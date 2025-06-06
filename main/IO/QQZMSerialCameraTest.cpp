@@ -8,14 +8,14 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
 	UInt32 portNum = 1;
 	UInt32 baudRate = 115200;
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt32(argv[1], portNum);

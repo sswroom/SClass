@@ -317,7 +317,7 @@ void PrintValInt32x4(Int32x4 val)
 	printf("Val[3] = %x\r\n", PEXTD4(val, 3));
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 *abuff = MemAllocA(UInt8, 32);
 	abuff[0] = 0x00;

@@ -16,7 +16,7 @@ namespace UtilUI
 		NN<UI::GUIButton> btnOk;
 		NN<UI::GUIButton> btnCancel;
 		NN<Media::MonitorMgr> monMgr;
-		Text::String *retInput;
+		Optional<Text::String> retInput;
 
 		static void __stdcall OnOKClicked(AnyType userObj);
 		static void __stdcall OnCancelClicked(AnyType userObj);

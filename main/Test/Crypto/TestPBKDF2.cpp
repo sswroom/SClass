@@ -18,7 +18,7 @@ UnsafeArray<UTF8Char> Test(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Ch
 	return sbuff;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;

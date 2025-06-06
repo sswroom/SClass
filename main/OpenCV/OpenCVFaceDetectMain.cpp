@@ -158,7 +158,7 @@ Optional<Media::VideoCapturer> OpenCapture(UOSInt defIndex)
 	return capture;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<Media::VideoCapturer> capture;
 	IO::ConsoleWriter *console;
@@ -170,7 +170,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		defIndex = Text::StrToUOSInt(argv[1]);

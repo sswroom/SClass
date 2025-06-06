@@ -582,7 +582,7 @@ NN<Data::NamedClass<FlightHoldingsPeriod>> FlightHoldingsPeriod::CreateClass() c
 	return cls;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN serverHost;
 	Text::CString database;

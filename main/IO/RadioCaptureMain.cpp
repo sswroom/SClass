@@ -10,7 +10,7 @@
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/CapturerWebHandler.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	UInt16 webPort = 8080;
@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16(argv[1], webPort);

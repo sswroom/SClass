@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 hashVal[50];
 	UTF8Char sbuff[128];

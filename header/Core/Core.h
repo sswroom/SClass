@@ -14,20 +14,20 @@ namespace UI
 
 namespace Core
 {
-	struct IProgControl
+	struct ProgControl
 	{
-		typedef void (CALLBACKFUNC WaitForExitFunc)(NN<IProgControl> progCtrl);
-		typedef UTF8Char **(CALLBACKFUNC GetCommandLinesFunc)(NN<IProgControl> progCtrl, OutParam<UOSInt> cmdCnt);
+		typedef void (CALLBACKFUNC WaitForExitFunc)(NN<ProgControl> progCtrl);
+		typedef UnsafeArray<UnsafeArray<UTF8Char>> (CALLBACKFUNC GetCommandLinesFunc)(NN<ProgControl> progCtrl, OutParam<UOSInt> cmdCnt);
 
 		WaitForExitFunc WaitForExit;
 		WaitForExitFunc SignalExit;
 		WaitForExitFunc SignalRestart;
 		GetCommandLinesFunc GetCommandLines;
 
-		static Optional<UI::GUICore> CreateGUICore(NN<IProgControl> progCtrl);
+		static Optional<UI::GUICore> CreateGUICore(NN<ProgControl> progCtrl);
 	};
-	typedef Media::VideoSource *(CALLBACKFUNC DecodeVideoFunc)(NN<Media::VideoSource> video);
-	typedef Media::AudioSource *(CALLBACKFUNC DecodeAudioFunc)(NN<Media::AudioSource> audio);
+	typedef Optional<Media::VideoSource> (CALLBACKFUNC DecodeVideoFunc)(NN<Media::VideoSource> video);
+	typedef Optional<Media::AudioSource> (CALLBACKFUNC DecodeAudioFunc)(NN<Media::AudioSource> audio);
 	typedef void (CALLBACKFUNC SimpleFunc)();
 
 	void CoreStart();
@@ -35,7 +35,7 @@ namespace Core
 	void CoreAddVideoDecFunc(DecodeVideoFunc func);
 	void CoreAddAudioDecFunc(DecodeAudioFunc func);
 	void CoreAddOnExitFunc(SimpleFunc func);
-	Media::VideoSource *DecodeVideo(NN<Media::VideoSource> video);
-	Media::AudioSource *DecodeAudio(NN<Media::AudioSource> audio);
+	Optional<Media::VideoSource> DecodeVideo(NN<Media::VideoSource> video);
+	Optional<Media::AudioSource> DecodeAudio(NN<Media::AudioSource> audio);
 }
 #endif

@@ -137,11 +137,11 @@ public:
 	}
 };
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Bool showHelp = true;
 	UOSInt cmdCnt;
-	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
+	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	if (cmdCnt == 2)
 	{

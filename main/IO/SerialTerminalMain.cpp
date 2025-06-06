@@ -31,14 +31,14 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NEW_CLASS(console, IO::ConsoleWriter());
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 
 	if (argc != 3)
 	{

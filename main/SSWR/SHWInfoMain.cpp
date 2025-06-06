@@ -111,7 +111,7 @@ UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UInt64 byteSize)
 	}
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;

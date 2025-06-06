@@ -26,7 +26,7 @@ void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 por
 	console->WriteLine(CSTRP(sbuff, sptr));
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -36,7 +36,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt32 baudRate = 115200;
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUOSInt(argv[1], portNum);

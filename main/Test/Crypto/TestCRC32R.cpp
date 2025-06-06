@@ -3,7 +3,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 testBlock[] = "123456789";
 	UInt8 testBlock2[] = "12345678901234567";

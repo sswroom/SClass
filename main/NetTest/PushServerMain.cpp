@@ -8,7 +8,7 @@
 #include "Net/PushServer.h"
 #include "Net/SSLEngineFactory.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("PushServer.err"), Manage::ExceptionRecorder::EA_RESTART);
 	IO::ConsoleWriter console;

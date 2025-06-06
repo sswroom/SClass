@@ -27,8 +27,8 @@ namespace IO
 		virtual Bool Enable();
 		virtual Bool Disable();
 		virtual Bool SetTimeoutSec(Int32 timeoutSec);
-		virtual Bool GetTimeoutSec(Int32 *timeoutSec);
-		virtual Bool GetTemperature(Double *temp);
+		virtual Bool GetTimeoutSec(OutParam<Int32> timeoutSec);
+		virtual Bool GetTemperature(OutParam<Double> temp);
 	};
 }
 
@@ -124,15 +124,15 @@ Bool IO::WatchdogLinux::SetTimeoutSec(Int32 timeoutSec)
 	return ioctl(this->fd, WDIOC_SETTIMEOUT, &timeoutSec) == 0;
 }
 
-Bool IO::WatchdogLinux::GetTimeoutSec(Int32 *timeoutSec)
+Bool IO::WatchdogLinux::GetTimeoutSec(OutParam<Int32> timeoutSec)
 {
 	if (this->fd < 0)
 		return false;
 
-	return ioctl(this->fd, WDIOC_GETTIMEOUT, timeoutSec) == 0;
+	return ioctl(this->fd, WDIOC_GETTIMEOUT, timeoutSec.Ptr()) == 0;
 }
 
-Bool IO::WatchdogLinux::GetTemperature(Double *temp)
+Bool IO::WatchdogLinux::GetTemperature(OutParam<Double> temp)
 {
 	if (this->fd < 0)
 		return false;
@@ -141,6 +141,6 @@ Bool IO::WatchdogLinux::GetTemperature(Double *temp)
 	if (ioctl(this->fd, WDIOC_GETTEMP, &t) != 0)
 		return false;
 
-	*temp = Math::Unit::Temperature::Convert(Math::Unit::Temperature::TU_FAHRENHEIT, Math::Unit::Temperature::TU_CELSIUS, t);
+	temp.Set(Math::Unit::Temperature::Convert(Math::Unit::Temperature::TU_FAHRENHEIT, Math::Unit::Temperature::TU_CELSIUS, t));
 	return true;
 }

@@ -3,7 +3,7 @@
 #include "Media/Decoder/FFMPEGDecoder.h"
 #include "SSWR/DownloadMonitor/DownMonMainForm.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 #if 1
 	Media::Decoder::FFMPEGDecoder::Enable();

@@ -14,7 +14,7 @@
 
 #undef CreateService
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::ProgControl> progCtrl);
 
 SERVICE_STATUS          gSvcStatus; 
 SERVICE_STATUS_HANDLE   gSvcStatusHandle; 
@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
 	return 0;
 } 
 
-Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	return 0;
 }

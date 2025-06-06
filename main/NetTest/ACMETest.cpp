@@ -6,7 +6,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Sync/SimpleThread.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN domain = CSTR("sswroom.no-ip.org");
 	UTF8Char sbuff[512];

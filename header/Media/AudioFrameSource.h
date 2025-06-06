@@ -26,7 +26,7 @@ namespace Media
 		UOSInt readBlockOfst;
 		Optional<Sync::Event> readEvt;
 
-		AudioFrame *blocks;
+		UnsafeArray<AudioFrame> blocks;
 		UInt32 blockCnt;
 		UInt32 maxBlockCnt;
 		UOSInt maxBlockSize;

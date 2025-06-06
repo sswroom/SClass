@@ -6,7 +6,7 @@
 #include "Media/AFilter/AudioSweepFilter.h"
 #include "Sync/SimpleThread.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Media::AudioDevice *dev;

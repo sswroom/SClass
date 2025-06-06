@@ -3,11 +3,11 @@
 #include "IO/ConsoleWriter.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	i = 0;
@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.ClearStr();
 		sb.AppendUOSInt(i);
 		sb.AppendUTF8Char('\t');
-		sb.AppendSlow(argv[i]);
+		sb.AppendSlow(UnsafeArray<const UTF8Char>(argv[i]));
 		console.WriteLine(sb.ToCString());
 		i++;
 	}

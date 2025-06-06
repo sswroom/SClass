@@ -6,7 +6,7 @@
 #include "SSWR/DiscDB/DiscDBMainForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	NN<UI::GUICore> ui;

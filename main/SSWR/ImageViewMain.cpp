@@ -5,13 +5,13 @@
 #include "SSWR/AVIRead/AVIRCoreWin.h"
 #include "SSWR/AVIRead/AVIRImageViewerForm.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
 	SSWR::AVIRead::AVIRImageViewerForm *frm;
 	NN<SSWR::AVIRead::AVIRCore> core;
 	NN<UI::GUICore> ui;
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	Bool succ;
 	UOSInt argc;
 	UInt32 i;

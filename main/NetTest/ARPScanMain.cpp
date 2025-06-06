@@ -39,7 +39,7 @@ void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType 
 	}
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));

@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	UI::GUICore *ui;

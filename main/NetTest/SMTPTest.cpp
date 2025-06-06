@@ -7,7 +7,7 @@
 #include "Net/Email/SMTPClient.h"
 #include "Parser/FileParser/X509Parser.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Parser::FileParser::X509Parser parser;
 	Data::DateTime dt;

@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	OSInt i = 0;
 	UTF8Char sbuff[10];

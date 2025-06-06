@@ -13,7 +13,7 @@ void __stdcall OnTVDblClick(void *userObj)
 	me->GetUI()->ShowMsgOK(CSTR("Test"), CSTR("GUI Test 6 TV DblClick"), me);
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))

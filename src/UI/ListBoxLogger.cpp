@@ -16,6 +16,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 		UOSInt curr;
 		UOSInt cnt;
 		UOSInt i;
+		NN<Text::String> s;
 		Sync::MutexUsage mutUsage(me->mut);
 		cnt = me->logCnt;
 		curr = me->logIndex - cnt;
@@ -54,9 +55,12 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 			i = 0;
 			while (cnt-- > 0)
 			{
-				me->lb->InsertItem(i, me->tmpLogArr[cnt], 0);
-				me->tmpLogArr[cnt]->Release();
-				i++;
+				if (me->tmpLogArr[cnt].SetTo(s))
+				{
+					me->lb->InsertItem(i, s->ToCString(), 0);
+					s->Release();
+					i++;
+				}
 			}
 		}
 		else
@@ -77,9 +81,12 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 			i = 0;
 			while (i < cnt)
 			{
-				me->lb->AddItem(Text::String::OrEmpty(me->tmpLogArr[i]), 0);
-				me->tmpLogArr[i]->Release();
-				i++;
+				if (me->tmpLogArr[i].SetTo(s))
+				{
+					me->lb->AddItem(s, 0);
+					s->Release();
+					i++;
+				}
 			}
 		}
 //		this->lb->EndUpdate();
@@ -108,8 +115,8 @@ UI::ListBoxLogger::ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UOS
 	this->maxLog = maxLog;
 	this->reverse = reverse;
 	this->frm = frm;
-	this->logArr = MemAlloc(Text::String *, this->maxLog);
-	this->tmpLogArr = MemAlloc(Text::String *, this->maxLog);
+	this->logArr = MemAllocArr(Optional<Text::String>, this->maxLog);
+	this->tmpLogArr = MemAllocArr(Optional<Text::String>, this->maxLog);
 	this->logIndex = 0;
 	this->logCnt = 0;
 	this->timeFormat = 0;
@@ -129,13 +136,10 @@ UI::ListBoxLogger::~ListBoxLogger()
 	UOSInt i = this->maxLog;
 	while (i-- > 0)
 	{
-		if (this->logArr[i])
-		{
-			this->logArr[i]->Release();
-		}
+		OPTSTR_DEL(this->logArr[i]);
 	}
-	MemFree(this->logArr);
-	MemFree(this->tmpLogArr);
+	MemFreeArr(this->logArr);
+	MemFreeArr(this->tmpLogArr);
 	SDEL_TEXTC(this->timeFormat);
 	
 }
@@ -166,20 +170,16 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CStringNN
 	{
 		this->logCnt++;
 	}
-	if (this->logArr[this->logIndex])
-	{
-		this->logArr[this->logIndex]->Release();
-	}
-	this->logArr[this->logIndex] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+	OPTSTR_DEL(this->logArr[this->logIndex]);
+	this->logArr[this->logIndex] = Text::String::New(sb.ToCString());
 	this->logIndex = (this->logIndex + 1) % this->maxLog;
 }
 
-void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
+void UI::ListBoxLogger::SetTimeFormat(UnsafeArray<const Char> timeFormat)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	SDEL_TEXTC(this->timeFormat);
 	this->timeFormat = Text::StrCopyNewCh(timeFormat);
-	mutUsage.EndUse();
 }
 
 NN<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse)

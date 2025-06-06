@@ -6,7 +6,7 @@
 #define PIN1 5
 #define PIN2 8
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	OSInt i = 3;
 	IO::GPIOControl gpio;	

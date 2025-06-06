@@ -9,7 +9,7 @@
 #include "SSWR/AVIRead/AVIRDNSProxyForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRDNSProxyForm *frm;
@@ -20,7 +20,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 //	MemSetBreakPoint(0x014746E8);
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
-	if (Core::IProgControl::CreateGUICore(progCtrl).SetTo(ui))
+	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, ui, core));

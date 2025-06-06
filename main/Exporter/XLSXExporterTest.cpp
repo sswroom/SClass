@@ -5,7 +5,7 @@
 #include "IO/FileStream.h"
 #include "Text/SpreadSheet/Workbook.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Exporter::ExcelXMLExporter exporterXML;
 	Exporter::XLSXExporter exporterXLSX;

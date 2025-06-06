@@ -1585,7 +1585,7 @@ NN<Media::EXIFData> Media::EXIFData::Clone() const
 	return newExif;
 }
 
-void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff)
+void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, UnsafeArray<const UInt8> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1593,14 +1593,14 @@ void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff)
 	item->cnt = cnt;
 	if (cnt <= 4)
 	{
-		MemCopyNO(&item->value, buff, cnt);
+		MemCopyNO(&item->value, &buff[0], cnt);
 		item->dataBuff = 0;
 	}
 	else
 	{
-		item->value = *(Int32*)buff;
+		item->value = ReadNInt32(&buff[0]);
 		item->dataBuff = MemAlloc(UInt8, cnt);
-		MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), buff, cnt);
+		MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), &buff[0], cnt);
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1608,7 +1608,7 @@ void Media::EXIFData::AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff)
 	}
 }
 
-void Media::EXIFData::AddString(UInt32 id, UInt64 cnt, const Char *buff)
+void Media::EXIFData::AddString(UInt32 id, UInt64 cnt, UnsafeArray<const Char> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1616,14 +1616,14 @@ void Media::EXIFData::AddString(UInt32 id, UInt64 cnt, const Char *buff)
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(UInt8, cnt);
-	MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), buff, cnt);
+	MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), &buff[0], cnt);
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
 }
 
-void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff)
+void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, UnsafeArray<const UInt16> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1631,14 +1631,14 @@ void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff)
 	item->cnt = cnt;
 	if (cnt <= 2)
 	{
-		MemCopyNO(&item->value, buff, cnt * sizeof(UInt16));
+		MemCopyNO(&item->value, &buff[0], cnt * sizeof(UInt16));
 		item->dataBuff = 0;
 	}
 	else
 	{
-		item->value = *(Int32*)buff;
+		item->value = ReadNInt32(&buff[0]);
 		item->dataBuff = MemAlloc(UInt16, cnt);
-		MemCopyNO(item->dataBuff.GetOpt<UInt16>().OrNull(), buff, cnt * sizeof(UInt16));
+		MemCopyNO(item->dataBuff.GetOpt<UInt16>().OrNull(), &buff[0], cnt * sizeof(UInt16));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1646,7 +1646,7 @@ void Media::EXIFData::AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff)
 	}
 }
 
-void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, const UInt32 *buff)
+void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, UnsafeArray<const UInt32> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1661,7 +1661,7 @@ void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, const UInt32 *buff)
 	{
 		item->value = (Int32)*buff;
 		item->dataBuff = MemAlloc(UInt32, cnt);
-		MemCopyNO(item->dataBuff.GetOpt<UInt32>().OrNull(), buff, cnt * sizeof(UInt32));
+		MemCopyNO(item->dataBuff.GetOpt<UInt32>().OrNull(), &buff[0], cnt * sizeof(UInt32));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1669,7 +1669,7 @@ void Media::EXIFData::AddUInt32(UInt32 id, UInt64 cnt, const UInt32 *buff)
 	}
 }
 
-void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, const Int16 *buff)
+void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, UnsafeArray<const Int16> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1677,14 +1677,14 @@ void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, const Int16 *buff)
 	item->cnt = cnt;
 	if (cnt <= 2)
 	{
-		MemCopyNO(&item->value, buff, cnt * sizeof(Int16));
+		MemCopyNO(&item->value, &buff[0], cnt * sizeof(Int16));
 		item->dataBuff = 0;
 	}
 	else
 	{
-		item->value = *(Int32*)buff;
+		item->value = ReadNInt32(&buff[0]);
 		item->dataBuff = MemAlloc(Int16, cnt);
-		MemCopyNO(item->dataBuff.GetOpt<Int16>().OrNull(), buff, cnt * sizeof(Int16));
+		MemCopyNO(item->dataBuff.GetOpt<Int16>().OrNull(), &buff[0], cnt * sizeof(Int16));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1692,7 +1692,7 @@ void Media::EXIFData::AddInt16(UInt32 id, UInt64 cnt, const Int16 *buff)
 	}
 }
 
-void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff)
+void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, UnsafeArray<const Int32> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1700,14 +1700,14 @@ void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff)
 	item->cnt = cnt;
 	if (cnt <= 1)
 	{
-		MemCopyNO(&item->value, buff, cnt * sizeof(Int32));
+		MemCopyNO(&item->value, &buff[0], cnt * sizeof(Int32));
 		item->dataBuff = 0;
 	}
 	else
 	{
-		item->value = *(Int32*)buff;
+		item->value = ReadNInt32(&buff[0]);
 		item->dataBuff = MemAlloc(Int32, cnt);
-		MemCopyNO(item->dataBuff.GetOpt<Int32>().OrNull(), buff, cnt * sizeof(Int32));
+		MemCopyNO(item->dataBuff.GetOpt<Int32>().OrNull(), &buff[0], cnt * sizeof(Int32));
 	}
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1715,7 +1715,7 @@ void Media::EXIFData::AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff)
 	}
 }
 
-void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff)
+void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, UnsafeArray<const UInt32> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1723,7 +1723,7 @@ void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff)
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(UInt32, cnt << 1);
-	MemCopyNO(item->dataBuff.GetOpt<UInt32>().OrNull(), buff, cnt * sizeof(UInt32) * 2);
+	MemCopyNO(item->dataBuff.GetOpt<UInt32>().OrNull(), &buff[0], cnt * sizeof(UInt32) * 2);
 
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1731,7 +1731,7 @@ void Media::EXIFData::AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff)
 	}
 }
 
-void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff)
+void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, UnsafeArray<const Int32> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1739,7 +1739,7 @@ void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff)
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(Int32, cnt << 1);
-	MemCopyNO(item->dataBuff.GetOpt<Int32>().OrNull(), buff, cnt * sizeof(Int32) * 2);
+	MemCopyNO(item->dataBuff.GetOpt<Int32>().OrNull(), &buff[0], cnt * sizeof(Int32) * 2);
 
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
@@ -1777,7 +1777,7 @@ void Media::EXIFData::AddSubEXIF(UInt32 id, NN<Media::EXIFData> exif)
 	}
 }
 
-void Media::EXIFData::AddDouble(UInt32 id, UInt64 cnt, const Double *buff)
+void Media::EXIFData::AddDouble(UInt32 id, UInt64 cnt, UnsafeArray<const Double> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1785,14 +1785,14 @@ void Media::EXIFData::AddDouble(UInt32 id, UInt64 cnt, const Double *buff)
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(Double, cnt);
-	MemCopyNO(item->dataBuff.GetOpt<Double>().OrNull(), buff, cnt * sizeof(Double));
+	MemCopyNO(item->dataBuff.GetOpt<Double>().OrNull(), &buff[0], cnt * sizeof(Double));
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
 }
 
-void Media::EXIFData::AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff)
+void Media::EXIFData::AddUInt64(UInt32 id, UInt64 cnt, UnsafeArray<const UInt64> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1800,14 +1800,14 @@ void Media::EXIFData::AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff)
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(UInt64, cnt);
-	MemCopyNO(item->dataBuff.GetOpt<UInt64>().OrNull(), buff, cnt * sizeof(UInt64));
+	MemCopyNO(item->dataBuff.GetOpt<UInt64>().OrNull(), &buff[0], cnt * sizeof(UInt64));
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);
 	}
 }
 
-void Media::EXIFData::AddInt64(UInt32 id, UInt64 cnt, const Int64 *buff)
+void Media::EXIFData::AddInt64(UInt32 id, UInt64 cnt, UnsafeArray<const Int64> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1815,7 +1815,7 @@ void Media::EXIFData::AddInt64(UInt32 id, UInt64 cnt, const Int64 *buff)
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(Int64, cnt);
-	MemCopyNO(item->dataBuff.GetOpt<Int64>().OrNull(), buff, cnt * sizeof(Int64));
+	MemCopyNO(item->dataBuff.GetOpt<Int64>().OrNull(), &buff[0], cnt * sizeof(Int64));
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{
 		FreeItem(item);

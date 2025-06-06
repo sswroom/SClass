@@ -553,7 +553,7 @@ Int32 WKBTest()
 	return 0;
 }
 
-Int32 SSHTest(NN<Core::IProgControl> progCtrl)
+Int32 SSHTest(NN<Core::ProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(false);
 	Net::SSHManager ssh(sockf);
@@ -1041,7 +1041,7 @@ Int32 MTDrawTest()
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UOSInt testType = 26;
 	switch (testType)

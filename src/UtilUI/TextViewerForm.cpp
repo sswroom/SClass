@@ -45,7 +45,7 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 	this->txtStatus->SetRect(0, 0, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->txtView, UI::GUITextFileView(ui, *this, deng, 0));
+	NEW_CLASSNN(this->txtView, UI::GUITextFileView(ui, *this, deng, 0));
 	this->txtView->SetCodePage(codePage);
 	this->txtView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->HandleDropFiles(OnFileDrop, this);
@@ -62,9 +62,10 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 
 UtilUI::TextViewerForm::~TextViewerForm()
 {
-	if (this->srchFrm)
+	NN<UI::GUIForm> srchFrm;
+	if (this->srchFrm.SetTo(srchFrm))
 	{
-		this->srchFrm->Close();
+		srchFrm->Close();
 	}
 }
 
@@ -154,19 +155,21 @@ Bool UtilUI::TextViewerForm::LoadStreamData(NN<IO::StreamData> data)
 
 Bool UtilUI::TextViewerForm::OpenSearch(Text::CString txt)
 {
-	if (this->srchFrm)
+	NN<UtilUI::TextSearchForm> srchFrm;
+	if (Optional<UtilUI::TextSearchForm>::ConvertFrom(this->srchFrm).SetTo(srchFrm))
 	{
-		this->srchFrm->Focus();
+		srchFrm->Focus();
 		if (txt.leng > 0)
-			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt.OrEmpty());
+			srchFrm->SetSearchText(txt.OrEmpty());
 	}
 	else
 	{
-		NEW_CLASS(this->srchFrm, UtilUI::TextSearchForm(0, this->ui, this->monMgr, this));
-		this->srchFrm->HandleFormClosed(OnSearchClosed, this);
+		NEW_CLASSNN(srchFrm, UtilUI::TextSearchForm(0, this->ui, this->monMgr, *this));
+		this->srchFrm = srchFrm;
+		srchFrm->HandleFormClosed(OnSearchClosed, this);
 		if (txt.leng > 0)
-			((UtilUI::TextSearchForm*)this->srchFrm)->SetSearchText(txt.OrEmpty());
-		this->srchFrm->Show();
+			srchFrm->SetSearchText(txt.OrEmpty());
+		srchFrm->Show();
 	}
 	return true;
 }

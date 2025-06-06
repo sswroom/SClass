@@ -13,7 +13,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Double temp;
@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16(argv[1], pinNum);

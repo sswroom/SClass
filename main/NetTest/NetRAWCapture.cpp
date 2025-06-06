@@ -9,13 +9,13 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/RAWAnalyzer.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Net::RAWAnalyzer *analyzer;
 	IO::Writer *console;
 	UInt16 portNum = 8089;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16(argv[1], portNum);

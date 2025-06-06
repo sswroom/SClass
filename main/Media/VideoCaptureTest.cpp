@@ -49,7 +49,7 @@ void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArra
 	frameCnt--;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Media::VideoCaptureMgr *mgr;
 	Media::ColorManager *colorMgr;
@@ -70,7 +70,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt32 prefFmt = 0;
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		widthLimit = Text::StrToUInt32(argv[1]);

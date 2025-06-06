@@ -4,7 +4,7 @@
 #include "SSWR/ProcMonForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
 	SSWR::ProcMonForm *frm;

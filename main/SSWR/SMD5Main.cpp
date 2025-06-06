@@ -192,12 +192,12 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose)
 	}
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UOSInt cmdCnt;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
+	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	showHelp = true;
 	if (cmdCnt >= 2)

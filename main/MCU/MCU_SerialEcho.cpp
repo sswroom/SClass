@@ -4,7 +4,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::SerialPort serial(1, 115200, IO::SerialPort::PARITY_NONE, false);	
 	UInt8 buff[64];

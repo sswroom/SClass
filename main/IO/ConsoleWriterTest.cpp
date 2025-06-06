@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	console.WriteLine(CSTR("WriteLine Test"));

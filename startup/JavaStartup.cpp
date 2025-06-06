@@ -7,14 +7,14 @@
 #include <jni.h>
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::ProgControl> progCtrl);
 
 extern "C"
 {
 	void *jniEnv;
 }
 
-struct LinuxProgControl : public Core::IProgControl
+struct LinuxProgControl : public Core::ProgControl
 {
 	UTF8Char **argv;
 	OSInt argc;
@@ -24,7 +24,7 @@ void LinuxProgControl_OnSignal(Int32 sigNum)
 {
 }
 
-void __stdcall LinuxProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 {
 /*	signal(SIGINT, LinuxProgControl_OnSignal);
 	signal(SIGPIPE, LinuxProgControl_OnSignal);
@@ -33,14 +33,14 @@ void __stdcall LinuxProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 //	getchar();
 }
 
-Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::Java::JavaCore> ui;
 	NEW_CLASSNN(ui, UI::Java::JavaCore());
 	return ui;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	NN<LinuxProgControl> ctrl = NN<LinuxProgControl>::ConvertFrom(progCtrl);
 	cmdCnt.Set((UOSInt)ctrl->argc);

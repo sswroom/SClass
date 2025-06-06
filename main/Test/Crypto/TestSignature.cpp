@@ -36,7 +36,7 @@ const Char key[] =
 	"G3d2Pvh+Go3G2tJocuO5QnQ73BRsmF7DEUlirgFav5tP3uWZ48M=\r\n"
 	"-----END RSA PRIVATE KEY-----\r\n";
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Int32 ret = 1;
 	UInt8 signData[2048];

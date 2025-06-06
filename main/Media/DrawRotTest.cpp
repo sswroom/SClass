@@ -25,7 +25,7 @@ void GenerateAngle(NN<Media::DrawEngine> deng, UOSInt angleDegree)
 	}
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 	GenerateAngle(deng, 0);

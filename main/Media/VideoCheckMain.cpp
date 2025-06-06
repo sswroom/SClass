@@ -115,7 +115,7 @@ end:
     return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Media::Decoder::FFMPEGDecoder::Enable();
 	const UTF8Char *fileName = (const UTF8Char*)"test.mp4";

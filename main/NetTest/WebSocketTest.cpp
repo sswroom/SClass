@@ -19,7 +19,7 @@ void __stdcall OnMessage(AnyType userObj, Text::CStringNN topic, const Data::Byt
 	printf("Data from topic: %s\r\n", topic.v.Ptr());
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);

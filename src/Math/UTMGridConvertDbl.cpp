@@ -15,7 +15,7 @@ Math::UTMGridConvertDbl::~UTMGridConvertDbl()
 {
 }
 
-UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> gridStr, Int32 digitCnt, Int32 *lonZone, Char *latZone, Double *northing, Double *easting, Double lat, Double lon)
+UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> gridStr, Int32 digitCnt, OptOut<Int32> lonZone, OptOut<Char> latZone, OptOut<Double> northing, OptOut<Double> easting, Double lat, Double lon)
 {
 	Double k0 = 0.9996;
 	Double deg2rad = Math::PI / 180.0;
@@ -97,10 +97,8 @@ UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> 
 	if (inorth < 0)
 		inorth = -inorth;
 	
-	if (lonZone)
-		*lonZone = zoneNumber;
-	if (latZone)
-		*latZone = letters[(((Int32)lat) >> 3) + 12];
+	lonZone.Set(zoneNumber);
+	latZone.Set(letters[(((Int32)lat) >> 3) + 12]);
 	Int32 pos = (ieast / 100000) - 1 + (((zoneNumber + 2) % 3) << 3);
 	Char eastZone = letters[pos];
 	pos = (inorth / 100000) % 20;
@@ -109,10 +107,8 @@ UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> 
 		pos = (pos + 5) % 20;
 	}
 	Char northZone = letters[pos];
-	if (easting)
-		*easting = utmEasting;
-	if (northing)
-		*northing = utmNorthing;
+	easting.Set(utmEasting);
+	northing.Set(utmNorthing);
 
 	UnsafeArray<UTF8Char> sptr = Text::StrInt32(gridStr, zoneNumber);
 	*sptr++ = (UTF8Char)letters[(((Int32)lat) >> 3) + 12];
@@ -155,7 +151,7 @@ UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> 
 	return sptr;
 }
 
-Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const UTF8Char *grid)
+Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Double> lonOut, UnsafeArray<const UTF8Char> grid)
 {
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double k0 = 0.9996;
@@ -260,12 +256,12 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 			break;
 		northing += 2000000.0;
 	}
-	*latOut = lat;
-	*lonOut = lon;
+	latOut.Set(lat);
+	lonOut.Set(lon);
 	return true;
 }
 
-Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, Int32 lonZone, Char latZone, Double northing, Double easting)
+Bool Math::UTMGridConvertDbl::Grid_WGS84(OutParam<Double> latOut, OutParam<Double> lonOut, Int32 lonZone, Char latZone, Double northing, Double easting)
 {
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double k0 = 0.9996;
@@ -310,8 +306,8 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, Int32 l
 	lon = (d - (1 + 2 * t1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * t1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * t1 * t1) * d *d * d * d * d / 120) / Math_Cos(phi1Rad);
 	lon = longOrigin + lon * rad2deg;
 	
-	*latOut = lat;
-	*lonOut = lon;
+	latOut.Set(lat);
+	lonOut.Set(lon);
 	return true;
 }
 

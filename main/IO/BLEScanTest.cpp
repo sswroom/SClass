@@ -29,7 +29,7 @@ void __stdcall OnScanResult(void *userObj, UInt64 mac, Int32 rssi, const Char *n
 	console->WriteLine(sb.ToCString());
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::BTManager manager;
 	IO::BTController *ctrl;
@@ -72,7 +72,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::RadioSignalLogger *radioLogger;

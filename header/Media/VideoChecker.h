@@ -18,9 +18,9 @@ namespace Media
 			UInt64 sampleCnt;
 			Data::Duration lastSampleTime;
 			Bool isEnd;
-			Media::AudioSource *adecoder;
+			Optional<Media::AudioSource> adecoder;
 			Media::NullRenderer *renderer;
-			Media::VideoSource *vdecoder;
+			Optional<Media::VideoSource> vdecoder;
 			NN<Sync::Event> evt;
 		} DecodeStatus;
 	private:

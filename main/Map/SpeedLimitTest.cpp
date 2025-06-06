@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN path = CSTR("/home/sswroom/Progs/Temp/kmlTest/RdNet_IRNP.gdb");
 	Math::ArcGISPRJParser prjParser;

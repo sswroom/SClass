@@ -6,13 +6,13 @@
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Int32 pinNum;
 	Int32 val;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 3)
 	{
 		if (Text::StrToInt32(argv[1], pinNum) && Text::StrToInt32(argv[2], val))

@@ -31,12 +31,12 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::Watchdog> nnwd;
 	IO::ConsoleWriter console;
 	Int32 wdId;
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UOSInt argc;
 	running = false;
 	toStop = false;
@@ -65,7 +65,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		Int32 timeoutSec;
 		Double temp;
-		if (nnwd->GetTimeoutSec(&timeoutSec))
+		if (nnwd->GetTimeoutSec(timeoutSec))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
@@ -77,7 +77,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in getting timeout value"));
 		}
 
-		if (nnwd->GetTemperature(&temp))
+		if (nnwd->GetTemperature(temp))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temperature = "));

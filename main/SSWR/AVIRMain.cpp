@@ -31,7 +31,7 @@ Int32 MyAdd(Int32 a, Int32 b)
 	return a;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBaseForm *frm;
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt argc;
 	UOSInt i;
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 
 //	MemSetBreakPoint(0x014746E8);
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
@@ -57,7 +57,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("log"));
 	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE);
-	if (Core::IProgControl::CreateGUICore(progCtrl).SetTo(ui))
+	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));

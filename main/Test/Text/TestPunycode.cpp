@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "Text/TextBinEnc/Punycode.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char refbuff[256];
 	UnsafeArray<UTF8Char> refPtr;

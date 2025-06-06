@@ -7,13 +7,13 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Optional<IO::Watchdog> wd;
 	NN<IO::Watchdog> nnwd;
 	Int32 wdId;
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UOSInt argc;
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2 && Text::StrToInt32(argv[1], wdId))
@@ -38,7 +38,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		Int32 timeoutSec;
 		Double temp;
-		if (nnwd->GetTimeoutSec(&timeoutSec))
+		if (nnwd->GetTimeoutSec(timeoutSec))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
@@ -50,7 +50,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in getting timeout value"));
 		}
 
-		if (nnwd->GetTemperature(&temp))
+		if (nnwd->GetTemperature(temp))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temperature = "));

@@ -195,7 +195,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	paramUrl = CSTR(URL);
 	threadCnt = THREADCNT;
@@ -207,7 +207,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[256];
 	UOSInt i;
 	UOSInt cmdCnt;
-	UTF8Char **args = progCtrl->GetCommandLines(progCtrl, cmdCnt);
+	UnsafeArray<UnsafeArray<UTF8Char>> args = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	Bool showHelp = false;
 
 	i = 1;

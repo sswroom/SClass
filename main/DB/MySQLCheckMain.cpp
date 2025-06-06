@@ -10,7 +10,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/Email/SMTPClient.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	NN<IO::ConfigFile> cfg;

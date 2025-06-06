@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Crypto/Hash/Adler32.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 testBlock[32];
 	UInt8 hashVal[32];

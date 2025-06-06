@@ -2,24 +2,24 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::ProgControl> progCtrl);
 
-void __stdcall BootControl_WaitForExit(NN<Core::IProgControl> progCtrl)
+void __stdcall BootControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 {
 }
 
-Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	return 0;
 }
 
-UTF8Char **__stdcall BootControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall BootControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	cmdCnt.Set(1);
 	return (UTF8Char**)&"Boot";
 }
 
-void BootControl_Create(Core::IProgControl *ctrl)
+void BootControl_Create(Core::ProgControl *ctrl)
 {
 	ctrl->WaitForExit = BootControl_WaitForExit;
 	ctrl->GetCommandLines = BootControl_GetCommandLines;
@@ -27,13 +27,13 @@ void BootControl_Create(Core::IProgControl *ctrl)
 	ctrl->SignalRestart = BootControl_WaitForExit;
 }
 
-void BootControl_Destroy(Core::IProgControl *ctrl)
+void BootControl_Destroy(Core::ProgControl *ctrl)
 {
 }
 
 int main()
 {
-	Core::IProgControl conCtrl;
+	Core::ProgControl conCtrl;
 	Core::CoreStart();
 	BootControl_Create(&conCtrl);
 	while (true)

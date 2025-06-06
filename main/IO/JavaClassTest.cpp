@@ -5,7 +5,7 @@
 #include "IO/JavaClass.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::JavaClass *cls = IO::JavaClass::ParseFile(CSTR("Test.class"));

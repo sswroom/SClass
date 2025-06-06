@@ -10,11 +10,11 @@
 #include "Net/SSLEngineFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
 	UOSInt argc;
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt8 buff[2048];
 	NEW_CLASS(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
@@ -24,9 +24,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		const UTF8Char *url = argv[1];
+		UnsafeArray<const UTF8Char> url = argv[1];
 		UOSInt urlLen = Text::StrCharCnt(url);
-		const UTF8Char *file = argv[2];
+		UnsafeArray<const UTF8Char> file = argv[2];
 
 		UOSInt i;
 		UOSInt j;

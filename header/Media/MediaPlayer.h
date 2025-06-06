@@ -21,10 +21,10 @@ namespace Media
 		Media::RefClock clk;
 
 		Optional<Media::AudioRenderer> arenderer;
-		Media::AudioSource *currADecoder;
+		Optional<Media::AudioSource> currADecoder;
 		Optional<Media::MediaFile> currFile;
 		Media::AudioSource *currAStm;
-		Media::VideoSource *currVDecoder;
+		Optional<Media::VideoSource> currVDecoder;
 		Media::VideoSource *currVStm;
 		Media::ChapterInfo *currChapInfo;
 

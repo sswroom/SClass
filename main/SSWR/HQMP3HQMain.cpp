@@ -8,7 +8,7 @@
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRHQMPForm *frm;
@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		frm->SetExitOnClose(true);
 
 		UOSInt argc;
-		UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+		UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 		while (argc-- > 1)
 		{
 			Bool succ = frm->OpenFile({argv[argc], Text::StrCharCnt(argv[argc])}, IO::ParserType::MediaFile);

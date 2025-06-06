@@ -35,7 +35,7 @@ Optional<Net::TCPClient> Net::SSHConn::GetTCPClient() const
 	return this->cli;
 }
 
-Bool Net::SSHConn::GetHostKeySHA1(UInt8 *buff)
+Bool Net::SSHConn::GetHostKeySHA1(UnsafeArray<UInt8> buff)
 {
 	return false;
 }

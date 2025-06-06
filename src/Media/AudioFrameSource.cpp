@@ -22,7 +22,7 @@ Media::AudioFrameSource::AudioFrameSource(NN<IO::StreamData> fd, NN<const Media:
 	this->maxBlockCnt = 40;
 	this->totalSampleCnt = 0;
 	this->totalSize = 0;
-	this->blocks = MemAlloc(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
+	this->blocks = MemAllocArr(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
 }
 
 Media::AudioFrameSource::AudioFrameSource(NN<IO::StreamData> fd, NN<const Media::AudioFormat> format, Text::CStringNN name)
@@ -44,14 +44,14 @@ Media::AudioFrameSource::AudioFrameSource(NN<IO::StreamData> fd, NN<const Media:
 	this->maxBlockCnt = 40;
 	this->totalSampleCnt = 0;
 	this->totalSize = 0;
-	this->blocks = MemAlloc(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
+	this->blocks = MemAllocArr(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
 }
 
 Media::AudioFrameSource::~AudioFrameSource()
 {
 	this->data.Delete();
 	this->name->Release();
-	MemFree(this->blocks);
+	MemFreeArr(this->blocks);
 }
 
 UnsafeArrayOpt<UTF8Char> Media::AudioFrameSource::GetSourceName(UnsafeArray<UTF8Char> buff)
@@ -201,11 +201,11 @@ void Media::AudioFrameSource::AddBlock(UInt64 offset, UInt32 length, UInt32 deco
 {
 	if (this->blockCnt >= this->maxBlockCnt)
 	{
-		Media::AudioFrameSource::AudioFrame *newBlocks;
+		UnsafeArray<Media::AudioFrameSource::AudioFrame> newBlocks;
 		this->maxBlockCnt = this->maxBlockCnt << 1;
-		newBlocks = MemAlloc(AudioFrame, this->maxBlockCnt);
-		MemCopyNO(newBlocks, this->blocks, sizeof(AudioFrame) * this->blockCnt);
-		MemFree(this->blocks);
+		newBlocks = MemAllocArr(AudioFrame, this->maxBlockCnt);
+		MemCopyNO(newBlocks.Ptr(), this->blocks.Ptr(), sizeof(AudioFrame) * this->blockCnt);
+		MemFreeArr(this->blocks);
 		this->blocks = newBlocks;
 	}
 	this->blocks[this->blockCnt].offset = offset;

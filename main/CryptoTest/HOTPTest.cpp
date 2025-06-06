@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base32Enc.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 key[20];
 	UInt8 decKey[20];

@@ -175,6 +175,7 @@ console:
 @LoRaGWLogger
 @MQTTFailover
 @NetRAWCapture
+@NetRAWLogger
 @OAuth2Test
 @PingMonitor
 @PingScan
@@ -602,6 +603,9 @@ MQTTFailover:
 @ConsoleStartup.o
 NetRAWCapture:
 @NetRAWCapture.o
+@ConsoleStartup.o
+NetRAWLogger:
+@NetRAWLogger.o
 @ConsoleStartup.o
 OAuth2Test:
 @OAuth2Test.o
@@ -1119,6 +1123,7 @@ LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
 LoRaGWLoggerMain.o: ../../main/NetTest/LoRaGWLoggerMain.cpp
 MQTTFailoverTest.o: ../../main/NetTest/MQTTFailoverTest.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
+NetRAWLogger.o: ../../main/NetTest/NetRAWLogger.cpp
 OAuth2Test.o: ../../main/NetTest/OAuth2Test.cpp
 PingMonitorMain.o: ../../main/NetTest/PingMonitorMain.cpp
 PingScanMain.o: ../../main/NetTest/PingScanMain.cpp

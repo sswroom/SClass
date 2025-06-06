@@ -48,11 +48,12 @@ Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *
 
 Media::OpenCV::OCVFrameFeeder::~OCVFrameFeeder()
 {
-	if (this->decoder)
+	NN<Media::VideoSource> decoder;
+	if (this->decoder.SetTo(decoder))
 	{
-		this->decoder->Stop();
-		this->decoder->Init(0, 0, 0);
-		DEL_CLASS(this->decoder);
+		decoder->Stop();
+		decoder->Init(0, 0, 0);
+		this->decoder.Delete();
 	}
 	else
 	{
@@ -63,6 +64,7 @@ Media::OpenCV::OCVFrameFeeder::~OCVFrameFeeder()
 
 Bool Media::OpenCV::OCVFrameFeeder::Start()
 {
+	NN<Media::VideoSource> decoder;
 	UOSInt i;
 	UOSInt j;
 	UInt32 rateNorm;
@@ -209,16 +211,16 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 	{
 		Media::Decoder::VideoDecoderFinder decoders;
 		this->decoder = decoders.DecodeVideo(this->src);
-		if (this->decoder)
+		if (this->decoder.SetTo(decoder))
 		{
-			this->decoder->GetVideoInfo(this->info, rateNorm, rateDenorm, maxFrameSize);
+			decoder->GetVideoInfo(this->info, rateNorm, rateDenorm, maxFrameSize);
 		}
 	}
 	this->thisSkip = 0;
-	if (this->decoder)
+	if (this->decoder.SetTo(decoder))
 	{
-		this->decoder->Init(OnFrame, OnFrameChange, this);
-		return this->decoder->Start();
+		decoder->Init(OnFrame, OnFrameChange, this);
+		return decoder->Start();
 	}
 	else
 	{

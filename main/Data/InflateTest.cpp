@@ -11,7 +11,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/StmData/MemoryDataRef.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 *buff2;
 	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/burial_site.gpkg");

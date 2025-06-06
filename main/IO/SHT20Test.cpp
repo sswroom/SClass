@@ -8,7 +8,7 @@
 #include "Sync/ThreadUtil.h"
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::SerialPort> port;
 	IO::Device::SHT20 *sht20;
@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt32 baudRate = 9600;
 	UInt8 addr = 1;
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 3)
 	{
 		Text::StrToUInt32(argv[1], portNum);

@@ -13,12 +13,12 @@ namespace UtilUI
 	class TextViewerForm : public UI::GUIForm
 	{
 	private:
-		UI::GUITextFileView *txtView;
+		NN<UI::GUITextFileView> txtView;
 		NN<UI::GUIPanel> pnlStatus;
 		NN<UI::GUITextBox> txtStatus;
 		NN<UI::GUIMainMenu> mnuMain;
 
-		UI::GUIForm *srchFrm;
+		Optional<UI::GUIForm> srchFrm;
 		NN<Media::MonitorMgr> monMgr;
 		
 		static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);

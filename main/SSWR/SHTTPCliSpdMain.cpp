@@ -11,11 +11,11 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
 	UOSInt argc;
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt8 buff[2048];
 	NEW_CLASS(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);

@@ -4,7 +4,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

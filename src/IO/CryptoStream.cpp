@@ -1,14 +1,13 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/CryptoStream.h"
 
-IO::CryptoStream::CryptoStream(IO::Stream *srcStream, Crypto::Encrypt::Encryption *crypto, void *encParam) : IO::Stream(srcStream->GetSourceNameObj())
+IO::CryptoStream::CryptoStream(NN<IO::Stream> srcStream, NN<Crypto::Encrypt::Encryption> crypto) : IO::Stream(srcStream->GetSourceNameObj())
 {
 	this->stm = srcStream;
 	this->crypto = crypto;
-	this->encParam = encParam;
-	this->encBuff = MemAlloc(UInt8, this->crypto->GetEncBlockSize());
-	this->decBuff = MemAlloc(UInt8, this->crypto->GetEncBlockSize());
+	this->encBuff = MemAllocArr(UInt8, this->crypto->GetEncBlockSize());
+	this->decBuff = MemAllocArr(UInt8, this->crypto->GetEncBlockSize());
 	this->encBuffSize = 0;
 	this->decBuffSize = 0;
 	this->tmpBuff = 0;
@@ -18,135 +17,144 @@ IO::CryptoStream::CryptoStream(IO::Stream *srcStream, Crypto::Encrypt::Encryptio
 IO::CryptoStream::~CryptoStream()
 {
 	Close();
-	MemFree(this->encBuff);
-	MemFree(this->decBuff);
-	if (this->tmpBuff)
-		MemFree(this->tmpBuff);
+	MemFreeArr(this->encBuff);
+	MemFreeArr(this->decBuff);
+	UnsafeArray<UInt8> tmpBuff;
+	if (this->tmpBuff.SetTo(tmpBuff))
+		MemFreeArr(tmpBuff);
 }
 
-OSInt IO::CryptoStream::Read(UInt8 *buff, OSInt size)
+UOSInt IO::CryptoStream::Read(const Data::ByteArray &buff)
 {
-	if (this->stm == 0)
+	NN<IO::Stream> nnstm;
+	if (!this->stm.SetTo(nnstm))
 		return 0;
-	OSInt retSize = 0;
-	OSInt eblkSize = this->crypto->GetEncBlockSize();
-	OSInt dblkSize = this->crypto->GetDecBlockSize();
-	OSInt i;
+	UnsafeArray<UInt8> tmpBuff;
+	UOSInt size = buff.GetSize();
+	UnsafeArray<UInt8> buffPtr = buff.Arr();
+	UOSInt retSize = 0;
+	UOSInt eblkSize = this->crypto->GetEncBlockSize();
+	UOSInt dblkSize = this->crypto->GetDecBlockSize();
+	UOSInt i;
 	if (this->decBuffSize > 0)
 	{
 		if (this->decBuffSize > size)
 		{
-			MemCopy(buff, this->decBuff, size);
-			MemCopy(this->decBuff, &this->decBuff[size], this->decBuffSize - size);
+			MemCopyNO(buffPtr.Ptr(), &this->decBuff[0], size);
+			MemCopyO(&this->decBuff[0], &this->decBuff[size], this->decBuffSize - size);
 			this->decBuffSize -= size;
 			retSize = size;
 			size = 0;
 		}
 		else
 		{
-			MemCopy(buff, this->decBuff, this->decBuffSize);
+			MemCopyNO(buffPtr.Ptr(), &this->decBuff[0], this->decBuffSize);
 			size -= this->decBuffSize;
 			retSize = this->decBuffSize;
-			buff += this->decBuffSize;
+			buffPtr += this->decBuffSize;
 			this->decBuffSize = 0;
 		}
 	}
 	if (size > 0)
 	{
 		OSInt blkCnt = size / eblkSize;
-		if (this->tmpBuffSize < blkCnt * dblkSize)
+		if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < blkCnt * dblkSize)
 		{
-			if (this->tmpBuff)
-				MemFree(this->tmpBuff);
+			if (this->tmpBuff.SetTo(tmpBuff))
+				MemFreeArr(tmpBuff);
 			this->tmpBuffSize = blkCnt * dblkSize;
-			this->tmpBuff = MemAlloc(UInt8, this->tmpBuffSize);
+			this->tmpBuff = tmpBuff = MemAllocArr(UInt8, this->tmpBuffSize);
 		}
-		i = this->stm->Read(this->tmpBuff, blkCnt * dblkSize);
-		i = this->crypto->Decrypt(this->tmpBuff, i, buff, this->encParam);
+		i = nnstm->Read(Data::ByteArray(tmpBuff, blkCnt * dblkSize));
+		i = this->crypto->Decrypt(tmpBuff, i, buffPtr);
 		retSize += i;
 		size -= i;
-		buff += i;
+		buffPtr += i;
 	}
 	if (size > 0 && size < eblkSize)
 	{
-		if (this->tmpBuffSize < dblkSize)
+		if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < dblkSize)
 		{
-			if (this->tmpBuff)
-				MemFree(this->tmpBuff);
+			if (this->tmpBuff.SetTo(tmpBuff))
+				MemFreeArr(tmpBuff);
 			this->tmpBuffSize = dblkSize;
-			this->tmpBuff = MemAlloc(UInt8, this->tmpBuffSize);
+			this->tmpBuff = tmpBuff = MemAllocArr(UInt8, this->tmpBuffSize);
 		}
-		i = this->stm->Read(this->tmpBuff, dblkSize);
-		this->decBuffSize = this->crypto->Decrypt(this->tmpBuff, i, this->decBuff, this->encParam);
+		i = nnstm->Read(Data::ByteArray(tmpBuff, dblkSize));
+		this->decBuffSize = this->crypto->Decrypt(tmpBuff, i, this->decBuff);
 		if (this->decBuffSize > size)
 		{
-			MemCopy(buff, this->decBuff, size);
-			MemCopy(this->decBuff, &this->decBuff[size], this->decBuffSize - size);
+			MemCopyNO(buffPtr.Ptr(), &this->decBuff[0], size);
+			MemCopyO(&this->decBuff[0], &this->decBuff[size], this->decBuffSize - size);
 			this->decBuffSize -= size;
 			retSize += size;
 			size = 0;
 		}
 		else if (this->decBuffSize > 0)
 		{
-			MemCopy(buff, this->decBuff, this->decBuffSize);
+			MemCopyNO(buffPtr.Ptr(), &this->decBuff[0], this->decBuffSize);
 			retSize += this->decBuffSize;
 			size -= this->decBuffSize;
-			buff += this->decBuffSize;
+			buffPtr += this->decBuffSize;
 			this->decBuffSize = 0;
 		}
 	}
 	return retSize;
 }
 
-OSInt IO::CryptoStream::Write(const UInt8 *buff, OSInt size)
+UOSInt IO::CryptoStream::Write(Data::ByteArrayR buff)
 {
-	if (this->stm == 0)
+	NN<IO::Stream> nnstm;
+	if (!this->stm.SetTo(nnstm))
 		return 0;
-	OSInt retSize = size;
-	OSInt eblkSize = this->crypto->GetEncBlockSize();
-	OSInt dblkSize = this->crypto->GetDecBlockSize();
-	OSInt i;
+	UnsafeArray<UInt8> tmpBuff;
+	UOSInt size = buff.GetSize();
+	UnsafeArray<const UInt8> buffPtr = buff.Arr();
+	UOSInt retSize = size;
+	UOSInt eblkSize = this->crypto->GetEncBlockSize();
+	UOSInt dblkSize = this->crypto->GetDecBlockSize();
+	UOSInt i;
 	if (this->encBuffSize + size < eblkSize)
 	{
-		MemCopy(&this->encBuff[this->encBuffSize], buff, size);
+		MemCopyNO(&this->encBuff[this->encBuffSize], buffPtr.Ptr(), size);
 		this->encBuffSize += size;
 	}
 	else
 	{
 		if (this->encBuffSize > 0)
 		{
-			if (this->tmpBuffSize < dblkSize)
+			if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < dblkSize)
 			{
-				if (this->tmpBuff)
-					MemFree(this->tmpBuff);
+				if (this->tmpBuff.SetTo(tmpBuff))
+					MemFreeArr(tmpBuff);
 				this->tmpBuffSize = dblkSize;
-				this->tmpBuff = MemAlloc(UInt8, this->tmpBuffSize);
+				this->tmpBuff = tmpBuff = MemAllocArr(UInt8, this->tmpBuffSize);
 			}
-			MemCopy(&this->encBuff[this->encBuffSize], buff, eblkSize - this->encBuffSize);
-			i = this->crypto->Encrypt(this->encBuff, eblkSize, this->tmpBuff, this->encParam);
-			this->stm->Write(this->tmpBuff, i);
-			buff += eblkSize - this->encBuffSize;
+			MemCopyNO(&this->encBuff[this->encBuffSize], buffPtr.Ptr(), eblkSize - this->encBuffSize);
+			i = this->crypto->Encrypt(this->encBuff, eblkSize, tmpBuff);
+			nnstm->Write(Data::ByteArrayR(tmpBuff, i));
+			buffPtr += eblkSize - this->encBuffSize;
 			size -= eblkSize - this->encBuffSize;
 			this->encBuffSize = 0;
 		}
 		OSInt blkCnt = size / eblkSize;
 		if (blkCnt > 0)
 		{
-			if (this->tmpBuffSize < blkCnt * dblkSize)
+			if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < blkCnt * dblkSize)
 			{
-				if (this->tmpBuff)
-					MemFree(this->tmpBuff);
+				if (this->tmpBuff.SetTo(tmpBuff))
+					MemFreeArr(tmpBuff);
 				this->tmpBuffSize = blkCnt * dblkSize;
-				this->tmpBuff = MemAlloc(UInt8, this->tmpBuffSize);
+				this->tmpBuff = tmpBuff = MemAlloc(UInt8, this->tmpBuffSize);
 			}
-			i = this->crypto->Encrypt(buff, blkCnt * eblkSize, this->tmpBuff, this->encParam);
-			this->stm->Write(this->tmpBuff, i);
-			buff += blkCnt * eblkSize;
+			i = this->crypto->Encrypt(buffPtr, blkCnt * eblkSize, tmpBuff);
+			nnstm->Write(Data::ByteArrayR(tmpBuff, i));
+			buffPtr += blkCnt * eblkSize;
 			size -= blkCnt * eblkSize;
 		}
 		if (size > 0)
 		{
-			MemCopy(this->encBuff, buff, size);
+			MemCopyNO(&this->encBuff[0], buffPtr.Ptr(), size);
 			this->encBuffSize = size;
 		}
 	}
@@ -161,23 +169,25 @@ Int32 IO::CryptoStream::Flush()
 
 void IO::CryptoStream::Close()
 {
-	if (this->stm)
+	NN<IO::Stream> nnstm;
+	if (this->stm.SetTo(nnstm))
 	{
 		if (this->encBuffSize > 0)
 		{
-			OSInt i;
-			OSInt dblkSize = this->crypto->GetDecBlockSize();
-			if (this->tmpBuffSize < dblkSize)
+			UnsafeArray<UInt8> tmpBuff;
+			UOSInt i;
+			UOSInt dblkSize = this->crypto->GetDecBlockSize();
+			if (!this->tmpBuff.SetTo(tmpBuff) || this->tmpBuffSize < dblkSize)
 			{
-				if (this->tmpBuff)
-					MemFree(this->tmpBuff);
+				if (this->tmpBuff.SetTo(tmpBuff))
+					MemFreeArr(tmpBuff);
 				this->tmpBuffSize = dblkSize;
-				this->tmpBuff = MemAlloc(UInt8, this->tmpBuffSize);
+				this->tmpBuff = tmpBuff = MemAllocArr(UInt8, this->tmpBuffSize);
 			}
-			i = this->crypto->Encrypt(this->encBuff, this->encBuffSize, this->tmpBuff, this->encParam);
-			this->stm->Write(this->tmpBuff, i);
+			i = this->crypto->Encrypt(this->encBuff, this->encBuffSize, tmpBuff);
+			nnstm->Write(Data::ByteArrayR(tmpBuff, i));
 		}
-		this->stm->Close();
+		nnstm->Close();
 		this->stm = 0;
 	}
 }

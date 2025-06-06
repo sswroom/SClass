@@ -9,7 +9,7 @@
 #define TRIGPIN 1
 #define ECHOPIN 0
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::GPIOControl gpio;

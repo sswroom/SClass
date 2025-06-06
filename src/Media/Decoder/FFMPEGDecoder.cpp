@@ -1218,7 +1218,7 @@ Bool Media::Decoder::FFMPEGDecoder::IsError()
 	return !data->inited || data->frameSize == 0;
 }
 
-Media::VideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NN<Media::VideoSource> sourceVideo)
+Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::VideoSource> sourceVideo)
 {
 	NN<Media::Decoder::FFMPEGDecoder> decoder;
 	Media::FrameInfo frameInfo;
@@ -1937,7 +1937,7 @@ public:
 
 
 
-Media::AudioSource *__stdcall FFMPEGDecoder_DecodeAudio(NN<Media::AudioSource> sourceAudio)
+Optional<Media::AudioSource> __stdcall FFMPEGDecoder_DecodeAudio(NN<Media::AudioSource> sourceAudio)
 {
 	FFMPEGADecoder *decoder;
 	NEW_CLASS(decoder, FFMPEGADecoder(sourceAudio));

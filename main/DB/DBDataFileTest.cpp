@@ -752,7 +752,7 @@ NN<Data::NamedClass<LamppostData>> LamppostData::CreateClass()
 	return cls;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN key = CSTR("WEBnAPI");
 	UTF8Char sbuff[512];

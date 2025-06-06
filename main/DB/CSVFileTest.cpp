@@ -6,7 +6,7 @@
 #include "Manage/HiResClock.h"
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/20221116 CAD/dataProcessed/adsb_movement_statistic/ADSB_Movement_Statistic_201904.csv");
 	Manage::HiResClock clk;

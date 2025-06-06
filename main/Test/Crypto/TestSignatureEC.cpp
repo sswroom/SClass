@@ -15,7 +15,7 @@ const Char key[] =
 	"lpQg5vf23Fc9fFrQ9AnQKrb1dgTkoxQ=\r\n"
 	"-----END EC PRIVATE KEY-----\r\n";
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Int32 ret = 1;
 	UInt8 signData[2048];

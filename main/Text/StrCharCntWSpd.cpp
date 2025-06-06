@@ -8,7 +8,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	const WChar *srcStr = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	IO::ConsoleWriter *console;

@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Parser/FileParser/X509Parser.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Parser::FileParser::X509Parser parser;

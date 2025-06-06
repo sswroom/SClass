@@ -118,7 +118,7 @@ void LanczosResampler(Double *srcBuff, UOSInt srcSize, Double *destBuff, UOSInt 
 	}
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Double inpVal[5];
 	Double outVal[20];

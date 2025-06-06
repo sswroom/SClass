@@ -63,14 +63,14 @@ void Core::CoreAddOnExitFunc(SimpleFunc func)
 	Core_onExitFuncs->Add(func);
 }
 
-Media::VideoSource *Core::DecodeVideo(NN<Media::VideoSource> video)
+Optional<Media::VideoSource> Core::DecodeVideo(NN<Media::VideoSource> video)
 {
-	Media::VideoSource *decoder = 0;
+	Optional<Media::VideoSource> decoder = 0;
 	if (Core_decVFuncs == 0)
 		return 0;
 	UOSInt i = 0;
 	UOSInt j = Core_decVFuncs->GetCount();
-	while (decoder == 0 && i < j)
+	while (decoder.IsNull() && i < j)
 	{
 		decoder = Core_decVFuncs->GetItem(i)(video);
 		i++;
@@ -78,14 +78,14 @@ Media::VideoSource *Core::DecodeVideo(NN<Media::VideoSource> video)
 	return decoder;
 }
 
-Media::AudioSource *Core::DecodeAudio(NN<Media::AudioSource> audio)
+Optional<Media::AudioSource> Core::DecodeAudio(NN<Media::AudioSource> audio)
 {
-	Media::AudioSource *decoder = 0;
+	Optional<Media::AudioSource> decoder = 0;
 	if (Core_decAFuncs == 0)
 		return 0;
 	UOSInt i = 0;
 	UOSInt j = Core_decAFuncs->GetCount();
-	while (decoder == 0 && i < j)
+	while (decoder.IsNull() && i < j)
 	{
 		decoder = Core_decAFuncs->GetItem(i)(audio);
 		i++;

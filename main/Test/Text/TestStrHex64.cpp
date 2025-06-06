@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[32];
 	UInt64 i;

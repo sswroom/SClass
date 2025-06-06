@@ -3,7 +3,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Sync/ThreadUtil.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Sync::SimpleThread::Sleep(10000);

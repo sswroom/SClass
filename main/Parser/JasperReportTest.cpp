@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Parser/FileParser/XMLParser.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CString path = CSTR("/home/sswroom/Progs/Temp/test.jrxml");
 	Parser::FileParser::XMLParser parser;

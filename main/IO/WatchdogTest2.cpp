@@ -118,7 +118,7 @@ UInt32 __stdcall HTTPThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::Watchdog> nnwd;
 	IO::ConsoleWriter console;
@@ -167,7 +167,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		Int32 timeoutSec;
 		nnwd->SetTimeoutSec(15);
-		if (nnwd->GetTimeoutSec(&timeoutSec))
+		if (nnwd->GetTimeoutSec(timeoutSec))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));

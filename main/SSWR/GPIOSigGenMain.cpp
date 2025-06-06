@@ -31,7 +31,7 @@ UInt32 __stdcall ThreadFunc(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	NN<IO::ConfigFile> cfg;

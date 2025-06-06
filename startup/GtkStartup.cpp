@@ -6,28 +6,28 @@
 #include "UI/GTK/GTKCore.h"
 #include <gtk/gtk.h>
 
-Int32 MyMain(NN<Core::IProgControl> ctrl);
+Int32 MyMain(NN<Core::ProgControl> ctrl);
 
-struct GtkProgControl : public Core::IProgControl
+struct GtkProgControl : public Core::ProgControl
 {
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UOSInt argc;
 };
 
-void __stdcall GtkProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
+void __stdcall GtkProgControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 {
 }
 
-UTF8Char ** __stdcall GtkProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall GtkProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	GtkProgControl *ctrl = (GtkProgControl*)progCtrl.Ptr();
 	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 
-void GtkProgControl_Create(NN<GtkProgControl> ctrl, UOSInt argc, Char **argv)
+void GtkProgControl_Create(NN<GtkProgControl> ctrl, UOSInt argc, UnsafeArray<UnsafeArray<Char>> argv)
 {
-	ctrl->argv = (UTF8Char**)argv;
+	ctrl->argv = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(argv);
 	ctrl->argc = argc;
 	ctrl->WaitForExit = GtkProgControl_WaitForExit;
 	ctrl->GetCommandLines = GtkProgControl_GetCommandLines;
@@ -39,7 +39,7 @@ void GtkProgControl_Destroy(NN<GtkProgControl> ctrl)
 {
 }
 
-Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GTK::GTKCore> ui;
 	NEW_CLASSNN(ui, UI::GTK::GTKCore());
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
 	gtk_init(&argc, &argv);
 	Core::CoreStart();
-	GtkProgControl_Create(ctrl, (UOSInt)argc, argv);
+	GtkProgControl_Create(ctrl, (UOSInt)argc, (UnsafeArray<Char>*)argv);
 	ret = MyMain(ctrl);
 	GtkProgControl_Destroy(ctrl);
 	Core::CoreEnd();

@@ -7,7 +7,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "SSWR/SMonitor/SMonitorSvrCore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

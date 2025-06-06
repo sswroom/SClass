@@ -242,7 +242,7 @@ public:
 		}
 	}
 
-	void Run(NN<Core::IProgControl> progCtrl)
+	void Run(NN<Core::ProgControl> progCtrl)
 	{
 		if (this->progList.GetCount() > 0)
 		{
@@ -256,7 +256,7 @@ public:
 	}
 };
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	ProcMonitorCore core;
 	core.Run(progCtrl);

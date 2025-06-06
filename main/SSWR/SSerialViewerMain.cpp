@@ -42,10 +42,10 @@ static UInt32 __stdcall SerialViewer(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UOSInt argc;
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UInt32 baudRate = 115200;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	argv = progCtrl->GetCommandLines(progCtrl, argc);

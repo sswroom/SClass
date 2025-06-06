@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN mapSrchFile = CSTR("/home/sswroom/Progs/Temp/20220208 MapSearch/MapSearch.txt");
 	UTF8Char sbuff[512];

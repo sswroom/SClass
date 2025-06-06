@@ -24,7 +24,7 @@ void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType 
 	console->WriteLine(sb.ToCString());
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Net::ARPHandler *arp = 0;
 	NEW_CLASS(console, IO::ConsoleWriter());

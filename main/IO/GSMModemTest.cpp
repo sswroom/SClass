@@ -7,7 +7,7 @@
 #include "Test/TestModem.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt32 baudRate = 115200;
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUOSInt(argv[1], portNum);

@@ -10,7 +10,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Parser/FileParser/X509Parser.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 buff[4096];
 	UTF8Char sbuff[512];

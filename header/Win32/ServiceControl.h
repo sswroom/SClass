@@ -5,7 +5,7 @@
 
 namespace Win32
 {
-	struct ServiceControl : public Core::IProgControl
+	struct ServiceControl : public Core::ProgControl
 	{
 		Sync::Event *evt;
 		Bool exited;
@@ -13,10 +13,10 @@ namespace Win32
 		UTF8Char *argv;
 	};
 
-	void ServiceControl_Create(NN<Core::IProgControl> progCtrl);
-	void ServiceControl_Destroy(NN<Core::IProgControl> progCtrl);
+	void ServiceControl_Create(NN<Core::ProgControl> progCtrl);
+	void ServiceControl_Destroy(NN<Core::ProgControl> progCtrl);
 		
-	void ServiceControl_SignalExit(NN<Core::IProgControl> progCtrl);
-	void ServiceControl_SignalRestart(NN<Core::IProgControl> progCtrl);
+	void ServiceControl_SignalExit(NN<Core::ProgControl> progCtrl);
+	void ServiceControl_SignalRestart(NN<Core::ProgControl> progCtrl);
 };
 #endif

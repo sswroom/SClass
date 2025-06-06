@@ -3,7 +3,7 @@
 #include "Crypto/Hash/SHA384.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 hashVal[48];
 	UTF8Char sbuff[97];

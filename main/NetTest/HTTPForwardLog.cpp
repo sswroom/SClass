@@ -57,7 +57,7 @@ void __stdcall OnForwardRequest(AnyType userObj, NN<Net::WebServer::WebRequest> 
 	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt16 listenPort = 0;
 	UInt16 forwardPort = 0;

@@ -6,7 +6,7 @@
 #include "Net/WebServer/PrintLogWebHandler.h"
 #include "Net/WebServer/WebListener.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	NN<Net::WebServer::OAuth2Handler> oauth2Hdlr;

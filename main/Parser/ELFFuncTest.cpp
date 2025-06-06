@@ -10,14 +10,14 @@ void Demangling(Text::CStringNN name)
 	printf("%s\r\n%s\r\n\r\n", name.v.Ptr(), sbuff);
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	//operator delete(void*)
 	Demangling(CSTR("_ZdlPv@GLIBCXX_3.4"));
 	//IO::DebugTool::PrintStackTrace(void)
 	Demangling(CSTR("_ZN2IO9DebugTool15PrintStackTraceEv"));
-	//MyMain(NN<Core::IProgControl>)
-	Demangling(CSTR("_Z6MyMain2NNIN4Core12IProgControlEE"));
+	//MyMain(NN<Core::ProgControl>)
+	Demangling(CSTR("_Z6MyMain2NNIN4Core12ProgControlEE"));
 	//StoneRoad::PBG::PBGMobileCore::UsersPasswordExists(NN<Users>, Text::CStringNN, NN<Sync::MutexUsage>) const
 	Demangling(CSTR("_ZNK9StoneRoad3PBG13PBGMobileCore19UsersPasswordExistsE2NNINS0_5UsersEEN4Text9CStringNNES2_IN4Sync10MutexUsageEE"));
 	//static StoneRoad::PBG::PBGMobileHandler::SetPasswordFunc(NN<Net::WebServer::WebRequest>, NN<Net::WebServer::WebResponse>, Text::CStringNN, NN<WebServiceHandler>)

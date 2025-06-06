@@ -12,7 +12,7 @@ namespace Media
 		private:
 			Media::OpenCV::OCVObjectDetector *frameInput;
 			NN<Media::VideoSource> src;
-			Media::VideoSource *decoder;
+			Optional<Media::VideoSource> decoder;
 			Media::FrameInfo info;
 			OSInt frameSkip;
 			OSInt thisSkip;

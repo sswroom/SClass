@@ -25,7 +25,7 @@ UnsafeArray<UTF8Char> Func3(UnsafeArray<UTF8Char> sbuff);
 UnsafeArray<UTF8Char> Func4(UnsafeArray<UTF8Char> sbuff);
 UnsafeArray<UTF8Char> Func4b(UnsafeArray<UTF8Char> sbuff);
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[128];
 	Func3(sbuff);

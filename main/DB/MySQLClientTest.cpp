@@ -465,7 +465,7 @@ void TempTest(NN<Net::TCPClientFactory> clif, IO::Writer *console)
 	}
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN mysqlServer;
 	Text::CStringNN mysqlDB;

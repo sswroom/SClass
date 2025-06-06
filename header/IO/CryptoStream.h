@@ -8,23 +8,22 @@ namespace IO
 	class CryptoStream : public Stream
 	{
 	protected:
-		Crypto::Encrypt::Encryption *crypto;
-		IO::Stream *stm;
-		void *encParam;
-		UInt8 *encBuff;
+		NN<Crypto::Encrypt::Encryption> crypto;
+		Optional<IO::Stream> stm;
+		UnsafeArray<UInt8> encBuff;
 		OSInt encBuffSize;
-		UInt8 *decBuff;
+		UnsafeArray<UInt8> decBuff;
 		OSInt decBuffSize;
-		UInt8 *tmpBuff;
+		UnsafeArrayOpt<UInt8> tmpBuff;
 		OSInt tmpBuffSize;
 
 
 	public:
-		CryptoStream(IO::Stream *srcStream, Crypto::Encrypt::Encryption *crypto, void *encParam);
+		CryptoStream(NN<IO::Stream> srcStream, NN<Crypto::Encrypt::Encryption> crypto);
 		virtual ~CryptoStream();
 
-		virtual OSInt Read(UInt8 *buff, OSInt size);
-		virtual OSInt Write(const UInt8 *buff, OSInt size);
+		virtual UOSInt Read(const Data::ByteArray &buff);
+		virtual UOSInt Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

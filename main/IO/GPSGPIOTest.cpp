@@ -34,7 +34,7 @@ void __stdcall OnGPSPos(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, D
 	console->WriteLine(sb.ToCString());
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<IO::GPIOControl> gpio;
 	NN<IO::RS232GPIO> port;
@@ -43,7 +43,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt16 pinNum = 7;
 	UOSInt argc;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16(argv[1], pinNum);

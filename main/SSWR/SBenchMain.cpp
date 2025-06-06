@@ -126,7 +126,7 @@ UInt32 EmptyThread(void *userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;

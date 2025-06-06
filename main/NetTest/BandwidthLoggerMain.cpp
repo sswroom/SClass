@@ -5,7 +5,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(false);
 	Net::BandwidthLogger logger(sockf);

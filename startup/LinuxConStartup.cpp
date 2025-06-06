@@ -12,11 +12,11 @@
 #define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); syslog(LOG_DEBUG, sbuff);}
 #endif
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::ProgControl> progCtrl);
 
-struct LinuxProgControl : public Core::IProgControl
+struct LinuxProgControl : public Core::ProgControl
 {
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	UOSInt argc;
 };
 
@@ -27,7 +27,7 @@ void LinuxProgControl_OnSignal(Int32 sigNum)
 #endif
 }
 
-void __stdcall LinuxProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 {
 	signal(SIGINT, LinuxProgControl_OnSignal);
 	signal(SIGPIPE, LinuxProgControl_OnSignal);
@@ -36,26 +36,26 @@ void __stdcall LinuxProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 //	getchar();
 }
 
-void __stdcall LinuxProgControl_SignalExit(NN<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_SignalExit(NN<Core::ProgControl> progCtrl)
 {
 	raise(SIGINT);
 }
 
-Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	return 0;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl.Ptr();
 	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 
-void LinuxProgControl_Create(NN<LinuxProgControl> ctrl, UOSInt argc, Char **argv)
+void LinuxProgControl_Create(NN<LinuxProgControl> ctrl, UOSInt argc, UnsafeArray<UnsafeArray<Char>> argv)
 {
-	ctrl->argv = (UTF8Char**)argv;
+	ctrl->argv = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(argv);
 	ctrl->argc = argc;
 
 	ctrl->WaitForExit = LinuxProgControl_WaitForExit;
@@ -77,7 +77,7 @@ Int32 main(int argc, char *argv[])
 	//signal(SIGCHLD, SIG_IGN);
 
 	Core::CoreStart();
-	LinuxProgControl_Create(conCtrl, (UOSInt)argc, argv);
+	LinuxProgControl_Create(conCtrl, (UOSInt)argc, (UnsafeArray<Char>*)argv);
 	ret = MyMain(conCtrl);
 	LinuxProgControl_Destroy(conCtrl);
 	Core::CoreEnd();

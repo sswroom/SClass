@@ -8,7 +8,7 @@
 
 IO::ConsoleWriter *console;
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 //	Text::CStringNN sslCert = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.crt");
 //	Text::CStringNN sslKey = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.key");

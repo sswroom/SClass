@@ -5,15 +5,15 @@
 
 namespace Core
 {
-	struct ConsoleControl : public Core::IProgControl
+	struct ConsoleControl : public Core::ProgControl
 	{
-		Sync::Event *evt;
+		NN<Sync::Event> evt;
 		Bool exited;
 		Bool ending;
 		Bool ended;
 
 		UOSInt argc;
-		UTF8Char **argv;
+		UnsafeArrayOpt<UnsafeArray<UTF8Char>> argv;
 	};		
 }
 #endif

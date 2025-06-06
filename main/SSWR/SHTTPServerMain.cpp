@@ -15,7 +15,7 @@
 
 IO::Writer *console;
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Net::WebServer::WebListener *svr;
 	Text::StringBuilderUTF8 sb;
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 #endif
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		port = 0;

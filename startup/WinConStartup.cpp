@@ -6,7 +6,7 @@
 #include "Text/MyStringW.h"
 #include <windows.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::ProgControl> progCtrl);
 
 NN<Core::ConsoleControl> ConsoleControl_self;
 
@@ -35,42 +35,43 @@ Int32 __stdcall ConsoleControl_ExitHdlr(UInt32 evtType)
 	return TRUE;
 }
 
-void __stdcall ConsoleControl_WaitForExit(NN<Core::IProgControl> progCtrl)
+void __stdcall ConsoleControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
+	NN<Core::ConsoleControl> ctrl = NN<Core::ConsoleControl>::ConvertFrom(progCtrl);
 	while (!ctrl->exited)
 	{
 		ctrl->evt->Wait();
 	}
 }
 
-void __stdcall ConsoleControl_SignalExit(NN<Core::IProgControl> progCtrl)
+void __stdcall ConsoleControl_SignalExit(NN<Core::ProgControl> progCtrl)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
+	NN<Core::ConsoleControl> ctrl = NN<Core::ConsoleControl>::ConvertFrom(progCtrl);
 	ctrl->exited = true;
 	ctrl->evt->Set();
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall ConsoleControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
-	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
-	if (ctrl->argv == 0)
+	NN<Core::ConsoleControl> ctrl = NN<Core::ConsoleControl>::ConvertFrom(progCtrl);
+	UnsafeArray<UnsafeArray<UTF8Char>> nnargv;
+	if (!ctrl->argv.SetTo(nnargv))
 	{
 		Int32 argc;
 		OSInt i;
 		WChar *cmdLine = GetCommandLineW();
 		WChar **argv = CommandLineToArgvW(cmdLine, &argc);
 		ctrl->argc = (UOSInt)argc;
-		ctrl->argv = MemAlloc(UTF8Char *, ctrl->argc);
+		ctrl->argv = nnargv = MemAllocArr(UnsafeArray<UTF8Char>, ctrl->argc);
 		i = argc;
 		while (i-- > 0)
 		{
-			ctrl->argv[i] = (UTF8Char*)Text::StrToUTF8New(argv[i]).Ptr();
+			nnargv[i] = UnsafeArray<UTF8Char>::ConvertFrom(Text::StrToUTF8New(argv[i]));
 		}
 		LocalFree(argv);
 	}
 	cmdCnt.Set(ctrl->argc);
-	return ctrl->argv;
+	return nnargv;
 }
 
 void ConsoleControl_Create(NN<Core::ConsoleControl> ctrl)
@@ -81,7 +82,7 @@ void ConsoleControl_Create(NN<Core::ConsoleControl> ctrl)
 	ctrl->exited = false;
 	ctrl->ending = false;
 	ctrl->ended = false;
-	NEW_CLASS(ctrl->evt, Sync::Event(true));
+	NEW_CLASSNN(ctrl->evt, Sync::Event(true));
 	ctrl->WaitForExit = ConsoleControl_WaitForExit;
 	ctrl->GetCommandLines = ConsoleControl_GetCommandLines;
 	ctrl->SignalExit = ConsoleControl_SignalExit;
@@ -99,22 +100,22 @@ void ConsoleControl_Destroy(NN<Core::ConsoleControl> ctrl)
 		ctrl->evt->Wait(100);
 	}
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleControl_ExitHdlr, FALSE);
-	DEL_CLASS(ctrl->evt);
+	ctrl->evt.Delete();
 #ifndef __CYGWIN__
-	if (ctrl->argv)
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
+	if (ctrl->argv.SetTo(argv))
 	{
 		UOSInt i = ctrl->argc;
 		while (i-- > 0)
 		{
-			Text::StrDelNew(ctrl->argv[i]);
+			Text::StrDelNew(UnsafeArray<const UTF8Char>(argv[i]));
 		}
-		MemFree(ctrl->argv);
-		ctrl->argv = 0;
+		MemFreeArr(argv);
 	}
 #endif
 }
 
-Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	return 0;
 }
@@ -127,7 +128,7 @@ Int32 main(int argc, char *argv[])
 	ConsoleControl_Create(conCtrl);
 #ifdef __CYGWIN__
 	conCtrl.argc = argc;
-	conCtrl.argv = (UTF8Char**)argv;
+	conCtrl.argv = (UnsafeArray<UTF8Char>*)argv;
 #endif
 	ret = MyMain(conCtrl);
 	ConsoleControl_Destroy(conCtrl);

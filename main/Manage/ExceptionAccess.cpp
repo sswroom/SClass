@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Char *tmp = (Char*)"Testing";
 	tmp[0] = 1;

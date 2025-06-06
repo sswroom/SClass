@@ -3,7 +3,7 @@
 #include "Crypto/Hash/MD5.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 testBlock[] = "The quick brown fox jumps over the lazy dog";
 	UInt8 hashVal[32];

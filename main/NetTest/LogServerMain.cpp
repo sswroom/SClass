@@ -30,7 +30,7 @@ public:
 	}
 };
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Net::LogServer *svr;
 	NN<Net::SocketFactory> sockf;
@@ -41,7 +41,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt16 port = 1234;
 
 	UOSInt argc;
-	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
+	UnsafeArray<UnsafeArray<UTF8Char>> argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc >= 2)
 	{
 		Text::StrToUInt16S(argv[1], port, 0);

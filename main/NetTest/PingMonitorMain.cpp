@@ -117,7 +117,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	OSInt i;
 	UTF8Char sbuff[512];

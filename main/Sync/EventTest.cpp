@@ -17,7 +17,7 @@ UInt32 __stdcall TestThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NEW_CLASS(clk, Manage::HiResClock());
 	NEW_CLASS(evt, Sync::Event(false));

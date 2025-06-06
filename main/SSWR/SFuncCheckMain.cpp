@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ConsoleWriter.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());

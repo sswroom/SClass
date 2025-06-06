@@ -5,7 +5,7 @@
 #include "IO/SMake.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Bool showHelp;
@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
+	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	showHelp = true;
 	Bool asyncMode = true;
 

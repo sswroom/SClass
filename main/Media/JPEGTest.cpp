@@ -9,7 +9,7 @@
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Parser/FileParser/JPGParser.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("");
 	IO::ConsoleWriter console;

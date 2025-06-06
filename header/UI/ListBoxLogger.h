@@ -17,8 +17,8 @@ namespace UI
 		NN<UI::GUIForm> frm;
 		UOSInt maxLog;
 		Bool reverse;
-		Text::String **logArr;
-		Text::String **tmpLogArr;
+		UnsafeArray<Optional<Text::String>> logArr;
+		UnsafeArray<Optional<Text::String>> tmpLogArr;
 		UnsafeArrayOpt<const Char> timeFormat;
 		UOSInt logIndex;
 		UInt32 logCnt;
@@ -32,7 +32,7 @@ namespace UI
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, IO::LogHandler::LogLevel logLev);
 
-		void SetTimeFormat(const Char *timeFormat);
+		void SetTimeFormat(UnsafeArray<const Char> timeFormat);
 
 		static NN<ListBoxLogger> CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse);
 	};

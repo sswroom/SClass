@@ -7,7 +7,7 @@
 
 #define DIFFRATIO 0.000000001
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;

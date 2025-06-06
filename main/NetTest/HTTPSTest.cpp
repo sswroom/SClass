@@ -5,7 +5,7 @@
 #include "Net/SSLEngineFactory.h"
 #include <stdio.h>
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Text::CStringNN url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
 	UInt8 buff[2048];

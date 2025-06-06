@@ -8,7 +8,7 @@
 #include "SSWR/OrganMgr/OrganSelCategoryForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 

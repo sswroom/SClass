@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;

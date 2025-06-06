@@ -20,7 +20,7 @@ Optional<Net::SSLEngine> ssl;
 Bool initSucc;
 NN<Net::WebServer::PrintLogWebHandler> logHdlr;
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff1[512];
 	UTF8Char sbuff2[512];

@@ -8,7 +8,7 @@ void __stdcall UtilUI::TextInputDialog::OnOKClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->txtInput->GetText(sb) && sb.GetLength() > 0)
 	{
-		me->retInput = Text::String::New(sb.ToCString()).Ptr();
+		me->retInput = Text::String::New(sb.ToCString());
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
@@ -44,7 +44,7 @@ UtilUI::TextInputDialog::TextInputDialog(Optional<UI::GUIClientControl> parent, 
 
 UtilUI::TextInputDialog::~TextInputDialog()
 {
-	SDEL_STRING(this->retInput);
+	OPTSTR_DEL(this->retInput);
 }
 
 void UtilUI::TextInputDialog::OnShow()
@@ -64,8 +64,9 @@ void UtilUI::TextInputDialog::SetInputString(Text::CStringNN s)
 
 Bool UtilUI::TextInputDialog::GetInputString(NN<Text::StringBuilderUTF8> sb)
 {
-	if (this->retInput == 0)
+	NN<Text::String> s;
+	if (!this->retInput.SetTo(s))
 		return false;
-	sb->Append(this->retInput);
+	sb->Append(s);
 	return true;	
 }

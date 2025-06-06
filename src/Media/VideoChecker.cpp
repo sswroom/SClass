@@ -47,6 +47,8 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 {
 	DecodeStatus *status;
 	NN<Media::MediaSource> msrc;
+	NN<Media::AudioSource> adecoder;
+	NN<Media::VideoSource> vdecoder;
 	Data::ArrayList<DecodeStatus*> statusList;
 	Bool isEnd;
 	UOSInt i = 0;
@@ -70,9 +72,9 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
 			status->vdecoder = vdecoders.DecodeVideo(NN<Media::VideoSource>::ConvertFrom(msrc));
-			if (status->vdecoder)
+			if (status->vdecoder.SetTo(vdecoder))
 			{
-				status->vdecoder->Init(OnVideoFrame, OnVideoChange, status);
+				vdecoder->Init(OnVideoFrame, OnVideoChange, status);
 			}
 			else
 			{
@@ -82,10 +84,10 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
 			status->adecoder = adecoders.DecodeAudio(NN<Media::AudioSource>::ConvertFrom(msrc));
-			if (status->adecoder)
+			if (status->adecoder.SetTo(adecoder))
 			{
 				NEW_CLASS(status->renderer, Media::NullRenderer());
-				status->renderer->BindAudio(status->adecoder);
+				status->renderer->BindAudio(adecoder);
 				status->renderer->SetEndNotify(OnAudioEnd, status);
 				status->renderer->AudioInit(0);
 			}
@@ -108,11 +110,11 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 		while (i-- > 0)
 		{
 			status = statusList.GetItem(i);
-			if (status->vdecoder)
+			if (status->vdecoder.SetTo(vdecoder))
 			{
-				status->vdecoder->Start();
+				vdecoder->Start();
 			}
-			if (status->adecoder)
+			if (status->adecoder.NotNull())
 			{
 				status->renderer->Start();
 			}
@@ -157,8 +159,8 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 				status->sampleCnt = status->renderer->GetSampleCnt();
 			}
 			SDEL_CLASS(status->renderer);
-			SDEL_CLASS(status->vdecoder);
-			SDEL_CLASS(status->adecoder);
+			status->vdecoder.Delete();
+			status->adecoder.Delete();
 
 			if (mediaFile->GetStream(i, syncTime).SetTo(msrc))
 			{

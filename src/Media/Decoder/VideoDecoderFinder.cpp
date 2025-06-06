@@ -19,7 +19,7 @@ Media::Decoder::VideoDecoderFinder::~VideoDecoderFinder()
 {
 }
 
-Media::VideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<Media::VideoSource> vsrc)
+Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<Media::VideoSource> vsrc)
 {
 	NN<Media::VideoSource> decoder;
 	Media::FrameInfo frameInfo;
@@ -37,9 +37,9 @@ Media::VideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<Media::Vi
 	{
 		return 0;
 	}
-	if (decoder.Set(Core::DecodeVideo(vsrc)))
+	if (Core::DecodeVideo(vsrc).SetTo(decoder))
 	{
-		return decoder.Ptr();
+		return decoder;
 	}
 	if (frameInfo.fourcc == *(UInt32*)"MP2G")
 	{
@@ -109,7 +109,7 @@ Media::VideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<Media::Vi
 	NEW_CLASSNN(decoder, Media::Decoder::VFWDecoder(vsrc));
 	if (decoder->GetVideoInfo(decFrameInfo, frameRateNorm, frameRateDenorm, maxFrameSize))
 	{
-		return decoder.Ptr();
+		return decoder;
 	}
 	decoder.Delete();
 	return 0;

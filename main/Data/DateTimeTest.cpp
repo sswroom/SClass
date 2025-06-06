@@ -16,7 +16,7 @@
 #include <stdio.h>
 #endif
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;

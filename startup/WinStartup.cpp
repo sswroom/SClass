@@ -14,16 +14,16 @@ typedef BOOL (WINAPI *BoolFunc)();
 typedef HRESULT (WINAPI *AwareFunc)(OSInt val);
 typedef BOOL (WINAPI *AwareFunc2)(OSInt val);
 
-Int32 MyMain(NN<Core::IProgControl> ctrl);
+Int32 MyMain(NN<Core::ProgControl> ctrl);
 
-struct WinProgControl : public Core::IProgControl
+struct WinProgControl : public Core::ProgControl
 {
 	UI::InstanceHandle *hInst;
 	UOSInt argc;
-	UTF8Char **argv;
+	UnsafeArrayOpt<UnsafeArray<UTF8Char>> argv;
 };
 
-void __stdcall WinProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
+void __stdcall WinProgControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 {
 }
 
@@ -108,33 +108,34 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 }
 #endif
 
-UTF8Char **__stdcall WinProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall WinProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
-	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
-	if (ctrl->argv == 0)
+	NN<WinProgControl> ctrl = NN<WinProgControl>::ConvertFrom(progCtrl);
+	UnsafeArray<UnsafeArray<UTF8Char>> nnargv;
+	if (!ctrl->argv.SetTo(nnargv))
 	{
 		Int32 argc;
 		UOSInt i;
 		WChar **argv = CommandLineToArgvW(GetCommandLineW(), &argc);
-		ctrl->argv = MemAlloc(UTF8Char *, (UInt32)argc);
+		ctrl->argv = nnargv = MemAllocArr(UnsafeArray<UTF8Char>, (UInt32)argc);
 		ctrl->argc = (UOSInt)argc;
 		i = ctrl->argc;
 		while (i-- > 0)
 		{
-			ctrl->argv[i] = (UTF8Char*)Text::StrToUTF8New(argv[i]).Ptr();
+			nnargv[i] = UnsafeArray<UTF8Char>::ConvertFrom(Text::StrToUTF8New(argv[i]));
 		}
 		LocalFree(argv);
 	}
 	cmdCnt.Set(ctrl->argc);
-	return ctrl->argv;
+	return nnargv;
 }
 
-void __stdcall WinProgControl_SignalExit(NN<Core::IProgControl> progCtrl)
+void __stdcall WinProgControl_SignalExit(NN<Core::ProgControl> progCtrl)
 {
 
 }
 
-void __stdcall WinProgControl_SignalRestart(NN<Core::IProgControl> progCtrl)
+void __stdcall WinProgControl_SignalRestart(NN<Core::ProgControl> progCtrl)
 {
 
 }
@@ -153,19 +154,20 @@ void WinProgControl_Create(NN<WinProgControl> ctrl, UI::InstanceHandle *hInst)
 
 void WinProgControl_Destroy(NN<WinProgControl> ctrl)
 {
-	if (ctrl->argv)
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
+	if (ctrl->argv.SetTo(argv))
 	{
 		UOSInt i = ctrl->argc;
 		while (i-- > 0)
 		{
-			Text::StrDelNew(ctrl->argv[i]);
+			Text::StrDelNew(UnsafeArray<const UTF8Char>(argv[i]));
 		}
-		MemFree(ctrl->argv);
+		MemFreeArr(argv);
 		ctrl->argv = 0;
 	}
 }
 
-Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
 	UI::Win::WinCore *ui;

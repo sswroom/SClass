@@ -81,7 +81,7 @@ Bool TestEncode2(UnsafeArray<const UTF8Char> key, UOSInt keyLen, UnsafeArray<con
 }
 
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	//TestAllForBit(40, &console);
 	if (!TestEncode2(UTF8STRC("Key"), UTF8STRC("Plaintext"), UTF8STRC("BBF316E8D940AF0AD3"))) return 1;

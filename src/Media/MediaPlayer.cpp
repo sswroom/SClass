@@ -14,18 +14,20 @@ extern "C"
 
 void Media::MediaPlayer::PlayTime(Data::Duration time)
 {
-	if (this->currVDecoder)
+	NN<Media::VideoSource> vdecoder;
+	NN<Media::AudioSource> adecoder;
+	if (this->currVDecoder.SetTo(vdecoder))
 	{
-		this->currVDecoder->SeekToTime(time);
+		vdecoder->SeekToTime(time);
 	}
 	else if (this->currVStm)
 	{
 		this->currVStm->SeekToTime(time);
 	}
 
-	if (this->currADecoder)
+	if (this->currADecoder.SetTo(adecoder))
 	{
-		time = this->currADecoder->SeekToTime(time);
+		time = adecoder->SeekToTime(time);
 	}
 	else if (this->currAStm)
 	{
@@ -135,7 +137,9 @@ void __stdcall Media::MediaPlayer::VideoCropImage(AnyType userObj, Data::Duratio
 	}
 	MediaPlayer_VideoCropImageY(yptr.Ptr(), w, h, ySplit, crops);
 	img.Delete();
-	me->currVDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
+	NN<Media::VideoSource> vdecoder;
+	if (me->currVDecoder.SetTo(vdecoder))
+		vdecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	vrenderer->UpdateCrop();
 }
 
@@ -144,12 +148,13 @@ void Media::MediaPlayer::ReleaseAudio()
 	NN<Media::AudioDevice> audioDev;
 	if (this->audioDev.SetTo(audioDev)) audioDev->BindAudio(0);
 	this->arenderer = 0;
-	SDEL_CLASS(this->currADecoder);
+	this->currADecoder.Delete();
 }
 
 Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::AudioSource> asrc, Int32 syncTime)
 {
 	NN<Media::AudioDevice> audioDev;
+	NN<Media::AudioSource> adecoder;
 	Bool ret = false;
 	if (!this->audioDev.SetTo(audioDev))
 	{
@@ -165,9 +170,9 @@ Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::AudioSource> asrc, Int32 sy
 	else
 	{
 		this->currADecoder = this->adecoders.DecodeAudio(asrc);
-		if (this->currADecoder)
+		if (this->currADecoder.SetTo(adecoder))
 		{
-			if ((this->arenderer = audioDev->BindAudio(this->currADecoder)).NotNull())
+			if ((this->arenderer = audioDev->BindAudio(adecoder)).NotNull())
 			{
 				if (this->vrenderer.SetTo(vrenderer)) vrenderer->SetTimeDelay(syncTime);
 				this->currAStm = asrc.Ptr();
@@ -175,7 +180,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::AudioSource> asrc, Int32 sy
 			}
 			else
 			{
-				SDEL_CLASS(this->currADecoder);
+				this->currADecoder.Delete();
 			}
 		}
 	}
@@ -217,6 +222,7 @@ void Media::MediaPlayer::SetEndHandler(PBEndHandler hdlr, AnyType userObj)
 
 Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 {
+	NN<Media::VideoSource> vdecoder;
 	NN<Media::AudioRenderer> arenderer;
 	Bool videoFound;
 	this->currFile = file;
@@ -231,7 +237,7 @@ Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 	this->currAStm = 0;
 	this->currVStm = 0;
 	this->currChapInfo = 0;
-	SDEL_CLASS(this->currVDecoder);
+	this->currVDecoder.Delete();
 	NN<Media::MediaFile> currFile;
 	if (!this->currFile.SetTo(currFile) || !this->vrenderer.SetTo(vrenderer))
 	{
@@ -253,10 +259,10 @@ Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 		{
 			NN<Media::VideoSource> vsrc = NN<Media::VideoSource>::ConvertFrom(msrc);
 			this->currVDecoder = this->vdecoders.DecodeVideo(vsrc);
-			if (this->currVDecoder)
+			if (this->currVDecoder.SetTo(vdecoder))
 			{
 				this->currVStm = vsrc.Ptr();
-				vrenderer->SetVideo(this->currVDecoder);
+				vrenderer->SetVideo(vdecoder);
 				this->clk.Stop();
 			}
 			else
@@ -443,11 +449,12 @@ Bool Media::MediaPlayer::GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h)
 	UOSInt vw;
 	UOSInt vh;
 	UInt32 tmpV;
+	NN<Media::VideoSource> vdecoder;
 	if (this->currVStm)
 	{
-		if (this->currVDecoder)
+		if (this->currVDecoder.SetTo(vdecoder))
 		{
-			this->currVDecoder->GetVideoInfo(info, tmpV, tmpV, vw);
+			vdecoder->GetVideoInfo(info, tmpV, tmpV, vw);
 		}
 		else
 		{
@@ -480,9 +487,10 @@ Bool Media::MediaPlayer::GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h)
 
 void Media::MediaPlayer::DetectCrop()
 {
-	if (this->currVDecoder)
+	NN<Media::VideoSource> vdecoder;
+	if (this->currVDecoder.SetTo(vdecoder))
 	{
-		this->currVDecoder->CaptureImage(VideoCropImage, this);
+		vdecoder->CaptureImage(VideoCropImage, this);
 	}
 }
 

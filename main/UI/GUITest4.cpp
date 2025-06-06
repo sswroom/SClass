@@ -51,7 +51,7 @@ void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fil
 	me->GetUI()->ShowMsgOK(sb.ToCString(), CSTR("Drop Files"), me);
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))

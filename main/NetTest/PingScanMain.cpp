@@ -55,7 +55,7 @@ void PingScan(UInt32 ip)
 	///////////////////////////
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(console, IO::ConsoleWriter());

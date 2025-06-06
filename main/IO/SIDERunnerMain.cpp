@@ -40,12 +40,12 @@ void __stdcall OnTestStep(AnyType userObj, UOSInt cmdIndex, Data::Duration dur)
 	stm->Write(sb.ToByteArray());
 }
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
 	IO::ConsoleWriter console;
 	UOSInt cmdCnt;
-	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
+	UnsafeArray<UnsafeArray<UTF8Char>> cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	Text::CStringNN cmd;
 	Text::CStringNN param;
 	UInt16 port = 4444;

@@ -10,7 +10,7 @@ ASTRUCT AlignedStruct
 	UOSInt tmp;
 };
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	if (sizeof(Math::Coord2DDbl) != 16)
 	{

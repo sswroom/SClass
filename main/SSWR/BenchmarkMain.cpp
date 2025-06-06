@@ -6,7 +6,7 @@
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NN<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBenchmarkForm *frm;
@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBenchmark.log"), Manage::ExceptionRecorder::EA_CLOSE));
-	if (Core::IProgControl::CreateGUICore(progCtrl).SetTo(ui))
+	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRBenchmarkForm(0, ui, core));
