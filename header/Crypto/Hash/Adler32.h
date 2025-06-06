@@ -1,11 +1,7 @@
 #ifndef _SM_CRYPTO_HASH_ADLER32
 #define _SM_CRYPTO_HASH_ADLER32
+#include "Crypto/Hash/Adler32_C.h"
 #include "Crypto/Hash/HashAlgorithm.h"
-
-extern "C"
-{
-	UInt32 Adler32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 abVal);
-}
 
 namespace Crypto
 {
@@ -17,7 +13,7 @@ namespace Crypto
 			UInt32 abVal;
 
 		private:
-			Adler32(const Adler32 *adler32);
+			Adler32(NN<const Adler32> adler32);
 		public:
 			Adler32();
 			virtual ~Adler32();

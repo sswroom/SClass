@@ -10,9 +10,10 @@
 
 UnsafeArray<const UInt8> Crypto::Encrypt::JasyptEncryptor::DecGetSalt(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> salt)
 {
-	if (this->salt)
+	UnsafeArray<UInt8> nnsalt;
+	if (this->salt.SetTo(nnsalt))
 	{
-		MemCopyNO(salt.Ptr(), this->salt, this->saltSize);
+		MemCopyNO(salt.Ptr(), nnsalt.Ptr(), this->saltSize);
 		return buff;
 	}
 	else
@@ -24,9 +25,10 @@ UnsafeArray<const UInt8> Crypto::Encrypt::JasyptEncryptor::DecGetSalt(UnsafeArra
 
 UnsafeArray<const UInt8> Crypto::Encrypt::JasyptEncryptor::DecGetIV(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> iv)
 {
-	if (this->iv)
+	UnsafeArray<UInt8> nniv;
+	if (this->iv.SetTo(nniv))
 	{
-		MemCopyNO(iv.Ptr(), this->iv, this->ivSize);
+		MemCopyNO(iv.Ptr(), nniv.Ptr(), this->ivSize);
 		return buff;
 	}
 	else
@@ -90,13 +92,14 @@ Crypto::Encrypt::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlg
 
 Crypto::Encrypt::JasyptEncryptor::~JasyptEncryptor()
 {
-	if (this->salt)
+	UnsafeArray<UInt8> p;
+	if (this->salt.SetTo(p))
 	{
-		MemFree(this->salt);
+		MemFreeArr(p);
 	}
-	if (this->iv)
+	if (this->iv.SetTo(p))
 	{
-		MemFree(this->iv);
+		MemFreeArr(p);
 	}
 }
 
@@ -204,21 +207,13 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8
 	UnsafeArray<UInt8> destBuff = MemAllocArr(UInt8, destLen);
 	UnsafeArray<const UInt8> salt;
 	UnsafeArray<const UInt8> iv;
-	if (this->salt != 0)
-	{
-		salt = this->salt;
-	}
-	else
+	if (!UnsafeArrayOpt<const UInt8>(this->salt).SetTo(salt))
 	{
 		salt = &destBuff[destOfst];
 		this->random.NextBytes(&destBuff[destOfst], this->saltSize);
 		destOfst += this->saltSize;
 	}
-	if (this->iv != 0)
-	{
-		iv = this->iv;
-	}
-	else
+	if (!UnsafeArrayOpt<const UInt8>(this->iv).SetTo(iv))
 	{
 		iv = &destBuff[destOfst];
 		this->random.NextBytes(&destBuff[destOfst], this->ivSize);

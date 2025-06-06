@@ -16,7 +16,7 @@ namespace Crypto
 			UInt8 hashCTxt[24];
 			UInt32 cost;
 
-			static void CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password, UInt8 *hashBuff);
+			static void CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password, UnsafeArray<UInt8> hashBuff);
 		public:
 			BcryptValidator();
 			virtual ~BcryptValidator();

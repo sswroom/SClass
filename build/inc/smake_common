@@ -1342,9 +1342,10 @@ Crypto/Encrypt/RSACipher.h:
 @RSACipher.o
 Crypto/Encrypt/XOREnc.h:
 @XOREnc.o
+Crypto/Hash/Adler32_C.h:
+@Adler32_CPP.o
 Crypto/Hash/Adler32.h:
 @Adler32.o
-@Adler32_CPP.o
 Crypto/Hash/AESCMAC.h:
 @AESCMAC.o
 Crypto/Hash/BatchHashValidator.h:
@@ -1355,9 +1356,10 @@ Crypto/Hash/BcryptValidator.h:
 @BcryptValidator.o
 Crypto/Hash/BruteForceAttack.h:
 @BruteForceAttack.o
+Crypto/Hash/CRC16_C.h:
+@CRC16_CPP.o
 Crypto/Hash/CRC16.h:
 @CRC16.o
-@CRC16_CPP.o
 Crypto/Hash/CRC16R_C.h:
 @CRC16R_CPP.o
 Crypto/Hash/CRC16R.h:

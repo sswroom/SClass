@@ -41,7 +41,7 @@ namespace Map
 
 		typedef struct
 		{
-			Media::DrawFont *font;
+			Optional<Media::DrawFont> font;
 			Optional<Media::DrawBrush> fontBrush;
 			UOSInt buffSize;
 			Optional<Media::DrawBrush> buffBrush;
@@ -54,13 +54,13 @@ namespace Map
 			NN<Media::DrawImage> img;
 			NN<Map::MapView> view;
 			Bool isLayerEmpty;
-			Math::RectAreaDbl *objBounds;
+			UnsafeArray<Math::RectAreaDbl> objBounds;
 			UOSInt objCnt;
-			MapLabels *labels;
+			UnsafeArray<MapLabels> labels;
 			UOSInt labelCnt;
 			UOSInt maxLabels;
 			UOSInt fontStyleCnt;
-			DrawFontStyle *fontStyles;
+			UnsafeArray<DrawFontStyle> fontStyles;
 			UInt32 imgDurMS;
 			Math::Size2DDbl dispSize;
 
@@ -81,10 +81,10 @@ namespace Map
 		DrawType drawType;
 
 	private:
-		static UOSInt NewLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
-		static void SwapLabel(MapLabels *mapLabels, UOSInt index, UOSInt index2);
-		static Bool LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect);
-		static Bool AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
+		static UOSInt NewLabel(UnsafeArray<MapLabels> labels, UOSInt maxLabel, InOutParam<UOSInt> labelCnt, Int32 priority);
+		static void SwapLabel(UnsafeArray<MapLabels> mapLabels, UOSInt index, UOSInt index2);
+		static Bool LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UOSInt nPoints, Math::RectAreaDbl rect);
+		static Bool AddLabel(UnsafeArray<MapLabels> labels, UOSInt maxLabel, InOutParam<UOSInt> labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
 		static void DrawLabels(NN<DrawEnv> denv);
 		static OSInt __stdcall VImgCompare(NN<Math::Geometry::VectorImage> obj1, NN<Math::Geometry::VectorImage> obj2);
 	private:

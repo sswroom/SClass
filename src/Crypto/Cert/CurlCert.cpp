@@ -4,7 +4,7 @@
 #include "Parser/FileParser/X509Parser.h"
 #include <curl/curl.h>
 
-Crypto::Cert::CurlCert::CurlCert(void *certinfo)
+Crypto::Cert::CurlCert::CurlCert(AnyType certinfo)
 {
 	this->certinfo = certinfo;
 }
@@ -16,7 +16,7 @@ Crypto::Cert::CurlCert::~CurlCert()
 
 Data::Timestamp Crypto::Cert::CurlCert::GetNotBefore() const
 {
-	curl_slist *slist = (curl_slist*)this->certinfo;
+	curl_slist *slist = (curl_slist*)this->certinfo.p;
 	UOSInt slen;
 	while (slist)
 	{
@@ -32,7 +32,7 @@ Data::Timestamp Crypto::Cert::CurlCert::GetNotBefore() const
 
 Data::Timestamp Crypto::Cert::CurlCert::GetNotAfter() const
 {
-	curl_slist *slist = (curl_slist*)this->certinfo;
+	curl_slist *slist = (curl_slist*)this->certinfo.p;
 	UOSInt slen;
 	while (slist)
 	{
@@ -50,7 +50,7 @@ Bool Crypto::Cert::CurlCert::IsSelfSigned() const
 {
 	const Char *subj = 0;
 	const Char *issuer = 0;
-	curl_slist *slist = (curl_slist*)this->certinfo;
+	curl_slist *slist = (curl_slist*)this->certinfo.p;
 	while (slist)
 	{
 		if (Text::StrStartsWith(slist->data, "Subject:"))
@@ -73,7 +73,7 @@ Bool Crypto::Cert::CurlCert::IsSelfSigned() const
 Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 {
 	NN<Crypto::Cert::X509Cert> pobjCert;
-	curl_slist *slist = (curl_slist*)this->certinfo;
+	curl_slist *slist = (curl_slist*)this->certinfo.p;
 	while (slist)
 	{
 		if (Text::StrStartsWith(slist->data, "Cert:"))
@@ -94,7 +94,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 
 void Crypto::Cert::CurlCert::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	curl_slist *slist = (curl_slist*)this->certinfo;
+	curl_slist *slist = (curl_slist*)this->certinfo.p;
 	while (slist)
 	{
 		sb->AppendSlow((const UTF8Char*)slist->data);

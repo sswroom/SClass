@@ -29,4 +29,4 @@ namespace Map
 		Bool AddPolylineLabel(void *sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate);
 		Bool AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyle, WChar *label, Int32 *points, Int32 nPoints, LabelFlags flags, Double mapRate);
 	};
-};
+}

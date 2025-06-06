@@ -12,15 +12,16 @@ namespace Crypto
 			UInt16 chksum;
 
 		private:
-			BSDChkSum(const BSDChkSum *adler32);
+			BSDChkSum(NN<const BSDChkSum> bsdchksum);
 		public:
 			BSDChkSum();
 			virtual ~BSDChkSum();
 
-			virtual HashAlgorithm *Clone() const;
+			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
+			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
 			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
-			virtual void GetValue(UInt8 *buff) const;
+			virtual void GetValue(UnsafeArray<UInt8> buff) const;
 			virtual UOSInt GetBlockSize() const;
 			virtual UOSInt GetResultSize() const;
 		};

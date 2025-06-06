@@ -9,10 +9,10 @@ struct Crypto::Cert::WinHttpCert::ClassData
 	WINHTTP_CERTIFICATE_INFO *certInfo;
 };
 
-Crypto::Cert::WinHttpCert::WinHttpCert(void *certInfo)
+Crypto::Cert::WinHttpCert::WinHttpCert(AnyType certInfo)
 {
-	this->clsData = MemAlloc(ClassData, 1);
-	this->clsData->certInfo = (WINHTTP_CERTIFICATE_INFO*)certInfo;
+	this->clsData = MemAllocNN(ClassData);
+	this->clsData->certInfo = (WINHTTP_CERTIFICATE_INFO*)certInfo.p;
 }
 
 Crypto::Cert::WinHttpCert::~WinHttpCert()
@@ -20,7 +20,7 @@ Crypto::Cert::WinHttpCert::~WinHttpCert()
 	LocalFree(this->clsData->certInfo->lpszSubjectInfo);
 	LocalFree(this->clsData->certInfo->lpszIssuerInfo);
 	MemFree(this->clsData->certInfo);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Data::Timestamp Crypto::Cert::WinHttpCert::GetNotBefore() const

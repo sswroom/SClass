@@ -15,7 +15,7 @@ namespace Map
 		struct LayerCRS
 		{
 			Math::RectAreaDbl bounds;
-			Text::String *name;
+			Optional<Text::String> name;
 			Bool swapXY;
 		};
 
@@ -23,7 +23,7 @@ namespace Map
 		{
 			Data::ArrayListNN<LayerCRS> crsList;
 			NN<Text::String> name;
-			Text::String *title;
+			NN<Text::String> title;
 			Bool queryable;
 		};
 	public:

@@ -9,7 +9,7 @@ struct Crypto::Encrypt::RSAEnc::ClassData
 
 Crypto::Encrypt::RSAEnc::RSAEnc()
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->ctx = EVP_CIPHER_CTX_new();
 	EVP_CIPHER_CTX_init(this->clsData->ctx);
 }
@@ -17,10 +17,10 @@ Crypto::Encrypt::RSAEnc::RSAEnc()
 Crypto::Encrypt::RSAEnc::~RSAEnc()
 {
 	EVP_CIPHER_CTX_free(this->clsData->ctx);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
-Bool Crypto::Encrypt::RSAEnc::SetPublicKey(Crypto::Cert::X509PubKey *key)
+Bool Crypto::Encrypt::RSAEnc::SetPublicKey(NN<Crypto::Cert::X509PubKey> key)
 {
 	if (this->clsData->ctx == 0)
 		return false;

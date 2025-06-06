@@ -30,7 +30,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	param.SetIssuedAt(1516239022);
 	Data::StringMap<const UTF8Char*> payload;
 	payload.Put(CSTR("name"), (const UTF8Char*)"John Doe");
-	jwt->Generate(sb, &payload, &param);
+	jwt->Generate(sb, payload, param);
 	if (!sb.Equals(UTF8STRC("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8")))
 	{
 		DEL_CLASS(jwt);

@@ -194,6 +194,7 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 			Bool queryable = false;
 			Text::String *layerName = 0;
 			Text::String *layerTitle = 0;
+			NN<Text::String> nnlayerTitle;
 			Data::ArrayListNN<LayerCRS> layerCRS;
 			NN<LayerCRS> crs;
 			UOSInt i;
@@ -258,21 +259,22 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 							}
 							else if (aname->Equals(UTF8STRC("CRS")))
 							{
-								SDEL_STRING(crs->name);
-								crs->name = avalue->Clone().Ptr();
+								OPTSTR_DEL(crs->name);
+								crs->name = avalue->Clone();
 							}
 							else if (aname->Equals(UTF8STRC("SRS")))
 							{
-								SDEL_STRING(crs->name);
-								crs->name = avalue->Clone().Ptr();
+								OPTSTR_DEL(crs->name);
+								crs->name = avalue->Clone();
 							}
 						}
 					}
 					reader->SkipElement();
-					if (crs->name)
+					NN<Text::String> s;
+					if (crs->name.SetTo(s))
 					{
 						NN<Text::String> version;
-						if (crs->name->Equals(UTF8STRC("EPSG:4326")) && this->version.SetTo(version) && version->Equals(UTF8STRC("1.3.0")))
+						if (s->Equals(UTF8STRC("EPSG:4326")) && this->version.SetTo(version) && version->Equals(UTF8STRC("1.3.0")))
 						{
 							crs->bounds.min = crs->bounds.min.SwapXY();
 							crs->bounds.max = crs->bounds.max.SwapXY();
@@ -291,12 +293,12 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 				}
 			}
 			NN<Text::String> s;
-			if (s.Set(layerName) && layerTitle && layerCRS.GetCount() > 0)
+			if (s.Set(layerName) && nnlayerTitle.Set(layerTitle) && layerCRS.GetCount() > 0)
 			{
 				NN<LayerInfo> layer;
 				NEW_CLASSNN(layer, LayerInfo());
 				layer->name = s;
-				layer->title = layerTitle;
+				layer->title = nnlayerTitle;
 				layer->crsList.AddAll(layerCRS);
 				layer->queryable = queryable;
 				this->layers.Add(layer);
@@ -309,7 +311,7 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 				while (i-- > 0)
 				{
 					crs = layerCRS.GetItemNoCheck(i);
-					crs->name->Release();
+					OPTSTR_DEL(crs->name);
 					MemFreeANN(crs);
 				}
 			}
@@ -357,12 +359,12 @@ Map::WebMapService::~WebMapService()
 	{
 		layer = this->layers.GetItemNoCheck(i);
 		layer->name->Release();
-		SDEL_STRING(layer->title);
+		layer->title->Release();
 		j = layer->crsList.GetCount();
 		while (j-- > 0)
 		{
 			crs = layer->crsList.GetItemNoCheck(j);
-			crs->name->Release();
+			OPTSTR_DEL(crs->name);
 			MemFreeANN(crs);
 		}
 		layer.Delete();
@@ -449,7 +451,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendC(UTF8STRC("&height="));
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&srs="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, Text::String::OrEmpty(currCRS->name)->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 		sb.AppendC(UTF8STRC("&QUERY_LAYERS="));
@@ -480,7 +482,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendC(UTF8STRC("&height="));
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&CRS="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, Text::String::OrEmpty(currCRS->name)->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 		sb.AppendC(UTF8STRC("&QUERY_LAYERS="));
@@ -583,7 +585,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&TRANSPARENT=TRUE"));
 		sb.AppendC(UTF8STRC("&srs="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, Text::String::OrEmpty(currCRS->name)->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 	}
@@ -606,7 +608,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&TRANSPARENT=TRUE"));
 		sb.AppendC(UTF8STRC("&CRS="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, Text::String::OrEmpty(currCRS->name)->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 	}
@@ -715,7 +717,7 @@ void Map::WebMapService::SetLayer(UOSInt index)
 		while (i < j)
 		{
 			crs = layer->crsList.GetItemNoCheck(i);
-			if (Math::CoordinateSystemManager::CreateFromName(crs->name->ToCString()).SetTo(csys))
+			if (Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(crs->name)->ToCString()).SetTo(csys))
 			{
 				if (csys->Equals(this->envCsys))
 				{
@@ -742,7 +744,7 @@ void Map::WebMapService::SetLayer(UOSInt index)
 		if (this->currCRS.SetTo(crs))
 		{
 			this->csys.Delete();
-			this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(crs->name->ToCString());
+			this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(Text::String::OrEmpty(crs->name)->ToCString());
 		}
 	}
 }
@@ -763,7 +765,7 @@ void Map::WebMapService::SetLayerCRS(UOSInt index)
 		NN<LayerCRS> crs = layer->crsList.GetItemNoCheck(index);
 		this->currCRS = crs;
 		this->csys.Delete();
-		this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(crs->name->ToCString());
+		this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(Text::String::OrEmpty(crs->name)->ToCString());
 	}
 }
 

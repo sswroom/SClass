@@ -49,13 +49,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&names, sizeof(names));
 	MemClear(&ext, sizeof(ext));
-	names.countryName = Text::String::New(UTF8STRC("HK")).Ptr();
-	names.stateOrProvinceName = Text::String::New(UTF8STRC("Hong Kong")).Ptr();
-	names.localityName = Text::String::New(UTF8STRC("Hong Kong")).Ptr();
-	names.organizationName = Text::String::New(UTF8STRC("Simon Software Working Room")).Ptr();
-	names.organizationUnitName = Text::String::New(UTF8STRC("sswr")).Ptr();
-	names.commonName = Text::String::New(UTF8STRC("sswroom.no-ip.org")).Ptr();
-	names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com")).Ptr();
+	names.countryName = Text::String::New(UTF8STRC("HK"));
+	names.stateOrProvinceName = Text::String::New(UTF8STRC("Hong Kong"));
+	names.localityName = Text::String::New(UTF8STRC("Hong Kong"));
+	names.organizationName = Text::String::New(UTF8STRC("Simon Software Working Room"));
+	names.organizationUnitName = Text::String::New(UTF8STRC("sswr"));
+	names.commonName = Text::String::New(UTF8STRC("sswroom.no-ip.org"));
+	names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com"));
 
 	NN<Data::ArrayListStringNN> nameList;
 	NEW_CLASSNN(nameList, Data::ArrayListStringNN());
@@ -63,7 +63,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	nameList->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
 	NN<Crypto::Cert::X509CertReq> csr;
 	NN<Net::SSLEngine> nnssl;
-	if (ssl.SetTo(nnssl) && csr.Set(Crypto::Cert::CertUtil::CertReqCreate(nnssl, names, key, &ext)))
+	if (ssl.SetTo(nnssl) && Crypto::Cert::CertUtil::CertReqCreate(nnssl, names, key, ext).SetTo(csr))
 	{
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CSRTestOut.pem"));

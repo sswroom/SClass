@@ -79,7 +79,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 			NN<IO::ParsedObject> pobj;
 			if (parser.ParseFile(fd, 0, IO::ParserType::ImageList).SetTo(pobj))
 			{
-				NEW_CLASS(this->brandLogoImg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(pobj), 0));
+				NEW_CLASSOPT(this->brandLogoImg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(pobj), 0));
 			}
 		}
 	}
@@ -90,7 +90,7 @@ Map::BingMapsTile::~BingMapsTile()
 	OPTSTR_DEL(this->url);
 	OPTSTR_DEL(this->key);
 	OPTSTR_DEL(this->brandLogoUri);
-	SDEL_CLASS(this->brandLogoImg);
+	this->brandLogoImg.Delete();
 	this->subdomains.FreeAll();
 }
 
@@ -155,7 +155,7 @@ Bool Map::BingMapsTile::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt l
 
 UOSInt Map::BingMapsTile::GetScreenObjCnt()
 {
-	if (this->brandLogoImg && !this->hideLogo)
+	if (this->brandLogoImg.NotNull() && !this->hideLogo)
 		return 1;
 	return 0;
 }
@@ -163,11 +163,11 @@ UOSInt Map::BingMapsTile::GetScreenObjCnt()
 Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UOSInt index)
 {
 	NN<Media::SharedImage> brandLogoImg;
-	if (index == 0 && brandLogoImg.Set(this->brandLogoImg) && !this->hideLogo)
+	if (index == 0 && this->brandLogoImg.SetTo(brandLogoImg) && !this->hideLogo)
 	{
 		Math::Coord2DDbl size96 = this->dispSize * (96.0 / this->dispDPI);
 		NN<Media::StaticImage> img;
-		if (this->brandLogoImg->GetImage(0).SetTo(img))
+		if (brandLogoImg->GetImage(0).SetTo(img))
 		{
 			Math::Coord2DDbl imgSize = img->info.dispSize.ToDouble();
 			Math::Coord2DDbl pos = size96 - 16 - imgSize;
@@ -179,7 +179,7 @@ Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UOSI
 
 UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UOSInt index)
 {
-	if (index == 0 && this->brandLogoImg && !this->hideLogo)
+	if (index == 0 && this->brandLogoImg.NotNull() && !this->hideLogo)
 	{
 		return Text::String::OrEmpty(this->brandLogoUri)->ConcatTo(sbuff);
 	}
@@ -188,7 +188,7 @@ UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char
 
 Bool Map::BingMapsTile::GetScreenObjURL(NN<Text::StringBuilderUTF8> sb, UOSInt index)
 {
-	if (index == 0 && this->brandLogoImg && !this->hideLogo)
+	if (index == 0 && this->brandLogoImg.NotNull() && !this->hideLogo)
 	{
 		sb->AppendOpt(this->brandLogoUri);
 		return true;

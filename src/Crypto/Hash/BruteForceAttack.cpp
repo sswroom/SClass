@@ -68,7 +68,7 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(AnyType userObj)
 	return 0;
 }
 
-UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UnsafeArray<UTF8Char> resultBuff)
+UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UnsafeArray<UInt8> keyBuff, UnsafeArray<UTF8Char> resultBuff)
 {
 	UOSInt ret;
 	UOSInt len;
@@ -102,7 +102,7 @@ UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UnsafeArray<UT
 		ret = len * 2;
 		break;
 	case CharEncoding::UTF8:
-		MemCopyNO(keyBuff, this->keyBuff, len);
+		MemCopyNO(&keyBuff[0], this->keyBuff, len);
 		ret = len;
 		break;
 	default:
@@ -153,7 +153,7 @@ UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UnsafeArray<UT
 	return ret;
 }
 
-Crypto::Hash::BruteForceAttack::BruteForceAttack(Crypto::Hash::HashValidator *validator, CharEncoding ce)
+Crypto::Hash::BruteForceAttack::BruteForceAttack(NN<Crypto::Hash::HashValidator> validator, CharEncoding ce)
 {
 	this->validator = validator;
 	this->ce = ce;
@@ -161,6 +161,7 @@ Crypto::Hash::BruteForceAttack::BruteForceAttack(Crypto::Hash::HashValidator *va
 	this->resultBuff[0] = 0;
 	this->threadCnt = 0;
 	this->threadToStop = false;
+	this->keyLimit = BruteForceAttack_LimitASCII;
 	this->maxLeng = 0;
 }
 
@@ -171,7 +172,7 @@ Crypto::Hash::BruteForceAttack::~BruteForceAttack()
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
-	DEL_CLASS(this->validator);
+	this->validator.Delete();
 }
 
 void Crypto::Hash::BruteForceAttack::SetCharLimit(CharLimit charLimit)

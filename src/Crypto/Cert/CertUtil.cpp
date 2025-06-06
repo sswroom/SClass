@@ -315,7 +315,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net:
 	}
 }
 
-Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, const CertExtensions *ext)
+Optional<Crypto::Cert::X509CertReq> Crypto::Cert::CertUtil::CertReqCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, Optional<const CertExtensions> ext)
 {
 	NN<const CertExtensions> nnext;
 	Net::ASN1PDUBuilder builder;
@@ -326,7 +326,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NN<Net::SSLEngi
 	if (!AppendNames(builder, names)) return 0;
 	if (!AppendPublicKey(builder, key)) return 0;
 	builder.BeginOther(0xA0);
-	if (nnext.Set(ext))
+	if (ext.SetTo(nnext))
 	{
 		builder.BeginSequence();
 		builder.AppendOIDString(CSTR("1.2.840.113549.1.9.14"));
@@ -344,12 +344,12 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NN<Net::SSLEngi
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(names->commonName);
 	sb.AppendC(UTF8STRC(".csr"));
-	Crypto::Cert::X509CertReq *csr;
-	NEW_CLASS(csr, Crypto::Cert::X509CertReq(sb.ToCString(), builder.GetArray()));
+	NN<Crypto::Cert::X509CertReq> csr;
+	NEW_CLASSNN(csr, Crypto::Cert::X509CertReq(sb.ToCString(), builder.GetArray()));
 	return csr;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, UOSInt validDays, Optional<const CertExtensions> ext)
 {
 	NN<const CertExtensions> nnext;
 	Data::RandomBytesGenerator rndBytes;
@@ -388,7 +388,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NN<Net::SSL
 	if (!AppendNames(builder, names)) return 0;
 	if (!AppendPublicKey(builder, key)) return 0;
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
-	if (nnext.Set(ext))
+	if (ext.SetTo(nnext))
 	{
 		AppendExtensions(builder, nnext);
 	}

@@ -7,7 +7,7 @@ namespace Map
 	class SHPUtil
 	{
 	public:
-		static Math::Geometry::Vector2D *ParseShpRecord(UInt32 srid, const UInt8 *buff, UOSInt buffSize);
+		static Optional<Math::Geometry::Vector2D> ParseShpRecord(UInt32 srid, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	};
 }
 #endif

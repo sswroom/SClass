@@ -41,9 +41,9 @@ void Crypto::Hash::AESCMAC::GenSubKey()
 	}
 }
 
-Crypto::Hash::AESCMAC::AESCMAC(const UInt8 *key) : aes(key)
+Crypto::Hash::AESCMAC::AESCMAC(UnsafeArray<const UInt8> key) : aes(key)
 {
-	MemCopyNO(this->key, key, 16);
+	MemCopyNO(this->key, &key[0], 16);
 	this->GenSubKey();
 	this->Clear();
 }

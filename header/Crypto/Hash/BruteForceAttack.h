@@ -29,13 +29,13 @@ namespace Crypto
 				UTF32LE
 			};
 		private:
-			Crypto::Hash::HashValidator *validator;
+			NN<Crypto::Hash::HashValidator> validator;
 			CharEncoding ce;
 			CharLimit charLimit;
 			UTF8Char resultBuff[64];
 			UOSInt threadCnt;
 			Bool threadToStop;
-			const UInt8 *keyLimit;
+			UnsafeArray<const UInt8> keyLimit;
 			UInt8 keyFirst;
 			Sync::Mutex keyMut;
 			UTF8Char keyBuff[64];
@@ -43,9 +43,9 @@ namespace Crypto
 			UInt64 testCnt;
 
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
-			UOSInt GetNextKey(UInt8 *keyBuff, UnsafeArray<UTF8Char> resultBuff);
+			UOSInt GetNextKey(UnsafeArray<UInt8> keyBuff, UnsafeArray<UTF8Char> resultBuff);
 		public:
-			BruteForceAttack(Crypto::Hash::HashValidator *validator, CharEncoding ce);
+			BruteForceAttack(NN<Crypto::Hash::HashValidator> validator, CharEncoding ce);
 			~BruteForceAttack();
 
 			void SetCharLimit(CharLimit charLimit);

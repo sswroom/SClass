@@ -170,7 +170,7 @@ Bool Crypto::Token::JWSignature::GetHashB64(NN<Text::StringBuilderUTF8> sb) cons
 	return true;
 }
 
-const UInt8 *Crypto::Token::JWSignature::GetSignature() const
+UnsafeArray<const UInt8> Crypto::Token::JWSignature::GetSignature() const
 {
 	return this->hashVal;
 }

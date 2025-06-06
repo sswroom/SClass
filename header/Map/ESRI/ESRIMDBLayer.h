@@ -14,7 +14,7 @@ namespace Map
 		{
 		private:
 			DB::SharedDBConn *conn;
-			Data::FastMap<Int32, Math::Geometry::Vector2D*> objects;
+			Data::FastMapNN<Int32, Math::Geometry::Vector2D> objects;
 			DB::DBConn *currDB;
 			DB::DBConn *lastDB;
 			Map::DrawLayerType layerType;

@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_CERT_WINHTTPCERT
 #define _SM_CRYPTO_CERT_WINHTTPCERT
+#include "AnyType.h"
 #include "Crypto/Cert/Certificate.h"
 #include "Crypto/Cert/X509Cert.h"
 
@@ -12,9 +13,9 @@ namespace Crypto
 		private:
 			struct ClassData;
 
-			ClassData *clsData;
+			NN<ClassData> clsData;
 		public:
-			WinHttpCert(void *certInfo);
+			WinHttpCert(AnyType certInfo);
 			virtual ~WinHttpCert();
 
 			Data::Timestamp GetNotBefore() const;

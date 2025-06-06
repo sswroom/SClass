@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_CERT_CURLCERT
 #define _SM_CRYPTO_CERT_CURLCERT
+#include "AnyType.h"
 #include "Crypto/Cert/Certificate.h"
 #include "Crypto/Cert/X509Cert.h"
 
@@ -10,9 +11,9 @@ namespace Crypto
 		class CurlCert : public Certificate
 		{
 		private:
-			void *certinfo;
+			AnyType certinfo;
 		public:
-			CurlCert(void *certinfo);
+			CurlCert(AnyType certinfo);
 			virtual ~CurlCert();
 
 			Data::Timestamp GetNotBefore() const;

@@ -21,7 +21,7 @@ namespace Crypto
 
 			void GenSubKey();
 		public:
-			AESCMAC(const UInt8 *key);
+			AESCMAC(UnsafeArray<const UInt8> key);
 			virtual ~AESCMAC();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;

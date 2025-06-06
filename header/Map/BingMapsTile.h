@@ -34,7 +34,7 @@ namespace Map
 		UOSInt urlNext;
 		Sync::Mutex urlMut;
 		Optional<Text::String> brandLogoUri;
-		Media::SharedImage *brandLogoImg;
+		Optional<Media::SharedImage> brandLogoImg;
 		Math::Size2DDbl dispSize;
 		Double dispDPI;
 		Bool hideLogo;

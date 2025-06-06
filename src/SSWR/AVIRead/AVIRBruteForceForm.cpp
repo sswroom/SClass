@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 	}
 	sb.ClearStr();
 	me->txtHashValue->GetText(sb);
-	Crypto::Hash::HashValidator *validator = 0;
+	NN<Crypto::Hash::HashValidator> validator;
 	OSInt hashType = me->cboHashType->GetSelectedItem().GetOSInt();
 	if (hashType < 1000)
 	{
@@ -49,11 +49,11 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 			me->ui->ShowMsgOK(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
 			return;
 		}
-		NEW_CLASS(validator, Crypto::Hash::BatchHashValidator(hash, true));
+		NEW_CLASSNN(validator, Crypto::Hash::BatchHashValidator(hash, true));
 	}
 	else if (hashType == 1000)
 	{
-		NEW_CLASS(validator, Crypto::Hash::BcryptValidator());
+		NEW_CLASSNN(validator, Crypto::Hash::BcryptValidator());
 	}
 	else
 	{

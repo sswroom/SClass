@@ -47,7 +47,7 @@ namespace Crypto
 			Bool CalcHash(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			Bool VerifyHash(UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UInt8> signature, UOSInt signatureSize);
 			Bool GetHashB64(NN<Text::StringBuilderUTF8> sb) const;
-			const UInt8 *GetSignature() const;
+			UnsafeArray<const UInt8> GetSignature() const;
 			UOSInt GetSignatureLen() const;
 
 			static Text::CStringNN AlgorithmGetName(Algorithm alg);

@@ -7,12 +7,12 @@ struct Crypto::Encrypt::RSAEnc::ClassData
 
 Crypto::Encrypt::RSAEnc::RSAEnc()
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 }
 
 Crypto::Encrypt::RSAEnc::~RSAEnc()
 {
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool Crypto::Encrypt::RSAEnc::SetPublicKey(Crypto::Cert::X509PubKey *key)

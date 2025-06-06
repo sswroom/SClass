@@ -4,7 +4,7 @@
 #include "Data/BinTool.h"
 #include "Text/PString.h"
 
-void Crypto::Hash::BcryptValidator::CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password, UInt8 *hashBuff)
+void Crypto::Hash::BcryptValidator::CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password, UnsafeArray<UInt8> hashBuff)
 {
 	Crypto::Encrypt::Blowfish bf;
 	bf.EksBlowfishSetup(cost, salt, password);

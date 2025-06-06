@@ -10,9 +10,9 @@ struct Crypto::Cert::OpenSSLCert::ClassData
 	X509 *x509;
 };
 
-Bool Crypto::Cert::OpenSSLCert::FromASN1_TIME(void *t, Data::DateTime *dt)
+Bool Crypto::Cert::OpenSSLCert::FromASN1_TIME(AnyType t, NN<Data::DateTime> dt)
 {
-	ASN1_TIME *asn1t = (ASN1_TIME *)t;
+	ASN1_TIME *asn1t = (ASN1_TIME *)t.p;
 	UTF8Char *sptr;
 	UInt16 year;
 	sptr = asn1t->data;
@@ -36,28 +36,28 @@ Bool Crypto::Cert::OpenSSLCert::FromASN1_TIME(void *t, Data::DateTime *dt)
 
 Crypto::Cert::OpenSSLCert::OpenSSLCert()
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->x509 = X509_new();
 }
 
-Crypto::Cert::OpenSSLCert::OpenSSLCert(void *x509)
+Crypto::Cert::OpenSSLCert::OpenSSLCert(AnyType x509)
 {
-	this->clsData = MemAlloc(ClassData, 1);
-	this->clsData->x509 = (X509*)x509;
+	this->clsData = MemAllocNN(ClassData);
+	this->clsData->x509 = (X509*)x509.p;
 }
 
 Crypto::Cert::OpenSSLCert::~OpenSSLCert()
 {
 	X509_free(this->clsData->x509);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
-Bool Crypto::Cert::OpenSSLCert::GetNotBefore(Data::DateTime *dt) const
+Bool Crypto::Cert::OpenSSLCert::GetNotBefore(NN<Data::DateTime> dt) const
 {
 	return FromASN1_TIME(X509_get_notBefore(this->clsData->x509), dt);
 }
 
-Bool Crypto::Cert::OpenSSLCert::GetNotAfter(Data::DateTime *dt) const
+Bool Crypto::Cert::OpenSSLCert::GetNotAfter(NN<Data::DateTime> dt) const
 {
 	return FromASN1_TIME(X509_get_notAfter(this->clsData->x509), dt);
 }

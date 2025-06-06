@@ -284,7 +284,7 @@ const UInt32 Crypto::Encrypt::Blowfish::origS[1024] = {
 	temp ^= this->s[2][(Xr >> 8)  & 0xff]; \
 	temp += this->s[3][ Xr        & 0xff]; \
 	Xl = Xl ^ temp ^ this->p[i + 1];
-void Crypto::Encrypt::Blowfish::EncryptInt(EncryptParam *param) const
+void Crypto::Encrypt::Blowfish::EncryptInt(NN<EncryptParam> param) const
 {
 	UInt32 Xl;
 	UInt32 Xr;
@@ -305,7 +305,7 @@ void Crypto::Encrypt::Blowfish::EncryptInt(EncryptParam *param) const
 	param->xr = Xl;
 }
 
-void Crypto::Encrypt::Blowfish::DecryptInt(EncryptParam *param) const
+void Crypto::Encrypt::Blowfish::DecryptInt(NN<EncryptParam> param) const
 {
 	UInt32 Xl;
 	UInt32 Xr;
@@ -460,31 +460,31 @@ void Crypto::Encrypt::Blowfish::Key(UnsafeArray<const UInt8> password, UOSInt pw
 	EncryptParam param;
 	param.xl = 0;
 	param.xr = 0;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[0] = param.xl;
 	this->p[1] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[2] = param.xl;
 	this->p[3] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[4] = param.xl;
 	this->p[5] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[6] = param.xl;
 	this->p[7] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[8] = param.xl;
 	this->p[9] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[10] = param.xl;
 	this->p[11] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[12] = param.xl;
 	this->p[13] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[14] = param.xl;
 	this->p[15] = param.xr;
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	this->p[16] = param.xl;
 	this->p[17] = param.xr;
 
@@ -494,7 +494,7 @@ void Crypto::Encrypt::Blowfish::Key(UnsafeArray<const UInt8> password, UOSInt pw
 		j = 0;
 		while (j < 256)
 		{
-			this->EncryptInt(&param);
+			this->EncryptInt(param);
 			this->s[i][j + 0] = param.xl;
 			this->s[i][j + 1] = param.xr;
 			j += 2;
@@ -515,31 +515,31 @@ void Crypto::Encrypt::Blowfish::ExpandKey(UnsafeArrayOpt<const UInt8> optsalt, U
 	UnsafeArray<const UInt8> salt;
 	if (!optsalt.SetTo(salt))
 	{
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[0] = param.xl;
 		this->p[1] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[2] = param.xl;
 		this->p[3] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[4] = param.xl;
 		this->p[5] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[6] = param.xl;
 		this->p[7] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[8] = param.xl;
 		this->p[9] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[10] = param.xl;
 		this->p[11] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[12] = param.xl;
 		this->p[13] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[14] = param.xl;
 		this->p[15] = param.xr;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[16] = param.xl;
 		this->p[17] = param.xr;
 
@@ -549,7 +549,7 @@ void Crypto::Encrypt::Blowfish::ExpandKey(UnsafeArrayOpt<const UInt8> optsalt, U
 			j = 0;
 			while (j < 256)
 			{
-				this->EncryptInt(&param);
+				this->EncryptInt(param);
 				this->s[i][j + 0] = param.xl;
 				this->s[i][j + 1] = param.xr;
 				j += 2;
@@ -566,47 +566,47 @@ void Crypto::Encrypt::Blowfish::ExpandKey(UnsafeArrayOpt<const UInt8> optsalt, U
 
 		param.xl = param.xl ^ salt0;
 		param.xr = param.xr ^ salt4;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[0] = param.xl;
 		this->p[1] = param.xr;
 		param.xl = param.xl ^ salt8;
 		param.xr = param.xr ^ salt12;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[2] = param.xl;
 		this->p[3] = param.xr;
 		param.xl = param.xl ^ salt0;
 		param.xr = param.xr ^ salt4;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[4] = param.xl;
 		this->p[5] = param.xr;
 		param.xl = param.xl ^ salt8;
 		param.xr = param.xr ^ salt12;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[6] = param.xl;
 		this->p[7] = param.xr;
 		param.xl = param.xl ^ salt0;
 		param.xr = param.xr ^ salt4;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[8] = param.xl;
 		this->p[9] = param.xr;
 		param.xl = param.xl ^ salt8;
 		param.xr = param.xr ^ salt12;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[10] = param.xl;
 		this->p[11] = param.xr;
 		param.xl = param.xl ^ salt0;
 		param.xr = param.xr ^ salt4;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[12] = param.xl;
 		this->p[13] = param.xr;
 		param.xl = param.xl ^ salt8;
 		param.xr = param.xr ^ salt12;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[14] = param.xl;
 		this->p[15] = param.xr;
 		param.xl = param.xl ^ salt0;
 		param.xr = param.xr ^ salt4;
-		this->EncryptInt(&param);
+		this->EncryptInt(param);
 		this->p[16] = param.xl;
 		this->p[17] = param.xr;
 
@@ -618,13 +618,13 @@ void Crypto::Encrypt::Blowfish::ExpandKey(UnsafeArrayOpt<const UInt8> optsalt, U
 			{
 				param.xl = param.xl ^ salt8;
 				param.xr = param.xr ^ salt12;
-				this->EncryptInt(&param);
+				this->EncryptInt(param);
 				this->s[i][j + 0] = param.xl;
 				this->s[i][j + 1] = param.xr;
 
 				param.xl = param.xl ^ salt0;
 				param.xr = param.xr ^ salt4;
-				this->EncryptInt(&param);
+				this->EncryptInt(param);
 				this->s[i][j + 2] = param.xl;
 				this->s[i][j + 3] = param.xr;
 				j += 4;
@@ -654,7 +654,7 @@ UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(UnsafeArray<const UInt8> inBlock,
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);
 	param.xr = ReadMUInt32(&inBlock[4]);
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	WriteMUInt32(&outBlock[0], param.xl);
 	WriteMUInt32(&outBlock[4], param.xr);
 	return 8;
@@ -665,7 +665,7 @@ UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(UnsafeArray<const UInt8> inBlock,
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);
 	param.xr = ReadMUInt32(&inBlock[4]);
-	this->DecryptInt(&param);
+	this->DecryptInt(param);
 	WriteMUInt32(&outBlock[0], param.xl);
 	WriteMUInt32(&outBlock[4], param.xr);
 	return 8;
@@ -692,12 +692,12 @@ void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, UnsafeArray<const 
 	}
 }
 
-void Crypto::Encrypt::Blowfish::EncryptBlk(UInt32 *lr)
+void Crypto::Encrypt::Blowfish::EncryptBlk(UnsafeArray<UInt32> lr)
 {
 	EncryptParam param;
 	param.xl = lr[0];
 	param.xr = lr[1];
-	this->EncryptInt(&param);
+	this->EncryptInt(param);
 	lr[0] = param.xl;
 	lr[1] = param.xr;
 

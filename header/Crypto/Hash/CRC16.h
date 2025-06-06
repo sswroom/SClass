@@ -1,12 +1,7 @@
 #ifndef _SM_CRYPTO_HASH_CRC16
 #define _SM_CRYPTO_HASH_CRC16
+#include "Crypto/Hash/CRC16_C.h"
 #include "Crypto/Hash/HashAlgorithm.h"
-
-extern "C"
-{
-	void CRC16_InitTable(UInt16 *tab, UInt16 polynomial);
-	UInt16 CRC16_Calc(const UInt8 *buff, UOSInt buffSize, UInt16 *tab, UInt16 currVal);
-}
 
 namespace Crypto
 {
@@ -15,7 +10,7 @@ namespace Crypto
 		class CRC16 : public HashAlgorithm
 		{
 		private:
-			UInt16 *crctab;
+			UnsafeArray<UInt16> crctab;
 			UInt16 currVal;
 			UInt16 polynomial;
 
@@ -37,7 +32,7 @@ namespace Crypto
 
 			UInt16 CalcDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 			{
-				return CRC16_Calc(buff.Ptr(), buffSize, this->crctab, 0);
+				return CRC16_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), 0);
 			}
 
 			static UInt16 GetPolynomialANSI();

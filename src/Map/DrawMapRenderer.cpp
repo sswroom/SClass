@@ -14,7 +14,7 @@
 #define IsDoorNum(a) Text::StrIsInt32(a.v)
 #define LBLMINDIST 150
 
-UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority)
+UOSInt Map::DrawMapRenderer::NewLabel(UnsafeArray<Map::DrawMapRenderer::MapLabels> labels, UOSInt maxLabel, InOutParam<UOSInt> labelCnt, Int32 priority)
 {
 	Int32 minPriority;
 	UOSInt i;
@@ -22,9 +22,9 @@ UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, U
 	Double k;
 	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
-	if (*labelCnt >= maxLabel)
+	if (labelCnt.Get() >= maxLabel)
 	{
-		i = *labelCnt;
+		i = labelCnt.Get();
 		minPriority = labels[0].priority;
 		j = (UOSInt)-1;
 		k = labels[0].totalSize;
@@ -58,7 +58,8 @@ UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, U
 	}
 	else
 	{
-		i = (*labelCnt)++;
+		i = labelCnt.Get();
+		labelCnt.Set(i + 1);
 		labels[i].priority = priority;
 		labels[i].label = 0;
 		labels[i].points = 0;
@@ -66,7 +67,7 @@ UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, U
 	}
 }
 
-void Map::DrawMapRenderer::SwapLabel(MapLabels *mapLabels, UOSInt index, UOSInt index2)
+void Map::DrawMapRenderer::SwapLabel(UnsafeArray<MapLabels> mapLabels, UOSInt index, UOSInt index2)
 {
 	MapLabels l;
 	MemCopyNO(&l, &mapLabels[index], sizeof(MapLabels));
@@ -74,7 +75,7 @@ void Map::DrawMapRenderer::SwapLabel(MapLabels *mapLabels, UOSInt index, UOSInt 
 	MemCopyNO(&mapLabels[index2], &l, sizeof(MapLabels));
 }
 
-Bool Map::DrawMapRenderer::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect)
+Bool Map::DrawMapRenderer::LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UOSInt nPoints, Math::RectAreaDbl rect)
 {
 	while (nPoints--)
 	{
@@ -85,7 +86,7 @@ Bool Map::DrawMapRenderer::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPo
 	return false;
 }
 
-Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
+Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UOSInt maxLabel, InOutParam<UOSInt> labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
 {
 	Double size;
 	Double visibleSize;
@@ -105,9 +106,10 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 
 	if (recType == Map::DRAW_LAYER_POINT || recType == Map::DRAW_LAYER_POINT3D) //Point
 	{
+		UOSInt cnt = labelCnt.Get();
 		found = 0;
 		i = 0;
-		while (i < *labelCnt)
+		while (i < cnt)
 		{
 			if (recType == labels[i].layerType)
 			{
@@ -291,8 +293,9 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		startPt = points[0];
 		endPt = points[nPoints - 1];
 		i = 0;
+		UOSInt cnt = labelCnt.Get();
 
-		while (i < *labelCnt)
+		while (i < cnt)
 		{
 			if (recType == labels[i].layerType)
 			{
@@ -471,8 +474,9 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		}
 		else
 		{
+			UOSInt cnt = labelCnt.Get();
 			i = 0;
-			while (i < *labelCnt)
+			while (i < cnt)
 			{
 				if (recType == labels[i].layerType)
 				{
@@ -1892,7 +1896,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 					case Math::Geometry::Vector2D::VectorType::Point:
 					{
 						Math::Coord2DDbl pt = vec->GetCenter();
-						AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), 1, &pt, priority, Map::DRAW_LAYER_POINT, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+						AddLabel(denv->labels, maxLabel, denv->labelCnt, sbLbl.ToCString(), 1, &pt, priority, Map::DRAW_LAYER_POINT, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 						break;
 					}
 					case Math::Geometry::Vector2D::VectorType::Polyline:
@@ -1925,11 +1929,11 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 								pointArr = ls->GetPointList(nPoint);
 								if (pl->HasZ())
 								{
-									AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+									AddLabel(denv->labels, maxLabel, denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE3D, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 								}
 								else
 								{
-									AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+									AddLabel(denv->labels, maxLabel, denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYLINE, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 								}
 							}
 						}
@@ -1962,7 +1966,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 							if (pg->GetItem(maxPos).SetTo(lr))
 							{
 								pointArr = lr->GetPointList(nPoint);
-								AddLabel(denv->labels, maxLabel, &denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
+								AddLabel(denv->labels, maxLabel, denv->labelCnt, sbLbl.ToCString(), nPoint, pointArr, priority, Map::DRAW_LAYER_POLYGON, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType);
 							}
 						}
 						break;
@@ -2339,7 +2343,7 @@ void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, OutParam<Math::Coord2D
 	}
 	else
 	{
-		if (!df.Set(denv->fontStyles[fontStyle].font))
+		if (!denv->fontStyles[fontStyle].font.SetTo(df))
 		{
 			size.Set(Math::Coord2DDbl(0, 0));
 			return;
@@ -2415,7 +2419,7 @@ void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Mat
 		if (fontStyle >= denv->fontStyleCnt)
 			return;
 		font = &denv->fontStyles[fontStyle];
-		if (!df.Set(font->font) || !font->fontBrush.SetTo(db))
+		if (!font->font.SetTo(df) || !font->fontBrush.SetTo(db))
 			return;
 	}
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
@@ -2447,7 +2451,7 @@ void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Mat
 
 		NN<Media::DrawBrush> buffBrush;
 		NN<Media::DrawFont> buffFnt;
-		if (font && font->buffSize > 0 && buffFnt.Set(font->font) && font->buffBrush.SetTo(buffBrush))
+		if (font && font->buffSize > 0 && font->font.SetTo(buffFnt) && font->buffBrush.SetTo(buffBrush))
 		{
 			denv->img->DrawStringB(scnPos - (size * 0.5), str1, buffFnt, buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			denv->img->DrawString(scnPos - (size * 0.5), str1, df, db);
@@ -2522,7 +2526,7 @@ void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Mat
 
 		NN<Media::DrawFont> buffFnt;
 		NN<Media::DrawBrush> buffBrush;
-		if (font && font->buffSize > 0 && buffFnt.Set(font->font) && font->buffBrush.SetTo(buffBrush))
+		if (font && font->buffSize > 0 && font->font.SetTo(buffFnt) && font->buffBrush.SetTo(buffBrush))
 		{
 			currPt.x = 0;
 			currPt.y = 0;
@@ -2601,7 +2605,7 @@ void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Mat
 		denv->img->SetTextAlign(Media::DrawEngine::DRAW_POS_CENTER);
 		NN<Media::DrawBrush> buffBrush;
 		NN<Media::DrawFont> buffFnt;
-		if (font && font->buffSize > 0 && buffFnt.Set(font->font) && font->buffBrush.SetTo(buffBrush))
+		if (font && font->buffSize > 0 && font->font.SetTo(buffFnt) && font->buffBrush.SetTo(buffBrush))
 		{
 			denv->img->DrawStringRotB(scnPos, str1, buffFnt, buffBrush, degD * 180 / Math::PI, font->buffSize);
 		}
@@ -2636,7 +2640,7 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 		if (fontStyle >= denv->fontStyleCnt)
 			return;
 		font = &denv->fontStyles[fontStyle];
-		if (!df.Set(font->font) || !font->fontBrush.SetTo(db))
+		if (!font->font.SetTo(df) || !font->fontBrush.SetTo(db))
 			return;
 	}
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
@@ -3168,7 +3172,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 		if (fontStyle >= denv->fontStyleCnt)
 			return;
 		font = &denv->fontStyles[fontStyle];
-		if (!df.Set(font->font) || !font->fontBrush.SetTo(db))
+		if (!font->font.SetTo(df) || !font->fontBrush.SetTo(db))
 			return;
 	}
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
@@ -3738,13 +3742,13 @@ void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 	denv.img = img;
 	denv.view = view;
 	denv.isLayerEmpty = true;
-	denv.objBounds = MemAllocA(Math::RectAreaDbl, this->env->GetNString());
+	denv.objBounds = MemAllocAArr(Math::RectAreaDbl, this->env->GetNString());
 	denv.objCnt = 0;
 	denv.labelCnt = 0;
-	denv.labels = MemAllocA(Map::DrawMapRenderer::MapLabels, denv.maxLabels = this->env->GetNString());
-	MemClear(denv.labels, denv.maxLabels * sizeof(Map::DrawMapRenderer::MapLabels));
+	denv.labels = MemAllocAArr(Map::DrawMapRenderer::MapLabels, denv.maxLabels = this->env->GetNString());
+	MemClear(&denv.labels[0], denv.maxLabels * sizeof(Map::DrawMapRenderer::MapLabels));
 	denv.fontStyleCnt = env->GetFontStyleCount();
-	denv.fontStyles = MemAlloc(Map::DrawMapRenderer::DrawFontStyle, denv.fontStyleCnt);
+	denv.fontStyles = MemAllocArr(Map::DrawMapRenderer::DrawFontStyle, denv.fontStyleCnt);
 	denv.imgDurMS = 0;
 	denv.dispSize = Math::Size2DDbl(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()));
 	i = denv.fontStyleCnt;
@@ -3792,7 +3796,7 @@ void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 		font = &denv.fontStyles[i];
 		if (font->fontBrush.SetTo(b))
 			img->DelBrush(b);
-		if (fnt.Set(font->font))
+		if (font->font.SetTo(fnt))
 			img->DelFont(fnt);
 		if (font->buffBrush.SetTo(b))
 		{
@@ -3807,9 +3811,9 @@ void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 		if (denv.layerFontColor.GetItem(i).SetTo(b))
 			img->DelBrush(b);
 	}
-	MemFree(denv.fontStyles);
-	MemFreeA(denv.objBounds);
-	MemFreeA(denv.labels);
+	MemFreeArr(denv.fontStyles);
+	MemFreeAArr(denv.objBounds);
+	MemFreeAArr(denv.labels);
 
 	this->lastLayerEmpty = denv.isLayerEmpty;
 	imgDurMS.Set(denv.imgDurMS);

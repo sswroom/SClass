@@ -9,11 +9,11 @@
 #include "Math/Geometry/PointM.h"
 #include "Math/Geometry/PointZM.h"
 
-Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 *buff, UOSInt buffSize)
+Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (buffSize < 4)
 		return 0;
-	Int32 shpType = ReadInt32(buff);
+	Int32 shpType = ReadInt32(&buff[0]);
 	switch (shpType)
 	{
 	case 0: //Null
@@ -54,7 +54,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -105,7 +105,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			if (buffSize >= 44 + nPtOfst * 4 + nPoint * 16)
 			{
 				UOSInt tmpV;
-				const UInt8 *ptOfsts;
+				UnsafeArray<const UInt8> ptOfsts;
 				UnsafeArray<Math::Coord2DDbl> points;
 				UOSInt i = 0;
 				UOSInt j = 0;
@@ -191,7 +191,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -276,7 +276,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -365,7 +365,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -427,7 +427,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -494,7 +494,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}
@@ -567,7 +567,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					ptOfsts[i] = ReadUInt32(buff);
+					ptOfsts[i] = ReadUInt32(&buff[0]);
 					buff += 4;
 					i++;
 				}

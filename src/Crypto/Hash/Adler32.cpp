@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::Adler32::Adler32(const Adler32 *adler32)
+Crypto::Hash::Adler32::Adler32(NN<const Adler32> adler32)
 {
 	this->abVal = adler32->abVal;
 }
@@ -26,7 +26,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::Adler32::GetName(UnsafeArray<UTF8Char> sbuff
 NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::Adler32::Clone() const
 {
 	NN<Crypto::Hash::Adler32> adler32;
-	NEW_CLASSNN(adler32, Crypto::Hash::Adler32(this));
+	NEW_CLASSNN(adler32, Crypto::Hash::Adler32(*this));
 	return adler32;
 }
 

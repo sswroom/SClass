@@ -241,17 +241,17 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType use
 	ext.subjectAltName = me->sanList;
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
-	Crypto::Cert::X509CertReq *csr;
+	Optional<Crypto::Cert::X509CertReq> csr;
 	NN<Crypto::Cert::X509CertReq> nncsr;
 	if (me->sanList.GetCount() > 0 || ext.caCert || ext.digitalSign)
 	{
-		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, &ext);
+		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, ext);
 	}
 	else
 	{
 		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, 0);
 	}
-	if (nncsr.Set(csr))
+	if (csr.SetTo(nncsr))
 	{
 		me->core->OpenObject(nncsr);
 	}
@@ -301,7 +301,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType 
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	NN<Crypto::Cert::X509Cert> cert;
-	if (cert.Set(Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, validDays, &ext)))
+	if (Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, validDays, ext).SetTo(cert))
 	{
 		me->core->OpenObject(cert);
 	}

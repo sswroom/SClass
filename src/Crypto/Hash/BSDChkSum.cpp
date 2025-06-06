@@ -5,7 +5,7 @@
 #include <intrin.h>
 #endif
 
-Crypto::Hash::BSDChkSum::BSDChkSum(const BSDChkSum *bsdchksum)
+Crypto::Hash::BSDChkSum::BSDChkSum(NN<const BSDChkSum> bsdchksum)
 {
 	this->chksum = bsdchksum->chksum;
 }
@@ -22,7 +22,7 @@ Crypto::Hash::BSDChkSum::~BSDChkSum()
 NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::BSDChkSum::Clone()
 {
 	Crypto::Hash::BSDChkSum *bsdchksum;
-	NEW_CLASS(bsdchksum, Crypto::Hash::BSDChkSum(this));
+	NEW_CLASS(bsdchksum, Crypto::Hash::BSDChkSum(*this));
 	return bsdchksum;
 }
 
@@ -46,9 +46,9 @@ void Crypto::Hash::BSDChkSum::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSiz
 	this->chksum = chksum;
 }
 
-void Crypto::Hash::BSDChkSum::GetValue(UInt8 *buff)
+void Crypto::Hash::BSDChkSum::GetValue(UnsafeArray<UInt8> buff)
 {
-	*(UInt16*)buff = chksum;
+	*(UInt16*)&buff[0] = chksum;
 }
 
 UOSInt Crypto::Hash::BSDChkSum::GetBlockSize()

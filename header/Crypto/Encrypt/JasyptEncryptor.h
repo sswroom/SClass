@@ -35,9 +35,9 @@ namespace Crypto
 			KeyAlgorithm keyAlgorithmn;
 			CipherAlgorithm cipherAlgorithm;
 			Data::ByteBuffer key;
-			UInt8 *salt;
+			UnsafeArrayOpt<UInt8> salt;
 			UOSInt saltSize;
-			UInt8 *iv;
+			UnsafeArrayOpt<UInt8> iv;
 			UOSInt ivSize;
 			UOSInt iterCnt;
 			UOSInt dkLen;

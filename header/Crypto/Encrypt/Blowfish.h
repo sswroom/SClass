@@ -21,8 +21,8 @@ namespace Crypto
 			UInt32 p[16 + 2];
 			UInt32 s[4][256];
 
-			void EncryptInt(EncryptParam *param) const;
-			void DecryptInt(EncryptParam *param) const;
+			void EncryptInt(NN<EncryptParam> param) const;
+			void DecryptInt(NN<EncryptParam> param) const;
 
 			void InitPassword(UnsafeArray<const UInt8> password, UOSInt pwdLen);
 			void Init();
@@ -38,7 +38,7 @@ namespace Crypto
 
 			void SetKey(UnsafeArray<const UInt8> key, UOSInt keySize);
 			void EksBlowfishSetup(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password);
-			void EncryptBlk(UInt32 *lr);
+			void EncryptBlk(UnsafeArray<UInt32> lr);
 		};
 	}
 }

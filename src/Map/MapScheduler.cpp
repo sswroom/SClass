@@ -398,7 +398,7 @@ void Map::MapScheduler::SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::D
 	this->isLayerEmpty = isLayerEmpty;
 }
 
-void Map::MapScheduler::SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxCnt)
+void Map::MapScheduler::SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, UOSInt *objCnt, UOSInt maxCnt)
 {
 	this->objBounds = objBounds;
 	this->objCnt = objCnt;
@@ -409,7 +409,7 @@ void Map::MapScheduler::Draw(NN<Math::Geometry::Vector2D> vec)
 {
 	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskFinish = false;
-	this->tasks.Add(vec.Ptr());
+	this->tasks.Add(vec);
 	mutUsage.EndUse();
 	this->taskEvt.Set();
 }

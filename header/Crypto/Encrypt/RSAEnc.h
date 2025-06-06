@@ -10,12 +10,12 @@ namespace Crypto
 		{
 		private:
 			struct ClassData;
-			ClassData *clsData;
+			NN<ClassData> clsData;
 		public:
 			RSAEnc();
 			~RSAEnc();
 
-			Bool SetPublicKey(Crypto::Cert::X509PubKey *key);
+			Bool SetPublicKey(NN<Crypto::Cert::X509PubKey> key);
 			Bool LoadPublicKeyFile(Text::CString filePath);
 
 			UnsafeArrayOpt<const UInt8> GetSessKey();

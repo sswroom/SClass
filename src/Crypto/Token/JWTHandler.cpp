@@ -16,24 +16,24 @@ Crypto::Token::JWTHandler::JWTHandler(Optional<Net::SSLEngine> ssl, JWSignature:
 {
 	this->ssl = ssl;
 	this->alg = alg;
-	this->key = MemAlloc(UInt8, keyLeng);
+	this->key = MemAllocArr(UInt8, keyLeng);
 	this->keyLeng = keyLeng;
 	this->keyType = keyType;
-	MemCopyNO(this->key, key.Ptr(), this->keyLeng);
+	MemCopyNO(&this->key[0], key.Ptr(), this->keyLeng);
 }
 
 Crypto::Token::JWTHandler::~JWTHandler()
 {
-	if (this->key)
-		MemFree(this->key);
+	MemFreeArr(this->key);
 }
 
-Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
+Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, NN<Data::StringMap<const UTF8Char*>> payload, Optional<JWTParam> param)
 {
 	NN<Data::ArrayList<Text::String*>> keys = payload->GetKeys();
 	Text::String *key;
 	UOSInt i;
 	UOSInt j;
+	NN<JWTParam> nnparam;
 	NN<Text::String> s;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	i = 0;
@@ -44,33 +44,33 @@ Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, Data::S
 		json.ObjectAddStrUTF8(key->ToCString(), payload->Get(key));
 		i++;
 	}
-	if (param != 0)
+	if (param.SetTo(nnparam))
 	{
-		if (param->GetIssuer().SetTo(s))
+		if (nnparam->GetIssuer().SetTo(s))
 		{
 			json.ObjectAddStr(CSTR("iss"), s);
 		}
-		if (param->GetSubject().SetTo(s))
+		if (nnparam->GetSubject().SetTo(s))
 		{
 			json.ObjectAddStr(CSTR("sub"), s);
 		}
-		if (param->GetAudience().SetTo(s))
+		if (nnparam->GetAudience().SetTo(s))
 		{
 			json.ObjectAddStr(CSTR("aud"), s);
 		}
-		if (param->GetExpirationTime() != 0)
+		if (nnparam->GetExpirationTime() != 0)
 		{
-			json.ObjectAddInt64(CSTR("exp"), param->GetExpirationTime());
+			json.ObjectAddInt64(CSTR("exp"), nnparam->GetExpirationTime());
 		}
-		if (param->GetNotBefore() != 0)
+		if (nnparam->GetNotBefore() != 0)
 		{
-			json.ObjectAddInt64(CSTR("nbf"), param->GetNotBefore());
+			json.ObjectAddInt64(CSTR("nbf"), nnparam->GetNotBefore());
 		}
-		if (param->GetIssuedAt() != 0)
+		if (nnparam->GetIssuedAt() != 0)
 		{
-			json.ObjectAddInt64(CSTR("iat"), param->GetIssuedAt());
+			json.ObjectAddInt64(CSTR("iat"), nnparam->GetIssuedAt());
 		}
-		if (param->GetJWTId().SetTo(s))
+		if (nnparam->GetJWTId().SetTo(s))
 		{
 			json.ObjectAddStr(CSTR("jti"), s);
 		}

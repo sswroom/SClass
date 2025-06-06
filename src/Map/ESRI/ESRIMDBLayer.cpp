@@ -113,7 +113,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 		while (r->ReadNext())
 		{
 			Int32 objId;
-			Math::Geometry::Vector2D *vec;
+			NN<Math::Geometry::Vector2D> vec;
 
 			currSize = r->GetBinarySize(this->shapeCol);
 			if (currSize > buffSize)
@@ -127,8 +127,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 			}
 			r->GetBinary(this->shapeCol, buff);
 			objId = r->GetInt32(this->objIdCol);
-			vec = Map::SHPUtil::ParseShpRecord(srid, buff, buffSize);
-			if (vec)
+			if (Map::SHPUtil::ParseShpRecord(srid, buff, buffSize).SetTo(vec))
 			{
 				Math::RectAreaDbl thisBounds;
 				this->objects.Put(objId, vec);
@@ -199,17 +198,9 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text:
 
 Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 {
-	UOSInt i;
-
 	this->conn->UnuseObject();
 	this->colNames.FreeAll();
-	Math::Geometry::Vector2D *vec;
-	i = this->objects.GetCount();
-	while (i-- > 0)
-	{
-		vec = this->objects.GetItem(i);
-		DEL_CLASS(vec);
-	}
+	this->objects.DeleteAll();
 	this->tableName->Release();
 }
 
@@ -247,14 +238,14 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outAr
 	}
 	UOSInt cnt = 0;
 	Math::RectAreaDbl minMax;
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = this->objects.GetCount();
 	while (i < j)
 	{
-		vec = this->objects.GetItem(i);
+		vec = this->objects.GetItemNoCheck(i);
 		minMax = vec->GetBounds();
 		if (rect.OverlapOrTouch(minMax))
 		{
@@ -357,8 +348,8 @@ void Map::ESRI::ESRIMDBLayer::EndGetObject(NN<GetObjectSess> session)
 
 Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMDBLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
-	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
-	if (vec)
+	NN<Math::Geometry::Vector2D> vec;
+	if (this->objects.Get((Int32)id).SetTo(vec))
 		return vec->Clone();
 	return 0;
 }
