@@ -9,16 +9,16 @@ namespace UI
 		class WinCore : public UI::GUICore
 		{
 		private:
-			InstanceHandle *hInst;
+			Optional<InstanceHandle> hInst;
 			Int32 frmCnt;
 			Bool hasCommCtrl;
 			Bool noDispOff;
-			void *focusWnd;
+			Optional<ControlHandle> focusWnd;
 			void *focusHAcc;
 			Optional<Media::MonitorMgr> monMgr;
 
 		public:
-			WinCore(InstanceHandle *hInst);
+			WinCore(Optional<InstanceHandle> hInst);
 			virtual ~WinCore();
 
 			virtual void Run();
@@ -62,20 +62,20 @@ namespace UI
 			virtual NN<GUITrackBar> NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 			virtual NN<GUIHSplitter> NewHSplitter(NN<UI::GUIClientControl> parent, Int32 width, Bool isRight);
 			virtual NN<GUIVSplitter> NewVSplitter(NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom);
-			virtual NN<GUIFileDialog> NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
+			virtual NN<GUIFileDialog> NewFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave);
 			virtual NN<GUIFolderDialog> NewFolderDialog();
 			virtual NN<GUIFontDialog> NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 			virtual NN<GUIFontDialog> NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 
-			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd);
+			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, Optional<ControlHandle> parentHWnd);
 			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent);
 
-			void SetFocusWnd(void *hWnd, void *hAcc);
-			InstanceHandle *GetHInst();
+			void SetFocusWnd(Optional<ControlHandle> hWnd, void *hAcc);
+			Optional<InstanceHandle> GetHInst();
 
-			static OSInt MSGetWindowObj(ControlHandle *hWnd, OSInt index);
-			static OSInt MSSetWindowObj(ControlHandle *hWnd, OSInt index, OSInt value);
-			static OSInt MSSetClassObj(ControlHandle *hWnd, OSInt index, OSInt value);
+			static OSInt MSGetWindowObj(Optional<ControlHandle> hWnd, OSInt index);
+			static OSInt MSSetWindowObj(Optional<ControlHandle> hWnd, OSInt index, OSInt value);
+			static OSInt MSSetClassObj(Optional<ControlHandle> hWnd, OSInt index, OSInt value);
 		};
 	}
 }

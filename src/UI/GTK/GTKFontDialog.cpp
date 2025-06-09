@@ -18,9 +18,9 @@ UI::GTK::GTKFontDialog::~GTKFontDialog()
 {
 }
 
-Bool UI::GTK::GTKFontDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::GTK::GTKFontDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
-	GtkWidget *dlg = gtk_font_chooser_dialog_new("Select Font", (GtkWindow*)ownerHandle);
+	GtkWidget *dlg = gtk_font_chooser_dialog_new("Select Font", (GtkWindow*)ownerHandle.OrNull());
 	NN<Text::String> s;
 	if (this->fontName.SetTo(s))
 	{

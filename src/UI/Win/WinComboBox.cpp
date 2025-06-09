@@ -31,7 +31,7 @@ UI::Win::WinComboBox::WinComboBox(NN<GUICore> ui, NN<UI::GUIClientControl> paren
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"COMBOBOX", (const UTF8Char*)"", style, 0, 0, 0, 200, 28);
 	if (allowTyping)
 	{
-		SendMessage((HWND)this->hwnd, CB_LIMITTEXT, 0, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), CB_LIMITTEXT, 0, 0);
 	}
 }
 
@@ -44,7 +44,7 @@ void UI::Win::WinComboBox::SetText(Text::CStringNN text)
 	if (this->allowEdit)
 	{
 		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
-		SetWindowTextW((HWND)hwnd, wptr.Ptr());
+		SetWindowTextW((HWND)hwnd.OrNull(), wptr.Ptr());
 		Text::StrDelNew(wptr);
 	}
 	else
@@ -70,15 +70,15 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinComboBox::GetText(UnsafeArray<UTF8Char> buf
 {
 	WChar wbuff[256];
 	wbuff[0] = 0;
-	GetWindowTextW((HWND)hwnd, wbuff, 256);
+	GetWindowTextW((HWND)hwnd.OrNull(), wbuff, 256);
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
 Bool UI::Win::WinComboBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
+	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd.OrNull());
 	WChar *wptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd, wptr, (int)leng + 1);
+	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)leng + 1);
 	sb->AppendW(wptr);
 	MemFree(wptr);
 	return true;
@@ -97,13 +97,13 @@ void UI::Win::WinComboBox::EndUpdate()
 UOSInt UI::Win::WinComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
-	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr.Ptr());
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), CB_ADDSTRING, 0, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Add(itemText->Clone());
 	return (UOSInt)i;
@@ -112,13 +112,13 @@ UOSInt UI::Win::WinComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 UOSInt UI::Win::WinComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
-	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr.Ptr());
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), CB_ADDSTRING, 0, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Add(Text::String::New(itemText));
 	return (UOSInt)i;
@@ -127,13 +127,13 @@ UOSInt UI::Win::WinComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
-	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), CB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Insert(index, itemText->Clone());
 	return (UOSInt)i;
@@ -142,13 +142,13 @@ UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NN<Text::String> itemText,
 UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
-	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), CB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	this->itemTexts.Insert(index, Text::String::New(itemText));
 	return (UOSInt)i;
@@ -156,15 +156,15 @@ UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, 
 
 AnyType UI::Win::WinComboBox::RemoveItem(UOSInt index)
 {
-	AnyType obj = (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
-	SendMessage((HWND)hwnd, CB_DELETESTRING, index, 0);
+	AnyType obj = (void*)SendMessage((HWND)hwnd.OrNull(), CB_GETITEMDATA, index, 0);
+	SendMessage((HWND)hwnd.OrNull(), CB_DELETESTRING, index, 0);
 	OPTSTR_DEL(this->itemTexts.RemoveAt(index));
 	return obj;
 }
 
 void UI::Win::WinComboBox::ClearItems()
 {
-	SendMessage((HWND)hwnd, CB_RESETCONTENT, 0, 0);
+	SendMessage((HWND)hwnd.OrNull(), CB_RESETCONTENT, 0, 0);
 	UOSInt i = this->itemTexts.GetCount();
 	while (i-- > 0)
 	{
@@ -174,21 +174,21 @@ void UI::Win::WinComboBox::ClearItems()
 
 UOSInt UI::Win::WinComboBox::GetCount()
 {
-	return (UOSInt)SendMessage((HWND)hwnd, CB_GETCOUNT, 0, 0);
+	return (UOSInt)SendMessage((HWND)hwnd.OrNull(), CB_GETCOUNT, 0, 0);
 }
 
 void UI::Win::WinComboBox::SetSelectedIndex(UOSInt index)
 {
-	if (index != (UOSInt)SendMessage((HWND)hwnd, CB_GETCURSEL, 0, 0))
+	if (index != (UOSInt)SendMessage((HWND)hwnd.OrNull(), CB_GETCURSEL, 0, 0))
 	{
-		SendMessage((HWND)hwnd, CB_SETCURSEL, index, 0);
+		SendMessage((HWND)hwnd.OrNull(), CB_SETCURSEL, index, 0);
 		EventSelectionChange();
 	}
 }
 
 UOSInt UI::Win::WinComboBox::GetSelectedIndex()
 {
-	OSInt si = SendMessage((HWND)hwnd, CB_GETCURSEL, 0, 0);
+	OSInt si = SendMessage((HWND)hwnd.OrNull(), CB_GETCURSEL, 0, 0);
 	if (si >= 0)
 		return (UOSInt)si;
 	if (this->autoComplete)
@@ -215,14 +215,14 @@ AnyType UI::Win::WinComboBox::GetSelectedItem()
 
 AnyType UI::Win::WinComboBox::GetItem(UOSInt index)
 {
-	return (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
+	return (void*)SendMessage((HWND)hwnd.OrNull(), CB_GETITEMDATA, index, 0);
 }
 
 Math::Size2DDbl UI::Win::WinComboBox::GetSize()
 {
 //	OSInt itemHeight = GetSelectionHeight();
 	RECT rect;
-	GetWindowRect((HWND)hwnd, &rect);
+	GetWindowRect((HWND)hwnd.OrNull(), &rect);
 	return Math::Size2DDbl(rect.right - rect.left, rect.bottom - rect.top) * this->ddpi / this->hdpi;
 }
 
@@ -237,7 +237,7 @@ void UI::Win::WinComboBox::SetArea(Double left, Double top, Double right, Double
 	}
 	this->lxPos = left;
 	this->lyPos = top;
-	MoveWindow((HWND)hwnd, (int)((left + ofst.x) * this->hdpi / this->ddpi), (int)((top + ofst.y) * this->hdpi / this->ddpi), (int)((right - left) * this->hdpi / this->ddpi), (int)((bottom - top + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd.OrNull(), (int)((left + ofst.x) * this->hdpi / this->ddpi), (int)((top + ofst.y) * this->hdpi / this->ddpi), (int)((right - left) * this->hdpi / this->ddpi), (int)((bottom - top + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
 	this->lxPos2 = left + right - left;
 	this->lyPos2 = top + bottom - top;
 	this->OnSizeChanged(updateScn);
@@ -271,12 +271,12 @@ void UI::Win::WinComboBox::UpdatePos(Bool redraw)
 	{
 		ofst = nnparent->GetClientOfst();
 	}
-	MoveWindow((HWND)hwnd, (int)((this->lxPos + ofst.x) * this->hdpi / this->ddpi), (int)((this->lyPos + ofst.y) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
+	MoveWindow((HWND)hwnd.OrNull(), (int)((this->lxPos + ofst.x) * this->hdpi / this->ddpi), (int)((this->lyPos + ofst.y) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 }
 
 void UI::Win::WinComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
 {
-	SendMessage((HWND)this->hwnd, CB_SETEDITSEL, 0, (LPARAM)((startPos & 0xffff) | (endPos << 16)));
+	SendMessage((HWND)this->hwnd.OrNull(), CB_SETEDITSEL, 0, (LPARAM)((startPos & 0xffff) | (endPos << 16)));
 }
 
 UOSInt UI::Win::WinComboBox::GetListMinVisible()
@@ -295,10 +295,10 @@ Bool UI::Win::WinComboBox::SetListMinVisible(UOSInt itemCount)
 
 UOSInt UI::Win::WinComboBox::GetSelectionHeight()
 {
-	return (UOSInt)SendMessage((HWND)this->hwnd, CB_GETITEMHEIGHT, (WPARAM)-1, 0);
+	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), CB_GETITEMHEIGHT, (WPARAM)-1, 0);
 }
 
 Bool UI::Win::WinComboBox::SetListItemHeight(UOSInt itemHeight)
 {
-	return SendMessage((HWND)this->hwnd, CB_SETITEMHEIGHT, 0, (LPARAM)itemHeight) == TRUE;
+	return SendMessage((HWND)this->hwnd.OrNull(), CB_SETITEMHEIGHT, 0, (LPARAM)itemHeight) == TRUE;
 }

@@ -9,10 +9,10 @@ namespace UI
 		class WinFileDialog : public UI::GUIFileDialog
 		{
 		public:
-			WinFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
+			WinFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave);
 			virtual ~WinFileDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

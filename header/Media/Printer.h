@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_PRINTER
 #define _SM_MEDIA_PRINTER
+#include "Handles.h"
 #include "Media/DrawEngine.h"
 #include "Media/PrintDocument.h"
 
@@ -15,7 +16,7 @@ namespace Media
 	public:
 		static UOSInt GetPrinterCount();
 		static UnsafeArrayOpt<UTF8Char> GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index);
-		static Printer *SelectPrinter(void *hWnd);
+		static Printer *SelectPrinter(Optional<ControlHandle> hWnd);
 
 	private:
 		Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize);
@@ -25,7 +26,7 @@ namespace Media
 		~Printer();
 		
 		Bool IsError();
-		Bool ShowPrintSettings(void *hWnd);
+		Bool ShowPrintSettings(Optional<ControlHandle> hWnd);
 		Optional<PrintDocument> StartPrint(NN<PrintHandler> hdlr, NN<Media::DrawEngine> eng);
 		void EndPrint(NN<PrintDocument> doc);
 	};

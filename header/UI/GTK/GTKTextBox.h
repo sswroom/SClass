@@ -37,7 +37,7 @@ namespace UI
 			virtual void SetWordWrap(Bool wordWrap);
 			virtual void SelectAll();
 
-			virtual ControlHandle *GetDisplayHandle();
+			virtual Optional<ControlHandle> GetDisplayHandle();
 		};
 	}
 }

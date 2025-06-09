@@ -200,11 +200,11 @@ void GUIDDrawControl_OnResize(GtkWidget *widget, GdkRectangle *allocation, gpoin
 	}
 }*/
 
-void UI::GUIDDrawControl::Init(InstanceHandle *hInst)
+void UI::GUIDDrawControl::Init(Optional<InstanceHandle> hInst)
 {
 }
 
-void UI::GUIDDrawControl::Deinit(InstanceHandle *hInst)
+void UI::GUIDDrawControl::Deinit(Optional<InstanceHandle> hInst)
 {
 }
 
@@ -232,7 +232,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(data->me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
-			sb.AppendOSInt((OSInt)data->me->GetHMonitor());
+			sb.AppendOSInt((OSInt)data->me->GetHMonitor().OrNull());
 			data->me->debugWriter->WriteLine(sb.ToCString());
 		}
 		if (data->me->inited)
@@ -454,7 +454,7 @@ void UI::GUIDDrawControl::EndUpdateSize()
 
 UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool directMode, NN<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->pSurfaceUpdated = true;
 	this->clsData->drawPause = 0;
 	
@@ -478,16 +478,16 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->currScnMode = SM_WINDOWED;
 	this->clsData->imgCtrl = gtk_image_new();
 	this->hwnd = (ControlHandle*)gtk_event_box_new();
-	gtk_container_add((GtkContainer*)this->hwnd, this->clsData->imgCtrl);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUIDDrawControl_OnMouseDown), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUIDDrawControl_OnMouseUp), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "motion-notify-event", G_CALLBACK(GUIDDrawControl_OnMouseMove), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "scroll-event", G_CALLBACK(GUIDDrawControl_OnMouseWheel), this);
-//	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUIDDrawControl_OnKeyDown), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "size-allocate", G_CALLBACK(GUIDDrawControl_OnResize), this);
+	gtk_container_add((GtkContainer*)this->hwnd.OrNull(), this->clsData->imgCtrl);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-press-event", G_CALLBACK(GUIDDrawControl_OnMouseDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-release-event", G_CALLBACK(GUIDDrawControl_OnMouseUp), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "motion-notify-event", G_CALLBACK(GUIDDrawControl_OnMouseMove), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "scroll-event", G_CALLBACK(GUIDDrawControl_OnMouseWheel), this);
+//	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "key-press-event", G_CALLBACK(GUIDDrawControl_OnKeyDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "size-allocate", G_CALLBACK(GUIDDrawControl_OnResize), this);
 //	this->HandleSizeChanged(OnResized, this);
-	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
-	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
+	gtk_widget_set_events((GtkWidget*)this->hwnd.OrNull(), GDK_ALL_EVENTS_MASK);
+	gtk_widget_set_can_focus((GtkWidget*)this->hwnd.OrNull(), true);
 	parent->AddChild(*this);
 	g_signal_connect(G_OBJECT(this->clsData->imgCtrl), "draw", G_CALLBACK(GUIDDrawControl_OnDDDraw), this);
 	gtk_widget_show(this->clsData->imgCtrl);
@@ -511,7 +511,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 		this->debugWriter = 0;
 	}
 	this->surfaceMgr.Delete();
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
@@ -588,14 +588,15 @@ void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, 
 
 void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 {
+	NN<UI::GUIForm> rootForm;
 	if (fullScn)
 	{
-		this->GetRootForm()->ToFullScn();
+		if (this->GetRootForm().SetTo(rootForm)) rootForm->ToFullScn();
 		this->currScnMode = SM_VFS;
 	}
 	else
 	{
-		this->GetRootForm()->FromFullScn();
+		if (this->GetRootForm().SetTo(rootForm)) rootForm->FromFullScn();
 		this->currScnMode = SM_WINDOWED;
 	}
 }
@@ -605,7 +606,7 @@ Bool UI::GUIDDrawControl::IsFullScreen()
 	return this->currScnMode == SM_FS || this->currScnMode == SM_VFS;
 }
 
-void UI::GUIDDrawControl::ChangeMonitor(MonitorHandle *hMon)
+void UI::GUIDDrawControl::ChangeMonitor(Optional<MonitorHandle> hMon)
 {
 	this->OnMonitorChanged();
 }

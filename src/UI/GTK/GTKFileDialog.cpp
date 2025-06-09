@@ -9,7 +9,7 @@
 
 #define MAXFILENAMESIZE 512
 
-UI::GTK::GTKFileDialog::GTKFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave) : UI::GUIFileDialog(compName, appName, dialogName, isSave)
+UI::GTK::GTKFileDialog::GTKFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave) : UI::GUIFileDialog(compName, appName, dialogName, isSave)
 {
 }
 
@@ -17,7 +17,7 @@ UI::GTK::GTKFileDialog::~GTKFileDialog()
 {
 }
 
-Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
 	WChar fname1[512];
 	WChar fname2[512];

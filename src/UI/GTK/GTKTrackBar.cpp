@@ -18,9 +18,9 @@ UI::GTK::GTKTrackBar::GTKTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> p
 		maxVal = minVal + 1;
 	}
 	this->hwnd = (ControlHandle*)gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, UOSInt2Double(minVal), UOSInt2Double(maxVal), 1);
-	gtk_scale_set_draw_value((GtkScale*)this->hwnd, false);
-	gtk_range_set_value((GtkRange*)this->hwnd, UOSInt2Double(currVal));
-	g_signal_connect((GtkRange*)this->hwnd, "value-changed", G_CALLBACK(SignalValueChanged), this);
+	gtk_scale_set_draw_value((GtkScale*)this->hwnd.OrNull(), false);
+	gtk_range_set_value((GtkRange*)this->hwnd.OrNull(), UOSInt2Double(currVal));
+	g_signal_connect((GtkRange*)this->hwnd.OrNull(), "value-changed", G_CALLBACK(SignalValueChanged), this);
 	parent->AddChild(*this);
 	this->Show();
 }
@@ -36,15 +36,15 @@ OSInt UI::GTK::GTKTrackBar::OnNotify(UInt32 code, void *lParam)
 
 void UI::GTK::GTKTrackBar::SetPos(UOSInt pos)
 {
-	gtk_range_set_value((GtkRange*)this->hwnd, UOSInt2Double(pos));
+	gtk_range_set_value((GtkRange*)this->hwnd.OrNull(), UOSInt2Double(pos));
 }
 
 void UI::GTK::GTKTrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
 {
-	gtk_range_set_range((GtkRange*)this->hwnd, UOSInt2Double(minVal), UOSInt2Double(maxVal));
+	gtk_range_set_range((GtkRange*)this->hwnd.OrNull(), UOSInt2Double(minVal), UOSInt2Double(maxVal));
 }
 
 UOSInt UI::GTK::GTKTrackBar::GetPos()
 {
-	return (UOSInt)Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd));
+	return (UOSInt)Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd.OrNull()));
 }

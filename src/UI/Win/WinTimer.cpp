@@ -11,12 +11,12 @@ UI::Win::WinTimer::WinTimer(NN<UI::GUIForm> parent, UOSInt id, UInt32 interval, 
 	this->id = id;
 	this->interval = interval;
 
-	SetTimer((HWND)parent->GetHandle(), this->id, interval, 0);
+	SetTimer((HWND)parent->GetHandle().OrNull(), this->id, interval, 0);
 }
 
 UI::Win::WinTimer::~WinTimer()
 {
-	KillTimer((HWND)this->parent->GetHandle(), this->id);
+	KillTimer((HWND)this->parent->GetHandle().OrNull(), this->id);
 }
 
 UOSInt UI::Win::WinTimer::GetId()

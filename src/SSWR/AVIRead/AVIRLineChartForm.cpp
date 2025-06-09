@@ -98,22 +98,22 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 		{
 			if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Double)
 			{
-				Data::ArrayList<Double> *dblVals = (Data::ArrayList<Double>*)colInfos[i].datas;
+				NN<Data::ArrayList<Double>> dblVals = colInfos[i].datas.GetNN<Data::ArrayList<Double>>();
 				dblVals->Add(reader->GetDblOrNAN(colInfos[i].colIndex));
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int32)
 			{
-				Data::ArrayList<Int32> *i32Vals = (Data::ArrayList<Int32>*)colInfos[i].datas;
+				NN<Data::ArrayList<Int32>> i32Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int32>>();
 				i32Vals->Add(reader->GetInt32(colInfos[i].colIndex));
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int64)
 			{
-				Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
+				NN<Data::ArrayList<Int64>> i64Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int64>>();
 				i64Vals->Add(reader->GetInt64(colInfos[i].colIndex));
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_DateTime)
 			{
-				Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
+				NN<Data::ArrayList<Int64>> i64Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int64>>();
 				i64Vals->Add(reader->GetTimestamp(colInfos[i].colIndex).ToTicks());
 			}
 		}
@@ -124,14 +124,14 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 	{
 		Int64 *i64Data;
 		NEW_CLASS(chart, Data::LineChart(me->tableName->ToCString()));
-		i64Data = ((Data::ArrayList<Int64>*)colInfos[0].datas)->GetArr(j).Ptr();
+		i64Data = colInfos[0].datas.GetNN<Data::ArrayList<Int64>>()->GetArr(j).Ptr();
 		chart->AddXDataDate(i64Data, j);
 	}
 	else if (colInfos[0].colDef->GetColType() == DB::DBUtil::CT_Double)
 	{
 		Double *dblData;
 		NEW_CLASS(chart, Data::LineChart(me->tableName->ToCString()));
-		dblData = ((Data::ArrayList<Double>*)colInfos[0].datas)->GetArr(j).Ptr();
+		dblData = colInfos[0].datas.GetNN<Data::ArrayList<Double>>()->GetArr(j).Ptr();
 		chart->AddXData(dblData, j);
 
 		Double dblDiff = dblData[j - 1] - dblData[0];
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 	{
 		Int32 *i32Data;
 		NEW_CLASS(chart, Data::LineChart(me->tableName->ToCString()));
-		i32Data = ((Data::ArrayList<Int32>*)colInfos[0].datas)->GetArr(j).Ptr();
+		i32Data = colInfos[0].datas.GetNN<Data::ArrayList<Int32>>()->GetArr(j).Ptr();
 		chart->AddXData(i32Data, j);
 	}
 	else
@@ -172,28 +172,28 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 			if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Double)
 			{
 				Double *dblData;
-				Data::ArrayList<Double> *dblVals = (Data::ArrayList<Double>*)colInfos[i].datas;
+				NN<Data::ArrayList<Double>> dblVals = colInfos[i].datas.GetNN<Data::ArrayList<Double>>();
 				dblData = dblVals->GetArr(j).Ptr();
 				chart->AddYData(colInfos[i].colDef->GetColName(), dblData, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int32)
 			{
 				Int32 *i32Data;
-				Data::ArrayList<Int32> *i32Vals = (Data::ArrayList<Int32>*)colInfos[i].datas;
+				NN<Data::ArrayList<Int32>> i32Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int32>>();
 				i32Data = i32Vals->GetArr(j).Ptr();
 				chart->AddYData(colInfos[i].colDef->GetColName(), i32Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int64)
 			{
 				Int64 *i64Data;
-				Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
+				NN<Data::ArrayList<Int64>> i64Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int64>>();
 				i64Data = i64Vals->GetArr(j).Ptr();
 				chart->AddYDataDate(colInfos[i].colDef->GetColName(), i64Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_DateTime)
 			{
 				Int64 *i64Data;
-				Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
+				NN<Data::ArrayList<Int64>> i64Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int64>>();
 				i64Data = i64Vals->GetArr(j).Ptr();
 				chart->AddYDataDate(colInfos[i].colDef->GetColName(), i64Data, j, chart->GetRndColor(), Data::LineChart::LS_LINE);
 			}
@@ -208,23 +208,23 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 	{
 		if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Double)
 		{
-			Data::ArrayList<Double> *dblVals = (Data::ArrayList<Double>*)colInfos[i].datas;
-			DEL_CLASS(dblVals);
+			NN<Data::ArrayList<Double>> dblVals = colInfos[i].datas.GetNN<Data::ArrayList<Double>>();
+			dblVals.Delete();
 		}
 		else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int32)
 		{
-			Data::ArrayList<Int32> *i32Vals = (Data::ArrayList<Int32>*)colInfos[i].datas;
-			DEL_CLASS(i32Vals);
+			NN<Data::ArrayList<Int32>> i32Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int32>>();
+			i32Vals.Delete();
 		}
 		else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int64)
 		{
-			Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
-			DEL_CLASS(i64Vals);
+			NN<Data::ArrayList<Int64>> i64Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int64>>();
+			i64Vals.Delete();
 		}
 		else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_DateTime)
 		{
-			Data::ArrayList<Int64> *i64Vals = (Data::ArrayList<Int64>*)colInfos[i].datas;
-			DEL_CLASS(i64Vals);
+			NN<Data::ArrayList<Int64>> i64Vals = colInfos[i].datas.GetNN<Data::ArrayList<Int64>>();
+			i64Vals.Delete();
 		}
 		colInfos[i].colDef.Delete();
 	}

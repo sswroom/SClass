@@ -228,7 +228,7 @@ UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sb
 	return Text::StrWChar_UTF8(sbuff, info[index].pName);
 }
 
-Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
+Media::Printer *Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
 {
 	LPPRINTPAGERANGE pPageRanges = NULL;
 	pPageRanges = (LPPRINTPAGERANGE) GlobalAlloc(GPTR, 10 * sizeof(PRINTPAGERANGE));
@@ -241,7 +241,7 @@ Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
 
 	PRINTDLGEX pdx;
     pdx.lStructSize = sizeof(PRINTDLGEX);
-    pdx.hwndOwner = (HWND)hWnd;
+    pdx.hwndOwner = (HWND)hWnd.OrNull();
     pdx.hDevMode = NULL;
     pdx.hDevNames = NULL;
     pdx.hDC = NULL;
@@ -373,11 +373,11 @@ Bool Media::Printer::IsError()
 	return false;
 }
 
-Bool Media::Printer::ShowPrintSettings(void *hWnd)
+Bool Media::Printer::ShowPrintSettings(Optional<ControlHandle> hWnd)
 {
 	if (this->devMode == 0)
 		return false;
-	Int32 lReturn = DocumentPropertiesW((HWND)hWnd, (HANDLE)this->hPrinter, ((DEVMODEW*)this->devMode)->dmDeviceName, (DEVMODEW*)this->devMode, (DEVMODEW*)this->devMode, DM_IN_PROMPT | DM_IN_BUFFER);
+	Int32 lReturn = DocumentPropertiesW((HWND)hWnd.OrNull(), (HANDLE)this->hPrinter, ((DEVMODEW*)this->devMode)->dmDeviceName, (DEVMODEW*)this->devMode, (DEVMODEW*)this->devMode, DM_IN_PROMPT | DM_IN_BUFFER);
 	return IDOK == lReturn;
 }
 

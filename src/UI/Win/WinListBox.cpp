@@ -47,12 +47,12 @@ UI::Win::WinListBox::WinListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> par
 		style = style | LBS_EXTENDEDSEL;
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, sz.x, sz.y);
-	this->wndproc = (WNDPROC)UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
+	this->wndproc = (WNDPROC)UI::Win::WinCore::MSSetWindowObj(this->hwnd.OrNull(), GWLP_WNDPROC, (OSInt)LBWndProc);
 }
 
 UI::Win::WinListBox::~WinListBox()
 {
-	UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->wndproc);
+	UI::Win::WinCore::MSSetWindowObj(this->hwnd.OrNull(), GWLP_WNDPROC, (OSInt)this->wndproc);
 }
 
 
@@ -61,13 +61,13 @@ UOSInt UI::Win::WinListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 	UOSInt i = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *s = MemAlloc(WChar, i + 1);
 	Text::StrUTF8_WCharC(s, itemText->v, itemText->leng, 0);
-	i = (UOSInt)SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)s);
+	i = (UOSInt)SendMessage((HWND)hwnd.OrNull(), LB_ADDSTRING, 0, (LPARAM)s);
 	MemFree(s);
 	if (i == INVALID_INDEX)
 		return i;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), LB_SETITEMDATA, i, (LPARAM)itemObj.p);
 	}
 	return i;
 }
@@ -77,25 +77,25 @@ UOSInt UI::Win::WinListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	UOSInt i = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *s = MemAlloc(WChar, i + 1);
 	Text::StrUTF8_WChar(s, itemText.v, 0);
-	i = (UOSInt)SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)s);
+	i = (UOSInt)SendMessage((HWND)hwnd.OrNull(), LB_ADDSTRING, 0, (LPARAM)s);
 	MemFree(s);
 	if (i == INVALID_INDEX)
 		return i;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), LB_SETITEMDATA, i, (LPARAM)itemObj.p);
 	}
 	return i;
 }
 
 UOSInt UI::Win::WinListBox::AddItem(const WChar *itemText, AnyType itemObj)
 {
-	OSInt i = SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)itemText);
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), LB_ADDSTRING, 0, (LPARAM)itemText);
 	if (i < 0)
 		return (UOSInt)i;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
@@ -103,13 +103,13 @@ UOSInt UI::Win::WinListBox::AddItem(const WChar *itemText, AnyType itemObj)
 UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
-	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), LB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return INVALID_INDEX;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
@@ -117,60 +117,60 @@ UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, Any
 UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
-	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), LB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return INVALID_INDEX;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
 
 UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj)
 {
-	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)itemText);
+	OSInt i = SendMessage((HWND)hwnd.OrNull(), LB_INSERTSTRING, index, (LPARAM)itemText);
 	if (i < 0)
 		return INVALID_INDEX;
 	if (itemObj.NotNull())
 	{
-		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
+		SendMessage((HWND)hwnd.OrNull(), LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj.p);
 	}
 	return (UOSInt)i;
 }
 
 AnyType UI::Win::WinListBox::RemoveItem(UOSInt index)
 {
-	AnyType obj = (void*)SendMessage((HWND)hwnd, LB_GETITEMDATA, index, 0);
-	SendMessage((HWND)hwnd, LB_DELETESTRING, index, 0);
+	AnyType obj = (void*)SendMessage((HWND)hwnd.OrNull(), LB_GETITEMDATA, index, 0);
+	SendMessage((HWND)hwnd.OrNull(), LB_DELETESTRING, index, 0);
 	return obj;
 }
 
 AnyType UI::Win::WinListBox::GetItem(UOSInt index)
 {
-	return (void*)SendMessage((HWND)hwnd, LB_GETITEMDATA, index, 0);
+	return (void*)SendMessage((HWND)hwnd.OrNull(), LB_GETITEMDATA, index, 0);
 }
 
 void UI::Win::WinListBox::ClearItems()
 {
-	SendMessage((HWND)hwnd, LB_RESETCONTENT, 0, 0);
+	SendMessage((HWND)hwnd.OrNull(), LB_RESETCONTENT, 0, 0);
 }
 
 UOSInt UI::Win::WinListBox::GetCount()
 {
-	return (UOSInt)SendMessage((HWND)hwnd, LB_GETCOUNT, 0, 0);
+	return (UOSInt)SendMessage((HWND)hwnd.OrNull(), LB_GETCOUNT, 0, 0);
 }
 
 void UI::Win::WinListBox::SetSelectedIndex(UOSInt index)
 {
-	SendMessage((HWND)hwnd, LB_SETCURSEL, index, 0);
+	SendMessage((HWND)hwnd.OrNull(), LB_SETCURSEL, index, 0);
 	this->EventSelectionChange();
 }
 
 UOSInt UI::Win::WinListBox::GetSelectedIndex()
 {
-	return (UOSInt)(OSInt)SendMessage((HWND)hwnd, LB_GETCURSEL, 0, 0);
+	return (UOSInt)(OSInt)SendMessage((HWND)hwnd.OrNull(), LB_GETCURSEL, 0, 0);
 }
 
 Bool UI::Win::WinListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
@@ -182,7 +182,7 @@ Bool UI::Win::WinListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 		UOSInt j = this->GetCount();
 		while (i < j)
 		{
-			ret = SendMessage((HWND)hwnd, LB_GETSEL, i, 0);
+			ret = SendMessage((HWND)hwnd.OrNull(), LB_GETSEL, i, 0);
 			if (ret < 0)
 				return false;
 			if (ret)
@@ -193,7 +193,7 @@ Bool UI::Win::WinListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 	}
 	else
 	{
-		OSInt i = SendMessage((HWND)hwnd, LB_GETCURSEL, 0, 0);
+		OSInt i = SendMessage((HWND)hwnd.OrNull(), LB_GETCURSEL, 0, 0);
 		if (i >= 0)
 			indices->Add((UInt32)i);
 		return true;
@@ -246,7 +246,7 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinListBox::GetItemText(UnsafeArray<UTF8Char> 
 
 WChar *UI::Win::WinListBox::GetItemText(WChar *buff, UOSInt index)
 {
-	OSInt strLen = SendMessageW((HWND)hwnd, LB_GETTEXT, index, (LPARAM)buff);
+	OSInt strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXT, index, (LPARAM)buff);
 	if (strLen == LB_ERR)
 	{
 		return 0;
@@ -266,11 +266,11 @@ void UI::Win::WinListBox::SetItemText(UOSInt index, Text::CStringNN text)
 
 Optional<Text::String> UI::Win::WinListBox::GetItemTextNew(UOSInt index)
 {
-	OSInt strLen = SendMessageW((HWND)hwnd, LB_GETTEXTLEN, index, 0);
+	OSInt strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXTLEN, index, 0);
 	if (strLen == LB_ERR)
 		return 0;
 	WChar *sbuff = MemAlloc(WChar, (UOSInt)strLen + 1);
-	strLen = SendMessageW((HWND)hwnd, LB_GETTEXT, index, (LPARAM)sbuff);
+	strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXT, index, (LPARAM)sbuff);
 	if (strLen == LB_ERR)
 	{
 		MemFree(sbuff);
@@ -287,7 +287,7 @@ Optional<Text::String> UI::Win::WinListBox::GetItemTextNew(UOSInt index)
 OSInt UI::Win::WinListBox::GetItemHeight()
 {
 	TEXTMETRIC tm;
-	HDC hdc = GetDC((HWND)this->hwnd);
+	HDC hdc = GetDC((HWND)this->hwnd.OrNull());
 	GetTextMetrics(hdc, &tm);
 	return tm.tmHeight;
 }

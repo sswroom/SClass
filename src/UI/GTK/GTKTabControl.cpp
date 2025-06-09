@@ -32,7 +32,7 @@ UI::GTK::GTKTabControl::GTKTabControl(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 {
 	this->selIndex = 0;
 	this->hwnd = (ControlHandle*)gtk_notebook_new();
-	g_signal_connect((GtkWidget*)this->hwnd, "switch-page", G_CALLBACK(SignalSwitchPage), this);
+	g_signal_connect((GtkWidget*)this->hwnd.OrNull(), "switch-page", G_CALLBACK(SignalSwitchPage), this);
 	parent->AddChild(*this);
 	this->Show();
 	g_idle_add(SignalShown, this);
@@ -62,7 +62,7 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NN<Text::String> tabName)
 	page->lbl = gtk_label_new((const Char*)tabName->v.Ptr());
 	page->txt = tabName->Clone();
 	tp->SetCustObj(page);
-	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
+	gtk_notebook_append_page((GtkNotebook*)this->hwnd.OrNull(), (GtkWidget*)tp->GetHandle().OrNull(), page->lbl);
 	Math::RectArea<OSInt> rect = this->GetTabPageRect();
 	tp->SetRect(0, 0, OSInt2Double(rect.GetWidth()), OSInt2Double(rect.GetHeight()), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
@@ -80,7 +80,7 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(Text::CStringNN tabName)
 	page->lbl = gtk_label_new((const Char*)tabName.v.Ptr());
 	page->txt = Text::String::New(tabName);
 	tp->SetCustObj(page);
-	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
+	gtk_notebook_append_page((GtkNotebook*)this->hwnd.OrNull(), (GtkWidget*)tp->GetHandle().OrNull(), page->lbl);
 	Math::RectArea<OSInt> rect = this->GetTabPageRect();
 	tp->SetRect(0, 0, OSInt2Double(rect.GetWidth()), OSInt2Double(rect.GetHeight()), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
@@ -93,7 +93,7 @@ void UI::GTK::GTKTabControl::SetSelectedIndex(UOSInt index)
 {
 	if (this->selIndex != index)
 	{
-		gtk_notebook_set_current_page((GtkNotebook*)this->hwnd, (gint)(OSInt)index);
+		gtk_notebook_set_current_page((GtkNotebook*)this->hwnd.OrNull(), (gint)(OSInt)index);
 		this->selIndex = index;
 		this->EventSelChange();
 	}
@@ -151,7 +151,7 @@ Math::RectArea<OSInt> UI::GTK::GTKTabControl::GetTabPageRect()
 	clip.y = 0;
 	clip.height = 0;
 
-	page = gtk_notebook_get_nth_page((GtkNotebook*)this->hwnd, -1);
+	page = gtk_notebook_get_nth_page((GtkNotebook*)this->hwnd.OrNull(), -1);
 	if (page)
 	{
 //		printf("Page allocation\r\n");

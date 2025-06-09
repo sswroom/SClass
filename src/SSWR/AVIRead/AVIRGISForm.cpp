@@ -1845,7 +1845,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 
 void SSWR::AVIRead::AVIRGISForm::OnMonitorChanged()
 {
-	MonitorHandle *hMonitor = this->GetHMonitor();
+	Optional<MonitorHandle> hMonitor = this->GetHMonitor();
 	this->colorSess->ChangeMonitor(hMonitor);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	OnMapScaleChanged(this, this->mapCtrl->GetMapScale());

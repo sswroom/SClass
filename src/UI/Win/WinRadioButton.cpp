@@ -11,12 +11,12 @@ void UI::Win::WinRadioButton::ChangeSelected(Bool selVal)
 {
 	if (selVal)
 	{
-		SendMessage((HWND)this->hwnd, BM_SETCHECK, BST_CHECKED, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), BM_SETCHECK, BST_CHECKED, 0);
 		this->selected = true;
 	}
 	else
 	{
-		SendMessage((HWND)this->hwnd, BM_SETCHECK, BST_UNCHECKED, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), BM_SETCHECK, BST_UNCHECKED, 0);
 		this->selected = false;
 	}
 	this->EventSelectedChange(selVal);
@@ -53,7 +53,7 @@ OSInt UI::Win::WinRadioButton::OnNotify(UInt32 code, void *lParam)
 
 Bool UI::Win::WinRadioButton::IsSelected()
 {
-	return SendMessage((HWND)this->hwnd, BM_GETCHECK, 0, 0) == BST_CHECKED;
+	return SendMessage((HWND)this->hwnd.OrNull(), BM_GETCHECK, 0, 0) == BST_CHECKED;
 }
 
 void UI::Win::WinRadioButton::Select()

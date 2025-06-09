@@ -9,10 +9,10 @@
 #include "UI/Clipboard.h"
 #include <windows.h>
 
-UI::Clipboard::Clipboard(void *hwnd)
+UI::Clipboard::Clipboard(Optional<ControlHandle> hwnd)
 {
 	this->clsData = 0;
-	if (OpenClipboard((HWND)hwnd))
+	if (OpenClipboard((HWND)hwnd.OrNull()))
 	{
 		this->succ = true;
 	}
@@ -512,9 +512,9 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	return false;
 }
 
-Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
+Bool UI::Clipboard::SetString(Optional<ControlHandle> hWndOwner, Text::CStringNN s)
 {
-	if (OpenClipboard((HWND)hWndOwner) == 0)
+	if (OpenClipboard((HWND)hWndOwner.OrNull()) == 0)
 		return false;
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(s.v);
 	UOSInt len = Text::StrCharCnt(wptr);
@@ -542,9 +542,9 @@ Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
 	return true;
 }
 
-Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb)
+Bool UI::Clipboard::GetString(Optional<ControlHandle> hWndOwner, NN<Text::StringBuilderUTF8> sb)
 {
-	if (OpenClipboard((HWND)hWndOwner) == 0)
+	if (OpenClipboard((HWND)hWndOwner.OrNull()) == 0)
 		return false;
 	Bool succ = false;
 	HANDLE hand = GetClipboardData(CF_UNICODETEXT);

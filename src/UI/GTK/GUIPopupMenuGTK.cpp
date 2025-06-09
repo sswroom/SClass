@@ -11,11 +11,11 @@ UI::GUIPopupMenu::GUIPopupMenu() : UI::GUIMenu(true)
 void UI::GUIPopupMenu::ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<OSInt> scnPos)
 {
 	NN<UI::GUIForm> frm;
-	if (frm.Set(ctrl->GetRootForm()))
+	if (ctrl->GetRootForm().SetTo(frm))
 	{
 		gint tranX;
 		gint tranY;
-		if (gtk_widget_translate_coordinates((GtkWidget*)ctrl->GetHandle(), (GtkWidget*)frm->GetHandle(), (gint)scnPos.x, (gint)scnPos.y, &tranX, &tranY))
+		if (gtk_widget_translate_coordinates((GtkWidget*)ctrl->GetHandle().OrNull(), (GtkWidget*)frm->GetHandle().OrNull(), (gint)scnPos.x, (gint)scnPos.y, &tranX, &tranY))
 		{
 			scnPos.x = tranX;
 			scnPos.y = tranY;
@@ -23,7 +23,7 @@ void UI::GUIPopupMenu::ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<OSInt> sc
 		this->SetMenuForm(frm);
 		ctrl = frm;
 	}
-	GdkWindow *window = gtk_widget_get_window((GtkWidget*)ctrl->GetHandle());
+	GdkWindow *window = gtk_widget_get_window((GtkWidget*)ctrl->GetHandle().OrNull());
 
 	GdkRectangle rect;
 	rect.x = (int)scnPos.x;

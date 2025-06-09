@@ -16,7 +16,7 @@ namespace Media
 		ClassData *clsData;
 
 	public:
-		DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease, Media::RotateType rotateType);
+		DDrawSurface(NN<DDrawManager> mgr, void *lpDD, void *surface, Optional<MonitorHandle> hMon, Bool needRelease, Media::RotateType rotateType);
 		virtual ~DDrawSurface();
 
 		virtual NN<Media::RasterImage> Clone() const;
@@ -32,7 +32,7 @@ namespace Media
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
 
-		void SetClipWindow(ControlHandle *clipWindow);
+		void SetClipWindow(Optional<ControlHandle> clipWindow);
 		void SetBuffSurface(NN<Media::DDrawSurface> buffSurface);
 	};
 }

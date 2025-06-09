@@ -14,7 +14,7 @@ UI::GTK::GTKFolderDialog::~GTKFolderDialog()
 {
 }
 
-Bool UI::GTK::GTKFolderDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::GTK::GTKFolderDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;

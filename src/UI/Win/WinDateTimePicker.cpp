@@ -58,7 +58,7 @@ OSInt UI::Win::WinDateTimePicker::OnNotify(UInt32 code, void *lParam)
 //			NMHDR *nmhdr = (NMHDR*)lParam;
 			if (this->showWeeknum)
 			{
-				HWND hwndCal = (HWND)SendMessage((HWND)this->hwnd, DTM_GETMONTHCAL, 0, 0);
+				HWND hwndCal = (HWND)SendMessage((HWND)this->hwnd.OrNull(), DTM_GETMONTHCAL, 0, 0);
 				RECT rcCal;
 				if (hwndCal == 0)
 					return 0;
@@ -81,20 +81,20 @@ void UI::Win::WinDateTimePicker::SetValue(NN<Data::DateTime> dt)
 	dt->SetTimeZoneQHR(0);
 	dt->ToSYSTEMTIME(&t);
 	dt->SetTimeZoneQHR(tz);
-	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
+	SendMessage((HWND)this->hwnd.OrNull(), DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
 void UI::Win::WinDateTimePicker::SetValue(const Data::Timestamp &ts)
 {
 	SYSTEMTIME t;
 	ts.ToSYSTEMTIME(&t);
-	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
+	SendMessage((HWND)this->hwnd.OrNull(), DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
 void UI::Win::WinDateTimePicker::GetSelectedTime(NN<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
-	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
+	SendMessage((HWND)this->hwnd.OrNull(), DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
 	Int8 tz = dt->GetTimeZoneQHR();
 	dt->ToUTCTime();
 	dt->SetValueSYSTEMTIME(&t);
@@ -104,14 +104,14 @@ void UI::Win::WinDateTimePicker::GetSelectedTime(NN<Data::DateTime> dt)
 Data::Timestamp UI::Win::WinDateTimePicker::GetSelectedTime()
 {
 	SYSTEMTIME t;
-	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
+	SendMessage((HWND)this->hwnd.OrNull(), DTM_GETSYSTEMTIME, 0, (LPARAM)&t);
 	return Data::Timestamp(Data::DateTimeUtil::SYSTEMTIME2Ticks(&t), 0);
 }
 
 void UI::Win::WinDateTimePicker::SetFormat(const Char *format)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew((const UTF8Char*)format);
-	SendMessage((HWND)this->hwnd, DTM_SETFORMATW, 0, (LPARAM)wptr.Ptr());
+	SendMessage((HWND)this->hwnd.OrNull(), DTM_SETFORMATW, 0, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 

@@ -3,7 +3,7 @@
 #include "Media/ImageUtil.h"
 #include "Media/MemorySurface.h"
 
-Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi)
+Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, Optional<const Media::ColorProfile> color, Double dpi)
 {
 	this->buffPtr = MemAllocA(UInt8, size.CalcArea() * (bitPerPixel >> 3));
 	this->info.fourcc = 0;
@@ -20,7 +20,7 @@ Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixe
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
 	NN<const Media::ColorProfile> colornn;
-	if (colornn.Set(color))
+	if (color.SetTo(colornn))
 	{
 		this->info.color.Set(colornn);
 	}

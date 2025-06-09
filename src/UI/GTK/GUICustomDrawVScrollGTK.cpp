@@ -13,7 +13,7 @@
 
 #define SCROLLWIDTH 8
 
-typedef struct
+struct UI::GUICustomDrawVScroll::ClassData
 {
 	UOSInt currPos;
 	UOSInt min;
@@ -23,14 +23,14 @@ typedef struct
 	OSInt scrollDownY;
 	UOSInt scrollDownPos;
 	OSInt scrollSize;
-} ClassData;
+};
 
 Int32 UI::GUICustomDrawVScroll::useCnt = 0;
 
 gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
-	ClassData *clsData = (ClassData*)me->clsData;
+	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
 	clsData->scrollSize = Double2OSInt(8 * me->GetHDPI() / me->GetDDPI());
 	OSInt width = gtk_widget_get_allocated_width(widget);
 	OSInt height = gtk_widget_get_allocated_height(widget);
@@ -68,7 +68,7 @@ gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer da
 gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
-	ClassData *clsData = (ClassData*)me->clsData;
+	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
 	GdkEventButton *evt = (GdkEventButton*)event;
 	me->Focus();
 	if (evt->type == GDK_BUTTON_PRESS)
@@ -135,7 +135,7 @@ gboolean GUICustomDrawVScroll_OnMouseDown(GtkWidget *widget, GdkEvent *event, gp
 gboolean GUICustomDrawVScroll_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
-	ClassData *clsData = (ClassData*)me->clsData;
+	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
 	GdkEventButton *evt = (GdkEventButton*)event;
 	if (evt->type == GDK_BUTTON_RELEASE)
 	{
@@ -171,7 +171,7 @@ gboolean GUICustomDrawVScroll_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpoi
 gboolean GUICustomDrawVScroll_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
-	ClassData *clsData = (ClassData*)me->clsData;
+	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
 	OSInt height = gtk_widget_get_allocated_height(widget);
 	GdkEventMotion *evt = (GdkEventMotion*)event;
 	if (clsData->scrollDown)
@@ -202,7 +202,7 @@ gboolean GUICustomDrawVScroll_OnMouseMove(GtkWidget *widget, GdkEvent *event, gp
 gboolean GUICustomDrawVScroll_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	UI::GUICustomDrawVScroll *me = (UI::GUICustomDrawVScroll*)data;
-	ClassData *clsData = (ClassData*)me->clsData;
+	NN<UI::GUICustomDrawVScroll::ClassData> clsData = me->clsData;
 	UOSInt scrollSize = clsData->pageSize >> 2;
 	if (scrollSize < 1)
 	{
@@ -241,7 +241,7 @@ gboolean GUICustomDrawVScroll_OnKeyDown(GtkWidget* self, GdkEventKey *event, gpo
 void UI::GUICustomDrawVScroll::ClearBackground(NN<Media::DrawImage> img)
 {
 	GtkStyleContext *context;
-	context = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	context = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	gtk_render_background(context, (cairo_t*)((Media::GTKDrawImage*)img.Ptr())->GetCairo(), 0, 0, UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()));
 }
 
@@ -250,7 +250,7 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUICli
 	this->deng = deng;
 	this->colorSess = colorSess;
 
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->min = 0;
 	data->max = 100;
@@ -262,21 +262,21 @@ UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUICli
 	data->scrollSize = 8;
 
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
-	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUICustomDrawVScroll_OnDraw), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseDown), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseUp), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "motion-notify-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseMove), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "scroll-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseWheel), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUICustomDrawVScroll_OnKeyDown), this);
-	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
-	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "draw", G_CALLBACK(GUICustomDrawVScroll_OnDraw), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-press-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-release-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseUp), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "motion-notify-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseMove), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "scroll-event", G_CALLBACK(GUICustomDrawVScroll_OnMouseWheel), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "key-press-event", G_CALLBACK(GUICustomDrawVScroll_OnKeyDown), this);
+	gtk_widget_set_events((GtkWidget*)this->hwnd.OrNull(), GDK_ALL_EVENTS_MASK);
+	gtk_widget_set_can_focus((GtkWidget*)this->hwnd.OrNull(), true);
 	parent->AddChild(*this);
 	this->Show();
 }
 
 UI::GUICustomDrawVScroll::~GUICustomDrawVScroll()
 {
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Text::CStringNN UI::GUICustomDrawVScroll::GetObjectClass() const
@@ -341,7 +341,7 @@ void UI::GUICustomDrawVScroll::EventDblClk()
 
 void UI::GUICustomDrawVScroll::SetVScrollBar(UOSInt min, UOSInt max, UOSInt pageSize)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	data->min = min;
 	data->max = max;
 	data->pageSize = pageSize;
@@ -358,13 +358,13 @@ void UI::GUICustomDrawVScroll::SetVScrollBar(UOSInt min, UOSInt max, UOSInt page
 
 UOSInt UI::GUICustomDrawVScroll::GetVScrollPos()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	return data->currPos;
 }
 
 Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (lastIndex >= data->max)
 	{
 		lastIndex = data->max - 1;

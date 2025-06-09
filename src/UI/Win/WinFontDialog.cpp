@@ -20,14 +20,14 @@ UI::Win::WinFontDialog::~WinFontDialog()
 {
 }
 
-Bool UI::Win::WinFontDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::Win::WinFontDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
 	LOGFONTW lf;
 	CHOOSEFONTW cfont;
 	NN<Text::String> s;
 	ZeroMemory(&cfont, sizeof(cfont));
 	cfont.lStructSize = sizeof(CHOOSEFONT);
-	cfont.hwndOwner = (HWND)ownerHandle;
+	cfont.hwndOwner = (HWND)ownerHandle.OrNull();
 	cfont.Flags = CF_NOSCRIPTSEL | CF_SCREENFONTS;
 	cfont.lpLogFont = &lf;
 	cfont.rgbColors = 0;

@@ -29,13 +29,13 @@ namespace UI
 		class WinDragDrop : public IDropTarget
 		{
 		private:
-			UI::GUIDropHandler *hdlr;
-			void *hWnd;
+			NN<UI::GUIDropHandler> hdlr;
+			Optional<ControlHandle> hWnd;
 			UInt32 unkCnt;
 			UI::GUIDropHandler::DragEffect currEff;
 
 		public:
-			WinDragDrop(void *hWnd, UI::GUIDropHandler *hdlr);
+			WinDragDrop(Optional<ControlHandle> hWnd, NN<UI::GUIDropHandler> hdlr);
 			virtual ~WinDragDrop();
 
 			virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void **ppvObject);
@@ -47,7 +47,7 @@ namespace UI
 			virtual HRESULT STDMETHODCALLTYPE DragLeave();
 			virtual HRESULT STDMETHODCALLTYPE Drop(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect);
 
-			void SetHandler(UI::GUIDropHandler *hdlr);
+			void SetHandler(NN<UI::GUIDropHandler> hdlr);
 		};
 	}
 }

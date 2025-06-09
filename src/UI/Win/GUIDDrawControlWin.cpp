@@ -192,14 +192,14 @@ OSInt __stdcall UI::GUIDDrawControl::FormWndProc(void *hWnd, UInt32 msg, UOSInt 
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUIDDrawControl::Init(InstanceHandle *hInst)
+void UI::GUIDDrawControl::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = CS_DBLCLKS; 
 	wc.lpfnWndProc = (WNDPROC)UI::GUIDDrawControl::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, 
         IDC_ARROW); 
@@ -211,9 +211,9 @@ void UI::GUIDDrawControl::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::GUIDDrawControl::Deinit(InstanceHandle *hInst)
+void UI::GUIDDrawControl::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
@@ -241,7 +241,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
-			sb.AppendOSInt((OSInt)me->GetHMonitor());
+			sb.AppendOSInt((OSInt)me->GetHMonitor().OrNull());
 			me->debugWriter->WriteLine(sb.ToCString());
 		}
 		if (me->inited)
@@ -260,14 +260,14 @@ void UI::GUIDDrawControl::GetDrawingRect(void *rc)
 		rcSrc->top = 0;
 		rcSrc->right = (LONG)this->scnW;
 		rcSrc->bottom = (LONG)this->scnH;
-		ClientToScreen((HWND)this->hwnd, (POINT*)&((RECT*)rc)->left);
-		ClientToScreen((HWND)this->hwnd, (POINT*)&((RECT*)rc)->right);
+		ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&((RECT*)rc)->left);
+		ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&((RECT*)rc)->right);
 	}
 	else
 	{
-		GetClientRect((HWND)this->hwnd, (RECT*)rc);
-		ClientToScreen((HWND)this->hwnd, (POINT*)&((RECT*)rc)->left);
-		ClientToScreen((HWND)this->hwnd, (POINT*)&((RECT*)rc)->right);
+		GetClientRect((HWND)this->hwnd.OrNull(), (RECT*)rc);
+		ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&((RECT*)rc)->left);
+		ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&((RECT*)rc)->right);
 	}
 }
 
@@ -316,7 +316,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 	}
 	else
 	{
-		ControlHandle *hWnd;
+		Optional<ControlHandle> hWnd;
 		if (this->currScnMode == SM_VFS)
 		{
 			this->surfaceMon = this->GetHMonitor();
@@ -346,9 +346,9 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				sb.AppendC(UTF8STRC(", bpl = "));
 				sb.AppendUOSInt(primarySurface->GetDataBpl());
 				sb.AppendC(UTF8STRC(", hMon = "));
-				sb.AppendOSInt((OSInt)this->surfaceMon);
+				sb.AppendOSInt((OSInt)this->surfaceMon.OrNull());
 				sb.AppendC(UTF8STRC(", hWnd = "));
-				sb.AppendOSInt((OSInt)hWnd);
+				sb.AppendOSInt((OSInt)hWnd.OrNull());
 				this->debugWriter->WriteLine(sb.ToCString());
 			}
 			this->bitDepth = primarySurface->info.storeBPP;
@@ -479,7 +479,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->switching = false;
 	this->debugFS = 0;
 	this->debugWriter = 0;
-	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
+	NEW_CLASSNN(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
 #if defined(_DEBUG)
 	{
 		NN<IO::FileStream> fs;
@@ -513,7 +513,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 		MONITORINFOEXW monInfo;
 		monInfo.cbSize = sizeof(monInfo);
 		this->currMon = this->GetHMonitor();
-		::GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);
+		::GetMonitorInfoW((HMONITOR)this->currMon.OrNull(), &monInfo);
 		this->scnX = monInfo.rcMonitor.left;
 		this->scnY = monInfo.rcMonitor.top;
 		SwitchFullScreen(false, false);
@@ -535,7 +535,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 			if (ret == JOYERR_NOERROR)
 			{
 				this->joystickId = i + 1;
-				SetTimer((HWND)this->hwnd, 1000, 18, 0);
+				SetTimer((HWND)this->hwnd.OrNull(), 1000, 18, 0);
 				break;
 			}
 			i++;
@@ -569,7 +569,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 		this->debugFS = 0;
 		this->debugWriter = 0;
 	}
-	DEL_CLASS(this->lib);
+	this->lib.Delete();
 }
 
 void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
@@ -665,7 +665,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		sb.AppendI32(fullScn?1:0);
 		sb.AppendI32(vfs?1:0);
 		sb.AppendC(UTF8STRC(", hMon="));
-		sb.AppendOSInt((OSInt)this->GetHMonitor());
+		sb.AppendOSInt((OSInt)this->GetHMonitor().OrNull());
 		this->debugWriter->WriteLine(sb.ToCString());
 	}
 	if (fullScn)
@@ -678,6 +678,9 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		if (this->currScnMode == SM_WINDOWED || this->currScnMode == SM_WINDOWED_DIR)
 			return;
 	}
+	NN<UI::GUIForm> rootForm;
+	if (!this->rootForm.SetTo(rootForm))
+		return;
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (fullScn && !vfs)
 	{
@@ -687,13 +690,13 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		DDSURFACEDESC2 ddsd;
 		ddsd.dwSize = sizeof(ddsd);
 
-		this->rootForm->ToFullScn();
-		this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), true);
+		rootForm->ToFullScn();
+		this->surfaceMgr->SetFSMode(this->GetHMonitor(), rootForm->GetHandle(), true);
 		if (lpDD->GetDisplayMode(&ddsd) != DD_OK)
 		{
-			this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
+			this->surfaceMgr->SetFSMode(this->GetHMonitor(), rootForm->GetHandle(), false);
 			mutUsage.EndUse();
-			this->rootForm->FromFullScn();
+			rootForm->FromFullScn();
 			this->EndUpdateSize();
 			SwitchFullScreen(false, false);
 			return;
@@ -712,9 +715,9 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		CreateSurface();
 		if (this->primarySurface.IsNull())
 		{
-			this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
+			this->surfaceMgr->SetFSMode(this->GetHMonitor(), rootForm->GetHandle(), false);
 			mutUsage.EndUse();
-			this->rootForm->FromFullScn();
+			rootForm->FromFullScn();
 			this->EndUpdateSize();
 			SwitchFullScreen(false, false);
 			return;
@@ -726,20 +729,20 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	else if (fullScn && vfs)
 	{
 		this->BeginUpdateSize();
-		if (this->surfaceMon) this->surfaceMgr->SetFSMode(this->surfaceMon, this->rootForm->GetHandle(), false);
+		if (this->surfaceMon.NotNull()) this->surfaceMgr->SetFSMode(this->surfaceMon, rootForm->GetHandle(), false);
 		if (this->imgCopy == 0)
 		{
 			NEW_CLASS(this->imgCopy, Media::ImageCopy());
 			this->imgCopy->SetThreadPriority(Sync::ThreadUtil::TP_HIGHEST);
 		}
-		this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
+		this->surfaceMgr->SetFSMode(this->GetHMonitor(), rootForm->GetHandle(), false);
 		if (this->debugWriter)
 		{
 			Text::StringBuilderUTF8 sb;
 			RECT rc;
-			GetClientRect((HWND)this->hwnd, &rc);
-			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.left);
-			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.right);
+			GetClientRect((HWND)this->hwnd.OrNull(), &rc);
+			ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&rc.left);
+			ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&rc.right);
 			sb.AppendC(UTF8STRC("FS: Draw rect1 = "));
 			sb.AppendI32(rc.left);
 			sb.AppendC(UTF8STRC(", "));
@@ -749,11 +752,11 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
 			this->debugWriter->WriteLine(sb.ToCString());
-			this->rootForm->ToFullScn();
+			rootForm->ToFullScn();
 			this->currScnMode = SM_VFS;
-			GetClientRect((HWND)this->hwnd, &rc);
-			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.left);
-			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.right);
+			GetClientRect((HWND)this->hwnd.OrNull(), &rc);
+			ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&rc.left);
+			ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&rc.right);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("FS: Draw rect2 = "));
 			sb.AppendI32(rc.left);
@@ -764,10 +767,10 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
 			this->debugWriter->WriteLine(sb.ToCString());
-			this->rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
-			GetClientRect((HWND)this->hwnd, &rc);
-			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.left);
-			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.right);
+			rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
+			GetClientRect((HWND)this->hwnd.OrNull(), &rc);
+			ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&rc.left);
+			ClientToScreen((HWND)this->hwnd.OrNull(), (POINT*)&rc.right);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("FS: Draw rect3 = "));
 			sb.AppendI32(rc.left);
@@ -781,9 +784,9 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		}
 		else
 		{
-			this->rootForm->ToFullScn();
+			rootForm->ToFullScn();
 			this->currScnMode = SM_VFS;
-			this->rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
+			rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 		}
 
 		this->CreateSurface();
@@ -794,8 +797,8 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	else
 	{
 		this->BeginUpdateSize();
-		if (this->surfaceMon) this->surfaceMgr->SetFSMode(this->surfaceMon, this->rootForm->GetHandle(), false);
-		this->rootForm->FromFullScn();
+		if (this->surfaceMon.NotNull()) this->surfaceMgr->SetFSMode(this->surfaceMon, rootForm->GetHandle(), false);
+		rootForm->FromFullScn();
 		if (this->directMode)
 		{
 			this->currScnMode = SM_WINDOWED_DIR;
@@ -804,7 +807,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		{
 			this->currScnMode = SM_WINDOWED;
 		}
-		this->surfaceMgr->SetFSMode(0, this->rootForm->GetHandle(), false);
+		this->surfaceMgr->SetFSMode(0, rootForm->GetHandle(), false);
 
 		this->CreateSurface();
 		mutUsage.EndUse();
@@ -818,13 +821,13 @@ Bool UI::GUIDDrawControl::IsFullScreen()
 	return this->currScnMode == SM_FS || this->currScnMode == SM_VFS;
 }
 
-void UI::GUIDDrawControl::ChangeMonitor(MonitorHandle *hMon)
+void UI::GUIDDrawControl::ChangeMonitor(Optional<MonitorHandle> hMon)
 {
 	MONITORINFOEXW monInfo;
 	((Media::DDrawManager*)this->surfaceMgr.Ptr())->ReleaseDD7(this->currMon);
 	this->currMon = hMon;
 	monInfo.cbSize = sizeof(monInfo);
-	::GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);
+	::GetMonitorInfoW((HMONITOR)this->currMon.OrNull(), &monInfo);
 	this->scnX = monInfo.rcMonitor.left;
 	this->scnY = monInfo.rcMonitor.top;
 	if (this->currScnMode == SM_WINDOWED_DIR)

@@ -8,7 +8,7 @@ void UI::GUIFileDialog::ClearFileNames()
 	this->fileNames.FreeAll();
 }
 
-UI::GUIFileDialog::GUIFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+UI::GUIFileDialog::GUIFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave)
 {
 	UOSInt i;
 	WChar buff[256];
@@ -18,7 +18,7 @@ UI::GUIFileDialog::GUIFileDialog(const WChar *compName, const WChar *appName, co
 	this->filterIndex = (UOSInt)-1;
 	this->allowMulti = false;
 	i = Text::StrCharCnt(dialogName);
-	this->dialogName = MemAlloc(WChar, i + 7);
+	this->dialogName = MemAllocArr(WChar, i + 7);
 	wptr = Text::StrConcat(this->dialogName, dialogName);
 	wptr = Text::StrConcat(wptr, L"Dialog");
 
@@ -36,7 +36,7 @@ UI::GUIFileDialog::~GUIFileDialog()
 	NN<IO::Registry> nnreg;
 	if (this->reg.SetTo(nnreg))
 		IO::Registry::CloseRegistry(nnreg);
-	MemFree(this->dialogName);
+	MemFreeArr(this->dialogName);
 	UnsafeArray<const WChar> lastName;
 	if (this->lastName.SetTo(lastName)) Text::StrDelNew(lastName);
 	OPTSTR_DEL(this->fileName);

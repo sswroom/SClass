@@ -24,7 +24,7 @@ void UI::GUIClientControl::UpdateFont()
 	void *font = GetFont();
 	if (font)
 	{
-		SendMessage((HWND)this->hwnd, WM_SETFONT, (WPARAM)font, TRUE);
+		SendMessage((HWND)this->hwnd.OrNull(), WM_SETFONT, (WPARAM)font, TRUE);
 	}
 	Data::ArrayIterator<NN<UI::GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
@@ -73,7 +73,7 @@ Math::Coord2DDbl UI::GUIClientControl::GetClientOfst()
 Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 {
 	RECT rc;
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rc);
 	return Math::Size2DDbl(rc.right - rc.left, rc.bottom - rc.top) * this->ddpi / this->hdpi;
 }
 
@@ -158,9 +158,9 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	this->undockRight = br.x;
 	this->undockBottom = br.y;
 	this->hasFillCtrl = hasFill;
-	if (redraw && this->children.GetCount() > 0 && this->hwnd)
+	if (redraw && this->children.GetCount() > 0 && this->hwnd.NotNull())
 	{
-		InvalidateRect((HWND)this->hwnd, 0, TRUE);
+		InvalidateRect((HWND)this->hwnd.OrNull(), 0, TRUE);
 	}
 }
 
@@ -170,8 +170,8 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 	{
 		return;
 	}
-	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
-	if (hMon != (HMONITOR)this->currHMon)
+	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
+	if (hMon != (HMONITOR)this->currHMon.OrNull())
 	{
 		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();

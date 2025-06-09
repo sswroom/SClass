@@ -36,7 +36,7 @@
 /////////////////////////////// EnumDisplayMonitors
 /////////////////////////////// GetMonitorInfoW
 
-UI::Win::WinCore::WinCore(InstanceHandle *hInst)
+UI::Win::WinCore::WinCore(Optional<InstanceHandle> hInst)
 {
 	this->hInst = hInst;
 	this->focusWnd = 0;
@@ -63,9 +63,9 @@ void UI::Win::WinCore::Run()
         {
 			break;
         }
-		else if (this->focusHAcc == 0 || TranslateAccelerator((HWND)this->focusWnd, (HACCEL)this->focusHAcc, &msg) == 0)
+		else if (this->focusHAcc == 0 || TranslateAccelerator((HWND)this->focusWnd.OrNull(), (HACCEL)this->focusHAcc, &msg) == 0)
 		{
-			if (!IsDialogMessage((HWND)this->focusWnd, &msg))
+			if (!IsDialogMessage((HWND)this->focusWnd.OrNull(), &msg))
 			{
 				TranslateMessage(&msg); 
 				DispatchMessage(&msg); 
@@ -79,9 +79,9 @@ void UI::Win::WinCore::ProcessMessages()
     MSG msg;
 	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{
-		if (this->focusHAcc == 0 || TranslateAccelerator((HWND)this->focusWnd, (HACCEL)this->focusHAcc, &msg) == 0)
+		if (this->focusHAcc == 0 || TranslateAccelerator((HWND)this->focusWnd.OrNull(), (HACCEL)this->focusHAcc, &msg) == 0)
 		{
-			if (!IsDialogMessage((HWND)this->focusWnd, &msg))
+			if (!IsDialogMessage((HWND)this->focusWnd.OrNull(), &msg))
 			{
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
@@ -165,13 +165,13 @@ void UI::Win::WinCore::UseDevice(Bool useSystem, Bool useDisplay)
 #endif
 }
 
-void UI::Win::WinCore::SetFocusWnd(void *hWnd, void *hAcc)
+void UI::Win::WinCore::SetFocusWnd(Optional<ControlHandle> hWnd, void *hAcc)
 {
 	this->focusWnd = hWnd;
 	this->focusHAcc = hAcc;
 }
 
-UI::InstanceHandle *UI::Win::WinCore::GetHInst()
+Optional<UI::InstanceHandle> UI::Win::WinCore::GetHInst()
 {
 	return this->hInst;
 }
@@ -405,7 +405,7 @@ NN<UI::GUIVSplitter> UI::Win::WinCore::NewVSplitter(NN<GUIClientControl> parent,
 	return ctrl;
 }
 
-NN<UI::GUIFileDialog> UI::Win::WinCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+NN<UI::GUIFileDialog> UI::Win::WinCore::NewFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave)
 {
 	NN<UI::Win::WinFileDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinFileDialog(compName, appName, dialogName, isSave));
@@ -433,7 +433,7 @@ NN<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Text::CString fontName, Do
 	return ctrl;
 }
 
-NN<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd)
+NN<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NN<UI::GUIPanel> master, Optional<ControlHandle> parentHWnd)
 {
 	NN<UI::Win::WinPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinPanelBase(master, *this, parentHWnd));
@@ -452,33 +452,33 @@ Bool UI::Win::WinCore::IsForwarded()
 	return false;
 }
 
-OSInt UI::Win::WinCore::MSGetWindowObj(ControlHandle *hWnd, OSInt index)
+OSInt UI::Win::WinCore::MSGetWindowObj(Optional<ControlHandle> hWnd, OSInt index)
 {
 #ifdef _WIN32_WCE
-	return (OSInt)GetWindowLong((HWND)hWnd, (int)index);
+	return (OSInt)GetWindowLong((HWND)hWnd.OrNull(), (int)index);
 #else
-	return (OSInt)GetWindowLongPtr((HWND)hWnd, (int)index);
+	return (OSInt)GetWindowLongPtr((HWND)hWnd.OrNull(), (int)index);
 #endif
 }
 
-OSInt UI::Win::WinCore::MSSetWindowObj(ControlHandle *hWnd, OSInt index, OSInt value)
+OSInt UI::Win::WinCore::MSSetWindowObj(Optional<ControlHandle> hWnd, OSInt index, OSInt value)
 {
 #ifdef _WIN32_WCE
-	return (OSInt)SetWindowLong((HWND)hWnd, (int)index, value);
+	return (OSInt)SetWindowLong((HWND)hWnd.OrNull(), (int)index, value);
 #elif _OSINT_SIZE == 64
-	return (OSInt)SetWindowLongPtr((HWND)hWnd, (int)index, value);
+	return (OSInt)SetWindowLongPtr((HWND)hWnd.OrNull(), (int)index, value);
 #else
-	return (OSInt)SetWindowLongPtr((HWND)hWnd, (int)index, (LONG)value);
+	return (OSInt)SetWindowLongPtr((HWND)hWnd.OrNull(), (int)index, (LONG)value);
 #endif
 }
 
-OSInt UI::Win::WinCore::MSSetClassObj(ControlHandle *hWnd, OSInt index, OSInt value)
+OSInt UI::Win::WinCore::MSSetClassObj(Optional<ControlHandle> hWnd, OSInt index, OSInt value)
 {
 #ifdef _WIN32_WCE
-	return (OSInt)SetClassLong((HWND)hWnd, (int)index, value);
+	return (OSInt)SetClassLong((HWND)hWnd.OrNull(), (int)index, value);
 #elif _OSINT_SIZE == 64
-	return (OSInt)SetClassLongPtr((HWND)hWnd, (int)index, value);
+	return (OSInt)SetClassLongPtr((HWND)hWnd.OrNull(), (int)index, value);
 #else
-	return (OSInt)SetClassLongPtr((HWND)hWnd, (int)index, (LONG)value);
+	return (OSInt)SetClassLongPtr((HWND)hWnd.OrNull(), (int)index, (LONG)value);
 #endif
 }

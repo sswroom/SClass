@@ -10,7 +10,7 @@ namespace UI
 	private:
 		NN<UI::GUIPanelBase> base;
 	public:
-		GUIPanel(NN<GUICore> ui, ControlHandle *parentHWnd);
+		GUIPanel(NN<GUICore> ui, Optional<ControlHandle> parentHWnd);
 		GUIPanel(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIPanel();
 
@@ -22,7 +22,7 @@ namespace UI
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetMinSize(Int32 minW, Int32 minH);
-		void SetHandle(ControlHandle *hwnd);
+		void SetHandle(Optional<ControlHandle> hwnd);
 		NN<UI::GUIPanelBase> GetBase() const;
 	};
 }

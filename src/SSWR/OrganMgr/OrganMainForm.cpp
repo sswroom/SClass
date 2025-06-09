@@ -2713,7 +2713,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	this->pbImg->HandleMouseUp(OnImgMouseUp, this);
 	this->pbImg->HandleMouseMove(OnImgMouseMove, this);
 	this->pbImg->HandleDraw(OnImgDraw, this);
-	this->pbImg->HandleDropEvents(this);
+	this->pbImg->HandleDropEvents(*this);
 //	RegisterDragDrop((HWND)this->pbImg->GetHandle(), this);
 
 	this->tpMap = this->tcMain->AddTabPage(this->env->GetLang(CSTR("MainFormTabMap")));

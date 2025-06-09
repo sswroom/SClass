@@ -69,7 +69,7 @@ UI::GTK::GTKTextBox::GTKTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> par
 	if (isMultiline)
 	{
 		this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
-		gtk_container_add(GTK_CONTAINER(this->hwnd), this->widget);
+		gtk_container_add(GTK_CONTAINER(this->hwnd.OrNull()), this->widget);
 		parent->AddChild(*this);
 		gtk_widget_show(this->widget);
 	}
@@ -89,13 +89,14 @@ UI::GTK::GTKTextBox::~GTKTextBox()
 Bool UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 {
 	Bool ret = this->GUITextBox::EventKeyDown(osKey);
+	NN<UI::GUIForm> rootForm;
 	if (!ret)
 	{
 		UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
 		if (key == UI::GUIControl::GK_ESCAPE)
 		{
 			NN<UI::GUIButton> btn;
-			if (this->GetRootForm()->GetCancelButton().SetTo(btn))
+			if (this->GetRootForm().SetTo(rootForm) && rootForm->GetCancelButton().SetTo(btn))
 			{
 				btn->EventButtonClick();
 				ret = true;
@@ -106,7 +107,7 @@ Bool UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 			if (!this->multiLine)
 			{
 				NN<UI::GUIButton> btn;
-				if (this->GetRootForm()->GetDefaultButton().SetTo(btn))
+				if (this->GetRootForm().SetTo(rootForm) && rootForm->GetDefaultButton().SetTo(btn))
 				{
 					btn->EventButtonClick();
 					ret = true;
@@ -241,7 +242,7 @@ void UI::GTK::GTKTextBox::SelectAll()
 	}
 }
 
-ControlHandle *UI::GTK::GTKTextBox::GetDisplayHandle()
+Optional<ControlHandle> UI::GTK::GTKTextBox::GetDisplayHandle()
 {
 	return (ControlHandle*)this->widget;
 }

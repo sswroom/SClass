@@ -27,15 +27,15 @@
 #define SetWindowLongPtr(a, b, c) SetWindowLongW(a, b, c)
 #endif
 
-void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, UnsafeArray<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControlHand(Optional<InstanceHandle> hInst, Optional<ControlHandle> parentHWnd, const WChar *className, UnsafeArray<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
-	HDC hdc = GetDC((HWND)parentHWnd);
+	HDC hdc = GetDC((HWND)parentHWnd.OrNull());
 	this->hdpi = GetDeviceCaps(hdc, LOGPIXELSY);
 	this->ddpi = 96.0;
-	ReleaseDC((HWND)parentHWnd, hdc);
+	ReleaseDC((HWND)parentHWnd.OrNull(), hdc);
 
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(txt);
-	this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32(x * this->hdpi / this->ddpi), Double2Int32(y * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parentHWnd, 0, (HINSTANCE)hInst, 0);
+	this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32(x * this->hdpi / this->ddpi), Double2Int32(y * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parentHWnd.OrNull(), 0, (HINSTANCE)hInst.OrNull(), 0);
 	Text::StrDelNew(wptr);
 	this->lxPos = x;
 	this->lyPos = y;
@@ -46,7 +46,7 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const 
 	UpdateFont();
 }
 
-void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, UnsafeArrayOpt<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(Optional<InstanceHandle> hInst, Optional<UI::GUIClientControl> parent, const WChar *className, UnsafeArrayOpt<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	this->fontHeightPt = 0.0;
 	NN<GUIClientControl> nnparent;
@@ -58,12 +58,12 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientCo
 		this->ddpi = nnparent->GetDDPI();
 		if (!txt.SetTo(nntxt))
 		{
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle().OrNull(), 0, (HINSTANCE)hInst.OrNull(), 0);
 		}
 		else
 		{
 			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(nntxt);
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle().OrNull(), 0, (HINSTANCE)hInst.OrNull(), 0);
 			Text::StrDelNew(wptr);
 		}
 		this->lxPos = x;
@@ -73,18 +73,18 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientCo
 	}
 	else
 	{
-		HDC hdc = GetDC((HWND)this->hwnd);
+		HDC hdc = GetDC((HWND)this->hwnd.OrNull());
 		if (!txt.SetTo(nntxt))
 		{
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst.OrNull(), 0);
 		}
 		else
 		{
 			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(nntxt);
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst, 0);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst.OrNull(), 0);
 			Text::StrDelNew(wptr);
 		}
-		ReleaseDC((HWND)this->hwnd, hdc);
+		ReleaseDC((HWND)this->hwnd.OrNull(), hdc);
 		this->lxPos = x * this->ddpi / this->hdpi;
 		this->lyPos = y * this->ddpi / this->hdpi;
 		this->lxPos2 = (x + w) * this->ddpi / this->hdpi;
@@ -122,14 +122,14 @@ UI::GUIControl::GUIControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent
 		this->hdpi = 96.0;
 		this->ddpi = 96.0;
 	}
-	this->currHMon = (MonitorHandle*)MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
+	this->currHMon = (MonitorHandle*)MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
 }
 
 UI::GUIControl::~GUIControl()
 {
 	if (this->inited)
 	{
-		SetWindowLongPtr((HWND)hwnd, GWL_USERDATA, 0);
+		SetWindowLongPtr((HWND)hwnd.OrNull(), GWL_USERDATA, 0);
 	}
 	if (this->hFont)
 	{
@@ -151,7 +151,7 @@ UI::GUIControl::~GUIControl()
 	}
 }
 
-UI::InstanceHandle *UI::GUIControl::GetHInst()
+Optional<UI::InstanceHandle> UI::GUIControl::GetHInst()
 {
 	return ((Win::WinCore*)ui.Ptr())->GetHInst();
 }
@@ -175,19 +175,19 @@ void *UI::GUIControl::GetFont()
 
 void UI::GUIControl::Show()
 {
-	ShowWindow((HWND)hwnd, SW_SHOW);
+	ShowWindow((HWND)hwnd.OrNull(), SW_SHOW);
 	this->OnShow();
 }
 
 void UI::GUIControl::Close()
 {
-	DestroyWindow((HWND)hwnd);
+	DestroyWindow((HWND)hwnd.OrNull());
 }
 
 void UI::GUIControl::SetText(Text::CStringNN text)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
-	SetWindowTextW((HWND)hwnd, wptr.Ptr());
+	SetWindowTextW((HWND)hwnd.OrNull(), wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 
@@ -195,15 +195,15 @@ UnsafeArrayOpt<UTF8Char> UI::GUIControl::GetText(UnsafeArray<UTF8Char> buff)
 {
 	WChar wbuff[256];
 	wbuff[0] = 0;
-	GetWindowTextW((HWND)hwnd, wbuff, 256);
+	GetWindowTextW((HWND)hwnd.OrNull(), wbuff, 256);
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
 Bool UI::GUIControl::GetText(NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
+	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd.OrNull());
 	WChar *wptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd, wptr, (int)leng + 1);
+	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)leng + 1);
 	sb->AppendW(wptr);
 	MemFree(wptr);
 	return true;
@@ -243,7 +243,7 @@ Math::Coord2D<OSInt> UI::GUIControl::GetPositionP()
 Math::Coord2D<OSInt> UI::GUIControl::GetScreenPosP()
 {
 	RECT rc;
-	GetWindowRect((HWND)hwnd, &rc);
+	GetWindowRect((HWND)hwnd.OrNull(), &rc);
 	return Math::Coord2D<OSInt>(rc.left, rc.top);
 }
 
@@ -260,9 +260,9 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	this->lxPos = left;
 	this->lyPos = top;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi), Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd.OrNull(), Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi), Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
 	RECT rect;
-	GetWindowRect((HWND)hwnd, &rect);
+	GetWindowRect((HWND)hwnd.OrNull(), &rect);
 	this->lxPos2 = left + (rect.right - rect.left) * this->ddpi / this->hdpi;
 	this->lyPos2 = top + (rect.bottom - rect.top) * this->ddpi / this->hdpi;
 	this->selfResize = false;
@@ -280,9 +280,9 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
 	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi), (int)(right - left), (int)(bottom - top), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi), (int)(right - left), (int)(bottom - top), updateScn?TRUE:FALSE);
 	RECT rect;
-	GetWindowRect((HWND)hwnd, &rect);
+	GetWindowRect((HWND)hwnd.OrNull(), &rect);
 	this->lxPos2 = OSInt2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
 	this->lyPos2 = OSInt2Double(top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
 	this->selfResize = false;
@@ -333,7 +333,7 @@ void UI::GUIControl::InitFont()
 		}
 		this->hFont = hFont;
 		UpdateFont();
-		SendMessage((HWND)this->hwnd, WM_SETFONT, (WPARAM)hFont, TRUE);
+		SendMessage((HWND)this->hwnd.OrNull(), WM_SETFONT, (WPARAM)hFont, TRUE);
 	}
 }
 
@@ -368,14 +368,14 @@ void UI::GUIControl::SetVisible(Bool isVisible)
 	}
 #else
 	Bool changed = false;
-	Int32 ws = GetWindowLong((HWND)this->hwnd, GWL_STYLE);
+	Int32 ws = GetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE);
 	if (isVisible)
 	{
 		if ((ws & WS_VISIBLE) == 0)
 		{
 			ws |= WS_VISIBLE;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 			changed = true;
 		}
 	}
@@ -384,8 +384,8 @@ void UI::GUIControl::SetVisible(Bool isVisible)
 		if (ws & WS_VISIBLE)
 		{
 			ws &= ~WS_VISIBLE;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 			changed = true;
 		}
 	}
@@ -402,15 +402,15 @@ void UI::GUIControl::SetVisible(Bool isVisible)
 
 Bool UI::GUIControl::GetVisible()
 {
-	Int32 ws = GetWindowLong((HWND)this->hwnd, GWL_STYLE);
+	Int32 ws = GetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE);
 	return (ws & WS_VISIBLE) != 0;
 }
 
 void UI::GUIControl::SetEnabled(Bool isEnable)
 {
-	if (this->hwnd)
+	if (this->hwnd.NotNull())
 	{
-		EnableWindow((HWND)this->hwnd, isEnable?TRUE:FALSE);
+		EnableWindow((HWND)this->hwnd.OrNull(), isEnable?TRUE:FALSE);
 	}
 }
 
@@ -450,7 +450,7 @@ Bool UI::GUIControl::IsFormFocused()
 
 void UI::GUIControl::Focus()
 {
-	SetFocus((HWND)this->hwnd);
+	SetFocus((HWND)this->hwnd.OrNull());
 }
 
 OSInt UI::GUIControl::GetScrollHPos()
@@ -458,7 +458,7 @@ OSInt UI::GUIControl::GetScrollHPos()
 	SCROLLINFO si;
 	si.cbSize = sizeof(SCROLLINFO);
 	si.fMask = SIF_POS;
-	if (GetScrollInfo((HWND)this->hwnd, SB_HORZ, &si))
+	if (GetScrollInfo((HWND)this->hwnd.OrNull(), SB_HORZ, &si))
 	{
 		return si.nPos;
 	}
@@ -470,7 +470,7 @@ OSInt UI::GUIControl::GetScrollVPos()
 	SCROLLINFO si;
 	si.cbSize = sizeof(SCROLLINFO);
 	si.fMask = SIF_POS;
-	if (GetScrollInfo((HWND)this->hwnd, SB_VERT, &si))
+	if (GetScrollInfo((HWND)this->hwnd.OrNull(), SB_VERT, &si))
 	{
 		return si.nPos;
 	}
@@ -479,8 +479,8 @@ OSInt UI::GUIControl::GetScrollVPos()
 
 void UI::GUIControl::ScrollTo(OSInt x, OSInt y)
 {
-	SetScrollPos((HWND)this->hwnd, SB_HORZ, (int)x, TRUE);
-	SetScrollPos((HWND)this->hwnd, SB_VERT, (int)y, TRUE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ, (int)x, TRUE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT, (int)y, TRUE);
 }
 
 void UI::GUIControl::OnSizeChanged(Bool updateScn)
@@ -489,8 +489,8 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 	{
 		return;
 	}
-	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
-	if (hMon != (HMONITOR)this->currHMon)
+	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
+	if (hMon != (HMONITOR)this->currHMon.OrNull())
 	{
 		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();
@@ -505,8 +505,8 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 
 void UI::GUIControl::OnPosChanged(Bool updateScn)
 {
-	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
-	if (hMon != (HMONITOR)this->currHMon)
+	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
+	if (hMon != (HMONITOR)this->currHMon.OrNull())
 	{
 		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();
@@ -531,7 +531,7 @@ void UI::GUIControl::UpdateFont()
 	void *font = GetFont();
 	if (font)
 	{
-		SendMessage((HWND)this->hwnd, WM_SETFONT, (WPARAM)font, TRUE);
+		SendMessage((HWND)this->hwnd.OrNull(), WM_SETFONT, (WPARAM)font, TRUE);
 	}
 }
 
@@ -540,7 +540,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 #if !defined(_WIN32_WCE)
 	WINDOWINFO wi;
 	wi.cbSize = sizeof(WINDOWINFO);
-	if (GetWindowInfo((HWND)hwnd, &wi))
+	if (GetWindowInfo((HWND)hwnd.OrNull(), &wi))
 	{
 		if (wi.dwStyle & (WS_MAXIMIZE | WS_MINIMIZE))
 		{
@@ -553,32 +553,33 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 	if (this->parent.SetTo(nnparent))
 	{
 		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
-		MoveWindow((HWND)hwnd, Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
+		MoveWindow((HWND)hwnd.OrNull(), Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 	}
 	else
 	{
 		Double newW = (this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi;
 		Double newH = (this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi;
-		Media::MonitorInfo *monInfo = this->GetMonitorInfo();
+		Optional<Media::MonitorInfo> monInfo = this->GetMonitorInfo();
+		NN<Media::MonitorInfo> nnmonInfo;
 		Double newX;
 		Double newY;
-		if (monInfo)
+		if (monInfo.SetTo(nnmonInfo))
 		{
-			Int32 maxW = monInfo->GetPixelWidth();
-			Int32 maxH = monInfo->GetPixelHeight();
+			Int32 maxW = nnmonInfo->GetPixelWidth();
+			Int32 maxH = nnmonInfo->GetPixelHeight();
 			if (newW > maxW)
 				newW = maxW;
 			if (newH > maxH)
 				newH = maxH;
 			RECT rc;
-			GetWindowRect((HWND)this->hwnd, &rc);
+			GetWindowRect((HWND)this->hwnd.OrNull(), &rc);
 			newX = (rc.left + rc.right - newW) * 0.5;
 			newY = (rc.top + rc.bottom - newH) * 0.5;
-			if (newY < monInfo->GetTop())
+			if (newY < nnmonInfo->GetTop())
 			{
-				newY = monInfo->GetTop();
+				newY = nnmonInfo->GetTop();
 			}
-			DEL_CLASS(monInfo);
+			nnmonInfo.Delete();
 		}
 		else
 		{
@@ -589,7 +590,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 			if (newH > maxY)
 				newH = maxY;
 			RECT rc;
-			GetWindowRect((HWND)this->hwnd, &rc);
+			GetWindowRect((HWND)this->hwnd.OrNull(), &rc);
 			newX = (rc.left + rc.right - newW) * 0.5;
 			newY = (rc.top + rc.bottom - newH) * 0.5;
 			if (newY < 0)
@@ -598,7 +599,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 			}
 		}
 
-		MoveWindow((HWND)this->hwnd, Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), Double2Int32(newH), redraw?TRUE:FALSE);
+		MoveWindow((HWND)this->hwnd.OrNull(), Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), Double2Int32(newH), redraw?TRUE:FALSE);
 	}
 }
 
@@ -621,12 +622,12 @@ void UI::GUIControl::UpdateBGColor()
 
 void UI::GUIControl::Redraw()
 {
-	InvalidateRect((HWND)this->hwnd, 0, TRUE);
+	InvalidateRect((HWND)this->hwnd.OrNull(), 0, TRUE);
 }
 
 void UI::GUIControl::SetCapture()
 {
-	::SetCapture((HWND)this->hwnd);
+	::SetCapture((HWND)this->hwnd.OrNull());
 }
 void UI::GUIControl::ReleaseCapture()
 {
@@ -699,7 +700,7 @@ Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 	return this->parent;
 }
 
-UI::GUIForm *UI::GUIControl::GetRootForm()
+Optional<UI::GUIForm> UI::GUIControl::GetRootForm()
 {
 	UI::GUIControl *ctrl = this;
 	Text::CStringNN objCls;
@@ -716,24 +717,24 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 	return 0;
 }
 
-ControlHandle *UI::GUIControl::GetHandle()
+Optional<ControlHandle> UI::GUIControl::GetHandle()
 {
 	return this->hwnd;
 }
 
-ControlHandle *UI::GUIControl::GetDisplayHandle()
+Optional<ControlHandle> UI::GUIControl::GetDisplayHandle()
 {
 	return this->hwnd;
 }
 
-MonitorHandle *UI::GUIControl::GetHMonitor()
+Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 {
-	return (MonitorHandle*)MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
+	return (MonitorHandle*)MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
 }
 
-Media::MonitorInfo *UI::GUIControl::GetMonitorInfo()
+Optional<Media::MonitorInfo> UI::GUIControl::GetMonitorInfo()
 {
-	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
+	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
 	if (hMon)
 	{
 		Media::MonitorInfo *info;
@@ -781,10 +782,10 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 	if (!this->fontName.SetTo(fontName))
 	{
 		WChar wbuff[256];
-		HDC hdc = GetDC((HWND)this->hwnd);
+		HDC hdc = GetDC((HWND)this->hwnd.OrNull());
 		SelectObject(hdc, (HFONT)f);
 		GetTextFaceW(hdc, 256, wbuff);
-		ReleaseDC((HWND)this->hwnd, hdc);
+		ReleaseDC((HWND)this->hwnd.OrNull(), hdc);
 		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img.Ptr())->hdcBmp, wbuff, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 	}
 	else
@@ -1600,7 +1601,7 @@ Text::CStringNN UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
 	}
 }
 
-UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandler *hdlr)
+UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHandler> hdlr)
 {
 	if (this->dropHdlr)
 	{
@@ -1611,12 +1612,12 @@ UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandle
 	else
 	{
 		UI::Win::WinDragDrop *dragDrop;
-		NEW_CLASS(dragDrop, UI::Win::WinDragDrop((HWND)this->GetHandle(), hdlr));
+		NEW_CLASS(dragDrop, UI::Win::WinDragDrop(this->GetHandle(), hdlr));
 
 		UI::GUIControl::DragErrorType errType;
 #if !defined(_WIN32_WCE)
 		OleInitialize(0);
-		HRESULT hRes = RegisterDragDrop((HWND)this->GetHandle(), dragDrop);
+		HRESULT hRes = RegisterDragDrop((HWND)this->GetHandle().OrNull(), dragDrop);
 		if (hRes == S_OK)
 		{
 			errType = UI::GUIControl::DET_NOERROR;

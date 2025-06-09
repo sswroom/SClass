@@ -72,11 +72,11 @@ namespace UI
 	private:
 		static Int32 useCnt;
 		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-		static void Init(InstanceHandle *hInst);
-		static void Deinit(InstanceHandle *hInst);
+		static void Init(Optional<InstanceHandle> hInst);
+		static void Deinit(Optional<InstanceHandle> hInst);
 
 		void UpdateHAcc();
-		GUIForm(NN<UI::GUICore> ui, ControlHandle *hWnd);
+		GUIForm(NN<UI::GUICore> ui, Optional<ControlHandle> hWnd);
 	public:
 		static Optional<GUIForm> FindForm(NN<UI::GUICore> ui, Text::CStringNN formName);
 

@@ -1404,7 +1404,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	
 void SSWR::AVIRead::AVIRHQMPForm::OnMonitorChanged()
 {
-	MonitorHandle *hMon = this->GetHMonitor();
+	Optional<MonitorHandle> hMon = this->GetHMonitor();
 	this->colorSess->ChangeMonitor(hMon);
 	this->vbox->ChangeMonitor(hMon);
 }

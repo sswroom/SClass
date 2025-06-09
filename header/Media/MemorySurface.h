@@ -10,7 +10,7 @@ namespace Media
 		UnsafeArray<UInt8> buffPtr;
 
 	public:
-		MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi);
+		MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, Optional<const Media::ColorProfile> color, Double dpi);
 		virtual ~MemorySurface();
 
 		Bool IsError() const;

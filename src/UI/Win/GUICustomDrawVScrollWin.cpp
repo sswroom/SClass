@@ -117,11 +117,11 @@ OSInt __stdcall UI::GUICustomDrawVScroll::CDVSWndProc(void *hWnd, UInt32 msg, UI
 void UI::GUICustomDrawVScroll::OnPaint()
 {
 	PAINTSTRUCT ps;
-	BeginPaint((HWND)this->hwnd, &ps);
+	BeginPaint((HWND)this->hwnd.OrNull(), &ps);
 	SetBkMode(ps.hdc, TRANSPARENT);
 
 	RECT rc;
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rc);
 	NN<Media::DrawImage> dimg;
 	dimg = NN<Media::GDIEngine>::ConvertFrom(this->deng)->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top, this->colorSess);
 	Double hdpi = this->GetHDPI();
@@ -130,17 +130,17 @@ void UI::GUICustomDrawVScroll::OnPaint()
 	dimg->SetVDPI(hdpi / ddpi * 96.0);
 	this->OnDraw(dimg);
 	this->deng->DeleteImage(dimg);
-	EndPaint((HWND)this->hwnd, &ps);
+	EndPaint((HWND)this->hwnd.OrNull(), &ps);
 }
 
-void UI::GUICustomDrawVScroll::Init(InstanceHandle *hInst)
+void UI::GUICustomDrawVScroll::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = CS_DBLCLKS;
 	wc.lpfnWndProc = (WNDPROC)UI::GUICustomDrawVScroll::CDVSWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, IDC_ARROW); 
     wc.hbrBackground = 0; 
@@ -151,15 +151,15 @@ void UI::GUICustomDrawVScroll::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::GUICustomDrawVScroll::Deinit(InstanceHandle *hInst)
+void UI::GUICustomDrawVScroll::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void UI::GUICustomDrawVScroll::ClearBackground(NN<Media::DrawImage> img)
 {
 	RECT rc;
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rc);
 	if (this->hbrBackground)
 	{
 		FillRect((HDC)((Media::GDIImage*)img.Ptr())->hdcBmp, &rc, (HBRUSH)this->hbrBackground);
@@ -263,12 +263,12 @@ void UI::GUICustomDrawVScroll::SetVScrollBar(UOSInt min, UOSInt max, UOSInt page
 	si.nMax = (int)(OSInt)max;
 	si.nPage = (UINT)pageSize;
 	si.fMask = SIF_PAGE | SIF_RANGE;
-	SetScrollInfo((HWND)this->hwnd, SB_VERT, &si, TRUE);
+	SetScrollInfo((HWND)this->hwnd.OrNull(), SB_VERT, &si, TRUE);
 }
 
 UOSInt UI::GUICustomDrawVScroll::GetVScrollPos()
 {
-	return (UInt32)GetScrollPos((HWND)this->hwnd, SB_VERT);
+	return (UInt32)GetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT);
 }
 
 Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
@@ -276,7 +276,7 @@ Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
 	SCROLLINFO si;
 	si.cbSize = sizeof (si);
 	si.fMask  = SIF_ALL;
-	GetScrollInfo((HWND)this->hwnd, SB_VERT, &si);
+	GetScrollInfo((HWND)this->hwnd.OrNull(), SB_VERT, &si);
 
 	if (lastIndex >= (UInt32)si.nMax)
 	{
@@ -293,8 +293,8 @@ Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
 	{
 		si.fMask = SIF_POS;
 		si.nPos = (Int32)(OSInt)firstIndex;
-		SetScrollInfo ((HWND)this->hwnd, SB_VERT, &si, TRUE);
-		GetScrollInfo ((HWND)this->hwnd, SB_VERT, &si);
+		SetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si, TRUE);
+		GetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si);
 		this->Redraw();
 		return true;
 	}
@@ -306,8 +306,8 @@ Bool UI::GUICustomDrawVScroll::MakeVisible(UOSInt firstIndex, UOSInt lastIndex)
 	{
 		si.fMask = SIF_POS;
 		si.nPos = (Int32)(OSInt)lastIndex - (Int32)si.nPage + 1;
-		SetScrollInfo ((HWND)this->hwnd, SB_VERT, &si, TRUE);
-		GetScrollInfo ((HWND)this->hwnd, SB_VERT, &si);
+		SetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si, TRUE);
+		GetScrollInfo ((HWND)this->hwnd.OrNull(), SB_VERT, &si);
 		this->Redraw();
 		return true;
 	}

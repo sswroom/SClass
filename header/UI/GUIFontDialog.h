@@ -18,7 +18,7 @@ namespace UI
 		GUIFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 		virtual ~GUIFontDialog();
 
-		virtual Bool ShowDialog(ControlHandle *ownerHandle) = 0;
+		virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle) = 0;
 
 		Optional<Text::String> GetFontName() const;
 		Double GetFontSizePt() const;

@@ -18,7 +18,7 @@ namespace UI
 		NN<Text::String> GetFolder() const;
 		void SetMessage(Text::CStringNN message);
 
-		virtual Bool ShowDialog(ControlHandle *ownerHandle) = 0;
+		virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle) = 0;
 	};
-};
+}
 #endif

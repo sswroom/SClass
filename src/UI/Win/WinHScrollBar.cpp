@@ -63,14 +63,14 @@ OSInt __stdcall UI::Win::WinHScrollBar::FormWndProc(void *hWnd, UInt32 msg, UOSI
 	return 0;
 }
 
-void UI::Win::WinHScrollBar::Init(InstanceHandle *hInst)
+void UI::Win::WinHScrollBar::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::Win::WinHScrollBar::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, IDC_ARROW); 
     wc.hbrBackground = 0; 
@@ -81,9 +81,9 @@ void UI::Win::WinHScrollBar::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::Win::WinHScrollBar::Deinit(InstanceHandle *hInst)
+void UI::Win::WinHScrollBar::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 UI::Win::WinHScrollBar::WinHScrollBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width) : UI::GUIHScrollBar(ui, parent)
@@ -118,19 +118,19 @@ void UI::Win::WinHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt 
 	info.nMin = (int)(UInt32)minVal;
 	info.nPage = (UINT)largeChg;
 	info.nPos = (int)(UInt32)currVal;
-	SetScrollInfo((HWND)this->hwnd, SB_HORZ, &info, TRUE);
+	SetScrollInfo((HWND)this->hwnd.OrNull(), SB_HORZ, &info, TRUE);
 	this->EventPosChanged(this->GetPos());
 }
 
 void UI::Win::WinHScrollBar::SetPos(UOSInt pos)
 {
-	SetScrollPos((HWND)this->hwnd, SB_HORZ, (int)(OSInt)pos, TRUE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(OSInt)pos, TRUE);
 	this->EventPosChanged(this->GetPos());
 }
 
 UOSInt UI::Win::WinHScrollBar::GetPos()
 {
-	return (UOSInt)(OSInt)GetScrollPos((HWND)this->hwnd, SB_HORZ);
+	return (UOSInt)(OSInt)GetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ);
 }
 
 void UI::Win::WinHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
@@ -150,9 +150,9 @@ void UI::Win::WinHScrollBar::SetArea(Double left, Double top, Double right, Doub
 	if (newSize < minSize)
 		newSize = minSize;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi), Double2Int32((right - left) * this->hdpi / this->ddpi), newSize, updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd.OrNull(), Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi), Double2Int32((right - left) * this->hdpi / this->ddpi), newSize, updateScn?TRUE:FALSE);
 	RECT rect;
-	GetWindowRect((HWND)hwnd, &rect);
+	GetWindowRect((HWND)hwnd.OrNull(), &rect);
 	this->lxPos2 = left + (rect.right - rect.left) * this->ddpi / this->hdpi;
 	this->lyPos2 = top + (rect.bottom - rect.top) * this->ddpi / this->hdpi;
 	this->selfResize = false;
@@ -174,9 +174,9 @@ void UI::Win::WinHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 	if (newSize < minSize)
 		newSize = minSize;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi), (int)(right - left), newSize, updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi), (int)(right - left), newSize, updateScn?TRUE:FALSE);
 	RECT rect;
-	GetWindowRect((HWND)hwnd, &rect);
+	GetWindowRect((HWND)hwnd.OrNull(), &rect);
 	this->lxPos2 = OSInt2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
 	this->lyPos2 = OSInt2Double(top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
 	this->selfResize = false;
@@ -195,7 +195,7 @@ void UI::Win::WinHScrollBar::UpdatePos(Bool redraw)
 {
 	WINDOWINFO wi;
 	wi.cbSize = sizeof(WINDOWINFO);
-	if (GetWindowInfo((HWND)hwnd, &wi))
+	if (GetWindowInfo((HWND)hwnd.OrNull(), &wi))
 	{
 		if (wi.dwStyle & (WS_MAXIMIZE | WS_MINIMIZE))
 		{
@@ -212,7 +212,7 @@ void UI::Win::WinHScrollBar::UpdatePos(Bool redraw)
 		newSize = Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
 		if (newSize < minSize)
 			newSize = minSize;
-		MoveWindow((HWND)hwnd, Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), newSize, redraw?TRUE:FALSE);
+		MoveWindow((HWND)hwnd.OrNull(), Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), newSize, redraw?TRUE:FALSE);
 	}
 	else
 	{
@@ -225,7 +225,7 @@ void UI::Win::WinHScrollBar::UpdatePos(Bool redraw)
 		if (newH > maxY)
 			newH = maxY;
 		RECT rc;
-		GetWindowRect((HWND)this->hwnd, &rc);
+		GetWindowRect((HWND)this->hwnd.OrNull(), &rc);
 		Double newX = (rc.left + rc.right - newW) * 0.5;
 		Double newY = (rc.top + rc.bottom - newH) * 0.5;
 		if (newY < 0)
@@ -235,6 +235,6 @@ void UI::Win::WinHScrollBar::UpdatePos(Bool redraw)
 		newSize = Double2Int32(newH);
 		if (newSize < minSize)
 			newSize = minSize;
-		MoveWindow((HWND)this->hwnd, Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), newSize, redraw?TRUE:FALSE);
+		MoveWindow((HWND)this->hwnd.OrNull(), Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), newSize, redraw?TRUE:FALSE);
 	}
 }

@@ -21,7 +21,7 @@ void UI::GUIClientControl::InitContainer()
 	this->container = data;
 	gtk_container_add(GTK_CONTAINER(data->scrolledWin), data->container);
 	gtk_box_pack_start(GTK_BOX(data->vbox), data->scrolledWin, true, true, 0);
-	gtk_container_add(GTK_CONTAINER(this->hwnd), data->vbox);
+	gtk_container_add(GTK_CONTAINER(this->hwnd.OrNull()), data->vbox);
 
 	Math::Size2DDbl outSz = this->GetClientSize();
 	if (outSz.x < 0)
@@ -100,7 +100,7 @@ void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 	if (this->container == 0) InitContainer();
 	this->selfResize = true;
 	ClientControlData *data = (ClientControlData*)this->container;
-	gtk_fixed_put((GtkFixed*)data->container, (GtkWidget*)child->GetHandle(), 0, 0);
+	gtk_fixed_put((GtkFixed*)data->container, (GtkWidget*)child->GetHandle().OrNull(), 0, 0);
 	this->children.Add(child);
 	this->selfResize = false;
 }
@@ -129,7 +129,7 @@ void UI::GUIClientControl::FocusChild(GUIControl *child)
 	}
 	else
 	{
-		gtk_window_set_focus((GtkWindow*)this->hwnd, (GtkWidget*)child->GetHandle());
+		gtk_window_set_focus((GtkWindow*)this->hwnd.OrNull(), (GtkWidget*)child->GetHandle().OrNull());
 	}
 }
 
@@ -222,7 +222,7 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 
 	gint outW;
 	gint outH;
-	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
+	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW != -1 && outH != -1)
 	{
 		if (outW < 0 || outH < 0)

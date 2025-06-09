@@ -7,7 +7,7 @@
 void UI::GTK::GTKRadioButton::SignalToggled(GtkRadioButton *btn, gpointer data)
 {
 	UI::GTK::GTKRadioButton *me = (UI::GTK::GTKRadioButton *)data;
-	Bool sel = gtk_toggle_button_get_active((GtkToggleButton*)me->GetHandle());
+	Bool sel = gtk_toggle_button_get_active((GtkToggleButton*)me->GetHandle().OrNull());
 	me->ChangeSelected(sel);
 }
 
@@ -48,7 +48,7 @@ UI::GTK::GTKRadioButton::GTKRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	
 	if (radioBtn)
 	{
-		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle(), (const Char*)initText.v.Ptr());
+		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle().OrNull(), (const Char*)initText.v.Ptr());
 	}
 	else
 	{
@@ -57,7 +57,7 @@ UI::GTK::GTKRadioButton::GTKRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	parent->AddChild(*this);
 	this->Show();
 
-	g_signal_connect(this->hwnd, "toggled", G_CALLBACK(SignalToggled), this);
+	g_signal_connect(this->hwnd.OrNull(), "toggled", G_CALLBACK(SignalToggled), this);
 	if (selected)
 		Select();
 }
@@ -78,5 +78,5 @@ Bool UI::GTK::GTKRadioButton::IsSelected()
 
 void UI::GTK::GTKRadioButton::Select()
 {
-	gtk_toggle_button_set_active((GtkToggleButton*)this->hwnd, true);
+	gtk_toggle_button_set_active((GtkToggleButton*)this->hwnd.OrNull(), true);
 }

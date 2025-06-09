@@ -49,11 +49,11 @@ UI::GTK::GTKButton::GTKButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> paren
 //	GtkStyleContext *context;
 //	context = gtk_widget_get_style_context(GTK_WIDGET(this->hwnd));
 //	gtk_style_context_set_paGTK_STATE_FLAG_NORMAL
-	g_signal_connect((GtkButton*)this->hwnd, "clicked", G_CALLBACK(SignalClicked), this);
-	g_signal_connect((GtkButton*)this->hwnd, "focus", G_CALLBACK(SignalFocus), this);
-	g_signal_connect((GtkButton*)this->hwnd, "grab-broken-event", G_CALLBACK(SignalFocusLost), this);
-	g_signal_connect((GtkButton*)this->hwnd, "pressed", G_CALLBACK(SignalPress), this);
-	g_signal_connect((GtkButton*)this->hwnd, "released", G_CALLBACK(SignalRelease), this);
+	g_signal_connect((GtkButton*)this->hwnd.OrNull(), "clicked", G_CALLBACK(SignalClicked), this);
+	g_signal_connect((GtkButton*)this->hwnd.OrNull(), "focus", G_CALLBACK(SignalFocus), this);
+	g_signal_connect((GtkButton*)this->hwnd.OrNull(), "grab-broken-event", G_CALLBACK(SignalFocusLost), this);
+	g_signal_connect((GtkButton*)this->hwnd.OrNull(), "pressed", G_CALLBACK(SignalPress), this);
+	g_signal_connect((GtkButton*)this->hwnd.OrNull(), "released", G_CALLBACK(SignalRelease), this);
 	parent->AddChild(*this);
 	this->Show();
 }
@@ -79,15 +79,15 @@ void UI::GTK::GTKButton::SetText(Text::CStringNN text)
 	}
 	if (hasUL)
 	{
-		gtk_button_set_use_underline((GtkButton*)this->hwnd, TRUE);
+		gtk_button_set_use_underline((GtkButton*)this->hwnd.OrNull(), TRUE);
 	}
-	gtk_button_set_label((GtkButton*)this->hwnd, (const Char*)lbl);
+	gtk_button_set_label((GtkButton*)this->hwnd.OrNull(), (const Char*)lbl);
 	Text::StrDelNew(lbl);
 }
 
 void UI::GTK::GTKButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
 {
-	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd);
+	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd.OrNull());
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle(CSTR("label"), CSTR_NULL);

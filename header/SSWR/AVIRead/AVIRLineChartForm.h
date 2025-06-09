@@ -21,7 +21,7 @@ namespace SSWR
 			{
 				UOSInt colIndex;
 				NN<DB::ColDef> colDef;
-				void *datas;
+				AnyType datas;
 			} ColInfo;
 		private:
 			NN<UI::GUIPanel> pnlStrCols;

@@ -21,24 +21,24 @@ namespace Media
 		virtual ~DDrawManager();
 
 		Bool IsError();
-		void *GetDD7(MonitorHandle *hMonitor);
-		void ReleaseDD7(MonitorHandle *hMonitor);
+		void *GetDD7(Optional<MonitorHandle> hMonitor);
+		void ReleaseDD7(Optional<MonitorHandle> hMonitor);
 		void RecheckMonitor();
 		void Reinit();
 
-		Double GetMonitorDPI(MonitorHandle *hMonitor);
-		Bool Is10BitColor(MonitorHandle *hMonitor);
-		const Media::ColorProfile *GetMonProfile(MonitorHandle *hMonitor);
+		Double GetMonitorDPI(Optional<MonitorHandle> hMonitor);
+		Bool Is10BitColor(Optional<MonitorHandle> hMonitor);
+		Optional<const Media::ColorProfile> GetMonProfile(Optional<MonitorHandle> hMonitor);
 
-		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);
-		virtual void WaitForVBlank(MonitorHandle *hMon);
-		virtual UInt32 GetRefreshRate(MonitorHandle *hMon);
-		virtual MonitorHandle *GetMonitorHandle(UOSInt monIndex);
+		virtual Bool SetFSMode(Optional<MonitorHandle> hMon, Optional<ControlHandle> hWnd, Bool fs);
+		virtual void WaitForVBlank(Optional<MonitorHandle> hMon);
+		virtual UInt32 GetRefreshRate(Optional<MonitorHandle> hMon);
+		virtual Optional<MonitorHandle> GetMonitorHandle(UOSInt monIndex);
 		virtual UOSInt GetMonitorCount();
 
 		virtual Optional<MonitorSurface> CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth);
-		virtual Optional<MonitorSurface> CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType);
-		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType);
+		virtual Optional<MonitorSurface> CreatePrimarySurface(Optional<MonitorHandle> hMon, Optional<ControlHandle> clipWindow, Media::RotateType rotateType);
+		virtual Bool CreatePrimarySurfaceWithBuffer(Optional<MonitorHandle> hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType);
 	};
 }
 #endif

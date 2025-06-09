@@ -355,7 +355,7 @@ NN<UI::GUIVSplitter> UI::GTK::GTKCore::NewVSplitter(NN<GUIClientControl> parent,
 	return ctrl;
 }
 
-NN<UI::GUIFileDialog> UI::GTK::GTKCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+NN<UI::GUIFileDialog> UI::GTK::GTKCore::NewFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave)
 {
 	NN<UI::GTK::GTKFileDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKFileDialog(compName, appName, dialogName, isSave));
@@ -383,7 +383,7 @@ NN<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Text::CString fontName, Do
 	return ctrl;
 }
 
-NN<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd)
+NN<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NN<UI::GUIPanel> master, Optional<ControlHandle> parentHWnd)
 {
 	NN<UI::GTK::GTKPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKPanelBase(master, *this, parentHWnd));

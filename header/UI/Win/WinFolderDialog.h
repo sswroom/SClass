@@ -14,7 +14,7 @@ namespace UI
 			WinFolderDialog();
 			virtual ~WinFolderDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

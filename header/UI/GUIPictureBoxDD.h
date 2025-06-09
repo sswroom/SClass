@@ -68,7 +68,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
-		virtual void ChangeMonitor(MonitorHandle *hMon);
+		virtual void ChangeMonitor(Optional<MonitorHandle> hMon);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
 		void EnableLRGBLimit(Bool enable);

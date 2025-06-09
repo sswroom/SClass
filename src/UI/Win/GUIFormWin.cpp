@@ -94,7 +94,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		}
 		return 0;
 	case WM_SIZE:
-		GetWindowRect((HWND)me->hwnd, &rc);
+		GetWindowRect((HWND)me->hwnd.OrNull(), &rc);
 		me->lxPos = rc.left * me->ddpi / me->hdpi;
 		me->lyPos = rc.top * me->ddpi / me->hdpi;
 		me->lxPos2 = rc.right * me->ddpi / me->hdpi;
@@ -245,7 +245,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		me->OnFocusLost();
 		break;
 	case WM_SETFOCUS:
-		((UI::Win::WinCore*)me->ui.Ptr())->SetFocusWnd(hWnd, me->hAcc);
+		((UI::Win::WinCore*)me->ui.Ptr())->SetFocusWnd((ControlHandle*)hWnd, me->hAcc);
 		me->OnFocus();
 		break;
 	case WM_HOTKEY:
@@ -269,7 +269,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	case WM_WINDOWPOSCHANGED:
 		break;
 	case WM_MOVE:
-		GetWindowRect((HWND)me->hwnd, &rc);
+		GetWindowRect((HWND)me->hwnd.OrNull(), &rc);
 		me->lxPos = rc.left * me->ddpi / me->hdpi;
 		me->lyPos = rc.top * me->ddpi / me->hdpi;
 		me->lxPos2 = rc.right * me->ddpi / me->hdpi;
@@ -329,14 +329,14 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUIForm::Init(InstanceHandle *hInst)
+void UI::GUIForm::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::GUIForm::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
 #ifdef _WIN32_WCE
     wc.hIcon = 0; 
 #else
@@ -352,9 +352,9 @@ void UI::GUIForm::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::GUIForm::Deinit(InstanceHandle *hInst)
+void UI::GUIForm::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(L"WinForm", (HINSTANCE)hInst);
+	UnregisterClassW(L"WinForm", (HINSTANCE)hInst.OrNull());
 }
 
 void UI::GUIForm::UpdateHAcc()
@@ -398,7 +398,7 @@ void UI::GUIForm::UpdateHAcc()
 		((UI::Win::WinCore*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc);
 	}
 }
-UI::GUIForm::GUIForm(NN<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIClientControl(ui, 0)
+UI::GUIForm::GUIForm(NN<UI::GUICore> ui, Optional<ControlHandle> hWnd) : UI::GUIClientControl(ui, 0)
 {
 	this->hwnd = hWnd;
 	this->hAcc = 0;
@@ -563,13 +563,13 @@ void UI::GUIForm::SetFormState(UI::GUIForm::FormState fs)
 	switch (fs)
 	{
 	case FS_NORMAL:
-		ShowWindow((HWND)this->hwnd, SW_SHOWNORMAL);
+		ShowWindow((HWND)this->hwnd.OrNull(), SW_SHOWNORMAL);
 		break;
 	case FS_MAXIMIZED:
-		ShowWindow((HWND)this->hwnd, SW_MAXIMIZE);
+		ShowWindow((HWND)this->hwnd.OrNull(), SW_MAXIMIZE);
 		break;
 	case FS_MINIMIZED:
-		ShowWindow((HWND)this->hwnd, SW_MINIMIZE);
+		ShowWindow((HWND)this->hwnd.OrNull(), SW_MINIMIZE);
 		break;
 	}
 }
@@ -609,14 +609,14 @@ void UI::GUIForm::SetDialogResult(UI::GUIForm::DialogResult dr)
 
 void UI::GUIForm::ShowTitleBar(Bool show)
 {
-	Int32 style = GetWindowLong((HWND)this->hwnd, GWL_STYLE);
+	Int32 style = GetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE);
 	if (show)
 	{
-		SetWindowLong((HWND)this->hwnd, GWL_STYLE, style | WS_CAPTION | WS_SYSMENU);
+		SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, style | WS_CAPTION | WS_SYSMENU);
 	}
 	else
 	{
-		SetWindowLong((HWND)this->hwnd, GWL_STYLE, style & ~(WS_CAPTION | WS_SYSMENU));
+		SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, style & ~(WS_CAPTION | WS_SYSMENU));
 	}
 }
 
@@ -624,17 +624,17 @@ void UI::GUIForm::SetAlwaysOnTop(Bool alwaysOnTop)
 {
 	if (alwaysOnTop)
 	{
-		SetWindowPos((HWND)this->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+		SetWindowPos((HWND)this->hwnd.OrNull(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	}
 	else
 	{
-		SetWindowPos((HWND)this->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+		SetWindowPos((HWND)this->hwnd.OrNull(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	}
 }
 
 void UI::GUIForm::MakeActive()
 {
-	SetActiveWindow((HWND)this->hwnd);
+	SetActiveWindow((HWND)this->hwnd.OrNull());
 }
 
 void UI::GUIForm::MakeForeground()
@@ -642,7 +642,7 @@ void UI::GUIForm::MakeForeground()
 #ifdef _WIN32_WCE
 	SetForegroundWindow((HWND)(((OSInt)this->hwnd) | 1));
 #else
-	SetForegroundWindow((HWND)this->hwnd);
+	SetForegroundWindow((HWND)this->hwnd.OrNull());
 #endif
 }
 
@@ -653,20 +653,20 @@ void UI::GUIForm::Close()
 	{
 		currDialog->Close();
 	}
-	DestroyWindow((HWND)hwnd);
+	DestroyWindow((HWND)hwnd.OrNull());
 }
 
 void UI::GUIForm::SetText(Text::CStringNN text)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
-	SetWindowTextW((HWND)this->hwnd, wptr.Ptr());
+	SetWindowTextW((HWND)this->hwnd.OrNull(), wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 
 Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 {
 	RECT rect;
-	GetWindowRect((HWND)hwnd, &rect);
+	GetWindowRect((HWND)hwnd.OrNull(), &rect);
 	return Math::Size2D<UOSInt>((UOSInt)(OSInt)(rect.right - rect.left),
 		(UOSInt)(OSInt)(rect.bottom - rect.top));
 }
@@ -678,14 +678,14 @@ void UI::GUIForm::SetExitOnClose(Bool exitOnClose)
 
 void UI::GUIForm::SetNoResize(Bool noResize)
 {
-	Int32 style = GetWindowLong((HWND)this->hwnd, GWL_STYLE);
+	Int32 style = GetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE);
 	if (noResize)
 	{
-		SetWindowLong((HWND)this->hwnd, GWL_STYLE, style & ~(WS_MAXIMIZEBOX | WS_THICKFRAME));
+		SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, style & ~(WS_MAXIMIZEBOX | WS_THICKFRAME));
 	}
 	else
 	{
-		SetWindowLong((HWND)this->hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME);
+		SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME);
 	}
 }
 
@@ -714,7 +714,7 @@ void UI::GUIForm::RemoveTimer(NN<UI::GUITimer> tmr)
 void UI::GUIForm::SetMenu(NN<UI::GUIMainMenu> menu)
 {
 #ifndef _WIN32_WCE
-	::SetMenu((HWND)this->hwnd, (HMENU)menu->GetHMenu());
+	::SetMenu((HWND)this->hwnd.OrNull(), (HMENU)menu->GetHMenu());
 #endif
 	this->menu.Delete();
 	this->menu = menu;
@@ -728,7 +728,7 @@ Optional<UI::GUIMainMenu> UI::GUIForm::GetMenu()
 
 void UI::GUIForm::UpdateMenu()
 {
-	DrawMenuBar((HWND)this->hwnd);
+	DrawMenuBar((HWND)this->hwnd.OrNull());
 	this->UpdateHAcc();
 }
 
@@ -756,7 +756,7 @@ Optional<UI::GUIButton> UI::GUIForm::GetCancelButton()
 Math::Size2DDbl UI::GUIForm::GetClientSize()
 {
 	RECT rc;
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rc);
 	return Math::Size2DDbl(rc.right - rc.left, rc.bottom - rc.top) * this->ddpi / this->hdpi;
 }
 
@@ -781,8 +781,8 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 	{
 		return;
 	}
-	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);
-	if (hMon != (HMONITOR)this->currHMon)
+	HMONITOR hMon = MonitorFromWindow((HWND)this->hwnd.OrNull(), MONITOR_DEFAULTTONEAREST);
+	if (hMon != (HMONITOR)this->currHMon.OrNull())
 	{
 		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();
@@ -846,17 +846,17 @@ void UI::GUIForm::SetSmallIcon(UI::GUIIcon *icon)
 {
 	if (icon)
 	{
-		SendMessage((HWND)this->hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon->GetHandle());
+		SendMessage((HWND)this->hwnd.OrNull(), WM_SETICON, ICON_SMALL, (LPARAM)icon->GetHandle());
 	}
 	else
 	{
-		SendMessage((HWND)this->hwnd, WM_SETICON, ICON_SMALL, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), WM_SETICON, ICON_SMALL, 0);
 	}
 }
 
 void UI::GUIForm::SetLargeIcon(UI::GUIIcon *icon)
 {
-	SendMessage((HWND)this->hwnd, WM_SETICON, ICON_BIG, (LPARAM)icon->GetHandle());
+	SendMessage((HWND)this->hwnd.OrNull(), WM_SETICON, ICON_BIG, (LPARAM)icon->GetHandle());
 }
 
 void UI::GUIForm::ShowMouseCursor(Bool toShow)
@@ -874,7 +874,7 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, AnyType userObj)
 #ifndef _WIN32_WCE
 	if (this->dropFileHandlers.GetCount() == 0)
 	{
-		OSInt style = GetWindowLongPtr((HWND)this->hwnd, GWL_EXSTYLE);
+		OSInt style = GetWindowLongPtr((HWND)this->hwnd.OrNull(), GWL_EXSTYLE);
 		UI::Win::WinCore::MSSetWindowObj(this->hwnd, GWL_EXSTYLE, style | WS_EX_ACCEPTFILES);
 	}
 #endif
@@ -967,7 +967,7 @@ void UI::GUIForm::ToFullScn()
 	if (this->fs)
 		return;
 #ifdef _WIN32_WCE
-	HWND hWnd = (HWND)this->hwnd;
+	HWND hWnd = (HWND)this->hwnd.OrNull();
 	this->fs = true;
 
 /*	WINDOWINFO wndInfo;
@@ -987,7 +987,7 @@ void UI::GUIForm::ToFullScn()
 	SetWindowLong(hWnd, GWL_STYLE, dwStyle);
 //	::SetMenu(hWnd, 0);
 #else
-	HWND hWnd = (HWND)this->hwnd;
+	HWND hWnd = (HWND)this->hwnd.OrNull();
 	this->fs = true;
 	WINDOWINFO wndInfo;
 	wndInfo.cbSize = sizeof(wndInfo);
@@ -1016,10 +1016,10 @@ void UI::GUIForm::FromFullScn()
 	if (!this->fs)
 		return;
 	this->fs = false;
-	SetWindowLong((HWND)this->hwnd, GWL_STYLE, (LONG)this->fsStyle);
-	MoveWindow((HWND)this->hwnd, this->fsX, this->fsY, this->fsW, this->fsH, TRUE);
+	SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, (LONG)this->fsStyle);
+	MoveWindow((HWND)this->hwnd.OrNull(), this->fsX, this->fsY, this->fsW, this->fsH, TRUE);
 
-	SetWindowPos((HWND)this->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE); 
+	SetWindowPos((HWND)this->hwnd.OrNull(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE); 
 
 	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
@@ -1027,7 +1027,7 @@ void UI::GUIForm::FromFullScn()
 #ifdef _WIN32_WCE
 //		::SetMenu((HWND)this->hwnd, (HMENU)menu->GetHMenu());
 #else
-		::SetMenu((HWND)this->hwnd, (HMENU)menu->GetHMenu());
+		::SetMenu((HWND)this->hwnd.OrNull(), (HMENU)menu->GetHMenu());
 #endif
 	}
 }

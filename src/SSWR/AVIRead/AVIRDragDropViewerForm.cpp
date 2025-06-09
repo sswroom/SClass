@@ -43,7 +43,7 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(Optional<UI::GUICl
 	this->txtMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMain->SetReadOnly(true);
 
-	UI::GUIControl::DragErrorType errType = this->HandleDropEvents(this);
+	UI::GUIControl::DragErrorType errType = this->HandleDropEvents(*this);
 	if (errType == UI::GUIControl::DET_NOERROR)
 	{
 	}

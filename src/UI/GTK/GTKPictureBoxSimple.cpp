@@ -8,7 +8,7 @@
 
 void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 {
-	gtk_image_clear((GtkImage*)this->hwnd);
+	gtk_image_clear((GtkImage*)this->hwnd.OrNull());
 	if (this->pixbuf)
 	{
 		g_object_unref(this->pixbuf);
@@ -40,11 +40,11 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 			buf = gdk_pixbuf_new_from_data(this->tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
 		this->pixbuf = buf;
-		gtk_image_set_from_pixbuf((GtkImage*)this->hwnd, buf);
+		gtk_image_set_from_pixbuf((GtkImage*)this->hwnd.OrNull(), buf);
 	}
 	else if (this->prevImageD.SetTo(dimg))
 	{
-		gtk_image_set_from_surface((GtkImage*)this->hwnd, (cairo_surface_t*)NN<Media::GTKDrawImage>::ConvertFrom(dimg)->GetSurface());
+		gtk_image_set_from_surface((GtkImage*)this->hwnd.OrNull(), (cairo_surface_t*)NN<Media::GTKDrawImage>::ConvertFrom(dimg)->GetSurface());
 	}
 	this->Redraw();
 }
@@ -110,7 +110,7 @@ void UI::GTK::GTKPictureBoxSimple::SetImageDImg(Optional<Media::DrawImage> img)
 		}
 		else
 		{
-			gtk_image_set_from_surface((GtkImage*)this->hwnd, (cairo_surface_t*)NN<Media::GTKDrawImage>::ConvertFrom(imgnn)->GetSurface());
+			gtk_image_set_from_surface((GtkImage*)this->hwnd.OrNull(), (cairo_surface_t*)NN<Media::GTKDrawImage>::ConvertFrom(imgnn)->GetSurface());
 		}
 	}
 	this->Redraw();

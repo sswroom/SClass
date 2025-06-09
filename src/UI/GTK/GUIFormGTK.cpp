@@ -79,7 +79,7 @@ void UI::GUIForm::UpdateHAcc()
 	{
 		accel_group = gtk_accel_group_new();
 		this->hAcc = accel_group;
-		gtk_window_add_accel_group(GTK_WINDOW((GtkWidget*)this->hwnd), accel_group);
+		gtk_window_add_accel_group(GTK_WINDOW((GtkWidget*)this->hwnd.OrNull()), accel_group);
 	}
 	else
 	{
@@ -120,7 +120,7 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	this->hAcc = 0;
 
 	this->hwnd = (ControlHandle*)gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	g_signal_connect((GtkWidget*)this->hwnd, "destroy", G_CALLBACK(GUIForm_EventDestroy), this);
+	g_signal_connect((GtkWidget*)this->hwnd.OrNull(), "destroy", G_CALLBACK(GUIForm_EventDestroy), this);
 
 	this->selfResize = true;
 	Math::Size2DDbl sz;
@@ -180,9 +180,9 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 		initX = (rect.x * 96.0 / this->hdpi) + ((sz.x - initW) * 0.5);
 		initY = (rect.y * 96.0 / this->hdpi) + ((sz.y - initH) * 0.5);
 	}
-	gtk_window_move((GtkWindow*)this->hwnd, Double2Int32(initX), Double2Int32(initY));
-	gtk_window_set_default_size((GtkWindow*)this->hwnd, Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
-	g_signal_connect((GtkWindow*)this->hwnd, "draw", G_CALLBACK(GUIForm_Draw), this);
+	gtk_window_move((GtkWindow*)this->hwnd.OrNull(), Double2Int32(initX), Double2Int32(initY));
+	gtk_window_set_default_size((GtkWindow*)this->hwnd.OrNull(), Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
+	g_signal_connect((GtkWindow*)this->hwnd.OrNull(), "draw", G_CALLBACK(GUIForm_Draw), this);
 	this->lxPos = initX;
 	this->lyPos = initY;
 	this->lxPos2 = initX + initW;
@@ -199,7 +199,7 @@ UI::GUIForm::~GUIForm()
 		this->timers.GetItem(i).Delete();
 	}
 	this->isDialog = true;
-	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	GtkWidget *widget = (GtkWidget*)this->hwnd.OrNull();
 	this->hwnd = 0;
 	if (widget)
 	{
@@ -220,14 +220,14 @@ void UI::GUIForm::SetFormState(FormState fs)
 	switch (fs)
 	{
 	case FS_MAXIMIZED:
-		gtk_window_maximize((GtkWindow*)this->hwnd);
+		gtk_window_maximize((GtkWindow*)this->hwnd.OrNull());
 		break;
 	case FS_NORMAL:
-		gtk_window_unmaximize((GtkWindow*)this->hwnd);
-		gtk_window_deiconify((GtkWindow*)this->hwnd);
+		gtk_window_unmaximize((GtkWindow*)this->hwnd.OrNull());
+		gtk_window_deiconify((GtkWindow*)this->hwnd.OrNull());
 		break;
 	case FS_MINIMIZED:
-		gtk_window_iconify((GtkWindow*)this->hwnd);
+		gtk_window_iconify((GtkWindow*)this->hwnd.OrNull());
 		break;
 	}
 }
@@ -265,18 +265,18 @@ void UI::GUIForm::SetDialogResult(DialogResult dr)
 
 void UI::GUIForm::SetAlwaysOnTop(Bool alwaysOnTop)
 {
-	gtk_window_set_keep_above((GtkWindow*)this->hwnd, alwaysOnTop);
+	gtk_window_set_keep_above((GtkWindow*)this->hwnd.OrNull(), alwaysOnTop);
 }
 
 void UI::GUIForm::MakeForeground()
 {
-	gtk_window_activate_focus((GtkWindow*)this->hwnd);
+	gtk_window_activate_focus((GtkWindow*)this->hwnd.OrNull());
 }
 
 void UI::GUIForm::Close()
 {
 #if GDK_VERSION_CUR_STABLE >= G_ENCODE_VERSION (3, 10)
-	gtk_window_close((GtkWindow*)this->hwnd);
+	gtk_window_close((GtkWindow*)this->hwnd.OrNull());
 #else
 	gtk_widget_destroy((GtkWidget*)this->hwnd);
 #endif
@@ -292,12 +292,12 @@ void UI::GUIForm::Close()
 
 void UI::GUIForm::SetText(Text::CStringNN text)
 {
-	gtk_window_set_title((GtkWindow*)this->hwnd, (const Char*)text.v.Ptr());
+	gtk_window_set_title((GtkWindow*)this->hwnd.OrNull(), (const Char*)text.v.Ptr());
 }
 
 Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 {
-	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd);
+	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull());
 	if (wnd)
 	{
 		GdkRectangle rect;
@@ -308,7 +308,7 @@ Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 	{
 		int w;
 		int h;
-		gtk_window_get_size((GtkWindow*)this->hwnd, &w, &h);
+		gtk_window_get_size((GtkWindow*)this->hwnd.OrNull(), &w, &h);
 		return Math::Size2D<UOSInt>((UInt32)w, (UInt32)h);
 	}
 }
@@ -331,11 +331,11 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 			this->lyPos2 = this->lyPos;
 		}
 		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / 96.0), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));*/
-		g_idle_add(GUIForm_SetNoResize, this->hwnd);
+		g_idle_add(GUIForm_SetNoResize, this->hwnd.OrNull());
 	}
 	else
 	{
-		gtk_window_set_resizable((GtkWindow*)this->hwnd, TRUE);
+		gtk_window_set_resizable((GtkWindow*)this->hwnd.OrNull(), TRUE);
 	}
 }
 
@@ -415,7 +415,7 @@ Math::Size2DDbl UI::GUIForm::GetClientSize()
 {
 	int width;
 	int height;
-	gtk_window_get_size((GtkWindow*)this->hwnd, &width, &height);
+	gtk_window_get_size((GtkWindow*)this->hwnd.OrNull(), &width, &height);
 	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
@@ -458,7 +458,7 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 	Double newSize;
 	gint outW;
 	gint outH;
-	gtk_window_get_size((GtkWindow*)this->hwnd, &outW, &outH);
+	gtk_window_get_size((GtkWindow*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW != -1)
 	{
 		newSize = this->lxPos + outW * this->ddpi / this->hdpi;
@@ -526,7 +526,7 @@ void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 void UI::GUIForm::ShowMouseCursor(Bool toShow)
 {
 	GdkCursor *cursor = gdk_cursor_new_from_name(gdk_display_get_default(), toShow?"default":"none");
-	gdk_window_set_cursor(gtk_widget_get_window((GtkWidget*)this->hwnd), cursor);
+	gdk_window_set_cursor(gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull()), cursor);
 }
 
 void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, AnyType userObj)
@@ -541,8 +541,8 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, AnyType userObj)
 	{ (gchar*)"text/uri-list", 0, 0 }
 	};
 
-	gtk_drag_dest_set((GtkWidget*)this->hwnd, GTK_DEST_DEFAULT_ALL, target_table, 1, GDK_ACTION_COPY);
-	g_signal_connect((GtkWindow*)this->hwnd, "drag-data-received", G_CALLBACK(GUIForm_OnFileDrop), this);
+	gtk_drag_dest_set((GtkWidget*)this->hwnd.OrNull(), GTK_DEST_DEFAULT_ALL, target_table, 1, GDK_ACTION_COPY);
+	g_signal_connect((GtkWindow*)this->hwnd.OrNull(), "drag-data-received", G_CALLBACK(GUIForm_OnFileDrop), this);
 }
 
 void UI::GUIForm::HandleMenuClicked(MenuEvent handler, AnyType userObj)
@@ -647,12 +647,12 @@ void UI::GUIForm::ToFullScn()
 		GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
 		gtk_widget_set_visible(menuBar, FALSE);
 	}
-	gtk_window_fullscreen((GtkWindow*)this->hwnd);
+	gtk_window_fullscreen((GtkWindow*)this->hwnd.OrNull());
 }
 
 void UI::GUIForm::FromFullScn()
 {
-	gtk_window_unfullscreen((GtkWindow*)this->hwnd);
+	gtk_window_unfullscreen((GtkWindow*)this->hwnd.OrNull());
 	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{

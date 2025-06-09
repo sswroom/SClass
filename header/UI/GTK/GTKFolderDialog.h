@@ -12,7 +12,7 @@ namespace UI
 			GTKFolderDialog();
 			virtual ~GTKFolderDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

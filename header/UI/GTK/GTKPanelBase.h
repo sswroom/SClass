@@ -13,7 +13,7 @@ namespace UI
 			NN<GUIPanel> master;
 
 		public:
-			GTKPanelBase(NN<GUIPanel> master, NN<GUICore> ui, ControlHandle *parentHWnd);
+			GTKPanelBase(NN<GUIPanel> master, NN<GUICore> ui, Optional<ControlHandle> parentHWnd);
 			GTKPanelBase(NN<GUIPanel> master, NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~GTKPanelBase();
 

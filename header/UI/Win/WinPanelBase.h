@@ -21,11 +21,11 @@ namespace UI
 
 			static Int32 useCnt;
 			static OSInt __stdcall PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-			static void Init(InstanceHandle *hInst);
-			static void Deinit(InstanceHandle *hInst);
+			static void Init(Optional<InstanceHandle> hInst);
+			static void Deinit(Optional<InstanceHandle> hInst);
 			void UpdateScrollBars();
 		public:
-			WinPanelBase(NN<GUIPanel> master, NN<GUICore> ui, ControlHandle *parentHWnd);
+			WinPanelBase(NN<GUIPanel> master, NN<GUICore> ui, Optional<ControlHandle> parentHWnd);
 			WinPanelBase(NN<GUIPanel> master, NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~WinPanelBase();
 

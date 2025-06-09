@@ -15,7 +15,7 @@ Crypto::Encrypt::RSAEnc::~RSAEnc()
 	MemFreeNN(this->clsData);
 }
 
-Bool Crypto::Encrypt::RSAEnc::SetPublicKey(Crypto::Cert::X509PubKey *key)
+Bool Crypto::Encrypt::RSAEnc::SetPublicKey(NN<Crypto::Cert::X509PubKey> key)
 {
 	return false;
 }

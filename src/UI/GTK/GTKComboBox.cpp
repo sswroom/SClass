@@ -38,10 +38,10 @@ UI::GTK::GTKComboBox::GTKComboBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> p
 	this->allowEdit = allowEdit;
 	parent->AddChild(*this);
 	this->Show();
-	g_signal_connect(this->hwnd, "changed", G_CALLBACK(GUIComboBox_EventChanged), this);
+	g_signal_connect(this->hwnd.OrNull(), "changed", G_CALLBACK(GUIComboBox_EventChanged), this);
 	if (allowEdit)
 	{
-		GtkWidget *entry = gtk_bin_get_child((GtkBin *)this->hwnd);
+		GtkWidget *entry = gtk_bin_get_child((GtkBin *)this->hwnd.OrNull());
 		g_signal_connect(entry, "changed", G_CALLBACK(GUIComboBox_TextChanged), this);
 	}
 }
@@ -54,7 +54,7 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 {
 	if (this->allowEdit)
 	{
-		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd);
+		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd.OrNull());
 		gtk_entry_set_text((GtkEntry*)entry, (const gchar *)text.v.Ptr());
 	}
 	else
@@ -74,7 +74,7 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 
 UnsafeArrayOpt<UTF8Char> UI::GTK::GTKComboBox::GetText(UnsafeArray<UTF8Char> buff)
 {
-	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
+	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd.OrNull()));
 	UnsafeArray<const UTF8Char> nnlbl;
 	if (nnlbl.Set((const UTF8Char*)lbl))
 	{
@@ -87,7 +87,7 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKComboBox::GetText(UnsafeArray<UTF8Char> buf
 
 Bool UI::GTK::GTKComboBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
-	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
+	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd.OrNull()));
 	sb->AppendSlow((const UTF8Char*)lbl);
 	g_free(lbl);
 	return true;
@@ -119,7 +119,7 @@ UOSInt UI::GTK::GTKComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 	this->items.Add(itemObj);
 	if (!this->autoComplete)
 	{
-		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText->v.Ptr());
+		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd.OrNull(), -1, 0, (const Char*)itemText->v.Ptr());
 	}
 	return cnt;
 }
@@ -139,7 +139,7 @@ UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	{
 		if (!this->autoComplete)
 		{
-			gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText.v.Ptr());
+			gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd.OrNull(), -1, 0, (const Char*)itemText.v.Ptr());
 		}
 	}
 
@@ -153,7 +153,7 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NN<Text::String> itemText,
 		index = cnt;
 	this->itemTexts.Insert(index, itemText->Clone());
 	this->items.Insert(index, itemObj);
-	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText->v.Ptr());
+	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd.OrNull(), (gint)index, 0, (const Char*)itemText->v.Ptr());
 	return index;
 }
 
@@ -164,7 +164,7 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, 
 		index = cnt;
 	this->itemTexts.Insert(index, Text::String::New(itemText));
 	this->items.Insert(index, itemObj);
-	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText.v.Ptr());
+	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd.OrNull(), (gint)index, 0, (const Char*)itemText.v.Ptr());
 	return index;
 }
 
@@ -176,7 +176,7 @@ AnyType UI::GTK::GTKComboBox::RemoveItem(UOSInt index)
 	Optional<Text::String> s = this->itemTexts.RemoveAt(index);
 	OPTSTR_DEL(s);
 	AnyType item = this->items.RemoveAt(index);
-	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd, (gint)index);
+	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd.OrNull(), (gint)index);
 	return item;
 }
 
@@ -189,7 +189,7 @@ void UI::GTK::GTKComboBox::ClearItems()
 	}
 	this->itemTexts.Clear();
 	this->items.Clear();
-	gtk_combo_box_text_remove_all((GtkComboBoxText*)this->hwnd);
+	gtk_combo_box_text_remove_all((GtkComboBoxText*)this->hwnd.OrNull());
 }
 
 UOSInt UI::GTK::GTKComboBox::GetCount()
@@ -199,12 +199,12 @@ UOSInt UI::GTK::GTKComboBox::GetCount()
 
 void UI::GTK::GTKComboBox::SetSelectedIndex(UOSInt index)
 {
-	gtk_combo_box_set_active((::GtkComboBox*)this->hwnd, (gint)index);
+	gtk_combo_box_set_active((::GtkComboBox*)this->hwnd.OrNull(), (gint)index);
 }
 
 UOSInt UI::GTK::GTKComboBox::GetSelectedIndex()
 {
-	return (UOSInt)(OSInt)gtk_combo_box_get_active((::GtkComboBox*)this->hwnd);
+	return (UOSInt)(OSInt)gtk_combo_box_get_active((::GtkComboBox*)this->hwnd.OrNull());
 }
 
 AnyType UI::GTK::GTKComboBox::GetSelectedItem()
@@ -221,7 +221,7 @@ Math::Size2DDbl UI::GTK::GTKComboBox::GetSize()
 {
 	gint w;
 	gint h;
-	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &w, &h);
+	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &w, &h);
 	return Math::Size2DDbl(w, h) * this->ddpi / this->hdpi;
 	///////////////////////////////
 }
@@ -248,7 +248,7 @@ void UI::GTK::GTKComboBox::SetTextSelection(UOSInt startPos, UOSInt endPos)
 {
 	if (this->allowEdit)
 	{
-		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd);
+		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd.OrNull());
 		gtk_editable_select_region((GtkEditable*)entry, (gint)startPos, (gint)endPos);
 	}
 }

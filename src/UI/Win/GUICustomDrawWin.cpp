@@ -46,14 +46,14 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 	case WM_PAINT:
 		{
 			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint((HWND)me->hwnd, &ps);
+			HDC hdc = BeginPaint((HWND)me->hwnd.OrNull(), &ps);
 			NN<Media::DrawImage> dimg;
 			dimg = NN<Media::GDIEngine>::ConvertFrom(me->eng)->CreateImageScn(hdc, 0, 0, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top, me->colorSess);
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			me->OnDraw(dimg);
 			me->eng->DeleteImage(dimg);
-			EndPaint((HWND)me->hwnd, &ps);
+			EndPaint((HWND)me->hwnd.OrNull(), &ps);
 		}
 		return 0;
 	case WM_LBUTTONDOWN:
@@ -176,14 +176,14 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUICustomDraw::Init(InstanceHandle *hInst)
+void UI::GUICustomDraw::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::GUICustomDraw::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull();
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, IDC_ARROW); 
     wc.hbrBackground = (HBRUSH)COLOR_WINDOW; 
@@ -194,9 +194,9 @@ void UI::GUICustomDraw::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::GUICustomDraw::Deinit(InstanceHandle *hInst)
+void UI::GUICustomDraw::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void UI::GUICustomDraw::InitJS()
@@ -228,7 +228,7 @@ UI::GUICustomDraw::GUICustomDraw(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 {
 	this->eng = eng;
 	this->colorSess = colorSess;
-	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
+	NEW_CLASSNN(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
 	this->focusing = false;
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
@@ -243,12 +243,12 @@ UI::GUICustomDraw::GUICustomDraw(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	}
 	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"MapControl", style, 0, 0, 0, 640, 480);
 	this->InitJS();
-	SetTimer((HWND)this->hwnd, 1000, 18, 0);
+	SetTimer((HWND)this->hwnd.OrNull(), 1000, 18, 0);
 }
 
 UI::GUICustomDraw::~GUICustomDraw()
 {
-	DEL_CLASS(this->lib);
+	this->lib.Delete();
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());

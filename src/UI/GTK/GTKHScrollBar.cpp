@@ -15,7 +15,7 @@ gboolean UI::GTK::GTKHScrollBar::SignalValueChanged(void *window, void *userObj)
 UI::GTK::GTKHScrollBar::GTKHScrollBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Double width) : UI::GUIHScrollBar(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	g_signal_connect((GtkButton*)this->hwnd, "value-changed", G_CALLBACK(SignalValueChanged), this);
+	g_signal_connect((GtkButton*)this->hwnd.OrNull(), "value-changed", G_CALLBACK(SignalValueChanged), this);
 	parent->AddChild(*this);
 	this->Show();
 }
@@ -26,21 +26,21 @@ UI::GTK::GTKHScrollBar::~GTKHScrollBar()
 
 void UI::GTK::GTKHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
 {
-	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
+	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd.OrNull());
 	gtk_adjustment_configure(adj, UOSInt2Double(currVal), UOSInt2Double(minVal), UOSInt2Double(maxVal), 1, UOSInt2Double(largeChg), UOSInt2Double(largeChg));
 	this->EventPosChanged(this->GetPos());
 }
 
 void UI::GTK::GTKHScrollBar::SetPos(UOSInt pos)
 {
-	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
+	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd.OrNull());
 	gtk_adjustment_set_value(adj, UOSInt2Double(pos));
 	this->EventPosChanged(this->GetPos());
 }
 
 UOSInt UI::GTK::GTKHScrollBar::GetPos()
 {
-	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
+	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd.OrNull());
 	return (UOSInt)Double2OSInt(gtk_adjustment_get_value(adj));
 }
 
@@ -61,7 +61,7 @@ void UI::GTK::GTKHScrollBar::SetArea(Double left, Double top, Double right, Doub
 	if (this->parent.SetTo(nnparent))
 	{
 		void *container = nnparent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd.OrNull(), Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
 	}
 	if (right < left)
 	{
@@ -71,11 +71,11 @@ void UI::GTK::GTKHScrollBar::SetArea(Double left, Double top, Double right, Doub
 	{
 		bottom = top;
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
+	gtk_widget_set_size_request((GtkWidget*)this->hwnd.OrNull(), Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 
 	gint outW;
 	gint outH;
-	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
+	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW == -1)
 	{
 		this->lxPos2 = right;
@@ -113,7 +113,7 @@ void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 	if (this->parent.SetTo(nnparent))
 	{
 		void *container = nnparent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if (right < left)
 	{
@@ -123,11 +123,11 @@ void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 	{
 		bottom = top;
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, (gint)(right - left), (gint)(bottom - top));
+	gtk_widget_set_size_request((GtkWidget*)this->hwnd.OrNull(), (gint)(right - left), (gint)(bottom - top));
 
 	gint outW;
 	gint outH;
-	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
+	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW == -1)
 	{
 		this->lxPos2 = OSInt2Double(right) * this->ddpi / this->hdpi;

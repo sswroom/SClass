@@ -17,7 +17,7 @@
 
 struct Media::FBSurface::ClassData
 {
-	MonitorHandle *hMon;
+	Optional<MonitorHandle> hMon;
 	Int32 fd;
 	Int32 ttyfd;
 	struct fb_fix_screeninfo finfo;
@@ -37,7 +37,7 @@ Bool Media::FBSurface::UpdateToScreen(Bool waitForVBlank)
 	return write(this->clsData->ttyfd, " \r", 2) == 2;
 }
 
-Media::FBSurface::FBSurface(MonitorHandle *hMon, Optional<const Media::ColorProfile> color, Double dpi, Media::RotateType rotateType)
+Media::FBSurface::FBSurface(Optional<MonitorHandle> hMon, Optional<const Media::ColorProfile> color, Double dpi, Media::RotateType rotateType)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->hMon = hMon;
@@ -45,7 +45,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, Optional<const Media::ColorProf
 	this->clsData->ttyfd = -1;
 	this->clsData->bugHandleMode = false;
 	Char sbuff[64];
-	Text::StrUOSInt(Text::StrConcat(UARR(sbuff), "/dev/fb"), ((UOSInt)hMon) - 1);
+	Text::StrUOSInt(Text::StrConcat(UARR(sbuff), "/dev/fb"), ((UOSInt)hMon.OrNull()) - 1);
 	this->clsData->fd = open(sbuff, O_RDWR);
 	if (this->clsData->fd < 0)
 	{

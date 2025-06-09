@@ -94,7 +94,7 @@ namespace SSWR
 			Optional<FileInfo> FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage);
 			Int32 FileGetByName(Text::CStringNN fileName, OutParam<Int32> webType);
 			Bool FileEnd(Int32 id, Int32 webType);
-			Bool FileStart(Int32 id, Int32 webType, ControlHandle *formHand);
+			Bool FileStart(Int32 id, Int32 webType, Optional<ControlHandle> formHand);
 			Int32 FileGetMaxId(Int32 webType);
 		};
 	}

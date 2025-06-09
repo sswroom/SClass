@@ -10,15 +10,15 @@ namespace Media
 	public:
 		virtual ~MonitorSurfaceMgr() {};
 
-		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs) = 0;
-		virtual void WaitForVBlank(MonitorHandle *hMon) = 0;
-		virtual UInt32 GetRefreshRate(MonitorHandle *hMon) = 0;
-		virtual MonitorHandle *GetMonitorHandle(UOSInt monIndex) = 0;
+		virtual Bool SetFSMode(Optional<MonitorHandle> hMon, Optional<ControlHandle> hWnd, Bool fs) = 0;
+		virtual void WaitForVBlank(Optional<MonitorHandle> hMon) = 0;
+		virtual UInt32 GetRefreshRate(Optional<MonitorHandle> hMon) = 0;
+		virtual Optional<MonitorHandle> GetMonitorHandle(UOSInt monIndex) = 0;
 		virtual UOSInt GetMonitorCount() = 0;
 
 		virtual Optional<MonitorSurface> CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth) = 0;
-		virtual Optional<MonitorSurface> CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType) = 0;
-		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType) = 0;
+		virtual Optional<MonitorSurface> CreatePrimarySurface(Optional<MonitorHandle> hMon, Optional<ControlHandle> clipWindow, Media::RotateType rotateType) = 0;
+		virtual Bool CreatePrimarySurfaceWithBuffer(Optional<MonitorHandle> hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType) = 0;
 	};
 }
 #endif

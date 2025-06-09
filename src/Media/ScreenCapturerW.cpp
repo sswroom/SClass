@@ -15,7 +15,7 @@ Media::ScreenCapturer::~ScreenCapturer()
 	DEL_CLASS(this->surfaceMgr);
 }
 
-Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
+Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<MonitorHandle> hMon)
 {
 	NN<Media::MonitorSurface> surface;
 	if (!this->surfaceMgr->CreatePrimarySurface(hMon, 0, Media::RotateType::None).SetTo(surface)) return 0;

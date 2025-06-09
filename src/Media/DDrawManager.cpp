@@ -92,18 +92,18 @@ Bool Media::DDrawManager::IsError()
 	return this->clsData->defDD == 0;
 }
 
-void *Media::DDrawManager::GetDD7(MonitorHandle *hMonitor)
+void *Media::DDrawManager::GetDD7(Optional<MonitorHandle> hMonitor)
 {
 	this->RecheckMonitor();
-	LPDIRECTDRAW7 ret = this->clsData->monMap.Get((OSInt)hMonitor);
+	LPDIRECTDRAW7 ret = this->clsData->monMap.Get((OSInt)hMonitor.OrNull());
 	if (ret)
 		return ret;
 	return this->clsData->defDD;
 }
 
-void Media::DDrawManager::ReleaseDD7(MonitorHandle *hMonitor)
+void Media::DDrawManager::ReleaseDD7(Optional<MonitorHandle> hMonitor)
 {
-	LPDIRECTDRAW7 ret = this->clsData->monMap.Remove((OSInt)hMonitor);
+	LPDIRECTDRAW7 ret = this->clsData->monMap.Remove((OSInt)hMonitor.OrNull());
 	if (ret)
 	{
 		ret->Release();
@@ -121,9 +121,9 @@ void Media::DDrawManager::Reinit()
 	this->RecheckMonitor();
 }
 
-Double Media::DDrawManager::GetMonitorDPI(MonitorHandle *hMonitor)
+Double Media::DDrawManager::GetMonitorDPI(Optional<MonitorHandle> hMonitor)
 {
-	if (hMonitor == 0)
+	if (hMonitor.IsNull())
 	{
 		return 96.0;
 	}
@@ -136,7 +136,7 @@ Double Media::DDrawManager::GetMonitorDPI(MonitorHandle *hMonitor)
 	return 96.0;
 }
 
-Bool Media::DDrawManager::Is10BitColor(MonitorHandle *hMonitor)
+Bool Media::DDrawManager::Is10BitColor(Optional<MonitorHandle> hMonitor)
 {
 	NN<Media::ColorManager> colorMgr;
 	NN<Media::ColorManagerSess> colorSess;
@@ -151,7 +151,7 @@ Bool Media::DDrawManager::Is10BitColor(MonitorHandle *hMonitor)
 	return false;
 }
 
-const Media::ColorProfile *Media::DDrawManager::GetMonProfile(MonitorHandle *hMonitor)
+Optional<const Media::ColorProfile> Media::DDrawManager::GetMonProfile(Optional<MonitorHandle> hMonitor)
 {
 	NN<Media::ColorManager> colorMgr;
 	NN<Media::ColorManagerSess> colorSess;
@@ -166,21 +166,21 @@ const Media::ColorProfile *Media::DDrawManager::GetMonProfile(MonitorHandle *hMo
 	return 0;
 }
 
-Bool Media::DDrawManager::SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs)
+Bool Media::DDrawManager::SetFSMode(Optional<MonitorHandle> hMon, Optional<ControlHandle> hWnd, Bool fs)
 {
 	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
 	if (lpDD == 0) return false;
 	if (fs)
 	{
-		return lpDD->SetCooperativeLevel((HWND)hWnd, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN) == DD_OK;
+		return lpDD->SetCooperativeLevel((HWND)hWnd.OrNull(), DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN) == DD_OK;
 	}
 	else
 	{
-		return lpDD->SetCooperativeLevel((HWND)hWnd, DDSCL_NORMAL) == DD_OK;
+		return lpDD->SetCooperativeLevel((HWND)hWnd.OrNull(), DDSCL_NORMAL) == DD_OK;
 	}
 }
 
-void Media::DDrawManager::WaitForVBlank(MonitorHandle *hMon)
+void Media::DDrawManager::WaitForVBlank(Optional<MonitorHandle> hMon)
 {
 	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
 	if (lpDD)
@@ -189,7 +189,7 @@ void Media::DDrawManager::WaitForVBlank(MonitorHandle *hMon)
 	}
 }
 
-UInt32 Media::DDrawManager::GetRefreshRate(MonitorHandle *hMon)
+UInt32 Media::DDrawManager::GetRefreshRate(Optional<MonitorHandle> hMon)
 {
 	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
 	if (lpDD == 0)
@@ -217,7 +217,7 @@ BOOL CALLBACK DDrawManager_MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LP
     return TRUE;
 }
 
-MonitorHandle *Media::DDrawManager::GetMonitorHandle(UOSInt monIndex)
+Optional<MonitorHandle> Media::DDrawManager::GetMonitorHandle(UOSInt monIndex)
 {
 	UOSInt arrs[3];
 	arrs[0] = 0;
@@ -268,11 +268,11 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreateSurface(Math::Size2D<
 		return 0;
 	}
 	Media::DDrawSurface *retSurface;
-	NEW_CLASS(retSurface, Media::DDrawSurface(this, lpDD, surface, 0, true, Media::RotateType::None));
+	NEW_CLASS(retSurface, Media::DDrawSurface(*this, lpDD, surface, 0, true, Media::RotateType::None));
 	return retSurface;
 }
 
-Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
+Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(Optional<MonitorHandle> hMon, Optional<ControlHandle> clipWindow, Media::RotateType rotateType)
 {
 	if (this->IsError())
 	{
@@ -302,13 +302,13 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(Monito
 		return 0;
 	}
 	Media::DDrawSurface *surface;
-	NEW_CLASS(surface, Media::DDrawSurface(this, lpDD, primarySurface, hMon, true, rotateType));
-	if (clipWindow)
+	NEW_CLASS(surface, Media::DDrawSurface(*this, lpDD, primarySurface, hMon, true, rotateType));
+	if (clipWindow.NotNull())
 		surface->SetClipWindow(clipWindow);
 	return surface;
 }
 
-Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, RotateType rotateType)
+Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(Optional<MonitorHandle> hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, RotateType rotateType)
 {
 	if (this->IsError())
 	{
@@ -341,8 +341,8 @@ Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, Ou
 
 	NN<Media::DDrawSurface> ddSurface1;
 	NN<Media::DDrawSurface> ddSurface2;
-	NEW_CLASSNN(ddSurface1, Media::DDrawSurface(this, lpDD, surface1, hMon, true, rotateType));
-	NEW_CLASSNN(ddSurface2, Media::DDrawSurface(this, lpDD, surface2, hMon, false, rotateType));
+	NEW_CLASSNN(ddSurface1, Media::DDrawSurface(*this, lpDD, surface1, hMon, true, rotateType));
+	NEW_CLASSNN(ddSurface2, Media::DDrawSurface(*this, lpDD, surface2, hMon, false, rotateType));
 	ddSurface1->SetBuffSurface(ddSurface2);
 	primarySurface.Set(ddSurface1);
 	bufferSurface.Set(ddSurface2);

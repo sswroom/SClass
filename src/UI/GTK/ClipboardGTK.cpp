@@ -10,7 +10,7 @@
 #include <gtk/gtk.h>
 #include <wchar.h>
 
-UI::Clipboard::Clipboard(void *hwnd)
+UI::Clipboard::Clipboard(Optional<ControlHandle> hwnd)
 {
 	this->clsData = 0;
 	this->succ = true;
@@ -266,7 +266,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	return false;
 }
 
-Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
+Bool UI::Clipboard::SetString(Optional<ControlHandle> hWndOwner, Text::CStringNN s)
 {
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -276,7 +276,7 @@ Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
 	return true;
 }
 
-Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb)
+Bool UI::Clipboard::GetString(Optional<ControlHandle> hWndOwner, NN<Text::StringBuilderUTF8> sb)
 {
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)

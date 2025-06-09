@@ -219,7 +219,7 @@ namespace UI
 	protected:
 		Data::ArrayList<Data::CallbackStorage<UIEvent>> resizeHandlers;
 		Bool inited;
-		ControlHandle *hwnd;
+		Optional<ControlHandle> hwnd;
 		void *hFont;
 		void *hbrBackground;
 		NN<GUICore> ui;
@@ -230,7 +230,7 @@ namespace UI
 		Double lxPos2;
 		Double lyPos2;
 		Bool selfResize;
-		MonitorHandle *currHMon;
+		Optional<MonitorHandle> currHMon;
 
 		Optional<Text::String> fontName;
 		Double fontHeightPt;
@@ -241,15 +241,15 @@ namespace UI
 		void *dropHdlr;
 
 	public:
-		void InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, UnsafeArray<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
-		void InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, UnsafeArrayOpt<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
+		void InitControlHand(Optional<InstanceHandle> hInst, Optional<ControlHandle> parentHWnd, const WChar *className, UnsafeArray<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
+		void InitControl(Optional<InstanceHandle> hInst, Optional<UI::GUIClientControl> parent, const WChar *className, UnsafeArrayOpt<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
 
 	protected:
 		GUIControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent);
 	public:
 		virtual ~GUIControl();
 
-		InstanceHandle *GetHInst();
+		Optional<InstanceHandle> GetHInst();
 		virtual void *GetFont();
 		virtual void Show();
 		virtual void Close();
@@ -305,11 +305,11 @@ namespace UI
 		UInt32 GetColorHightlightText();
 
 		virtual Optional<GUIClientControl> GetParent();
-		GUIForm *GetRootForm();
-		ControlHandle *GetHandle();
-		virtual ControlHandle *GetDisplayHandle();
-		MonitorHandle *GetHMonitor();
-		Media::MonitorInfo *GetMonitorInfo();
+		Optional<GUIForm> GetRootForm();
+		Optional<ControlHandle> GetHandle();
+		virtual Optional<ControlHandle> GetDisplayHandle();
+		Optional<MonitorHandle> GetHMonitor();
+		Optional<Media::MonitorInfo> GetMonitorInfo();
 		virtual void SetDPI(Double hdpi, Double ddpi);
 		Double GetHDPI();
 		Double GetDDPI();
@@ -319,7 +319,7 @@ namespace UI
 		static GUIKey OSKey2GUIKey(UInt32 osKey);
 		static Text::CStringNN GUIKeyGetName(GUIKey guiKey);
 
-		DragErrorType HandleDropEvents(GUIDropHandler *hdlr);
+		DragErrorType HandleDropEvents(NN<GUIDropHandler> hdlr);
 
 		virtual void DestroyObject();
 	};

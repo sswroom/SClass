@@ -19,7 +19,7 @@ UI::GTK::GTKCheckBox::GTKCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> paren
 	{
 		this->SetChecked(checked);
 	}
-	g_signal_connect((GtkWidget*)this->hwnd, "toggled", G_CALLBACK(SignalToggled), this);
+	g_signal_connect((GtkWidget*)this->hwnd.OrNull(), "toggled", G_CALLBACK(SignalToggled), this);
 	this->Show();
 }
 
@@ -29,7 +29,7 @@ UI::GTK::GTKCheckBox::~GTKCheckBox()
 
 void UI::GTK::GTKCheckBox::SetText(Text::CStringNN text)
 {
-	GList *children = gtk_container_get_children((GtkContainer*)this->hwnd);
+	GList *children = gtk_container_get_children((GtkContainer*)this->hwnd.OrNull());
 	if (children)
 	{
 		gtk_label_set_text((GtkLabel*)children->data, (const Char*)text.v.Ptr());
@@ -44,12 +44,12 @@ OSInt UI::GTK::GTKCheckBox::OnNotify(UInt32 code, void *lParam)
 
 Bool UI::GTK::GTKCheckBox::IsChecked()
 {
-	return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON((GtkWidget*)this->hwnd));
+	return gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON((GtkWidget*)this->hwnd.OrNull()));
 }
 
 void UI::GTK::GTKCheckBox::SetChecked(Bool checked)
 {
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON((GtkWidget*)this->hwnd), checked?TRUE:FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON((GtkWidget*)this->hwnd.OrNull()), checked?TRUE:FALSE);
 }
 
 

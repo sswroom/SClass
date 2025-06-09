@@ -52,14 +52,14 @@ OSInt __stdcall UI::Win::WinRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::Win::WinRealtimeLineChart::Init(InstanceHandle *hInst)
+void UI::Win::WinRealtimeLineChart::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::Win::WinRealtimeLineChart::RLCWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, IDC_ARROW); 
     wc.hbrBackground = 0; 
@@ -70,9 +70,9 @@ void UI::Win::WinRealtimeLineChart::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::Win::WinRealtimeLineChart::Deinit(InstanceHandle *hInst)
+void UI::Win::WinRealtimeLineChart::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 UI::Win::WinRealtimeLineChart::WinRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIRealtimeLineChart(ui, parent, eng, lineCnt, sampleCnt)
@@ -90,12 +90,12 @@ UI::Win::WinRealtimeLineChart::WinRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::G
 	}
 	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 
-	SetTimer((HWND)this->hwnd, 1, updateInterval, 0);
+	SetTimer((HWND)this->hwnd.OrNull(), 1, updateInterval, 0);
 }
 
 UI::Win::WinRealtimeLineChart::~WinRealtimeLineChart()
 {
-	KillTimer((HWND)this->hwnd, 1);
+	KillTimer((HWND)this->hwnd.OrNull(), 1);
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 		Deinit(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());

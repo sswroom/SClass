@@ -25,12 +25,12 @@ namespace UI
 	private:
 		struct ClassData;
 
-		ClassData *clsData;
-		UI::GUIForm *rootForm;
+		NN<ClassData> clsData;
+		Optional<UI::GUIForm> rootForm;
 		Media::ImageCopy *imgCopy;
 
 		Sync::Event drawEvt;
-		MonitorHandle *surfaceMon;
+		Optional<MonitorHandle> surfaceMon;
 		Optional<Media::MonitorSurface> primarySurface;
 		Optional<Media::MonitorSurface> buffSurface;
 		IO::Stream *debugFS;
@@ -51,17 +51,17 @@ namespace UI
 		UOSInt scnW;
 		UOSInt scnH;
 		Bool switching;
-		MonitorHandle *currMon;
+		Optional<MonitorHandle> currMon;
 		ScreenMode currScnMode;
 		ScreenMode fullScnMode;
-		IO::Library *lib;
+		NN<IO::Library> lib;
 		Media::RotateType rotType;
 
 	private:
 		static Int32 useCnt;
 		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-		static void Init(InstanceHandle *hInst);
-		static void Deinit(InstanceHandle *hInst);
+		static void Init(Optional<InstanceHandle> hInst);
+		static void Deinit(Optional<InstanceHandle> hInst);
 		static void JSTimerTick(AnyType userObj);
 	public:
 		static void __stdcall OnResized(AnyType userObj);
@@ -90,7 +90,7 @@ namespace UI
 		void DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
-		virtual void ChangeMonitor(MonitorHandle *hMon);
+		virtual void ChangeMonitor(Optional<MonitorHandle> hMon);
 		UInt32 GetRefreshRate();
 		Bool IsSurfaceReady();
 		void SetRotateType(Media::RotateType rotType);

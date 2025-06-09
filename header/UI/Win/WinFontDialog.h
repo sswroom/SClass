@@ -13,7 +13,7 @@ namespace UI
 			WinFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 			virtual ~WinFontDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

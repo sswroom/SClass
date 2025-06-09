@@ -47,7 +47,7 @@ gboolean UI::GTK::GTKListBox::SignalButtonPress(GtkWidget *widget, GdkEvent *eve
 		{
 			gtk_list_box_select_row((GtkListBox*)me->listbox, row);
 		}
-		GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)me->hwnd);
+		GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)me->hwnd.OrNull());
 		event->button.y -= (Int32)gtk_adjustment_get_value(adj);
 		me->EventRightClick(Math::Coord2D<OSInt>(Double2OSInt(event->button.x), Double2OSInt(event->button.y)));
 	}
@@ -72,7 +72,7 @@ UI::GTK::GTKListBox::GTKListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> par
 		gtk_list_box_set_selection_mode((GtkListBox*)this->listbox, GTK_SELECTION_MULTIPLE);
 	}
 	this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
-	gtk_container_add(GTK_CONTAINER(this->hwnd), this->listbox);
+	gtk_container_add(GTK_CONTAINER(this->hwnd.OrNull()), this->listbox);
 	parent->AddChild(*this);
 	g_signal_connect(this->listbox, "row-selected", G_CALLBACK(SignalSelChange), this);
 	g_signal_connect(this->listbox, "button-press-event", G_CALLBACK(SignalButtonPress), this);
@@ -271,7 +271,7 @@ void UI::GTK::GTKListBox::SetSelectedIndex(UOSInt index)
 	Double itemH = h / (Double)this->items.GetCount();
 	Double targetTop = itemH * UOSInt2Double(index);
 	Double targetBottom = targetTop + itemH;
-	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)this->hwnd);
+	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)this->hwnd.OrNull());
 	Double pageSize = gtk_adjustment_get_page_size(adj);
 	Double currVal = gtk_adjustment_get_value(adj);
 	if (currVal + pageSize < targetBottom)

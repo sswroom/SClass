@@ -349,9 +349,9 @@ namespace SSWR
 		public:
 			virtual void Test() = 0;
 
-			Double GetMonitorHDPI(MonitorHandle *hMonitor);
-			Double GetMonitorDDPI(MonitorHandle *hMonitor);
-			void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
+			Double GetMonitorHDPI(Optional<MonitorHandle> hMonitor);
+			Double GetMonitorDDPI(Optional<MonitorHandle> hMonitor);
+			void SetMonitorHDPI(Optional<MonitorHandle> hMonitor, Double monitorHDPI);
 
 			virtual void ExportLite(UnsafeArray<const UTF8Char> folder) = 0;
 		};

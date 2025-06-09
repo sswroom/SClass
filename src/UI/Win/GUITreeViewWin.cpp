@@ -111,8 +111,8 @@ OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 //			ImageList_DragShowNolock(FALSE);
 			tvht.pt.x = Pos.x;
 			tvht.pt.y = Pos.y;
-			if ((hitTarget = (HTREEITEM)SendMessage((HWND)me->hwnd, TVM_HITTEST, 0, (LPARAM)&tvht)) != 0)
-				SendMessage((HWND)me->hwnd, TVM_SELECTITEM, TVGN_DROPHILITE, (LPARAM)hitTarget);
+			if ((hitTarget = (HTREEITEM)SendMessage((HWND)me->hwnd.OrNull(), TVM_HITTEST, 0, (LPARAM)&tvht)) != 0)
+				SendMessage((HWND)me->hwnd.OrNull(), TVM_SELECTITEM, TVGN_DROPHILITE, (LPARAM)hitTarget);
 
 //			ImageList_DragShowNolock(TRUE); 
 		}
@@ -128,9 +128,9 @@ OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 
 //			ImageList_DragLeave((HWND)me->hwnd);
 //			ImageList_EndDrag();
-			Selected = (HTREEITEM)SendMessage((HWND)me->hwnd, TVM_GETNEXTITEM, TVGN_DROPHILITE, 0);
-			SendMessage((HWND)me->hwnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)Selected);
-			SendMessage((HWND)me->hwnd, TVM_SELECTITEM, TVGN_DROPHILITE, 0);
+			Selected = (HTREEITEM)SendMessage((HWND)me->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_DROPHILITE, 0);
+			SendMessage((HWND)me->hwnd.OrNull(), TVM_SELECTITEM, TVGN_CARET, (LPARAM)Selected);
+			SendMessage((HWND)me->hwnd.OrNull(), TVM_SELECTITEM, TVGN_DROPHILITE, 0);
 			me->ReleaseCapture();
 			ShowCursor(TRUE); 
 			me->draging = false;
@@ -141,7 +141,7 @@ OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 				itm.mask = TVIF_HANDLE | TVIF_PARAM;
 				itm.hItem = Selected;
 				itm.lParam = 0;
-				SendMessage((HWND)me->hwnd, TVM_GETITEMW, 0, (LPARAM)&itm);
+				SendMessage((HWND)me->hwnd.OrNull(), TVM_GETITEMW, 0, (LPARAM)&itm);
 				if (dropItem.Set((TreeItem*)itm.lParam))
 				{
 					me->EventDragItem(dragItem, dropItem);
@@ -253,7 +253,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	is.item.lParam = (LPARAM)item.Ptr();
 	is.item.cchTextMax = (Int32)Text::StrCharCnt(wptr);
 	is.item.pszText = (LPWSTR)wptr.Ptr();
-	HTREEITEM hItem = (HTREEITEM)SendMessage((HWND)hwnd, TVM_INSERTITEMW, 0, (LPARAM)&is);
+	HTREEITEM hItem = (HTREEITEM)SendMessage((HWND)hwnd.OrNull(), TVM_INSERTITEMW, 0, (LPARAM)&is);
 	Text::StrDelNew(wptr);
 	if(hItem == 0)
 	{
@@ -300,7 +300,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	is.item.lParam = (LPARAM)item.Ptr();
 	is.item.cchTextMax = (Int32)Text::StrCharCnt(wptr);
 	is.item.pszText = (LPWSTR)wptr.Ptr();
-	HTREEITEM hItem = (HTREEITEM)SendMessage((HWND)hwnd, TVM_INSERTITEMW, 0, (LPARAM)&is);
+	HTREEITEM hItem = (HTREEITEM)SendMessage((HWND)hwnd.OrNull(), TVM_INSERTITEMW, 0, (LPARAM)&is);
 	Text::StrDelNew(wptr);
 	if(hItem == 0)
 	{
@@ -326,7 +326,7 @@ AnyType UI::GUITreeView::RemoveItem(NN<UI::GUITreeView::TreeItem> item)
 	if (i != INVALID_INDEX)
 	{
 		AnyType obj = item->GetItemObj();
-		SendMessage((HWND)hwnd, TVM_DELETEITEM, 0, (LPARAM)item->GetHItem());
+		SendMessage((HWND)hwnd.OrNull(), TVM_DELETEITEM, 0, (LPARAM)item->GetHItem());
 		this->treeItems.RemoveAt(i);
 		item.Delete();
 		return obj;
@@ -339,7 +339,7 @@ AnyType UI::GUITreeView::RemoveItem(NN<UI::GUITreeView::TreeItem> item)
 
 void UI::GUITreeView::ClearItems()
 {
-	SendMessage((HWND)hwnd, TVM_DELETEITEM, 0, 0);
+	SendMessage((HWND)hwnd.OrNull(), TVM_DELETEITEM, 0, 0);
 	FreeItems();
 }
 
@@ -355,24 +355,24 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UOSInt index)
 
 void UI::GUITreeView::ExpandItem(NN<UI::GUITreeView::TreeItem> titem)
 {
-	SendMessage((HWND)this->hwnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)titem->GetHItem());
+	SendMessage((HWND)this->hwnd.OrNull(), TVM_EXPAND, TVE_EXPAND, (LPARAM)titem->GetHItem());
 }
 
 Bool UI::GUITreeView::IsExpanded(NN<UI::GUITreeView::TreeItem> titem)
 {
-	return (SendMessage((HWND)this->hwnd, TVM_GETITEMSTATE, (WPARAM)titem->GetHItem(), TVIS_EXPANDED) & TVIS_EXPANDED) != 0;
+	return (SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEMSTATE, (WPARAM)titem->GetHItem(), TVIS_EXPANDED) & TVIS_EXPANDED) != 0;
 }
 
 void UI::GUITreeView::SetHasLines(Bool hasLines)
 {
-	Int32 ws = GetWindowLong((HWND)this->hwnd, GWL_STYLE);
+	Int32 ws = GetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE);
 	if (hasLines)
 	{
 		if ((ws & TVS_HASLINES) == 0)
 		{
 			ws |= TVS_HASLINES;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 		}
 	}
 	else
@@ -380,22 +380,22 @@ void UI::GUITreeView::SetHasLines(Bool hasLines)
 		if (ws & TVS_HASLINES)
 		{
 			ws &= ~TVS_HASLINES;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 		}
 	}
 }
 
 void UI::GUITreeView::SetHasCheckBox(Bool hasCheckBox)
 {
-	Int32 ws = GetWindowLong((HWND)this->hwnd, GWL_STYLE);
+	Int32 ws = GetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE);
 	if (hasCheckBox)
 	{
 		if ((ws & TVS_CHECKBOXES) == 0)
 		{
 			ws |= TVS_CHECKBOXES;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 		}
 	}
 	else
@@ -403,22 +403,22 @@ void UI::GUITreeView::SetHasCheckBox(Bool hasCheckBox)
 		if (ws & TVS_CHECKBOXES)
 		{
 			ws &= ~TVS_CHECKBOXES;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 		}
 	}
 }
 
 void UI::GUITreeView::SetHasButtons(Bool hasButtons)
 {
-	Int32 ws = GetWindowLong((HWND)this->hwnd, GWL_STYLE);
+	Int32 ws = GetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE);
 	if (hasButtons)
 	{
 		if ((ws & TVS_HASBUTTONS) == 0)
 		{
 			ws |= TVS_HASBUTTONS;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 		}
 	}
 	else
@@ -426,8 +426,8 @@ void UI::GUITreeView::SetHasButtons(Bool hasButtons)
 		if (ws & TVS_HASBUTTONS)
 		{
 			ws &= ~TVS_HASBUTTONS;
-			SetWindowLong((HWND)this->hwnd, GWL_STYLE, ws);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			SetWindowLong((HWND)this->hwnd.OrNull(), GWL_STYLE, ws);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 		}
 	}
 }
@@ -439,14 +439,14 @@ void UI::GUITreeView::SetAutoFocus(Bool autoFocus)
 
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 {
-	HTREEITEM hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd, TVM_GETNEXTITEM, TVGN_CARET, 0);
+	HTREEITEM hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_CARET, 0);
 	if (hTreeItem == 0)
 		return 0;
 	TVITEM item;
 	item.mask = TVIF_HANDLE | TVIF_PARAM;
 	item.hItem =  hTreeItem;
 	item.lParam = 0;
-	if (SendMessage((HWND)this->hwnd, TVM_GETITEM, 0, (LPARAM)&item))
+	if (SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEM, 0, (LPARAM)&item))
 	{
 		return (UI::GUITreeView::TreeItem *)item.lParam;
 	}
@@ -455,10 +455,10 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 {
-	HTREEITEM hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd, TVM_GETNEXTITEM, TVGN_DROPHILITE, 0);
+	HTREEITEM hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_DROPHILITE, 0);
 	if (hTreeItem == 0)
 	{
-		hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd, TVM_GETNEXTITEM, TVGN_CARET, 0);
+		hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_CARET, 0);
 		if (hTreeItem == 0)
 			return 0;
 	}
@@ -466,7 +466,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 	item.mask = TVIF_HANDLE | TVIF_PARAM;
 	item.hItem =  hTreeItem;
 	item.lParam = 0;
-	if (SendMessage((HWND)this->hwnd, TVM_GETITEM, 0, (LPARAM)&item))
+	if (SendMessage((HWND)this->hwnd.OrNull(), TVM_GETITEM, 0, (LPARAM)&item))
 	{
 		return (UI::GUITreeView::TreeItem *)item.lParam;
 	}
@@ -475,8 +475,8 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 
 void UI::GUITreeView::BeginEdit(NN<TreeItem> item)
 {
-	SendMessage((HWND)this->hwnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->GetHItem());
-	SendMessage((HWND)this->hwnd, TVM_EDITLABEL, 0, (LPARAM)item->GetHItem());
+	SendMessage((HWND)this->hwnd.OrNull(), TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->GetHItem());
+	SendMessage((HWND)this->hwnd.OrNull(), TVM_EDITLABEL, 0, (LPARAM)item->GetHItem());
 }
 
 Text::CStringNN UI::GUITreeView::GetObjectClass() const

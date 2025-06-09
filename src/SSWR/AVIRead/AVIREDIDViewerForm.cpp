@@ -225,7 +225,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 	UOSInt edidSize;
 	UnsafeArray<UInt8> edid;
 	UnsafeArray<UInt8> edidSrc;
-	MonitorHandle *hMon = this->GetHMonitor();
+	Optional<MonitorHandle> hMon = this->GetHMonitor();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	if (this->edid.SetTo(edid))

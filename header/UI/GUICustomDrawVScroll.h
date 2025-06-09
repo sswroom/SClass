@@ -10,9 +10,11 @@ namespace UI
 	class GUICustomDrawVScroll : public UI::GUIControl
 	{
 	public:
+		struct ClassData;
+
 		NN<Media::DrawEngine> deng;
 		Optional<Media::ColorSess> colorSess;
-		void *clsData;
+		NN<ClassData> clsData;
 		typedef enum
 		{
 			KBTN_NONE = 0,
@@ -27,8 +29,8 @@ namespace UI
 	private:
 		static OSInt __stdcall CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 		void OnPaint();
-		void Init(InstanceHandle *hInst);
-		void Deinit(InstanceHandle *hInst);
+		void Init(Optional<InstanceHandle> hInst);
+		void Deinit(Optional<InstanceHandle> hInst);
 	
 	protected:
 		void ClearBackground(NN<Media::DrawImage> img);

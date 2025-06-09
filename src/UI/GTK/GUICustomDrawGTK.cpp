@@ -14,10 +14,10 @@
 #include <stdio.h>
 
 Int32 UI::GUICustomDraw::useCnt = 0;
-typedef struct
+struct UI::GUICustomDraw::ClassData
 {
 	guint timerId;
-} ClassData;
+};
 
 Int32 GUICustomDraw_OnTick(void *userObj)
 {
@@ -314,18 +314,18 @@ UI::GUICustomDraw::GUICustomDraw(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 {
 	this->eng = eng;
 	this->colorSess = colorSess;
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
-	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUICustomDraw_OnDraw), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUICustomDraw_OnMouseDown), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUICustomDraw_OnMouseUp), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "motion-notify-event", G_CALLBACK(GUICustomDraw_OnMouseMove), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "scroll-event", G_CALLBACK(GUICustomDraw_OnMouseWheel), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUICustomDraw_OnKeyDown), this);
-	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
-	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "draw", G_CALLBACK(GUICustomDraw_OnDraw), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-press-event", G_CALLBACK(GUICustomDraw_OnMouseDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-release-event", G_CALLBACK(GUICustomDraw_OnMouseUp), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "motion-notify-event", G_CALLBACK(GUICustomDraw_OnMouseMove), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "scroll-event", G_CALLBACK(GUICustomDraw_OnMouseWheel), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "key-press-event", G_CALLBACK(GUICustomDraw_OnKeyDown), this);
+	gtk_widget_set_events((GtkWidget*)this->hwnd.OrNull(), GDK_ALL_EVENTS_MASK);
+	gtk_widget_set_can_focus((GtkWidget*)this->hwnd.OrNull(), true);
 	parent->AddChild(*this);
 	this->Show();
 	data->timerId = g_timeout_add(50, GUICustomDraw_OnTick, this);
@@ -333,9 +333,9 @@ UI::GUICustomDraw::GUICustomDraw(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 
 UI::GUICustomDraw::~GUICustomDraw()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	g_source_remove(data->timerId);
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 Text::CStringNN UI::GUICustomDraw::GetObjectClass() const

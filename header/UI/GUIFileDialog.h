@@ -12,7 +12,7 @@ namespace UI
 	{
 	protected:
 		Optional<IO::Registry> reg;
-		WChar *dialogName;
+		UnsafeArray<WChar> dialogName;
 		UnsafeArrayOpt<const WChar> lastName;
 		Optional<Text::String> fileName;
 		Bool isSave;
@@ -24,7 +24,7 @@ namespace UI
 
 		void ClearFileNames();
 	public:
-		GUIFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
+		GUIFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave);
 		virtual ~GUIFileDialog();
 
 		void AddFilter(Text::CStringNN pattern, Text::CStringNN name);
@@ -35,7 +35,7 @@ namespace UI
 		Optional<Text::String> GetFileNames(UOSInt index);
 		void SetAllowMultiSel(Bool allowMulti);
 
-		virtual Bool ShowDialog(ControlHandle *ownerHandle) = 0;
+		virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle) = 0;
 	};
 }
 #endif

@@ -416,7 +416,7 @@ OSInt UI::GUIPictureBoxDD::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIPictureBoxDD::ChangeMonitor(MonitorHandle *hMon)
+void UI::GUIPictureBoxDD::ChangeMonitor(Optional<MonitorHandle> hMon)
 {
 	this->currMon = hMon;
 

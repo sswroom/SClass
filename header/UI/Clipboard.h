@@ -23,7 +23,7 @@ namespace UI
 		Bool succ;
 		ClassData *clsData;
 	public:
-		Clipboard(void *hwnd);
+		Clipboard(Optional<ControlHandle> hwnd);
 		~Clipboard();
 
 		UOSInt GetDataFormats(Data::ArrayList<UInt32> *dataTypes);
@@ -33,8 +33,8 @@ namespace UI
 
 	public:
 		static Bool GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilderUTF8> sb, UInt32 tymed);
-		static Bool SetString(ControlHandle *hWndOwner, Text::CStringNN s);
-		static Bool GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb);
+		static Bool SetString(Optional<ControlHandle> hWndOwner, Text::CStringNN s);
+		static Bool GetString(Optional<ControlHandle> hWndOwner, NN<Text::StringBuilderUTF8> sb);
 		static UnsafeArray<UTF8Char> GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UOSInt buffSize);
 	};
 }

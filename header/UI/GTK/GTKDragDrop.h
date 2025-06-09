@@ -38,8 +38,8 @@ namespace UI
 		class GTKDragDrop
 		{
 		private:
-			UI::GUIDropHandler *hdlr;
-			void *hWnd;
+			NN<UI::GUIDropHandler> hdlr;
+			Optional<ControlHandle> hWnd;
 			UI::GUIDropHandler::DragEffect currEff;
 			GTKDropData *dragData;
 
@@ -48,10 +48,10 @@ namespace UI
 			static gboolean OnDragDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint y, guint time, gpointer user_data);
 			static void OnDropData(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer user_data);
 		public:
-			GTKDragDrop(void *hWnd, UI::GUIDropHandler *hdlr);
+			GTKDragDrop(Optional<ControlHandle> hWnd, NN<UI::GUIDropHandler> hdlr);
 			~GTKDragDrop();
 
-			void SetHandler(UI::GUIDropHandler *hdlr);
+			void SetHandler(NN<UI::GUIDropHandler> hdlr);
 
 			Int32 EventDragMotion(void *context, OSInt x, OSInt y, UInt32 time);
 			void EventDragLeave();		

@@ -126,7 +126,7 @@ IO::Stream *UI::Win::WinDropData::GetDataStream(UnsafeArray<const UTF8Char> name
 	}
 }
 
-UI::Win::WinDragDrop::WinDragDrop(void *hWnd, UI::GUIDropHandler *hdlr)
+UI::Win::WinDragDrop::WinDragDrop(Optional<ControlHandle> hWnd, NN<UI::GUIDropHandler> hdlr)
 {
 	this->hWnd = hWnd;
 	this->hdlr = hdlr;
@@ -213,7 +213,7 @@ HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::Drop(IDataObject *pDataObj, DWOR
 	return S_OK;
 }
 
-void UI::Win::WinDragDrop::SetHandler(UI::GUIDropHandler *hdlr)
+void UI::Win::WinDragDrop::SetHandler(NN<UI::GUIDropHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }

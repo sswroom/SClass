@@ -13,7 +13,7 @@ namespace UI
 			GTKFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 			virtual ~GTKFontDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

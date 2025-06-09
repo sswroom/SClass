@@ -10,7 +10,7 @@
 
 #define MAXFILENAMESIZE 512
 
-UI::Win::WinFileDialog::WinFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave) : UI::GUIFileDialog(compName, appName, dialogName, isSave)
+UI::Win::WinFileDialog::WinFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave) : UI::GUIFileDialog(compName, appName, dialogName, isSave)
 {
 }
 
@@ -18,7 +18,7 @@ UI::Win::WinFileDialog::~WinFileDialog()
 {
 }
 
-Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::Win::WinFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
 	WChar fname1[512];
 	WChar fname2[512];

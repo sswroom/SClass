@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnEDIDClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UOSInt edidSize;
 	UnsafeArray<UInt8> edidSrc;
-	MonitorHandle *hMon = me->GetHMonitor();
+	Optional<MonitorHandle> hMon = me->GetHMonitor();
 
 	Media::EDID::EDIDInfo info;
 	Media::DDCReader reader(hMon);

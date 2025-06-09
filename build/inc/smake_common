@@ -3992,6 +3992,8 @@ SSWR/AVIRead/AVIRDS18B20Form.h:
 @AVIRDS18B20Form.o
 SSWR/AVIRead/AVIRDWQB30Form.h:
 @AVIRDWQB30Form.o
+SSWR/AVIRead/AVIREdgeAnalyseForm.h:
+@AVIREdgeAnalyseForm.o
 SSWR/AVIRead/AVIREDIDViewerForm.h:
 @AVIREDIDViewerForm.o
 SSWR/AVIRead/AVIReGaugeSvrForm.h:

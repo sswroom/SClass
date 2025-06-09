@@ -57,8 +57,8 @@ void UI::Win::WinPictureBox::OnPaint()
 	HGDIOBJ lastObj;
 	PAINTSTRUCT ps;
 	RECT rc;
-	GetClientRect((HWND)this->hwnd, &rc);
-	BeginPaint((HWND)this->hwnd, &ps);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rc);
+	BeginPaint((HWND)this->hwnd.OrNull(), &ps);
 	if (!this->noBGColor)
 	{
 		if (this->hbrBackground)
@@ -111,17 +111,17 @@ void UI::Win::WinPictureBox::OnPaint()
 		SelectObject(ps.hdc, lastObj);
 		DeleteObject(p);
 	}
-	EndPaint((HWND)this->hwnd, &ps);
+	EndPaint((HWND)this->hwnd.OrNull(), &ps);
 }
 
-void UI::Win::WinPictureBox::Init(InstanceHandle *hInst)
+void UI::Win::WinPictureBox::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::Win::WinPictureBox::PBWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, IDC_ARROW); 
     wc.hbrBackground = 0; 
@@ -132,9 +132,9 @@ void UI::Win::WinPictureBox::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::Win::WinPictureBox::Deinit(InstanceHandle *hInst)
+void UI::Win::WinPictureBox::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void UI::Win::WinPictureBox::UpdatePreview()

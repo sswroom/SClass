@@ -611,7 +611,7 @@ void UI::GUITextFileView::EnsureCaretVisible()
 			line = MemAlloc(WChar, charCnt + 1);
 			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
 			Text::StrReplaceW(line, '\t', ' ');
-			this->GetDrawSize(line, this->caretX, &drawW, &drawH);
+			this->GetDrawSize(line, this->caretX, drawW, drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
 			MemFree(line);
 		}
@@ -1496,7 +1496,7 @@ void UI::GUITextFileView::UpdateCaretPos()
 			line = MemAlloc(WChar, charCnt + 1);
 			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
 			Text::StrReplaceW(line, '\t', ' ');
-			this->GetDrawSize(line, this->caretX, &drawW, &drawH);
+			this->GetDrawSize(line, this->caretX, drawW, drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
 			MemFree(line);
 		}

@@ -46,7 +46,7 @@ UI::Win::WinButton::WinButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, T
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", txt.v.Ptr(), style, 0, 0, 0, 200, 24);
 #ifndef _WIN32_WCE
-	SetWindowLongPtr((HWND)this->hwnd, GWLP_ID, (Int32)(this->btnId = nextId++));
+	SetWindowLongPtr((HWND)this->hwnd.OrNull(), GWLP_ID, (Int32)(this->btnId = nextId++));
 #else
 	this->btnId = nextId++;
 #endif
@@ -70,7 +70,7 @@ UI::Win::WinButton::~WinButton()
 void UI::Win::WinButton::SetText(Text::CStringNN text)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
-	SetWindowTextW((HWND)this->hwnd, wptr.Ptr());
+	SetWindowTextW((HWND)this->hwnd.OrNull(), wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 
@@ -117,5 +117,5 @@ OSInt UI::Win::WinButton::GetBtnId()
 
 void UI::Win::WinButton::SetDefaultBtnLook()
 {
-	SendMessage((HWND)this->hwnd, BM_SETSTYLE, BS_DEFPUSHBUTTON, TRUE);
+	SendMessage((HWND)this->hwnd.OrNull(), BM_SETSTYLE, BS_DEFPUSHBUTTON, TRUE);
 }

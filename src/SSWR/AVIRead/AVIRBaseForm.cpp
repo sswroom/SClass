@@ -80,6 +80,7 @@
 #include "SSWR/AVIRead/AVIRDragDropViewerForm.h"
 #include "SSWR/AVIRead/AVIRDS18B20Form.h"
 #include "SSWR/AVIRead/AVIRDWQB30Form.h"
+#include "SSWR/AVIRead/AVIREdgeAnalyseForm.h"
 #include "SSWR/AVIRead/AVIREDIDViewerForm.h"
 #include "SSWR/AVIRead/AVIReGaugeSvrForm.h"
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
@@ -542,7 +543,8 @@ typedef enum
 	MNU_WSDISCOVERY,
 	MNU_WSDLISTENER,
 	MNU_WEBPUSH,
-	MNU_CHROME_DEVTOOLS
+	MNU_CHROME_DEVTOOLS,
+	MNU_EDGE_ANALYSE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -859,6 +861,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2 = mnu->AddSubMenu(CSTR("Other"));
 	mnu2->AddItem(CSTR("GPSDev Viewer"), MNU_GPSDEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JT/T808 Server"), MNU_JTT808, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Edge Analyse Device"), MNU_EDGE_ANALYSE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("Throughput Test"));
 	mnu2->AddItem(CSTR("TCP Conn Test"), MNU_TCPTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3165,6 +3168,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRChromeDevToolsForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRChromeDevToolsForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_EDGE_ANALYSE:
+		{
+			NN<SSWR::AVIRead::AVIREdgeAnalyseForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREdgeAnalyseForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

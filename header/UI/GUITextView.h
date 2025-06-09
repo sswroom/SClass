@@ -30,8 +30,8 @@ namespace UI
 	private:
 		static OSInt __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 		static void __stdcall OnResize(AnyType userObj);
-		void Init(InstanceHandle *hInst);
-		void Deinit(InstanceHandle *hInst);
+		void Init(Optional<InstanceHandle> hInst);
+		void Deinit(Optional<InstanceHandle> hInst);
 		void OnPaint();
 		void UpdateScrollBar();
 
@@ -42,8 +42,8 @@ namespace UI
 		void SetScrollHRange(UOSInt min, UOSInt max);
 		void SetScrollVRange(UOSInt min, UOSInt max);
 
-		UInt32 GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth);
-		void GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height);
+		UInt32 GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt strLen, UOSInt pxWidth);
+		void GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, OutParam<UOSInt> width, OutParam<UOSInt> height);
 		void SetCaretPos(OSInt scnX, OSInt scnY);
 	public:
 		GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess);

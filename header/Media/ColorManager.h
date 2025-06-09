@@ -106,9 +106,9 @@ namespace Media
 		void SetYUVType(Media::ColorProfile::YUVType newVal);
 		Media::ColorProfile::YUVType GetDefYUVType();
 
-		NN<MonitorColorManager> GetMonColorManager(Optional<Text::String> profileName);
-		NN<MonitorColorManager> GetMonColorManager(MonitorHandle *hMon);
-		NN<ColorManagerSess> CreateSess(MonitorHandle *hMon);
+		NN<MonitorColorManager> GetMonColorManagerByName(Optional<Text::String> profileName);
+		NN<MonitorColorManager> GetMonColorManager(Optional<MonitorHandle> hMon);
+		NN<ColorManagerSess> CreateSess(Optional<MonitorHandle> hMon);
 		void DeleteSess(NN<ColorManagerSess> sess);
 	};
 
@@ -134,7 +134,7 @@ namespace Media
 		Media::ColorProfile::YUVType GetDefYUVType();
 		Bool Get10BitColor();
 
-		void ChangeMonitor(MonitorHandle *hMon);
+		void ChangeMonitor(Optional<MonitorHandle> hMon);
 
 		void RGBUpdated(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 		void YUVUpdated(NN<const Media::ColorHandler::YUVPARAM> yuvParam);

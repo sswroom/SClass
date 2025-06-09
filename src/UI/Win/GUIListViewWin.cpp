@@ -96,11 +96,11 @@ void UI::GUIListView::EndAddingImage()
 {
 	if (this->lvStyle == UI::ListViewStyle::SmallIcon)
 	{
-		SendMessage((HWND)this->hwnd, LVM_SETIMAGELIST, LVSIL_SMALL, (LPARAM)this->himgList);
+		SendMessage((HWND)this->hwnd.OrNull(), LVM_SETIMAGELIST, LVSIL_SMALL, (LPARAM)this->himgList);
 	}
 	else
 	{
-		SendMessage((HWND)this->hwnd, LVM_SETIMAGELIST, LVSIL_NORMAL, (LPARAM)this->himgList);
+		SendMessage((HWND)this->hwnd.OrNull(), LVM_SETIMAGELIST, LVSIL_NORMAL, (LPARAM)this->himgList);
 	}
 }
 
@@ -136,7 +136,7 @@ Bool UI::GUIListView::AddColumn(UnsafeArray<const WChar> columnName, Double colW
 	col.pszText = (LPWSTR)columnName.Ptr();
 	col.cx = Double2Int32(colWidth * this->hdpi / this->ddpi);
 
-	OSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTCOLUMNW, this->colCnt, (LPARAM)&col);
+	OSInt ret = SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTCOLUMNW, this->colCnt, (LPARAM)&col);
 	if (ret != -1)
 	{
 		this->colCnt++;
@@ -151,7 +151,7 @@ Bool UI::GUIListView::SetColumnWidth(UOSInt index, Double colWidth)
 	col.mask = LVCF_WIDTH;
 	col.cx = Double2Int32(colWidth * this->hdpi / this->ddpi);
 
-	OSInt ret = SendMessage((HWND)this->hwnd, LVM_SETCOLUMNW, index, (LPARAM)&col);
+	OSInt ret = SendMessage((HWND)this->hwnd.OrNull(), LVM_SETCOLUMNW, index, (LPARAM)&col);
 	if (ret != -1)
 	{
 		return true;
@@ -164,7 +164,7 @@ Bool UI::GUIListView::ClearAll()
 	while (this->colCnt > 0)
 	{
 		this->colCnt--;
-		SendMessage((HWND)this->hwnd, LVM_DELETECOLUMN, this->colCnt, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), LVM_DELETECOLUMN, this->colCnt, 0);
 	}
 	this->ClearItems();
 	return true;
@@ -182,7 +182,7 @@ UOSInt UI::GUIListView::AddItem(NN<Text::String> itemText, AnyType itemObj)
 	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)ws;
 	item.cchTextMax = 256;
-	strLen = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
+	strLen = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEMW, 0, (LPARAM)&item);
 	Text::StrDelNew(ws);
 	return strLen;
 }
@@ -199,7 +199,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)ws;
 	item.cchTextMax = 256;
-	strLen = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
+	strLen = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEMW, 0, (LPARAM)&item);
 	Text::StrDelNew(ws);
 	return strLen;
 }
@@ -213,7 +213,7 @@ UOSInt UI::GUIListView::AddItem(UnsafeArray<const WChar> itemText, AnyType itemO
 	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)itemText.Ptr();
 	item.cchTextMax = 256;
-	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
+	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEMW, 0, (LPARAM)&item);
 }
 
 UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj, UOSInt imageIndex)
@@ -226,7 +226,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj, UOSIn
 	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText.v).Ptr();
 	item.cchTextMax = (int)itemText.leng;
 	item.iImage = (Int32)imageIndex;
-	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	return ret;
 }
@@ -241,7 +241,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, NN<Text::String>
 	ws = Text::StrToWCharNew(text->v);
 	item.pszText = (LPWSTR)ws.Ptr();
 	item.cchTextMax = (int)Text::StrCharCnt(ws);
-	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
+	Bool ret = (SendMessage((HWND)this->hwnd.OrNull(), LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 	Text::StrDelNew(ws);
 	return ret;
 }
@@ -266,7 +266,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN 
 		item.pszText = 0;
 		item.cchTextMax = 0;
 	}
-	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
+	Bool ret = (SendMessage((HWND)this->hwnd.OrNull(), LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 	if (optws.SetTo(ws)) Text::StrDelNew(ws);
 	return ret;
 }
@@ -279,7 +279,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, UnsafeArray<cons
 	item.mask = LVIF_TEXT;
 	item.pszText = (LPWSTR)text.Ptr();
 	item.cchTextMax = 256;
-	return (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
+	return (SendMessage((HWND)this->hwnd.OrNull(), LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 }
 
 Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, NN<Text::StringBuilderUTF8> sb)
@@ -291,7 +291,7 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, NN<Text::StringB
 	item.mask = LVIF_TEXT;
 	item.pszText = MemAlloc(WCHAR, 256);
 	item.cchTextMax = 256;
-	Bool ret = (SendMessage((HWND)this->hwnd, LVM_GETITEMW, 0, (LPARAM)&item) == TRUE);
+	Bool ret = (SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEMW, 0, (LPARAM)&item) == TRUE);
 	if (ret)
 	{
 		sb->AppendW(item.pszText);
@@ -313,7 +313,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, AnyTy
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
 	item.pszText = (LPWSTR)wptr.Ptr();
 	item.cchTextMax = 256;
-	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew(wptr);
 	return ret;
 }
@@ -327,13 +327,13 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, UnsafeArray<const WChar> itemTe
 	item.lParam = (LPARAM)itemObj.p;
 	item.pszText = (LPWSTR)itemText.Ptr();
 	item.cchTextMax = 256;
-	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
+	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_INSERTITEM, 0, (LPARAM)&item);
 }
 
 AnyType UI::GUIListView::RemoveItem(UOSInt index)
 {
 	AnyType item = GetItem(index);
-	SendMessage((HWND)this->hwnd, LVM_DELETEITEM, index, 0);
+	SendMessage((HWND)this->hwnd.OrNull(), LVM_DELETEITEM, index, 0);
 	return item;
 }
 
@@ -344,40 +344,40 @@ AnyType UI::GUIListView::GetItem(UOSInt index)
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM;
 	item.lParam = 0;
-    SendMessage((HWND)this->hwnd, LVM_GETITEM, 0, (LPARAM)&item);
+    SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEM, 0, (LPARAM)&item);
 	return (void*)item.lParam;
 }
 
 void UI::GUIListView::ClearItems()
 {
-	SendMessage((HWND)this->hwnd, LVM_DELETEALLITEMS, 0, 0);
+	SendMessage((HWND)this->hwnd.OrNull(), LVM_DELETEALLITEMS, 0, 0);
 }
 
 UOSInt UI::GUIListView::GetCount()
 {
-	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
+	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEMCOUNT, 0, 0);
 }
 
 void UI::GUIListView::SetSelectedIndex(UOSInt index)
 {
-	SendMessage((HWND)this->hwnd, LVM_SETSELECTIONMARK, 0, (LPARAM)index);
+	SendMessage((HWND)this->hwnd.OrNull(), LVM_SETSELECTIONMARK, 0, (LPARAM)index);
 	this->EventSelChg();
 }
 
 UOSInt UI::GUIListView::GetSelectedIndex()
 {
-	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETSELECTIONMARK, 0, 0);
+	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETSELECTIONMARK, 0, 0);
 }
 
 UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
 {
-	UOSInt cnt = (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETITEMCOUNT, 0, 0);
+	UOSInt cnt = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEMCOUNT, 0, 0);
 	UOSInt i;
 	UOSInt ret = 0;
 	i = 0;
 	while (i < cnt)
 	{
-		if (SendMessage((HWND)this->hwnd, LVM_GETITEMSTATE, i, LVIS_SELECTED) != 0)
+		if (SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEMSTATE, i, LVIS_SELECTED) != 0)
 		{
 			selIndices->Add(i);
 			ret++;
@@ -420,7 +420,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff
 	item.iSubItem = 0;
 	item.cchTextMax = 256;
 	item.pszText = wbuff;
-	SendMessage((HWND)this->hwnd, LVM_GETITEMTEXTW, index, (LPARAM)&item);
+	SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEMTEXTW, index, (LPARAM)&item);
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
@@ -438,12 +438,12 @@ Optional<Text::String> UI::GUIListView::GetItemTextNew(UOSInt index)
 
 void UI::GUIListView::SetFullRowSelect(Bool fullRowSelect)
 {
-	SendMessage((HWND)this->hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_FULLROWSELECT, fullRowSelect?LVS_EX_FULLROWSELECT:0);
+	SendMessage((HWND)this->hwnd.OrNull(), LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_FULLROWSELECT, fullRowSelect?LVS_EX_FULLROWSELECT:0);
 }
 
 void UI::GUIListView::SetShowGrid(Bool showGrid)
 {
-	SendMessage((HWND)this->hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_GRIDLINES, showGrid?LVS_EX_GRIDLINES:0);
+	SendMessage((HWND)this->hwnd.OrNull(), LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_GRIDLINES, showGrid?LVS_EX_GRIDLINES:0);
 }
 
 UOSInt UI::GUIListView::GetStringWidth(UnsafeArray<const UTF8Char> s)
@@ -451,21 +451,21 @@ UOSInt UI::GUIListView::GetStringWidth(UnsafeArray<const UTF8Char> s)
 	UOSInt strLen = Text::StrUTF8_WCharCnt(s);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
 	Text::StrUTF8_WChar(ws, s, 0);
-	strLen = (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws);
+	strLen = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETSTRINGWIDTHW, 0, (LPARAM)ws);
 	MemFree(ws);
 	return strLen;
 }
 
 UOSInt UI::GUIListView::GetStringWidth(const WChar *s)
 {
-	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_GETSTRINGWIDTHW, 0, (LPARAM)s);
+	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETSTRINGWIDTHW, 0, (LPARAM)s);
 }
 
 void UI::GUIListView::GetItemRectP(UOSInt index, Int32 *rect)
 {
 	RECT rc;
 	rc.left = LVIR_BOUNDS;
-	if (SendMessage((HWND)this->hwnd, LVM_GETITEMRECT, index, (LPARAM)&rc) == TRUE)
+	if (SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEMRECT, index, (LPARAM)&rc) == TRUE)
 	{
 		rect[0] = rc.left;
 		rect[1] = rc.top;
@@ -483,7 +483,7 @@ void UI::GUIListView::GetItemRectP(UOSInt index, Int32 *rect)
 
 void UI::GUIListView::EnsureVisible(UOSInt index)
 {
-	SendMessage((HWND)this->hwnd, LVM_ENSUREVISIBLE, index, (LPARAM)TRUE);
+	SendMessage((HWND)this->hwnd.OrNull(), LVM_ENSUREVISIBLE, index, (LPARAM)TRUE);
 }
 
 AnyType UI::GUIListView::SetItem(UOSInt index, AnyType itemObj)
@@ -493,7 +493,7 @@ AnyType UI::GUIListView::SetItem(UOSInt index, AnyType itemObj)
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM;
 	item.lParam = (LPARAM)itemObj.p;
-    SendMessage((HWND)this->hwnd, LVM_SETITEM, 0, (LPARAM)&item);
+    SendMessage((HWND)this->hwnd.OrNull(), LVM_SETITEM, 0, (LPARAM)&item);
 	return (void*)item.lParam;
 
 }
@@ -585,7 +585,7 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 {
 	if (this->lvStyle == UI::ListViewStyle::Icon)
 	{
-		SendMessage((HWND)this->hwnd, LVM_ARRANGE, LVA_DEFAULT, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), LVM_ARRANGE, LVA_DEFAULT, 0);
 	}
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
@@ -654,11 +654,11 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 	Double ratio = this->hdpi / oldHDPI * oldDDPI / this->ddpi;
 	while (i < this->colCnt)
 	{
-		ret = SendMessage((HWND)this->hwnd, LVM_GETCOLUMNW, i, (LPARAM)&col);
+		ret = SendMessage((HWND)this->hwnd.OrNull(), LVM_GETCOLUMNW, i, (LPARAM)&col);
 		if (ret != 0)
 		{
 			col.cx = Double2Int32(col.cx * ratio);
-			ret = SendMessage((HWND)this->hwnd, LVM_SETCOLUMNW, i, (LPARAM)&col);
+			ret = SendMessage((HWND)this->hwnd.OrNull(), LVM_SETCOLUMNW, i, (LPARAM)&col);
 		}
 		i++;
 	}

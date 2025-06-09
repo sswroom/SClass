@@ -358,14 +358,14 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::GUITextView::Init(InstanceHandle *hInst)
+void UI::GUITextView::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::GUITextView::TFVWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, IDC_IBEAM); 
     wc.hbrBackground = 0;//BGBRUSH; 
@@ -376,29 +376,29 @@ void UI::GUITextView::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::GUITextView::Deinit(InstanceHandle *hInst)
+void UI::GUITextView::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void UI::GUITextView::OnPaint()
 {
 	RECT rc;
 	PAINTSTRUCT ps;
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rc);
 	NN<Media::GDIImage> img;
 	if (!Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
 	{	
-		BeginPaint((HWND)this->hwnd, &ps);
+		BeginPaint((HWND)this->hwnd.OrNull(), &ps);
 		FillRect(ps.hdc, &rc, BGBRUSH);
-		EndPaint((HWND)this->hwnd, &ps);
+		EndPaint((HWND)this->hwnd.OrNull(), &ps);
 		return;
 	}
 
 	this->DrawImage(img);
-	BeginPaint((HWND)this->hwnd, &ps);
+	BeginPaint((HWND)this->hwnd.OrNull(), &ps);
 	BitBlt(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top, (HDC)img->hdcBmp, 0, 0, SRCCOPY);
-	EndPaint((HWND)this->hwnd, &ps);
+	EndPaint((HWND)this->hwnd.OrNull(), &ps);
 	this->UpdateCaretPos();
 }
 
@@ -429,17 +429,17 @@ void UI::GUITextView::UpdateScrollBar()
 			img->DelFont(fnt);
 		}
 	}
-	GetClientRect((HWND)this->hwnd, &rc);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rc);
 	SCROLLINFO si;
 	si.cbSize = sizeof(si);
 	si.fMask = SIF_PAGE;
 	si.nPage = (UINT)Double2Int32((rc.bottom - rc.top) / sz.y);
 	this->pageLineCnt = si.nPage;
 	this->pageLineHeight = Double2Int32(sz.y);
-	SetScrollInfo((HWND)this->hwnd, SB_VERT, &si, TRUE);
+	SetScrollInfo((HWND)this->hwnd.OrNull(), SB_VERT, &si, TRUE);
 
 	si.nPage = (UINT)(rc.right - rc.left);
-	SetScrollInfo((HWND)this->hwnd, SB_HORZ, &si, TRUE);
+	SetScrollInfo((HWND)this->hwnd.OrNull(), SB_HORZ, &si, TRUE);
 }
 
 Bool UI::GUITextView::IsShiftPressed()
@@ -450,25 +450,25 @@ Bool UI::GUITextView::IsShiftPressed()
 
 void UI::GUITextView::SetScrollHPos(UOSInt pos, Bool redraw)
 {
-	SetScrollPos((HWND)this->hwnd, SB_HORZ, (int)(OSInt)pos, redraw?TRUE:FALSE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(OSInt)pos, redraw?TRUE:FALSE);
 }
 
 void UI::GUITextView::SetScrollVPos(UOSInt pos, Bool redraw)
 {
-	SetScrollPos((HWND)this->hwnd, SB_VERT, (int)(OSInt)pos, redraw?TRUE:FALSE);
+	SetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT, (int)(OSInt)pos, redraw?TRUE:FALSE);
 }
 
 void UI::GUITextView::SetScrollHRange(UOSInt min, UOSInt max)
 {
-	SetScrollRange((HWND)this->hwnd, SB_HORZ, (int)(OSInt)min, (int)(OSInt)max, TRUE);	
+	SetScrollRange((HWND)this->hwnd.OrNull(), SB_HORZ, (int)(OSInt)min, (int)(OSInt)max, TRUE);	
 }
 
 void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 {
-	SetScrollRange((HWND)this->hwnd, SB_VERT, (int)(OSInt)min, (int)(OSInt)max, TRUE);
+	SetScrollRange((HWND)this->hwnd.OrNull(), SB_VERT, (int)(OSInt)min, (int)(OSInt)max, TRUE);
 }
 
-UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
+UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt strLen, UOSInt pxWidth)
 {
 	NN<Media::GDIImage> img;
 	if (Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
@@ -480,7 +480,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 			HDC hdc = (HDC)img->hdcBmp;
 			SelectObject(hdc, (HFONT)fnt->hfont);
 			Int32 textX;
-			GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
+			GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
 			img->DelFont(fnt);
 			return (UInt32)textX;
 		}
@@ -492,20 +492,20 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 	else
 	{
 		SIZE sz;
-		HDC hdc = GetDC((HWND)this->hwnd);
+		HDC hdc = GetDC((HWND)this->hwnd.OrNull());
 		void *fnt = this->GetFont();
 		if (fnt)
 		{
 			SelectObject(hdc, fnt);
 		}
 		Int32 textX;
-		GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
-		ReleaseDC((HWND)this->hwnd, hdc);
+		GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(OSInt)strLen, (int)(OSInt)pxWidth, &textX, 0, &sz);
+		ReleaseDC((HWND)this->hwnd.OrNull(), hdc);
 		return (UInt32)textX;
 	}
 }
 
-void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
+void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, OutParam<UOSInt> width, OutParam<UOSInt> height)
 {
 	NN<Media::GDIImage> img;
 	if (Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
@@ -515,29 +515,29 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 		if (this->CreateDrawFont(img).SetTo(fnt))
 		{
 			sz = img->GetTextSize(fnt, str, (OSInt)strLen);
-			*width = (UOSInt)Double2OSInt(sz.x);
-			*height = (UOSInt)Double2OSInt(sz.y);
+			width.Set((UOSInt)Double2OSInt(sz.x));
+			height.Set((UOSInt)Double2OSInt(sz.y));
 			img->DelFont(fnt);
 		}
 		else
 		{
-			*width = 0;
-			*height = 0;
+			width.Set(0);
+			height.Set(0);
 		}
 	}
 	else
 	{
 		SIZE sz;
-		HDC hdc = GetDC((HWND)this->hwnd);
+		HDC hdc = GetDC((HWND)this->hwnd.OrNull());
 		void *fnt = this->GetFont();
 		if (fnt)
 		{
 			SelectObject(hdc, fnt);
 		}
-		GetTextExtentExPoint(hdc, str, (Int32)(OSInt)strLen, 0, 0, 0, &sz);
-		ReleaseDC((HWND)this->hwnd, hdc);
-		*width = (UInt32)sz.cx;
-		*height = (UInt32)sz.cy;
+		GetTextExtentExPoint(hdc, str.Ptr(), (Int32)(OSInt)strLen, 0, 0, 0, &sz);
+		ReleaseDC((HWND)this->hwnd.OrNull(), hdc);
+		width.Set((UInt32)sz.cx);
+		height.Set((UInt32)sz.cy);
 	}
 }
 
@@ -565,7 +565,7 @@ UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
-	SetTimer((HWND)this->hwnd, 1, 1000, 0);
+	SetTimer((HWND)this->hwnd.OrNull(), 1, 1000, 0);
 
 	this->bgColor = this->GetColorBg();
 	this->scrColor = 0xffcccccc;
@@ -577,7 +577,7 @@ UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 
 UI::GUITextView::~GUITextView()
 {
-	KillTimer((HWND)this->hwnd, 1);
+	KillTimer((HWND)this->hwnd.OrNull(), 1);
 	NN<Media::DrawImage> img;
 	if (this->drawBuff.SetTo(img))
 	{
@@ -609,10 +609,10 @@ void UI::GUITextView::UpdateFont()
 
 OSInt UI::GUITextView::GetScrollHPos()
 {
-	return ::GetScrollPos((HWND)this->hwnd, SB_HORZ);
+	return ::GetScrollPos((HWND)this->hwnd.OrNull(), SB_HORZ);
 }
 
 OSInt UI::GUITextView::GetScrollVPos()
 {
-	return ::GetScrollPos((HWND)this->hwnd, SB_VERT);
+	return ::GetScrollPos((HWND)this->hwnd.OrNull(), SB_VERT);
 }

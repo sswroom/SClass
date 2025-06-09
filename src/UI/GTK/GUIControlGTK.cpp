@@ -99,10 +99,10 @@ void *UI::GUIControl::GetFont()
 void UI::GUIControl::Show()
 {
 	this->UpdateFont();
-	gtk_widget_show((GtkWidget*)this->hwnd);
+	gtk_widget_show((GtkWidget*)this->hwnd.OrNull());
 	if (!this->inited)
 	{
-		g_signal_connect((GtkWidget*)this->hwnd, "configure-event", G_CALLBACK(GUIControl_SizeChanged), this);
+		g_signal_connect((GtkWidget*)this->hwnd.OrNull(), "configure-event", G_CALLBACK(GUIControl_SizeChanged), this);
 		this->inited = true;
 	}
 }
@@ -110,7 +110,7 @@ void UI::GUIControl::Show()
 void UI::GUIControl::Close()
 {
 //	gtk_widget_hide((GtkWidget*)this->hwnd);
-	gtk_widget_destroy((GtkWidget*)this->hwnd);
+	gtk_widget_destroy((GtkWidget*)this->hwnd.OrNull());
 }
 
 void UI::GUIControl::SetText(Text::CStringNN text)
@@ -185,7 +185,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (this->parent.SetTo(nnparent))
 	{
 		void *container = nnparent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd.OrNull(), Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
 	{
@@ -195,11 +195,11 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	{
 		bottom = top;
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
+	gtk_widget_set_size_request((GtkWidget*)this->hwnd.OrNull(), Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 
 	gint outW;
 	gint outH;
-	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
+	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 //	printf("%s set size to %lf, %lf, Size = %d, %d\r\n", this->GetObjectClass(), right - left, bottom - top, outW, outH);
 //	if (Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"Panel"))
 //	{
@@ -242,7 +242,7 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	if (this->parent.SetTo(nnparent))
 	{
 		void *container = nnparent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
 	{
@@ -252,11 +252,11 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	{
 		bottom = top;
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, (gint)(right - left), (gint)(bottom - top));
+	gtk_widget_set_size_request((GtkWidget*)this->hwnd.OrNull(), (gint)(right - left), (gint)(bottom - top));
 
 	gint outW;
 	gint outH;
-	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
+	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW == -1)
 	{
 		this->lxPos2 = OSInt2Double(right) * this->ddpi / this->hdpi;
@@ -317,7 +317,7 @@ void UI::GUIControl::InitFont()
 	if (this->fontName.SetTo(nns)) builder.AddFontFamily(nns->v);
 	if (this->fontHeightPt != 0) builder.AddFontSize(this->fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
-	GtkWidget *widget = (GtkWidget*)this->GetDisplayHandle();
+	GtkWidget *widget = (GtkWidget*)this->GetDisplayHandle().OrNull();
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
@@ -349,9 +349,9 @@ UI::GUIControl::DockType UI::GUIControl::GetDockType()
 void UI::GUIControl::SetVisible(Bool isVisible)
 {
 	if (isVisible)
-		gtk_widget_show((GtkWidget*)this->hwnd);
+		gtk_widget_show((GtkWidget*)this->hwnd.OrNull());
 	else
-		gtk_widget_hide((GtkWidget*)this->hwnd);
+		gtk_widget_hide((GtkWidget*)this->hwnd.OrNull());
 }
 
 Bool UI::GUIControl::GetVisible()
@@ -362,7 +362,7 @@ Bool UI::GUIControl::GetVisible()
 
 void UI::GUIControl::SetEnabled(Bool isEnable)
 {
-	gtk_widget_set_sensitive((GtkWidget*)this->hwnd, isEnable);
+	gtk_widget_set_sensitive((GtkWidget*)this->hwnd.OrNull(), isEnable);
 }
 
 void UI::GUIControl::SetBGColor(UInt32 bgColor)
@@ -372,7 +372,7 @@ void UI::GUIControl::SetBGColor(UInt32 bgColor)
 	builder.NewStyle(CSTR_NULL, CSTR_NULL);
 	builder.AddBGColorRGBA(bgColor);
 
-	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	GtkWidget *widget = (GtkWidget*)this->hwnd.OrNull();
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
@@ -402,7 +402,7 @@ Bool UI::GUIControl::IsFormFocused()
 
 void UI::GUIControl::Focus()
 {
-	gtk_widget_grab_focus((GtkWidget*)this->hwnd);
+	gtk_widget_grab_focus((GtkWidget*)this->hwnd.OrNull());
 }
 
 OSInt UI::GUIControl::GetScrollHPos()
@@ -428,7 +428,7 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 
 	gint outW;
 	gint outH;
-	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
+	gtk_widget_get_size_request((GtkWidget*)this->hwnd.OrNull(), &outW, &outH);
 	if (outW != -1)
 	{
 		this->lxPos2 = this->lxPos + outW * this->ddpi / this->hdpi;
@@ -483,7 +483,7 @@ void UI::GUIControl::UpdateFont()
 		if (height != 0) builder.AddFontSize(height, Math::Unit::Distance::DU_PIXEL);
 		if (weight != 0) builder.AddFontWeight((Text::CSSBuilder::FontWeight)weight);
 
-		GtkWidget *widget = (GtkWidget*)this->hwnd;
+		GtkWidget *widget = (GtkWidget*)this->hwnd.OrNull();
 		GtkStyleContext *style = gtk_widget_get_style_context(widget);
 		GtkCssProvider *styleProvider = gtk_css_provider_new();
 		gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
@@ -501,7 +501,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 	if (this->GetObjectClass().Equals(UTF8STRC("WinForm")))
 	{
 		isForm = true;
-		if (gtk_window_is_maximized((GtkWindow*)this->hwnd))
+		if (gtk_window_is_maximized((GtkWindow*)this->hwnd.OrNull()))
 		{
 			return;
 		}
@@ -512,7 +512,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 	{
 		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
 		void *container = nnparent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd.OrNull(), Double2Int32((this->lxPos + ofst.x) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + ofst.y) * this->hdpi / this->ddpi));
 		if (this->lxPos2 < this->lxPos)
 		{
 			this->lxPos2 = this->lxPos;
@@ -521,34 +521,35 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		{
 			this->lyPos2 = this->lyPos;
 		}
-		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
+		gtk_widget_set_size_request((GtkWidget*)this->hwnd.OrNull(), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 	}
 	else if (isForm)
 	{
 		Double newW = (this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi;
 		Double newH = (this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi;
-		Media::MonitorInfo *monInfo = this->GetMonitorInfo();
+		Optional<Media::MonitorInfo> monInfo = this->GetMonitorInfo();
+		NN<Media::MonitorInfo> nnmonInfo;
 		Double newX;
 		Double newY;
 		gint winX;
 		gint winY;
-		gtk_window_get_position((GtkWindow*)this->hwnd, &winX, &winY);
+		gtk_window_get_position((GtkWindow*)this->hwnd.OrNull(), &winX, &winY);
 		Math::Size2D<UOSInt> winSize = this->GetSizeP();
-		if (monInfo)
+		if (monInfo.SetTo(nnmonInfo))
 		{
-			Int32 maxW = monInfo->GetPixelWidth();
-			Int32 maxH = monInfo->GetPixelHeight();
+			Int32 maxW = nnmonInfo->GetPixelWidth();
+			Int32 maxH = nnmonInfo->GetPixelHeight();
 			if (newW > maxW)
 				newW = maxW;
 			if (newH > maxH)
 				newH = maxH;
 			newX = (OSInt2Double(winX + winX + (OSInt)winSize.GetWidth()) - newW) * 0.5;
 			newY = (OSInt2Double(winY + winY + (OSInt)winSize.GetHeight()) - newH) * 0.5;
-			if (newY < monInfo->GetTop())
+			if (newY < nnmonInfo->GetTop())
 			{
-				newY = monInfo->GetTop();
+				newY = nnmonInfo->GetTop();
 			}
-			DEL_CLASS(monInfo);
+			nnmonInfo.Delete();
 		}
 		else
 		{
@@ -566,17 +567,17 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 			}
 		}
 
-		gtk_window_move((GtkWindow*)this->hwnd, Double2Int32(newX), Double2Int32(newY));
-		if (gtk_window_get_resizable((GtkWindow*)this->hwnd))
+		gtk_window_move((GtkWindow*)this->hwnd.OrNull(), Double2Int32(newX), Double2Int32(newY));
+		if (gtk_window_get_resizable((GtkWindow*)this->hwnd.OrNull()))
 		{
-			gtk_window_resize((GtkWindow*)this->hwnd, Double2Int32(newW), Double2Int32(newH));
+			gtk_window_resize((GtkWindow*)this->hwnd.OrNull(), Double2Int32(newW), Double2Int32(newH));
 		}
 		else
 		{
-			gtk_window_set_resizable((GtkWindow*)this->hwnd, true);
-			gtk_window_set_default_size((GtkWindow*)this->hwnd, Double2Int32(newW), Double2Int32(newH));
-			gtk_window_resize((GtkWindow*)this->hwnd, Double2Int32(newW), Double2Int32(newH));
-			g_idle_add(GUIControl_SetNoResize, this->hwnd);
+			gtk_window_set_resizable((GtkWindow*)this->hwnd.OrNull(), true);
+			gtk_window_set_default_size((GtkWindow*)this->hwnd.OrNull(), Double2Int32(newW), Double2Int32(newH));
+			gtk_window_resize((GtkWindow*)this->hwnd.OrNull(), Double2Int32(newW), Double2Int32(newH));
+			g_idle_add(GUIControl_SetNoResize, this->hwnd.OrNull());
 		}
 	}
 	else if (this->GetObjectClass().Equals(UTF8STRC("TabPage")))
@@ -591,7 +592,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 
 void UI::GUIControl::Redraw()
 {
-	g_idle_add(GUIControl_ToGenDrawSignal, this->hwnd);
+	g_idle_add(GUIControl_ToGenDrawSignal, this->hwnd.OrNull());
 }
 
 void UI::GUIControl::SetCapture()
@@ -600,7 +601,7 @@ void UI::GUIControl::SetCapture()
 	GdkSeat *seat = gdk_display_get_default_seat(gdk_display_get_default());
 	if (seat)
 	{
-		gdk_seat_grab(seat, gtk_widget_get_window((GtkWidget*)this->hwnd), GDK_SEAT_CAPABILITY_ALL_POINTING, TRUE, 0, 0, 0, 0);
+		gdk_seat_grab(seat, gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull()), GDK_SEAT_CAPABILITY_ALL_POINTING, TRUE, 0, 0, 0, 0);
 	}
 #else
 	GdkDevice *dev = gtk_get_current_event_device();
@@ -651,7 +652,7 @@ UInt32 GdkRGBA2Color(GdkRGBA *rgba)
 UInt32 UI::GUIControl::GetColorBg()
 {
 	GdkRGBA color;
-	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	gtk_style_context_get_color(style, GTK_STATE_FLAG_NORMAL, &color);
 	if ((color.red + color.green + color.blue) > 1.5)
 	{
@@ -666,7 +667,7 @@ UInt32 UI::GUIControl::GetColorBg()
 UInt32 UI::GUIControl::GetColorText()
 {
 	GdkRGBA color;
-	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	gtk_style_context_get_color(style, GTK_STATE_FLAG_NORMAL, &color);
 	return GdkRGBA2Color(&color);
 }
@@ -674,7 +675,7 @@ UInt32 UI::GUIControl::GetColorText()
 UInt32 UI::GUIControl::GetColorTextAlt()
 {
 	GdkRGBA color;
-	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	gtk_style_context_get_color(style, GTK_STATE_FLAG_LINK, &color);
 	return GdkRGBA2Color(&color);
 }
@@ -682,7 +683,7 @@ UInt32 UI::GUIControl::GetColorTextAlt()
 UInt32 UI::GUIControl::GetColorHightlight()
 {
 	GdkRGBA color;
-	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	gtk_style_context_get_color(style, GTK_STATE_FLAG_SELECTED, &color);
 	if ((color.red + color.green + color.blue) > 1.5)
 	{
@@ -697,7 +698,7 @@ UInt32 UI::GUIControl::GetColorHightlight()
 UInt32 UI::GUIControl::GetColorHightlightText()
 {
 	GdkRGBA color;
-	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	gtk_style_context_get_color(style, GTK_STATE_FLAG_SELECTED, &color);
 	return GdkRGBA2Color(&color);
 }
@@ -707,7 +708,7 @@ Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 	return this->parent;
 }
 
-UI::GUIForm *UI::GUIControl::GetRootForm()
+Optional<UI::GUIForm> UI::GUIControl::GetRootForm()
 {
 	UI::GUIControl *ctrl = this;
 	Text::CStringNN objCls;
@@ -724,21 +725,21 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 	return 0;
 }
 
-ControlHandle *UI::GUIControl::GetHandle()
+Optional<ControlHandle> UI::GUIControl::GetHandle()
 {
 	return this->hwnd;
 }
 
-ControlHandle *UI::GUIControl::GetDisplayHandle()
+Optional<ControlHandle> UI::GUIControl::GetDisplayHandle()
 {
 	return this->hwnd;
 }
 
-MonitorHandle *UI::GUIControl::GetHMonitor()
+Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 {
 #if GDK_VERSION_AFTER(3, 22)
-	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd);
-	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd);
+	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd.OrNull());
+	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull());
 	if (display == 0)
 		return 0;
 	MonitorHandle *ret;
@@ -787,9 +788,9 @@ MonitorHandle *UI::GUIControl::GetHMonitor()
 #endif
 }
 
-Media::MonitorInfo *UI::GUIControl::GetMonitorInfo()
+Optional<Media::MonitorInfo> UI::GUIControl::GetMonitorInfo()
 {
-	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd);
+	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd.OrNull());
 	if (display)
 	{
 		Media::MonitorInfo *info;
@@ -1618,7 +1619,7 @@ Text::CStringNN UI::GUIControl::GUIKeyGetName(GUIKey guiKey)
 	}
 }
 
-UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandler *hdlr)
+UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHandler> hdlr)
 {
 	if (this->dropHdlr)
 	{

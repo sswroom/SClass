@@ -299,7 +299,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	}
 }
 
-void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName)
+void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, UnsafeArray<const WChar> dialogName)
 {
 	UOSInt i;
 	UOSInt j;

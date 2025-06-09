@@ -45,6 +45,6 @@ SSWR::AVIRead::AVIRHKIDForm::~AVIRHKIDForm()
 
 void SSWR::AVIRead::AVIRHKIDForm::OnMonitorChanged()
 {
-	MonitorHandle *hMon = this->GetHMonitor();
+	Optional<MonitorHandle> hMon = this->GetHMonitor();
 	this->SetDPI(this->core->GetMonitorHDPI(hMon), this->core->GetMonitorDDPI(hMon));
 }

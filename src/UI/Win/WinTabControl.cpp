@@ -91,7 +91,7 @@ UI::Win::WinTabControl::WinTabControl(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 	this->selIndex = 0;
 
 	WNDCLASSW wc;
-	GetClassInfoW((HINSTANCE)((UI::Win::WinCore*)ui.Ptr())->GetHInst(), WC_TABCONTROLW, &wc);
+	GetClassInfoW((HINSTANCE)((UI::Win::WinCore*)ui.Ptr())->GetHInst().OrNull(), WC_TABCONTROLW, &wc);
 	this->hbrBackground = wc.hbrBackground;
 }
 
@@ -108,7 +108,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NN<Text::String> tabName)
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName->v).Ptr();
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
@@ -131,7 +131,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN tabName)
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName.v).Ptr();
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
@@ -155,13 +155,13 @@ void UI::Win::WinTabControl::SetSelectedIndex(UOSInt index)
 		if (this->tabPages.GetItem(this->selIndex).SetTo(page))
 			page->SetVisible(false);
 		this->selIndex = index;
-		SendMessage((HWND)this->hwnd, TCM_SETCURSEL, index, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), TCM_SETCURSEL, index, 0);
 
 		this->EventSelChange();
 		if (this->tabPages.GetItem(this->selIndex).SetTo(page))
 		{
 			page->SetVisible(true);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 		}
 	}
 }
@@ -194,7 +194,7 @@ void UI::Win::WinTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 	item.mask = TCIF_TEXT;
 	item.pszText = (LPWSTR)Text::StrToWCharNew(name.v).Ptr();
 	item.cchTextMax = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_SETITEMW, index, (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_SETITEMW, index, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
 }
 
@@ -206,7 +206,7 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinTabControl::GetTabPageName(UOSInt index, Un
 	item.pszText = (LPWSTR)wbuff;
 	item.cchTextMax = 512;
 	wbuff[0] = 0;
-	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_GETITEMW, index, (LPARAM)&item);
+	index = (UOSInt)SendMessageW((HWND)this->hwnd.OrNull(), TCM_GETITEMW, index, (LPARAM)&item);
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
@@ -218,8 +218,8 @@ Math::RectArea<OSInt> UI::Win::WinTabControl::GetTabPageRect()
 	rc.top = 0;
 	rc.right = 0;
 	rc.bottom = 0;
-	SendMessageW((HWND)this->hwnd, TCM_ADJUSTRECT, FALSE, (LPARAM)&rc);
-	GetClientRect((HWND)this->hwnd, &rcTc);
+	SendMessageW((HWND)this->hwnd.OrNull(), TCM_ADJUSTRECT, FALSE, (LPARAM)&rc);
+	GetClientRect((HWND)this->hwnd.OrNull(), &rcTc);
 	return Math::RectArea<OSInt>(rc.left, rc.top, rcTc.right + rc.right - rc.left, rcTc.bottom + rc.bottom - rc.top);
 }
 
@@ -230,7 +230,7 @@ OSInt UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
 	switch (code)
 	{
 	case TCN_SELCHANGE:
-		newIndex = (UOSInt)SendMessage((HWND)this->hwnd, TCM_GETCURSEL, 0, 0);
+		newIndex = (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), TCM_GETCURSEL, 0, 0);
 		if (newIndex != this->selIndex)
 		{
 			if (this->tabPages.GetItem(this->selIndex).SetTo(tp))
@@ -238,7 +238,7 @@ OSInt UI::Win::WinTabControl::OnNotify(UInt32 code, void *lParam)
 			this->selIndex = newIndex;
 			if (this->tabPages.GetItem(this->selIndex).SetTo(tp))
 				tp->SetVisible(true);
-			InvalidateRect((HWND)this->hwnd, 0, false);
+			InvalidateRect((HWND)this->hwnd.OrNull(), 0, false);
 			this->EventSelChange();
 		}
 		return 0;

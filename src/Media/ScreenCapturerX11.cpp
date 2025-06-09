@@ -52,11 +52,11 @@ Media::ScreenCapturer::~ScreenCapturer()
 {
 }
 
-Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
+Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<MonitorHandle> hMon)
 {
     Display *dis = XOpenDisplay((char *)0);
 	printf("nScreen = %d\r\n", ScreenCount(dis));
-    Screen *scr = ScreenOfDisplay(dis, -1 + (int)(OSInt)hMon);
+    Screen *scr = ScreenOfDisplay(dis, -1 + (int)(OSInt)hMon.OrNull());
     Drawable drawable = XRootWindowOfScreen(scr);
 
 	Media::StaticImage *retImg = 0;

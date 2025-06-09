@@ -178,14 +178,14 @@ OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::Win::WinPanelBase::Init(InstanceHandle *hInst)
+void UI::Win::WinPanelBase::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::Win::WinPanelBase::PnlWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE) NULL, IDC_ARROW); 
     wc.hbrBackground = BGBRUSH; 
@@ -196,9 +196,9 @@ void UI::Win::WinPanelBase::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::Win::WinPanelBase::Deinit(InstanceHandle *hInst)
+void UI::Win::WinPanelBase::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void UI::Win::WinPanelBase::UpdateScrollBars()
@@ -209,7 +209,7 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 	Int32 vsSize = GetSystemMetrics(SM_CXVSCROLL);
 	Int32 hsSize = GetSystemMetrics(SM_CYHSCROLL);
 	SCROLLINFO info;
-	GetClientRect((HWND)this->master->GetHandle(), &rc);
+	GetClientRect((HWND)this->master->GetHandle().OrNull(), &rc);
 	w = rc.right - rc.left;
 	h = rc.bottom - rc.top;
 	if (w >= this->minW && h >= this->minH)
@@ -225,7 +225,7 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 			this->scrollV = false;
 		}
 #ifndef _WIN32_WCE
-		ShowScrollBar((HWND)this->master->GetHandle(), SB_BOTH, FALSE);
+		ShowScrollBar((HWND)this->master->GetHandle().OrNull(), SB_BOTH, FALSE);
 #endif
 	}
 	else if (w < this->minW)
@@ -233,7 +233,7 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 		if (!this->scrollH)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->master->GetHandle(), SB_HORZ, TRUE);
+			ShowScrollBar((HWND)this->master->GetHandle().OrNull(), SB_HORZ, TRUE);
 #endif
 			this->scrollH = true;
 		}
@@ -242,7 +242,7 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 			if (!this->scrollV)
 			{
 #ifndef _WIN32_WCE
-				ShowScrollBar((HWND)this->master->GetHandle(), SB_VERT, TRUE);
+				ShowScrollBar((HWND)this->master->GetHandle().OrNull(), SB_VERT, TRUE);
 #endif
 				this->scrollV = true;
 			}
@@ -252,13 +252,13 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 			info.nMin = 0;
 			info.nPage = (UInt32)(h - hsSize);
 //			info.nPos = this->currScrY;
-			SetScrollInfo((HWND)this->master->GetHandle(), SB_VERT, &info, TRUE);
+			SetScrollInfo((HWND)this->master->GetHandle().OrNull(), SB_VERT, &info, TRUE);
 			w -= vsSize;
 		}
 		else if (this->scrollV)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->master->GetHandle(), SB_VERT, FALSE);
+			ShowScrollBar((HWND)this->master->GetHandle().OrNull(), SB_VERT, FALSE);
 #endif
 			this->scrollV = false;
 			this->currScrY = 0;
@@ -269,14 +269,14 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 		info.nMin = 0;
 		info.nPage = (UInt32)w;
 //		info.nPos = this->currScrX;
-		SetScrollInfo((HWND)this->master->GetHandle(), SB_HORZ, &info, TRUE);
+		SetScrollInfo((HWND)this->master->GetHandle().OrNull(), SB_HORZ, &info, TRUE);
 	}
 	else if (h < this->minH)
 	{
 		if (!this->scrollV)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->master->GetHandle(), SB_VERT, TRUE);
+			ShowScrollBar((HWND)this->master->GetHandle().OrNull(), SB_VERT, TRUE);
 #endif
 			this->scrollV = true;
 		}
@@ -285,7 +285,7 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 			if (!this->scrollH)
 			{
 #ifndef _WIN32_WCE
-				ShowScrollBar((HWND)this->master->GetHandle(), SB_HORZ, TRUE);
+				ShowScrollBar((HWND)this->master->GetHandle().OrNull(), SB_HORZ, TRUE);
 #endif
 				this->scrollH = true;
 			}
@@ -295,13 +295,13 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 			info.nMin = 0;
 			info.nPage = (UInt32)(w - vsSize);
 //			info.nPos = this->currScrX;
-			SetScrollInfo((HWND)this->master->GetHandle(), SB_HORZ, &info, TRUE);
+			SetScrollInfo((HWND)this->master->GetHandle().OrNull(), SB_HORZ, &info, TRUE);
 			h -= hsSize;
 		}
 		else if (this->scrollH)
 		{
 #ifndef _WIN32_WCE
-			ShowScrollBar((HWND)this->master->GetHandle(), SB_HORZ, FALSE);
+			ShowScrollBar((HWND)this->master->GetHandle().OrNull(), SB_HORZ, FALSE);
 #endif
 			this->scrollH = false;
 			this->currScrX = 0;
@@ -312,11 +312,11 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 		info.nMin = 0;
 		info.nPage = (UInt32)h;
 //		info.nPos = this->currScrY;
-		SetScrollInfo((HWND)this->master->GetHandle(), SB_VERT, &info, TRUE);
+		SetScrollInfo((HWND)this->master->GetHandle().OrNull(), SB_VERT, &info, TRUE);
 	}
 }
 
-UI::Win::WinPanelBase::WinPanelBase(NN<GUIPanel> master, NN<UI::GUICore> ui, ControlHandle *parentHWnd)
+UI::Win::WinPanelBase::WinPanelBase(NN<GUIPanel> master, NN<UI::GUICore> ui, Optional<ControlHandle> parentHWnd)
 {
 	this->master = master;
 	this->ui = NN<WinCore>::ConvertFrom(ui);
@@ -333,9 +333,9 @@ UI::Win::WinPanelBase::WinPanelBase(NN<GUIPanel> master, NN<UI::GUICore> ui, Con
 
 	UInt32 style = WS_CLIPSIBLINGS | WS_CHILD | WS_VISIBLE;
 #ifdef _WIN32_WCE
-	this->master->InitControl(this->ui->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
+	this->master->InitControlHand(this->ui->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, 0, 0, 0, 200, 200);
 #else
-	this->master->InitControl(this->ui->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
+	this->master->InitControlHand(this->ui->GetHInst(), parentHWnd, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 #endif
 }
 
@@ -384,7 +384,7 @@ Math::Size2DDbl UI::Win::WinPanelBase::GetClientSize()
 	Int32 cliW;
 	Int32 cliH;
 	RECT rc;
-	GetClientRect((HWND)this->master->GetHandle(), &rc);
+	GetClientRect((HWND)this->master->GetHandle().OrNull(), &rc);
 	cliW = rc.right - rc.left;
 	cliH = rc.bottom - rc.top;
 	if (cliW < this->minW)

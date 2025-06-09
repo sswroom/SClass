@@ -78,9 +78,9 @@ UI::GTK::GTKVSplitter::GTKVSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl>
 	this->dragMode = false;
 	this->isBottom = isBottom;
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
-	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(SignalMouseDown), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(SignalMouseUp), this);
-	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-press-event", G_CALLBACK(SignalMouseDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-release-event", G_CALLBACK(SignalMouseUp), this);
+	gtk_widget_set_events((GtkWidget*)this->hwnd.OrNull(), GDK_ALL_EVENTS_MASK);
 	parent->AddChild(*this);
 	this->Show();
 

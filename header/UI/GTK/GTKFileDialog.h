@@ -9,10 +9,10 @@ namespace UI
 		class GTKFileDialog : public UI::GUIFileDialog
 		{
 		public:
-			GTKFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
+			GTKFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave);
 			virtual ~GTKFileDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

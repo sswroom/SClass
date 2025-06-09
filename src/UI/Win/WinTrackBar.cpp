@@ -21,9 +21,9 @@ UI::Win::WinTrackBar::WinTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> p
 		style = style | WS_VISIBLE;
 	}
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, TRACKBAR_CLASSW, (const UTF8Char*)"", style, 0, 0, 0, 200, 24);
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, (LPARAM)minVal);
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
-	SendMessage((HWND)this->hwnd, TBM_SETPOS, 0, (LPARAM)currVal);
+	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETRANGEMIN, 0, (LPARAM)minVal);
+	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
+	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETPOS, 0, (LPARAM)currVal);
 }
 
 UI::Win::WinTrackBar::~WinTrackBar()
@@ -53,18 +53,18 @@ OSInt UI::Win::WinTrackBar::OnNotify(UInt32 code, void *lParam)
 
 void UI::Win::WinTrackBar::SetPos(UOSInt pos)
 {
-	SendMessage((HWND)this->hwnd, TBM_SETPOS, TRUE, (LPARAM)pos);
+	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETPOS, TRUE, (LPARAM)pos);
 	EventScrolled(GetPos());
 //	InvalidateRect((HWND)this->hwnd, 0, false);
 }
 
 void UI::Win::WinTrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
 {
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMIN, 0, (LPARAM)minVal);
-	SendMessage((HWND)this->hwnd, TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
+	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETRANGEMIN, 0, (LPARAM)minVal);
+	SendMessage((HWND)this->hwnd.OrNull(), TBM_SETRANGEMAX, 0, (LPARAM)maxVal);
 }
 
 UOSInt UI::Win::WinTrackBar::GetPos()
 {
-	return (UOSInt)SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
+	return (UOSInt)SendMessage((HWND)this->hwnd.OrNull(), TBM_GETPOS, 0, 0);
 }

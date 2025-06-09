@@ -12,8 +12,8 @@ namespace UI
 			static Int32 useCnt;
 
 			static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-			static void Init(InstanceHandle *hInst);
-			static void Deinit(InstanceHandle *hInst);
+			static void Init(Optional<InstanceHandle> hInst);
+			static void Deinit(Optional<InstanceHandle> hInst);
 		public:
 			WinHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width);
 			virtual ~WinHScrollBar();

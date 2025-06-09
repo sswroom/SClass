@@ -8,16 +8,16 @@
 
 struct Media::DDrawSurface::ClassData
 {
-	Media::DDrawManager *mgr;
+	NN<Media::DDrawManager> mgr;
 	LPDIRECTDRAW7 lpDD;
 	LPDIRECTDRAWSURFACE7 surface;
-	MonitorHandle *hMon;
+	Optional<MonitorHandle> hMon;
 	LPDIRECTDRAWCLIPPER clipper;
 	Bool needRelease;
 	Optional<Media::DDrawSurface> buffSurface;
 };
 
-Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease, Media::RotateType rotateType)
+Media::DDrawSurface::DDrawSurface(NN<DDrawManager> mgr, void *lpDD, void *surface, Optional<MonitorHandle> hMon, Bool needRelease, Media::RotateType rotateType)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->mgr = mgr;
@@ -53,7 +53,7 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->info.hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info.vdpi = this->info.hdpi;
 	NN<const Media::ColorProfile> color;
-	if (color.Set(mgr->GetMonProfile(hMon)))
+	if (mgr->GetMonProfile(hMon).SetTo(color))
 		this->info.color.Set(color);
 	else
 		this->info.color.SetCommonProfile(Media::ColorProfile::CPT_VDISPLAY);
@@ -162,7 +162,7 @@ Bool Media::DDrawSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Mat
 
 		MONITORINFOEXW info;
 		info.cbSize = sizeof(info);
-		if (GetMonitorInfoW((HMONITOR)this->clsData->hMon, &info))
+		if (GetMonitorInfoW((HMONITOR)this->clsData->hMon.OrNull(), &info))
 		{
 			rc.left -= info.rcMonitor.left;
 			rc.top -= info.rcMonitor.top;
@@ -464,7 +464,7 @@ void Media::DDrawSurface::SetSurfaceBugMode(Bool surfaceBugMode)
 
 }
 
-void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)
+void Media::DDrawSurface::SetClipWindow(Optional<ControlHandle> clipWindow)
 {
 	if (this->clsData->clipper)
 	{
@@ -473,7 +473,7 @@ void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)
 	}
 
 	this->clsData->lpDD->CreateClipper(0, &this->clsData->clipper, NULL);
-	if (this->clsData->clipper->SetHWnd(0, (HWND)clipWindow) != DD_OK)
+	if (this->clsData->clipper->SetHWnd(0, (HWND)clipWindow.OrNull()) != DD_OK)
 	{
 		this->clsData->clipper->Release();
 		this->clsData->clipper = 0;

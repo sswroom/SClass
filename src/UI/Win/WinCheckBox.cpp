@@ -42,7 +42,7 @@ void UI::Win::WinCheckBox::SetChecked(Bool checked)
 	if (this->checked != checked)
 	{
 		this->checked = checked;
-		SendMessage((HWND)this->hwnd, BM_SETCHECK, checked?BST_CHECKED:BST_UNCHECKED, 0);
+		SendMessage((HWND)this->hwnd.OrNull(), BM_SETCHECK, checked?BST_CHECKED:BST_UNCHECKED, 0);
 		this->EventCheckedChange(checked);
 	}
 }

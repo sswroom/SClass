@@ -62,12 +62,12 @@ OSInt __stdcall UI::Win::WinHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 			NN<GUIClientControl> nnparent;
 			if (me->parent.SetTo(nnparent))
 			{
-				hdc = GetDC((HWND)nnparent->GetHandle());
+				hdc = GetDC((HWND)nnparent->GetHandle().OrNull());
 
 				me->DrawXorBar(hdc, me->lastX, me->lastY);
 				me->DrawXorBar(hdc, pt.x, pt.y);
 
-				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+				ReleaseDC((HWND)nnparent->GetHandle().OrNull(), hdc);
 			}
 			me->lastX = pt.x;
 			me->lastY = pt.y;
@@ -79,14 +79,14 @@ OSInt __stdcall UI::Win::WinHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::Win::WinHSplitter::Init(InstanceHandle *hInst)
+void UI::Win::WinHSplitter::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::Win::WinHSplitter::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE)0, IDC_SIZEWE); 
     wc.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1); 
@@ -97,9 +97,9 @@ void UI::Win::WinHSplitter::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::Win::WinHSplitter::Deinit(InstanceHandle *hInst)
+void UI::Win::WinHSplitter::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void UI::Win::WinHSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
@@ -275,9 +275,9 @@ void UI::Win::WinHSplitter::EventMouseDown(GUIControl::MouseButton btn, Math::Co
 		NN<GUIClientControl> nnparent;
 		if (this->parent.SetTo(nnparent))
 		{
-			HDC hdc = GetDC((HWND)nnparent->GetHandle());
+			HDC hdc = GetDC((HWND)nnparent->GetHandle().OrNull());
 			this->DrawXorBar(hdc, pos.x, pos.y);
-			ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+			ReleaseDC((HWND)nnparent->GetHandle().OrNull(), hdc);
 		}
 	}
 }
@@ -298,9 +298,9 @@ void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 		NN<GUIClientControl> nnparent;
 		if (this->parent.SetTo(nnparent))
 		{
-			HDC hdc = GetDC((HWND)nnparent->GetHandle());
+			HDC hdc = GetDC((HWND)nnparent->GetHandle().OrNull());
 			this->DrawXorBar(hdc, this->lastX, this->lastY);
-			ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+			ReleaseDC((HWND)nnparent->GetHandle().OrNull(), hdc);
 		}
 
 		pos = this->GetPositionP();

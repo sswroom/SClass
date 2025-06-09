@@ -229,7 +229,7 @@ UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sb
 	return ret;
 }
 
-Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
+Media::Printer *Media::Printer::SelectPrinter(Optional<ControlHandle> hWnd)
 {
 	return 0;
 }
@@ -254,7 +254,7 @@ Bool Media::Printer::IsError()
 	return this->printerName->leng == 0;
 }
 
-Bool Media::Printer::ShowPrintSettings(void *hWnd)
+Bool Media::Printer::ShowPrintSettings(Optional<ControlHandle> hWnd)
 {
 	return false;
 }

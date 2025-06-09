@@ -354,8 +354,9 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 	this->Redraw();
 }
 
-UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
+UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt strLen, UOSInt pxWidth)
 {
+	WChar wbuff[256];
 	NN<Media::DrawImage> drawBuff;
 	if (this->drawBuff.SetTo(drawBuff))
 	{
@@ -365,19 +366,29 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 		UnsafeArray<const UTF8Char> currPtr;
 		UnsafeArray<const UTF8Char> nextPtr;
 
-		GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd);  
+		GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull());  
 		cairo_region_t *region = cairo_region_create();
 		GdkDrawingContext *drawing = gdk_window_begin_draw_frame(window, region);
 		cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
-		WChar c;
 		UOSInt ret;
 		NN<Media::DrawFont> fnt;
 		if (this->CreateDrawFont(drawBuff).SetTo(fnt))
 		{
-			c = str[strLen];
-			str[strLen] = 0;
-			UnsafeArray<const UTF8Char> csptr = Text::StrToUTF8New(str);
-			str[strLen] = c;
+			UnsafeArray<const UTF8Char> csptr;
+			if (strLen < 256)
+			{
+				MemCopyNO(wbuff, str.Ptr(), strLen * sizeof(WChar));
+				wbuff[strLen] = 0;
+				csptr = Text::StrToUTF8New(wbuff);
+			}
+			else
+			{
+				WChar *wbuffTmp = MemAlloc(WChar, strLen + 1);
+				MemCopyNO(wbuffTmp, str.Ptr(), strLen * sizeof(WChar));
+				wbuffTmp[strLen] = 0;
+				csptr = Text::StrToUTF8New(wbuffTmp);
+				MemFree(wbuffTmp);
+			}
 			NN<Media::GTKDrawFont>::ConvertFrom(fnt)->Init(cr);
 			cairo_text_extents_t extents;
 
@@ -421,31 +432,47 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 	}
 }
 
-void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
+void UI::GUITextView::GetDrawSize(UnsafeArray<const WChar> str, UOSInt strLen, OutParam<UOSInt> width, OutParam<UOSInt> height)
 {
 	NN<Media::DrawImage> drawBuff;
 	if (this->drawBuff.SetTo(drawBuff))
 	{
-		WChar c;
+		WChar wbuff[256];
 		Math::Size2DDbl sz;
 		NN<Media::DrawFont> fnt;
 		if (this->CreateDrawFont(drawBuff).SetTo(fnt))
 		{
-			c = str[strLen];
-			str[strLen] = 0;
-			NN<Text::String> s = Text::String::NewNotNull(str);
-			str[strLen] = c;
+			NN<Text::String> s;
+			if (strLen < 256)
+			{
+				MemCopyNO(wbuff, str.Ptr(), strLen * sizeof(WChar));
+				wbuff[strLen] = 0;
+				s = Text::String::NewNotNull(wbuff);
+			}
+			else
+			{
+				WChar *wbuffTmp = MemAlloc(WChar, strLen + 1);
+				MemCopyNO(wbuffTmp, str.Ptr(), strLen * sizeof(WChar));
+				wbuffTmp[strLen] = 0;
+				s = Text::String::NewNotNull(wbuffTmp);
+				MemFree(wbuffTmp);
+			}
 			sz = drawBuff->GetTextSize(fnt, s->ToCString());
 			s->Release();
-			*width = (UOSInt)Double2OSInt(sz.x);
-			*height = (UOSInt)Double2OSInt(sz.y);
+			width.Set((UOSInt)Double2OSInt(sz.x));
+			height.Set((UOSInt)Double2OSInt(sz.y));
 			drawBuff->DelFont(fnt);
 		}
 		else
 		{
-			*width = 0;
-			*height = 0;
+			width.Set(0);
+			height.Set(0);
 		}
+	}
+	else
+	{
+		width.Set(0);
+		height.Set(0);
 	}
 /*	else
 	{
@@ -511,15 +538,15 @@ UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 	this->selColor = this->GetColorHightlight();
 	this->selTextColor = this->GetColorHightlightText();
 
-	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUITextView_OnDraw), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUITextView_OnMouseDown), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUITextView_OnMouseUp), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "motion-notify-event", G_CALLBACK(GUITextView_OnMouseMove), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "scroll-event", G_CALLBACK(GUITextView_OnMouseWheel), this);
-	g_signal_connect(G_OBJECT(this->hwnd), "key-press-event", G_CALLBACK(GUITextView_OnKeyDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "draw", G_CALLBACK(GUITextView_OnDraw), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-press-event", G_CALLBACK(GUITextView_OnMouseDown), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "button-release-event", G_CALLBACK(GUITextView_OnMouseUp), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "motion-notify-event", G_CALLBACK(GUITextView_OnMouseMove), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "scroll-event", G_CALLBACK(GUITextView_OnMouseWheel), this);
+	g_signal_connect(G_OBJECT(this->hwnd.OrNull()), "key-press-event", G_CALLBACK(GUITextView_OnKeyDown), this);
 
-	gtk_widget_set_events((GtkWidget*)this->hwnd, GDK_ALL_EVENTS_MASK);
-	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
+	gtk_widget_set_events((GtkWidget*)this->hwnd.OrNull(), GDK_ALL_EVENTS_MASK);
+	gtk_widget_set_can_focus((GtkWidget*)this->hwnd.OrNull(), true);
 //	gtk_grab_add((GtkWidget*)this->hwnd);
 	parent->AddChild(*this);
 	this->HandleSizeChanged(OnResize, this);

@@ -861,7 +861,7 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 	return this->defYUVType;
 }
 
-NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Optional<Text::String> profileName)
+NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManagerByName(Optional<Text::String> profileName)
 {
 	Optional<Media::MonitorColorManager> monColor;
 	NN<Media::MonitorColorManager> nnmonColor;
@@ -894,13 +894,13 @@ NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Optional<
 	}
 }
 
-NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(MonitorHandle *hMon)
+NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Optional<MonitorHandle> hMon)
 {
 	Media::MonitorInfo monInfo(hMon);
-	return GetMonColorManager(monInfo.GetMonitorID());
+	return GetMonColorManagerByName(monInfo.GetMonitorID());
 }
 
-NN<Media::ColorManagerSess> Media::ColorManager::CreateSess(MonitorHandle *hMon)
+NN<Media::ColorManagerSess> Media::ColorManager::CreateSess(Optional<MonitorHandle> hMon)
 {
 	NN<Media::MonitorColorManager> monColor;
 	monColor = this->GetMonColorManager(hMon);
@@ -974,7 +974,7 @@ Bool Media::ColorManagerSess::Get10BitColor()
 	return this->monColor->Get10BitColor();
 }
 
-void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
+void Media::ColorManagerSess::ChangeMonitor(Optional<MonitorHandle> hMon)
 {
 	Media::MonitorInfo monInfo(hMon);
 	NN<Text::String> monName;
@@ -987,7 +987,7 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 		return;
 	}
 	this->monColor->RemoveSess(*this);
-	this->monColor = this->colorMgr->GetMonColorManager(monName);
+	this->monColor = this->colorMgr->GetMonColorManagerByName(monName);
 	this->monColor->AddSess(*this);
 	this->mut.UnlockWrite();
 	this->RGBUpdated(this->GetRGBParam());

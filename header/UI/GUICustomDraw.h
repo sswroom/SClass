@@ -14,11 +14,12 @@ namespace UI
 	class GUICustomDraw : public GUIControl
 	{
 	public:
+		struct ClassData;
 		NN<Media::DrawEngine> eng;
 		Optional<Media::ColorSess> colorSess;
 	private:
-		IO::Library *lib;
-		void *clsData;
+		NN<IO::Library> lib;
+		NN<ClassData> clsData;
 
 		Bool focusing;
 		UInt32 jsLastButtons;
@@ -28,8 +29,8 @@ namespace UI
 	private:
 		static Int32 useCnt;
 		static OSInt __stdcall FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
-		static void Init(InstanceHandle *hInst);
-		static void Deinit(InstanceHandle *hInst);
+		static void Init(Optional<InstanceHandle> hInst);
+		static void Deinit(Optional<InstanceHandle> hInst);
 		void InitJS();
 
 	public:

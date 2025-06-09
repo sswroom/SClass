@@ -1818,6 +1818,7 @@ AVIRDNSProxyForm.o: ../../src/SSWR/AVIRead/AVIRDNSProxyForm.cpp
 AVIRDragDropViewerForm.o: ../../src/SSWR/AVIRead/AVIRDragDropViewerForm.cpp
 AVIRDS18B20Form.o: ../../src/SSWR/AVIRead/AVIRDS18B20Form.cpp
 AVIRDWQB30Form.o: ../../src/SSWR/AVIRead/AVIRDWQB30Form.cpp
+AVIREdgeAnalyseForm.o: ../../src/SSWR/AVIRead/AVIREdgeAnalyseForm.cpp
 AVIREDIDViewerForm.o: ../../src/SSWR/AVIRead/AVIREDIDViewerForm.cpp
 AVIReGaugeSvrForm.o: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 AVIRElectronicScaleForm.o: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp

@@ -29,12 +29,12 @@ Int32 UI::GTK::GTKProgressBar::SignalTick(void *userObj)
 UI::GTK::GTKProgressBar::GTKProgressBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt) : UI::GUIProgressBar(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_progress_bar_new();
-	gtk_progress_bar_set_show_text((GtkProgressBar*)this->hwnd, false);
+	gtk_progress_bar_set_show_text((GtkProgressBar*)this->hwnd.OrNull(), false);
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle(CSTR("progress, trough"), CSTR_NULL);
 	builder.AddMinHeight(24, Math::Unit::Distance::DU_PIXEL);
-	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	GtkWidget *widget = (GtkWidget*)this->hwnd.OrNull();
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
@@ -44,7 +44,7 @@ UI::GTK::GTKProgressBar::GTKProgressBar(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	parent->AddChild(*this);
 	this->Show();
 	this->totalCnt = totalCnt;
-	this->bar = (GtkProgressBar*)this->hwnd;
+	this->bar = (GtkProgressBar*)this->hwnd.OrNull();
 	this->currCnt = 0;
 	this->cntUpdated = false;
 	this->timerId = g_timeout_add(500, SignalTick, this);

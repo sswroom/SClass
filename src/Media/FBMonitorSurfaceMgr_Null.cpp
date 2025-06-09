@@ -49,7 +49,7 @@ const Media::ColorProfile *Media::FBMonitorSurfaceMgr::GetMonitorColor(MonitorHa
 	return 0;
 }
 
-Bool Media::FBMonitorSurfaceMgr::Is10BitColor(MonitorHandle *hMonitor)
+Bool Media::FBMonitorSurfaceMgr::Is10BitColor(Optional<MonitorHandle> hMonitor)
 {
 	if (this->colorMgr)
 	{
@@ -62,7 +62,7 @@ Bool Media::FBMonitorSurfaceMgr::Is10BitColor(MonitorHandle *hMonitor)
 	return false;
 }
 
-Bool Media::FBMonitorSurfaceMgr::SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs)
+Bool Media::FBMonitorSurfaceMgr::SetFSMode(Optional<MonitorHandle> hMon, Optional<ControlHandle> hWnd, Bool fs)
 {
 	return true;
 }

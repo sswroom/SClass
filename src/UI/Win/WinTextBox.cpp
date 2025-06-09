@@ -41,26 +41,26 @@ UI::Win::WinTextBox::~WinTextBox()
 
 void UI::Win::WinTextBox::SetReadOnly(Bool isReadOnly)
 {
-	SendMessage((HWND)this->hwnd, EM_SETREADONLY, isReadOnly?TRUE:FALSE, 0);
+	SendMessage((HWND)this->hwnd.OrNull(), EM_SETREADONLY, isReadOnly?TRUE:FALSE, 0);
 }
 
 void UI::Win::WinTextBox::SetPasswordChar(UTF32Char c)
 {
-	SendMessage((HWND)this->hwnd, EM_SETPASSWORDCHAR, c, 0);
+	SendMessage((HWND)this->hwnd.OrNull(), EM_SETPASSWORDCHAR, c, 0);
 }
 
 void UI::Win::WinTextBox::SetText(Text::CStringNN txt)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(txt.v);
-	SetWindowTextW((HWND)hwnd, wptr.Ptr());
+	SetWindowTextW((HWND)hwnd.OrNull(), wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 
 UnsafeArrayOpt<UTF8Char> UI::Win::WinTextBox::GetText(UnsafeArray<UTF8Char> buff)
 {
-	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
+	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd.OrNull());
 	WChar *wptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd, wptr, (int)(leng + 1));
+	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)(leng + 1));
 	buff = Text::StrWChar_UTF8(buff, wptr);
 	MemFree(wptr);
 	return buff;
@@ -68,9 +68,9 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinTextBox::GetText(UnsafeArray<UTF8Char> buff
 
 Bool UI::Win::WinTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
-	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
+	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd.OrNull());
 	WChar *wptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd, wptr, (int)leng + 1);
+	GetWindowTextW((HWND)hwnd.OrNull(), wptr, (int)leng + 1);
 	sb->AppendW(wptr);
 	MemFree(wptr);
 	return true;
@@ -97,5 +97,5 @@ void UI::Win::WinTextBox::SetWordWrap(Bool wordWrap)
 
 void UI::Win::WinTextBox::SelectAll()
 {
-	SendMessage((HWND)this->hwnd, EM_SETSEL, 0, -1);
+	SendMessage((HWND)this->hwnd.OrNull(), EM_SETSEL, 0, -1);
 }

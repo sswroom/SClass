@@ -51,9 +51,9 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 			NN<UI::GUIClientControl> nnparent;
 			if (me->parent.SetTo(nnparent))
 			{
-				hdc = GetDC((HWND)nnparent->GetHandle());
+				hdc = GetDC((HWND)nnparent->GetHandle().OrNull());
 				me->DrawXorBar(hdc, me->lastX, me->lastY);
-				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+				ReleaseDC((HWND)nnparent->GetHandle().OrNull(), hdc);
 			}
 
 			Math::Coord2D<OSInt> pos = me->GetPositionP();
@@ -111,12 +111,12 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 			NN<UI::GUIClientControl> nnparent;
 			if (me->parent.SetTo(nnparent))
 			{
-				hdc = GetDC((HWND)nnparent->GetHandle());
+				hdc = GetDC((HWND)nnparent->GetHandle().OrNull());
 
 				me->DrawXorBar(hdc, me->lastX, me->lastY);
 				me->DrawXorBar(hdc, pt.x, pt.y);
 
-				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+				ReleaseDC((HWND)nnparent->GetHandle().OrNull(), hdc);
 			}
 			me->lastX = pt.x;
 			me->lastY = pt.y;
@@ -128,14 +128,14 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 	return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
 }
 
-void UI::Win::WinVSplitter::Init(InstanceHandle *hInst)
+void UI::Win::WinVSplitter::Init(Optional<InstanceHandle> hInst)
 {
 	WNDCLASSW wc;
     wc.style = 0; 
 	wc.lpfnWndProc = (WNDPROC)UI::Win::WinVSplitter::FormWndProc; 
     wc.cbClsExtra = 0; 
     wc.cbWndExtra = 0; 
-    wc.hInstance = (HINSTANCE)hInst; 
+    wc.hInstance = (HINSTANCE)hInst.OrNull(); 
     wc.hIcon = 0; 
     wc.hCursor = LoadCursor((HINSTANCE)0, IDC_SIZENS); 
     wc.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1); 
@@ -146,9 +146,9 @@ void UI::Win::WinVSplitter::Init(InstanceHandle *hInst)
         return; 
 }
 
-void UI::Win::WinVSplitter::Deinit(InstanceHandle *hInst)
+void UI::Win::WinVSplitter::Deinit(Optional<InstanceHandle> hInst)
 {
-	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
+	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst.OrNull());
 }
 
 void UI::Win::WinVSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
@@ -339,9 +339,9 @@ void UI::Win::WinVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math
 			NN<UI::GUIClientControl> nnparent;
 			if (this->parent.SetTo(nnparent))
 			{
-				HDC hdc = GetDC((HWND)nnparent->GetHandle());
+				HDC hdc = GetDC((HWND)nnparent->GetHandle().OrNull());
 				this->DrawXorBar(hdc, pos.x, pos.y);
-				ReleaseDC((HWND)nnparent->GetHandle(), hdc);
+				ReleaseDC((HWND)nnparent->GetHandle().OrNull(), hdc);
 			}
 		}
 	}

@@ -233,18 +233,18 @@ void UI::GTK::GTKDragDrop::OnDropData(GtkWidget *widget, GdkDragContext *context
 	}
 }
 
-UI::GTK::GTKDragDrop::GTKDragDrop(void *hWnd, UI::GUIDropHandler *hdlr)
+UI::GTK::GTKDragDrop::GTKDragDrop(Optional<ControlHandle> hWnd, NN<UI::GUIDropHandler> hdlr)
 {
 	this->hWnd = hWnd;
 	this->hdlr = hdlr;
 	this->currEff = UI::GUIDropHandler::DE_NONE;
 	this->dragData = 0;
 
-	gtk_drag_dest_set((GtkWidget*)this->hWnd, (GtkDestDefaults)0, 0, 0, GDK_ACTION_COPY);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-motion", G_CALLBACK(OnDragMotion), this);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-leave", G_CALLBACK(OnDragLeave), this);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-drop", G_CALLBACK(OnDragDrop), this);
-	g_signal_connect((GtkWindow*)this->hWnd, "drag-data-received", G_CALLBACK(OnDropData), this);
+	gtk_drag_dest_set((GtkWidget*)this->hWnd.OrNull(), (GtkDestDefaults)0, 0, 0, GDK_ACTION_COPY);
+	g_signal_connect((GtkWindow*)this->hWnd.OrNull(), "drag-motion", G_CALLBACK(OnDragMotion), this);
+	g_signal_connect((GtkWindow*)this->hWnd.OrNull(), "drag-leave", G_CALLBACK(OnDragLeave), this);
+	g_signal_connect((GtkWindow*)this->hWnd.OrNull(), "drag-drop", G_CALLBACK(OnDragDrop), this);
+	g_signal_connect((GtkWindow*)this->hWnd.OrNull(), "drag-data-received", G_CALLBACK(OnDropData), this);
 }
 
 UI::GTK::GTKDragDrop::~GTKDragDrop()
@@ -252,7 +252,7 @@ UI::GTK::GTKDragDrop::~GTKDragDrop()
 	SDEL_CLASS(this->dragData);
 }
 
-void UI::GTK::GTKDragDrop::SetHandler(UI::GUIDropHandler *hdlr)
+void UI::GTK::GTKDragDrop::SetHandler(NN<UI::GUIDropHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
@@ -265,7 +265,7 @@ Int32 UI::GTK::GTKDragDrop::EventDragMotion(void *context, OSInt x, OSInt y, UIn
 	}
 	else
 	{
-		NEW_CLASSNN(dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
+		NEW_CLASSNN(dragData, UI::GTK::GTKDropData(this->hWnd.OrNull(), context, time, false));
 		this->dragData = dragData.Ptr();
 		this->currEff = this->hdlr->DragEnter(dragData);
 	}
@@ -292,7 +292,7 @@ Bool UI::GTK::GTKDragDrop::EventDragDrop(void *context, OSInt x, OSInt y, UInt32
 	}
 	else
 	{
-		NEW_CLASSNN(dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
+		NEW_CLASSNN(dragData, UI::GTK::GTKDropData(this->hWnd.OrNull(), context, time, false));
 		this->dragData = dragData.Ptr();
 	}
 	while (gtk_events_pending())

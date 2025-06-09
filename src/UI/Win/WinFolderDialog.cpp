@@ -36,11 +36,11 @@ UI::Win::WinFolderDialog::~WinFolderDialog()
 	CoUninitialize();
 }
 
-Bool UI::Win::WinFolderDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::Win::WinFolderDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
 	WChar wbuff[MAX_PATH];
 	BROWSEINFOW info;
-	info.hwndOwner = (HWND)ownerHandle;
+	info.hwndOwner = (HWND)ownerHandle.OrNull();
 	info.pidlRoot = 0;
 	NN<Text::String> s;
 	if (this->dirName.SetTo(s))
