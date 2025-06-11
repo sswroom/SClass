@@ -36,6 +36,7 @@ namespace Text
 	public:
 		virtual JSONType GetType() = 0;
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb) = 0;
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level) = 0;
 		virtual Bool Equals(Text::CStringNN s) = 0;
 		virtual Bool Identical(NN<JSONBase> obj) = 0;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) = 0;
@@ -73,7 +74,7 @@ namespace Text
 	private:
 		static UnsafeArray<const UTF8Char> ClearWS(UnsafeArray<const UTF8Char> jsonStr);
 		static UnsafeArrayOpt<const UTF8Char> ParseJSString(UnsafeArray<const UTF8Char> jsonStr, NN<Text::StringBuilderUTF8> sb);
-		static UnsafeArrayOpt<const UTF8Char> ParseJSNumber(UnsafeArray<const UTF8Char> jsonStr, OutParam<Double> val);
+		static UnsafeArrayOpt<const UTF8Char> ParseJSNumber(UnsafeArray<const UTF8Char> jsonStr, OutParam<Double> val, OptOut<Bool> noDecimal);
 		static Optional<JSONBase> ParseJSONStr2(UnsafeArray<const UTF8Char> jsonStr, UnsafeArray<const UTF8Char> jsonStrEnd, OutParam<UnsafeArrayOpt<const UTF8Char>> jsonStrEndOut, NN<Text::StringBuilderUTF8> sbEnv);
 		static Bool Str2Bool(NN<Text::String> s);
 	};
@@ -91,6 +92,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
@@ -110,6 +112,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
@@ -129,6 +132,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
@@ -149,6 +153,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
@@ -168,6 +173,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
@@ -186,6 +192,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
@@ -227,6 +234,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
@@ -255,6 +263,7 @@ namespace Text
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level);
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);

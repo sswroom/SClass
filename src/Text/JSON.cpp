@@ -712,7 +712,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 	return 0;
 }
 
-UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const UTF8Char> jsonStr, OutParam<Double> val)
+UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const UTF8Char> jsonStr, OutParam<Double> val, OptOut<Bool> noDecimal)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> dptr = sbuff;
@@ -761,6 +761,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const U
 		{
 			*dptr = 0;
 			val.Set(Text::StrToDoubleOrNAN(sbuff));
+			noDecimal.Set(!hasDot);
 			return jsonStr;
 		}
 		jsonStr++;
@@ -937,17 +938,35 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 	else if (c == '-' || (c >= '0' && c <= '9'))
 	{
 		Double val;
-		if (!ParseJSNumber(jsonStr, val).SetTo(jsonStr))
+		Bool noDecimal;
+		if (!ParseJSNumber(jsonStr, val, noDecimal).SetTo(jsonStr))
 		{
 			jsonStrEndOut.Set(0);
 			return 0;
 		}
 		else 
 		{
-			Text::JSONNumber *num;
-			NEW_CLASS(num, Text::JSONNumber(val));
-			jsonStrEndOut.Set(jsonStr);
-			return num;
+			if (noDecimal && val >= -0x80000000 && val <= 0x7fffffff)
+			{
+				Text::JSONInt32 *num;
+				NEW_CLASS(num, Text::JSONInt32(Double2Int32(val)));
+				jsonStrEndOut.Set(jsonStr);
+				return num;
+			}
+			else if (noDecimal && val >= -0x8000000000000000LL && (Int64)val <= 0x7fffffffffffffffLL)
+			{
+				Text::JSONInt64 *num;
+				NEW_CLASS(num, Text::JSONInt64((Int64)val));
+				jsonStrEndOut.Set(jsonStr);
+				return num;
+			}
+			else
+			{
+				Text::JSONNumber *num;
+				NEW_CLASS(num, Text::JSONNumber(val));
+				jsonStrEndOut.Set(jsonStr);
+				return num;
+			}
 		}
 	}
 	else if (c == 't')
@@ -1033,6 +1052,11 @@ void Text::JSONNumber::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	Text::SBAppendF64(sb, this->val);
 }
 
+void Text::JSONNumber::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
+{
+	Text::SBAppendF64(sb, this->val);
+}
+
 Bool Text::JSONNumber::Equals(Text::CStringNN s)
 {
 	return false;
@@ -1074,6 +1098,11 @@ void Text::JSONInt32::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendI32(this->val);
 }
 
+void Text::JSONInt32::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
+{
+	sb->AppendI32(this->val);
+}
+
 Bool Text::JSONInt32::Equals(Text::CStringNN s)
 {
 	return false;
@@ -1111,6 +1140,11 @@ Text::JSONType Text::JSONInt64::GetType()
 }
 
 void Text::JSONInt64::ToJSONString(NN<Text::StringBuilderUTF8> sb)
+{
+	sb->AppendI64(this->val);
+}
+
+void Text::JSONInt64::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
 {
 	sb->AppendI64(this->val);
 }
@@ -1200,6 +1234,11 @@ void Text::JSONString::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendUTF8Char('\"');
 }
 
+void Text::JSONString::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
+{
+	this->ToJSONString(sb);
+}
+
 Bool Text::JSONString::Equals(Text::CStringNN s)
 {
 	return this->val->Equals(s.v, s.leng);
@@ -1246,6 +1285,11 @@ void Text::JSONBool::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	{
 		sb->AppendC(UTF8STRC("false"));
 	}
+}
+
+void Text::JSONBool::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
+{
+	this->ToJSONString(sb);
 }
 
 Bool Text::JSONBool::Equals(Text::CStringNN s)
@@ -1318,6 +1362,41 @@ void Text::JSONObject::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 			sb->AppendC(UTF8STRC("null"));
 		}
 		i++;
+	}
+	sb->AppendUTF8Char('}');
+}
+
+void Text::JSONObject::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
+{
+	NN<Text::JSONBase> obj;
+	UOSInt i = 0;
+	UOSInt j = this->objVals.GetCount();
+	sb->AppendUTF8Char('{');
+	i = 0;
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb->AppendUTF8Char(',');
+		}
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendChar('\t', level + 1);
+		Text::JSText::ToJSTextDQuote(sb, Text::String::OrEmpty(this->objVals.GetKey(i))->v);
+		sb->AppendC(UTF8STRC(" : "));
+		if (this->objVals.GetItem(i).SetTo(obj))
+		{
+			obj->ToJSONStringWF(sb, level + 1);
+		}
+		else
+		{
+			sb->AppendC(UTF8STRC("null"));
+		}
+		i++;
+	}
+	if (j > 0)
+	{
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendChar('\t', level);
 	}
 	sb->AppendUTF8Char('}');
 }
@@ -1647,6 +1726,38 @@ void Text::JSONArray::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendUTF8Char(']');
 }
 
+void Text::JSONArray::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
+{
+	NN<Text::JSONBase> obj;
+	UOSInt i = 0;
+	UOSInt j = this->arrVals.GetCount();
+	sb->AppendUTF8Char('[');
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb->AppendUTF8Char(',');
+		}
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendChar('\t', level + 1);
+		if (this->arrVals.GetItem(i).SetTo(obj))
+		{
+			obj->ToJSONStringWF(sb, level + 1);
+		}
+		else
+		{
+			sb->AppendC(UTF8STRC("null"));
+		}
+		i++;
+	}
+	if (j > 0)
+	{
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendChar('\t', level);
+	}
+	sb->AppendUTF8Char(']');
+}
+
 Bool Text::JSONArray::Equals(Text::CStringNN s)
 {
 	///////////////////////////////
@@ -1782,6 +1893,11 @@ Text::JSONType Text::JSONNull::GetType()
 }
 
 void Text::JSONNull::ToJSONString(NN<Text::StringBuilderUTF8> sb)
+{
+	sb->AppendC(UTF8STRC("null"));
+}
+
+void Text::JSONNull::ToJSONStringWF(NN<Text::StringBuilderUTF8> sb, UOSInt level)
 {
 	sb->AppendC(UTF8STRC("null"));
 }
