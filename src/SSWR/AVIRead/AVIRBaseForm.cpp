@@ -242,6 +242,7 @@
 #include "SSWR/AVIRead/AVIRTrustStoreForm.h"
 #include "SSWR/AVIRead/AVIRTVControlForm.h"
 #include "SSWR/AVIRead/AVIRUDPCaptureForm.h"
+#include "SSWR/AVIRead/AVIRUDPLoadBalancerForm.h"
 #include "SSWR/AVIRead/AVIRUDPTestForm.h"
 #include "SSWR/AVIRead/AVIRUSBDeviceForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentBatchForm.h"
@@ -544,7 +545,10 @@ typedef enum
 	MNU_WSDLISTENER,
 	MNU_WEBPUSH,
 	MNU_CHROME_DEVTOOLS,
-	MNU_EDGE_ANALYSE
+	MNU_EDGE_ANALYSE,
+	MNU_LB_UDP,
+	MNU_LB_TCP,
+	MNU_LB_HTTP
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -835,6 +839,10 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2 = mnu->AddSubMenu(CSTR("LoRa"));
 	mnu2->AddItem(CSTR("GW Simulator"), MNU_LORA_GW_SIM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JSON Parser"), MNU_LORA_JSON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Load Balancer"));
+	mnu2->AddItem(CSTR("UDP Load Balancer (To Be Ready)"), MNU_LB_UDP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("TCP Load Balancer (To Be Ready)"), MNU_LB_TCP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HTTP Load Balancer (To Be Ready)"), MNU_LB_HTTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("ACME Client"), MNU_ACME_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("RSS Reader"), MNU_RSSREADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("eGauge Server"), MNU_EGAUGESVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3177,6 +3185,17 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREdgeAnalyseForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
+		break;
+	case MNU_LB_UDP:
+		{
+			NN<SSWR::AVIRead::AVIRUDPLoadBalancerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPLoadBalancerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_LB_TCP:
+		break;
+	case MNU_LB_HTTP:
 		break;
 	}
 }

@@ -2047,6 +2047,7 @@ AVIRTraceRouteForm.o: ../../src/SSWR/AVIRead/AVIRTraceRouteForm.cpp
 AVIRTrustStoreForm.o: ../../src/SSWR/AVIRead/AVIRTrustStoreForm.cpp
 AVIRTVControlForm.o: ../../src/SSWR/AVIRead/AVIRTVControlForm.cpp
 AVIRUDPCaptureForm.o: ../../src/SSWR/AVIRead/AVIRUDPCaptureForm.cpp
+AVIRUDPLoadBalancerForm.o: ../../src/SSWR/AVIRead/AVIRUDPLoadBalancerForm.cpp
 AVIRUDPTestForm.o: ../../src/SSWR/AVIRead/AVIRUDPTestForm.cpp
 AVIRUSBDeviceForm.o: ../../src/SSWR/AVIRead/AVIRUSBDeviceForm.cpp
 AVIRUserAgentBatchForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentBatchForm.cpp

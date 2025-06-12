@@ -4449,6 +4449,8 @@ SSWR/AVIRead/AVIRTVControlForm.h:
 @AVIRTVControlForm.o
 SSWR/AVIRead/AVIRUDPCaptureForm.h:
 @AVIRUDPCaptureForm.o
+SSWR/AVIRead/AVIRUDPLoadBalancerForm.h:
+@AVIRUDPLoadBalancerForm.o
 SSWR/AVIRead/AVIRUDPTestForm.h:
 @AVIRUDPTestForm.o
 SSWR/AVIRead/AVIRUSBDeviceForm.h:
