@@ -5,6 +5,7 @@
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListView.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -40,6 +41,7 @@ namespace SSWR
 			Sync::Mutex sessMut;
 			Data::ArrayListNN<UDPSession> sessList;
 			UOSInt nextTarget;
+			UOSInt dispNextTarget;
 			Data::ArrayListNN<UDPTarget> targetList;
 			IO::LogTool log;
 			Data::Duration sessTimeout;
@@ -65,6 +67,8 @@ namespace SSWR
 			static void __stdcall OnSourceUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 			static void __stdcall OnTargetUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnTargetAddClicked(AnyType userObj);
+			static void __stdcall OnTargetDelClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall FreeSession(NN<UDPSession> sess);
 		public:

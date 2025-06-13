@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_DURATION
 #define _SM_DATA_DURATION
 #define DURATION_INFINITY -12345
+#include "Text/CString.h"
 
 namespace Data
 {
@@ -297,6 +298,77 @@ namespace Data
 			Int64 secs = (Int64)(val / divider);
 			UInt64 bytes = val % divider;
 			return Data::Duration(secs, (UInt32)(bytes * 1000000000 / divider));
+		}
+
+		static Data::Duration FromStr(Text::CStringNN s)
+		{
+			UTF8Char sbuff[64];
+			UnsafeArray<UTF8Char> sptr;
+			if (s.leng >= 64 || s.leng == 0)
+			{
+				return 0;
+			}
+			Double timeMul = 0.001;
+			sptr = s.ConcatTo(sbuff);
+			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ms")))
+			{
+				sptr -= 2;
+				sptr[0] = 0;
+			}
+			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("us")))
+			{
+				timeMul = 0.000001;
+				sptr -= 2;
+				sptr[0] = 0;
+			}
+			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ns")))
+			{
+				timeMul = 0.000000001;
+				sptr -= 2;
+				sptr[0] = 0;
+			}
+			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("min")))
+			{
+				timeMul = 60;
+				sptr -= 3;
+				sptr[0] = 0;
+			}
+			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("h")))
+			{
+				timeMul = 3600;
+				sptr -= 1;
+				sptr[0] = 0;
+			}
+			else if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("s")))
+			{
+				timeMul = 1;
+				sptr -= 1;
+				sptr[0] = 0;
+			}
+			Double val;
+			if (!Text::StrToDouble(sbuff, val))
+			{
+				return 0;
+			}
+			val *= timeMul;
+			Int64 iVal;
+			UInt32 ns;
+			iVal = (Int64)Math_Fix(val);
+			if (val < 0)
+			{
+				iVal -= 1;
+				ns = (UInt32)Math_Round((val - (Double)iVal) * 1000000000);
+				if (ns >= 1000000000)
+				{
+					ns -= 1000000000;
+					iVal += 1;
+				}
+			}
+			else
+			{
+				ns = (UInt32)Math_Round((val - (Double)iVal) * 1000000000);
+			}
+			return Data::Duration(iVal, ns);
 		}
 	};
 }

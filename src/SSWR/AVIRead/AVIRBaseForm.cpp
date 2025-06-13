@@ -840,7 +840,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("GW Simulator"), MNU_LORA_GW_SIM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JSON Parser"), MNU_LORA_JSON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Load Balancer"));
-	mnu2->AddItem(CSTR("UDP Load Balancer (To Be Ready)"), MNU_LB_UDP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("UDP Load Balancer"), MNU_LB_UDP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("TCP Load Balancer (To Be Ready)"), MNU_LB_TCP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Load Balancer (To Be Ready)"), MNU_LB_HTTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("ACME Client"), MNU_ACME_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);

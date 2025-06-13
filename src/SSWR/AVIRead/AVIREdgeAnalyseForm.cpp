@@ -128,6 +128,7 @@ void __stdcall SSWR::AVIRead::AVIREdgeAnalyseForm::OnTimerTick(AnyType userObj)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	NN<Text::String> s;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage(me->newRecordsMut);
@@ -169,7 +170,15 @@ void __stdcall SSWR::AVIRead::AVIREdgeAnalyseForm::OnTimerTick(AnyType userObj)
 			record = records.GetItemNoCheck(i);
 			sptr = record->ts.ToStringNoZone(sbuff);
 			k = me->lvWebHookData->AddItem(CSTRP(sbuff, sptr), record);
-			me->lvWebHookData->SetSubItem(k, 1, record->type);
+			if (record->json->GetValueString(CSTR("deviceSn")).SetTo(s))
+			{
+				me->lvWebHookData->SetSubItem(k, 1, s);
+			}
+			if (record->json->GetValueString(CSTR("cameraId")).SetTo(s))
+			{
+				me->lvWebHookData->SetSubItem(k, 2, s);
+			}
+			me->lvWebHookData->SetSubItem(k, 3, record->type);
 			if (record->type->Equals(CSTR("passengerNumber")))
 			{
 				NN<Text::String> hour;
@@ -184,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIREdgeAnalyseForm::OnTimerTick(AnyType userObj)
 					sb.AppendI32(Double2Int32(enterNumber));
 					sb.Append(CSTR(", leaveNumber="));
 					sb.AppendI32(Double2Int32(leaveNumber));
-					me->lvWebHookData->SetSubItem(k, 2, sb.ToCString());
+					me->lvWebHookData->SetSubItem(k, 4, sb.ToCString());
 				}
 			}
 			else if (record->type->Equals(CSTR("peopleCountByArea")))
@@ -198,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIREdgeAnalyseForm::OnTimerTick(AnyType userObj)
 					sb.Append(areaName);
 					sb.Append(CSTR(", countNumber="));
 					sb.AppendI32(Double2Int32(countNumber));
-					me->lvWebHookData->SetSubItem(k, 2, sb.ToCString());
+					me->lvWebHookData->SetSubItem(k, 4, sb.ToCString());
 				}
 			}
 			me->records.Add(record);
@@ -241,11 +250,13 @@ SSWR::AVIRead::AVIREdgeAnalyseForm::AVIREdgeAnalyseForm(Optional<UI::GUIClientCo
 	this->txtWebHookData->SetRect(0, 0, 100, 120, false);
 	this->txtWebHookData->SetReadOnly(true);
 	this->txtWebHookData->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	this->lvWebHookData = ui->NewListView(this->tpWebHook, UI::ListViewStyle::Table, 3);
+	this->lvWebHookData = ui->NewListView(this->tpWebHook, UI::ListViewStyle::Table, 5);
 	this->lvWebHookData->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWebHookData->SetFullRowSelect(true);
 	this->lvWebHookData->SetShowGrid(true);
 	this->lvWebHookData->AddColumn(CSTR("Time"), 120);
+	this->lvWebHookData->AddColumn(CSTR("DeviceSN"), 150);
+	this->lvWebHookData->AddColumn(CSTR("CameraId"), 150);
 	this->lvWebHookData->AddColumn(CSTR("Type"), 100);
 	this->lvWebHookData->AddColumn(CSTR("Desc"), 300);
 	this->lvWebHookData->HandleSelChg(OnWebHookDataSelChg, this);
