@@ -10,9 +10,10 @@ namespace Net
 		class WebSession
 		{
 		public:
-			virtual Bool RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os) = 0;
+			virtual Bool RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os, Text::CStringNN origin) = 0;
 			virtual void EndUse() = 0;
-			virtual Int64 GetSessId() = 0;
+			virtual Int64 GetSessId() const = 0;
+			virtual NN<Text::String> GetOrigin() const = 0;
 
 			virtual void SetValuePtr(Text::CStringNN name, void *val) = 0;
 			virtual void SetValueDbl(Text::CStringNN name, Double val) = 0;

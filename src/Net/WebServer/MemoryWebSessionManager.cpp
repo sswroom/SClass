@@ -110,6 +110,8 @@ Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CStringNN
 	this->chkHdlrObj = chkHdlrObj;
 	this->chkToStop = false;
 	this->chkRunning = false;
+	this->forceSecure = false;
+	this->checkReferer = true;
 	Sync::ThreadUtil::Create(CheckThread, this);
 	while (!this->chkRunning)
 	{
@@ -147,7 +149,12 @@ Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::Ge
 	NN<Net::WebServer::MemoryWebSession> sess;
 	if (Optional<Net::WebServer::MemoryWebSession>::ConvertFrom(this->GetSession(sessId)).SetTo(sess))
 	{
-		if (!sess->RequestValid(req->GetBrowser(), req->GetOS()))
+		Text::StringBuilderUTF8 sb;
+		if (this->checkReferer)
+		{
+			req->GetOrigin(sb);
+		}
+		if (!sess->RequestValid(req->GetBrowser(), req->GetOS(), sb.ToCString()))
 		{
 			sess->EndUse();
 			return 0;
@@ -166,9 +173,14 @@ NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSe
 		return sess;
 	Int64 sessId = this->GenSessId(req);
 	sptr = Text::StrInt64(sbuff, sessId);
-	resp->AddSetCookie(this->cookieName->ToCString(), CSTRP(sbuff, sptr), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
+	resp->AddSetCookie(this->cookieName->ToCString(), CSTRP(sbuff, sptr), this->path->ToCString(), true, this->forceSecure || req->IsSecure(), Net::WebServer::SameSiteType::Strict, 0);
 	UOSInt i;
-	NEW_CLASSNN(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
+	Text::StringBuilderUTF8 sb;
+	if (this->checkReferer)
+	{
+		req->GetOrigin(sb);
+	}
+	NEW_CLASSNN(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS(), sb.ToCString()));
 	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedInsert(sessId);
 	this->sesses.Insert(i, NN<Net::WebServer::MemoryWebSession>::ConvertFrom(sess));
@@ -201,8 +213,13 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::W
 			nnsess->EndUse();
 			nnsess.Delete();
 		}
-		resp->AddSetCookie(this->cookieName->ToCString(), CSTR(""), this->path->ToCString(), true, req->IsSecure(), Net::WebServer::SameSiteType::Strict, Data::Timestamp::UtcNow().AddMonth(-12));
+		resp->AddSetCookie(this->cookieName->ToCString(), CSTR(""), this->path->ToCString(), true, this->forceSecure || req->IsSecure(), Net::WebServer::SameSiteType::Strict, Data::Timestamp::UtcNow().AddMonth(-12));
 	}
+}
+
+void Net::WebServer::MemoryWebSessionManager::SetForceSecure(Bool forceSecure)
+{
+	this->forceSecure = forceSecure;
 }
 
 Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::WebRequest> req)
@@ -231,7 +248,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::WebR
 	return dt.ToTicks() + *(Int64*)buff;
 }
 
-NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId)
+NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId, Text::CStringNN origin)
 {
 	OSInt si;
 	NN<Net::WebServer::MemoryWebSession> sess;
@@ -243,7 +260,7 @@ NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSe
 	}
 	else
 	{
-		NEW_CLASSNN(sess, Net::WebServer::MemoryWebSession(sessId, Net::BrowserInfo::BT_UNKNOWN, Manage::OSInfo::OT_UNKNOWN));
+		NEW_CLASSNN(sess, Net::WebServer::MemoryWebSession(sessId, Net::BrowserInfo::BT_UNKNOWN, Manage::OSInfo::OT_UNKNOWN, origin));
 		UOSInt i = this->sessIds.SortedInsert(sessId);
 		this->sesses.Insert(i, NN<Net::WebServer::MemoryWebSession>::ConvertFrom(sess));
 	}

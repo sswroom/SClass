@@ -46,6 +46,7 @@ namespace Net
 			virtual Bool GetHeaderC(NN<Text::StringBuilderUTF8> sb, Text::CStringNN name) const = 0;
 			virtual UOSInt GetHeaderNames(NN<Data::ArrayListStringNN> names) const = 0;
 			Bool GetRefererDomain(NN<Text::StringBuilderUTF8> sb) const;
+			Bool GetOrigin(NN<Text::StringBuilderUTF8> sb) const;
 			Bool GetIfModifiedSince(NN<Data::DateTime> dt) const;
 			Bool GetCookie(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb) const;
 			Optional<Text::String> GetCookieAsNew(Text::CStringNN name) const;

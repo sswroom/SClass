@@ -19,6 +19,8 @@ namespace Net
 			Sync::Mutex mut;
 			NN<Text::String> path;
 			NN<Text::String> cookieName;
+			Bool forceSecure;
+			Bool checkReferer;
 
 			Int32 chkInterval;
 			SessionHandler chkHdlr;
@@ -37,8 +39,9 @@ namespace Net
 			virtual NN<WebSession> CreateSession(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 			virtual void DeleteSession(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 
+			void SetForceSecure(Bool forceSecure);
 			Int64 GenSessId(NN<Net::WebServer::WebRequest> req);
-			NN<WebSession> CreateSession(Int64 sessId);
+			NN<WebSession> CreateSession(Int64 sessId, Text::CStringNN origin);
 			Optional<WebSession> GetSession(Int64 sessId);
 			void DeleteSession(Int64 sessId);
 

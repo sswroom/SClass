@@ -90,6 +90,29 @@ Bool Net::WebServer::WebRequest::GetRefererDomain(NN<Text::StringBuilderUTF8> sb
 	return true;
 }
 
+Bool Net::WebServer::WebRequest::GetOrigin(NN<Text::StringBuilderUTF8> sb) const
+{
+	NN<Text::String> hdr;
+	if (this->GetSHeader(CSTR("Origin")).SetTo(hdr))
+	{
+		sb->Append(hdr);
+		return true;
+	}
+	if (this->GetSHeader(CSTR("Referer")).SetTo(hdr))
+	{
+		UOSInt i = hdr->IndexOf(CSTR("://"));
+		if (i == INVALID_INDEX)
+			return false;
+		i = hdr->IndexOf('/', i + 3);
+		if (i == INVALID_INDEX)
+			sb->Append(hdr);
+		else
+			sb->AppendC(hdr->v, i);
+		return true;
+	}
+	return false;
+}
+
 Bool Net::WebServer::WebRequest::GetIfModifiedSince(NN<Data::DateTime> dt) const
 {
 	NN<Text::String> s;

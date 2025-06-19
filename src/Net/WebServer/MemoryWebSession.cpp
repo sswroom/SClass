@@ -3,22 +3,25 @@
 #include "Text/MyString.h"
 #include "Net/WebServer/MemoryWebSession.h"
 
-Net::WebServer::MemoryWebSession::MemoryWebSession(Int64 sessId, Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os)
+Net::WebServer::MemoryWebSession::MemoryWebSession(Int64 sessId, Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os, Text::CStringNN origin)
 {
 	this->browser = browser;
 	this->os = os;
 	this->sessId = sessId;
+	this->origin = Text::String::New(origin);
 }
 
 Net::WebServer::MemoryWebSession::~MemoryWebSession()
 {
 }
 
-Bool Net::WebServer::MemoryWebSession::RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os)
+Bool Net::WebServer::MemoryWebSession::RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os, Text::CStringNN origin)
 {
 	if (this->browser != Net::BrowserInfo::BT_UNKNOWN && this->browser != browser)
 		return false;
 	if (this->os != Manage::OSInfo::OT_UNKNOWN && this->os != os)
+		return false;
+	if (!this->origin->Equals(origin))
 		return false;
 	return true;
 }
@@ -33,9 +36,14 @@ void Net::WebServer::MemoryWebSession::EndUse()
 	this->mut.Unlock();
 }
 
-Int64 Net::WebServer::MemoryWebSession::GetSessId()
+Int64 Net::WebServer::MemoryWebSession::GetSessId() const
 {
 	return this->sessId;
+}
+
+NN<Text::String> Net::WebServer::MemoryWebSession::GetOrigin() const
+{
+	return this->origin;
 }
 
 void Net::WebServer::MemoryWebSession::SetValuePtr(Text::CStringNN name, void *val)

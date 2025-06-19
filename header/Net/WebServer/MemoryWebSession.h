@@ -14,17 +14,19 @@ namespace Net
 			Net::BrowserInfo::BrowserType browser;
 			Manage::OSInfo::OSType os;
 			Data::FastStringMap<Int64> items;
+			NN<Text::String> origin;
 			Sync::Mutex mut;
 			Int64 sessId;
 
 		public:
-			MemoryWebSession(Int64 sessId, Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);
+			MemoryWebSession(Int64 sessId, Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os, Text::CStringNN origin);
 			virtual ~MemoryWebSession();
 
-			virtual Bool RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);
+			virtual Bool RequestValid(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os, Text::CStringNN origin);
 			void BeginUse();
 			virtual void EndUse();
-			virtual Int64 GetSessId();
+			virtual Int64 GetSessId() const;
+			virtual NN<Text::String> GetOrigin() const;
 
 			virtual void SetValuePtr(Text::CStringNN name, void *val);
 			virtual void SetValueDbl(Text::CStringNN name, Double val);
