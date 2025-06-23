@@ -144,6 +144,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::VectorImage::Clone() const
 	{
 		vimg->SetZIndex(this->zIndex);
 	}
+	vimg->SetSrcAlpha(this->srcAlpha);
 	return vimg;
 }
 
@@ -414,7 +415,7 @@ void Math::Geometry::VectorImage::SetSrcAlpha(Double srcAlpha)
 
 Bool Math::Geometry::VectorImage::HasSrcAlpha() const
 {
-	return this->srcAlpha >= 0 && this->srcAlpha <=	1;
+	return this->srcAlpha >= 0 && this->srcAlpha < 1;
 }
 
 Double Math::Geometry::VectorImage::GetSrcAlpha() const

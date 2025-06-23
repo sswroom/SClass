@@ -2236,7 +2236,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				NN<Media::StaticImage> newImg;
 				if (this->resizer->ProcessToNew(img).SetTo(newImg))
 				{
-					if (srcAlpha >= 0 && srcAlpha <= 1)
+					if (srcAlpha >= 0 && srcAlpha < 1)
 					{
 						newImg->MultiplyAlpha(srcAlpha);
 					}
@@ -2307,7 +2307,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				{
 					if (this->resizer->ProcessToNewPartial(img, cimgPt, cimgPt2).SetTo(newImg))
 					{
-						if (srcAlpha >= 0 && srcAlpha <= 1)
+						if (srcAlpha >= 0 && srcAlpha < 1)
 						{
 							newImg->MultiplyAlpha(srcAlpha);
 						}

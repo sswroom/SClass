@@ -1467,7 +1467,30 @@ Bool Media::StaticImage::MultiplyAlpha(Double alpha)
 	{
 		if (this->info.atype == Media::AT_PREMUL_ALPHA)
 		{
-			return false;
+			UInt8 atable[256];
+			Int32 i32a;
+			UOSInt i = 256;
+			while (i-- > 0)
+			{
+				i32a = Double2Int32(alpha * UOSInt2Double(i));
+				if (i32a < 0)
+					atable[i] = 0;
+				else if (i32a > 255)
+					atable[i] = 255;
+				else
+					atable[i] = (UInt8)i32a;
+			}
+			UnsafeArray<UInt8> ptr = this->data;
+			i = this->info.storeSize.CalcArea();
+			while (i-- > 0)
+			{
+				ptr[0] = atable[ptr[0]];
+				ptr[1] = atable[ptr[1]];
+				ptr[2] = atable[ptr[2]];
+				ptr[3] = atable[ptr[3]];
+				ptr += 4;
+			}
+			return true;
 		}
 		else if (this->info.atype == Media::AT_ALPHA_ALL_FF || this->info.atype == Media::AT_IGNORE_ALPHA)
 		{

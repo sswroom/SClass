@@ -11,6 +11,7 @@
 #include "UI/GUIListBox.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUITextBox.h"
+#include "UI/GUITrackBar.h"
 
 namespace SSWR
 {
@@ -33,6 +34,9 @@ namespace SSWR
 			NN<UI::GUITextBox> txtRight;
 			NN<UI::GUILabel> lblBottom;
 			NN<UI::GUITextBox> txtBottom;
+			NN<UI::GUILabel> lblAlpha;
+			NN<UI::GUITextBox> txtAlpha;
+			NN<UI::GUITrackBar> trkAlpha;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Int64 currImage;
@@ -49,6 +53,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static void __stdcall OnAlphaScrolled(AnyType userObj, UOSInt scrollPos);
 			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
 		public:
 			AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi);
