@@ -1,18 +1,6 @@
 [submodule "ThirdParty/miniz"]
 	path = ThirdParty/miniz
 	url = https://github.com/richgel999/miniz.git
-[submodule "js/leaflet-easyPrint"]
-	path = js/leaflet-easyPrint
-	url = https://github.com/sswroom/leaflet-easyPrint.git
-[submodule "js/leaflet-drawText"]
-	path = js/leaflet-drawText
-	url = https://github.com/sswroom/leaflet-drawText.git
-[submodule "js/dom-to-image"]
-	path = js/dom-to-image
-	url = https://github.com/sswroom/dom-to-image
-[submodule "js/leaflet-rotate"]
-	path = js/leaflet-rotate
-	url = https://github.com/sswroom/leaflet-rotate
 [submodule "ThirdParty/webdriverxx"]
 	path = ThirdParty/webdriverxx
 	url = https://github.com/sswroom/webdriverxx.git
