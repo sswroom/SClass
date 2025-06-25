@@ -222,6 +222,11 @@ void Net::WebServer::MemoryWebSessionManager::SetForceSecure(Bool forceSecure)
 	this->forceSecure = forceSecure;
 }
 
+void Net::WebServer::MemoryWebSessionManager::SetCheckReferer(Bool checkReferer)
+{
+	this->checkReferer = checkReferer;
+}
+
 Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::WebRequest> req)
 {
 	Data::DateTime dt;
