@@ -245,6 +245,15 @@ SSWR::AVIRead::AVIRUDPLoadBalancerForm::AVIRUDPLoadBalancerForm(Optional<UI::GUI
 	this->btnTargetDel = ui->NewButton(this->pnlTarget, CSTR("Delete"));
 	this->btnTargetDel->SetRect(384, 4, 75, 23, false);
 	this->btnTargetDel->HandleButtonClick(OnTargetDelClicked, this);
+
+	this->tpSession = this->tcMain->AddTabPage(CSTR("Session"));
+	this->lvSession = ui->NewListView(this->tpSession, UI::ListViewStyle::Table, 3);
+	this->lvSession->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSession->SetFullRowSelect(true);
+	this->lvSession->SetShowGrid(true);
+	this->lvSession->AddColumn(CSTR("Source"), 150);
+	this->lvSession->AddColumn(CSTR("Target"), 150);
+	this->lvSession->AddColumn(CSTR("Session Start"), 150);
 }
 
 SSWR::AVIRead::AVIRUDPLoadBalancerForm::~AVIRUDPLoadBalancerForm()

@@ -24,6 +24,7 @@ namespace SSWR
 				Net::SocketUtil::AddressInfo targetAddr;
 				UInt16 targetPort;
 				Data::Timestamp lastDataTime;
+				Data::Timestamp sessCreatedTime;
 				NN<Net::UDPServer> targetUDP;
 				NN<AVIRUDPLoadBalancerForm> me;
 			};
@@ -63,6 +64,9 @@ namespace SSWR
 			NN<UI::GUITextBox> txtTargetPort;
 			NN<UI::GUIButton> btnTargetAdd;
 			NN<UI::GUIButton> btnTargetDel;
+
+			NN<UI::GUITabPage> tpSession;
+			NN<UI::GUIListView> lvSession;
 
 			static void __stdcall OnSourceUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 			static void __stdcall OnTargetUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
