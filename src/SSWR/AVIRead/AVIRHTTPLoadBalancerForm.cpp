@@ -3,16 +3,18 @@
 #include "IO/Path.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
-#include "SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h"
+#include "SSWR/AVIRead/AVIRHTTPLoadBalancerForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType userObj)
+#define TITLE CSTR("HTTP Load Balancer")
+
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStartClick(AnyType userObj)
 {
-	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
 	if (me->svr.NotNull())
 	{
 		return;
@@ -27,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 	Optional<Net::SSLEngine> ssl = 0;
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
-		me->ui->ShowMsgOK(CSTR("Invalid Forward URL"), CSTR("HTTP Load Balance"), me);
+		me->ui->ShowMsgOK(CSTR("Invalid Forward URL"), TITLE, me);
 		return;
 	}
 
@@ -37,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 		NN<Crypto::Cert::X509File> sslKey;
 		if (!me->sslCert.SetTo(sslCert) || !me->sslKey.SetTo(sslKey))
 		{
-			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
+			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), TITLE, me);
 			return;
 		}
 		ssl = me->ssl;
@@ -111,9 +113,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStopClick(AnyType userObj)
 {
-	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
 	if (me->svr.IsNull())
 	{
 		return;
@@ -132,9 +134,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(AnyType userO
 	me->btnSSLCert->SetEnabled(true);
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnLogSel(AnyType userObj)
 {
-	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
 	NN<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
@@ -143,9 +145,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTimerTick(AnyType userObj)
 {
-	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
@@ -225,9 +227,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(AnyType userO
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnAccessSelChg(AnyType userObj)
 {
-	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
@@ -257,9 +259,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(AnyType us
 	me->txtAccess->SetText(sb.ToCString());
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnSSLCertClicked(AnyType userObj)
 {
-	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -279,7 +281,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(AnyType 
 	}
 }
 
-void SSWR::AVIRead::AVIRHTTPLoadBalanceForm::ClearCACerts()
+void SSWR::AVIRead::AVIRHTTPLoadBalancerForm::ClearCACerts()
 {
 	UOSInt i = this->caCerts.GetCount();
 	while (i-- > 0)
@@ -289,13 +291,13 @@ void SSWR::AVIRead::AVIRHTTPLoadBalanceForm::ClearCACerts()
 	this->caCerts.Clear();
 }
 
-SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPLoadBalancerForm::AVIRHTTPLoadBalancerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	this->core = core;
-	this->SetText(CSTR("HTTP Load Balance"));
+	this->SetText(TITLE);
 	this->SetFont(0, 0, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->sslCert = 0;
@@ -433,7 +435,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(Optional<UI::GUI
 	this->AddTimer(1000, OnTimerTick, this);
 }
 
-SSWR::AVIRead::AVIRHTTPLoadBalanceForm::~AVIRHTTPLoadBalanceForm()
+SSWR::AVIRead::AVIRHTTPLoadBalancerForm::~AVIRHTTPLoadBalancerForm()
 {
 	this->svr.Delete();
 	this->fwdHdlr.Delete();
@@ -446,7 +448,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::~AVIRHTTPLoadBalanceForm()
 	this->ClearCACerts();
 }
 
-void SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnMonitorChanged()
+void SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }

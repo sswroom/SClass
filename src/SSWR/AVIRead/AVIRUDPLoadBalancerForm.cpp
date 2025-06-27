@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRUDPLoadBalancerForm.h"
 
-
 #define TITLE CSTR("UDP Load Balancer")
 
 void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnSourceUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
@@ -34,6 +33,8 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnSourceUDPPacket(NN<cons
 		sess->targetAddr = target->targetAddr;
 		sess->targetPort = target->targetPort;
 		sess->me = me;
+		sess->displayed = false;
+		sess->sessCreatedTime = sess->lastDataTime;
 		NEW_CLASSNN(sess->targetUDP, Net::UDPServer(me->sockf, 0, 0, 0, OnTargetUDPPacket, sess, me->log, 0, 2, true));
 		me->sessList.Add(sess);
 	}
@@ -60,6 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnStartClicked(AnyType us
 		{
 			Sync::MutexUsage mutUsage(me->sessMut);
 			me->sessList.FreeAll(FreeSession);
+			me->lvSession->ClearItems();
 		}
 		me->sourceUDP.Delete();
 		me->txtListenerPort->SetReadOnly(false);
@@ -165,20 +167,41 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnTargetDelClicked(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPLoadBalancerForm>();
+	UTF8Char sbuff[128];
+	UnsafeArray<UTF8Char> sptr;
 	if (me->sourceUDP.NotNull())
 	{
 		Sync::MutexUsage mutUsage(me->sessMut);
 		NN<UDPSession> sess;
 		Data::Timestamp currTime = Data::Timestamp::UtcNow();
-		UOSInt i = me->sessList.GetCount();
-		while (i-- > 0)
+		UOSInt i = 0;
+		UOSInt j = me->sessList.GetCount();
+		UOSInt k;
+		while (i < j)
 		{
 			sess = me->sessList.GetItemNoCheck(i);
 			if ((currTime - sess->lastDataTime).GetTotalSec() >= 900)
 			{
 				me->sessList.RemoveAt(i);
+				if (sess->displayed)
+				{
+					me->lvSession->RemoveItem(i);
+				}
 				FreeSession(sess);
 			}
+			else if (!sess->displayed)
+			{
+				sess->displayed = true;
+				sbuff[0] = 0;
+				sptr = Net::SocketUtil::GetAddrName(sbuff, sess->sourceAddr, sess->sourcePort).Or(sbuff);
+				k = me->lvSession->AddItem(CSTRP(sbuff, sptr), sess);
+				sbuff[0] = 0;
+				sptr = Net::SocketUtil::GetAddrName(sbuff, sess->targetAddr, sess->targetPort).Or(sbuff);
+				me->lvSession->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+				sptr = sess->sessCreatedTime.ToStringNoZone(sbuff);
+				me->lvSession->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+			}
+			i++;
 		}
 	}
 }
@@ -254,6 +277,8 @@ SSWR::AVIRead::AVIRUDPLoadBalancerForm::AVIRUDPLoadBalancerForm(Optional<UI::GUI
 	this->lvSession->AddColumn(CSTR("Source"), 150);
 	this->lvSession->AddColumn(CSTR("Target"), 150);
 	this->lvSession->AddColumn(CSTR("Session Start"), 150);
+
+	this->AddTimer(500, OnTimerTick, this);
 }
 
 SSWR::AVIRead::AVIRUDPLoadBalancerForm::~AVIRUDPLoadBalancerForm()

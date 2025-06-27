@@ -1893,7 +1893,7 @@ AVIRHTTPClientCertTestForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientCertTestForm.
 AVIRHTTPClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPClientForm.cpp
 AVIRHTTPDownloaderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPDownloaderForm.cpp
 AVIRHTTPForwarderForm.o: ../../src/SSWR/AVIRead/AVIRHTTPForwarderForm.cpp
-AVIRHTTPLoadBalanceForm.o: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalanceForm.cpp
+AVIRHTTPLoadBalancerForm.o: ../../src/SSWR/AVIRead/AVIRHTTPLoadBalancerForm.cpp
 AVIRHTTPProxyClientForm.o: ../../src/SSWR/AVIRead/AVIRHTTPProxyClientForm.cpp
 AVIRHTTPSvrForm.o: ../../src/SSWR/AVIRead/AVIRHTTPSvrForm.cpp
 AVIRHTTPTestForm.o: ../../src/SSWR/AVIRead/AVIRHTTPTestForm.cpp
@@ -2029,6 +2029,7 @@ AVIRSudokuForm.o: ../../src/SSWR/AVIRead/AVIRSudokuForm.cpp
 AVIRSyslogServerForm.o: ../../src/SSWR/AVIRead/AVIRSyslogServerForm.cpp
 AVIRSystemInfoLogForm.o: ../../src/SSWR/AVIRead/AVIRSystemInfoLogForm.cpp
 AVIRTableMsgForm.o: ../../src/SSWR/AVIRead/AVIRTableMsgForm.cpp
+AVIRTCPLoadBalancerForm.o: ../../src/SSWR/AVIRead/AVIRTCPLoadBalancerForm.cpp
 AVIRTCPPortScanForm.o: ../../src/SSWR/AVIRead/AVIRTCPPortScanForm.cpp
 AVIRTCPSpdCliForm.o: ../../src/SSWR/AVIRead/AVIRTCPSpdCliForm.cpp
 AVIRTCPSpdSvrForm.o: ../../src/SSWR/AVIRead/AVIRTCPSpdSvrForm.cpp

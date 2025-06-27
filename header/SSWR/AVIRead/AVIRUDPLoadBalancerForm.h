@@ -27,6 +27,7 @@ namespace SSWR
 				Data::Timestamp sessCreatedTime;
 				NN<Net::UDPServer> targetUDP;
 				NN<AVIRUDPLoadBalancerForm> me;
+				Bool displayed;
 			};
 			
 			struct UDPTarget

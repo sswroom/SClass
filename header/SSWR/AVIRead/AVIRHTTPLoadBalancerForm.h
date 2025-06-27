@@ -1,5 +1,5 @@
-#ifndef _SM_SSWR_AVIREAD_AVIRHTTPLOADBALANCEFORM
-#define _SM_SSWR_AVIREAD_AVIRHTTPLOADBALANCEFORM
+#ifndef _SM_SSWR_AVIREAD_AVIRHTTPLOADBALANCERFORM
+#define _SM_SSWR_AVIREAD_AVIRHTTPLOADBALANCERFORM
 #include "Data/ArrayListStrUTF8.h"
 #include "Net/WebServer/HTTPForwardHandler.h"
 #include "Net/WebServer/WebListener.h"
@@ -23,7 +23,7 @@ namespace SSWR
 	{
 		class AVIRHTTPLog;
 
-		class AVIRHTTPLoadBalanceForm : public UI::GUIForm
+		class AVIRHTTPLoadBalancerForm : public UI::GUIForm
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -100,8 +100,8 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
-			AVIRHTTPLoadBalanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
-			virtual ~AVIRHTTPLoadBalanceForm();
+			AVIRHTTPLoadBalancerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
+			virtual ~AVIRHTTPLoadBalancerForm();
 
 			virtual void OnMonitorChanged();
 		};

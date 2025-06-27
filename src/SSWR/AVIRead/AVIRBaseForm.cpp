@@ -120,7 +120,7 @@
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
 #include "SSWR/AVIRead/AVIRHTTPForwarderForm.h"
-#include "SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h"
+#include "SSWR/AVIRead/AVIRHTTPLoadBalancerForm.h"
 #include "SSWR/AVIRead/AVIRHTTPProxyClientForm.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
 #include "SSWR/AVIRead/AVIRHTTPTestForm.h"
@@ -225,6 +225,7 @@
 #include "SSWR/AVIRead/AVIRStreamTermForm.h"
 #include "SSWR/AVIRead/AVIRSudokuForm.h"
 #include "SSWR/AVIRead/AVIRSyslogServerForm.h"
+#include "SSWR/AVIRead/AVIRTCPLoadBalancerForm.h"
 #include "SSWR/AVIRead/AVIRTCPPortScanForm.h"
 #include "SSWR/AVIRead/AVIRTCPSpdCliForm.h"
 #include "SSWR/AVIRead/AVIRTCPSpdSvrForm.h"
@@ -470,7 +471,7 @@ typedef enum
 	MNU_SMBIOS,
 	MNU_NETBIOS_SCANNER,
 	MNU_HEX_VIEWER,
-	MNU_HTTP_LOAD_BALANCE,
+	MNU_HTTP_LOAD_BALANCER,
 	MNU_ACME_CLIENT,
 	MNU_CERT_UTIL,
 	MNU_CA_UTIL,
@@ -547,8 +548,7 @@ typedef enum
 	MNU_CHROME_DEVTOOLS,
 	MNU_EDGE_ANALYSE,
 	MNU_LB_UDP,
-	MNU_LB_TCP,
-	MNU_LB_HTTP
+	MNU_LB_TCP
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -791,7 +791,6 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 //	mnu2->AddItem(CSTR("Proxy Server"), MNU_PROXYSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RESTful Server"), MNU_RESTFUL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("PushServer"), MNU_PUSHSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("HTTP Load Balance"), MNU_HTTP_LOAD_BALANCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("HTTP Client Cert Test"), MNU_HTTPCLIENTCERTTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SAML Test"), MNU_SAMLTEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SAML Response Decrypt"), MNU_SAML_RESP_DECRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -841,8 +840,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("JSON Parser"), MNU_LORA_JSON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Load Balancer"));
 	mnu2->AddItem(CSTR("UDP Load Balancer"), MNU_LB_UDP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("TCP Load Balancer (To Be Ready)"), MNU_LB_TCP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("HTTP Load Balancer (To Be Ready)"), MNU_LB_HTTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("TCP Load Balancer"), MNU_LB_TCP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HTTP Load Balancer"), MNU_HTTP_LOAD_BALANCER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("ACME Client"), MNU_ACME_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("RSS Reader"), MNU_RSSREADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("eGauge Server"), MNU_EGAUGESVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2583,10 +2582,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			this->core->ShowForm(frm);
 		}
 		break;
-	case MNU_HTTP_LOAD_BALANCE:
+	case MNU_HTTP_LOAD_BALANCER:
 		{
-			NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPLoadBalanceForm(0, this->ui, this->core));
+			NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPLoadBalancerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -3194,8 +3193,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_LB_TCP:
-		break;
-	case MNU_LB_HTTP:
+		{
+			NN<SSWR::AVIRead::AVIRTCPLoadBalancerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPLoadBalancerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
 		break;
 	}
 }

@@ -4142,8 +4142,8 @@ SSWR/AVIRead/AVIRHTTPDownloaderForm.h:
 @AVIRHTTPDownloaderForm.o
 SSWR/AVIRead/AVIRHTTPForwarderForm.h:
 @AVIRHTTPForwarderForm.o
-SSWR/AVIRead/AVIRHTTPLoadBalanceForm.h:
-@AVIRHTTPLoadBalanceForm.o
+SSWR/AVIRead/AVIRHTTPLoadBalancerForm.h:
+@AVIRHTTPLoadBalancerForm.o
 SSWR/AVIRead/AVIRHTTPProxyClientForm.h:
 @AVIRHTTPProxyClientForm.o
 SSWR/AVIRead/AVIRHTTPSvrForm.h:
@@ -4413,6 +4413,8 @@ SSWR/AVIRead/AVIRSystemInfoLogForm.h:
 @AVIRSystemInfoLogForm.o
 SSWR/AVIRead/AVIRTableMsgForm.h:
 @AVIRTableMsgForm.o
+SSWR/AVIRead/AVIRTCPLoadBalancerForm.h:
+@AVIRTCPLoadBalancerForm.o
 SSWR/AVIRead/AVIRTCPPortScanForm.h:
 @AVIRTCPPortScanForm.o
 SSWR/AVIRead/AVIRTCPSpdCliForm.h:
