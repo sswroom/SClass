@@ -24,12 +24,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStartClick(AnyType use
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
-	sb.ClearStr();
-	me->txtFwdURL->GetText(sb);
 	Optional<Net::SSLEngine> ssl = 0;
-	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
+	UOSInt i;
+	UOSInt j;
+	if (me->targets.GetCount() <= 0)
 	{
-		me->ui->ShowMsgOK(CSTR("Invalid Forward URL"), TITLE, me);
+		me->ui->ShowMsgOK(CSTR("Please add at least 1 target URL"), TITLE, me);
 		return;
 	}
 
@@ -53,7 +53,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStartClick(AnyType use
 	{
 		NN<Net::WebServer::WebListener> svr;
 		NN<Net::WebServer::HTTPForwardHandler> fwdHdlr;
-		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetTCPClientFactory(), me->ssl, sb.ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetOSInt()));
+		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetTCPClientFactory(), me->ssl, me->targets.GetItemNoCheck(0)->ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetOSInt()));
+		i = 1;
+		j = me->targets.GetCount();
+		while (i < j)
+		{
+			fwdHdlr->AddForwardURL(me->targets.GetItemNoCheck(i)->ToCString());
+			i++;
+		}
 		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (svr->IsError())
 		{
@@ -96,7 +103,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStartClick(AnyType use
 	if (valid)
 	{
 		me->txtPort->SetReadOnly(true);
-		me->txtFwdURL->SetReadOnly(true);
+		me->txtTargetURL->SetReadOnly(true);
+		me->btnTargetAdd->SetEnabled(false);
 		me->txtLogDir->SetReadOnly(true);
 		me->chkAllowProxy->SetEnabled(false);
 		me->chkSkipLog->SetEnabled(false);
@@ -125,7 +133,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStopClick(AnyType user
 	me->log.Delete();
 	me->logger.Delete();
 	me->txtPort->SetReadOnly(false);
-	me->txtFwdURL->SetReadOnly(false);
+	me->txtTargetURL->SetReadOnly(false);
+	me->btnTargetAdd->SetEnabled(true);
 	me->txtLogDir->SetReadOnly(false);
 	me->chkAllowProxy->SetEnabled(true);
 	me->chkSkipLog->SetEnabled(true);
@@ -281,6 +290,29 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnSSLCertClicked(AnyType
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTargetAddClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
+	Text::StringBuilderUTF8 sb;
+	me->txtTargetURL->GetText(sb);
+	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
+	{
+		me->ui->ShowMsgOK(CSTR("Invalid Target URL, must be starts with http::// or https://"), TITLE, me);
+		return;
+	}
+	UOSInt i = me->targets.GetCount();
+	while (i-- > 0)
+	{
+		if (me->targets.GetItemNoCheck(i)->Equals(sb.ToCString()))
+		{
+			me->ui->ShowMsgOK(CSTR("Target URL already exists"), TITLE, me);
+			return;
+		}
+	}
+	me->targets.Add(Text::String::New(sb.ToCString()));
+	me->lbTarget->AddItem(sb.ToCString(), 0);
+}
+
 void SSWR::AVIRead::AVIRHTTPLoadBalancerForm::ClearCACerts()
 {
 	UOSInt i = this->caCerts.GetCount();
@@ -357,23 +389,33 @@ SSWR::AVIRead::AVIRHTTPLoadBalancerForm::AVIRHTTPLoadBalancerForm(Optional<UI::G
 	this->lblAllowKA->SetRect(8, 128, 100, 23, false);
 	this->chkAllowKA = ui->NewCheckBox(this->grpParam, CSTR("Enable"), false);
 	this->chkAllowKA->SetRect(108, 128, 100, 23, false);
-	this->lblFwdURL = ui->NewLabel(this->grpParam, CSTR("Forward URL"));
-	this->lblFwdURL->SetRect(8, 152, 100, 23, false);
-	this->txtFwdURL = ui->NewTextBox(this->grpParam, CSTR("http://sswroom.no-ip.org:5080/"));
-	this->txtFwdURL->SetRect(108, 152, 500, 23, false);
 	this->lblFwdType = ui->NewLabel(this->grpParam, CSTR("Forward Type"));
-	this->lblFwdType->SetRect(8, 176, 100, 23, false);
+	this->lblFwdType->SetRect(8, 152, 100, 23, false);
 	this->cboFwdType = ui->NewComboBox(this->grpParam,false);
-	this->cboFwdType->SetRect(108, 176, 100, 23, false);
+	this->cboFwdType->SetRect(108, 152, 100, 23, false);
 	this->cboFwdType->AddItem(CSTR("Normal"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Normal);
 	this->cboFwdType->AddItem(CSTR("Transparent"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Transparent);
 	this->cboFwdType->SetSelectedIndex(0);
-	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
-	this->btnStart->SetRect(200, 300, 75, 23, false);
+	this->btnStart = ui->NewButton(this->grpParam, CSTR("Start"));
+	this->btnStart->SetRect(200, 176, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	this->btnStop = ui->NewButton(this->tpControl, CSTR("Stop"));
-	this->btnStop->SetRect(300, 300, 75, 23, false);
+	this->btnStop = ui->NewButton(this->grpParam, CSTR("Stop"));
+	this->btnStop->SetRect(300, 176, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
+	this->grpTarget = ui->NewGroupBox(this->tpControl, CSTR("Targets"));
+	this->grpTarget->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->pnlTarget = ui->NewPanel(this->grpTarget);
+	this->pnlTarget->SetRect(0, 0, 100, 31, false);
+	this->pnlTarget->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblTargetURL = ui->NewLabel(this->pnlTarget, CSTR("Forward URL"));
+	this->lblTargetURL->SetRect(8, 4, 100, 23, false);
+	this->txtTargetURL = ui->NewTextBox(this->pnlTarget, CSTR("http://sswroom.no-ip.org:5080/"));
+	this->txtTargetURL->SetRect(108, 4, 500, 23, false);
+	this->btnTargetAdd = ui->NewButton(this->pnlTarget, CSTR("Add"));
+	this->btnTargetAdd->SetRect(608, 4, 75, 23, false);
+	this->btnTargetAdd->HandleButtonClick(OnTargetAddClicked, this);
+	this->lbTarget = ui->NewListBox(this->grpTarget, false);
+	this->lbTarget->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->lblConnCurr = ui->NewLabel(this->tpStatus, CSTR("Conn Curr"));
 	this->lblConnCurr->SetRect(4, 4, 100, 23, false);

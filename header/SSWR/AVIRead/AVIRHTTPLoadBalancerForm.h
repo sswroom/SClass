@@ -13,6 +13,7 @@
 #include "UI/GUIGroupBox.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListBox.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -38,6 +39,7 @@ namespace SSWR
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
+			Data::ArrayListStringNN targets;
 
 			NN<UI::GUITabControl> tcMain;
 			NN<UI::GUITabPage> tpControl;
@@ -60,12 +62,16 @@ namespace SSWR
 			NN<UI::GUICheckBox> chkSkipLog;
 			NN<UI::GUILabel> lblAllowKA;
 			NN<UI::GUICheckBox> chkAllowKA;
-			NN<UI::GUILabel> lblFwdURL;
-			NN<UI::GUITextBox> txtFwdURL;
 			NN<UI::GUILabel> lblFwdType;
 			NN<UI::GUIComboBox> cboFwdType;
 			NN<UI::GUIButton> btnStart;
 			NN<UI::GUIButton> btnStop;
+			NN<UI::GUIGroupBox> grpTarget;
+			NN<UI::GUIPanel> pnlTarget;
+			NN<UI::GUILabel> lblTargetURL;
+			NN<UI::GUITextBox> txtTargetURL;
+			NN<UI::GUIButton> btnTargetAdd;
+			NN<UI::GUIListBox> lbTarget;
 
 			NN<UI::GUILabel> lblConnCurr;
 			NN<UI::GUITextBox> txtConnCurr;
@@ -98,6 +104,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnAccessSelChg(AnyType userObj);
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
+			static void __stdcall OnTargetAddClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
 			AVIRHTTPLoadBalancerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
