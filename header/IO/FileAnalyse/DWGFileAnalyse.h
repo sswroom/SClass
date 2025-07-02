@@ -24,7 +24,8 @@ namespace IO
 				ClassSection,
 				ObjectMap,
 				UnknownTable,
-				Measurement
+				Measurement,
+				R2004FileHeader
 			};
 
 			typedef struct

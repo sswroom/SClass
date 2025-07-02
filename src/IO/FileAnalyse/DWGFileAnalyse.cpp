@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
+#include "Data/DWGUtil.h"
 #include "Data/UUID.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
@@ -102,6 +103,15 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		Data::Sort::ArtificialQuickSort::Sort<NN<PackInfo>>(me->packs.GetArrayList(mutUsage), comparator);
 		mutUsage.EndUse();
 	}
+	else if (me->fileVer == 27)
+	{
+		me->fd->GetRealData(0, 256, BYTEARR(buff));
+		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
+		pack->fileOfst = 0;
+		pack->packSize = 256;
+		pack->packType = PackType::R2004FileHeader;
+		me->packs.Add(pack);
+	}
 }
 
 IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("DWGFileAnalyse"))
@@ -202,6 +212,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
+	UInt8 buff[128];
 	Data::UUID uuid;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UOSInt nSection;
@@ -246,6 +257,34 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		uuid.SetValue(&packBuff[ofst + 2]);
 		sptr = uuid.ToString(sbuff);
 		frame->AddField(ofst + 2, 16, CSTR("Section Type"), CSTRP(sbuff, sptr));
+		break;
+	}
+	case PackType::R2004FileHeader:
+	{
+		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		frame->AddStrC(0, 4, CSTR("Magic number"), &packBuff[0]);
+		frame->AddUInt(4, 2, CSTR("File Version"), this->fileVer);
+		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
+		frame->AddUInt(11, 1, CSTR("Maintenance release version"), packBuff[11]);
+		frame->AddUInt(12, 1, CSTR("Unknown"), packBuff[12]);
+		frame->AddHex32(13, CSTR("Preview Image Address"), ReadUInt32(&packBuff[13]));
+		frame->AddUInt(0x11, 1, CSTR("Application version"), packBuff[17]);
+		frame->AddUInt(0x12, 1, CSTR("Application maintenance release version"), packBuff[18]);
+		frame->AddUInt(0x13, 2, CSTR("Codepage"), ReadUInt16(&packBuff[19]));
+		frame->AddHexBuff(0x15, 3, CSTR("All Zero"), &packBuff[21], false);
+		frame->AddHex32(0x18, CSTR("Security flags"), ReadUInt32(&packBuff[0x18]));
+		frame->AddBit(0x18, CSTR("Encrypt data"), packBuff[0x18] & 1, 0);
+		frame->AddBit(0x18, CSTR("Encrypt properties"), packBuff[0x18] & 2, 1);
+		frame->AddBit(0x18, CSTR("Sign data"), packBuff[0x18] & 16, 4);
+		frame->AddBit(0x18, CSTR("Add timestamp"), packBuff[0x18] & 32, 5);
+		frame->AddUInt(0x1C, 4, CSTR("Unknown long"), ReadUInt32(&packBuff[0x1C]));
+		frame->AddHex32(0x20, CSTR("Summary info Address"), ReadUInt32(&packBuff[0x20]));
+		frame->AddHex32(0x24, CSTR("VBA Project Address"), ReadUInt32(&packBuff[0x24]));
+		frame->AddHex32(0x28, CSTR("Unknown"), ReadUInt32(&packBuff[0x28]));
+		frame->AddHexBuff(0x2C, 0x54, CSTR("All Zero"), &packBuff[0x2C], true);
+		Data::DWGUtil::HeaderDecrypt(&packBuff[0x80], buff, 0x6c);
+		frame->AddHexBuff(0x80, CSTR("Decrypted block"), Data::ByteArrayR(buff, 0x6c), true);
 		break;
 	}
 	case PackType::PreviewImage:
@@ -327,6 +366,8 @@ Text::CStringNN IO::FileAnalyse::DWGFileAnalyse::PackTypeGetName(PackType packTy
 		return CSTR("Unknown Table");
 	case PackType::Measurement:
 		return CSTR("Measurement");
+	case PackType::R2004FileHeader:
+		return CSTR("R2004 File Header");
 	case PackType::Unknown:
 	default:
 		return CSTR("Unknown");

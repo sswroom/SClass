@@ -30,6 +30,14 @@ namespace SSWR
 			NN<UI::GUILabel> lblEndian;
 			NN<UI::GUIRadioButton> radEndianLittle;
 			NN<UI::GUIRadioButton> radEndianBig;
+			NN<UI::GUILabel> lblOffset;
+			NN<UI::GUITextBox> txtOffset;
+			NN<UI::GUILabel> lblUTF8Code;
+			NN<UI::GUITextBox> txtUTF8Code;
+			NN<UI::GUILabel> lblFloat32;
+			NN<UI::GUITextBox> txtFloat32;
+			NN<UI::GUILabel> lblFloat64;
+			NN<UI::GUITextBox> txtFloat64;
 			NN<UI::GUILabel> lblInt8;
 			NN<UI::GUITextBox> txtInt8;
 			NN<UI::GUILabel> lblInt16;
@@ -46,12 +54,6 @@ namespace SSWR
 			NN<UI::GUITextBox> txtUInt32;
 			NN<UI::GUILabel> lblUInt64;
 			NN<UI::GUITextBox> txtUInt64;
-			NN<UI::GUILabel> lblFloat32;
-			NN<UI::GUITextBox> txtFloat32;
-			NN<UI::GUILabel> lblFloat64;
-			NN<UI::GUITextBox> txtFloat64;
-			NN<UI::GUILabel> lblUTF8CharCode;
-			NN<UI::GUITextBox> txtUTF8CharCode;
 			NN<UI::GUIButton> btnFont;
 			NN<UI::GUIButton> btnNextUnk;
 			NN<UI::GUICheckBox> chkDynamicSize;

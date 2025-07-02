@@ -1525,6 +1525,8 @@ Data/DateTime.h:
 Data/DateTimeUtil.h:
 @DateTimeUtil.o
 Data/Duration.h:
+Data/DWGUtil.h:
+@DWGUtil.o
 Data/FastMap.h:
 Data/FastMapNN.h:
 Data/FastStringMap.h:

@@ -142,6 +142,7 @@ DataComparer.o: ../../src/Data/DataComparer.cpp
 DataModelUtil.o: ../../src/Data/DataModelUtil.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
 DateTimeUtil.o: ../../src/Data/DateTimeUtil.cpp
+DWGUtil.o: ../../src/Data/DWGUtil.cpp
 FieldComparator.o: ../../src/Data/FieldComparator.cpp
 LineChart.o: ../../src/Data/LineChart.cpp
 MacCore.o: ../../src/Data/MacCore.cpp
