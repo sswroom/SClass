@@ -65,7 +65,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 							ptNearId = id;
 							ptNearInd = i;
 							ptNearDist = dist;
-							ptNear = nearPos;
+							if (!csysEnv->Equals(csysLyr))
+							{
+								ptNear = Math::CoordinateSystem::Convert(csysLyr, csysEnv, nearPos);
+							}
+							else
+							{
+								ptNear = nearPos;
+							}
 						}
 					}
 					else if (mapLyrPos == nearPos)
@@ -91,7 +98,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		}
 		if (ptNearId != -1)
 		{
-			Math::Coord2D<OSInt> nearScn = me->navi->MapXY2ScnXY(ptNear);
+			Math::Coord2D<OSInt> nearScn;
+			nearScn = me->navi->MapXY2ScnXY(ptNear);
 			if (nearScn.x < scnPos.x)
 			{
 				nearScn.x = scnPos.x - nearScn.x;
@@ -116,16 +124,16 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		}
 
 		me->lvInfo->ClearItems();
+		me->cboItem->ClearItems();
 		if (id == -1 || !optLyr.SetTo(lyr))
 		{
-			me->txtLayer->SetText(CSTR(""));
 			me->navi->SetSelectedVector(0);
 		}
 		else
 		{
 			Data::ArrayListInt64 arr;
 			Optional<Map::NameArray> nameArr;
-			me->txtLayer->SetText(lyr->GetName()->ToCString());
+			me->cboItem->AddItem(lyr->GetName()->ToCString(), 0);
 			csysLyr = lyr->GetCoordinateSystem();
 			if (!csysEnv->Equals(csysLyr))
 			{
@@ -193,10 +201,9 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClie
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
-	this->txtLayer = ui->NewTextBox(*this, CSTR(""));
-	this->txtLayer->SetRect(0, 0, 100, 23, false);
-	this->txtLayer->SetReadOnly(true);
-	this->txtLayer->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboItem = ui->NewComboBox(*this, false);
+	this->cboItem->SetRect(0, 0, 100, 23, false);
+	this->cboItem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvInfo = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvInfo->AddColumn(CSTR("Name"), 100);

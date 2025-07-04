@@ -100,10 +100,14 @@ void Map::MapScheduler::DrawVector(NN<Math::Geometry::Vector2D> vec)
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 		this->DrawCurvePolygon(NN<Math::Geometry::CurvePolygon>::ConvertFrom(vec));
 		break;
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+		this->DrawMultiCurve(NN<Math::Geometry::MultiCurve>::ConvertFrom(vec));
+		break;
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+		this->DrawCompoundCurve(NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec));
+		break;
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
-	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
-	case Math::Geometry::Vector2D::VectorType::MultiCurve:
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
@@ -268,6 +272,29 @@ void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 	if (relArr)
 	{
 		MemFree(relArr);
+	}
+}
+
+void Map::MapScheduler::DrawCompoundCurve(NN<Math::Geometry::CompoundCurve> cc)
+{
+	NN<Media::DrawPen> nnp;
+	if (!this->p.SetTo(nnp))
+	{
+		return;
+	}
+	Data::ArrayListA<Math::Coord2DDbl> ptList;
+	cc->GetDrawPoints(ptList);
+	if (this->map->MapXYToScnXY(ptList.Arr(), ptList.Arr(), ptList.GetCount(), Math::Coord2DDbl(0, 0)))
+		*this->isLayerEmpty = false;
+	this->img->DrawPolyline(ptList.Arr(), ptList.GetCount(), nnp);
+}
+
+void Map::MapScheduler::DrawMultiCurve(NN<Math::Geometry::MultiCurve> mc)
+{
+	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = mc->Iterator();
+	while (it.HasNext())
+	{
+		this->DrawVector(it.Next());
 	}
 }
 

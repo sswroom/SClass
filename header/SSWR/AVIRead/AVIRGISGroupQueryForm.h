@@ -3,9 +3,9 @@
 #include "Map/MapEnv.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRMapNavigator.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIListView.h"
-#include "UI/GUITextBox.h"
 
 namespace SSWR
 {
@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRGISGroupQueryForm : public UI::GUIForm
 		{
 		private:
-			NN<UI::GUITextBox> txtLayer;
+			NN<UI::GUIComboBox> cboItem;
 			NN<UI::GUIListView> lvInfo;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
