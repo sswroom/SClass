@@ -23,8 +23,17 @@ namespace SSWR
 			Optional<Map::MapEnv::GroupItem> group;
 			Math::Coord2D<OSInt> downPos;
 
+			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
+			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
+			Data::ArrayList<UOSInt> queryValueOfstList;
+			Data::ArrayListStringNN queryNameList;
+			Data::ArrayListNN<Text::String> queryValueList;
+
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static void __stdcall OnItemSelChg(AnyType userObj);
+			void ClearQueryResults();
+			void SetQueryItem(UOSInt index);
 		public:
 			AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group);
 			virtual ~AVIRGISGroupQueryForm();
