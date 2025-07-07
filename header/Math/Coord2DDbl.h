@@ -66,6 +66,14 @@ namespace Math
 		{
 			return this->x;
 		}
+
+		Math::Coord2DDbl Rotate(Double rotateAngleRad, Math::Coord2DDbl rotateCenter) const
+		{
+			Math::Coord2DDbl diff = *this - rotateCenter;
+			Double sAng = Math_Sin(-rotateAngleRad);
+			Double cAng = Math_Cos(-rotateAngleRad);
+			return rotateCenter + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);
+		}
 	};
 }
 #endif

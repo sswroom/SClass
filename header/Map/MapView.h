@@ -41,6 +41,8 @@ namespace Map
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const = 0;
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const = 0;
 		virtual NN<Map::MapView> Clone() const = 0;
+		Math::Coord2DDbl MapXYToScnXYRot(Math::Coord2DDbl mapPos, Double rotAngleRad) const;
+		Math::Coord2DDbl ScnXYRotToMapXY(Math::Coord2DDbl scnPos, Double rotAngleRad) const;
 
 		Double GetScnWidth() const;
 		Double GetScnHeight() const;

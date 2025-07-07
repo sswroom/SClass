@@ -74,6 +74,29 @@ Double Math::Quadrilateral::CalcLenBottom() const
 	return br.CalcLengTo(bl);
 }
 
+Bool Math::Quadrilateral::InsideOrTouch(Math::Coord2DDbl pt) const
+{
+	if (pt == tl || pt == tr || pt == bl || pt == br)
+		return true;
+	Double a1 = Math_ArcTan2(pt.y - tl.y, pt.x - tl.x);
+	Double a2 = Math_ArcTan2(pt.y - tr.y, pt.x - tr.x);
+	Double a3 = Math_ArcTan2(pt.y - br.y, pt.x - br.x);
+	Double a4 = Math_ArcTan2(pt.y - bl.y, pt.x - bl.x);
+	Double ta1 = a2 - a1;
+	Double ta2 = a3 - a2;
+	Double ta3 = a4 - a3;
+	Double ta4 = a1 - a4;
+	if (ta1 < 0) ta1 = -ta1;
+	if (ta2 < 0) ta2 = -ta2;
+	if (ta3 < 0) ta3 = -ta3;
+	if (ta4 < 0) ta4 = -ta4;
+	if (ta1 > Math::PI) ta1 = 2 * Math::PI - ta1;
+	if (ta2 > Math::PI) ta2 = 2 * Math::PI - ta2;
+	if (ta3 > Math::PI) ta3 = 2 * Math::PI - ta3;
+	if (ta4 > Math::PI) ta4 = 2 * Math::PI - ta4;
+	return Math::PI * 2 - 0.0000000001 <= ta1 + ta2 + ta3 + ta4;
+}
+
 Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2D<UOSInt>> pg)
 {
 	UOSInt minX = pg[3].x;

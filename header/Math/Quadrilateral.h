@@ -22,6 +22,7 @@ namespace Math
 		Double CalcLenTop() const;
 		Double CalcLenRight() const;
 		Double CalcLenBottom() const;
+		Bool InsideOrTouch(Math::Coord2DDbl pt) const;
 		static Quadrilateral FromPolygon(UnsafeArray<Coord2D<UOSInt>> pg);
 		static Quadrilateral FromPolygon(UnsafeArray<Coord2DDbl> pg);
 	};

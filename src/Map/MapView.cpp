@@ -13,6 +13,18 @@ Map::MapView::~MapView()
 {
 }
 
+Math::Coord2DDbl Map::MapView::MapXYToScnXYRot(Math::Coord2DDbl mapPos, Double rotAngleRad) const
+{
+	Math::Coord2DDbl scnCenter = this->scnSize * 0.5;
+	return this->MapXYToScnXY(mapPos).Rotate(-rotAngleRad, scnCenter);
+}
+
+Math::Coord2DDbl Map::MapView::ScnXYRotToMapXY(Math::Coord2DDbl scnPos, Double rotAngleRad) const
+{
+	Math::Coord2DDbl scnCenter = this->scnSize * 0.5;
+	return this->ScnXYToMapXY(scnPos.Rotate(rotAngleRad, scnCenter));
+}
+
 Double Map::MapView::GetScnWidth() const
 {
 	return this->scnSize.GetWidth();

@@ -1041,9 +1041,42 @@ Int32 MTDrawTest()
 	return 0;
 }
 
+Int32 QuadrilateralTest()
+{
+	Math::RectAreaDbl rect(Math::Coord2DDbl(0, 0), Math::Coord2DDbl(5, 5));
+	Math::Quadrilateral quad = rect.ToQuadrilateral();
+	printf("Test 1: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(2, 2)));
+	printf("Test 2: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(0, 0)));
+	printf("Test 3: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(0, 2)));
+	printf("Test 4: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(2, 0)));
+	printf("Test 5: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(5, 5)));
+	printf("Test 6: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(-1, 2)));
+	printf("Test 7: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(2, -1)));
+	printf("Test 8: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(6, 2)));
+	printf("Test 9: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(2, 6)));
+	printf("Test 10: %d\r\n", quad.InsideOrTouch(Math::Coord2DDbl(5.001, 2)));
+	return 0;
+}
+
+Int32 CoordRotateTest()
+{
+	Double angle = 10 * Math::PI / 180;
+	UOSInt i = 0;
+	UOSInt j = 36;
+	Math::Coord2DDbl pt = Math::Coord2DDbl(1, 0);
+	Math::Coord2DDbl c = Math::Coord2DDbl(1, 1);
+	while (i < j)
+	{
+		printf("Step %d: (%lf, %lf)\r\n", (Int32)i, pt.x, pt.y);
+		pt = pt.Rotate(angle, c);
+		i++;
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 26;
+	UOSInt testType = 28;
 	switch (testType)
 	{
 	case 0:
@@ -1100,6 +1133,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return ECDSATest();
 	case 26:
 		return MTDrawTest();
+	case 27:
+		return QuadrilateralTest();
+	case 28:
+		return CoordRotateTest();
 	default:
 		return 0;
 	}

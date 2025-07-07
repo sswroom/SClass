@@ -142,7 +142,7 @@ Media::NearestRotate::~NearestRotate()
 Optional<Media::RasterImage> Media::NearestRotate::Rotate(NN<Media::RasterImage> srcImg, Single centerX, Single centerY, Single angleRad, Bool keepCoord, Bool keepSize)
 {
 	NN<Media::StaticImage> simg = srcImg->CreateStaticImage();
-	if (!simg->To32bpp())
+	if (!simg->ToB8G8R8A8())
 	{
 		simg.Delete();
 		return 0;
