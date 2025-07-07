@@ -18,13 +18,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 	{
 		Math::Coord2DDbl mapEnvPos;
 		Math::Coord2DDbl mapLyrPos;
-		Math::Coord2DDbl ptNear = {0, 0};
-		Int64 nearId = -1;
 		Math::Coord2DDbl nearPos;
 		NN<Map::GetObjectSess> sess;
-		Int64 id;
 		UOSInt i;
 		UOSInt j;
+		UOSInt i2;
+		UOSInt j2;
 		UOSInt k;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
@@ -32,6 +31,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		NN<Map::MapDrawLayer> lyr;
 		NN<Math::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
 		NN<Math::CoordinateSystem> csysLyr;
+		Data::ArrayListNN<Math::Geometry::Vector2D> vecList;
+		NN<Math::Geometry::Vector2D> vec;
 		Text::StringBuilderUTF8 sb;
 		mapEnvPos = me->navi->ScnXY2MapXY(scnPos);
 		me->env->GetLayersInGroup(me->group, layers);
@@ -43,7 +44,6 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		{
 			if (layers.GetItem(k).SetTo(lyr))
 			{
-				sess = lyr->BeginGetObject();
 				nearPos = {0, 0};
 				csysLyr = lyr->GetCoordinateSystem();
 				if (!csysEnv->Equals(csysLyr))
@@ -54,95 +54,141 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 				{
 					mapLyrPos = mapEnvPos;
 				}
-				id = lyr->GetNearestObjectId(sess, mapLyrPos, nearPos);
-				if (id != -1)
+				if (lyr->CanQuery() && lyr->QueryInfos(mapLyrPos, vecList, me->queryValueOfstList, me->queryNameList, me->queryValueList) && vecList.GetCount() > 0)
 				{
-					nearId = -1;
-					Map::DrawLayerType lyrType = lyr->GetLayerType();
-					if (lyrType == Map::DRAW_LAYER_POINT3D || lyrType == Map::DRAW_LAYER_POINT || lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
+					i = 0;
+					j = vecList.GetCount();
+					while (i < j)
 					{
-						if (!csysEnv->Equals(csysLyr))
-						{
-							ptNear = Math::CoordinateSystem::Convert(csysLyr, csysEnv, nearPos);
-						}
-						else
-						{
-							ptNear = nearPos;
-						}
-						Math::Coord2D<OSInt> nearScn;
-						nearScn = me->navi->MapXY2ScnXY(ptNear);
-						if (nearScn.x < scnPos.x)
-						{
-							nearScn.x = scnPos.x - nearScn.x;
-						}
-						else
-						{
-							nearScn.x = nearScn.x - scnPos.x;
-						}
-						if (nearScn.y < scnPos.y)
-						{
-							nearScn.y = scnPos.y - nearScn.y;
-						}
-						else
-						{
-							nearScn.y = nearScn.y - scnPos.y;
-						}
-						if (nearScn.x < 10 && nearScn.x < 10)
-						{
-							nearId = id;
-						}
-					}
-					else if (mapLyrPos == nearPos)
-					{
-						if (nearId == -1)
-						{
-							nearId = id;
-						}
-					}
-					NN<Math::Geometry::Vector2D> vec;
-					if (nearId != -1 && lyr->GetNewVectorById(sess, id).SetTo(vec))
-					{
-						Data::ArrayListInt64 arr;
-						Optional<Map::NameArray> nameArr;
+						vec = vecList.GetItemNoCheck(i);
 						sb.ClearStr();
 						sb.Append(lyr->GetName());
 						sb.Append(CSTR(" - "));
-						sb.AppendI64(nearId);
+						sb.Append(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()));
 						me->cboItem->AddItem(sb.ToCString(), 0);
-						me->queryValueOfstList.Add(me->queryValueList.GetCount());
-						csysLyr = lyr->GetCoordinateSystem();
-						if (!csysEnv->Equals(csysLyr))
-						{
-							mapLyrPos = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
-						}
-						else
-						{
-							mapLyrPos = mapEnvPos;
-						}
-						lyr->GetObjectIdsMapXY(arr, nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
-						i = 0;
-						j = lyr->GetColumnCnt();
-						while (i < j)
-						{
-							sbuff[0] = 0;
-							sptr = lyr->GetColumnName(sbuff, i).Or(sbuff);
-							me->queryNameList.Add(Text::String::NewP(sbuff, sptr));
-							sb.ClearStr();
-							lyr->GetString(sb, nameArr, id, i);
-							me->queryValueList.Add(Text::String::New(sb.ToCString()));
-							i++;
-						}
 						me->queryVecOriList.Add(vec->Clone());
+
 						if (!csysEnv->Equals(csysLyr))
 						{
 							Math::CoordinateSystemConverter converter(csysLyr, csysEnv);
 							vec->Convert(converter);
+							me->queryVecList.Add(vec);
 						}
-						me->queryVecList.Add(vec);
-						lyr->ReleaseNameArr(nameArr);
+						else
+						{
+							me->queryVecList.Add(vec);
+						}
+
+						i++;
 					}
 				}
-				lyr->EndGetObject(sess);
+				else
+				{
+					Math::Coord2DDbl mapLyrPos2 = me->navi->ScnXY2MapXY(scnPos + Math::Coord2D<OSInt>(5, 0));
+					if (!csysEnv->Equals(csysLyr))
+					{
+						mapLyrPos2 = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapLyrPos2);
+					}
+					Data::ArrayListNN<Map::MapDrawLayer::ObjectInfo> objList;
+					NN<Map::MapDrawLayer::ObjectInfo> obj;
+					sess = lyr->BeginGetObject();
+					lyr->GetNearObjects(sess, objList, mapLyrPos, mapLyrPos2.x - mapLyrPos.x);
+					i = 0;
+					j = objList.GetCount();
+					if (j > 0)
+					{
+						Data::ArrayListInt64 arr;
+						Optional<Map::NameArray> nameArr;
+						lyr->GetObjectIdsMapXY(arr, nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
+						while (i < j)
+						{
+							obj = objList.GetItemNoCheck(i);
+							Bool valid = false;
+							Map::DrawLayerType lyrType = lyr->GetLayerType();
+							if (lyrType == Map::DRAW_LAYER_POINT3D || lyrType == Map::DRAW_LAYER_POINT || lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
+							{
+								Math::Coord2DDbl ptNear;
+								if (!csysEnv->Equals(csysLyr))
+								{
+									ptNear = Math::CoordinateSystem::Convert(csysLyr, csysEnv, obj->objPos);
+								}
+								else
+								{
+									ptNear = obj->objPos;
+								}
+								Math::Coord2D<OSInt> nearScn;
+								nearScn = me->navi->MapXY2ScnXY(ptNear);
+								if (nearScn.x < scnPos.x)
+								{
+									nearScn.x = scnPos.x - nearScn.x;
+								}
+								else
+								{
+									nearScn.x = nearScn.x - scnPos.x;
+								}
+								if (nearScn.y < scnPos.y)
+								{
+									nearScn.y = scnPos.y - nearScn.y;
+								}
+								else
+								{
+									nearScn.y = nearScn.y - scnPos.y;
+								}
+								if (nearScn.x < 10 && nearScn.y < 10)
+								{
+									valid = true;
+								}
+							}
+							else
+							{
+								valid = true;
+							}
+
+							if (valid && lyr->GetNewVectorById(sess, obj->objId).SetTo(vec))
+							{
+								sb.ClearStr();
+								sb.Append(lyr->GetName());
+								sb.Append(CSTR(" - "));
+								sb.AppendI64(obj->objId);
+								me->cboItem->AddItem(sb.ToCString(), 0);
+								me->queryValueOfstList.Add(me->queryValueList.GetCount());
+								csysLyr = lyr->GetCoordinateSystem();
+								if (!csysEnv->Equals(csysLyr))
+								{
+									mapLyrPos = Math::CoordinateSystem::Convert(csysEnv, csysLyr, mapEnvPos);
+								}
+								else
+								{
+									mapLyrPos = mapEnvPos;
+								}
+								i2 = 0;
+								j2 = lyr->GetColumnCnt();
+								while (i2 < j2)
+								{
+									sbuff[0] = 0;
+									sptr = lyr->GetColumnName(sbuff, i2).Or(sbuff);
+									me->queryNameList.Add(Text::String::NewP(sbuff, sptr));
+									sb.ClearStr();
+									lyr->GetString(sb, nameArr, obj->objId, i2);
+									me->queryValueList.Add(Text::String::New(sb.ToCString()));
+									i2++;
+								}
+								me->queryVecOriList.Add(vec->Clone());
+								if (!csysEnv->Equals(csysLyr))
+								{
+									Math::CoordinateSystemConverter converter(csysLyr, csysEnv);
+									vec->Convert(converter);
+								}
+								me->queryVecList.Add(vec);
+							}
+
+							i++;
+						}
+						lyr->ReleaseNameArr(nameArr);
+						lyr->FreeObjects(objList);
+					}
+					lyr->EndGetObject(sess);
+				}
 			}
 		}
 		me->navi->SetSelectedVectors(me->queryVecList);

@@ -177,6 +177,41 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<
 	return false;
 }
 
+Bool Map::MapDrawUtil::DrawCompoundCurve(NN<Math::Geometry::CompoundCurve> cc, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+{
+	NN<Media::DrawPen> nnp;
+	if (!p.SetTo(nnp))
+		return false;
+	Data::ArrayListA<Math::Coord2DDbl> ptList;
+	cc->GetDrawPoints(ptList);
+	if (ptList.GetCount() > 0)
+	{
+		UOSInt nPoint;
+		Math::Coord2DDbl *pointArr = ptList.GetArr(nPoint).Ptr();
+		Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
+		view->MapXYToScnXY(pointArr, dpoints, nPoint, ofst);
+		img->DrawPolyline(dpoints, nPoint, nnp);
+		MemFreeA(dpoints);
+		return true;
+	}
+	return false;
+}
+
+Bool Map::MapDrawUtil::DrawMultiCurve(NN<Math::Geometry::MultiCurve> mc, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+{
+	Bool succ = false;
+	NN<Math::Geometry::Vector2D> vec;
+	UOSInt plInd = mc->GetCount();
+	while (plInd-- > 0)
+	{
+		if (mc->GetItem(plInd).SetTo(vec))
+		{
+			succ = DrawVector(vec, img, view, b, p, ofst) || succ;
+		}
+	}
+	return succ;
+}
+
 Bool Map::MapDrawUtil::DrawGeometryCollection(NN<Math::Geometry::GeometryCollection> geomColl, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Bool succ = false;
@@ -346,10 +381,12 @@ Bool Map::MapDrawUtil::DrawVector(NN<Math::Geometry::Vector2D> vec, NN<Media::Dr
 		return DrawEllipse(NN<Math::Geometry::Ellipse>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::LinearRing:
 		return DrawLinearRing(NN<Math::Geometry::LinearRing>::ConvertFrom(vec), img, view, b, p, ofst);
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+		return DrawMultiCurve(NN<Math::Geometry::MultiCurve>::ConvertFrom(vec), img, view, b, p, ofst);
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+		return DrawCompoundCurve(NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
-	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
-	case Math::Geometry::Vector2D::VectorType::MultiCurve:
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
