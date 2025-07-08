@@ -776,26 +776,28 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 				//	MessageBoxW(NULL, L"Test", lastLbl, MB_OK);
 				}
 
-				Math::Coord2D<Int32> *points = MemAlloc(Math::Coord2D<Int32>, denv->labels[i].nPoints);
-				denv->view->MapXYToScnXY(ptPtr, points, denv->labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
-				OSInt minX = 0;
-				OSInt minY = 0;
-				OSInt maxX = 0;
-				OSInt maxY = 0;
-				Math::Coord2D<OSInt> diff;
+				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, denv->labels[i].nPoints);
+				Double dscnWidth = (Double)scnWidth;
+				Double dscnHeight = (Double)scnHeight;
+				denv->view->MapXYToScnXY(ptPtr, points, denv->labels[i].nPoints, Math::Coord2DDbl(0, 0));
+				Double minX = 0;
+				Double minY = 0;
+				Double maxX = 0;
+				Double maxY = 0;
+				Math::Coord2DDbl diff;
 				Double scaleN;
 				Double scaleD;
-				OSInt lastX;
-				OSInt lastY;
-				OSInt thisX;
-				OSInt thisY;
+				Double lastX;
+				Double lastY;
+				Double thisX;
+				Double thisY;
 				UOSInt k;
 				Bool hasPoint;
 
 				j = denv->labels[i].nPoints - 1;
 				lastX = points[j].x;
 				lastY = points[j].y;
-				if (lastX >= 0 && lastX < (OSInt)scnWidth && lastY >= 0 && lastY < (OSInt)scnHeight)
+				if (lastX >= 0 && lastX < dscnWidth && lastY >= 0 && lastY < dscnHeight)
 				{
 					maxX = minX = lastX;
 					maxY = minY = lastY;
@@ -815,16 +817,16 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 					thisX = points[j].x;
 					thisY = points[j].y;
 
-					if (lastX > scnWidth)
+					if (lastX > dscnWidth)
 					{
-						if (thisX > scnWidth)
+						if (thisX > dscnWidth)
 						{
 							continue;
 						}
 						else
 						{
-							lastY = thisY + MulDivOS((lastY - thisY), (scnWidth - thisX), (lastX - thisX));
-							lastX = scnWidth;
+							lastY = thisY + (lastY - thisY) * (dscnWidth - thisX) / (lastX - thisX);
+							lastX = dscnWidth;
 						}
 					}
 					else if (lastX < 0)
@@ -835,33 +837,33 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 						}
 						else
 						{
-							lastY = thisY + MulDivOS(lastY - thisY, 0 - thisX, lastX - thisX);
+							lastY = thisY + (lastY - thisY) * (0 - thisX) / (lastX - thisX);
 							lastX = 0;
 						}
 					}
 
 					if (thisX < 0)
 					{
-						thisY = lastY + MulDivOS(thisY - lastY, 0 - lastX, thisX - lastX);
+						thisY = lastY + (thisY - lastY) * (0 - lastX) / (thisX - lastX);
 						thisX = 0;
 					}
-					else if (thisX > scnWidth)
+					else if (thisX > dscnWidth)
 					{
-						thisY = lastY + MulDivOS(thisY - lastY, scnWidth - lastX, thisX - lastX);
-						thisX = scnWidth;
+						thisY = lastY + (thisY - lastY) * (dscnWidth - lastX) / (thisX - lastX);
+						thisX = dscnWidth;
 					}
 
 
-					if (lastY > scnHeight)
+					if (lastY > dscnHeight)
 					{
-						if (thisY > scnHeight)
+						if (thisY > dscnHeight)
 						{
 							continue;
 						}
 						else
 						{
-							lastX = thisX + MulDivOS(lastX - thisX, scnHeight - thisY, lastY - thisY);
-							lastY = scnHeight;
+							lastX = thisX + (lastX - thisX) * (dscnHeight - thisY) / (lastY - thisY);
+							lastY = dscnHeight;
 						}
 					}
 					else if (lastY < 0)
@@ -872,20 +874,20 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 						}
 						else
 						{
-							lastX = thisX + MulDivOS(lastX - thisX, 0 - thisY, lastY - thisY);
+							lastX = thisX + (lastX - thisX) * (0 - thisY) / (lastY - thisY);
 							lastY = 0;
 						}
 					}
 
 					if (thisY < 0)
 					{
-						thisX = lastX + MulDivOS(thisX - lastX, 0 - lastY, thisY - lastY);
+						thisX = lastX + (thisX - lastX) * (0 - lastY) / (thisY - lastY);
 						thisY = 0;
 					}
-					else if (thisY > scnHeight)
+					else if (thisY > dscnHeight)
 					{
-						thisX = lastX + MulDivOS(thisX - lastX, scnHeight - lastY, thisY - lastY);
-						thisY = scnHeight;
+						thisX = lastX + (thisX - lastX) * (dscnHeight - lastY) / (thisY - lastY);
+						thisY = dscnHeight;
 					}
 
 					if (!hasPoint)
@@ -942,7 +944,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 
 				if (diff.x > diff.y)
 				{
-					scnPt.x = OSInt2Double((maxX + minX) >> 1);
+					scnPt.x = (maxX + minX) * 0.5;
 					k = 0;
 					while (k < denv->labels[i].nPoints - 1)
 					{
@@ -964,7 +966,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 				}
 				else
 				{
-					scnPt.y = OSInt2Double((maxY + minY) >> 1);
+					scnPt.y = (maxY + minY) * 0.5;
 					k = 0;
 					while (k < denv->labels[i].nPoints - 1)
 					{
@@ -996,7 +998,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 					denv->labels[i].scaleH = 0;
 				}
 				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
-				if (OSInt2Double(diff.x) < szThis.x && OSInt2Double(diff.y) < szThis.y)
+				if (diff.x < szThis.x && diff.y < szThis.y)
 				{
 					rect.min = scnPt - (szThis * 0.5);
 					rect.max = rect.min + szThis;
@@ -1013,7 +1015,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 				}
 				else
 				{
-					OSInt scnDiff = (maxX - minX) >> 1;
+					Double scnDiff = (maxX - minX) * 0.5;
 					Int32 tryCnt = 50;
 					j = 1;
 					while (j)
@@ -1037,7 +1039,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 									if (scnPt.x <= OSInt2Double(minX))
 									{
 										scnDiff = -scnDiff;
-										scnPt.x = OSInt2Double(((minX + maxX) >> 1) + scnDiff + 1);
+										scnPt.x = (((minX + maxX) * 0.5) + scnDiff + 1);
 									}
 								}
 								else
@@ -1045,11 +1047,11 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 									scnPt.x += OSInt2Double(scnDiff) + 1;
 									if (scnPt.x >= OSInt2Double(maxX))
 									{
-										scnDiff = scnDiff >> 1;
+										scnDiff = scnDiff * 0.5;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										scnPt.x = OSInt2Double(((minX + maxX) >> 1) + scnDiff - 1);
+										scnPt.x = (((minX + maxX) * 0.5) + scnDiff - 1);
 									}
 								}
 
@@ -1076,23 +1078,23 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 							{
 								if (scnDiff < 0)
 								{
-									scnPt.y += OSInt2Double(scnDiff - 1);
-									if (scnPt.y <= OSInt2Double(minY))
+									scnPt.y += scnDiff - 1;
+									if (scnPt.y <= minY)
 									{
 										scnDiff = -scnDiff;
-										scnPt.y = OSInt2Double(((minY + maxY) >> 1) + scnDiff + 1);
+										scnPt.y = ((minY + maxY) * 0.5) + scnDiff + 1;
 									}
 								}
 								else
 								{
-									scnPt.y += OSInt2Double(scnDiff + 1);
-									if (scnPt.y >= OSInt2Double(maxY))
+									scnPt.y += scnDiff + 1;
+									if (scnPt.y >= maxY)
 									{
-										scnDiff = scnDiff >> 1;
+										scnDiff = scnDiff * 0.5;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										scnPt.y = OSInt2Double(((minY + maxY) >> 1) + scnDiff - 1);
+										scnPt.y = (((minY + maxY) * 0.5) + scnDiff - 1);
 									}
 								}
 
@@ -1114,7 +1116,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 									k++;
 								}
 							}
-							scnPt = points[k].ToDouble() + ((points[k + 1].ToDouble() - points[k].ToDouble()) * scaleN / scaleD);
+							scnPt = points[k] + ((points[k + 1] - points[k]) * scaleN / scaleD);
 							if (denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE)
 							{
 								denv->labels[i].scaleW = ptPtr[k + 1].x - ptPtr[k].x;
@@ -2613,11 +2615,11 @@ void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Mat
 	}
 }
 
-void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2D<Int32>> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds)
+void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
-	Math::Coord2DDbl centPt = scnPts[thisPt].ToDouble() + (scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble()) * scaleN / scaleD;
+	Math::Coord2DDbl centPt = scnPts[thisPt] + (scnPts[thisPt + 1] - scnPts[thisPt]) * scaleN / scaleD;
 	Math::Coord2DDbl currPt;
 	Math::Coord2DDbl nextPt;
 	Double startX = 0;
@@ -2656,7 +2658,7 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 
 	min = max = centPt;
 
-	diff = scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble();
+	diff = scnPts[thisPt + 1] - scnPts[thisPt];
 	aDiff = diff.Abs();
 
 	if (diff.x > 0)
@@ -2901,7 +2903,7 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 				j++;
 				while (j < nPoints - 1)
 				{
-					nextPt = scnPts[j + 1].ToDouble() - currPt;
+					nextPt = scnPts[j + 1] - currPt;
 					diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
 					if (diff.x < diff.y)
 					{
@@ -2964,7 +2966,7 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 			{
 				while (j-- > 0)
 				{
-					nextPt = scnPts[j].ToDouble() - currPt;
+					nextPt = scnPts[j] - currPt;
 					diff.x = (nextPt.x * nextPt.x) + (nextPt.y * nextPt.y);
 					if (diff.x < diff.y)
 					{
@@ -3143,12 +3145,12 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 	realBounds.Set(Math::RectAreaDbl(min, max));
 }
 
-void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2D<Int32>> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds)
+void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds)
 {
 	UTF8Char sbuff[256];
 	UOSInt lblSize = str1.leng;
 	str1.ConcatTo(sbuff);
-	Math::Coord2DDbl centPt = scnPts[thisPt].ToDouble() + (scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble()) * scaleN / scaleD;
+	Math::Coord2DDbl centPt = scnPts[thisPt] + (scnPts[thisPt + 1] - scnPts[thisPt]) * scaleN / scaleD;
 	Math::Coord2DDbl currPt;
 	Math::Coord2DDbl nextPt;
 	Math::Coord2DDbl startPt = Math::Coord2DDbl(0, 0);
@@ -3188,7 +3190,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 
 	max = min = centPt;
 
-	diff = scnPts[thisPt + 1].ToDouble() - scnPts[thisPt].ToDouble();
+	diff = scnPts[thisPt + 1] - scnPts[thisPt];
 	aDiff = diff.Abs();
 
 	if (aDiff.x > aDiff.y)
@@ -3387,7 +3389,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 			if (j == (UOSInt)-1)
 			{
 				j = 0;
-				startPt = scnPts[0].ToDouble();
+				startPt = scnPts[0];
 			}
 		}
 		else
@@ -3455,7 +3457,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 			if (j >= nPoints - 1)
 			{
 				j = nPoints - 2;
-				startPt = scnPts[j + 1].ToDouble();
+				startPt = scnPts[j + 1];
 			}
 		}
 	}
@@ -3638,8 +3640,8 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 			{
 				nextPt = lastPt + ((szLast + szThis) * 0.5);
 			}
-			Math::Coord2DDbl scnPt1 = scnPts[lastAInd].ToDouble();
-			Math::Coord2DDbl scnPt2 = scnPts[lastAInd + 1].ToDouble();
+			Math::Coord2DDbl scnPt1 = scnPts[lastAInd];
+			Math::Coord2DDbl scnPt2 = scnPts[lastAInd + 1];
 			Math::Coord2DDbl tempPt = scnPt1 + (scnPt2 - scnPt1) * ((nextPt - scnPt1) / (scnPt2 - scnPt1)).SwapXY();
 			tempPt -= lastPt;
 			if (tempPt.y < 0)

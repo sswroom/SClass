@@ -36,7 +36,6 @@ namespace Map
 		virtual Double GetDDPI() const;
 
 		virtual Bool InViewXY(Math::Coord2DDbl mapPos) const;
-		virtual Bool MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
 		virtual Bool MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const; // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXYNoDir(Math::Coord2DDbl mapPos) const;

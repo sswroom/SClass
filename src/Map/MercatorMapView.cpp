@@ -115,48 +115,6 @@ Bool Map::MercatorMapView::InViewXY(Math::Coord2DDbl mapPos) const
 	return x >= 0 && x < this->scnSize.x && y >= 0 && y < this->scnSize.y;
 }
 
-Bool Map::MercatorMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
-{
-	if (nPoints == 0)
-	{
-		return false;
-	}
-	Int32 iminX = 0;
-	Int32 iminY = 0;
-	Int32 imaxX = 0;
-	Int32 imaxY = 0;
-	Int32 thisX;
-	Int32 thisY;
-	Double rate;
-	rate = this->hdpi / this->ddpi;
-	while (nPoints-- > 0)
-	{
-		thisX = Double2Int32((Lon2PixelX(srcArr[0].GetLon()) - this->centPixel.x) * rate + this->scnSize.x * 0.5);
-		thisY = Double2Int32((Lat2PixelY(srcArr[0].GetLat()) - this->centPixel.y) * rate + this->scnSize.y * 0.5);
-		destArr[0].x = thisX + ofst.x;
-		destArr[0].y = thisY + ofst.y;
-		srcArr++;
-		destArr++;
-		if (iminX == 0 && imaxX == 0)
-		{
-			iminX = imaxX = thisX;
-			iminY = imaxY = thisY;
-		}
-		else
-		{
-			if (thisX < iminX)
-				iminX = thisX;
-			if (thisX > imaxX)
-				imaxX = thisX;
-			if (thisY < iminY)
-				iminY = thisY;
-			if (thisY > imaxY)
-				imaxY = thisY;
-		}
-	}
-	return (imaxX >= 0) && (iminX < (OSInt)scnSize.x) && (imaxY >= 0) && (iminY < (OSInt)scnSize.y);
-}
-
 Bool Map::MercatorMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofstPt) const
 {
 	if (nPoints == 0)
