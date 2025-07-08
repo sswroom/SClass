@@ -7,22 +7,33 @@ Map::MapView::MapView(Math::Size2DDbl scnSize)
 {
 	this->scnSize = scnSize;
 	this->converterOfst = Math::Coord2DDbl(0, 0);
+	this->hAngle = 0;
+	this->hSin = 0;
+	this->hCos = 1;
+	this->hISin = 0;
+	this->hICos = 1;
 }
 
 Map::MapView::~MapView()
 {
 }
 
-Math::Coord2DDbl Map::MapView::MapXYToScnXYRot(Math::Coord2DDbl mapPos, Double rotAngleRad) const
+Math::Coord2DDbl Map::MapView::MapXYToScnXY(Math::Coord2DDbl mapPos) const
 {
 	Math::Coord2DDbl scnCenter = this->scnSize * 0.5;
-	return this->MapXYToScnXY(mapPos).Rotate(-rotAngleRad, scnCenter);
+	Math::Coord2DDbl diff = this->MapXYToScnXYNoDir(mapPos) - scnCenter;
+	Double sAng = this->hISin;
+	Double cAng = this->hICos;
+	return scnCenter + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);
 }
 
-Math::Coord2DDbl Map::MapView::ScnXYRotToMapXY(Math::Coord2DDbl scnPos, Double rotAngleRad) const
+Math::Coord2DDbl Map::MapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) const
 {
 	Math::Coord2DDbl scnCenter = this->scnSize * 0.5;
-	return this->ScnXYToMapXY(scnPos.Rotate(rotAngleRad, scnCenter));
+	Math::Coord2DDbl diff = scnPos - scnCenter;
+	Double sAng = this->hSin;
+	Double cAng = this->hCos;
+	return this->ScnXYNoDirToMapXY(scnCenter + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng));
 }
 
 Double Map::MapView::GetScnWidth() const
@@ -42,6 +53,15 @@ Math::Size2DDbl Map::MapView::GetScnSize() const
 
 void Map::MapView::SetVAngle(Double angleRad)
 {
+}
+
+void Map::MapView::SetHAngle(Double angleRad)
+{
+	this->hAngle = angleRad;
+	this->hSin = Math_Sin(angleRad);
+	this->hCos = Math_Cos(angleRad);
+	this->hISin = Math_Sin(-angleRad);
+	this->hICos = Math_Cos(-angleRad);
 }
 
 void Map::MapView::SetDestImage(NN<Media::DrawImage> img)

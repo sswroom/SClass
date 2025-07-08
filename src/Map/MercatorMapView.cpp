@@ -262,12 +262,12 @@ Bool Map::MercatorMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math:
 	return (imaxX >= 0) && (iminX < (OSInt)scnSize.x) && (imaxY >= 0) && (iminY < (OSInt)scnSize.y);
 }
 
-Math::Coord2DDbl Map::MercatorMapView::MapXYToScnXY(Math::Coord2DDbl mapPos) const
+Math::Coord2DDbl Map::MercatorMapView::MapXYToScnXYNoDir(Math::Coord2DDbl mapPos) const
 {
 	return (Math::Coord2DDbl(Lon2PixelX(mapPos.x), Lat2PixelY(mapPos.y)) - this->centPixel) * this->hdpi / this->ddpi + this->scnSize * 0.5;
 }
 
-Math::Coord2DDbl Map::MercatorMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) const
+Math::Coord2DDbl Map::MercatorMapView::ScnXYNoDirToMapXY(Math::Coord2DDbl scnPos) const
 {
 	Math::Coord2DDbl px = (scnPos - this->scnSize * 0.5) * this->ddpi / this->hdpi + this->centPixel;
 	return Math::Coord2DDbl(PixelX2Lon(px.x), PixelY2Lat(px.y));

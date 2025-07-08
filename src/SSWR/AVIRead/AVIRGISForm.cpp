@@ -511,6 +511,14 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnVAngleScrolled(AnyType userObj, UOS
 	me->mapCtrl->SetVAngle(UOSInt2Double(newVal) * Math::PI / 180);
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISForm::OnHAngleScrolled(AnyType userObj, UOSInt newVal)
+{
+	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
+	me->mapCtrl->SetHAngle(UOSInt2Double(newVal) * Math::PI / 180);
+	me->mapCtrl->UpdateMap();
+	me->mapCtrl->Redraw();
+}
+
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(AnyType userObj)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
@@ -732,10 +740,15 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->chkTime->SetRect(0, 0, 150, 24, false);
 	this->chkTime->HandleCheckedChange(OnTimeChecked, this);
 	this->lblVAngle = ui->NewLabel(this->pnlControl, CSTR("VAngle"));
-	this->lblVAngle->SetRect(250, 0, 100, 23, false);
+	this->lblVAngle->SetRect(250, 0, 50, 23, false);
 	this->tbVAngle = ui->NewTrackBar(this->pnlControl, 0, 90, 0);
-	this->tbVAngle->SetRect(350, 0, 100, 23, false);
+	this->tbVAngle->SetRect(300, 0, 100, 23, false);
 	this->tbVAngle->HandleScrolled(OnVAngleScrolled, this);
+	this->lblHAngle = ui->NewLabel(this->pnlControl, CSTR("HAngle"));
+	this->lblHAngle->SetRect(400, 0, 50, 23, false);
+	this->tbHAngle = ui->NewTrackBar(this->pnlControl, 0, 360, 0);
+	this->tbHAngle->SetRect(450, 0, 100, 23, false);
+	this->tbHAngle->HandleScrolled(OnHAngleScrolled, this);
 
 	NEW_CLASSNN(this->mapTree, UI::GUIMapTreeView(ui, *this, env));
 	this->mapTree->SetRect(0, 0, 200, 10, false);

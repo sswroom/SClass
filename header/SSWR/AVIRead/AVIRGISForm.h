@@ -48,6 +48,8 @@ namespace SSWR
 			NN<UI::GUICheckBox> chkTime;
 			NN<UI::GUILabel> lblVAngle;
 			NN<UI::GUITrackBar> tbVAngle;
+			NN<UI::GUILabel> lblHAngle;
+			NN<UI::GUITrackBar> tbHAngle;
 			NN<Map::MapEnv> env;
 			NN<Map::DrawMapRenderer> envRenderer;
 			Bool scaleChanging;
@@ -90,6 +92,7 @@ namespace SSWR
 			static void __stdcall OnTimeChecked(AnyType userObj, Bool newState);
 			static void __stdcall OnTreeDrag(AnyType userObj, NN<UI::GUIMapTreeView::ItemIndex> dragItem, NN<UI::GUIMapTreeView::ItemIndex> dropItem);
 			static void __stdcall OnVAngleScrolled(AnyType userObj, UOSInt newVal);
+			static void __stdcall OnHAngleScrolled(AnyType userObj, UOSInt newVal);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);

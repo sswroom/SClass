@@ -232,12 +232,12 @@ Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::C
 	return ScaledMapView_IMapXYToScnXY(srcArr.Ptr(), destArr.Ptr(), nPoints, rRate, dleft, dbottom, mul.x, mul.y, ofst.x, ofst.y, (UOSInt)this->scnSize.x, (UOSInt)this->scnSize.y);
 }
 
-Math::Coord2DDbl Map::ScaledMapView::MapXYToScnXY(Math::Coord2DDbl mapPos) const
+Math::Coord2DDbl Map::ScaledMapView::MapXYToScnXYNoDir(Math::Coord2DDbl mapPos) const
 {
 	return Math::Coord2DDbl(mapPos.x - this->tl.x, this->br.y - mapPos.y) * scnSize / (this->br - this->tl);
 }
 
-Math::Coord2DDbl Map::ScaledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) const
+Math::Coord2DDbl Map::ScaledMapView::ScnXYNoDirToMapXY(Math::Coord2DDbl scnPos) const
 {
 	Math::Coord2DDbl v = scnPos * (this->br - this->tl) / scnSize;
 	return Math::Coord2DDbl(this->tl.x + v.x, this->br.y - v.y);

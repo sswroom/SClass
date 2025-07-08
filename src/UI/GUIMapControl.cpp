@@ -879,6 +879,11 @@ void UI::GUIMapControl::SetVAngle(Double angleRad)
 	this->view->SetVAngle(angleRad);
 }
 
+void UI::GUIMapControl::SetHAngle(Double angleRad)
+{
+	this->view->SetHAngle(angleRad);
+}
+
 void UI::GUIMapControl::HandleScaleChanged(ScaleChangedHandler hdlr, AnyType userObj)
 {
 	this->scaleChgHdlrs.Add({hdlr, userObj});

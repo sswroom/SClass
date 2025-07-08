@@ -252,12 +252,12 @@ Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::
 	return (imaxX >= 0) && (iminX < (OSInt)scnSize.x) && (imaxY >= 0) && (iminY < (OSInt)scnSize.y);
 }
 
-Math::Coord2DDbl Map::LeveledMapView::MapXYToScnXY(Math::Coord2DDbl mapPos) const
+Math::Coord2DDbl Map::LeveledMapView::MapXYToScnXYNoDir(Math::Coord2DDbl mapPos) const
 {
 	return Math::Coord2DDbl(mapPos.x - this->tl.x, this->br.y - mapPos.y) * scnSize / (this->br - this->tl);
 }
 
-Math::Coord2DDbl Map::LeveledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) const
+Math::Coord2DDbl Map::LeveledMapView::ScnXYNoDirToMapXY(Math::Coord2DDbl scnPos) const
 {
 	Math::Coord2DDbl v = scnPos * (this->br - this->tl) / scnSize;
 	return Math::Coord2DDbl(this->tl.x + v.x, this->br.y - v.y);

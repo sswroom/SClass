@@ -15,6 +15,11 @@ namespace Map
 		Math::Coord2DDbl converterOfst;
 	protected:
 		Math::Size2DDbl scnSize;
+		Double hAngle;
+		Double hSin;
+		Double hCos;
+		Double hISin;
+		Double hICos;
 		
 	public:
 		MapView(Math::Size2DDbl scnSize);
@@ -38,16 +43,17 @@ namespace Map
 		virtual Bool MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
 		virtual Bool MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const = 0; // return inScreen
 		virtual Bool IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
-		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const = 0;
-		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const = 0;
+		virtual Math::Coord2DDbl MapXYToScnXYNoDir(Math::Coord2DDbl mapPos) const = 0;
+		virtual Math::Coord2DDbl ScnXYNoDirToMapXY(Math::Coord2DDbl scnPos) const = 0;
 		virtual NN<Map::MapView> Clone() const = 0;
-		Math::Coord2DDbl MapXYToScnXYRot(Math::Coord2DDbl mapPos, Double rotAngleRad) const;
-		Math::Coord2DDbl ScnXYRotToMapXY(Math::Coord2DDbl scnPos, Double rotAngleRad) const;
+		Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const;
+		Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const;
 
 		Double GetScnWidth() const;
 		Double GetScnHeight() const;
 		Math::Size2DDbl GetScnSize() const;
 		void SetVAngle(Double angleRad);
+		void SetHAngle(Double angleRad);
 
 		void SetDestImage(NN<Media::DrawImage> img);
 		void ToPointCnt(UnsafeArray<Int32> parts, Int32 nParts, Int32 nPoints) const;

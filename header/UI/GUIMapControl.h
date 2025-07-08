@@ -111,6 +111,7 @@ namespace UI
 		void SetSelectedVector(Optional<Math::Geometry::Vector2D> vec);
 		void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 		void SetVAngle(Double angleRad);
+		void SetHAngle(Double angleRad);
 
 		void HandleScaleChanged(ScaleChangedHandler hdlr, AnyType userObj);
 		void HandleMapUpdated(MapUpdatedHandler hdlr, AnyType userObj);
