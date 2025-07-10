@@ -2695,6 +2695,8 @@ Media/ImageList.h:
 @ImageList.o
 Media/ImagePreviewTool.h:
 @ImagePreviewTool.o
+Media/ImageRemapper.h:
+@ImageRemapper.o
 Media/ImageResizer.h:
 @ImageResizer.o
 Media/ImageTo8Bit.h:
@@ -2748,6 +2750,8 @@ Media/MPGFile.h:
 @MPGFile.o
 Media/MSFontRenderer.h:
 @MSFontRenderer.o
+Media/NearestNeighbourRemapper.h:
+@NearestNeighbourRemapper.o
 Media/NullRenderer.h:
 @NullRenderer.o
 Media/NWASource.h:

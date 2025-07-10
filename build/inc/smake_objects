@@ -1012,6 +1012,7 @@ ImageCopy.o: ../../src/Media/ImageCopy.cpp
 ImageGenerator.o: ../../src/Media/ImageGenerator.cpp
 ImageList.o: ../../src/Media/ImageList.cpp
 ImagePreviewTool.o: ../../src/Media/ImagePreviewTool.cpp
+ImageRemapper.o: ../../src/Media/ImageRemapper.cpp
 ImageResizer.o: ../../src/Media/ImageResizer.cpp
 ImageTo8Bit.o: ../../src/Media/ImageTo8Bit.cpp
 ImageUtil.o: ../../src/Media/ImageUtil.cpp
@@ -1060,6 +1061,7 @@ MSFontRenderer.o: ../../src/Media/MSFontRenderer.cpp
 PulseAudioRenderer.o: ../../src/Media/PulseAudioRenderer.cpp
 $`$(PKG-CONFIG) --cflags libpulse`
 !`$(PKG-CONFIG) --libs libpulse`
+NearestNeighbourRemapper.o: ../../src/Media/NearestNeighbourRemapper.cpp
 NoGUIDrawEngine.o: ../../src/Media/NoGUIDrawEngine.cpp
 NullRenderer.o: ../../src/Media/NullRenderer.cpp
 NWASource.o: ../../src/Media/NWASource.cpp

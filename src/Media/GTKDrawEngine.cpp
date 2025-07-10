@@ -8,6 +8,7 @@
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
 #include "Media/JPEGFile.h"
+#include "Media/NearestNeighbourRemapper.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Sync/MutexUsage.h"
@@ -1095,17 +1096,30 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 
 Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
 {
-	/////////////////////////////////
-	Math::Coord2DDbl points[5];
-	points[0] = quad.tl;
-	points[1] = quad.tr;
-	points[2] = quad.br;
-	points[3] = quad.bl;
-	points[4] = quad.tl;
-	NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, 0, 0);
-	this->DrawPolygon(points, 5, p, 0);
-	this->DelPen(p);
-	return false;
+	if (this->surface == 0 || this->info.storeBPP != 32)
+	{
+		Math::Coord2DDbl points[5];
+		points[0] = quad.tl;
+		points[1] = quad.tr;
+		points[2] = quad.br;
+		points[3] = quad.bl;
+		points[4] = quad.tl;
+		NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, 0, 0);
+		this->DrawPolygon(points, 5, p, 0);
+		this->DelPen(p);
+		return false;
+	}
+	else
+	{
+		cairo_surface_flush((cairo_surface_t*)this->surface);
+		UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
+		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
+		Media::NearestNeighbourRemapper remapper;
+		remapper.SetSourceImage(img);
+		remapper.Remap(dimgPtr, (UOSInt)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
+		return true;
+	}
 }
 
 NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
