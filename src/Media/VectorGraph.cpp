@@ -541,6 +541,11 @@ Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL
 	return true;
 }
 
+Bool Media::VectorGraph::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
+{
+	return false;
+}
+
 NN<Media::DrawPen> Media::VectorGraph::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	NN<Media::VectorGraph::VectorPenStyle> pen;
