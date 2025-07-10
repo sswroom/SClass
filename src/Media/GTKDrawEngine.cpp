@@ -1093,6 +1093,21 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 	}
 }
 
+Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
+{
+	/////////////////////////////////
+	Math::Coord2DDbl points[5];
+	points[0] = quad.tl;
+	points[1] = quad.tr;
+	points[2] = quad.br;
+	points[3] = quad.bl;
+	points[4] = quad.tl;
+	NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, 0, 0);
+	this->DrawPolygon(points, 5, p, 0);
+	this->DelPen(p);
+	return false;
+}
+
 NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	NN<Media::GTKDrawPen> p;

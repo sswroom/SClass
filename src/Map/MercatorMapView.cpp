@@ -163,19 +163,44 @@ Bool Map::MercatorMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcA
 	Doublex2 ofst = PDoublex2Set(ofstPt.x, ofstPt.y);
 	thisVal = PDoublex2Set(Lon2PixelX(srcArr[0].x), Lat2PixelY(srcArr[0].y));
 	imin = imax = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
-	PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(imin, ofst));
-	srcArr += 1;
-	destArr += 1;
-	nPoints--;
-	while (nPoints-- > 0)
+	if (this->hAngle == 0)
 	{
-		thisVal = PDoublex2Set(Lon2PixelX(srcArr[0].x), Lat2PixelY(srcArr[0].y));
-		thisVal = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
-		PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(thisVal, ofst));
+		PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(imin, ofst));
 		srcArr += 1;
 		destArr += 1;
-		imin = PMINPD(imin, thisVal);
-		imax = PMAXPD(imax, thisVal);
+		nPoints--;
+		while (nPoints-- > 0)
+		{
+			thisVal = PDoublex2Set(Lon2PixelX(srcArr[0].x), Lat2PixelY(srcArr[0].y));
+			thisVal = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
+			PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(thisVal, ofst));
+			srcArr += 1;
+			destArr += 1;
+			imin = PMINPD(imin, thisVal);
+			imax = PMAXPD(imax, thisVal);
+		}
+	}
+	else
+	{
+		Doublex2 rotXMul = PDoublex2Set(this->hICos, this->hISin);
+		Doublex2 rotYMul = PDoublex2Set(-this->hISin, this->hICos);
+		Doublex2 scnCenter = (this->scnSize * 0.5).vals;
+		Doublex2 diff = imin - scnCenter;
+		PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ofst));
+		srcArr += 1;
+		destArr += 1;
+		nPoints--;
+		while (nPoints-- > 0)
+		{
+			thisVal = PDoublex2Set(Lon2PixelX(srcArr[0].x), Lat2PixelY(srcArr[0].y));
+			thisVal = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
+			diff = thisVal - scnCenter;
+			PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ofst));
+			srcArr += 1;
+			destArr += 1;
+			imin = PMINPD(imin, thisVal);
+			imax = PMAXPD(imax, thisVal);
+		}
 	}
 	return (Doublex2GetLo(imax) >= 0) && (Doublex2GetLo(imin) < this->scnSize.x) && (Doublex2GetHi(imax) >= 0) && (Doublex2GetHi(imin) < this->scnSize.y);
 }

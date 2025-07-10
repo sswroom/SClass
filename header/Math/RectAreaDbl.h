@@ -143,6 +143,23 @@ namespace Math
 			return Math::RectAreaDbl(this->min.Min(pt), this->max.Max(pt));
 		}
 
+		Math::Quadrilateral Rotate(Double angleRad) const
+		{
+			Coord2DDbl center = (this->min + this->max) * 0.5;
+			Coord2DDbl diff;
+			Double sAng = Math_Sin(-angleRad);
+			Double cAng = Math_Cos(-angleRad);
+			diff = min - center;
+			Coord2DDbl tl = center + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);
+			diff = Coord2DDbl(max.x, min.y) - center;
+			Coord2DDbl tr = center + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);
+			diff = max - center;
+			Coord2DDbl br = center + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);
+			diff = Coord2DDbl(min.x, max.y) - center;
+			Coord2DDbl bl = center + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);
+			return Math::Quadrilateral(tl, tr, br, bl);
+		}
+
 		static RectAreaDbl GetRectArea(Coord2DDbl *points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;

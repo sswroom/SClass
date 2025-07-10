@@ -19,6 +19,7 @@
 #include "Map/ESRI/FileGDBDir.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"
+#include "Math/Triangle.h"
 #include "Math/WKBReader.h"
 #include "Math/WKBWriter.h"
 #include "Math/WKTReader.h"
@@ -1074,9 +1075,23 @@ Int32 CoordRotateTest()
 	return 0;
 }
 
+Int32 TriangleRemapTest()
+{
+	Math::Triangle srcTri(Math::Coord2DDbl(-1, -1),
+		Math::Coord2DDbl(1, -1),
+		Math::Coord2DDbl(-1, 1));
+	Math::Triangle destTri(Math::Coord2DDbl(1, 0),
+		Math::Coord2DDbl(2, 2),
+		Math::Coord2DDbl(0, 2));
+	Math::Coord2DDbl pt(1, 1);
+	Math::Coord2DDbl res = srcTri.Remap(pt, destTri);
+	printf("Dest Pos = (%lf, %lf)\r\n", res.x, res.y);
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 28;
+	UOSInt testType = 27;
 	switch (testType)
 	{
 	case 0:
@@ -1137,6 +1152,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return QuadrilateralTest();
 	case 28:
 		return CoordRotateTest();
+	case 29:
+		return TriangleRemapTest();
 	default:
 		return 0;
 	}

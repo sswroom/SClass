@@ -101,7 +101,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UOSInt maxLab
 	if (label.leng == 0)
 		return false;
 
-	Math::RectAreaDbl rect = view->GetVerticalRect();
+	Math::RectAreaDbl rect = view->GetBounds().GetExterior();
 	Math::Coord2DDbl mapPos = view->GetCenter();
 
 	if (recType == Map::DRAW_LAYER_POINT || recType == Map::DRAW_LAYER_POINT3D) //Point
@@ -1551,7 +1551,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 	{
 		Math::Coord2DDbl tl;
 		Math::Coord2DDbl br;
-		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+		Math::RectAreaDbl rect = denv->view->GetBounds().GetExterior();
 		tl = rect.min;
 		br = rect.max;
 		tl = Math::CoordinateSystem::Convert(envCSys, lyrCSys, tl);
@@ -1609,7 +1609,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 	{
 		Math::Coord2DDbl tl;
 		Math::Coord2DDbl br;
-		Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+		Math::RectAreaDbl rect = denv->view->GetBounds().GetExterior();
 		tl = rect.min;
 		br = rect.max;
 		layer->GetObjectIdsMapXY(denv->idArr, 0, Math::RectAreaDbl(tl, br), true);
@@ -1669,7 +1669,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 	NN<Map::GetObjectSess> session;
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
-	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+	Math::RectAreaDbl rect = denv->view->GetBounds().GetExterior();
 	tl = rect.min;
 	br = rect.max;
 	Double spotX;
@@ -1855,7 +1855,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 	Bool csysConv = false;;
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
-	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+	Math::RectAreaDbl rect = denv->view->GetBounds().GetExterior();
 	tl = rect.min;
 	br = rect.max;
 	NN<Math::CoordinateSystem> lyrCSys = layer->GetCoordinateSystem();
@@ -2116,7 +2116,7 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 	}
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
-	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
+	Math::RectAreaDbl rect = denv->view->GetBounds().GetExterior();
 	tl = rect.min;
 	br = rect.max;
 	if (geoConv)
@@ -2157,30 +2157,43 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 	{
 		Math::RectAreaDbl scnCoords;
 		vimg = imgList.GetItemNoCheck(i);
-		if (vimg->IsScnCoord())
-		{
-			scnCoords = vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI());
-		}
-		else
-		{
-			Math::RectAreaDbl mapCoords = vimg->GetBounds();
-			Double t = mapCoords.min.y;
-			mapCoords.min.y = mapCoords.max.y;
-			mapCoords.max.y = t;
-			if (geoConv)
-			{
-				mapCoords.min = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.min);
-				mapCoords.max = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.max);
-			}
-			scnCoords.min = denv->view->MapXYToScnXY(mapCoords.min);
-			scnCoords.max = denv->view->MapXYToScnXY(mapCoords.max);
-			scnCoords = scnCoords.Reorder();
-		}
 		UInt32 imgTimeMS;
 		NN<Media::StaticImage> simg;
 		if (vimg->GetImage(scnCoords.GetWidth(), scnCoords.GetHeight(), imgTimeMS).SetTo(simg))
 		{
-			DrawImageObject(denv, simg, scnCoords.min, scnCoords.max, vimg->GetSrcAlpha());
+			if (vimg->IsScnCoord())
+			{
+				scnCoords = vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI());
+				DrawImageObject(denv, simg, scnCoords.min, scnCoords.max, vimg->GetSrcAlpha());
+			}
+			else
+			{
+				Math::RectAreaDbl mapCoords = vimg->GetBounds();
+				Double t = mapCoords.min.y;
+				mapCoords.min.y = mapCoords.max.y;
+				mapCoords.max.y = t;
+				if (geoConv)
+				{
+					mapCoords.min = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.min);
+					mapCoords.max = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.max);
+				}
+				Math::Quadrilateral quad;
+				quad.tl = denv->view->MapXYToScnXY(mapCoords.min);
+				quad.tr = denv->view->MapXYToScnXY(Math::Coord2DDbl(mapCoords.max.x, mapCoords.min.y));
+				quad.br = denv->view->MapXYToScnXY(mapCoords.max);
+				quad.bl = denv->view->MapXYToScnXY(Math::Coord2DDbl(mapCoords.min.x, mapCoords.max.y));
+				if (quad.IsNonRotateRectangle())
+				{
+					scnCoords.min = quad.tl;
+					scnCoords.max = quad.br;
+					scnCoords = scnCoords.Reorder();
+					DrawImageObject(denv, simg, scnCoords.min, scnCoords.max, vimg->GetSrcAlpha());
+				}
+				else
+				{
+					DrawImageObjectQuad(denv, simg, quad, vimg->GetSrcAlpha());
+				}
+			}
 			if (imgTimeMS != 0)
 			{
 				if (denv->imgDurMS == 0)
@@ -2327,6 +2340,11 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 			}
 		}
 	}
+}
+
+void Map::DrawMapRenderer::DrawImageObjectQuad(NN<DrawEnv> denv, NN<Media::StaticImage> img, Math::Quadrilateral scnCoords, Double srcAlpha)
+{
+	denv->img->DrawImageQuad(img, scnCoords);
 }
 
 void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)

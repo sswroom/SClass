@@ -126,6 +126,7 @@ namespace Media
 		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl) = 0;
 		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize) = 0;
+		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad) = 0;
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern) = 0;
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color) = 0;

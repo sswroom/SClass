@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "Math/Quadrilateral.h"
+#include "Math/RectAreaDbl.h"
 #include "Math/Triangle.h"
 
 Math::Quadrilateral::Quadrilateral(Coord2DDbl tl, Coord2DDbl tr, Coord2DDbl br, Coord2DDbl bl)
@@ -76,7 +77,21 @@ Double Math::Quadrilateral::CalcLenBottom() const
 
 Bool Math::Quadrilateral::InsideOrTouch(Math::Coord2DDbl pt) const
 {
-	if (pt == tl || pt == tr || pt == bl || pt == br)
+	Double d1 = Sign(pt, this->tl, this->tr);
+	Double d2 = Sign(pt, this->tr, this->br);
+	Double d3 = Sign(pt, this->br, this->bl);
+	Double d4 = Sign(pt, this->bl, this->tl);
+	if (d1 <= 0 && d2 <= 0 && d3 <= 0 && d4 <= 0)
+	{
+		return true;
+	}
+	if (d1 >= 0 && d2 >= 0 && d3 >= 0 && d4 >= 0)
+	{
+		return true;
+	}
+	return false;
+
+/*	if (pt == tl || pt == tr || pt == bl || pt == br)
 		return true;
 	Double a1 = Math_ArcTan2(pt.y - tl.y, pt.x - tl.x);
 	Double a2 = Math_ArcTan2(pt.y - tr.y, pt.x - tr.x);
@@ -94,7 +109,31 @@ Bool Math::Quadrilateral::InsideOrTouch(Math::Coord2DDbl pt) const
 	if (ta2 > Math::PI) ta2 = 2 * Math::PI - ta2;
 	if (ta3 > Math::PI) ta3 = 2 * Math::PI - ta3;
 	if (ta4 > Math::PI) ta4 = 2 * Math::PI - ta4;
-	return Math::PI * 2 - 0.0000000001 <= ta1 + ta2 + ta3 + ta4;
+	return Math::PI * 2 - 0.0000000001 <= ta1 + ta2 + ta3 + ta4;*/
+}
+
+Math::RectAreaDbl Math::Quadrilateral::GetExterior() const
+{
+	Math::Coord2DDbl min = this->tl.Min(this->tr).Min(this->br).Min(this->bl);
+	Math::Coord2DDbl max = this->tl.Max(this->tr).Max(this->br).Max(this->bl);
+	return Math::RectAreaDbl(min, max);
+}
+
+Bool Math::Quadrilateral::IsRectangle() const
+{
+	return this->tl.y == this->tr.y && this->tl.x == this->bl.x && this->bl.y == this->br.y && this->tr.x == this->br.x;
+}
+
+Bool Math::Quadrilateral::IsNonRotateRectangle() const
+{
+	return this->tl.y == this->tr.y && this->tl.x == this->bl.x && this->bl.y == this->br.y && this->tr.x == this->br.x && this->tl.x <= this->br.x && this->tl.y <= this->br.y;
+}
+
+Double Math::Quadrilateral::Sign(Coord2DDbl p1, Coord2DDbl p2, Coord2DDbl p3)
+{
+	Coord2DDbl diff13 = p1 - p3;
+	Coord2DDbl diff23 = p2 - p3;
+	return diff13.x * diff23.y - diff23.x * diff13.y;
 }
 
 Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2D<UOSInt>> pg)

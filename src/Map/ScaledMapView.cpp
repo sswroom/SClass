@@ -71,7 +71,8 @@ void Map::ScaledMapView::SetDPI(Double hdpi, Double ddpi)
 
 Math::Quadrilateral Map::ScaledMapView::GetBounds() const
 {
-	return Math::Quadrilateral(this->tl, Math::Coord2DDbl(this->br.x, this->tl.y), this->br, Math::Coord2DDbl(this->tl.x, this->br.y));
+	return Math::RectAreaDbl(this->tl, this->br).Rotate(this->hAngle);
+	//return Math::Quadrilateral(this->tl, Math::Coord2DDbl(this->br.x, this->tl.y), this->br, Math::Coord2DDbl(this->tl.x, this->br.y));
 }
 
 Math::RectAreaDbl Map::ScaledMapView::GetVerticalRect() const
@@ -107,6 +108,13 @@ Double Map::ScaledMapView::GetDDPI() const
 
 Bool Map::ScaledMapView::InViewXY(Math::Coord2DDbl mapPos) const
 {
+	if (this->hAngle != 0)
+	{
+		Math::Coord2DDbl diff = mapPos - this->centMap;
+		Double sAng = this->hISin;
+		Double cAng = this->hICos;
+		mapPos = this->centMap + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);
+	}
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
@@ -158,20 +166,46 @@ Bool Map::ScaledMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr
 	Doublex2 minVal;
 	Doublex2 maxVal;
 	thisVal = PDoublex2Set((srcArr[0].x  - dleft), (dbottom - srcArr[0].y));
-	minVal = maxVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
-	PStoreDoublex2((Double*)destArr.Ptr(), minVal);
-	srcArr++;
-	destArr++;
-	nPoints--;
-	while (nPoints-- > 0)
+	minVal = maxVal = PMULPD(thisVal, ptMul);
+	if (this->hAngle == 0)
 	{
-		thisVal = PDoublex2Set((srcArr[0].x  - dleft), (dbottom - srcArr[0].y));
-		thisVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
-		PStoreDoublex2((Double*)destArr.Ptr(), thisVal);
+		PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(minVal, ptOfst));
 		srcArr++;
 		destArr++;
-		minVal = PMINPD(minVal, thisVal);
-		maxVal = PMAXPD(maxVal, thisVal);
+		nPoints--;
+		while (nPoints-- > 0)
+		{
+			thisVal = PDoublex2Set((srcArr[0].x  - dleft), (dbottom - srcArr[0].y));
+			thisVal = PMULPD(thisVal, ptMul);
+			PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(thisVal, ptOfst));
+			srcArr++;
+			destArr++;
+			minVal = PMINPD(minVal, thisVal);
+			maxVal = PMAXPD(maxVal, thisVal);
+		}
+	}
+	else
+	{
+		Doublex2 rotXMul = PDoublex2Set(this->hICos, this->hISin);
+		Doublex2 rotYMul = PDoublex2Set(-this->hISin, this->hICos);
+		Doublex2 scnCenter = (this->scnSize * 0.5).vals;
+		Doublex2 diff = minVal - scnCenter;
+		PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ptOfst));
+		srcArr++;
+		destArr++;
+		nPoints--;
+		while (nPoints-- > 0)
+		{
+			thisVal = PDoublex2Set((srcArr[0].x  - dleft), (dbottom - srcArr[0].y));
+			thisVal = PMULPD(thisVal, ptMul);
+			diff = thisVal - scnCenter;
+			PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ptOfst));
+			srcArr++;
+			destArr++;
+			minVal = PMINPD(minVal, thisVal);
+			maxVal = PMAXPD(maxVal, thisVal);
+		}
+
 	}
 	return (Doublex2GetLo(maxVal) >= 0) && (Doublex2GetLo(minVal) < scnSize.x) && (Doublex2GetHi(maxVal) >= 0) && (Doublex2GetHi(minVal) < scnSize.y);
 }

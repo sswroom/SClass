@@ -206,6 +206,13 @@ typedef __m128d Doublex2;
 #define PDIVPD(v1, v2) _mm_div_pd(v1, v2)
 #define PMINPD(v1, v2) _mm_min_pd(v1, v2)
 #define PMAXPD(v1, v2) _mm_max_pd(v1, v2)
+#define MOVLHPS(v1, v2) _mm_movelh_ps(v1, v2)
+#define MOVHLPS(v1, v2) _mm_movehl_ps(v1, v2) 
+#if defined(__SSE3__)
+#define HADDPD(v1, v2) _mm_hadd_pd(v1, v2)
+#else
+#define HADDPD(v1, v2) PADDPD(MOVLHPS(v1, v2), MOVHLPS(v1, v2))
+#endif
 #define PLoadDoublex2(ptr) _mm_loadu_pd(ptr)
 #define PStoreDoublex2(ptr, v) _mm_storeu_pd(ptr, v)
 #define Doublex2GetLo(v) _mm_cvtsd_f64(v)
@@ -619,6 +626,14 @@ Doublex2 FORCEINLINE PMAXPD(Doublex2 val1, Doublex2 val2)
 	Doublex2 ret;
 	ret.vals[0] = (val1.vals[0] > val2.vals[0])?val1.vals[0]:val2.vals[0];
 	ret.vals[1] = (val1.vals[1] > val2.vals[1])?val1.vals[1]:val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE HADDPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = (val1.vals[0] + val1.vals[1]);
+	ret.vals[1] = (val2.vals[0] + val2.vals[1]);
 	return ret;
 }
 
@@ -2033,6 +2048,14 @@ Doublex2 FORCEINLINE PMAXPD(Doublex2 val1, Doublex2 val2)
 	Doublex2 ret;
 	ret.vals[0] = (val1.vals[0] > val2.vals[0])?val1.vals[0]:val2.vals[0];
 	ret.vals[1] = (val1.vals[1] > val2.vals[1])?val1.vals[1]:val2.vals[1];
+	return ret;
+}
+
+Doublex2 FORCEINLINE HADDPD(Doublex2 val1, Doublex2 val2)
+{
+	Doublex2 ret;
+	ret.vals[0] = (val1.vals[0] + val1.vals[1]);
+	ret.vals[1] = (val2.vals[0] + val2.vals[1]);
 	return ret;
 }
 
