@@ -89,7 +89,7 @@ void Map::LeveledMapView::SetDPI(Double hdpi, Double ddpi)
 
 Math::Quadrilateral Map::LeveledMapView::GetBounds() const
 {
-	return Math::Quadrilateral(this->tl, Math::Coord2DDbl(this->br.x, this->tl.y), this->br, Math::Coord2DDbl(this->tl.x, this->br.y));
+	return Math::RectAreaDbl(this->tl, this->br).Rotate(this->hAngle);
 }
 
 Math::RectAreaDbl Map::LeveledMapView::GetVerticalRect() const
@@ -128,7 +128,7 @@ Bool Map::LeveledMapView::InViewXY(Math::Coord2DDbl mapPos) const
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::LeveledMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
+Bool Map::LeveledMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
 {
 	if (nPoints == 0)
 	{

@@ -131,5 +131,5 @@ Math::Vector3 Map::MapView::Convert3D(Math::Vector3 vec3) const
 
 void Map::MapView::Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints) const
 {
-	this->MapXYToScnXY(srcArr, destArr, nPoints, this->converterOfst);
+	this->MapXYToScnXYArr(srcArr, destArr, nPoints, this->converterOfst);
 }

@@ -779,7 +779,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 				Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, denv->labels[i].nPoints);
 				Double dscnWidth = (Double)scnWidth;
 				Double dscnHeight = (Double)scnHeight;
-				denv->view->MapXYToScnXY(ptPtr, points, denv->labels[i].nPoints, Math::Coord2DDbl(0, 0));
+				denv->view->MapXYToScnXYArr(ptPtr, points, denv->labels[i].nPoints, Math::Coord2DDbl(0, 0));
 				Double minX = 0;
 				Double minY = 0;
 				Double maxX = 0;
@@ -1574,7 +1574,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, denv->isLayerEmpty);
 
 			Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
 			session = layer->BeginGetObject();
@@ -1630,7 +1630,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), thick * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1757,8 +1757,8 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		}
 		if (dimg.SetTo(gimg))
 		{
-			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
-			this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
+			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, denv->isLayerEmpty);
+			this->mapSch.SetDrawObjs(denv->objBounds, denv->objCnt, maxLabel);
 			session = layer->BeginGetObject();
 			Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
 			i = arri.GetCount();
@@ -1820,8 +1820,8 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		}
 		if (dimg.SetTo(gimg))
 		{
-			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
-			this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
+			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, denv->isLayerEmpty);
+			this->mapSch.SetDrawObjs(denv->objBounds, denv->objCnt, maxLabel);
 			session = layer->BeginGetObject();
 
 			i = arri.GetCount();

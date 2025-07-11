@@ -52,7 +52,7 @@ namespace Map
 		Bool threadRunning;
 		Bool taskFinish;
 		Bool isFirst;
-		Bool *isLayerEmpty;
+		OptOut<Bool> isLayerEmpty;
 
 	private:
 		static UInt32 __stdcall MapThread(AnyType obj);
@@ -74,8 +74,8 @@ namespace Map
 		virtual ~MapScheduler();
 
 		void SetMapView(NN<Map::MapView> map, NN<Media::DrawImage> img);
-		void SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Optional<Media::DrawImage> ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
-		void SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, UOSInt *objCnt, UOSInt maxCnt);
+		void SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Optional<Media::DrawImage> ico, Double icoSpotX, Double icoSpotY, OutParam<Bool> isLayerEmpty);
+		void SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt, UOSInt maxCnt);
 		void Draw(NN<Math::Geometry::Vector2D> vec);
 		void DrawNextType(Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b);
 		void WaitForFinish();

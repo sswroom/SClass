@@ -70,6 +70,7 @@ void Media::NearestNeighbourRemapper::DoRemap(UnsafeArray<const UInt8> srcImgPtr
 	OSInt right = (OSInt)rect.max.x;
 	OSInt bottom = (OSInt)rect.max.y;
 	OSInt x;
+	Double y;
 	if (left < 0) left = 0;
 	if (top < 0) top = 0;
 	if (right >= (OSInt)this->destWidth) right = (OSInt)this->destWidth - 1;
@@ -81,15 +82,48 @@ void Media::NearestNeighbourRemapper::DoRemap(UnsafeArray<const UInt8> srcImgPtr
 	Math::Triangle tlSrc = Math::Triangle(Math::Coord2DDbl(0, 0), Math::Coord2DDbl((Double)this->srcWidth - 1, 0), Math::Coord2DDbl(0, (Double)this->srcHeight - 1));
 	Math::Triangle brSrc = Math::Triangle(Math::Coord2DDbl((Double)this->srcWidth - 1, (Double)this->srcHeight - 1), Math::Coord2DDbl(0, (Double)this->srcHeight - 1), Math::Coord2DDbl((Double)this->srcWidth - 1, 0));
 	Math::Coord2DDbl coord;
+	Double xArr[4];
+	Double v;
+	Double dright = (Double)right;
+	UOSInt ptCnt;
+	UOSInt i;
+	UOSInt j;
 	destImgPtr += (UOSInt)top * this->destBpl + (UOSInt)left * 4;
 	while (top <= bottom)
 	{
-		x = left;
-		while (x <= right)
+		y = (Double)top;
+		ptCnt = quad.CalcIntersactsAtY(xArr, y);
+		j = ptCnt;
+		while (j > 1)
 		{
-			coord = Math::Coord2DDbl((Double)x, (Double)top);
-			if (quad.InsideOrTouch(coord))
+			i = 1;
+			while (i < j)
 			{
+				if (xArr[i - 1] > xArr[i])
+				{
+					v = xArr[i];
+					xArr[i] = xArr[i - 1];
+					xArr[i - 1] = v;
+				}
+				i++;
+			}
+			j--;
+		}
+		if (ptCnt == 4 || ptCnt == 2)
+		{
+			if (xArr[1] >= dright)
+			{
+				xArr[1] = dright;
+			}
+			x = left;
+			while ((Double)x < xArr[0])
+			{
+				destImgPtr += 4;
+				x++;
+			}
+			while ((Double)x <= xArr[1])
+			{
+				coord = Math::Coord2DDbl((Double)x, y);
 				if (tlTri.InsideOrTouch(coord))
 				{
 					coord = tlTri.Remap(coord, tlSrc);
@@ -100,9 +134,46 @@ void Media::NearestNeighbourRemapper::DoRemap(UnsafeArray<const UInt8> srcImgPtr
 				}
 				UInt32 px = GetPixel32(srcImgPtr, coord);
 				WriteNUInt32(&destImgPtr[0], px);
+				destImgPtr += 4;
+				x++;
 			}
-			destImgPtr += 4;
-			x++;
+			if (ptCnt == 4 && xArr[2] < dright)
+			{
+				if (xArr[3] >= dright)
+				{
+					xArr[3] = dright;
+				}
+				while ((Double)x < xArr[2])
+				{
+					destImgPtr += 4;
+					x++;
+				}
+				while ((Double)x <= xArr[3])
+				{
+					coord = Math::Coord2DDbl((Double)x, y);
+					if (tlTri.InsideOrTouch(coord))
+					{
+						coord = tlTri.Remap(coord, tlSrc);
+					}
+					else
+					{
+						coord = brTri.Remap(coord, brSrc);
+					}
+					UInt32 px = GetPixel32(srcImgPtr, coord);
+					WriteNUInt32(&destImgPtr[0], px);
+					destImgPtr += 4;
+					x++;
+				}
+				destImgPtr += 4 * (right - x + 1) ;
+			}
+			else
+			{
+				destImgPtr += 4 * (right - x + 1) ;
+			}
+		}
+		else
+		{
+			destImgPtr += (right - left + 1) * 4;
 		}
 		destImgPtr += destAdd;
 		top++;

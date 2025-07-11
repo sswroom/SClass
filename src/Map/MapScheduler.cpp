@@ -141,7 +141,7 @@ void Map::MapScheduler::DrawPoint(NN<Math::Geometry::Point> pt)
 		imgW = UOSInt2Double(img->GetWidth()) * scale;
 		imgH = UOSInt2Double(img->GetHeight()) * scale;
 		pts = this->map->MapXYToScnXY(pt->GetCenter());
-		*this->isLayerEmpty = false;
+		this->isLayerEmpty.Set(false);
 		if (*this->objCnt >= this->maxCnt)
 		{
 			--(*this->objCnt);
@@ -178,8 +178,8 @@ void Map::MapScheduler::DrawLineString(NN<Math::Geometry::LineString> pl)
 	UnsafeArray<Math::Coord2DDbl> pointArr = pl->GetPointList(nPoint);
 	if (this->isFirst)
 	{
-		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-			*this->isLayerEmpty = false;
+		if (this->map->MapXYToScnXYArr(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+			this->isLayerEmpty.Set(false);
 	}
 
 	this->img->DrawPolyline(pointArr, nPoint, nnp);
@@ -203,8 +203,8 @@ void Map::MapScheduler::DrawPolyline(NN<Math::Geometry::Polyline> pl)
 		{
 			lineString = it.Next();
 			pointArr = lineString->GetPointList(nPoint);
-			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-				*this->isLayerEmpty = false;
+			if (this->map->MapXYToScnXYArr(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+				this->isLayerEmpty.Set(false);
 		}
 	}
 
@@ -243,8 +243,8 @@ void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 		while (it.HasNext())
 		{
 			pointArr = it.Next()->GetPointList(nPoint);
-			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-				*this->isLayerEmpty = false;
+			if (this->map->MapXYToScnXYArr(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+				this->isLayerEmpty.Set(false);
 		}
 	}
 	UOSInt i = 0;
@@ -284,8 +284,8 @@ void Map::MapScheduler::DrawCompoundCurve(NN<Math::Geometry::CompoundCurve> cc)
 	}
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	cc->GetDrawPoints(ptList);
-	if (this->map->MapXYToScnXY(ptList.Arr(), ptList.Arr(), ptList.GetCount(), Math::Coord2DDbl(0, 0)))
-		*this->isLayerEmpty = false;
+	if (this->map->MapXYToScnXYArr(ptList.Arr(), ptList.Arr(), ptList.GetCount(), Math::Coord2DDbl(0, 0)))
+		this->isLayerEmpty.Set(false);
 	this->img->DrawPolyline(ptList.Arr(), ptList.GetCount(), nnp);
 }
 
@@ -352,8 +352,8 @@ void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 			UOSInt k;
 			UOSInt l;
 
-			if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
-				*this->isLayerEmpty = false;
+			if (this->map->MapXYToScnXYArr(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
+				this->isLayerEmpty.Set(false);
 			k = nPtOfst;
 			l = 1;
 			while (l < k)
@@ -388,7 +388,7 @@ Map::MapScheduler::MapScheduler()
 	this->toStop = false;
 	this->threadRunning = false;
 	this->taskFinish = true;
-	this->isLayerEmpty = 0;
+	this->isLayerEmpty = nullptr;
 	Sync::ThreadUtil::Create(MapThread, this);
 }
 
@@ -408,7 +408,7 @@ void Map::MapScheduler::SetMapView(NN<Map::MapView> map, NN<Media::DrawImage> im
 	this->img = img.Ptr();
 }
 
-void Map::MapScheduler::SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Optional<Media::DrawImage> ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
+void Map::MapScheduler::SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Optional<Media::DrawImage> ico, Double icoSpotX, Double icoSpotY, OutParam<Bool> isLayerEmpty)
 {
 	while (this->dt == ThreadState::Clearing)
 	{
@@ -425,10 +425,10 @@ void Map::MapScheduler::SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::D
 	this->isLayerEmpty = isLayerEmpty;
 }
 
-void Map::MapScheduler::SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, UOSInt *objCnt, UOSInt maxCnt)
+void Map::MapScheduler::SetDrawObjs(UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt, UOSInt maxCnt)
 {
 	this->objBounds = objBounds;
-	this->objCnt = objCnt;
+	this->objCnt = objCnt.Ptr();
 	this->maxCnt = maxCnt;
 }
 

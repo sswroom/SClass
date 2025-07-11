@@ -78,7 +78,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 	}
 }
 
-Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::MapScheduler *mapSch)
+Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, NN<Map::MapScheduler> mapSch)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -114,7 +114,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	{
 		dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 		dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-		mcfg->DrawMap(dimg2, view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
+		mcfg->DrawMap(dimg2, view, isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), params);
 		mutUsage.BeginUse();
 		this->dbGenList.RemoveAt((UOSInt)this->dbGenList.SortedIndexOf(id));
 		this->dbEvt.Set();
@@ -154,7 +154,7 @@ Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, UInt32 scale, UIn
 	return (((Int64)x) << 32) | (0xffffffffLL & (Int64)y);
 }
 
-Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapScheduler *mapSch)
+Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::MapScheduler> mapSch)
 {
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -202,7 +202,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 		{
 			dimg->SetHDPI(96);
 			dimg->SetVDPI(96);
-			mcfg->DrawMap(dimg, view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
+			mcfg->DrawMap(dimg, view, isLayerEmpty, mapSch, resizer, CSTR_NULL, params);
 		}
 		else
 		{
@@ -210,7 +210,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 			{
 				dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 				dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-				mcfg->DrawMap(dimg2, view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
+				mcfg->DrawMap(dimg2, view, isLayerEmpty, mapSch, resizer, CSTR_NULL, params);
 				
 				Bool revOrder;
 				UnsafeArray<UInt8> imgPtr;
@@ -238,7 +238,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	}
 }
 
-Bool Map::TileMapGenerator::GenerateTileArea(Double lat1, Double lon1, Double lat2, Double lon2, UInt32 scale, Map::MapScheduler *mapSch)
+Bool Map::TileMapGenerator::GenerateTileArea(Double lat1, Double lon1, Double lat2, Double lon2, UInt32 scale, NN<Map::MapScheduler> mapSch)
 {
 	Int64 id = GetTileID(lat1, lon1, scale, this->imgSize);
 	Int32 i;

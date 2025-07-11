@@ -129,6 +129,79 @@ Bool Math::Quadrilateral::IsNonRotateRectangle() const
 	return this->tl.y == this->tr.y && this->tl.x == this->bl.x && this->bl.y == this->br.y && this->tr.x == this->br.x && this->tl.x <= this->br.x && this->tl.y <= this->br.y;
 }
 
+UOSInt Math::Quadrilateral::CalcIntersactsAtY(UnsafeArray<Double> xArr, Double y) const
+{
+	UOSInt ret = 0;
+	if (this->tr.y == y)
+	{
+		if (this->tl.y == y || this->br.y == y)
+		{
+			UOSInt eqCnt = 1;
+			Double min = tr.x;
+			Double max = tr.x;
+			if (this->tl.y == y) { eqCnt++; if (min > tl.x) min = tl.x; if (max < tl.x) max = tl.x; }
+			if (this->br.y == y) { eqCnt++; if (min > br.x) min = br.x; if (max < br.x) max = br.x; }
+			if (this->bl.y == y) { eqCnt++; if (min > bl.x) min = bl.x; if (max < bl.x) max = bl.x; }
+			xArr[ret] = min;
+			xArr[ret + 1] = max;
+			ret += 2;
+			if (eqCnt == 2)
+			{
+				if (this->tl.y == y)
+				{
+					ret += CalcIntersactAtY(this->br, this->bl, y, &xArr[ret]);
+				}
+				else
+				{
+					ret += CalcIntersactAtY(this->bl, this->tl, y, &xArr[ret]);
+				}
+			}
+			return ret;
+		}
+		else
+		{
+			xArr[ret] = tr.x;
+			xArr[ret + 1] = tr.x;
+		}
+	}
+	else if (this->bl.y == y)
+	{
+		if (this->tl.y == y || this->br.y == y)
+		{
+			UOSInt eqCnt = 1;
+			Double min = bl.x;
+			Double max = bl.x;
+			if (this->tl.y == y) { eqCnt++; if (min > tl.x) min = tl.x; if (max < tl.x) max = tl.x; }
+			if (this->br.y == y) { eqCnt++; if (min > br.x) min = br.x; if (max < br.x) max = br.x; }
+			xArr[ret] = min;
+			xArr[ret + 1] = max;
+			ret += 2;
+			if (eqCnt == 2)
+			{
+				if (this->tl.y == y)
+				{
+					ret += CalcIntersactAtY(this->tr, this->br, y, &xArr[ret]);
+				}
+				else
+				{
+					ret += CalcIntersactAtY(this->tl, this->tr, y, &xArr[ret]);
+				}
+			}
+			return ret;
+		}
+		else
+		{
+			xArr[ret] = bl.x;
+			xArr[ret + 1] = bl.x;
+		}
+	}
+	ret += CalcIntersactAtY(this->tl, this->tr, y, &xArr[ret]);
+	ret += CalcIntersactAtY(this->tr, this->br, y, &xArr[ret]);
+	ret += CalcIntersactAtY(this->br, this->bl, y, &xArr[ret]);
+	ret += CalcIntersactAtY(this->bl, this->tl, y, &xArr[ret]);
+	return ret;
+}
+
 Double Math::Quadrilateral::Sign(Coord2DDbl p1, Coord2DDbl p2, Coord2DDbl p3)
 {
 	Coord2DDbl diff13 = p1 - p3;
@@ -340,4 +413,15 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2DDb
 		break;
 	}
 	return quad;
+}
+
+UOSInt Math::Quadrilateral::CalcIntersactAtY(Math::Coord2DDbl p1, Coord2DDbl p2, Double y, UnsafeArray<Double> xArr)
+{
+	if ((p1.y > y) ^ (p2.y > y))
+	{
+		Coord2DDbl diff = p1 - p2;
+		xArr[0] = p1.x - diff.x * (p1.y - y) / diff.y;
+		return 1;
+	}
+	return 0;
 }

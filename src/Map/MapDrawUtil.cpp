@@ -19,7 +19,7 @@ Bool Map::MapDrawUtil::DrawLineString(NN<Math::Geometry::LineString> pl, NN<Medi
 	UOSInt nPoint;
 	UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(nPoint);
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
+	view->MapXYToScnXYArr(points, dpoints, nPoint, ofst);
 	img->DrawPolyline(dpoints, nPoint, nnp);
 	MemFreeA(dpoints);
 	return true;
@@ -46,7 +46,7 @@ Bool Map::MapDrawUtil::DrawPolyline(NN<Math::Geometry::Polyline> pl, NN<Media::D
 			dpointsSize = nPoint;
 			dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 		}
-		view->MapXYToScnXY(points, dpoints, nPoint, ofst);
+		view->MapXYToScnXYArr(points, dpoints, nPoint, ofst);
 		img->DrawPolyline(dpoints, nPoint, nnp);
 	}
 	if (dpoints)
@@ -61,7 +61,7 @@ Bool Map::MapDrawUtil::DrawLinearRing(NN<Math::Geometry::LinearRing> lr, NN<Medi
 	UOSInt nPoint;
 	UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(nPoint);
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
+	view->MapXYToScnXYArr(points, dpoints, nPoint, ofst);
 	img->DrawPolygon(dpoints, nPoint, p, b);
 	MemFreeA(dpoints);
 	return true;
@@ -84,7 +84,7 @@ Bool Map::MapDrawUtil::DrawPolygon(NN<Math::Geometry::Polygon> pg, NN<Media::Dra
 	{
 		lr = it.Next();
 		points = lr->GetPointList(k);
-		view->MapXYToScnXY(points, &dpoints[j], k, ofst);
+		view->MapXYToScnXYArr(points, &dpoints[j], k, ofst);
 		myPtCnts[i] = (UInt32)k;
 		j += k;
 		i++;
@@ -161,7 +161,7 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<
 		UOSInt k;
 		UOSInt l;
 
-		view->MapXYToScnXY(pointArr, dpoints, nPoint, ofst);
+		view->MapXYToScnXYArr(pointArr, dpoints, nPoint, ofst);
 		k = nPtOfst;
 		l = 1;
 		while (l < k)
@@ -189,7 +189,7 @@ Bool Map::MapDrawUtil::DrawCompoundCurve(NN<Math::Geometry::CompoundCurve> cc, N
 		UOSInt nPoint;
 		Math::Coord2DDbl *pointArr = ptList.GetArr(nPoint).Ptr();
 		Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-		view->MapXYToScnXY(pointArr, dpoints, nPoint, ofst);
+		view->MapXYToScnXYArr(pointArr, dpoints, nPoint, ofst);
 		img->DrawPolyline(dpoints, nPoint, nnp);
 		MemFreeA(dpoints);
 		return true;

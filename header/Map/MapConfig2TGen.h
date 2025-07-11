@@ -18,12 +18,12 @@ namespace Map
 			Int32 tileX;
 			Int32 tileY;
 			Int32 labelType; // 0 = write only, 1 = read neighbour, 2 = read from dbStream
-			IO::Stream *dbStream;
+			Optional<IO::Stream> dbStream;
 		} DrawParam;
 	private:
 		typedef struct
 		{
-			Text::String *label;
+			NN<Text::String> label;
 			Math::Coord2DDbl pos;
 			UInt32 fontStyle;
 			Double scaleW;
@@ -40,48 +40,41 @@ namespace Map
 			UInt32 flags;
 		} MapLabels2;
 
-		typedef struct
-		{
-			Int32 mcc;
-			Map::MapLayerData *data;
-		} MapArea;
-
 	private:
 		Bool inited;
 		UInt32 bgColor;
 		UInt32 nLine;
 		UInt32 nFont;
 		UOSInt nStr;
-		Data::ArrayList<MapLineStyle*> **lines;
-		Data::ArrayList<MapFontStyle*> **fonts;
-		Data::ArrayList<MapLayerStyle*> *drawList;
+		UnsafeArrayOpt<Optional<Data::ArrayListNN<MapLineStyle>>> lines;
+		UnsafeArrayOpt<Optional<Data::ArrayListNN<MapFontStyle>>> fonts;
+		Optional<Data::ArrayListNN<MapLayerStyle>> drawList;
 		NN<Media::DrawEngine> drawEng;
-		Data::ArrayList<MapArea*> *areaList;
 
 		static Bool IsDoorNum(UnsafeArray<const UTF8Char> txt);
-		static void DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, Double xPos, Double yPos, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign);
-		static void DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds);
-		static void DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str1, Double *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle);
-		static void DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds);
-		static void GetCharsSize(NN<Media::DrawImage> img, Math::Coord2DDbl *size, Text::CStringNN label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
+		static void DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, Double xPos, Double yPos, Double scaleW, Double scaleH, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, Bool isAlign);
+		static void DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, OutParam<Math::RectAreaDbl> realBounds);
+		static void DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Double> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle);
+		static void DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2DDbl> scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, OutParam<Math::RectAreaDbl> realBounds);
+		static void GetCharsSize(NN<Media::DrawImage> img, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Optional<Data::ArrayListNN<MapFontStyle>> fontStyle, Double scaleW, Double scaleH);
 		static UInt32 ToColor(UnsafeArray<const UTF8Char> str);
 		static Optional<Map::MapDrawLayer> GetDrawLayer(Text::CStringNN name, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, NN<IO::Writer> errWriter);
-		static void DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, NN<Media::DrawEngine> eng, Media::ImageResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
-		static void DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UOSInt maxLabels, UOSInt *labelCnt, Bool *isLayerEmpty);
-		static UOSInt NewLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
-		static Bool AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Int32 recType, UInt32 fntStyle, UInt32 flag, NN<Map::MapView> view, Double xOfst, Double yOfst);
-		static void SwapLabel(MapLabels2 *mapLabels, UOSInt index, UOSInt index2);
-		static Bool LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect);
-		static void DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, NN<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, NN<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt);
-		static void LoadLabels(NN<Media::DrawImage> img, Map::MapConfig2TGen::MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, NN<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, NN<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt, Text::CStringNN fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, IO::Stream *dbStream);
+		static void DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyrs, NN<Map::MapView> view, OutParam<Bool> isLayerEmpty, NN<Map::MapScheduler> mapSch, NN<Media::DrawEngine> eng, Optional<Media::ImageResizer> resizer, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt, UOSInt maxObjCnt);
+		static void DrawString(NN<Media::DrawImage> img, NN<MapLayerStyle> lyrs, NN<Map::MapView> view, UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> fonts, UnsafeArray<MapLabels2> labels, UOSInt maxLabels, UnsafeArray<UOSInt> labelCnt, OutParam<Bool> isLayerEmpty);
+		static UOSInt NewLabel(UnsafeArray<MapLabels2> labels, UOSInt maxLabel, UnsafeArray<UOSInt> labelCnt, Int32 priority);
+		static Bool AddLabel(UnsafeArray<MapLabels2> labels, UOSInt maxLabel, UnsafeArray<UOSInt> labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Int32 recType, UInt32 fntStyle, UInt32 flag, NN<Map::MapView> view, Double xOfst, Double yOfst);
+		static void SwapLabel(UnsafeArray<MapLabels2> mapLabels, UOSInt index, UOSInt index2);
+		static Bool LabelOverlapped(UnsafeArray<Math::RectAreaDbl> points, UOSInt nPoints, Math::RectAreaDbl rect);
+		static void DrawLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels2> labels, UOSInt maxLabel, UnsafeArray<UOSInt> labelCnt, NN<Map::MapView> view, UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> fonts, NN<Media::DrawEngine> drawEng, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt);
+		static void LoadLabels(NN<Media::DrawImage> img, UnsafeArray<MapLabels2> labels, UOSInt maxLabel, UnsafeArray<UOSInt> labelCnt, NN<Map::MapView> view, UnsafeArray<Optional<Data::ArrayListNN<MapFontStyle>>> fonts, NN<Media::DrawEngine> drawEng, UnsafeArray<Math::RectAreaDbl> objBounds, InOutParam<UOSInt> objCnt, Text::CStringNN fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, Optional<IO::Stream> dbStream);
 
 	public:
-		MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngine> eng, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, Parser::ParserList *parserList, UnsafeArrayOpt<const UTF8Char> forceBase, NN<IO::Writer> errWriter, Int32 maxScale, Int32 minScale);
+		MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngine> eng, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, NN<Parser::ParserList> parserList, UnsafeArrayOpt<const UTF8Char> forceBase, NN<IO::Writer> errWriter, Int32 maxScale, Int32 minScale);
 		~MapConfig2TGen();
 
 		Bool IsError();
 		Optional<Media::DrawPen> CreatePen(NN<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer);
-		WChar *DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::ImageResizer *resizer, Text::CString dbOutput, DrawParam *params);
+		Bool DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OutParam<Bool> isLayerEmpty, NN<Map::MapScheduler> mapSch, Optional<Media::ImageResizer> resizer, Text::CString dbOutput, NN<DrawParam> params);
 
 		UInt32 GetBGColor();
 		Bool SupportMCC(Int32 mcc);

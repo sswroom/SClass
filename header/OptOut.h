@@ -33,6 +33,11 @@ public:
 		this->p = p.Ptr();
 	}
 
+	OptOut(OutParam<T> p)
+	{
+		this->p = p.Ptr();
+	}
+
 	Bool IsNull() const
 	{
 		return this->p == 0;

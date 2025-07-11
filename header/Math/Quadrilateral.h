@@ -27,9 +27,13 @@ namespace Math
 		RectAreaDbl GetExterior() const;
 		Bool IsRectangle() const;
 		Bool IsNonRotateRectangle() const;
+		UOSInt CalcIntersactsAtY(UnsafeArray<Double> xArr, Double y) const;
 		static Double Sign(Coord2DDbl p1, Coord2DDbl p2, Coord2DDbl p3);
 		static Quadrilateral FromPolygon(UnsafeArray<Coord2D<UOSInt>> pg);
 		static Quadrilateral FromPolygon(UnsafeArray<Coord2DDbl> pg);
+
+	private:
+		static UOSInt CalcIntersactAtY(Math::Coord2DDbl p1, Coord2DDbl p2, Double y, UnsafeArray<Double> xArr);
 	};
 }
 #endif

@@ -69,7 +69,7 @@ void Map::MercatorMapView::UpdateXY()
 
 Math::Quadrilateral Map::MercatorMapView::GetBounds() const
 {
-	return this->GetVerticalRect().ToQuadrilateral();
+	return this->GetVerticalRect().Rotate(this->hAngle);
 }
 
 Math::RectAreaDbl Map::MercatorMapView::GetVerticalRect() const
@@ -115,7 +115,7 @@ Bool Map::MercatorMapView::InViewXY(Math::Coord2DDbl mapPos) const
 	return x >= 0 && x < this->scnSize.x && y >= 0 && y < this->scnSize.y;
 }
 
-Bool Map::MercatorMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofstPt) const
+Bool Map::MercatorMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofstPt) const
 {
 	if (nPoints == 0)
 	{
