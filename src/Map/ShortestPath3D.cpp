@@ -2,8 +2,9 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/TableDef.h"
 #include "Map/ShortestPath3D.h"
-#include "Math/GeometryTool.h"
 #include "Math/CoordinateSystemConverter.h"
+#include "Math/GeometryTool.h"
+#include "Math/Geometry/MultiCurve.h"
 #include "Sync/MutexUsage.h"
 
 #define MAX_DIST 1.0e+30
@@ -427,97 +428,6 @@ void Map::ShortestPath3D::FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId)
 	}
 }
 
-void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties)
-{
-	Math::Geometry::Vector2D::VectorType type = vec->GetVectorType();
-	NN<Math::Geometry::Polyline> pl;
-	NN<Math::Geometry::LineString> ls;
-	NN<LineInfo> lineInfo;
-	NN<NodeInfo> nodeInfo;
-	UnsafeArray<Math::Coord2DDbl> ptList;
-	UnsafeArray<Double> zList;
-	UOSInt nPoints;
-	UOSInt i;
-	UOSInt j;
-	switch (type)
-	{
-	case Math::Geometry::Vector2D::VectorType::Polyline:
-		pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
-		i = 0;
-		j = pl->GetCount();
-		while (i < j)
-		{
-			if (pl->GetItem(i).SetTo(ls))
-			{
-				this->AddVector(ls->Clone(), properties);
-			}
-			i++;
-		}
-		vec.Delete();
-		break;
-	case Math::Geometry::Vector2D::VectorType::LineString:
-		ls = NN<Math::Geometry::LineString>::ConvertFrom(vec);
-		NEW_CLASSNN(lineInfo, LineInfo());
-		ptList = ls->GetPointList(nPoints);
-		lineInfo->startPos = ptList[0];
-		lineInfo->endPos = ptList[nPoints - 1];
-		if (ls->GetZList(nPoints).SetTo(zList))
-		{
-			lineInfo->startZ = zList[0];
-			lineInfo->endZ = zList[nPoints - 1];
-		}
-		else
-		{
-			lineInfo->startZ = 0;
-			lineInfo->endZ = 0;
-		}
-		lineInfo->index = this->lines.GetCount();
-		lineInfo->networkId = 0;
-		lineInfo->vec = ls;
-		lineInfo->rect = ls->GetBounds();
-		i = 0;
-		j = properties.GetCount();
-		lineInfo->properties = Data::DataArray<Optional<Text::String>>::Alloc(j);
-		while (i < j)
-		{
-			lineInfo->properties[i] = Text::String::CopyOrNull(properties[i]);
-			i++;
-		}
-		lineInfo->length = ls->Calc3DLength();
-		this->lines.Add(lineInfo);
-		nodeInfo = this->GetNode(lineInfo->startPos, lineInfo->startZ);
-		nodeInfo->lines.Add(lineInfo);
-		nodeInfo = this->GetNode(lineInfo->endPos, lineInfo->endZ);
-		nodeInfo->lines.Add(lineInfo);
-		break;
-	case Math::Geometry::Vector2D::VectorType::Unknown:
-	case Math::Geometry::Vector2D::VectorType::Point:
-	case Math::Geometry::Vector2D::VectorType::Polygon:
-	case Math::Geometry::Vector2D::VectorType::MultiPoint:
-	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
-	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
-	case Math::Geometry::Vector2D::VectorType::CircularString:
-	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
-	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
-	case Math::Geometry::Vector2D::VectorType::MultiCurve:
-	case Math::Geometry::Vector2D::VectorType::MultiSurface:
-	case Math::Geometry::Vector2D::VectorType::Curve:
-	case Math::Geometry::Vector2D::VectorType::Surface:
-	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
-	case Math::Geometry::Vector2D::VectorType::Tin:
-	case Math::Geometry::Vector2D::VectorType::Triangle:
-	case Math::Geometry::Vector2D::VectorType::LinearRing:
-	case Math::Geometry::Vector2D::VectorType::Image:
-	case Math::Geometry::Vector2D::VectorType::String:
-	case Math::Geometry::Vector2D::VectorType::Ellipse:
-	case Math::Geometry::Vector2D::VectorType::PieArea:
-	default:
-		printf("Unsupported vector type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(type).v.Ptr());
-		vec.Delete();
-		break;
-	}
-}
-
 Map::ShortestPath3D::ShortestPath3D(NN<Math::CoordinateSystem> csys, Double searchDist)
 {
 	this->csys = csys;
@@ -540,7 +450,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDi
 	this->unknownNode->pos = Math::Coord2DDbl(0, 0);
 	this->unknownNode->z = 0;
 	this->unknownNode->networkId = 0;
-	this->AddLayer(layer);
+	this->AddSimpleLayer(layer);
 	this->BuildNetwork();
 }
 
@@ -553,7 +463,7 @@ Map::ShortestPath3D::~ShortestPath3D()
 	this->unknownNode.Delete();
 }
 
-void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
+void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 {
 	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	Optional<Map::NameArray> nameArr;
@@ -591,13 +501,13 @@ void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
 			}
 			if (csys->Equals(this->csys))
 			{
-				this->AddVector(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt));
+				this->AddPath(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt), true, true);
 			}
 			else
 			{
 				Math::CoordinateSystemConverter converter(csys, this->csys);
 				vec->Convert(converter);
-				this->AddVector(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt));
+				this->AddPath(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt), true, true);
 			}
 			k = colCnt;
 			while (k-- > 0)
@@ -610,6 +520,133 @@ void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
 	layer->EndGetObject(sess);
 	layer->ReleaseNameArr(nameArr);
 	MemFreeArr(properties);
+}
+
+Optional<Map::ShortestPath3D::LineInfo> Map::ShortestPath3D::AddPath(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties, Bool allowReverse, Bool addToNode)
+{
+	Optional<LineInfo> retInfo = 0;
+	Math::Geometry::Vector2D::VectorType type = vec->GetVectorType();
+	NN<Math::Geometry::Polyline> pl;
+	NN<Math::Geometry::LineString> ls;
+	NN<LineInfo> lineInfo;
+	NN<NodeInfo> nodeInfo;
+	UnsafeArray<Math::Coord2DDbl> ptList;
+	UnsafeArray<Double> zList;
+	UOSInt nPoints;
+	UOSInt i;
+	UOSInt j;
+	switch (type)
+	{
+	case Math::Geometry::Vector2D::VectorType::Polyline:
+		pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
+		i = 0;
+		j = pl->GetCount();
+		while (i < j)
+		{
+			if (pl->GetItem(i).SetTo(ls))
+			{
+				retInfo = this->AddPath(ls->Clone(), properties, allowReverse, addToNode);
+			}
+			i++;
+		}
+		vec.Delete();
+		break;
+	case Math::Geometry::Vector2D::VectorType::LineString:
+		ls = NN<Math::Geometry::LineString>::ConvertFrom(vec);
+		NEW_CLASSNN(lineInfo, LineInfo());
+		ptList = ls->GetPointList(nPoints);
+		lineInfo->startPos = ptList[0];
+		lineInfo->endPos = ptList[nPoints - 1];
+		if (ls->GetZList(nPoints).SetTo(zList))
+		{
+			lineInfo->startZ = zList[0];
+			lineInfo->endZ = zList[nPoints - 1];
+		}
+		else
+		{
+			lineInfo->startZ = 0;
+			lineInfo->endZ = 0;
+		}
+		lineInfo->index = this->lines.GetCount();
+		lineInfo->networkId = 0;
+		lineInfo->vec = ls;
+		lineInfo->rect = ls->GetBounds();
+		lineInfo->allowReverse = allowReverse;
+		i = 0;
+		j = properties.GetCount();
+		lineInfo->properties = Data::DataArray<Optional<Text::String>>::Alloc(j);
+		while (i < j)
+		{
+			lineInfo->properties[i] = Text::String::CopyOrNull(properties[i]);
+			i++;
+		}
+		lineInfo->length = ls->Calc3DLength();
+		retInfo = lineInfo;
+		this->lines.Add(lineInfo);
+		if (addToNode)
+		{
+			nodeInfo = this->GetNode(lineInfo->startPos, lineInfo->startZ);
+			nodeInfo->lines.Add(lineInfo);
+			nodeInfo = this->GetNode(lineInfo->endPos, lineInfo->endZ);
+			nodeInfo->lines.Add(lineInfo);
+		}
+		break;
+	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+		{
+			NN<Math::Geometry::Vector2D> vec2;
+			if (NN<Math::Geometry::MultiCurve>::ConvertFrom(vec)->ToSimpleShape().SetTo(vec2))
+			{
+				retInfo = this->AddPath(vec2, properties, allowReverse, addToNode);
+			}
+			vec.Delete();
+			break;
+		}
+	case Math::Geometry::Vector2D::VectorType::Unknown:
+	case Math::Geometry::Vector2D::VectorType::Point:
+	case Math::Geometry::Vector2D::VectorType::Polygon:
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
+	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
+	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
+	case Math::Geometry::Vector2D::VectorType::CircularString:
+	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
+	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
+	case Math::Geometry::Vector2D::VectorType::MultiSurface:
+	case Math::Geometry::Vector2D::VectorType::Curve:
+	case Math::Geometry::Vector2D::VectorType::Surface:
+	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:
+	case Math::Geometry::Vector2D::VectorType::Tin:
+	case Math::Geometry::Vector2D::VectorType::Triangle:
+	case Math::Geometry::Vector2D::VectorType::LinearRing:
+	case Math::Geometry::Vector2D::VectorType::Image:
+	case Math::Geometry::Vector2D::VectorType::String:
+	case Math::Geometry::Vector2D::VectorType::Ellipse:
+	case Math::Geometry::Vector2D::VectorType::PieArea:
+	default:
+		printf("Unsupported vector type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(type).v.Ptr());
+		vec.Delete();
+		break;
+	}
+	return retInfo;
+}
+
+NN<Map::ShortestPath3D::NodeInfo> Map::ShortestPath3D::AddNode(Math::Coord2DDbl pos, Double z, NN<LineInfo> lineInfo)
+{
+	Double diffZ = (lineInfo->startZ - z);
+	Double startDiff = (lineInfo->startPos - pos).SumSqr() + diffZ * diffZ;
+	diffZ = (lineInfo->endZ - z);
+	Double endDiff = (lineInfo->endPos - pos).SumSqr() + diffZ * diffZ;
+	if (startDiff < endDiff)
+	{
+		NN<NodeInfo> nodeInfo = this->GetNode(lineInfo->startPos, lineInfo->startZ);
+		nodeInfo->lines.Add(lineInfo);
+		return nodeInfo;
+	}
+	else
+	{
+		NN<NodeInfo> nodeInfo = this->GetNode(lineInfo->endPos, lineInfo->endZ);
+		nodeInfo->lines.Add(lineInfo);
+		return nodeInfo;
+	}
 }
 
 void Map::ShortestPath3D::BuildNetwork()

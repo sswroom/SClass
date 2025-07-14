@@ -15,6 +15,7 @@
 #include "IO/StmData/FileData.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Manage/Process.h"
+#include "Map/HKRoadNetwork2.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
 #include "Map/ESRI/FileGDBDir.h"
 #include "Math/CoordinateSystemManager.h"
@@ -1089,9 +1090,34 @@ Int32 TriangleRemapTest()
 	return 0;
 }
 
+Int32 RoadNetworkSPTest()
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN fileName = CSTR("~/Map/HK/RdNet_IRNP.gdb.zip");
+	sptr = IO::Path::GetRealPath(sbuff, fileName.v, fileName.leng);
+	Math::ArcGISPRJParser prjParser;
+	Map::HKRoadNetwork2 rdNet(CSTRP(sbuff, sptr), prjParser);
+	if (rdNet.IsError())
+	{
+		printf("Error in opening fgdb file\r\n");
+		printf("File Path: %s\r\n", sbuff);
+	}
+	else
+	{
+		NN<Map::ShortestPath3D> spath;
+		if (rdNet.CreateShortestPath().SetTo(spath))
+		{
+			printf("Success, network count = %d\r\n", spath->GetNetworkCnt());
+			spath.Delete();
+		}
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 27;
+	UOSInt testType = 30;
 	switch (testType)
 	{
 	case 0:
@@ -1154,6 +1180,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return CoordRotateTest();
 	case 29:
 		return TriangleRemapTest();
+	case 30:
+		return RoadNetworkSPTest();
 	default:
 		return 0;
 	}

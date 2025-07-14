@@ -4,6 +4,7 @@
 #include "Map/MapDrawLayer.h"
 #include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystem.h"
+#include "Map/ShortestPath3D.h"
 #include "Net/SSLEngine.h"
 #include "Text/CString.h"
 #include "Text/EncodingFactory.h"
@@ -28,6 +29,7 @@ namespace Map
 		Optional<Map::HKSpeedLimit> CreateSpeedLimit();
 		Optional<Map::MapDrawLayer> CreateTonnesSignLayer();
 		Optional<Map::HKTrafficLayer2> CreateTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact);
+		Optional<Map::ShortestPath3D> CreateShortestPath();
 
 		static Text::CStringNN GetDownloadURL();
 		static Text::CStringNN GetDefFileName();

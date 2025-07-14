@@ -22,6 +22,7 @@ namespace Map
 			Double endZ;
 			Double length;
 			UInt32 networkId;
+			Bool allowReverse;
 			Data::DataArray<Optional<Text::String>> properties;
 		};
 
@@ -126,14 +127,16 @@ namespace Map
 		NN<NodeInfo> GetNodeOrUnknown(Math::Coord2DDbl pos, Double z) const;
 		NN<NodeSession> GetNodeSess(NN<PathSession> sess, Math::Coord2DDbl pos, Double z) const;
 		void FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId);
-		void AddVector(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties);
 	public:
 		ShortestPath3D(NN<Math::CoordinateSystem> csys, Double searchDist);
 		ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDist);
 		~ShortestPath3D();
 
-		void AddLayer(NN<Map::MapDrawLayer> layer);
+		void AddSimpleLayer(NN<Map::MapDrawLayer> layer);
+		Optional<LineInfo> AddPath(NN<Math::Geometry::Vector2D> path, Data::DataArray<Optional<Text::String>> properties, Bool allowReverse, Bool addToNode);
+		NN<NodeInfo> AddNode(Math::Coord2DDbl pos, Double z, NN<LineInfo> lineInfo);
 		void BuildNetwork();
+
 		void GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId) const;
 		void GetNearestPaths(NN<Data::ArrayListNN<PathResult>> paths, Math::Coord2DDbl pos) const;
 		NN<PathSession> CreateSession() const;

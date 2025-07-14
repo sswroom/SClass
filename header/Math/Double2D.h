@@ -133,6 +133,12 @@ namespace Math
 			return *this;
 		}
 
+		Double SumSqr() const
+		{
+			Double2D sqr = this->vals * this->vals;
+			return sqr.x + sqr.y;
+		}
+
 		Bool IsZero() const
 		{
 			return this->x == 0 && this->y == 0;
