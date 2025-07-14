@@ -60,8 +60,8 @@ namespace Net
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
 		UOSInt cmdSeqNum;
-		MySQLTCPReader *cmdTCPReader;
-		MySQLTCPBinaryReader *cmdBinReader;
+		Optional<MySQLTCPReader> cmdTCPReader;
+		Optional<MySQLTCPBinaryReader> cmdBinReader;
 		CmdResultType cmdResultType;
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);

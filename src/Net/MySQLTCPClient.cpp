@@ -1381,6 +1381,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	UnsafeArray<UInt8> ptrCurr;
 	UnsafeArray<UInt8> ptrEnd;
 	NN<Net::TCPClient> cli;
+	NN<MySQLTCPBinaryReader> cmdBinReader;
+	NN<MySQLTCPReader> cmdTCPReader;
 	{
 		me->recvStarted = true;
 		me->recvRunning = true;
@@ -1712,7 +1714,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 					{
 						break;
 					}
-					if (buff[readSize + 4] == 0xFF || (buff[readSize + 3] == (me->cmdSeqNum & 0xff) && (me->cmdTCPReader || me->cmdBinReader)))
+					if (buff[readSize + 4] == 0xFF || (buff[readSize + 3] == (me->cmdSeqNum & 0xff) && (me->cmdTCPReader.NotNull() || me->cmdBinReader.NotNull())))
 					{
 						if (me->cmdSeqNum == 1)
 						{
@@ -1722,7 +1724,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								if (buff[readSize + 4] == 0) //OK
 								{
 									UInt32 stmtId = ReadUInt32(&buff[readSize + 5]);
-									me->cmdBinReader->SetStmtId(stmtId);
+									if (me->cmdBinReader.SetTo(cmdBinReader)) cmdBinReader->SetStmtId(stmtId);
 									UInt16 numColumns = ReadUInt16(&buff[readSize + 9]);
 #if defined(VERBOSE)
 									UInt16 numParams = ReadUInt16(&buff[readSize + 11]);
@@ -1742,11 +1744,11 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								else if (buff[readSize + 4] == 0xFF) //ERR
 								{
 									me->SetLastError({&buff[readSize + 7], packetSize - 3});
-									if (me->cmdBinReader)
+									if (me->cmdBinReader.SetTo(cmdBinReader))
 									{
 										me->cmdResultType = CmdResultType::Error;
 										me->cmdEvt.Set();
-										me->cmdBinReader->EndData();
+										cmdBinReader->EndData();
 									}
 									else
 									{
@@ -1761,9 +1763,9 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								{
 									me->cmdResultType = CmdResultType::Error;
 									me->cmdEvt.Set();
-									if (me->cmdBinReader)
+									if (me->cmdBinReader.SetTo(cmdBinReader))
 									{
-										me->cmdBinReader->EndData();
+										cmdBinReader->EndData();
 									}
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d COM_STMT_PREPARE Error\r\n", cli->GetLocalPort());
@@ -1775,11 +1777,11 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								if (buff[readSize + 4] == 0xFF) //ERR
 								{
 									me->SetLastError({&buff[readSize + 7], packetSize - 3});
-									if (me->cmdBinReader)
+									if (me->cmdBinReader.SetTo(cmdBinReader))
 									{
 										me->cmdResultType = CmdResultType::Error;
 										me->cmdEvt.Set();
-										me->cmdBinReader->EndData();
+										cmdBinReader->EndData();
 									}
 									else
 									{
@@ -1796,13 +1798,13 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)
 									printf("MySQLTCP %d COM_STMT_EXECUTE executed, column cnt = %lld\r\n", cli->GetLocalPort(), val);
 	#endif
-									if (val == 0)
+									if (val == 0 && me->cmdBinReader.SetTo(cmdBinReader))
 									{
-										me->cmdBinReader->SetRowChanged(-1);
-										me->cmdBinReader->EndCols();
-										me->SendStmtClose(me->cmdBinReader->GetStmtId());
+										cmdBinReader->SetRowChanged(-1);
+										cmdBinReader->EndCols();
+										me->SendStmtClose(cmdBinReader->GetStmtId());
 										me->cmdResultType = CmdResultType::ResultEnd;
-										me->cmdBinReader->EndData();
+										cmdBinReader->EndData();
 										me->cmdEvt.Set();
 									}
 								}
@@ -1812,7 +1814,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								if (buff[readSize + 4] == 0) //OK
 								{
 									Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
-									me->cmdTCPReader->SetRowChanged((Int64)val);
+									if (me->cmdTCPReader.SetTo(cmdTCPReader))
+										cmdTCPReader->SetRowChanged((Int64)val);
 									me->cmdResultType = CmdResultType::ResultEnd;
 									me->cmdEvt.Set();
 	#if defined(VERBOSE)
@@ -1822,14 +1825,14 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								else if (buff[readSize + 4] == 0xFF) //ERR
 								{
 									me->SetLastError({&buff[readSize + 7], packetSize - 3});
-									if (me->cmdTCPReader)
+									if (me->cmdTCPReader.SetTo(cmdTCPReader))
 									{
 										if (me->cmdResultType == CmdResultType::Processing)
 										{
 											me->cmdResultType = CmdResultType::Error;
 											me->cmdEvt.Set();
 										}
-										me->cmdTCPReader->EndData();
+										cmdTCPReader->EndData();
 									}
 									else
 									{
@@ -1860,26 +1863,27 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								me->cmdEvt.Set();
 								break;
 							case CmdResultType::ProcessingBinary:
-							{
-								UInt32 stmtId = me->cmdBinReader->GetStmtId();
-								me->SendExecuteStmt(stmtId);
+								if (me->cmdBinReader.SetTo(cmdBinReader))
+								{
+									UInt32 stmtId = cmdBinReader->GetStmtId();
+									me->SendExecuteStmt(stmtId);
 	#if defined(VERBOSE)
-								printf("MySQLTCP %d EOF found, execute statment id %d\r\n", cli->GetLocalPort(), stmtId);
+									printf("MySQLTCP %d EOF found, execute statment id %d\r\n", cli->GetLocalPort(), stmtId);
 	#endif
-								me->cmdResultType = CmdResultType::BinaryExecuting;
-								me->cmdEvt.Set();
-								break;
-							}
+									me->cmdResultType = CmdResultType::BinaryExecuting;
+									me->cmdEvt.Set();
+									break;
+								}
 							case CmdResultType::BinaryExecuting:
 								me->cmdResultType = CmdResultType::BinaryResultReady;
-								me->cmdBinReader->EndCols();
+								if (me->cmdBinReader.SetTo(cmdBinReader)) cmdBinReader->EndCols();
 								me->cmdEvt.Set();
 								break;
 							case CmdResultType::BinaryResultReady:
-								if (me->cmdBinReader)
+								if (me->cmdBinReader.SetTo(cmdBinReader))
 								{
-									me->SendStmtClose(me->cmdBinReader->GetStmtId());
-									me->cmdBinReader->EndData();
+									me->SendStmtClose(cmdBinReader->GetStmtId());
+									cmdBinReader->EndData();
 									me->cmdResultType = CmdResultType::ResultEnd;
 									me->cmdEvt.Set();
 								}
@@ -1893,10 +1897,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							case CmdResultType::Error:
 							default:
 								me->cmdResultType = CmdResultType::ResultEnd;
-								if (me->cmdTCPReader)
-									me->cmdTCPReader->EndData();
-								else if (me->cmdBinReader)
-									me->cmdBinReader->EndData();
+								if (me->cmdTCPReader.SetTo(cmdTCPReader))
+									cmdTCPReader->EndData();
+								else if (me->cmdBinReader.SetTo(cmdBinReader))
+									cmdBinReader->EndData();
 								me->cmdEvt.Set();
 								break;
 							}
@@ -1910,8 +1914,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)
 								printf("MySQLTCP %d Seq %d Column found\r\n", cli->GetLocalPort(), buff[readSize + 3]);
 	#endif
-								if (me->cmdTCPReader)
-									me->cmdTCPReader->AddColumnDef41(&buff[readSize + 4], packetSize);
+								if (me->cmdTCPReader.SetTo(cmdTCPReader))
+									cmdTCPReader->AddColumnDef41(&buff[readSize + 4], packetSize);
 								break;
 							case CmdResultType::ProcessingBinary: //ColumnDefinition
 	#if defined(VERBOSE)
@@ -1922,15 +1926,15 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)
 								printf("MySQLTCP %d Seq %d Binary Column found\r\n", cli->GetLocalPort(), buff[readSize + 3]);
 	#endif
-								if (me->cmdBinReader)
-									me->cmdBinReader->AddColumnDef41(&buff[readSize + 4], packetSize);
+								if (me->cmdBinReader.SetTo(cmdBinReader))
+									cmdBinReader->AddColumnDef41(&buff[readSize + 4], packetSize);
 								break;
 							case CmdResultType::BinaryResultReady:
 	#if defined(VERBOSE)
 								printf("MySQLTCP %d Seq %d Binary Row found\r\n", cli->GetLocalPort(), buff[readSize + 3]);
 	#endif
-								if (me->cmdBinReader)
-									me->cmdBinReader->AddRowData(&buff[readSize + 4], packetSize);
+								if (me->cmdBinReader.SetTo(cmdBinReader))
+									cmdBinReader->AddRowData(&buff[readSize + 4], packetSize);
 								break;
 							case CmdResultType::ResultEnd:
 							case CmdResultType::Error:
@@ -1939,8 +1943,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)
 								printf("MySQLTCP %d Seq %d Text Row found\r\n", cli->GetLocalPort(), buff[readSize + 3]);
 	#endif
-								if (me->cmdTCPReader)
-									me->cmdTCPReader->AddRowData(&buff[readSize + 4], packetSize);
+								if (me->cmdTCPReader.SetTo(cmdTCPReader))
+									cmdTCPReader->AddRowData(&buff[readSize + 4], packetSize);
 								break;
 							}
 						}
@@ -1967,7 +1971,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 			}
 		}
 
-		if (me->cmdTCPReader)
+		if (me->cmdTCPReader.SetTo(cmdTCPReader))
 		{
 			if (me->cmdResultType == CmdResultType::Processing)
 			{
@@ -1982,10 +1986,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)	
 				printf("MySQLTCP %d End Conn: end data %d\r\n", cli->GetLocalPort(), (Int32)me->cmdResultType);
 	#endif
-				me->cmdTCPReader->EndData();
+				cmdTCPReader->EndData();
 			}
 		}
-		if (me->cmdBinReader)
+		if (me->cmdBinReader.SetTo(cmdBinReader))
 		{
 			if (me->cmdResultType == CmdResultType::Processing)
 			{
@@ -2000,7 +2004,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	#if defined(VERBOSE)	
 				printf("MySQLTCP %d End Conn: end data %d\r\n", cli->GetLocalPort(), (Int32)me->cmdResultType);
 	#endif
-				me->cmdBinReader->EndData();
+				cmdBinReader->EndData();
 			}
 		}
 	#if defined(VERBOSE)	
@@ -2343,17 +2347,17 @@ void Net::MySQLTCPClient::CloseReader(NN<DB::DBReader> r)
 	{
 		this->cmdEvt.Wait(10000);
 	}
-	if (this->cmdBinReader == (MySQLTCPBinaryReader*)r.Ptr())
+	if (this->cmdBinReader == NN<MySQLTCPBinaryReader>::ConvertFrom(r))
 	{
-		MySQLTCPBinaryReader *reader = (MySQLTCPBinaryReader*)r.Ptr();
+		NN<MySQLTCPBinaryReader> reader = NN<MySQLTCPBinaryReader>::ConvertFrom(r);
 		this->cmdBinReader = 0;
-		DEL_CLASS(reader);
+		reader.Delete();
 	}
 	else if (this->cmdTCPReader == (MySQLTCPReader*)r.Ptr())
 	{
-		MySQLTCPReader *reader = (MySQLTCPReader*)r.Ptr();
+		NN<MySQLTCPReader> reader = NN<MySQLTCPReader>::ConvertFrom(r);
 		this->cmdTCPReader = 0;
-		DEL_CLASS(reader);
+		reader.Delete();
 	}
 }
 
