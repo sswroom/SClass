@@ -10,6 +10,7 @@
 #include "IO/FileAnalyse/JPGFileAnalyse.h"
 #include "IO/FileAnalyse/JMVL01FileAnalyse.h"
 #include "IO/FileAnalyse/LNKFileAnalyse.h"
+#include "IO/FileAnalyse/MapsforgeFileAnalyse.h"
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "IO/FileAnalyse/NFDumpFileAnalyse.h"
@@ -165,6 +166,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	else if (fileName->EndsWith(UTF8STRC(".vcs")) && buffSize >= 15 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("BEGIN:VCALENDAR")))
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::TXTFileAnalyse(fd));
+	}
+	else if (fileName->EndsWith(UTF8STRC(".map")) && buffSize >= 20 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("mapsforge binary OSM")))
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::MapsforgeFileAnalyse(fd));
 	}
 	else
 	{

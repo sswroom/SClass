@@ -660,6 +660,7 @@ FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 JMVL01FileAnalyse.o: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
 LNKFileAnalyse.o: ../../src/IO/FileAnalyse/LNKFileAnalyse.cpp
+MapsforgeFileAnalyse.o: ../../src/IO/FileAnalyse/MapsforgeFileAnalyse.cpp
 MDBFileAnalyse.o: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
 NFDumpFileAnalyse.o: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp

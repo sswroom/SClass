@@ -893,33 +893,45 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 	else
 	{
 		sess->lastStartHalfLine2 = startHalfLine2;
-		///////////////////////////
-		// if (path1 == path2)
-		startHalfLine1->Reverse();
-		nodeSess = GetNodeSess(sess, path1->line->startPos, path1->line->startZ);
-		nodeSess->calcNodeDist = lastDist = startHalfLine1->Calc3DLength();
-		nodeSess->calcFrom = posStart;
-		nodeSess->calcFromZ = 0;
-		nodeSess->calcLine = startHalfLine1;
-		nodeSess->calcLineProp = path1->line->properties;
-		calcNodes.Add(nodeSess);
-		nodeSess = GetNodeSess(sess, path1->line->endPos, path1->line->endZ);
-		nodeSess->calcNodeDist = startHalfLine2->Calc3DLength();
-		nodeSess->calcFrom = posStart;
-		nodeSess->calcFromZ = 0;
-		nodeSess->calcLine = startHalfLine2;
-		nodeSess->calcLineProp = path1->line->properties;
-		if (nodeSess->calcNodeDist < lastDist)
+		if (path1->line->allowReverse)
 		{
-			calcNodes.Insert(0, nodeSess);
+			startHalfLine1->Reverse();
+			nodeSess = GetNodeSess(sess, path1->line->startPos, path1->line->startZ);
+			nodeSess->calcNodeDist = lastDist = startHalfLine1->Calc3DLength();
+			nodeSess->calcFrom = posStart;
+			nodeSess->calcFromZ = 0;
+			nodeSess->calcLine = startHalfLine1;
+			nodeSess->calcLineProp = path1->line->properties;
+			calcNodes.Add(nodeSess);
+			nodeSess = GetNodeSess(sess, path1->line->endPos, path1->line->endZ);
+			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength();
+			nodeSess->calcFrom = posStart;
+			nodeSess->calcFromZ = 0;
+			nodeSess->calcLine = startHalfLine2;
+			nodeSess->calcLineProp = path1->line->properties;
+			if (nodeSess->calcNodeDist < lastDist)
+			{
+				calcNodes.Insert(0, nodeSess);
+			}
+			else
+			{
+				calcNodes.Add(nodeSess);
+			}
 		}
 		else
 		{
+			nodeSess = GetNodeSess(sess, path1->line->endPos, path1->line->endZ);
+			nodeSess->calcNodeDist = startHalfLine2->Calc3DLength();
+			nodeSess->calcFrom = posStart;
+			nodeSess->calcFromZ = 0;
+			nodeSess->calcLine = startHalfLine2;
+			nodeSess->calcLineProp = path1->line->properties;
 			calcNodes.Add(nodeSess);
 		}
 	}
 	Bool startFound = false;
 	Bool endFound = false;
+	Optional<Map::ShortestPath3D::NodeSession> optDestNodeSess;
 	NodeDistanceComparator comparator;
 	i1 = 0;
 	while (i1 < calcNodes.GetCount())
@@ -933,28 +945,35 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 			lastDist = nodeSess->calcNodeDist + lineInfo->length;
 			if (lineInfo->startPos == nodeSess->node->pos && lineInfo->startZ == nodeSess->node->z)
 			{
-				destNodeSess = GetNodeSess(sess, lineInfo->endPos, lineInfo->endZ);
+				optDestNodeSess = GetNodeSess(sess, lineInfo->endPos, lineInfo->endZ);
+			}
+			else if (lineInfo->allowReverse)
+			{
+				optDestNodeSess = GetNodeSess(sess, lineInfo->startPos, lineInfo->startZ);
 			}
 			else
 			{
-				destNodeSess = GetNodeSess(sess, lineInfo->startPos, lineInfo->startZ);
+				optDestNodeSess = 0;
 			}
-			if (destNodeSess->calcNodeDist == MAX_DIST)
+			if (optDestNodeSess.SetTo(destNodeSess))
 			{
-				calcNodes.Add(destNodeSess);
-				destNodeSess->calcNodeDist = lastDist;
-				destNodeSess->calcFrom = nodeSess->node->pos;
-				destNodeSess->calcFromZ = nodeSess->node->z;
-				destNodeSess->calcLine = lineInfo->vec;
-				destNodeSess->calcLineProp = lineInfo->properties;
-			}
-			else if (destNodeSess->calcNodeDist > lastDist)
-			{
-				destNodeSess->calcNodeDist = lastDist;
-				destNodeSess->calcFrom = nodeSess->node->pos;
-				destNodeSess->calcFromZ = nodeSess->node->z;
-				destNodeSess->calcLine = lineInfo->vec;
-				destNodeSess->calcLineProp = lineInfo->properties;
+				if (destNodeSess->calcNodeDist == MAX_DIST)
+				{
+					calcNodes.Add(destNodeSess);
+					destNodeSess->calcNodeDist = lastDist;
+					destNodeSess->calcFrom = nodeSess->node->pos;
+					destNodeSess->calcFromZ = nodeSess->node->z;
+					destNodeSess->calcLine = lineInfo->vec;
+					destNodeSess->calcLineProp = lineInfo->properties;
+				}
+				else if (destNodeSess->calcNodeDist > lastDist)
+				{
+					destNodeSess->calcNodeDist = lastDist;
+					destNodeSess->calcFrom = nodeSess->node->pos;
+					destNodeSess->calcFromZ = nodeSess->node->z;
+					destNodeSess->calcLine = lineInfo->vec;
+					destNodeSess->calcLineProp = lineInfo->properties;
+				}
 			}
 			i2++;
 		}
@@ -994,15 +1013,24 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 	}
 	else
 	{
-		endHalfLine2->Reverse();
-		lastDist = endHalfLine1->Calc3DLength();
-		nodeSess = GetNodeSess(sess, path2->line->startPos, path2->line->startZ);
-		lastDist += nodeSess->calcNodeDist;
-		nodeSess = GetNodeSess(sess, path2->line->endPos, path2->line->endZ);
-		if (nodeSess->calcNodeDist + endHalfLine2->Calc3DLength() < lastDist)
+		if (path2->line->allowReverse)
 		{
-			lineList->Add(endHalfLine2);
-			propList->Add(path2->line->properties);
+			endHalfLine2->Reverse();
+			lastDist = endHalfLine1->Calc3DLength();
+			nodeSess = GetNodeSess(sess, path2->line->startPos, path2->line->startZ);
+			lastDist += nodeSess->calcNodeDist;
+			nodeSess = GetNodeSess(sess, path2->line->endPos, path2->line->endZ);
+			if (nodeSess->calcNodeDist + endHalfLine2->Calc3DLength() < lastDist)
+			{
+				lineList->Add(endHalfLine2);
+				propList->Add(path2->line->properties);
+			}
+			else
+			{
+				nodeSess = GetNodeSess(sess, path2->line->startPos, path2->line->startZ);
+				lineList->Add(endHalfLine1);
+				propList->Add(path2->line->properties);
+			}
 		}
 		else
 		{

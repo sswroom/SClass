@@ -2148,6 +2148,8 @@ IO/FileAnalyse/JMVL01FileAnalyse.h:
 @JMVL01FileAnalyse.o
 IO/FileAnalyse/LNKFileAnalyse.h:
 @LNKFileAnalyse.o
+IO/FileAnalyse/MapsforgeFileAnalyse.h:
+@MapsforgeFileAnalyse.o
 IO/FileAnalyse/MDBFileAnalyse.h:
 @MDBFileAnalyse.o
 IO/FileAnalyse/MPEGFileAnalyse.h:
