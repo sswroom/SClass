@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 		{
 			s = Text::String::OrEmpty(objList.GetKey(i));
 			me->lbProgObject->AddItem(s, 0);
-			if (me->smake->GetProgItem(s->ToCString()).SetTo(prog) && prog->srcFile)
+			if (me->smake->GetProgItem(s->ToCString()).SetTo(prog) && prog->srcFile.SetTo(s))
 			{
-				procList.Put(prog->srcFile, 1);
+				procList.PutNN(s, 1);
 			}
 			i++;
 		}

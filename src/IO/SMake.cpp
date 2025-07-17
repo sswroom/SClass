@@ -141,9 +141,10 @@ void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileC
 
 Bool IO::SMake::ExecuteCmd(Text::CStringNN cmd)
 {
-	if (this->cmdWriter)
+	NN<IO::Writer> cmdWriter;
+	if (this->cmdWriter.SetTo(cmdWriter))
 	{
-		this->cmdWriter->WriteLine(cmd);
+		cmdWriter->WriteLine(cmd);
 	}
 	Text::StringBuilderUTF8 sbRet;
 	Int32 ret = Manage::Process::ExecuteProcess(cmd, sbRet);
@@ -154,9 +155,9 @@ Bool IO::SMake::ExecuteCmd(Text::CStringNN cmd)
 	}
 	if (sbRet.GetLength() > 0)
 	{
-		if (this->cmdWriter)
+		if (this->cmdWriter.SetTo(cmdWriter))
 		{
-			this->cmdWriter->WriteLine(sbRet.ToCString());
+			cmdWriter->WriteLine(sbRet.ToCString());
 		}
 	}
 	return true;
@@ -165,12 +166,13 @@ Bool IO::SMake::ExecuteCmd(Text::CStringNN cmd)
 Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 {
 	Bool ret = false;
-	if (this->messageWriter)
+	NN<IO::Writer> messageWriter;
+	if (this->messageWriter.SetTo(messageWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Loading "));
 		sb.Append(cfgFile);
-		this->messageWriter->WriteLine(sb.ToCString());
+		messageWriter->WriteLine(sb.ToCString());
 	}
 	IO::FileStream fs(cfgFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -245,22 +247,23 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 			{
 				Text::CStringNN ccfg = str1.ToCString();
 				NN<IO::SMake::ConfigItem> cfg;
+				NN<Text::String> compileCfg;
 				if (this->cfgMap.GetC(str1.ToCString()).SetTo(cfg))
 				{
 					ccfg = cfg->value->ToCString();
 				}
-				if (nnprog->compileCfg)
+				if (nnprog->compileCfg.SetTo(compileCfg))
 				{
 					sb.ClearStr();
-					sb.Append(nnprog->compileCfg);
+					sb.Append(compileCfg);
 					sb.AppendUTF8Char(' ');
 					sb.Append(ccfg);
-					nnprog->compileCfg->Release();
-					nnprog->compileCfg = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					compileCfg->Release();
+					nnprog->compileCfg = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 				else
 				{
-					nnprog->compileCfg = Text::String::New(ccfg).Ptr();
+					nnprog->compileCfg = Text::String::New(ccfg);
 				}
 			}
 		}
@@ -336,6 +339,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 				{
 					if (this->progMap.GetC(str1.Substring(1).ToCString()).SetTo(nnprog))
 					{
+						prog = nnprog;
 					}
 					else
 					{
@@ -343,7 +347,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 						nnprog->name = Text::String::New(str1.Substring(1).ToCString());
 						if (str2.v[0])
 						{
-							nnprog->srcFile = Text::String::New(str2.ToCString()).Ptr();
+							nnprog->srcFile = Text::String::New(str2.ToCString());
 						}
 						else
 						{
@@ -579,6 +583,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 	{
 		skipCheck = true;
 	}
+	NN<IO::Writer> messageWriter;
 	Text::CStringNN fileName;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
@@ -695,13 +700,13 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 							NN<Text::String> debugObj;
 							procList->PutNN(prog->name, 1);
 
-							if (debugObj.Set(this->debugObj) && this->messageWriter && prog->name->Equals(debugObj))
+							if (this->debugObj.SetTo(debugObj) && this->messageWriter.SetTo(messageWriter) && prog->name->Equals(debugObj))
 							{
 								Text::StringBuilderUTF8 sb2;
 								sb2.Append(debugObj);
 								sb2.AppendC(UTF8STRC(" found in "));
 								sb2.Append(sourceFile);
-								this->messageWriter->WriteLine(sb2.ToCString());
+								messageWriter->WriteLine(sb2.ToCString());
 							}
 #if defined(VERBOSE)
 							printf("Parsing header \"%s\" in source %s\r\n", prog->name->v, sourceFile.v);
@@ -724,13 +729,13 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 							while (it.HasNext())
 							{
 								NN<Text::String> subItem = it.Next();
-								if (debugObj.Set(this->debugObj) && this->messageWriter && subItem->Equals(debugObj))
+								if (this->debugObj.SetTo(debugObj) && this->messageWriter.SetTo(messageWriter) && subItem->Equals(debugObj))
 								{
 									Text::StringBuilderUTF8 sb2;
 									sb2.Append(debugObj);
 									sb2.AppendC(UTF8STRC(" found in "));
 									sb2.Append(sourceFile);
-									this->messageWriter->WriteLine(sb2.ToCString());
+									messageWriter->WriteLine(sb2.ToCString());
 								}
 								if (objList->PutNN(subItem, 1) != 1)
 								{
@@ -751,12 +756,12 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 							while (it.HasNext())
 							{
 								NN<Text::String> lib = it.Next();
-								if (this->messageWriter)
+								if (this->messageWriter.SetTo(messageWriter))
 								{
 									tmpSb->ClearStr();
 									tmpSb->AppendC(UTF8STRC("Add lib "));
 									tmpSb->Append(lib);
-									this->messageWriter->WriteLine(tmpSb->ToCString());
+									messageWriter->WriteLine(tmpSb->ToCString());
 								}
 								libList->PutNN(lib, 1);
 							}
@@ -884,6 +889,7 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 		return true;
 	}
 
+	NN<IO::Writer> messageWriter;
 	NN<IO::SMake::ProgramItem> prog;
 	if (!this->progMap.GetNN(objectFile).SetTo(prog))
 	{
@@ -901,13 +907,13 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 		while (it.HasNext())
 		{
 			NN<Text::String> subItem = it.Next();
-			if (debugObj.Set(this->debugObj) && this->messageWriter && subItem->Equals(debugObj))
+			if (this->debugObj.SetTo(debugObj) && this->messageWriter.SetTo(messageWriter) && subItem->Equals(debugObj))
 			{
 				Text::StringBuilderUTF8 sb2;
 				sb2.Append(debugObj);
 				sb2.AppendC(UTF8STRC(" found in "));
 				sb2.Append(sourceFile);
-				this->messageWriter->WriteLine(sb2.ToCString());
+				messageWriter->WriteLine(sb2.ToCString());
 			}
 			if (objList->PutNN(subItem, 1) != 1)
 			{
@@ -922,27 +928,27 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 		while (it.HasNext())
 		{
 			NN<Text::String> lib = it.Next();
-			if (this->messageWriter)
+			if (this->messageWriter.SetTo(messageWriter))
 			{
 				tmpSb->ClearStr();
 				tmpSb->AppendC(UTF8STRC("Add lib "));
 				tmpSb->Append(lib);
 				tmpSb->AppendC(UTF8STRC(" from "));
 				tmpSb->Append(prog->name);
-				this->messageWriter->WriteLine(tmpSb->ToCString());
+				messageWriter->WriteLine(tmpSb->ToCString());
 			}
 			libList->PutNN(lib, 1);
 		}
-		if (debugObj.Set(this->debugObj) && this->messageWriter && prog->name->Equals(debugObj))
+		if (this->debugObj.SetTo(debugObj) && this->messageWriter.SetTo(messageWriter) && prog->name->Equals(debugObj))
 		{
 			Text::StringBuilderUTF8 sb2;
 			sb2.Append(debugObj);
 			sb2.AppendC(UTF8STRC(" found in "));
 			sb2.Append(sourceFile);
-			this->messageWriter->WriteLine(sb2.ToCString());
+			messageWriter->WriteLine(sb2.ToCString());
 		}
 		NN<Text::String> s;
-		if (s.Set(prog->srcFile))
+		if (prog->srcFile.SetTo(s))
 		{
 			Data::ArrayListUInt64 objParsedProgs;
 			Int64 thisTime;
@@ -971,6 +977,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 	NN<const ProgramItem> prog,
 	NN<Text::StringBuilderUTF8> tmpSb)
 {
+	NN<IO::Writer> messageWriter;
 	NN<Text::String> subItem;
 	NN<Text::String> debugObj;
 	NN<IO::SMake::ProgramItem> subProg;
@@ -985,13 +992,13 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 		{
 			progGrp = false;
 		}
-		if (debugObj.Set(this->debugObj) && this->messageWriter && subItem->Equals(debugObj))
+		if (this->debugObj.SetTo(debugObj) && this->messageWriter.SetTo(messageWriter) && subItem->Equals(debugObj))
 		{
 			tmpSb->ClearStr();
 			tmpSb->Append(debugObj);
 			tmpSb->AppendC(UTF8STRC(" depends by "));
 			tmpSb->Append(prog->name);
-			this->messageWriter->WriteLine(tmpSb->ToCString());
+			messageWriter->WriteLine(tmpSb->ToCString());
 		}
 		objList->PutNN(subItem, 1);
 	}
@@ -1017,7 +1024,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 		}
 		objList->PutNN(cfg->value, 1);
 		objParsedProgs.Clear();
-		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, subProg->srcFile->ToCString(), 0, objParsedProgs, tmpSb))
+		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, Text::String::OrEmpty(subProg->srcFile)->ToCString(), 0, objParsedProgs, tmpSb))
 		{
 			return false;
 		}
@@ -1038,7 +1045,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 			return false;
 		}
 		objParsedProgs.Clear();
-		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, subProg->srcFile->ToCString(), 0, objParsedProgs, tmpSb))
+		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, Text::String::OrEmpty(subProg->srcFile)->ToCString(), 0, objParsedProgs, tmpSb))
 		{
 			return false;
 		}
@@ -1067,7 +1074,7 @@ void IO::SMake::CompileObject(Text::CStringNN cmd)
 {
 	CompileReq *req = MemAlloc(CompileReq, 1);
 	req->cmd = Text::String::New(cmd);
-	req->me = this;
+	req->me = *this;
 	this->tasks->AddTask(CompileTask, req);
 }
 
@@ -1075,25 +1082,32 @@ void IO::SMake::CompileObject(NN<Text::String> cmd)
 {
 	CompileReq *req = MemAlloc(CompileReq, 1);
 	req->cmd = cmd;
-	req->me = this;
+	req->me = *this;
 	this->tasks->AddTask(CompileTask, req);
 }
 
-Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest)
+Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest, Text::CString parentName)
 {
 	Data::FastStringMap<Int32> libList;
 	Data::FastStringMap<Int32> objList;
 	Data::FastStringMap<Int32> procList;
+	NN<IO::Writer> messageWriter;
 	Int64 latestTime = 0;
 	Int64 thisTime;
 	NN<IO::SMake::ProgramItem> subProg;
 	Bool progGroup;
-	if (this->messageWriter)
+	if (this->messageWriter.SetTo(messageWriter))
 	{
 		Text::StringBuilderUTF8 sb;
+		Text::CStringNN nnname;
 		sb.AppendC(UTF8STRC("Compiling Program "));
 		sb.Append(prog->name);
-		this->messageWriter->WriteLine(sb.ToCString());
+		if (parentName.SetTo(nnname))
+		{
+			sb.AppendC(UTF8STRC(" from "));
+			sb.Append(nnname);
+		}
+		messageWriter->WriteLine(sb.ToCString());
 	}
 
 	if (!enableTest && prog->name->Equals(UTF8STRC("test")))
@@ -1126,7 +1140,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 				this->SetErrorMsg(sb.ToCString());
 				return false;
 			}
-			if (!this->CompileProgInternal(subProg, asmListing, enableTest))
+			if (!this->CompileProgInternal(subProg, asmListing, enableTest, prog->name->ToCString()))
 			{
 				return false;
 			}
@@ -1175,7 +1189,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 			return false;
 		}
 		NN<Text::String> srcFile;
-		if (!srcFile.Set(subProg->srcFile))
+		if (!subProg->srcFile.SetTo(srcFile))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Object "));
@@ -1225,7 +1239,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 			}
 			lastTime = dt1.ToTicks();
 			thisTime = this->fileTimeMap.GetNN(srcFile);
-			if (this->messageWriter)
+			if (this->messageWriter.SetTo(messageWriter))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("SrcFile "));
@@ -1239,7 +1253,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 				{
 					sb.AppendTSNoZone(Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr()));
 				}
-				this->messageWriter->WriteLine(sb.ToCString());
+				messageWriter->WriteLine(sb.ToCString());
 			}
 			if (thisTime && thisTime > lastTime)
 			{
@@ -1256,7 +1270,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 				if (thisTime >= lastTime)
 				{
 					updateToDate = true;
-					if (this->messageWriter)
+					if (this->messageWriter.SetTo(messageWriter))
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Obj "));
@@ -1269,7 +1283,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 						dt1 = Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr());
 						sb.AppendTSNoZone(dt1);
 						sb.AppendC(UTF8STRC(", Skip"));
-						this->messageWriter->WriteLine(sb.ToCString());
+						messageWriter->WriteLine(sb.ToCString());
 					}
 				}
 			}
@@ -1281,14 +1295,14 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 		
 		if (!updateToDate)
 		{
-			if (this->messageWriter)
+			if (this->messageWriter.SetTo(messageWriter))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Obj "));
 				sb.Append(subProg->name);
 				sb.AppendC(UTF8STRC(" creating from "));
 				sb.Append(srcFile);
-				this->messageWriter->WriteLine(sb.ToCString());
+				messageWriter->WriteLine(sb.ToCString());
 			}
 			if (srcFile->EndsWith(UTF8STRC(".cpp")))
 			{
@@ -1305,9 +1319,10 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 					sb.Append(cfg->value);
 					sb.AppendUTF8Char(' ');
 				}
-				if (subProg->compileCfg)
+				NN<Text::String> compileCfg;
+				if (subProg->compileCfg.SetTo(compileCfg))
 				{
-					this->AppendCfg(sb, subProg->compileCfg->ToCString());
+					this->AppendCfg(sb, compileCfg->ToCString());
 					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
@@ -1346,9 +1361,10 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 					sb.Append(cfg->value);
 					sb.AppendUTF8Char(' ');
 				}
-				if (subProg->compileCfg)
+				NN<Text::String> compileCfg;
+				if (subProg->compileCfg.SetTo(compileCfg))
 				{
-					this->AppendCfg(sb, subProg->compileCfg->ToCString());
+					this->AppendCfg(sb, compileCfg->ToCString());
 					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
@@ -1593,12 +1609,13 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 
 Bool IO::SMake::TestProg(NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> sb)
 {
-	if (this->cmdWriter)
+	NN<IO::Writer> cmdWriter;
+	if (this->cmdWriter.SetTo(cmdWriter))
 	{
 		sb->ClearStr();
 		sb->AppendC(UTF8STRC("Testing "));
 		sb->Append(prog->name);
-		this->cmdWriter->WriteLine(sb->ToCString());
+		cmdWriter->WriteLine(sb->ToCString());
 	}
 	sb->ClearStr();
 	sb->Append(this->basePath);
@@ -1629,9 +1646,9 @@ void IO::SMake::SetErrorMsg(Text::CStringNN msg)
 	this->errorMsg = Text::String::New(msg);
 }
 
-IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
+IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer> messageWriter) : IO::ParsedObject(cfgFile)
 {
-	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
+	NEW_CLASSNN(this->tasks, Sync::ParallelTask(threadCnt, false));
 	this->errorMsg = 0;
 	this->error = false;
 	this->asyncMode = false;
@@ -1652,6 +1669,7 @@ IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageW
 		this->basePath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	this->messageWriter = messageWriter;
+	this->cmdWriter = 0;
 	this->debugObj = 0;
 
 	this->LoadConfigFile(cfgFile);
@@ -1682,8 +1700,8 @@ IO::SMake::~SMake()
 //		prog = progList->GetItem(i);
 		prog = this->progMap.GetItemNoCheck(i);
 		prog->name->Release();
-		SDEL_STRING(prog->srcFile);
-		SDEL_STRING(prog->compileCfg);
+		OPTSTR_DEL(prog->srcFile);
+		OPTSTR_DEL(prog->compileCfg);
 		j = prog->subItems.GetCount();
 		while (j-- > 0)
 		{
@@ -1696,10 +1714,10 @@ IO::SMake::~SMake()
 		}
 		prog.Delete();
 	}
-	DEL_CLASS(this->tasks);
+	this->tasks.Delete();
 	OPTSTR_DEL(this->errorMsg);
 	this->basePath->Release();
-	SDEL_STRING(this->debugObj);
+	OPTSTR_DEL(this->debugObj);
 }
 
 IO::ParserType IO::SMake::GetParserType() const
@@ -1750,7 +1768,7 @@ Bool IO::SMake::GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb) const
 	return ret;
 }
 
-void IO::SMake::SetMessageWriter(IO::Writer *messageWriter)
+void IO::SMake::SetMessageWriter(Optional<IO::Writer> messageWriter)
 {
 	this->messageWriter = messageWriter;
 }
@@ -1762,11 +1780,11 @@ void IO::SMake::SetCommandWriter(IO::Writer *cmdWriter)
 
 void IO::SMake::SetDebugObj(Text::CString debugObj)
 {
-	SDEL_STRING(this->debugObj);
+	OPTSTR_DEL(this->debugObj);
 	Text::CStringNN nns;
 	if (debugObj.SetTo(nns))
 	{
-		this->debugObj = Text::String::New(nns).Ptr();
+		this->debugObj = Text::String::New(nns);
 	}
 }
 
@@ -1774,8 +1792,8 @@ void IO::SMake::SetThreadCnt(UOSInt threadCnt)
 {
 	if (this->tasks->GetThreadCnt() != threadCnt)
 	{
-		DEL_CLASS(this->tasks);
-		NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
+		this->tasks.Delete();
+		NEW_CLASSNN(this->tasks, Sync::ParallelTask(threadCnt, false));
 	}
 }
 
@@ -1845,7 +1863,7 @@ Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
 	}
 	else
 	{
-		return this->CompileProgInternal(prog, asmListing, false);
+		return this->CompileProgInternal(prog, asmListing, false, 0);
 	}
 }
 

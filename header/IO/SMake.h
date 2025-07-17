@@ -24,7 +24,7 @@ namespace IO
 		typedef struct
 		{
 			NN<Text::String> cmd;
-			SMake *me;
+			NN<SMake> me;
 		} CompileReq;
 	public:
 		typedef struct
@@ -37,8 +37,8 @@ namespace IO
 		{
 		public:
 			NN<Text::String> name;
-			Text::String *srcFile;
-			Text::String *compileCfg;
+			Optional<Text::String> srcFile;
+			Optional<Text::String> compileCfg;
 			Data::ArrayListStringNN subItems;
 			Data::ArrayListStringNN libs;
 			Bool compiled;
@@ -51,10 +51,10 @@ namespace IO
 		Sync::Mutex errorMsgMut;
 		Optional<Text::String> errorMsg;
 		NN<Text::String> basePath;
-		IO::Writer *messageWriter;
-		IO::Writer *cmdWriter;
-		Text::String *debugObj;
-		Sync::ParallelTask *tasks;
+		Optional<IO::Writer> messageWriter;
+		Optional<IO::Writer> cmdWriter;
+		Optional<Text::String> debugObj;
+		NN<Sync::ParallelTask> tasks;
 		Bool error;
 		Bool asyncMode;
 		Data::ArrayListStringNN linkCmds;
@@ -76,12 +76,12 @@ namespace IO
 		static void __stdcall CompileTask(AnyType userObj);
 		void CompileObject(Text::CStringNN cmd);
 		void CompileObject(NN<Text::String> cmd);
-		Bool CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest);
+		Bool CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest, Text::CString parentName);
 		Bool TestProg(NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> sb);
 
 		void SetErrorMsg(Text::CStringNN msg);
 	public:
-		SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
+		SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer> messageWriter);
 		virtual ~SMake();
 
 		virtual IO::ParserType GetParserType() const;
@@ -91,7 +91,7 @@ namespace IO
 		Bool IsLoadFailed() const;
 		Bool HasError() const;
 		Bool GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb) const;
-		void SetMessageWriter(IO::Writer *messageWriter);
+		void SetMessageWriter(Optional<IO::Writer> messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(Text::CString debugObj);
 		void SetThreadCnt(UOSInt threadCnt);

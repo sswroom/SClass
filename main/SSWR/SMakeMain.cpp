@@ -10,6 +10,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Bool showHelp;
 	Bool asmListing = false;
+	Bool infoMode = false;
 	UOSInt cmdCnt;
 	UOSInt i;
 	UOSInt j;
@@ -87,6 +88,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				{
 					asyncMode = false;
 				}
+				else if (cmdLines[i][1] == 'i')
+				{
+					infoMode = true;
+				}
 			}
 			i++;
 		}
@@ -108,7 +113,74 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				}
 				else
 				{
-					if (smake.HasProg({cmdLines[i], cmdLineLen}))
+					if (infoMode)
+					{
+						NN<const IO::SMake::ProgramItem> progItem;
+						NN<Text::String> s;
+						UOSInt i2;
+						UOSInt j2;
+						if (smake.GetProgItem({cmdLines[i], cmdLineLen}).SetTo(progItem))
+						{
+							showHelp = false;
+							console.Write(CSTR("Program Name: "));
+							console.SetTextColor(Text::StandardColor::Red);
+							console.WriteLine(progItem->name->ToCString());
+							console.ResetTextColor();
+							console.Write(CSTR("Source File: "));
+							if (progItem->srcFile.SetTo(s))
+							{
+								console.SetTextColor(Text::StandardColor::Red);
+								console.WriteLine(s->ToCString());
+								console.ResetTextColor();
+							}
+							else
+							{
+								console.WriteLine();
+							}
+							console.Write(CSTR("Compile Config: "));
+							if (progItem->compileCfg.SetTo(s))
+							{
+								console.SetTextColor(Text::StandardColor::Red);
+								console.WriteLine(s->ToCString());
+								console.ResetTextColor();
+							}
+							else
+							{
+								console.WriteLine();
+							}
+							i2 = 0;
+							j2 = progItem->libs.GetCount();
+							while (i2 < j2)
+							{
+								console.Write(CSTR("Library: "));
+								console.SetTextColor(Text::StandardColor::Red);
+								console.WriteLine(progItem->libs.GetItemNoCheck(i2)->ToCString());
+								console.ResetTextColor();
+								i2++;
+							}
+							i2 = 0;
+							j2 = progItem->subItems.GetCount();
+							while (i2 < j2)
+							{
+								console.Write(CSTR("Sub-Items: "));
+								console.SetTextColor(Text::StandardColor::Red);
+								console.WriteLine(progItem->subItems.GetItemNoCheck(i2)->ToCString());
+								console.ResetTextColor();
+								i2++;
+							}
+						}
+						else
+						{
+							Text::StringBuilderUTF8 sb;
+							sb.AppendC(UTF8STRC("Program "));
+							sb.AppendC(cmdLines[i], cmdLineLen);
+							sb.AppendC(UTF8STRC(" not found"));
+							console.SetTextColor(Text::StandardColor::Red);
+							console.WriteLine(sb.ToCString());
+							console.ResetTextColor();
+						}
+					}
+					else if (smake.HasProg({cmdLines[i], cmdLineLen}))
 					{
 						showHelp = false;
 						if (!smake.CompileProg({cmdLines[i], cmdLineLen}, asmListing))
@@ -157,6 +229,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console.WriteLine(CSTR("-q                 Quiet"));
 		console.WriteLine(CSTR("-s                 Single Thread"));
 		console.WriteLine(CSTR("-S                 Sync Mode (disable Async Mode)"));
+		console.WriteLine(CSTR("-i                 Show Object Info only"));
 	}
 	return 0;
 }
