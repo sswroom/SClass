@@ -175,6 +175,16 @@ NN<Text::String> Text::String::NewCSVRec(UnsafeArray<const UTF8Char> str)
 	return s;
 }
 
+NN<Text::String> Text::String::NewSubstr(Text::CStringNN s, UOSInt index, UOSInt maxLen)
+{
+	if (s.leng < index || maxLen <= 0)
+		return NewEmpty();
+	UOSInt endIndex = index + maxLen;
+	if (s.leng < endIndex)
+		endIndex = s.leng;
+	return New(&s.v[index], endIndex - index);
+}
+
 void Text::String::Release()
 {
 #if defined(THREADSAFE)

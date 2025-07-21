@@ -61,6 +61,7 @@ namespace Text
 		static NN<String> NewNotNull(UnsafeArray<const UTF32Char> str);
 		static NN<String> NewW(UnsafeArray<const UTF32Char> str, UOSInt len);
 		static NN<String> NewCSVRec(UnsafeArray<const UTF8Char> str);
+		static NN<String> NewSubstr(Text::CStringNN s, UOSInt index, UOSInt maxLen);
 		static NN<String> NewEmpty() { return emptyStr.Clone(); }
 		static NN<String> OrEmpty(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret; return emptyStr.Clone(); }
 		static Optional<String> CopyOrNull(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret->Clone(); return 0; }

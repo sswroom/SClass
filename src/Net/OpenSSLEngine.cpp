@@ -485,8 +485,8 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 
 Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
 {
-	Net::SocketUtil::AddressInfo addr[1];
-	UOSInt addrCnt = this->clif->GetSocketFactory()->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 1));
+	Net::SocketUtil::AddressInfo addr[5];
+	UOSInt addrCnt = this->clif->GetSocketFactory()->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 5));
 	if (addrCnt == 0)
 	{
 		err.Set(ErrorType::HostnameNotResolved);

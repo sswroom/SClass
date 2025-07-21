@@ -1382,6 +1382,7 @@ HTTPProxyClient.o: ../../src/Net/HTTPProxyClient.cpp
 HTTPProxyTCPClient.o: ../../src/Net/HTTPProxyTCPClient.cpp
 HTTPQueue.o: ../../src/Net/HTTPQueue.cpp
 HTTPServerMonitor.o: ../../src/Net/HTTPServerMonitor.cpp
+HTTPUtil.o: ../../src/Net/HTTPUtil.cpp
 IAMSmartAPI.o: ../../src/Net/IAMSmartAPI.cpp
 IAMSmartClient.o: ../../src/Net/IAMSmartClient.cpp
 ICMPScanner.o: ../../src/Net/ICMPScanner.cpp
@@ -2199,6 +2200,7 @@ MyString.o: ../../src/Text/MyString.cpp
 MyStringFloat.o: ../../src/Text/MyStringFloat.cpp
 MyStringW.o: ../../src/Text/MyStringW.cpp
 PString.o: ../../src/Text/PString.cpp
+RegEx.o: ../../src/Text/RegEx.cpp
 ReportBuilder.o: ../../src/Text/ReportBuilder.cpp
 SearchIndexer.o: ../../src/Text/SearchIndexer.cpp
 SMSMessage.o: ../../src/Text/SMSMessage.cpp
@@ -2215,6 +2217,7 @@ StringCaseConverter.o: ../../src/Text/StringCaseConverter.cpp
 StringTool.o: ../../src/Text/StringTool.cpp
 StringUtil.o: ../../src/Text/StringUtil.cpp
 TextAnalyzer.o: ../../src/Text/TextAnalyzer.cpp
+TextWriteUtil.o: ../../src/Text/TextWriteUtil.cpp
 Unicode.o: ../../src/Text/Unicode.cpp
 UnicodeCharacterData.o: ../../src/Text/UnicodeCharacterData.cpp
 URLString.o: ../../src/Text/URLString.cpp

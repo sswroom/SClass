@@ -85,6 +85,7 @@ console:
 @X509Test
 @DateTimeTest
 @InflateTest
+@LLMTest
 @MiscTest
 @SortSpeed
 @CSVFileTest
@@ -292,6 +293,9 @@ DateTimeTest:
 @ConsoleStartup.o
 InflateTest:
 @InflateTest.o
+@ConsoleStartup.o
+LLMTest:
+@LLMTest.o
 @ConsoleStartup.o
 MiscTest:
 @MiscTest.o
@@ -1025,6 +1029,7 @@ RSATest.o: ../../main/CryptoTest/RSATest.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 InflateTest.o: ../../main/Data/InflateTest.cpp
+LLMTest.o: ../../main/Data/LLMTest.cpp
 MiscTest.o: ../../main/Data/MiscTest.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 CSVFileTest.o: ../../main/DB/CSVFileTest.cpp
@@ -3230,6 +3235,8 @@ Net/HTTPQueue.h:
 @HTTPQueue.o
 Net/HTTPServerMonitor.h:
 @HTTPServerMonitor.o
+Net/HTTPUtil.h:
+@HTTPUtil.o
 Net/IAMSmartAPI.h:
 @IAMSmartAPI.o
 Net/IAMSmartClient.h:
@@ -4740,6 +4747,8 @@ Text/MyStringW.h:
 @MyStringW.o
 Text/PString.h:
 @PString.o
+Text/RegEx.h:
+@RegEx.o
 Text/ReportBuilder.h:
 @ReportBuilder.o
 Text/SearchIndexer.h:
@@ -4781,6 +4790,8 @@ Text/TextAnalyzer.h:
 @TextAnalyzer.o
 Text/TextCommon.h:
 Text/TextEncoding.h:
+Text/TextWriteUtil.h:
+@TextWriteUtil.o
 Text/Unicode.h:
 @Unicode.o
 Text/UnicodeCharacterData.h:

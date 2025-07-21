@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "IO/Stream.h"
+#include "Text/StringBuilderUTF8.h"
 
 IO::Stream::Stream(NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
 {
@@ -75,6 +76,32 @@ UInt64 IO::Stream::ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize)
 		}
 	}
 	return totalSize;
+}
+
+Optional<Text::String> IO::Stream::ReadAsString(UOSInt buffSize)
+{
+	Data::ByteBuffer buff(buffSize);
+	UOSInt readSize;
+	readSize = this->Read(buff);
+	if (readSize <= 0)
+		return 0;
+	Text::StringBuilderUTF8 sb;
+	sb.AppendC(buff.Arr(), readSize);
+	while (true)
+	{
+		readSize = this->Read(buff);
+		if (readSize <= 0)
+		{
+			break;
+		}
+		sb.AppendC(buff.Arr(), readSize);
+	}
+	return Text::String::New(sb.ToCString());
+}
+
+Optional<Text::String> IO::Stream::ReadAsString()
+{
+	return this->ReadAsString(65536);
 }
 
 Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UOSInt buffSize)

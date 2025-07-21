@@ -341,6 +341,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 	UInt8 flags;
 	UOSInt cnt;
 	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	if (!this->packs.GetItem(index).SetTo(pack) || !this->fd.SetTo(fd))
 		return 0;
 
@@ -528,11 +530,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					}
 					nextOfst = ReadVBES(packBuff, ofst, iv);
 					frame->AddInt(ofst, (UOSInt)(nextOfst - ofst), CSTR("Lat Diff"), iv);
-					frame->AddFloat(ofst, (UOSInt)(nextOfst - ofst), CSTR("Latitude"), Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, z) + (Double)iv * 0.000001);
+					frame->AddFloat(ofst, (UOSInt)(nextOfst - ofst), CSTR("Latitude"), Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, pack->baseZoomLevel) + (Double)iv * 0.000001);
 					ofst = nextOfst;
 					nextOfst = ReadVBES(packBuff, ofst, iv);
 					frame->AddInt(ofst, (UOSInt)(nextOfst - ofst), CSTR("Lon Diff"), iv);
-					frame->AddFloat(ofst, (UOSInt)(nextOfst - ofst), CSTR("Longitude"), Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, z) + (Double)iv * 0.000001);
+					frame->AddFloat(ofst, (UOSInt)(nextOfst - ofst), CSTR("Longitude"), Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel) + (Double)iv * 0.000001);
 					ofst = nextOfst;
 					frame->AddUInt(ofst, 1, CSTR("Layer"), packBuff[ofst] >> 4);
 					frame->AddUInt(ofst, 1, CSTR("Amount of tags for the POI"), packBuff[ofst] & 15);
@@ -574,6 +576,191 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 				z++;
 			}
 
+			z = pack->minZoomLevel;
+			while (z <= pack->maxZoomLevel)
+			{
+				UInt64 startOfst;
+				UOSInt i2 = 0;
+				while (i2 < nWay[z])
+				{
+					startOfst = ofst;
+					if (this->flags & 0x80)
+					{
+						frame->AddStrC(ofst, 32, CSTR("Way Signature"), &packBuff[ofst]);
+						ofst += 32;
+					}
+					nextOfst = ReadVBEU(packBuff, ofst, v);
+					frame->AddUInt(ofst, nextOfst - ofst, CSTR("Way data size"), v);
+					ofst = nextOfst;
+					UInt64 wayEndOfst = ofst + v;
+					frame->AddUInt(ofst, 2, CSTR("Sub tile bitmap"), ReadMUInt16(&packBuff[ofst]));
+					frame->AddUInt(ofst + 2, 1, CSTR("Layer"), packBuff[ofst + 2] >> 4);
+					cnt = packBuff[ofst + 2] & 15;
+					frame->AddUInt(ofst + 2, 1, CSTR("Amount of tags for the way"), cnt);
+					ofst += 3;
+					i = 0;
+					while (i < cnt)
+					{
+						nextOfst = ReadVBEU(packBuff, ofst, v);
+						frame->AddUIntName(ofst, (UOSInt)(nextOfst - ofst), CSTR("Way Tag"), v, OPTSTR_CSTR(this->wayTags.GetItem((UOSInt)v)));
+						ofst = nextOfst;
+						i++;
+					}
+					UInt8 wayFlags = packBuff[ofst];
+					frame->AddBit(ofst, CSTR("Existence of a way name"), wayFlags, 7);
+					frame->AddBit(ofst, CSTR("Existence of a house number"), wayFlags, 6);
+					frame->AddBit(ofst, CSTR("Existence of a reference"), wayFlags, 5);
+					frame->AddBit(ofst, CSTR("Existence of a label position"), wayFlags, 4);
+					frame->AddBit(ofst, CSTR("Existence of number of way data blocks field"), wayFlags, 3);
+					frame->AddBit(ofst, CSTR("Double delta encoding"), wayFlags, 2);
+					ofst++;
+					if (wayFlags & 0x80)
+					{
+						nextOfst = ReadVBEU(packBuff, ofst, v);
+						frame->AddField(ofst, nextOfst + v - ofst, CSTR("Name"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
+						ofst = nextOfst + (UOSInt)v;
+					}
+					if (wayFlags & 0x40)
+					{
+						nextOfst = ReadVBEU(packBuff, ofst, v);
+						frame->AddField(ofst, nextOfst + v - ofst, CSTR("House number"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
+						ofst = nextOfst + (UOSInt)v;
+					}
+					if (wayFlags & 0x20)
+					{
+						nextOfst = ReadVBEU(packBuff, ofst, v);
+						frame->AddField(ofst, nextOfst + v - ofst, CSTR("Reference"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
+						ofst = nextOfst + (UOSInt)v;
+					}
+					if (wayFlags & 0x10)
+					{
+						nextOfst = ReadVBES(packBuff, ofst, iv);
+						frame->AddInt(ofst, nextOfst - ofst, CSTR("Label position lat-diff"), iv);
+						frame->AddFloat(ofst, nextOfst - ofst, CSTR("Label position latitude"), Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, pack->baseZoomLevel) + (Double)iv * 0.000001);
+						ofst = nextOfst;
+						nextOfst = ReadVBES(packBuff, ofst, iv);
+						frame->AddInt(ofst, nextOfst - ofst, CSTR("Label position lon-diff"), iv);
+						frame->AddFloat(ofst, nextOfst - ofst, CSTR("Label position longitude"), Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel) + (Double)iv * 0.000001);
+						ofst = nextOfst;
+					}
+					UOSInt nDataBlk;
+					if (wayFlags & 0x8)
+					{
+						nextOfst = ReadVBEU(packBuff, ofst, v);
+						frame->AddUInt(ofst, nextOfst - ofst, CSTR("Number of way data blocks"), v);
+						nDataBlk = (UOSInt)v;
+						ofst = nextOfst;
+					}
+					else
+					{
+						nDataBlk = 1;
+					}
+					i = 0;
+					while (i < nDataBlk)
+					{
+						UInt64 nWayBlocks;
+						nextOfst = ReadVBEU(packBuff, ofst, nWayBlocks);
+						frame->AddUInt(ofst, nextOfst - ofst, CSTR("Number of way coordinate blocks"), nWayBlocks);
+						ofst = nextOfst;
+						j = 0;
+						while (j < nWayBlocks)
+						{
+							UInt64 nNodes;
+							nextOfst = ReadVBEU(packBuff, ofst, nNodes);
+							frame->AddUInt(ofst, nextOfst - ofst, CSTR("Amount of way nodes of this way"), nNodes);
+							ofst = nextOfst;
+							if (wayFlags & 4)
+							{
+								Double lastLat = Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, pack->baseZoomLevel);
+								Double lastLon = Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel);
+								Int64 lastLatOffset = 0;
+								Int64 lastLonOffset = 0;
+								k = 0;
+								while (k < nNodes)
+								{
+									nextOfst = ReadVBES(packBuff, ofst, iv);
+									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lat-diff"), iv);
+									if (k > 0)
+									{
+										lastLatOffset += iv;
+										lastLat += (Double)lastLatOffset * 0.000001;
+									}
+									else
+									{
+										lastLat += (Double)iv * 0.000001;
+									}
+									frame->AddFloat(ofst, nextOfst - ofst, CSTR("Way node latitude"), lastLat);
+									ofst = nextOfst;
+									nextOfst = ReadVBES(packBuff, ofst, iv);
+									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lon-diff"), iv);
+									if (k > 0)
+									{
+										lastLonOffset += iv;
+										lastLon += (Double)iv * 0.000001;
+									}
+									else
+									{
+										lastLon += (Double)iv * 0.000001;
+									}
+									frame->AddFloat(ofst, nextOfst - ofst, CSTR("Way node longitude"), lastLon);
+									ofst = nextOfst;
+									
+									if (ofst > wayEndOfst)
+									{
+										j = nWayBlocks;
+										i = nDataBlk;
+										break;
+									}
+									k++;
+								}
+							}
+							else
+							{
+								Double lastLat = Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, pack->baseZoomLevel);
+								Double lastLon = Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel);
+								k = 0;
+								while (k < nNodes)
+								{
+									nextOfst = ReadVBES(packBuff, ofst, iv);
+									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lat-diff"), iv);
+									lastLat += (Double)iv * 0.000001;
+									frame->AddFloat(ofst, nextOfst - ofst, CSTR("Way node latitude"), lastLat);
+									ofst = nextOfst;
+									nextOfst = ReadVBES(packBuff, ofst, iv);
+									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lon-diff"), iv);
+									lastLon += (Double)iv * 0.000001;
+									frame->AddFloat(ofst, nextOfst - ofst, CSTR("Way node longitude"), lastLon);
+									ofst = nextOfst;
+
+									if (ofst > wayEndOfst)
+									{
+										j = nWayBlocks;
+										i = nDataBlk;
+										break;
+									}
+									k++;
+								}
+							}
+							j++;
+						}
+						i++;
+					}
+					if (ofst != wayEndOfst)
+					{
+						printf("Way Offset mismatch: i2 = %d, z = %d, ofst = 0x%llx, endOfst = 0x%llx\r\n", (UInt32)i2, z, startOfst + pack->fileOfst, wayEndOfst + pack->fileOfst);
+						ofst = wayEndOfst;
+						//break;
+					}
+					else if (ofst >= pack->packSize)
+					{
+						printf("End of pack: i2 = %d, z = %d\r\n", (UInt32)i2, z);
+						z = pack->maxZoomLevel + 1;
+						break;
+					}
+					i2++;
+				}
+				z++;
+			}
 		}
 		break;
 	}

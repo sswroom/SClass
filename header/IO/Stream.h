@@ -75,6 +75,8 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 		UInt64 ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize);
+		Optional<Text::String> ReadAsString(UOSInt buffSize);
+		Optional<Text::String> ReadAsString();
 		Bool WriteFromData(NN<IO::StreamData> data, UOSInt buffSize);
 		UOSInt WriteCont(UnsafeArray<const UInt8> buff, UOSInt size);
 	};
