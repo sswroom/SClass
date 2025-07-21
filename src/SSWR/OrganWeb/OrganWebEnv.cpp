@@ -841,7 +841,7 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::TCPClientFactory> clif, Optiona
 		webHdlr->HandlePath(CSTR("/js"), this->nodeHdlr, false);
 		webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 
-		this->webHdlr = webHdlr.Ptr();
+		this->webHdlr = webHdlr;
 		NEW_CLASSOPT(this->listener, Net::WebServer::WebListener(this->clif, 0, webHdlr, port, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!this->ssl.IsNull() && sslPort)
 		{
