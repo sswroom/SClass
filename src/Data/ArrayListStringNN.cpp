@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "Text/MyString.h"
 
 Data::ArrayListStringNN::ArrayListStringNN() : Data::SortableArrayListNN<Text::String>()
@@ -139,4 +140,39 @@ void Data::ArrayListStringNN::FreeAll()
 		this->arr[i]->Release();
 	}
 	this->objCnt = 0;
+}
+
+void Data::ArrayListStringNN::ValueCounts(NN<Data::FastStringMap<UInt32>> counts) const
+{
+	UInt32 cnt;
+	NN<Text::String> s;
+	UOSInt i = this->GetCount();
+	if (i > 10)
+	{
+		UnsafeArray<NN<Text::String>> sarr = MemAllocArr(NN<Text::String>, i);
+		MemCopyNO(sarr.Ptr(), this->arr.Ptr(), i * sizeof(NN<Text::String>));
+		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(sarr, *this, 0, (OSInt)i - 1);
+		UOSInt j = 0;
+		UOSInt k = 0;
+		while (j < i)
+		{
+			if (!sarr[j]->Equals(sarr[k]))
+			{
+				counts->PutNN(sarr[k], (UInt32)(j - k));
+				k = j;
+			}
+			j++;
+		}
+		counts->PutNN(sarr[k], (UInt32)(i - k));
+		MemFreeArr(sarr);
+	}
+	else
+	{
+		while (i-- > 0)
+		{
+			s = this->GetItemNoCheck(i);
+			cnt = counts->GetNN(s);
+			counts->PutNN(s, cnt + 1);
+		}
+	}
 }

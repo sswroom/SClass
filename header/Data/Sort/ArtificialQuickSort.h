@@ -57,9 +57,9 @@ namespace Data
 			void SortUInt32(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
 			void SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex);
 
-			template <class T> static void PreSort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(NN<Data::ArrayCollection<T>> list, NN<Data::Comparator<T>> comparator);
+			template <class T> static void PreSort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void Sort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void Sort(NN<Data::ArrayCollection<T>> list, NN<const Data::Comparator<T>> comparator);
 			template <class T, class V> static void PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
 			template <class T, class V> static void SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
 			static void PreSortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
@@ -68,7 +68,7 @@ namespace Data
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::PreSort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt left, OSInt right)
+template <class T> void Data::Sort::ArtificialQuickSort::PreSort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt left, OSInt right)
 {
 	T temp = arr[left];
 	T temp2;
@@ -86,7 +86,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::PreSort(UnsafeArray<T> 
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex)
 {
 #if _OSINT_SIZE == 16
 	OSInt levi[256];
@@ -170,7 +170,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr
 #endif
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(NN<Data::ArrayCollection<T>> list, NN<Data::Comparator<T>> comparator)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(NN<Data::ArrayCollection<T>> list, NN<const Data::Comparator<T>> comparator)
 {
 	UOSInt len;
 	UnsafeArray<T> arr = list->GetArr(len);

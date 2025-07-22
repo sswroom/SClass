@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Text/CharUtil.h"
 #include "Text/JSText.h"
+#include "Text/MyStringW.h"
 #include "Text/StringTool.h"
 
 //#define VERBOSE
@@ -403,4 +404,50 @@ OSInt Text::StringTool::CompareICase(Optional<Text::String> s1, Optional<Text::S
 	if (!s2.SetTo(str2))
 		return 1;
 	return str1->CompareToICase(str2);
+}
+
+Math::Size2D<UOSInt> Text::StringTool::GetMonospaceSize(UnsafeArray<const UTF8Char> s)
+{
+	UOSInt h = 1;
+	UOSInt w = 0;
+	UOSInt maxW = 0;
+	UTF32Char c;
+	while (true)
+	{
+		s = Text::StrReadChar(s, c);
+		if (c == 0)
+		{
+			if (w > maxW)
+			{
+				maxW = w;
+			}
+			return {maxW, h};
+		}
+		if (c == '\r')
+		{
+			if (s[0] == '\n')
+			{
+				s++;
+			}
+			if (w > maxW)
+			{
+				maxW = w;
+			}
+			w = 0;
+			h++;
+		}
+		else if (c == '\n')
+		{
+			if (w > maxW)
+			{
+				maxW = w;
+			}
+			w = 0;
+			h++;
+		}
+		else if (Text::CharUtil::IsDoubleSize(c))
+			w += 2;
+		else
+			w += 1;
+	}
 }

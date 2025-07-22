@@ -140,6 +140,7 @@ CircularByteBuff.o: ../../src/Data/CircularByteBuff.cpp
 Class.o: ../../src/Data/Class.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
 DataModelUtil.o: ../../src/Data/DataModelUtil.cpp
+DataSet.o: ../../src/Data/DataSet.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
 DateTimeUtil.o: ../../src/Data/DateTimeUtil.cpp
 DWGUtil.o: ../../src/Data/DWGUtil.cpp
@@ -151,6 +152,7 @@ RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
 SyncLinkedList.o: ../../src/Data/SyncLinkedList.cpp
+TableData.o: ../../src/Data/TableData.cpp
 Usage.o: ../../src/Data/Usage.cpp
 UUID.o: ../../src/Data/UUID.cpp
 VariItem.o: ../../src/Data/VariItem.cpp

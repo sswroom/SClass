@@ -31,14 +31,14 @@ namespace Data
 		class InsertionSort
 		{
 		public:
-			template <class T> static void SortB(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void SortB(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T, class V> static void SortBKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
 			static void SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }
 
-template <class T> void Data::Sort::InsertionSort::SortB(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt left, OSInt right)
+template <class T> void Data::Sort::InsertionSort::SortB(UnsafeArray<T> arr, NN<const Data::Comparator<T>> comparator, OSInt left, OSInt right)
 {
 	OSInt i;
 	OSInt j;

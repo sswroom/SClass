@@ -6,6 +6,7 @@
 #include "DB/DBConn.h"
 #include "DB/TableDef.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "IO/StreamDataStream.h"
 #include "IO/StreamReader.h"
 #include "Math/MSGeography.h"
@@ -14,53 +15,64 @@
 #include "Text/MyStringW.h"
 #include "Text/UTF8Reader.h"
 
-DB::CSVFile::CSVFile(NN<Text::String> fileName, UInt32 codePage) : DB::ReadingDB(fileName)
+void DB::CSVFile::InitReader(NN<CSVReader> r)
+{
+	r->SetIndexCol(this->indexCol);
+	UOSInt i = this->timeCols.GetCount();
+	while (i-- > 0)
+	{
+		r->AddTimeCol(this->timeCols.GetItem(i));
+	}
+}
+
+DB::CSVFile::CSVFile(NN<Text::String> fileName, UInt32 codePage) : DB::ReadingDB(fileName), timeCols(4)
 {
 	this->fileName = fileName->Clone();
 	this->stm = 0;
-	this->releaseStm = false;
+	this->fd = 0;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
+	this->indexCol = INVALID_INDEX;
 }
 
-DB::CSVFile::CSVFile(Text::CStringNN fileName, UInt32 codePage) : DB::ReadingDB(fileName)
+DB::CSVFile::CSVFile(Text::CStringNN fileName, UInt32 codePage) : DB::ReadingDB(fileName), timeCols(4)
 {
 	this->fileName = Text::String::New(fileName);
 	this->stm = 0;
-	this->releaseStm = false;
+	this->fd = 0;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
+	this->indexCol = INVALID_INDEX;
 }
 
-DB::CSVFile::CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
+DB::CSVFile::CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj()), timeCols(4)
 {
 	this->fileName = stm->GetSourceNameObj()->Clone();
 	this->stm = stm;
-	this->releaseStm = false;
+	this->fd = 0;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
+	this->indexCol = INVALID_INDEX;
 }
 
-DB::CSVFile::CSVFile(NN<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd->GetFullName())
+DB::CSVFile::CSVFile(NN<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd->GetFullName()), timeCols(4)
 {
 	this->fileName = fd->GetFullName()->Clone();
-	NEW_CLASSOPT(this->stm, IO::StreamDataStream(fd));
-	this->releaseStm = true;
+	this->fd = fd->GetPartialData(0, fd->GetDataSize());
+	this->stm = 0;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
+	this->indexCol = INVALID_INDEX;
 }
 
 DB::CSVFile::~CSVFile()
 {
 	this->fileName->Release();
-	if (this->stm.NotNull() && this->releaseStm)
-	{
-		this->stm.Delete();
-	}
+	this->fd.Delete();
 }
 
 UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
@@ -73,11 +85,27 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 
 Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
+	NN<IO::StreamData> fd;
 	NN<IO::SeekableStream> stm;
+	NN<IO::Reader> rdr;
+	NN<DB::CSVReader> r;
+	if (this->fd.SetTo(fd))
+	{
+		NEW_CLASSNN(stm, IO::StreamDataStream(fd));
+		if (codePage == 65001)
+		{
+			NEW_CLASSNN(rdr, Text::UTF8Reader(stm));
+		}
+		else
+		{
+			NEW_CLASSNN(rdr, IO::StreamReader(stm, codePage));
+		}
+		NEW_CLASSNN(r, DB::CSVReader(stm, rdr, this->noHeader, this->nullIfEmpty, condition));
+		this->InitReader(r);
+		return r;
+	}
 	if (this->stm.SetTo(stm))
 	{
-		NN<IO::Reader> rdr;
-		DB::CSVReader *r;
 		stm->SeekFromBeginning(0);
 		if (codePage == 65001)
 		{
@@ -87,11 +115,10 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 		{
 			NEW_CLASSNN(rdr, IO::StreamReader(stm, codePage));
 		}
-		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty, condition));
+		NEW_CLASSNN(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty, condition));
+		this->InitReader(r);
 		return r;
 	}
-	NN<IO::Reader> rdr;
-	DB::CSVReader *r;
 	NN<IO::FileStream> fs;
 	NEW_CLASSNN(fs, IO::FileStream(this->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (!fs->IsError())
@@ -104,7 +131,8 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 		{
 			NEW_CLASSNN(rdr, IO::StreamReader(fs, codePage));
 		}
-		NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty, condition));
+		NEW_CLASSNN(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty, condition));
+		this->InitReader(r);
 		return r;
 	}
 	else
@@ -161,6 +189,36 @@ void DB::CSVFile::SetNullIfEmpty(Bool nullIfEmpty)
 	this->nullIfEmpty = nullIfEmpty;
 }
 
+void DB::CSVFile::SetIndexCol(UOSInt indexCol)
+{
+	this->indexCol = indexCol;
+}
+
+void DB::CSVFile::SetTimeCols(Data::DataArray<UOSInt> timeCols)
+{
+	UOSInt i = 0;
+	UOSInt j = timeCols.GetCount();
+	this->timeCols.Clear();
+	while (i < j)
+	{
+		this->timeCols.Add(timeCols[i]);
+		i++;
+	}
+}
+
+Optional<Data::TableData> DB::CSVFile::LoadAsTableData(Text::CStringNN fileName, UInt32 codePage, UOSInt indexCol, Data::DataArray<UOSInt> timeCols)
+{
+	if (IO::Path::GetPathType(fileName) != IO::Path::PathType::File)
+		return 0;
+	NN<DB::CSVFile> csv;
+	NEW_CLASSNN(csv, DB::CSVFile(fileName, codePage));
+	csv->SetIndexCol(indexCol);
+	csv->SetTimeCols(timeCols);
+	NN<Data::TableData> data;
+	NEW_CLASSNN(data, Data::TableData(csv, true, 0, CSTR("")));
+	return data;
+}
+
 DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Optional<Data::QueryConditions> condition)
 {
 	this->stm = stm;
@@ -169,10 +227,10 @@ DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHe
 	this->nullIfEmpty = nullIfEmpty;
 	this->nCol = 0;
 	this->rowBuffSize = 16384;
-	this->row = MemAlloc(UTF8Char, this->rowBuffSize);
-	this->cols = MemAllocArr(UnsafeArray<UTF8Char>, 128);
-	this->colSize = MemAlloc(UOSInt, 128);
-	this->hdrs = MemAlloc(Text::PString, 128);
+	this->indexCol = INVALID_INDEX;
+	this->row = MemAllocArr(UTF8Char, this->rowBuffSize);
+	this->cols = MemAllocArr(CSVColumn, 128);
+	this->hdrs = MemAllocArr(Text::PString, 128);
 	this->condition = condition;
 
 	UnsafeArray<UTF8Char> sptr;
@@ -197,12 +255,12 @@ DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHe
 						break;
 					if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
 					{
-						UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
-						MemCopyNO(newRow, this->row, this->rowBuffSize);
+						UnsafeArray<UTF8Char> newRow = MemAllocArr(UTF8Char, this->rowBuffSize << 1);
+						MemCopyNO(newRow.Ptr(), this->row.Ptr(), this->rowBuffSize);
 						this->rowBuffSize <<= 1;
 						sptr = &newRow[(sptr - this->row)];
 						currPtr = &newRow[(currPtr - this->row)];
-						MemFree(this->row);
+						MemFreeArr(this->row);
 						this->row = newRow;
 					}
 				}
@@ -244,14 +302,19 @@ DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHe
 		}
 	}
 
-	this->hdr = MemAlloc(UTF8Char, (UOSInt)(currPtr - this->row + 1));
-	MemCopyNO(this->hdr, this->row, sizeof(UTF8Char) * (UOSInt)(currPtr - this->row + 1));
+	this->hdr = MemAllocArr(UTF8Char, (UOSInt)(currPtr - this->row + 1));
+	MemCopyNO(this->hdr.Ptr(), this->row.Ptr(), sizeof(UTF8Char) * (UOSInt)(currPtr - this->row + 1));
 	this->nHdr = Text::StrCSVSplitP(this->hdrs, 128, this->hdr);
 	this->nCol = this->nHdr;
 	UOSInt i = this->nCol;
 	while (i-- > 0)
 	{
-		this->colSize[i] = this->hdrs[i].leng;
+		this->cols[i].colSize = this->hdrs[i].leng;
+	}
+	i = 128;
+	while (i-- > 0)
+	{
+		this->cols[i].colType = DB::DBUtil::ColType::CT_VarUTF8Char;
 	}
 }
 
@@ -259,11 +322,10 @@ DB::CSVReader::~CSVReader()
 {
 	this->rdr.Delete();
 	this->stm.Delete();
-	MemFree(this->row);
+	MemFreeArr(this->row);
 	MemFreeArr(this->cols);
-	MemFree(this->colSize);
-	MemFree(this->hdr);
-	MemFree(this->hdrs);
+	MemFreeArr(this->hdr);
+	MemFreeArr(this->hdrs);
 }
 
 Bool DB::CSVReader::ReadNext()
@@ -282,7 +344,7 @@ Bool DB::CSVReader::ReadNext()
 		this->nCol = nCol;
 		while (nCol-- > 0)
 		{
-			this->cols[nCol] = this->hdrs[nCol].v;
+			this->cols[nCol].value = this->hdrs[nCol].v;
 		}
 		return true;
 	}
@@ -302,7 +364,7 @@ Bool DB::CSVReader::ReadNext()
 		}
 
 		nCol = 1;
-		cols[0] = this->row;
+		cols[0].value = this->row;
 
 		currPtr = this->row;
 		colStart = true;
@@ -318,23 +380,23 @@ Bool DB::CSVReader::ReadNext()
 						break;
 					if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
 					{
-						UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
-						MemCopyNO(newRow, this->row, this->rowBuffSize);
+						UnsafeArray<UTF8Char> newRow = MemAllocArr(UTF8Char, this->rowBuffSize << 1);
+						MemCopyNO(newRow.Ptr(), this->row.Ptr(), this->rowBuffSize);
 						this->rowBuffSize <<= 1;
 						sptr = &newRow[(sptr - this->row)];
 						currPtr = &newRow[(currPtr - this->row)];
 						UOSInt i = nCol;
 						while (i-- > 0)
 						{
-							cols[i] = &newRow[(cols[i] - this->row)];
+							cols[i].value = &newRow[(cols[i].value - &this->row[0])];
 						}
-						MemFree(this->row);
+						MemFreeArr(this->row);
 						this->row = newRow;
 					}
 				}
 				else
 				{
-					this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
+					this->cols[nCol - 1].colSize = (UOSInt)(currPtr - this->cols[nCol - 1].value);
 					break;
 				}
 			}
@@ -365,9 +427,9 @@ Bool DB::CSVReader::ReadNext()
 			}
 			else if ((c == ',') && (quote == 0))
 			{
-				this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
+				this->cols[nCol - 1].colSize = (UOSInt)(currPtr - this->cols[nCol - 1].value);
 				*currPtr++ = 0;
-				cols[nCol++] = currPtr;
+				this->cols[nCol++].value = currPtr;
 				colStart = true;
 			}
 			else
@@ -421,12 +483,12 @@ UnsafeArrayOpt<WChar> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> 
 
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
 			return 0;
 		}
 	}
-	UnsafeArray<const WChar> csptr = Text::StrToWCharNew(cols[colIndex]);
+	UnsafeArray<const WChar> csptr = Text::StrToWCharNew(cols[colIndex].value);
 	UnsafeArray<const WChar> ptr = csptr;
 	WChar c;
 	Int32 quote = 0;
@@ -491,12 +553,12 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 		return false;
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
 			return 0;
 		}
 	}
-	UnsafeArray<const WChar> csptr = Text::StrToWCharNew(cols[colIndex]);
+	UnsafeArray<const WChar> csptr = Text::StrToWCharNew(cols[colIndex].value);
 	UnsafeArray<const WChar> ptr = csptr;
 	WChar c;
 	Int32 quote = 0;
@@ -559,14 +621,14 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
 			return 0;
 		}
 	}
 	NN<Text::String> s;
 	UOSInt len = 0;
-	UnsafeArray<const UTF8Char> csptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> csptr = cols[colIndex].value;
 	UnsafeArray<const UTF8Char> ptr = csptr;
 	UTF8Char c;
 	Int32 quote = 0;
@@ -678,12 +740,12 @@ UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8
 		return 0;
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
 			return 0;
 		}
 	}
-	UnsafeArray<const UTF8Char> ptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> ptr = cols[colIndex].value;
 	UTF8Char c;
 	Int32 quote = 0;
 	c = *ptr;
@@ -795,12 +857,12 @@ Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
 		return 0;
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
 			return 0;
 		}
 	}
-	UnsafeArray<const UTF8Char> ptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> ptr = cols[colIndex].value;
 	if (Text::StrStartsWith(ptr, (const UTF8Char*)"0x"))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -865,18 +927,18 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	}
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || (*(UInt16*)cols[colIndex].Ptr() == 0x2222 && cols[colIndex][2] == 0))
+		if (cols[colIndex].value[0] == 0 || (*(UInt16*)cols[colIndex].value.Ptr() == 0x2222 && cols[colIndex].value[2] == 0))
 		{
 			item->SetNull();
 			return true;
 		}
 	}
-	UnsafeArray<const UTF8Char> ptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> ptr = cols[colIndex].value;
 	UTF8Char c;
 	c = *ptr;
 	if (c == '"')
 	{
-		NN<Text::String> s = Text::String::New(this->colSize[colIndex]);
+		NN<Text::String> s = Text::String::New(this->cols[colIndex].colSize);
 		UnsafeArray<UTF8Char> buff = s->v;
 		Int32 quote = 0;
 		while (true)
@@ -910,13 +972,27 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 		}
 		*buff = 0;
 		s->leng = (UOSInt)(buff - s->v);
-		item->SetStr(s);
+		if (cols[colIndex].colType == DB::DBUtil::CT_DateTimeTZ)
+		{
+			item->SetDate(Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()));
+		}
+		else
+		{
+			item->SetStr(s);
+		}
 		s->Release();
 		return true;
 	}
 	else
 	{
-		item->SetStrSlow(ptr);
+		if (cols[colIndex].colType == DB::DBUtil::CT_DateTimeTZ)
+		{
+			item->SetDate(Data::Timestamp::FromStr(Text::CStringNN::FromPtr(ptr), Data::DateTimeUtil::GetLocalTzQhr()));
+		}
+		else
+		{
+			item->SetStrSlow(ptr);
+		}
 		return true;
 	}	
 }
@@ -940,7 +1016,7 @@ DB::DBUtil::ColType DB::CSVReader::GetColType(UOSInt colIndex, OptOut<UOSInt> co
 	if (colIndex >= nHdr)
 		return DB::DBUtil::CT_Unknown;
 	colSize.Set(0xffffffff);
-	return DB::DBUtil::CT_VarUTF8Char;
+	return cols[colIndex].colType;
 }
 
 Bool DB::CSVReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
@@ -948,11 +1024,11 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	if (colIndex >= nHdr)
 		return false;
 	colDef->SetColName(this->hdrs[colIndex].ToCString());
-	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
+	colDef->SetColType(cols[colIndex].colType);
 	colDef->SetColSize(256);
 	colDef->SetColDP(0);
 	colDef->SetNotNull(true);
-	colDef->SetPK(false);
+	colDef->SetPK(colIndex == this->indexCol);
 	colDef->SetAutoInc(DB::ColDef::AutoIncType::None, 1, 1);
 	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetAttr(CSTR_NULL);
@@ -972,9 +1048,22 @@ NN<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
 			}
 			else
 			{
-				return Data::VariItem::NewStrSlow(UnsafeArray<const UTF8Char>(this->cols[i]));
+				return Data::VariItem::NewStrSlow(UnsafeArray<const UTF8Char>(this->cols[i].value));
 			}
 		}
 	}
 	return Data::VariItem::NewUnknown();
+}
+
+void DB::CSVReader::SetIndexCol(UOSInt indexCol)
+{
+	this->indexCol = indexCol;
+}
+
+void DB::CSVReader::AddTimeCol(UOSInt timeCol)
+{
+	if (timeCol < 128)
+	{
+		this->cols[timeCol].colType = DB::DBUtil::CT_DateTimeTZ;
+	}
 }

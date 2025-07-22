@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_ARRAYLISTSTRINGNN
 #define _SM_DATA_ARRAYLISTSTRINGNN
+#include "Data/FastStringMap.h"
 #include "Data/SortableArrayListNN.h"
 #include "Text/String.h"
 
@@ -19,6 +20,7 @@ namespace Data
 		NN<Text::String> JoinString() const;
 		NN<Text::String> JoinString(Text::CStringNN s) const;
 		void FreeAll();
+		void ValueCounts(NN<Data::FastStringMap<UInt32>> counts) const;
 	};
 }
 #endif

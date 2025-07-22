@@ -83,6 +83,7 @@ console:
 @RC2Test
 @RSATest
 @X509Test
+@DataSciTest
 @DateTimeTest
 @InflateTest
 @LLMTest
@@ -288,6 +289,9 @@ X509Test:
 @ConsoleStartup.o
 
 #Data
+DataSciTest:
+@DataSciTest.o
+@ConsoleStartup.o
 DateTimeTest:
 @DateTimeTest.o
 @ConsoleStartup.o
@@ -1027,6 +1031,7 @@ JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
 RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
 RSATest.o: ../../main/CryptoTest/RSATest.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
+DataSciTest.o: ../../main/Data/DataSciTest.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 InflateTest.o: ../../main/Data/InflateTest.cpp
 LLMTest.o: ../../main/Data/LLMTest.cpp
@@ -1524,6 +1529,8 @@ Data/DataMap.h:
 Data/DataMapNN.h:
 Data/DataModelUtil.h:
 @DataModelUtil.o
+Data/DataSet.h:
+@DataSet.o
 Data/Date.h:
 Data/DateTime.h:
 @DateTime.o
@@ -1578,6 +1585,8 @@ Data/SyncCircularBuff.h:
 Data/SyncCircularBuffNN.h:
 Data/SyncLinkedList.h:
 @SyncLinkedList.o
+Data/TableData.h:
+@TableData.o
 Data/TimeInstant.h:
 Data/Timestamp.h:
 Data/TwinItem.h:
@@ -1619,6 +1628,7 @@ Data/Compress/PackBits.h:
 @PackBits.o
 Data/Sort/ArtificialQuickSort.h:
 @ArtificialQuickSort.o
+Data/Sort/ArtificialQuickSortAList.h:
 Data/Sort/ArtificialQuickSortC.h:
 @ArtificialQuickSort_CPP.o
 Data/Sort/ArtificialQuickSortCmp.h:

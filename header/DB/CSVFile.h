@@ -1,5 +1,6 @@
 #ifndef _SM_DB_CSVFILE
 #define _SM_DB_CSVFILE
+#include "Data/TableData.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/SeekableStream.h"
@@ -9,16 +10,20 @@
 
 namespace DB
 {
+	class CSVReader;
 	class CSVFile : public DB::ReadingDB
 	{
 	private:
 		NN<Text::String> fileName;
 		Optional<IO::SeekableStream> stm;
-		Bool releaseStm;
+		Optional<IO::StreamData> fd;
 		UInt32 codePage;
 		Bool noHeader;
 		Bool nullIfEmpty;
+		UOSInt indexCol;
+		Data::ArrayList<UOSInt> timeCols;
 
+		void InitReader(NN<CSVReader> r);
 	public:
 		CSVFile(NN<Text::String> fileName, UInt32 codePage);
 		CSVFile(Text::CStringNN fileName, UInt32 codePage);
@@ -34,23 +39,34 @@ namespace DB
 		virtual void Reconnect();
 		void SetNoHeader(Bool noHeader);
 		void SetNullIfEmpty(Bool nullIfEmpty);
+		void SetIndexCol(UOSInt indexCol);
+		void SetTimeCols(Data::DataArray<UOSInt> timeCols);
+
+		static Optional<Data::TableData> LoadAsTableData(Text::CStringNN fileName, UInt32 codePage, UOSInt indexCol, Data::DataArray<UOSInt> timeCols);
 	};
 
 	class CSVReader : public DB::DBReader, public Data::ObjectGetter
 	{
 	private:
+		struct CSVColumn
+		{
+			UOSInt colSize;
+			UnsafeArray<UTF8Char> value;
+			DB::DBUtil::ColType colType;
+		};
+	private:
 		Optional<IO::Stream> stm;
 		NN<IO::Reader> rdr;
 		UOSInt nCol;
 		UOSInt nHdr;
-		UTF8Char *row;
+		UnsafeArray<UTF8Char> row;
 		UOSInt rowBuffSize;
-		UnsafeArray<UnsafeArray<UTF8Char>> cols;
-		UOSInt *colSize;
-		UTF8Char *hdr;
-		Text::PString *hdrs;
+		UnsafeArray<CSVColumn> cols;
+		UnsafeArray<UTF8Char> hdr;
+		UnsafeArray<Text::PString> hdrs;
 		Bool noHeader;
 		Bool nullIfEmpty;
+		UOSInt indexCol;
 		Optional<Data::QueryConditions> condition;
 
 	public:
@@ -81,6 +97,8 @@ namespace DB
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
 		virtual NN<Data::VariItem> GetNewItem(Text::CStringNN name);
+		void SetIndexCol(UOSInt indexCol);
+		void AddTimeCol(UOSInt timeCol);
 	};
 }
 #endif

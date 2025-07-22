@@ -2,6 +2,7 @@
 #define _SM_DATA_SORTABLEARRAYLISTNATIVE
 #include "Data/ArrayList.h"
 #include "Data/Comparator.h"
+#include "Data/Sort/ArtificialQuickSortCmp.h"
 
 namespace Data
 {
@@ -15,6 +16,10 @@ namespace Data
 		UOSInt SortedInsert(T val);
 		OSInt SortedIndexOf(T val) const;
 		virtual OSInt Compare(T a, T b) const;
+		T Min() const;
+		T Max() const;
+		Double Mean() const;
+		T Median() const;
 	};
 
 	template <class T> UOSInt Data::SortableArrayListNative<T>::SortedInsert(T val)
@@ -80,6 +85,64 @@ namespace Data
 		if (a > b) return 1;
 		if (a < b) return -1;
 		return 0;
+	}
+
+	template <class T> T Data::SortableArrayListNative<T>::Min() const
+	{
+		UOSInt i = this->objCnt;
+		if (this->objCnt == 0)
+			return 0;
+		T v = this->arr[0];
+		while (i-- > 1)
+		{
+			if (this->arr[i] < v)
+			{
+				v = this->arr[i];
+			}
+		}
+		return v;
+	}
+
+	template <class T> T Data::SortableArrayListNative<T>::Max() const
+	{
+		UOSInt i = this->objCnt;
+		if (this->objCnt == 0)
+			return 0;
+		T v = this->arr[0];
+		while (i-- > 1)
+		{
+			if (this->arr[i] > v)
+			{
+				v = this->arr[i];
+			}
+		}
+		return v;
+	}
+
+	template <class T> Double Data::SortableArrayListNative<T>::Mean() const
+	{
+		Double sum = 0;
+		UOSInt i = this->objCnt;
+		while (i-- > 0)
+		{
+			sum += (Double)this->arr[i];
+		}
+		return sum / (Double)this->objCnt;
+	}
+
+	template <class T> T Data::SortableArrayListNative<T>::Median() const
+	{
+		UOSInt cnt = this->objCnt;
+		if (cnt == 0)
+			return 0;
+		if (cnt == 1)
+			return this->arr[0];
+		UnsafeArray<T> tmpArr = MemAllocArr(T, cnt);
+		MemCopyNO(tmpArr.Ptr(), this->arr.Ptr(), cnt * sizeof(T));
+		ArtificialQuickSort_Sort(tmpArr.Ptr(), 0, (OSInt)cnt - 1);
+		T v = tmpArr[cnt >> 1];
+		MemFreeArr(tmpArr);
+		return v;
 	}
 }
 #endif

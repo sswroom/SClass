@@ -5,6 +5,7 @@
 #include "Data/NamedClass.h"
 #include "Data/StringMap.h"
 #include "Data/StringUTF8Map.h"
+#include "Math/Size2D.h"
 #include "Text/CString.h"
 #include "Text/JSText.h"
 #include "Text/String.h"
@@ -33,6 +34,7 @@ namespace Text
 		static Bool Equals(Optional<Text::String> s1, Optional<Text::String> s2);
 		static OSInt Compare(Optional<Text::String> s1, Optional<Text::String> s2);
 		static OSInt CompareICase(Optional<Text::String> s1, Optional<Text::String> s2);
+		static Math::Size2D<UOSInt> GetMonospaceSize(UnsafeArray<const UTF8Char> s);
 	};
 }
 
