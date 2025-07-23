@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCHARTFORM
 #define _SM_SSWR_AVIREAD_AVIRCHARTFORM
-#include "Data/Chart.h"
+#include "Data/ChartPlotter.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIPictureBoxSimple.h"
@@ -15,11 +15,11 @@ namespace SSWR
 			NN<UI::GUIPictureBoxSimple> pbMain;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<Data::Chart> chart;
+			NN<Data::ChartPlotter> chart;
 
 			static void __stdcall OnSizeChanged(AnyType userObj);
 		public:
-			AVIRChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::Chart> chart);
+			AVIRChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ChartPlotter> chart);
 			virtual ~AVIRChartForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

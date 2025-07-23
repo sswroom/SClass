@@ -1513,8 +1513,8 @@ Data/ByteOrderMSB.h:
 Data/ByteTool.h:
 @ByteTool.o
 Data/CallbackStorage.h:
-Data/Chart.h:
-@Chart.o
+Data/ChartPlotter.h:
+@ChartPlotter.o
 Data/CircularByteBuff.h:
 @CircularByteBuff.o
 Data/Class.h:
@@ -1551,8 +1551,6 @@ Data/ICaseStringMap.h:
 Data/ICaseStringMapNN.h:
 Data/ICaseStringUTF8Map.h:
 Data/Iterator.h:
-Data/LineChart.h:
-@LineChart.o
 Data/List.h:
 Data/ListMap.h:
 Data/ListMapNN.h:

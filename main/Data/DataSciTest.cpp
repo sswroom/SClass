@@ -1,11 +1,12 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Data/ArrayListUInt32.h"
+#include "Data/ChartPlotter.h"
 #include "DB/CSVFile.h"
 #include "IO/ConsoleWriter.h"
 #include "Text/TextWriteUtil.h"
 
-#define DATAPATH ""
+#define DATAPATH "/home/sswroom/Progs/VCClass/Book/GotopDataSci/MathProgramming/"
 
 Int32 TestPage26()
 {
@@ -30,7 +31,20 @@ Int32 TestPage27()
 	{
 		if (dfInfo->GetDataSet(CSTR("金額")).SetTo(ds))
 		{
-			console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("Item Count:"))->AppendUOSInt(ds->GetCount())->ToCString());
+			Data::ArrayList<Data::TwinItem<Data::Timestamp, Double>> groupResult;
+			ds->GroupKeyByMonth().Sum(groupResult);
+//			UOSInt i = 0;
+//			UOSInt j = groupResult.GetCount();
+//			while (i < j)
+//			{
+//				console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("TS: "))->AppendTSNoZone(groupResult.GetItem(i).key)->Append(CSTR(", Sum: "))->AppendDouble(groupResult.GetItem(i).value)->ToCString());
+//				i++;
+//			}
+			Data::ChartPlotter chart(0);
+//			chart.AddXData(groupResult);
+//			chart.AddLine(groupResult);
+//			chart.GetXAxis().SetRotate(60);
+			//console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("Item Count:"))->AppendUOSInt(groupResult.GetCount())->ToCString());
 			ds.Delete();
 		}
 		else

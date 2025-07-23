@@ -14,15 +14,15 @@
 Text::CStringNN Text::ReportBuilder::ColumnMergeLeft = CSTR("|-L");
 Text::CStringNN Text::ReportBuilder::ColumnMergeUp = CSTR("|-U");
 
-Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::Chart::DataType dataType)
+Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::ChartPlotter::DataType dataType)
 {
 	switch (dataType)
 	{
-	case Data::Chart::DataType::DateTicks:
+	case Data::ChartPlotter::DataType::DateTicks:
 		return Text::SpreadSheet::AxisType::Date;
-	case Data::Chart::DataType::None:
-	case Data::Chart::DataType::DOUBLE:
-	case Data::Chart::DataType::Integer:
+	case Data::ChartPlotter::DataType::None:
+	case Data::ChartPlotter::DataType::DOUBLE:
+	case Data::ChartPlotter::DataType::Integer:
 		return Text::SpreadSheet::AxisType::Numeric;
 	default:
 		return Text::SpreadSheet::AxisType::Numeric;
@@ -159,7 +159,7 @@ void Text::ReportBuilder::SetPaperHori(Bool paperHori)
 	this->paperHori = paperHori;
 }
 
-void Text::ReportBuilder::AddChart(Data::Chart *chart)
+void Text::ReportBuilder::AddChart(Data::ChartPlotter *chart)
 {
 	SDEL_CLASS(this->chart);
 	this->chart = chart;
@@ -818,7 +818,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 			UOSInt colCount;
 			switch (chart->GetXAxisType())
 			{
-			case Data::Chart::DataType::DateTicks:
+			case Data::ChartPlotter::DataType::DateTicks:
 			{
 				if (dateStyle == 0)
 				{
@@ -836,7 +836,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				}
 				break;
 			}
-			case Data::Chart::DataType::DOUBLE:
+			case Data::ChartPlotter::DataType::DOUBLE:
 			{
 				if (dblStyle == 0)
 				{
@@ -854,7 +854,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				}
 				break;
 			}
-			case Data::Chart::DataType::Integer:
+			case Data::ChartPlotter::DataType::Integer:
 			{
 				if (intStyle == 0)
 				{
@@ -872,7 +872,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				}
 				break;
 			}
-			case Data::Chart::DataType::None:
+			case Data::ChartPlotter::DataType::None:
 				colCount = 0;
 				break;
 			}
@@ -883,7 +883,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				dataSheet->SetCellString(1 + i, 0, strStyle, Text::String::OrEmpty(chart->GetYName(i)));
 				switch (chart->GetYType(i))
 				{
-				case Data::Chart::DataType::DateTicks:
+				case Data::ChartPlotter::DataType::DateTicks:
 				{
 					if (dateStyle == 0)
 					{
@@ -901,7 +901,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					}
 					break;
 				}
-				case Data::Chart::DataType::DOUBLE:
+				case Data::ChartPlotter::DataType::DOUBLE:
 				{
 					if (dblStyle == 0)
 					{
@@ -919,7 +919,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					}
 					break;
 				}
-				case Data::Chart::DataType::Integer:
+				case Data::ChartPlotter::DataType::Integer:
 				{
 					if (intStyle == 0)
 					{
@@ -937,7 +937,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					}
 					break;
 				}
-				case Data::Chart::DataType::None:
+				case Data::ChartPlotter::DataType::None:
 					colCount = 0;
 					break;				
 				}

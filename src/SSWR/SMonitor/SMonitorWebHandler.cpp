@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Data/LineChart.h"
+#include "Data/ChartPlotter.h"
 #include "Exporter/GUIPNGExporter.h"
 #include "IO/MemoryStream.h"
 #include "Math/Math.h"
@@ -1030,7 +1030,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		NN<Media::DrawBrush> b;
 		UOSInt readingIndex = (UOSInt)-1;
 		Int32 readingTypeD;
-		Data::LineChart *chart;
+		Data::ChartPlotter *chart;
 		j = dev->nReading;
 		i = 0;
 		while (i < j)
@@ -1393,14 +1393,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 					}
 				}
 
-				NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
+				NEW_CLASS(chart, Data::ChartPlotter(sb.ToCString()));
 				if (dateList2.GetCount() >= 2)
 				{
 					chart->AddXDataDate(dateList2.Arr().Ptr(), dateList2.GetCount());
-					chart->AddYData(CSTR("Yesterday"), valList2.Arr().Ptr(), valList2.GetCount(), 0xffcccccc, Data::LineChart::LS_LINE);
+					chart->AddYData(CSTR("Yesterday"), valList2.Arr().Ptr(), valList2.GetCount(), 0xffcccccc, Data::ChartPlotter::LineStyle::Line);
 				}
 				chart->AddXDataDate(dateList.Arr().Ptr(), dateList.GetCount());
-				chart->AddYData(CSTR("Reading"), valList.Arr().Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
+				chart->AddYData(CSTR("Reading"), valList.Arr().Ptr(), valList.GetCount(), 0xffff0000, Data::ChartPlotter::LineStyle::Line);
 
 				chart->SetDateFormat(CSTR(""));
 				chart->SetFontHeightPt(10);
@@ -1660,7 +1660,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		NN<Media::DrawBrush> b;
 		UOSInt readingIndex = (UOSInt)-1;
 		Int32 readingType = 0;
-		Data::LineChart *chart;
+		Data::ChartPlotter *chart;
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
 		i = dev->nReading;
 		while (i-- > 0)
@@ -1752,9 +1752,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 
 			if (dateList.GetCount() >= 2)
 			{
-				NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
+				NEW_CLASS(chart, Data::ChartPlotter(sb.ToCString()));
 				chart->AddXDataDate(dateList.Arr().Ptr(), dateList.GetCount());
-				chart->AddYData(CSTR("Reading"), valList.Arr().Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
+				chart->AddYData(CSTR("Reading"), valList.Arr().Ptr(), valList.GetCount(), 0xffff0000, Data::ChartPlotter::LineStyle::Line);
 				chart->SetDateFormat(CSTR(""));
 				chart->SetFontHeightPt(10);
 				chart->SetTimeZoneQHR(32);

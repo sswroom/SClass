@@ -135,7 +135,7 @@ BinTool.o: ../../src/Data/BinTool.cpp
 ByteOrderLSB.o: ../../src/Data/ByteOrderLSB.cpp
 ByteOrderMSB.o: ../../src/Data/ByteOrderMSB.cpp
 ByteTool.o: ../../src/Data/ByteTool.cpp
-Chart.o: ../../src/Data/Chart.cpp
+ChartPlotter.o: ../../src/Data/ChartPlotter.cpp
 CircularByteBuff.o: ../../src/Data/CircularByteBuff.cpp
 Class.o: ../../src/Data/Class.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
@@ -145,7 +145,6 @@ DateTime.o: ../../src/Data/DateTime.cpp
 DateTimeUtil.o: ../../src/Data/DateTimeUtil.cpp
 DWGUtil.o: ../../src/Data/DWGUtil.cpp
 FieldComparator.o: ../../src/Data/FieldComparator.cpp
-LineChart.o: ../../src/Data/LineChart.cpp
 MacCore.o: ../../src/Data/MacCore.cpp
 QueryConditions.o: ../../src/Data/QueryConditions.cpp
 RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp

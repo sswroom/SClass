@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRChartForm::AVIRChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::Chart> chart) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRChartForm::AVIRChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ChartPlotter> chart) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Chart Form"));
 	this->SetFont(0, 0, 8.25, false);

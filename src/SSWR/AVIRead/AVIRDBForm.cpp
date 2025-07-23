@@ -769,8 +769,8 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CHART_LINE:
 		if (this->lbTable->GetSelectedItemText(sbuff).SetTo(sptr))
 		{
-			Optional<Data::Chart> chart = 0;
-			NN<Data::Chart> nnchart;
+			Optional<Data::ChartPlotter> chart = 0;
+			NN<Data::ChartPlotter> nnchart;
 			{
 				Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));

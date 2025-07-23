@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/LineChart.h"
+#include "Data/ChartPlotter.h"
 #include "DB/CSVFile.h"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 		UnsafeArray<UTF8Char> sptr;
 		{
 			sptr = country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
-			Data::LineChart chart(CSTRP(sbuff, sptr));
+			Data::ChartPlotter chart(CSTRP(sbuff, sptr));
 			chart.SetFontHeightPt(9.0);
 			chart.SetDateFormat(CSTR("yyyy-MM-dd"));
 			i = 0;
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 				i++;
 			}
 			chart.AddXDataDate(dates, j);
-			chart.AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
+			chart.AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::ChartPlotter::LineStyle::Line);
 			chart.Plot(dimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 			MemFree(counts);
 			MemFree(dates);

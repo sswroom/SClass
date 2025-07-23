@@ -1,28 +1,61 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/Chart.h"
-#include "Data/LineChart.h"
+#include "Data/ChartPlotter.h"
+#include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Data::LineChart::LineChart(Text::CString title)
+Data::ChartPlotter::ChartData::ChartData(NN<Text::String> name, void *data, UOSInt dataCnt, DataType dataType, UInt32 lineColor, LineStyle lineStyle, ChartType chartType)
 {
+	this->name = name->Clone();
+	this->data = data;
+	this->dataCnt = dataCnt;
+	this->dataType = dataType;
+	this->lineColor = lineColor;
+	this->lineStyle = lineStyle;
+	this->chartType = chartType;
+}
+
+Data::ChartPlotter::ChartData::ChartData(Text::CStringNN name, void *data, UOSInt dataCnt, DataType dataType, UInt32 lineColor, LineStyle lineStyle, ChartType chartType)
+{
+	this->name = Text::String::New(name);
+	this->data = data;
+	this->dataCnt = dataCnt;
+	this->dataType = dataType;
+	this->lineColor = lineColor;
+	this->lineStyle = lineStyle;
+	this->chartType = chartType;
+}
+
+Data::ChartPlotter::ChartData::~ChartData()
+{
+	this->name->Release();
+	MemFree(this->data);
+}
+
+Data::ChartPlotter::ChartPlotter(Text::CString title)
+{
+	this->title = 0;
+	this->xAxisName = 0;
+	this->yAxisName = 0;
+
+	this->timeFormat = Text::String::New(UTF8STRC("HH:mm"));
+	this->dateFormat = Text::String::New(UTF8STRC("yyyy/MM/dd"));
+	this->dblFormat = Text::String::New(UTF8STRC("0.00"));
+	this->minDblVal = 0.01;
+
 	this->titleBuff = 0;
 	this->SetTitle(title);
-	this->xType = Data::Chart::DataType::None;
+	this->xType = DataType::None;
 	this->refTime = 0;
 	this->timeZoneQHR = 0;
 	this->barLength = 3.0;
-	this->pointType = PT_NULL;
+	this->pointType = PointType::Null;
 	this->pointSize = 0;
 	this->yUnit = 0;
 	Data::DateTime dt;
 	dt.ToLocalTime();
 	this->timeZoneQHR = dt.GetTimeZoneQHR();
-	NEW_CLASS(this->rnd, Data::RandomOS());
-	NEW_CLASS(xDatas, Data::ArrayList<void*>());
-	NEW_CLASS(xDataCnt, Data::ArrayList<UOSInt>());
-	NEW_CLASS(yCharts, Data::ArrayList<ChartData*>());
 
 	bgColor = 0xffffffff;
 	boundColor = 0xff000000;
@@ -47,43 +80,43 @@ Data::LineChart::LineChart(Text::CString title)
 	this->hasYRangeInt = false;
 }
 
-Data::LineChart::~LineChart()
+Data::ChartPlotter::~ChartPlotter()
 {
+	OPTSTR_DEL(this->title);
+	OPTSTR_DEL(this->xAxisName);
+	OPTSTR_DEL(this->yAxisName);
+
+	this->dateFormat->Release();
+	this->timeFormat->Release();
+	this->dblFormat->Release();
+
 	UOSInt i;
 
-	i = this->xDatas->GetCount();
+	i = this->xDatas.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->xDatas->GetItem(i));
+		MemFree(this->xDatas.GetItem(i));
 	}
-	DEL_CLASS(this->xDatas);
-	this->xDatas = 0;
-	DEL_CLASS(this->xDataCnt);
-	this->xDataCnt = 0;
 
-	i = this->yCharts->GetCount();
+	i = this->yCharts.GetCount();
 	while (i-- > 0)
 	{
-		Data::LineChart::ChartData *data = (Data::LineChart::ChartData*)this->yCharts->RemoveAt(i);
-		DEL_CLASS(data);
+		this->yCharts.RemoveAt(i).Delete();
 	}
-	DEL_CLASS(this->yCharts);
-	this->yCharts = 0;
-
-	DEL_CLASS(this->rnd);
 	
 	this->refTime = 0;
 	this->xRangeDateMax = 0;
 	this->xRangeDateMin = 0;
 
 	OPTSTR_DEL(this->yUnit);
-	SDEL_STRING(this->titleBuff);
+	OPTSTR_DEL(this->titleBuff);
 	this->fntName->Release();
 }
 
-Bool Data::LineChart::AddXData(Data::DateTime **data, UOSInt dataCnt)
+
+Bool Data::ChartPlotter::AddXData(UnsafeArray<Data::DateTime*> data, UOSInt dataCnt)
 {
-	if (xType == Data::Chart::DataType::None)
+	if (xType == DataType::None)
 	{
 		Int64 *dateData = MemAlloc(Int64, dataCnt);
 		UOSInt i = dataCnt;
@@ -92,12 +125,12 @@ Bool Data::LineChart::AddXData(Data::DateTime **data, UOSInt dataCnt)
 			dateData[i] = data[i]->ToTicks();
 		}
 		
-		xType = Data::Chart::DataType::DateTicks;
-		xDatas->Add(dateData);
-		xDataCnt->Add(dataCnt);
+		xType = DataType::DateTicks;
+		this->xDatas.Add(dateData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
-	else if (xType == Data::Chart::DataType::DateTicks)
+	else if (xType == DataType::DateTicks)
 	{
 		Int64 *dateData = MemAlloc(Int64, dataCnt);
 		UOSInt i = dataCnt;
@@ -106,8 +139,8 @@ Bool Data::LineChart::AddXData(Data::DateTime **data, UOSInt dataCnt)
 			dateData[i] = data[i]->ToTicks();
 		}
 
-		xDatas->Add(dateData);
-		xDataCnt->Add(dataCnt);
+		this->xDatas.Add(dateData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
 	else
@@ -116,9 +149,9 @@ Bool Data::LineChart::AddXData(Data::DateTime **data, UOSInt dataCnt)
 	}
 }
 
-Bool Data::LineChart::AddXData(Data::Timestamp *data, UOSInt dataCnt)
+Bool Data::ChartPlotter::AddXData(UnsafeArray<Data::Timestamp> data, UOSInt dataCnt)
 {
-	if (xType == Data::Chart::DataType::None)
+	if (xType == DataType::None)
 	{
 		Int64 *dateData = MemAlloc(Int64, dataCnt);
 		UOSInt i = dataCnt;
@@ -127,12 +160,12 @@ Bool Data::LineChart::AddXData(Data::Timestamp *data, UOSInt dataCnt)
 			dateData[i] = data[i].ToTicks();
 		}
 		
-		xType = Data::Chart::DataType::DateTicks;
-		xDatas->Add(dateData);
-		xDataCnt->Add(dataCnt);
+		xType = DataType::DateTicks;
+		this->xDatas.Add(dateData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
-	else if (xType == Data::Chart::DataType::DateTicks)
+	else if (xType == DataType::DateTicks)
 	{
 		Int64 *dateData = MemAlloc(Int64, dataCnt);
 		UOSInt i = dataCnt;
@@ -141,8 +174,8 @@ Bool Data::LineChart::AddXData(Data::Timestamp *data, UOSInt dataCnt)
 			dateData[i] = data[i].ToTicks();
 		}
 
-		xDatas->Add(dateData);
-		xDataCnt->Add(dataCnt);
+		this->xDatas.Add(dateData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
 	else
@@ -151,23 +184,23 @@ Bool Data::LineChart::AddXData(Data::Timestamp *data, UOSInt dataCnt)
 	}
 }
 
-Bool Data::LineChart::AddXData(Double *data, UOSInt dataCnt)
+Bool Data::ChartPlotter::AddXData(UnsafeArray<Double> data, UOSInt dataCnt)
 {
-	if (xType == Data::Chart::DataType::None)
+	if (xType == DataType::None)
 	{
 		Double *dblData = MemAlloc(Double, dataCnt);
-		MemCopyNO(dblData, data, sizeof(Double) * dataCnt);
-		xType = Data::Chart::DataType::DOUBLE;
-		xDatas->Add(dblData);
-		xDataCnt->Add(dataCnt);
+		MemCopyNO(dblData, data.Ptr(), sizeof(Double) * dataCnt);
+		xType = DataType::DOUBLE;
+		this->xDatas.Add(dblData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
-	else if (xType == Data::Chart::DataType::DOUBLE)
+	else if (xType == DataType::DOUBLE)
 	{
 		Double *dblData = MemAlloc(Double, dataCnt);
-		MemCopyNO(dblData, data, sizeof(Double) * dataCnt);
-		xDatas->Add(dblData);
-		xDataCnt->Add(dataCnt);
+		MemCopyNO(dblData, data.Ptr(), sizeof(Double) * dataCnt);
+		this->xDatas.Add(dblData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
 	else
@@ -176,23 +209,23 @@ Bool Data::LineChart::AddXData(Double *data, UOSInt dataCnt)
 	}
 }
 
-Bool Data::LineChart::AddXData(Int32 *data, UOSInt dataCnt)
+Bool Data::ChartPlotter::AddXData(UnsafeArray<Int32> data, UOSInt dataCnt)
 {
-	if (xType == Data::Chart::DataType::None)
+	if (xType == DataType::None)
 	{
 		Int32 *iData = MemAlloc(Int32, dataCnt);
-		MemCopyNO(iData, data, sizeof(Int32) * dataCnt);
-		xType = Data::Chart::DataType::Integer;
-		xDatas->Add(iData);
-		xDataCnt->Add(dataCnt);
+		MemCopyNO(iData, data.Ptr(), sizeof(Int32) * dataCnt);
+		xType = DataType::Integer;
+		this->xDatas.Add(iData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
-	else if (xType == Data::Chart::DataType::Integer)
+	else if (xType == DataType::Integer)
 	{
 		Int32 *iData = MemAlloc(Int32, dataCnt);
-		MemCopyNO(iData, data, sizeof(Int32) * dataCnt);
-		xDatas->Add(iData);
-		xDataCnt->Add(dataCnt);
+		MemCopyNO(iData, data.Ptr(), sizeof(Int32) * dataCnt);
+		this->xDatas.Add(iData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
 	else
@@ -201,23 +234,23 @@ Bool Data::LineChart::AddXData(Int32 *data, UOSInt dataCnt)
 	}
 }
 
-Bool Data::LineChart::AddXDataDate(Int64 *data, UOSInt dataCnt)
+Bool Data::ChartPlotter::AddXDataDate(UnsafeArray<Int64> data, UOSInt dataCnt)
 {
-	if (xType == Data::Chart::DataType::None)
+	if (xType == DataType::None)
 	{
 		Int64 *newData = MemAlloc(Int64, dataCnt);
-		MemCopyNO(newData, data, sizeof(Int64) * dataCnt);
-		xType = Data::Chart::DataType::DateTicks;
-		xDatas->Add(newData);
-		xDataCnt->Add(dataCnt);
+		MemCopyNO(newData, data.Ptr(), sizeof(Int64) * dataCnt);
+		xType = DataType::DateTicks;
+		this->xDatas.Add(newData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
-	else if (xType == Data::Chart::DataType::DateTicks)
+	else if (xType == DataType::DateTicks)
 	{
 		Int64 *newData = MemAlloc(Int64, dataCnt);
-		MemCopyNO(newData, data, sizeof(Int64) * dataCnt);
-		xDatas->Add(newData);
-		xDataCnt->Add(dataCnt);
+		MemCopyNO(newData, data.Ptr(), sizeof(Int64) * dataCnt);
+		this->xDatas.Add(newData);
+		this->xDataCnt.Add(dataCnt);
 		return true;
 	}
 	else
@@ -226,79 +259,79 @@ Bool Data::LineChart::AddXDataDate(Int64 *data, UOSInt dataCnt)
 	}
 }
 
-void Data::LineChart::SetFontHeightPt(Double ptSize)
+void Data::ChartPlotter::SetFontHeightPt(Double ptSize)
 {
 	if (ptSize > 0)
 		fntSizePt = ptSize;
 }
 
-void Data::LineChart::SetFontName(Text::CStringNN name)
+void Data::ChartPlotter::SetFontName(Text::CStringNN name)
 {
 	this->fntName->Release();
 	this->fntName = Text::String::New(name);
 }
 
-void Data::LineChart::SetYRefVal(Int32 refVal, UInt32 col)
+void Data::ChartPlotter::SetYRefVal(Int32 refVal, UInt32 col)
 {
 	this->refInt = refVal;
 	this->refLineColor = col;
 	this->refExist = true;
 }
 
-void Data::LineChart::SetYRefVal(Double refVal, UInt32 col)
+void Data::ChartPlotter::SetYRefVal(Double refVal, UInt32 col)
 {
 	this->refDbl = refVal;
 	this->refLineColor = col;
 	this->refExist = true;
 }
 
-void Data::LineChart::SetYRefVal(Data::DateTime *refVal, UInt32 col)
+void Data::ChartPlotter::SetYRefVal(NN<Data::DateTime> refVal, UInt32 col)
 {
 	this->refTime = refVal->ToTicks();
 	this->refLineColor = col;
 	this->refExist = true;
 }
 
-void Data::LineChart::SetYRefType(Data::LineChart::RefType refType)
+void Data::ChartPlotter::SetYRefType(RefType refType)
 {
 	this->refType = refType;
 }
 
-void Data::LineChart::SetYUnit(Text::CString yUnit)
+void Data::ChartPlotter::SetYUnit(Text::CString yUnit)
 {
 	OPTSTR_DEL(this->yUnit);
 	this->yUnit = Text::String::NewOrNull(yUnit);
 }
 
-void Data::LineChart::SetLineThick(Double lineThick)
+void Data::ChartPlotter::SetLineThick(Double lineThick)
 {
 	this->lineThick = lineThick;
 }
 
-void Data::LineChart::SetTimeZoneQHR(Int8 timeZoneQHR)
+void Data::ChartPlotter::SetTimeZoneQHR(Int8 timeZoneQHR)
 {
 	this->timeZoneQHR = timeZoneQHR;
 }
 
-void Data::LineChart::SetBarLength(Double barLength)
+void Data::ChartPlotter::SetBarLength(Double barLength)
 {
 	this->barLength = barLength;
 }
 
-void Data::LineChart::SetPointType(PointType pointType, Double pointSize)
+void Data::ChartPlotter::SetPointType(PointType pointType, Double pointSize)
 {
 	this->pointType = pointType;
 	this->pointSize = pointSize;
 }
 
-UInt32 Data::LineChart::GetRndColor()
+UInt32 Data::ChartPlotter::GetRndColor()
 {
 	UInt32 r;
 	UInt32 g;
 	UInt32 b;
 	
-	r = (UInt32)(64 + (this->rnd->NextInt15() % 192));
-	g = (UInt32)(64 + (this->rnd->NextInt15() % 192));
+	r = (UInt32)(64 + (this->rnd.NextInt15() % 192));
+	g = (UInt32)(64 + (this->rnd.NextInt15() % 192));
 	b = 512 - r - g;
 	if (b < 0)
 		b = 0;
@@ -307,55 +340,67 @@ UInt32 Data::LineChart::GetRndColor()
 	return 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
-void Data::LineChart::AddYDataDate(NN<Text::String> name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::ChartPlotter::AddYDataDate(NN<Text::String> name, UnsafeArray<Int64> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
 {
 	Int64 *newVals;
 	newVals = MemAlloc(Int64, valCnt);
-	MemCopyNO(newVals, value, sizeof(Int64) * valCnt);
-	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::DateTicks, lineColor, lineStyle));
+	MemCopyNO(newVals, value.Ptr(), sizeof(Int64) * valCnt);
+	NN<ChartData> data;
+	NEW_CLASSNN(data, ChartData(name, newVals, valCnt, DataType::DateTicks, lineColor, lineStyle, ChartType::Line));
+	this->yCharts.Add(data);
 }
 
-void Data::LineChart::AddYDataDate(Text::CStringNN name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::ChartPlotter::AddYDataDate(Text::CStringNN name, UnsafeArray<Int64> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
 {
 	Int64 *newVals;
 	newVals = MemAlloc(Int64, valCnt);
-	MemCopyNO(newVals, value, sizeof(Int64) * valCnt);
-	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::DateTicks, lineColor, lineStyle));
+	MemCopyNO(newVals, value.Ptr(), sizeof(Int64) * valCnt);
+	NN<ChartData> data;
+	NEW_CLASSNN(data, ChartData(name, newVals, valCnt, DataType::DateTicks, lineColor, lineStyle, ChartType::Line));
+	this->yCharts.Add(data);
 }
 
-void Data::LineChart::AddYData(NN<Text::String> name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::ChartPlotter::AddYData(NN<Text::String> name, UnsafeArray<Int32> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
 {
 	Int32 *newVals;
 	newVals = MemAlloc(Int32, valCnt);
-	MemCopyNO(newVals, value, sizeof(Int32) * valCnt);
-	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::Integer, lineColor, lineStyle));
+	MemCopyNO(newVals, value.Ptr(), sizeof(Int32) * valCnt);
+	NN<ChartData> data;
+	NEW_CLASSNN(data, ChartData(name, newVals, valCnt, DataType::Integer, lineColor, lineStyle, ChartType::Line));
+	this->yCharts.Add(data);
 }
 
-void Data::LineChart::AddYData(Text::CStringNN name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::ChartPlotter::AddYData(Text::CStringNN name, UnsafeArray<Int32> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
 {
 	Int32 *newVals;
 	newVals = MemAlloc(Int32, valCnt);
-	MemCopyNO(newVals, value, sizeof(Int32) * valCnt);
-	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::Integer, lineColor, lineStyle));
+	MemCopyNO(newVals, value.Ptr(), sizeof(Int32) * valCnt);
+	NN<ChartData> data;
+	NEW_CLASSNN(data, ChartData(name, newVals, valCnt, DataType::Integer, lineColor, lineStyle, ChartType::Line));
+	this->yCharts.Add(data);
 }
 
-void Data::LineChart::AddYData(NN<Text::String> name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::ChartPlotter::AddYData(NN<Text::String> name, UnsafeArray<Double> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
 {
 	Double *newVals;
 	newVals = MemAlloc(Double, valCnt);
-	MemCopyNO(newVals, value, sizeof(Double) * valCnt);
-	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::DOUBLE, lineColor, lineStyle));
+	MemCopyNO(newVals, value.Ptr(), sizeof(Double) * valCnt);
+	NN<ChartData> data;
+	NEW_CLASSNN(data, ChartData(name, newVals, valCnt, DataType::DOUBLE, lineColor, lineStyle, ChartType::Line));
+	this->yCharts.Add(data);
 }
 
-void Data::LineChart::AddYData(Text::CStringNN name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::ChartPlotter::AddYData(Text::CStringNN name, UnsafeArray<Double> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
 {
 	Double *newVals;
 	newVals = MemAlloc(Double, valCnt);
-	MemCopyNO(newVals, value, sizeof(Double) * valCnt);
-	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::DOUBLE, lineColor, lineStyle));
+	MemCopyNO(newVals, value.Ptr(), sizeof(Double) * valCnt);
+	NN<ChartData> data;
+	NEW_CLASSNN(data, ChartData(name, newVals, valCnt, DataType::DOUBLE, lineColor, lineStyle, ChartType::Line));
+	this->yCharts.Add(data);
 }
 
-void Data::LineChart::SetXRangeDate(Data::DateTime *xVal)
+void Data::ChartPlotter::SetXRangeDate(NN<Data::DateTime> xVal)
 {
 	if (hasXRangeDate)
 	{
@@ -376,7 +421,7 @@ void Data::LineChart::SetXRangeDate(Data::DateTime *xVal)
 	}
 }
 
-void Data::LineChart::SetYRangeInt(Int32 yVal)
+void Data::ChartPlotter::SetYRangeInt(Int32 yVal)
 {
 	if (hasYRangeInt)
 	{
@@ -397,7 +442,7 @@ void Data::LineChart::SetYRangeInt(Int32 yVal)
 	}
 }
 
-void Data::LineChart::SetYRangeDbl(Double yVal)
+void Data::ChartPlotter::SetYRangeDbl(Double yVal)
 {
 	if (hasYRangeDbl)
 	{
@@ -423,13 +468,13 @@ void Data::LineChart::SetYRangeDbl(Double yVal)
 	this->style = style;
 }*/
 
-void Data::LineChart::SetTitle(Text::CString title)
+void Data::ChartPlotter::SetTitle(Text::CString title)
 {
 	NN<Text::String> s;
 	OPTSTR_DEL(this->title);
 	this->title = Text::String::NewOrNull(title);
 
-	SDEL_STRING(this->titleBuff);
+	OPTSTR_DEL(this->titleBuff);
 	if (!this->title.SetTo(s))
 	{
 		this->titleBuff = 0;
@@ -437,99 +482,172 @@ void Data::LineChart::SetTitle(Text::CString title)
 	}
 	else
 	{
-		this->titleBuff = Text::String::New(s->v, s->leng).Ptr();
-		this->titleLineCnt = Text::StrSplitLineP(this->titleLine, 3, *this->titleBuff);
+		this->titleBuff = s = Text::String::New(s->v, s->leng);
+		this->titleLineCnt = Text::StrSplitLineP(this->titleLine, 3, s.Ptr()[0]);
 	}
 }
 
+Optional<Text::String> Data::ChartPlotter::GetTitle() const
+{
+	return this->title;
+}
 
-Data::Chart::DataType Data::LineChart::GetXAxisType() const
+void Data::ChartPlotter::SetDateFormat(Text::CStringNN format)
+{
+	this->dateFormat->Release();
+	this->dateFormat = Text::String::New(format);
+}
+
+NN<Text::String> Data::ChartPlotter::GetDateFormat() const
+{
+	return this->dateFormat;
+}
+
+void Data::ChartPlotter::SetTimeFormat(Text::CStringNN format)
+{
+	this->timeFormat->Release();
+	this->timeFormat = Text::String::New(format);
+}
+
+NN<Text::String> Data::ChartPlotter::GetTimeFormat() const
+{
+	return this->timeFormat;
+}
+
+void Data::ChartPlotter::SetDblFormat(Text::CStringNN format)
+{
+	this->dblFormat->Release();
+	this->dblFormat = Text::String::New(format);
+	UOSInt i = format.IndexOf('.');
+	if (i == INVALID_INDEX)
+	{
+		this->minDblVal = 1.0;
+	}
+	else
+	{
+		i = format.leng - i - 1;
+		this->minDblVal = 1.0;
+		while (i-- > 0)
+		{
+			this->minDblVal = this->minDblVal * 0.1;
+		}
+	}
+}
+
+NN<Text::String> Data::ChartPlotter::GetDblFormat() const
+{
+	return this->dblFormat;
+}
+
+void Data::ChartPlotter::SetXAxisName(Text::CString xAxisName)
+{
+	OPTSTR_DEL(this->xAxisName);
+	this->xAxisName = Text::String::NewOrNull(xAxisName);
+}
+
+Optional<Text::String> Data::ChartPlotter::GetXAxisName() const
+{
+	return this->xAxisName;
+}
+
+void Data::ChartPlotter::SetYAxisName(Text::CString yAxisName)
+{
+	OPTSTR_DEL(this->yAxisName);
+	this->yAxisName = Text::String::NewOrNull(yAxisName);
+}
+
+Optional<Text::String> Data::ChartPlotter::GetYAxisName() const
+{
+	return this->yAxisName;
+}
+
+Data::ChartPlotter::DataType Data::ChartPlotter::GetXAxisType() const
 {
 	return this->xType;
 }
 
-UOSInt Data::LineChart::GetXDataCount() const
+UOSInt Data::ChartPlotter::GetXDataCount() const
 {
-	return this->xDatas->GetCount();
+	return this->xDatas.GetCount();
 }
 
-UnsafeArrayOpt<Int64> Data::LineChart::GetXDateTicks(UOSInt index, OutParam<UOSInt> cnt) const
+UnsafeArrayOpt<Int64> Data::ChartPlotter::GetXDateTicks(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	if (this->xType != DataType::DateTicks)
 		return 0;
-	cnt.Set(this->xDataCnt->GetItem(index));
-	return (Int64*)this->xDatas->GetItem(index);
+	cnt.Set(this->xDataCnt.GetItem(index));
+	return (Int64*)this->xDatas.GetItem(index);
 }
 
-UnsafeArrayOpt<Double> Data::LineChart::GetXDouble(UOSInt index, OutParam<UOSInt> cnt) const
+UnsafeArrayOpt<Double> Data::ChartPlotter::GetXDouble(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	if (this->xType != DataType::DOUBLE)
 		return 0;
-	cnt.Set(this->xDataCnt->GetItem(index));
-	return (Double*)this->xDatas->GetItem(index);
+	cnt.Set(this->xDataCnt.GetItem(index));
+	return (Double*)this->xDatas.GetItem(index);
 }
 
-UnsafeArrayOpt<Int32> Data::LineChart::GetXInt32(UOSInt index, OutParam<UOSInt> cnt) const
+UnsafeArrayOpt<Int32> Data::ChartPlotter::GetXInt32(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	if (this->xType != DataType::Integer)
 		return 0;
-	cnt.Set(this->xDataCnt->GetItem(index));
-	return (Int32*)this->xDatas->GetItem(index);
+	cnt.Set(this->xDataCnt.GetItem(index));
+	return (Int32*)this->xDatas.GetItem(index);
 }
 
-UOSInt Data::LineChart::GetYDataCount() const
+UOSInt Data::ChartPlotter::GetYDataCount() const
 {
-	return this->yCharts->GetCount();
+	return this->yCharts.GetCount();
 }
 
-UnsafeArrayOpt<Int64> Data::LineChart::GetYDateTicks(UOSInt index, OutParam<UOSInt> cnt) const
+UnsafeArrayOpt<Int64> Data::ChartPlotter::GetYDateTicks(UOSInt index, OutParam<UOSInt> cnt) const
 {
-	ChartData *data = this->yCharts->GetItem(index);
-	if (data == 0 || data->dataType != DataType::DateTicks)
+	NN<ChartData> data;
+	if (!this->yCharts.GetItem(index).SetTo(data) || data->dataType != DataType::DateTicks)
 		return 0;
 	cnt.Set(data->dataCnt);
 	return (Int64*)data->data;
 }
 
-UnsafeArrayOpt<Double> Data::LineChart::GetYDouble(UOSInt index, OutParam<UOSInt> cnt) const
+UnsafeArrayOpt<Double> Data::ChartPlotter::GetYDouble(UOSInt index, OutParam<UOSInt> cnt) const
 {
-	ChartData *data = this->yCharts->GetItem(index);
-	if (data == 0 || data->dataType != DataType::DOUBLE)
+	NN<ChartData> data;
+	if (!this->yCharts.GetItem(index).SetTo(data) || data->dataType != DataType::DOUBLE)
 		return 0;
 	cnt.Set(data->dataCnt);
 	return (Double*)data->data;
 }
 
-UnsafeArrayOpt<Int32> Data::LineChart::GetYInt32(UOSInt index, OutParam<UOSInt> cnt) const
+UnsafeArrayOpt<Int32> Data::ChartPlotter::GetYInt32(UOSInt index, OutParam<UOSInt> cnt) const
 {
-	ChartData *data = this->yCharts->GetItem(index);
-	if (data == 0 || data->dataType != DataType::Integer)
+	NN<ChartData> data;
+	if (!this->yCharts.GetItem(index).SetTo(data) || data->dataType != DataType::Integer)
 		return 0;
 	cnt.Set(data->dataCnt);
 	return (Int32*)data->data;
 }
 
-Optional<Text::String> Data::LineChart::GetYName(UOSInt index) const
+Optional<Text::String> Data::ChartPlotter::GetYName(UOSInt index) const
 {
-	ChartData *data = this->yCharts->GetItem(index);
-	if (data == 0)
+	NN<ChartData> data;
+	if (!this->yCharts.GetItem(index).SetTo(data))
 		return 0;
 	return data->name;
 }
 
-Data::Chart::DataType Data::LineChart::GetYType(UOSInt index) const
+Data::ChartPlotter::DataType Data::ChartPlotter::GetYType(UOSInt index) const
 {
-	ChartData *data = this->yCharts->GetItem(index);
-	if (data == 0)
+	NN<ChartData> data;
+	if (!this->yCharts.GetItem(index).SetTo(data))
 		return DataType::None;
 	return data->dataType;
 }
 
-void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height) const
+void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height)
 {
 	if (height == 0 || width == 0)
 		return;
-	if (this->yCharts->GetCount() == 0)
+	if (this->yCharts.GetCount() == 0)
 	{
 		if (!this->hasXRangeDate || this->xRangeDateMax == this->xRangeDateMin)
 			return;
@@ -554,11 +672,11 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	Double xMinDbl = 0;
 	Int64 xMaxDate = 0;
 	Int64 xMinDate = 0;
-	Data::Chart::DataType xType = this->xType;
+	DataType xType = this->xType;
 //	Int32 yAxis1Pos;
-	Data::Chart::DataType yAxis1Type;
+	DataType yAxis1Type;
 //	Int32 yAxis2Pos;
-	Data::Chart::DataType yAxis2Type;
+	DataType yAxis2Type;
 	Int32 y1MaxInt = 0;
 	Int32 y1MinInt = 0;
 	Int32 y2MaxInt = 0;
@@ -611,27 +729,27 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	}
 
 
-	if (xType == Data::Chart::DataType::None || xDatas->GetCount() == 0)
+	if (xType == DataType::None || this->xDatas.GetCount() == 0)
 	{
-		if (this->yCharts->GetCount() == 0)
+		if (this->yCharts.GetCount() == 0)
 		{
 			if (this->hasXRangeDate)
 			{
-				xType = Data::Chart::DataType::DateTicks;
+				xType = DataType::DateTicks;
 				xMaxDate = this->xRangeDateMax;
 				xMinDate = this->xRangeDateMin;
 			}
 		}
 		else
 		{
-			xType = Data::Chart::DataType::Integer;
+			xType = DataType::Integer;
 			UOSInt dataLeng;
-			Data::LineChart::ChartData *data = ((Data::LineChart::ChartData*)yCharts->GetItem(0));
+			NN<ChartData> data = this->yCharts.GetItemNoCheck(0);
 			Int32 *tmpData = MemAlloc(Int32, dataLeng = (i = data->dataCnt));
 			while (i-- > 0)
 				tmpData[i] = (Int32)i;
-			this->xDatas->Add(tmpData);
-			this->xDataCnt->Add(dataLeng);
+			this->xDatas.Add(tmpData);
+			this->xDataCnt.Add(dataLeng);
 			xMaxInt = (Int32)dataLeng - 1;
 			xMinInt = 0;
 			if (data->dataCnt == 2)
@@ -639,17 +757,17 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 			customX = true;
 		}
 	}
-	else if (xType == Data::Chart::DataType::DateTicks)
+	else if (xType == DataType::DateTicks)
 	{
 		Int64 *tmpdata;
 		UOSInt tmpdataCnt;
-		xMaxDate = ((Int64*)xDatas->GetItem(0))[0];
-		xMinDate = ((Int64*)xDatas->GetItem(0))[0];
+		xMaxDate = ((Int64*)this->xDatas.GetItem(0))[0];
+		xMinDate = ((Int64*)this->xDatas.GetItem(0))[0];
 		i = 0;
-		while (i < this->xDatas->GetCount())
+		while (i < this->xDatas.GetCount())
 		{
-			tmpdata = (Int64*)xDatas->GetItem(i);
-			tmpdataCnt = xDataCnt->GetItem(i);
+			tmpdata = (Int64*)this->xDatas.GetItem(i);
+			tmpdataCnt = this->xDataCnt.GetItem(i);
 			j = 0;
 			while (j < tmpdataCnt)
 			{
@@ -667,16 +785,16 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 			xMaxDate += 3600000;
 		}
 	}
-	else if (xType == Data::Chart::DataType::DOUBLE)
+	else if (xType == DataType::DOUBLE)
 	{
 		Double *tmpdata;
 		UOSInt tmpdataCnt;
-		xMinDbl = xMaxDbl = ((Double*)xDatas->GetItem(0))[0];
+		xMinDbl = xMaxDbl = ((Double*)this->xDatas.GetItem(0))[0];
 		i = 0;
-		while (i < this->xDatas->GetCount())
+		while (i < this->xDatas.GetCount())
 		{
-			tmpdata = (Double*)xDatas->GetItem(i);
-			tmpdataCnt = xDataCnt->GetItem(i);
+			tmpdata = (Double*)this->xDatas.GetItem(i);
+			tmpdataCnt = this->xDataCnt.GetItem(i);
 			j = 0;
 			while (j < tmpdataCnt)
 			{
@@ -693,16 +811,16 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 			xMaxDbl = xMaxDbl + 1;
 		}
 	}
-	else if (xType == Data::Chart::DataType::Integer)
+	else if (xType == DataType::Integer)
 	{
 		Int32 *tmpdata;
 		UOSInt tmpdataCnt;
-		xMinInt = xMaxInt = ((Int32*)xDatas->GetItem(0))[0];
+		xMinInt = xMaxInt = ((Int32*)this->xDatas.GetItem(0))[0];
 		i = 0;
-		while (i < this->xDatas->GetCount())
+		while (i < this->xDatas.GetCount())
 		{
-			tmpdata = (Int32*)xDatas->GetItem(i);
-			tmpdataCnt = xDataCnt->GetItem(i);
+			tmpdata = (Int32*)this->xDatas.GetItem(i);
+			tmpdataCnt = this->xDataCnt.GetItem(i);
 			j = 0;
 			while (j < tmpdataCnt)
 			{
@@ -720,18 +838,18 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 
 
 
-	yAxis1Type = Data::Chart::DataType::None;
-	yAxis2Type = Data::Chart::DataType::None;
-	if (this->yCharts->GetCount() > 0)
+	yAxis1Type = DataType::None;
+	yAxis2Type = DataType::None;
+	if (this->yCharts.GetCount() > 0)
 	{
 		i = 0;
-		while (i < this->yCharts->GetCount())
+		while (i < this->yCharts.GetCount())
 		{
-			Data::LineChart::ChartData *data = (Data::LineChart::ChartData*)this->yCharts->GetItem(i);
-			if (data->dataType == Data::Chart::DataType::Integer)
+			NN<ChartData> data = this->yCharts.GetItemNoCheck(i);
+			if (data->dataType == DataType::Integer)
 			{
 				Int32 *datas = (Int32*)data->data;
-				if (yAxis1Type == Data::Chart::DataType::None)
+				if (yAxis1Type == DataType::None)
 				{
 					if (this->hasYRangeInt)
 					{
@@ -747,7 +865,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 						y1MaxInt = datas[0];
 						y1MinInt = datas[0];
 					}
-					yAxis1Type = Data::Chart::DataType::Integer;
+					yAxis1Type = DataType::Integer;
 					j = 0;
 					while (j < data->dataCnt)
 					{
@@ -760,7 +878,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					if (y1MaxInt == y1MinInt)
 						y1MaxInt = y1MinInt + 1;
 				}
-				else if (yAxis1Type == Data::Chart::DataType::Integer)
+				else if (yAxis1Type == DataType::Integer)
 				{
 					j = 0;
 					while (j < data->dataCnt)
@@ -774,9 +892,9 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					if (y1MaxInt == y1MinInt)
 						y1MaxInt = y1MinInt + 1;
 				}
-				else if (yAxis2Type == Data::Chart::DataType::None)
+				else if (yAxis2Type == DataType::None)
 				{
-					yAxis2Type = Data::Chart::DataType::Integer;
+					yAxis2Type = DataType::Integer;
 					if (this->hasYRangeInt)
 					{
 						y2MinInt = this->yRangeIntMin;
@@ -803,7 +921,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					if (y2MaxInt == y2MinInt)
 						y2MaxInt = y2MinInt + 1;
 				}
-				else if (yAxis2Type == Data::Chart::DataType::Integer)
+				else if (yAxis2Type == DataType::Integer)
 				{
 					j = 0;
 					while (j < data->dataCnt)
@@ -823,10 +941,10 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					return;
 				}
 			}
-			else if (data->dataType == Data::Chart::DataType::DOUBLE)
+			else if (data->dataType == DataType::DOUBLE)
 			{
 				Double *datas = (Double*)data->data;
-				if (yAxis1Type == Data::Chart::DataType::None)
+				if (yAxis1Type == DataType::None)
 				{
 					if (this->hasYRangeDbl)
 					{
@@ -842,7 +960,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 						y1MaxDbl = datas[0];
 						y1MinDbl = datas[0];
 					}
-					yAxis1Type = Data::Chart::DataType::DOUBLE;
+					yAxis1Type = DataType::DOUBLE;
 					j = 0;
 					while (j < data->dataCnt)
 					{
@@ -855,7 +973,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					if (y1MaxDbl == y1MinDbl)
 						y1MaxDbl = y1MinDbl + minDblVal;
 				}
-				else if (yAxis1Type == Data::Chart::DataType::DOUBLE)
+				else if (yAxis1Type == DataType::DOUBLE)
 				{
 					j = 0;
 					while (j < data->dataCnt)
@@ -869,9 +987,9 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					if (y1MaxDbl == y1MinDbl)
 						y1MaxDbl = y1MinDbl + minDblVal;
 				}
-				else if (yAxis2Type == Data::Chart::DataType::None)
+				else if (yAxis2Type == DataType::None)
 				{
-					yAxis2Type = Data::Chart::DataType::DOUBLE;
+					yAxis2Type = DataType::DOUBLE;
 					if (this->hasYRangeDbl)
 					{
 						y2MinDbl = this->yRangeDblMin;
@@ -898,7 +1016,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					if (y2MaxDbl == y2MinDbl)
 						y2MaxDbl = y2MinDbl + minDblVal;
 				}
-				else if (yAxis2Type == Data::Chart::DataType::DOUBLE)
+				else if (yAxis2Type == DataType::DOUBLE)
 				{
 					j = 0;
 					while (j < data->dataCnt)
@@ -919,10 +1037,10 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					return;
 				}
 			}
-			else if (data->dataType == Data::Chart::DataType::DateTicks)
+			else if (data->dataType == DataType::DateTicks)
 			{
 				Int64 *datas = (Int64*)data->data;
-				if (yAxis1Type == Data::Chart::DataType::None)
+				if (yAxis1Type == DataType::None)
 				{
 					if (refExist)
 					{
@@ -933,7 +1051,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 						y1MaxDate = datas[0];
 						y1MinDate = datas[0];
 					}
-					yAxis1Type = Data::Chart::DataType::DateTicks;
+					yAxis1Type = DataType::DateTicks;
 					j = 0;
 					while (j < data->dataCnt)
 					{
@@ -949,7 +1067,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 						y1MaxDate += 3600000;
 					}
 				}
-				else if (yAxis1Type == Data::Chart::DataType::DateTicks)
+				else if (yAxis1Type == DataType::DateTicks)
 				{
 					j = 0;
 					while (j < data->dataCnt)
@@ -966,9 +1084,9 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 						y1MaxDate += 3600000;
 					}
 				}
-				else if (yAxis2Type == Data::Chart::DataType::None)
+				else if (yAxis2Type == DataType::None)
 				{
-					yAxis2Type = Data::Chart::DataType::DateTicks;
+					yAxis2Type = DataType::DateTicks;
 					if (refExist)
 					{
 						y2MinDate = y2MaxDate = refTime;
@@ -993,7 +1111,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 						y2MaxDate += 3600000;
 					}
 				}
-				else if (yAxis2Type == Data::Chart::DataType::DateTicks)
+				else if (yAxis2Type == DataType::DateTicks)
 				{
 					j = 0;
 					while (j < data->dataCnt)
@@ -1022,13 +1140,13 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	{
 		if (this->hasYRangeDbl && this->yRangeDblMax != this->yRangeDblMin)
 		{
-			yAxis1Type = Data::Chart::DataType::DOUBLE;
+			yAxis1Type = DataType::DOUBLE;
 			y1MaxDbl = this->yRangeDblMax;
 			y1MinDbl = this->yRangeDblMin;
 		}
 		else if (this->hasYRangeInt && this->yRangeIntMax != this->yRangeIntMin)
 		{
-			yAxis1Type = Data::Chart::DataType::Integer;
+			yAxis1Type = DataType::Integer;
 			y1MaxInt = this->yRangeIntMax;
 			y1MinInt = this->yRangeIntMin;
 		}
@@ -1037,7 +1155,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	xLeng = 0;
 	y1Leng = 0;
 	y2Leng = 0;
-	if (xType == Data::Chart::DataType::Integer)
+	if (xType == DataType::Integer)
 	{
 		sptr = Text::StrInt32(sbuff, xMaxInt);
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
@@ -1048,7 +1166,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		if (rcSize.x > xLeng)
 			xLeng = (Single)rcSize.x;
 	}
-	else if (xType == Data::Chart::DataType::DOUBLE)
+	else if (xType == DataType::DOUBLE)
 	{
 		sptr = Text::StrDoubleFmt(sbuff, xMaxDbl, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
@@ -1059,7 +1177,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		if (rcSize.x > xLeng)
 			xLeng = (Single)rcSize.x;
 	}
-	else if (xType == Data::Chart::DataType::DateTicks)
+	else if (xType == DataType::DateTicks)
 	{
 		dt1.SetTicks(xMaxDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
@@ -1101,7 +1219,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	xLeng += barLeng;
 
 
-	if (yAxis1Type == Data::Chart::DataType::Integer)
+	if (yAxis1Type == DataType::Integer)
 	{
 		sptr = Text::StrInt32(sbuff, y1MaxInt);
 		if (this->yUnit.SetTo(s))
@@ -1116,7 +1234,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		if (rcSize.x > y1Leng)
 			y1Leng = rcSize.x;
 	}
-	else if (yAxis1Type == Data::Chart::DataType::DOUBLE)
+	else if (yAxis1Type == DataType::DOUBLE)
 	{
 		sptr = Text::StrDoubleFmt(sbuff, y1MaxDbl, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 		if (this->yUnit.SetTo(s))
@@ -1131,7 +1249,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		if (rcSize.x > y1Leng)
 			y1Leng = rcSize.x;
 	}
-	else if (yAxis1Type == Data::Chart::DataType::DateTicks)
+	else if (yAxis1Type == DataType::DateTicks)
 	{
 		dt1.SetTicks(y1MaxDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
@@ -1155,7 +1273,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 
 
 
-	if (yAxis2Type == Data::Chart::DataType::Integer)
+	if (yAxis2Type == DataType::Integer)
 	{
 		sptr = Text::StrInt32(sbuff, y2MaxInt);
 		if (this->yUnit.SetTo(s))
@@ -1173,7 +1291,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		y2Leng += barLeng;
 		y2show = true;
 	}
-	else if (yAxis2Type == Data::Chart::DataType::DOUBLE)
+	else if (yAxis2Type == DataType::DOUBLE)
 	{
 		sptr = Text::StrDoubleFmt(sbuff, y2MaxDbl, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 		if (this->yUnit.SetTo(s))
@@ -1191,7 +1309,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		y2Leng += barLeng;
 		y2show = true;
 	}
-	else if (yAxis2Type == Data::Chart::DataType::DateTicks)
+	else if (yAxis2Type == DataType::DateTicks)
 	{
 		dt1.SetTicks(y2MaxDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
@@ -1209,7 +1327,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		y2Leng += barLeng;
 		y2show = true;
 	}
-	else if (yAxis2Type == Data::Chart::DataType::None)
+	else if (yAxis2Type == DataType::None)
 	{
 		y2Leng = (rcSize.y / 2.0);
 		y2show = false;
@@ -1229,21 +1347,21 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	
 	Data::ArrayListDbl locations;
 	Data::ArrayListStringNN labels;
-	if (xType == Data::Chart::DataType::Integer)
+	if (xType == DataType::Integer)
 	{
-		Data::Chart::CalScaleMarkInt(locations, labels, xMinInt, xMaxInt, width - y1Leng - y2Leng - this->pointSize * 2, fntH, 0);
+		CalScaleMarkInt(locations, labels, xMinInt, xMaxInt, width - y1Leng - y2Leng - this->pointSize * 2, fntH, 0);
 	}
-	else if (xType == Data::Chart::DataType::DOUBLE)
+	else if (xType == DataType::DOUBLE)
 	{
-		Data::Chart::CalScaleMarkDbl(locations, labels, xMinDbl, xMaxDbl, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, 0);
+		CalScaleMarkDbl(locations, labels, xMinDbl, xMaxDbl, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, 0);
 	}
-	else if (xType == Data::Chart::DataType::DateTicks)
+	else if (xType == DataType::DateTicks)
 	{
 		dt1.SetTicks(xMinDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(xMaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::Chart::CalScaleMarkDate(locations, labels, dt1, dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
+		CalScaleMarkDate(locations, labels, dt1, dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 	}
 	else
 	{
@@ -1274,21 +1392,21 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	}
 	labels.Clear();
 
-	if (yAxis1Type == Data::Chart::DataType::Integer)
+	if (yAxis1Type == DataType::Integer)
 	{
-		Data::Chart::CalScaleMarkInt(locations, labels, y1MinInt, y1MaxInt, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, this->yUnit);
+		CalScaleMarkInt(locations, labels, y1MinInt, y1MaxInt, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, this->yUnit);
 	}
-	else if (yAxis1Type == Data::Chart::DataType::DOUBLE)
+	else if (yAxis1Type == DataType::DOUBLE)
 	{
-		Data::Chart::CalScaleMarkDbl(locations, labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, this->yUnit);
+		CalScaleMarkDbl(locations, labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, this->yUnit);
 	}
-	else if (yAxis1Type == Data::Chart::DataType::DateTicks)
+	else if (yAxis1Type == DataType::DateTicks)
 	{
 		dt1.SetTicks(y1MinDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(y2MaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::Chart::CalScaleMarkDate(locations, labels, dt1, dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
+		CalScaleMarkDate(locations, labels, dt1, dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 	}
 	else
 	{
@@ -1334,24 +1452,24 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	UOSInt currPosLen;
     
 	i = 0;
-	while (i < yCharts->GetCount())
+	while (i < this->yCharts.GetCount())
 	{
 		void *xData;
 		UOSInt xDataCnt;
-		Data::LineChart::ChartData *chart = (Data::LineChart::ChartData*)yCharts->GetItem(i);
+		NN<ChartData> chart = this->yCharts.GetItemNoCheck(i);
 
-		if (xDatas->GetCount() > i)
+		if (this->xDatas.GetCount() > i)
 		{
-			xData = xDatas->GetItem(i);
-			xDataCnt = this->xDataCnt->GetItem(i);
+			xData = this->xDatas.GetItem(i);
+			xDataCnt = this->xDataCnt.GetItem(i);
 		}
 		else
 		{
-			xData = xDatas->GetItem(0);
-			xDataCnt = this->xDataCnt->GetItem(0);
+			xData = this->xDatas.GetItem(0);
+			xDataCnt = this->xDataCnt.GetItem(0);
 		}
 
-		if (chart->lineStyle == Data::LineChart::LS_FILL)
+		if (chart->lineStyle == LineStyle::Fill)
 		{
 			currPosLen = xDataCnt + 2;
 			currPos = MemAllocA(Math::Coord2DDbl, currPosLen);
@@ -1363,7 +1481,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		}
 
 		Double xChartLeng = width - y1Leng - y2Leng - this->pointSize * 2.0;
-		if (xType == Data::Chart::DataType::DateTicks)
+		if (xType == DataType::DateTicks)
 		{
 			Int64 *data = (Int64*)xData;
 			j = 0;
@@ -1373,7 +1491,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				j++;
 			}
 		}
-		else if (xType == Data::Chart::DataType::DOUBLE)
+		else if (xType == DataType::DOUBLE)
 		{
 			Double *data = (Double*)xData;
 			j = 0;
@@ -1383,7 +1501,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				j++;
 			}
 		}
-		else if (xType == Data::Chart::DataType::Integer)
+		else if (xType == DataType::Integer)
 		{
 			Int32 *data = (Int32*)xData;
 
@@ -1396,7 +1514,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		}
 
 		xChartLeng = height - xLeng - fntH / 2 - this->pointSize * 2;
-		if (chart->dataType == Data::Chart::DataType::Integer)
+		if (chart->dataType == DataType::Integer)
 		{
 			Int32 *data = (Int32*)chart->data;
 			Int32 iMax = 0;
@@ -1419,7 +1537,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				j++;
 			}
 		}
-		else if (chart->dataType == Data::Chart::DataType::DOUBLE)
+		else if (chart->dataType == DataType::DOUBLE)
 		{
 			Double *data = (Double*)chart->data;
 			Double dMax = 0;
@@ -1443,7 +1561,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				j++;
 			}
 		}
-		else if (chart->dataType == Data::Chart::DataType::DateTicks)
+		else if (chart->dataType == DataType::DateTicks)
 		{
 			Int64 *data = (Int64 *)chart->data;
 			Int64 dMax = 0;
@@ -1467,7 +1585,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 			}
 		}
 
-		if (chart->lineStyle == Data::LineChart::LS_FILL)
+		if (chart->lineStyle == LineStyle::Fill)
 		{
 			if (currPosLen >= 4)
 			{
@@ -1476,8 +1594,8 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				currPos[j - 2].y = (Double)(y + height - xLeng);
 				currPos[j - 1].x = currPos[0].x;
 				currPos[j - 1].y = (Double)(y + height - xLeng);
-				NN<Media::DrawPen> p = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, 1, 0, 0);
-				NN<Media::DrawBrush> b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
+				NN<Media::DrawPen> p = img->NewPenARGB(chart->lineColor, 1, 0, 0);
+				NN<Media::DrawBrush> b = img->NewBrushARGB(chart->lineColor);
 				img->DrawPolygon(currPos, currPosLen, p, b);
 				img->DelBrush(b);
 				img->DelPen(p);
@@ -1487,13 +1605,13 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		{
 			if (currPosLen >= 2)
 			{
-				NN<Media::DrawPen> pen = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, this->lineThick, 0, 0);
+				NN<Media::DrawPen> pen = img->NewPenARGB(chart->lineColor, this->lineThick, 0, 0);
 				img->DrawPolyline(currPos, currPosLen, pen);
 				img->DelPen(pen);
 
-				if (this->pointType == PT_CIRCLE && this->pointSize > 0)
+				if (this->pointType == PointType::Circle && this->pointSize > 0)
 				{
-					NN<Media::DrawBrush> b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
+					NN<Media::DrawBrush> b = img->NewBrushARGB(chart->lineColor);
 					j = currPosLen;
 					while (j-- > 0)
 					{
@@ -1520,7 +1638,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		Int64 tMax;
 		Int64 tMin;
 
-		if (yAxis1Type == Data::Chart::DataType::Integer)
+		if (yAxis1Type == DataType::Integer)
 		{
 			iMax = y1MaxInt;
 			iMin = y1MinInt;
@@ -1532,19 +1650,19 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				sptr = Text::StrInt32(sbuff, this->refInt);
 				if (this->yUnit.SetTo(s))
 					sptr = s->ConcatTo(sptr);
-				if (this->refType == RT_LEFTALIGN)
+				if (this->refType == RefType::LeftAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + y1Leng, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
-				else if (this->refType == RT_RIGHTALIGN)
+				else if (this->refType == RefType::RightAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + width - y2Leng - rcSize.x, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 			}
 		}
-		else if (yAxis2Type == Data::Chart::DataType::Integer)
+		else if (yAxis2Type == DataType::Integer)
 		{
 			iMax = y2MaxInt;
 			iMin = y2MinInt;
@@ -1556,12 +1674,12 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				sptr = Text::StrInt32(sbuff, this->refInt);
 				if (this->yUnit.SetTo(s))
 					sptr = s->ConcatTo(sptr);
-				if (this->refType == RT_LEFTALIGN)
+				if (this->refType == RefType::LeftAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + y1Leng, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
-				else if (this->refType == RT_RIGHTALIGN)
+				else if (this->refType == RefType::RightAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + width - y2Leng - rcSize.x, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
@@ -1569,7 +1687,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 			}
 		}
 
-		if (Data::Chart::DataType::DOUBLE == yAxis1Type)
+		if (DataType::DOUBLE == yAxis1Type)
 		{
 			dMax = y1MaxDbl;
 			dMin = y1MinDbl;
@@ -1581,19 +1699,19 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 				if (this->yUnit.SetTo(s))
 					sptr = s->ConcatTo(sptr);
-				if (this->refType == RT_LEFTALIGN)
+				if (this->refType == RefType::LeftAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + y1Leng, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
-				else if (this->refType == RT_RIGHTALIGN)
+				else if (this->refType == RefType::RightAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + width - y2Leng - rcSize.x, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
 			}
 		}
-		else if  (Data::Chart::DataType::DOUBLE == yAxis2Type)
+		else if (DataType::DOUBLE == yAxis2Type)
 		{
 			dMax = y2MaxDbl;
 			dMin = y2MinDbl;
@@ -1605,12 +1723,12 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 				if (this->yUnit.SetTo(s))
 					sptr = s->ConcatTo(sptr);
-				if (this->refType == RT_LEFTALIGN)
+				if (this->refType == RefType::LeftAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + y1Leng, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
 				}
-				else if (this->refType == RT_RIGHTALIGN)
+				else if (this->refType == RefType::RightAlign)
 				{
 					rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
 					img->DrawString(Math::Coord2DDbl(x + width - y2Leng - rcSize.x, yPos - rcSize.y), CSTRP(sbuff, sptr), fnt, fontBrush);
@@ -1620,7 +1738,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 
 		if (this->refTime != 0)
 		{
-			if (Data::Chart::DataType::DateTicks == yAxis1Type)
+			if (DataType::DateTicks == yAxis1Type)
 			{
 				tMax = y1MaxDate;
 				tMin = y1MinDate;
@@ -1630,7 +1748,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 					img->DrawLine((Double)(x + y1Leng), (Double)yPos, (Double)(x + width - y2Leng), (Double)yPos, refLinePen);
 				}
 			}
-			else if (Data::Chart::DataType::DateTicks == yAxis2Type)
+			else if (DataType::DateTicks == yAxis2Type)
 			{
 				tMax = y2MaxDate;
 				tMin = y2MinDate;
@@ -1652,52 +1770,418 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 
 	if (customX)
 	{
-		i = this->xDatas->GetCount();
+		i = this->xDatas.GetCount();
 		while (i-- > 0)
 		{
-			MemFree(this->xDatas->GetItem(i));
+			MemFree(this->xDatas.GetItem(i));
 		}
-		this->xDatas->Clear();
-		this->xDataCnt->Clear();
+		this->xDatas.Clear();
+		this->xDataCnt.Clear();
 	}
 }
 
-UOSInt Data::LineChart::GetLegendCount() const
+UOSInt Data::ChartPlotter::GetLegendCount() const
 {
-	return this->yCharts->GetCount();
+	return this->yCharts.GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Data::LineChart::GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const
+UnsafeArrayOpt<UTF8Char> Data::ChartPlotter::GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const
 {
-	if (index >= this->yCharts->GetCount())
+	NN<ChartData> cdata;
+	if (!this->yCharts.GetItem(index).SetTo(cdata))
 		return 0;
-	Data::LineChart::ChartData *cdata = this->yCharts->GetItem(index);
 	color.Set(cdata->lineColor);
 	return Text::StrConcatC(sbuff, cdata->name->v, cdata->name->leng);
 }
 
-Data::LineChart::ChartData::ChartData(NN<Text::String> name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+UOSInt Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit)
 {
-	this->name = name->Clone();
-	this->data = data;
-	this->dataCnt = dataCnt;
-	this->dataType = dataType;
-	this->lineColor = lineColor;
-	this->lineStyle = lineStyle;
+	UOSInt retCnt = 2;
+	UTF8Char sbuff[128];
+	UnsafeArray<UTF8Char> sptr;
+	Double scale;
+	Double lScale;
+	Double dScale;
+	Double pos;
+	NN<Text::String> s;
+
+	sptr = Text::StrDoubleFmt(sbuff, min, dblFormat);
+	locations->Add(0);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+
+	scale = minLeng * (max - min) / leng;
+	lScale = (Int32)(Math_Log10(scale));
+	dScale = Math_Pow(10, lScale);
+	if (scale / dScale <= 2)
+		dScale = Math_Pow(10, lScale) * 2;
+	else if (scale / dScale <= 5)
+		dScale = Math_Pow(10, lScale) * 5;
+	else
+		dScale = Math_Pow(10, lScale) * 10;
+
+	if (dScale <= 0 || lScale <= -10)
+	{
+	}
+	else
+	{
+		scale = (((Int32)(min / dScale)) + 1) * dScale;
+		while (scale < max)
+		{
+			pos = ((scale - min) * leng / (max - min));
+			if ((pos > minLeng) && (pos < leng - minLeng))
+			{
+				sptr = Text::StrDoubleFmt(sbuff, scale, dblFormat);
+				locations->Add(pos);
+				if (unit.SetTo(s))
+					sptr = s->ConcatTo(sptr);
+				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				retCnt++;
+			}
+			scale += dScale;
+		}
+	}
+
+	sptr = Text::StrDoubleFmt(sbuff, max, dblFormat);
+	locations->Add(leng);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	return retCnt;
 }
 
-Data::LineChart::ChartData::ChartData(Text::CStringNN name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+UOSInt Data::ChartPlotter::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit)
 {
-	this->name = Text::String::New(name);
-	this->data = data;
-	this->dataCnt = dataCnt;
-	this->dataType = dataType;
-	this->lineColor = lineColor;
-	this->lineStyle = lineStyle;
+	UOSInt retCnt = 2;
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	Double scale;
+	Double lScale;
+	Double dScale;
+	Single pos;
+	NN<Text::String> s;
+
+	sptr = Text::StrInt32(sbuff, min);
+	locations->Add(0);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+
+	scale = minLeng * (Double)(max - min) / leng;
+	lScale = (Int32)(Math_Log10(scale));
+	if (scale < 1)
+		dScale = 1;
+	else
+	{
+		dScale = Math_Pow(10, lScale);
+		if (scale / dScale <= 2)
+			dScale = Math_Pow(10, lScale) * 2;
+		else if (scale / dScale <= 5)
+			dScale = Math_Pow(10, lScale) * 5;
+		else
+			dScale = Math_Pow(10, lScale) * 10;
+	}
+
+	scale = (((Int32)(min / dScale)) + 1) * dScale;
+	while (scale < max)
+	{
+		pos = (Single)((scale - min) * leng / (Single)(max - min));
+		if ((pos > minLeng) && (pos < leng - minLeng))
+		{
+			sptr = Text::StrInt32(sbuff, Double2Int32(scale));
+			locations->Add(pos);
+			if (unit.SetTo(s))
+				sptr = s->ConcatTo(sptr);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			retCnt++;
+		}
+		scale += dScale;
+	}
+
+	sptr = Text::StrInt32(sbuff, max);
+	locations->Add(leng);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	return retCnt;
 }
 
-Data::LineChart::ChartData::~ChartData()
+UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat)
 {
-	this->name->Release();
-	MemFree(this->data);
+	UOSInt retCnt = 2;
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	Int64 timeDif;
+	Double scale;
+	Double lScale;
+	Int32 iScale;
+//	Double dScale;
+	Data::DateTime currDate;
+	Single pos;
+	Bool hasSecond = true;
+	UnsafeArray<const Char> nntimeFormat;
+	if (timeFormat.SetTo(nntimeFormat))
+	{
+		if (Text::StrIndexOfCharCh(nntimeFormat, 's') == INVALID_INDEX)
+		{
+			hasSecond = false;
+		}
+	}
+    
+	timeDif = max->DiffMS(min);
+	if (!timeFormat.SetTo(nntimeFormat) || Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 1)
+	{
+		sptr = min->ToString(sbuff, dateFormat);
+		locations->Add(0);
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+
+		scale = Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng;
+		lScale = (Int32)(Math_Log10(scale));
+		iScale = Double2Int32(Math_Pow(10, lScale));
+		if (scale / iScale <= 2)
+			iScale = Double2Int32(Math_Pow(10, lScale) * 2);
+		else if (scale / iScale <= 5)
+			iScale = Double2Int32(Math_Pow(10, lScale) * 5);
+		else
+			iScale = Double2Int32(Math_Pow(10, lScale) * 10);
+
+		currDate = min;
+		currDate.ClearTime();
+		currDate.AddDay(iScale - (currDate.GetDay() % (iScale)));
+		if (((Double)currDate.DiffMS(min) / (Double)timeDif) < minLeng / leng)
+		{
+			currDate.AddDay(iScale);
+		}
+		while (currDate < max)
+		{
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
+			if ((pos > minLeng) && (pos < leng - minLeng))
+			{
+				sptr = currDate.ToString(sbuff, dateFormat);
+				locations->Add(pos);
+				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				retCnt++;
+			}
+			currDate.AddDay(iScale);
+		}
+
+		sptr = max->ToString(sbuff, dateFormat);
+		locations->Add(leng);
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	}
+	else if (Data::DateTimeUtil::MS2Hours(timeDif) * minLeng / leng >= 1)
+	{
+		if (min->GetMSPassedDate() == 0)
+		{
+			sptr = min->ToString(sbuff, dateFormat);
+			locations->Add(0);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+		else
+		{
+			sptr = min->ToString(sbuff, nntimeFormat);
+			locations->Add(0);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+		
+		scale = Data::DateTimeUtil::MS2Hours(timeDif) * minLeng / leng;
+		if (scale <= 2)
+			iScale = 2;
+		else if (scale <= 3)
+			iScale = 3;
+		else if (scale <= 6)
+			iScale = 6;
+		else if (scale <= 12)
+			iScale = 12;
+		else
+			iScale = 24;
+
+		currDate = min;
+		currDate.ClearTime();
+		currDate.AddHour(iScale + (Int32)(Data::DateTimeUtil::MS2Hours(min->GetMSPassedDate()) / iScale) * iScale);
+		while (currDate < max)
+		{
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
+			if ((pos > minLeng) && (pos < leng - minLeng))
+			{
+				if (currDate.GetMSPassedDate() == 0)
+				{
+					sptr = currDate.ToString(sbuff, dateFormat);
+					locations->Add(pos);
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				}
+				else
+				{
+					sptr = currDate.ToString(sbuff, nntimeFormat);
+					locations->Add(pos);
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				}
+				retCnt++;
+			}
+			currDate.AddHour(iScale);
+		}
+
+		if (max->GetMSPassedDate() == 0)
+		{
+			sptr = max->ToString(sbuff, dateFormat);
+			locations->Add(leng);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+		else
+		{
+			sptr = max->ToString(sbuff, nntimeFormat);
+			locations->Add(leng);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+	}
+	else if (!hasSecond || Data::DateTimeUtil::MS2Minutes(timeDif) * minLeng / leng >= 1)
+	{
+		if (min->GetMSPassedDate() == 0)
+		{
+			sptr = min->ToString(sbuff, dateFormat);
+			locations->Add(0);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+		else
+		{
+			sptr = min->ToString(sbuff, nntimeFormat);
+			locations->Add(0);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+
+		scale = Data::DateTimeUtil::MS2Minutes(timeDif) * minLeng / leng;
+		if (scale <= 1)
+			iScale = 1;
+		else if (scale <= 2)
+			iScale = 2;
+		else if (scale <= 5)
+			iScale = 5;
+		else if (scale <= 10)
+			iScale = 10;
+		else if (scale <= 20)
+			iScale = 20;
+		else if (scale <= 30)
+			iScale = 30;
+		else
+			iScale = 60;
+
+		currDate = min;
+		currDate.ClearTime();
+		currDate.AddMinute(iScale + (Int32)(Data::DateTimeUtil::MS2Minutes(min->GetMSPassedDate()) / iScale) * iScale);
+		while (currDate < max)
+		{
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
+			if ((pos > minLeng) && (pos < leng - minLeng))
+			{
+				if (currDate.GetMSPassedDate() == 0)
+				{
+					sptr = currDate.ToString(sbuff, dateFormat);
+					locations->Add(pos);
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				}
+				else
+				{
+					sptr = currDate.ToString(sbuff, nntimeFormat);
+					locations->Add(pos);
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				}
+				retCnt++;
+			}
+			currDate.AddMinute(iScale);
+		}
+
+		if (max->GetMSPassedDate() == 0)
+		{
+			sptr = max->ToString(sbuff, dateFormat);
+			locations->Add(leng);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+		else
+		{
+			sptr = max->ToString(sbuff, nntimeFormat);
+			locations->Add(leng);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+	}
+	else if (Data::DateTimeUtil::MS2Seconds(timeDif) >= 1)
+	{
+		if (min->GetMSPassedDate() == 0)
+		{
+			sptr = min->ToString(sbuff, dateFormat);
+			locations->Add(0);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+		else
+		{
+			sptr = min->ToString(sbuff, nntimeFormat);
+			locations->Add(0);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+
+		scale = Data::DateTimeUtil::MS2Seconds(timeDif) * minLeng / leng;
+		if (scale <= 1)
+			iScale = 1;
+		else if (scale <= 2)
+			iScale = 2;
+		else if (scale <= 5)
+			iScale = 5;
+		else if (scale <= 10)
+			iScale = 10;
+		else if (scale <= 20)
+			iScale = 20;
+		else if (scale <= 30)
+			iScale = 30;
+		else
+			iScale = 60;
+
+		currDate = min;
+		currDate.ClearTime();
+		currDate.AddSecond(iScale + (Int32)(Data::DateTimeUtil::MS2Seconds(min->GetMSPassedDate()) / iScale) * iScale);
+		while (currDate < max)
+		{
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
+			if ((pos > minLeng) && (pos < leng - minLeng))
+			{
+				if (currDate.GetMSPassedDate() == 0)
+				{
+					sptr = currDate.ToString(sbuff, dateFormat);
+					locations->Add(pos);
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				}
+				else
+				{
+					sptr = currDate.ToString(sbuff, nntimeFormat);
+					locations->Add(pos);
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				}
+				retCnt++;
+			}
+			currDate.AddSecond(iScale);
+		}
+
+		if (max->GetMSPassedDate() == 0)
+		{
+			sptr = max->ToString(sbuff, dateFormat);
+			locations->Add(leng);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+		else
+		{
+			sptr = max->ToString(sbuff, nntimeFormat);
+			locations->Add(leng);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		}
+	}
+	else
+	{
+		sptr = min->ToString(sbuff, nntimeFormat);
+		locations->Add(0);
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+
+		sptr = max->ToString(sbuff, nntimeFormat);
+		locations->Add(leng);
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	}
+	return retCnt;
 }

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/LineChart.h"
+#include "Data/ChartPlotter.h"
 #include "Math/Unit/Count.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSolarEdgeForm.h"
@@ -302,7 +302,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 		{
 			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
-			Data::LineChart chart(CSTR("Site Energy"));
+			Data::ChartPlotter chart(CSTR("Site Energy"));
 			chart.SetFontHeightPt(9.0);
 			UOSInt i = 0;
 			UOSInt j = this->siteEnergyList.GetCount();
@@ -315,7 +315,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 				i++;
 			}
 			chart.AddXData(tsList, j);
-			chart.AddYData(CSTR("Wh"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
+			chart.AddYData(CSTR("Wh"), valList, j, 0xffff0000, Data::ChartPlotter::LineStyle::Line);
 			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);
@@ -339,7 +339,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 		{
 			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
-			Data::LineChart chart(CSTR("Site Power"));
+			Data::ChartPlotter chart(CSTR("Site Power"));
 			chart.SetFontHeightPt(9.0);
 			UOSInt i = 0;
 			UOSInt j = this->sitePowerList.GetCount();
@@ -352,7 +352,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 				i++;
 			}
 			chart.AddXData(tsList, j);
-			chart.AddYData(CSTR("W"), valList, j, 0xffff0000, Data::LineChart::LS_LINE);
+			chart.AddYData(CSTR("W"), valList, j, 0xffff0000, Data::ChartPlotter::LineStyle::Line);
 			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);

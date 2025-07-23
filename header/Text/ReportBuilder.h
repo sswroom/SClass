@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_REPORTBUILDER
 #define _SM_TEXT_REPORTBUILDER
 #include "Data/ArrayListArr.h"
-#include "Data/Chart.h"
+#include "Data/ChartPlotter.h"
 #include "Media/VectorDocument.h"
 #include "Text/String.h"
 #include "Text/TextCommon.h"
@@ -79,10 +79,10 @@ namespace Text
 		Bool tableBorders;
 		Double *colWidthPts;
 		ColType *colTypes;
-		Data::Chart *chart;
+		Data::ChartPlotter *chart;
 		Bool paperHori;
 
-		static Text::SpreadSheet::AxisType FromChartDataType(Data::Chart::DataType dataType);
+		static Text::SpreadSheet::AxisType FromChartDataType(Data::ChartPlotter::DataType dataType);
 	public:
 		ReportBuilder(Text::CStringNN name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns);
 		~ReportBuilder();
@@ -92,7 +92,7 @@ namespace Text
 		void SetFontName(NN<Text::String> fontName);
 		void SetFontName(Text::CStringNN fontName);
 		void SetPaperHori(Bool paperHori);
-		void AddChart(Data::Chart *chart);
+		void AddChart(Data::ChartPlotter *chart);
 		void AddPreHeader(Text::CStringNN name, Text::CStringNN val);
 		void AddPreHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right);
 		void AddHeader(Text::CStringNN name, Text::CStringNN val);

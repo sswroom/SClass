@@ -138,7 +138,7 @@ namespace Data
 		Bool GetAsBool() const;
 		void GetAsString(NN<Text::StringBuilderUTF8> sb) const;
 		UnsafeArray<UTF8Char> GetAsStringS(UnsafeArray<UTF8Char> buff, UOSInt buffSize) const;
-		Text::String *GetAsNewString() const;
+		Optional<Text::String> GetAsNewString() const;
 		Data::DateTime *GetAsNewDateTime() const;
 		Data::Timestamp GetAsTimestamp() const;
 		Data::Date GetAsDate() const;

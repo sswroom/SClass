@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Data/LineChart.h"
+#include "Data/ChartPlotter.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"

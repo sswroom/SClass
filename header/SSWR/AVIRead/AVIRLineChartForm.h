@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRLINECHARTFORM
 #define _SM_SSWR_AVIREAD_AVIRLINECHARTFORM
-#include "Data/Chart.h"
+#include "Data/ChartPlotter.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
@@ -44,7 +44,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<DB::ReadingDB> db;
-			Optional<Data::Chart> chart;
+			Optional<Data::ChartPlotter> chart;
 			Data::ArrayList<UInt32> yCols;
 			NN<Text::String> tableName;
 			Optional<Text::String> schemaName;
@@ -61,7 +61,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Optional<Data::Chart> GetChart();
+			Optional<Data::ChartPlotter> GetChart();
 		};
 	}
 }
