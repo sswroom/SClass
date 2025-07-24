@@ -159,17 +159,17 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 			stm->Write(CSTR("\r\n\tmodification-date=\"").ToByteArray());
 			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
 			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR("\"\r\n").ToByteArray());
+			stm->Write(CSTR("\"").ToByteArray());
 		}
 		else
 		{
 			stm->Write(CSTR(" modification-date=\"").ToByteArray());
 			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
 			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR("\"\r\n").ToByteArray());
+			stm->Write(CSTR("\"").ToByteArray());
 			k = 21 + (UOSInt)(sptr - sbuff);
 		}
-		stm->Write(CSTR("Content-ID: <").ToByteArray());
+		stm->Write(CSTR("\r\nContent-ID: <").ToByteArray());
 		stm->Write(att->contentId->ToByteArray());
 		stm->Write(CSTR(">\r\nContent-Transfer-Encoding: base64\r\n\r\n").ToByteArray());
 		WriteB64Data(stm, att->content, att->contentLen);
