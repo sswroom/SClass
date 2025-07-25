@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ChartPlotter.h"
+#include "IO/FileStream.h"
 #include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -192,7 +193,7 @@ void Data::ChartPlotter::TimeAxis::CalcX(NN<ChartData> data, UnsafeArray<Math::C
 		while (i < j)
 		{
 			pos[i].x = minX + tArr[i].DiffSecDbl(min) * ratio;
-			j++;
+			i++;
 		}
 	}
 }
@@ -209,7 +210,7 @@ void Data::ChartPlotter::TimeAxis::CalcY(NN<ChartData> data, UnsafeArray<Math::C
 		while (i < j)
 		{
 			pos[i].y = minY + tArr[i].DiffSecDbl(min) * ratio;
-			j++;
+			i++;
 		}
 	}
 }
@@ -269,7 +270,7 @@ void Data::ChartPlotter::Int32Axis::CalcX(NN<ChartData> data, UnsafeArray<Math::
 	while (i < j)
 	{
 		pos[i].x = minX + (iArr[i] - min) * ratio;
-		j++;
+		i++;
 	}
 }
 
@@ -283,7 +284,7 @@ void Data::ChartPlotter::Int32Axis::CalcY(NN<ChartData> data, UnsafeArray<Math::
 	while (i < j)
 	{
 		pos[i].y = minY + (iArr[i] - min) * ratio;
-		j++;
+		i++;
 	}
 }
 
@@ -343,7 +344,7 @@ void Data::ChartPlotter::DoubleAxis::CalcX(NN<ChartData> data, UnsafeArray<Math:
 	while (i < j)
 	{
 		pos[i].x = minX + (dArr[i] - min) * ratio;
-		j++;
+		i++;
 	}
 }
 
@@ -357,7 +358,7 @@ void Data::ChartPlotter::DoubleAxis::CalcY(NN<ChartData> data, UnsafeArray<Math:
 	while (i < j)
 	{
 		pos[i].y = minY + (dArr[i] - min) * ratio;
-		j++;
+		i++;
 	}
 }
 
@@ -436,6 +437,10 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis(NN<ChartData> da
 		return 0;
 	}
 	this->xAxis = NewAxis(data);
+	if (this->xAxis.SetTo(axis))
+	{
+		axis->SetLabelRotate(90);
+	}
 	return this->xAxis;
 }
 
@@ -912,6 +917,11 @@ Optional<Text::String> Data::ChartPlotter::GetY2AxisName() const
 	return 0;
 }
 
+Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis() const
+{
+	return this->xAxis;
+}
+
 Data::ChartPlotter::DataType Data::ChartPlotter::GetXAxisType() const
 {
 	NN<Axis> axis;
@@ -978,6 +988,10 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		}
 	}
 
+	Double labelRotate = xAxis->GetLabelRotate();
+	Double sRotate = Math_Sin(labelRotate * Math::PI / 180.0);
+	Double cRotate = Math_Cos(labelRotate * Math::PI / 180.0);
+	Double rotLeng;
 	xLeng = 0;
 	y1Leng = 0;
 	y2Leng = 0;
@@ -986,24 +1000,28 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(xAxis);
 		sptr = Text::StrInt32(sbuff, iAxis->GetMax());
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		xLeng = (Single)rcSize.x;
+		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		xLeng = rotLeng;
 
 		sptr = Text::StrInt32(sbuff, iAxis->GetMin());
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		if (rcSize.x > xLeng)
-			xLeng = (Single)rcSize.x;
+		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		if (rotLeng > xLeng)
+			xLeng = rotLeng;
 	}
 	else if (xAxis->GetType() == DataType::DOUBLE)
 	{
 		NN<DoubleAxis> dAxis = NN<DoubleAxis>::ConvertFrom(xAxis);
 		sptr = Text::StrDoubleFmt(sbuff, dAxis->GetMax(), UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		xLeng = (Single)rcSize.x;
+		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		xLeng = rotLeng;
 		
 		sptr = Text::StrDoubleFmt(sbuff, dAxis->GetMin(), UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		if (rcSize.x > xLeng)
-			xLeng = (Single)rcSize.x;
+		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		if (rotLeng > xLeng)
+			xLeng = rotLeng;
 	}
 	else if (xAxis->GetType() == DataType::Time)
 	{
@@ -1016,7 +1034,8 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		{
 			sptr = dt1.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			xLeng = (Single)rcSize.x;
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			xLeng = rotLeng;
 			if (dt2.GetMSPassedDate() == 0)
 			{
 				sptr = dt2.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v));
@@ -1026,18 +1045,21 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 				sptr = dt2.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 			}
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			if (rcSize.x > xLeng)
-				xLeng = (Single)rcSize.x;
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			if (rotLeng > xLeng)
+				xLeng = rotLeng;
 		}
 		else
 		{
 			sptr = dt1.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v));
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			xLeng = (Single)rcSize.x;
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			xLeng = rotLeng;
 			sptr = dt1.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			if (rcSize.x > xLeng)
-				xLeng = (Single)rcSize.x;
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			if (rotLeng > xLeng)
+				xLeng = rotLeng;
 		}
 	}
 	if (xAxis->GetName().SetTo(s))
@@ -1213,13 +1235,12 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		i++;
 	}
 
-
 	i = 0;
 	while (i < locations.GetCount())
 	{
 		s = Text::String::OrEmpty(labels.GetItem(i));
 		Math::Size2DDbl strSize = img->GetTextSize(fnt, s->ToCString());
-		img->DrawStringRot(Math::Coord2DDbl((x + y1Leng + this->pointSize + locations.GetItem(i)) - strSize.y * 0.5, (y + height - xLeng + barLeng) + strSize.x), Text::String::OrEmpty(labels.GetItem(i)), fnt, fontBrush, 90);
+		img->DrawStringRot(Math::Coord2DDbl((x + y1Leng + this->pointSize + locations.GetItem(i)) - strSize.y * 0.5 * sRotate - strSize.x * cRotate, (y + height - xLeng + barLeng) + strSize.x * sRotate - strSize.y * 0.5 * cRotate), Text::String::OrEmpty(labels.GetItem(i)), fnt, fontBrush, labelRotate);
 		i += 1;
 	}
 
@@ -1540,6 +1561,29 @@ UnsafeArrayOpt<UTF8Char> Data::ChartPlotter::GetLegend(UnsafeArray<UTF8Char> sbu
 	return Text::StrConcatC(sbuff, cdata->name->v, cdata->name->leng);
 }
 
+Bool Data::ChartPlotter::SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UOSInt> size, Text::CStringNN fileName)
+{
+	NN<Media::DrawImage> img;
+	if (!deng->CreateImage32(size, Media::AlphaType::AT_IGNORE_ALPHA).SetTo(img))
+	{
+		return false;
+	}
+	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		deng->DeleteImage(img);
+		return false;
+	}
+	this->Plot(img, 0, 0, UOSInt2Double(size.GetWidth()), UOSInt2Double(size.GetHeight()));
+	if (img->SavePng(fs) > 0)
+	{
+		deng->DeleteImage(img);
+		return true;
+	}
+	deng->DeleteImage(img);
+	return false;
+}
+
 UOSInt Data::ChartPlotter::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit)
 {
 	UOSInt retCnt = 2;
@@ -1676,7 +1720,34 @@ UOSInt Data::ChartPlotter::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN
 	}
     
 	timeDif = max->DiffMS(min);
-	if (!timeFormat.SetTo(nntimeFormat) || Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 1)
+	if (Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 20)
+	{
+		sptr = min->ToString(sbuff, dateFormat);
+		locations->Add(0);
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+		
+		Double lastPos = 0;
+		currDate = min;
+		currDate.ClearTime();
+		currDate.SetDay(1);
+		while (currDate < max)
+		{
+			currDate.AddMonth(1);
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
+			if ((pos >= lastPos + minLeng) && (pos < leng - minLeng))
+			{
+				sptr = currDate.ToString(sbuff, dateFormat);
+				locations->Add(pos);
+				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+				retCnt++;
+			}
+		}
+
+		sptr = max->ToString(sbuff, dateFormat);
+		locations->Add(leng);
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	}
+	else if (!timeFormat.SetTo(nntimeFormat) || Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 1)
 	{
 		sptr = min->ToString(sbuff, dateFormat);
 		locations->Add(0);

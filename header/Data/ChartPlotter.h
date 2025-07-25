@@ -102,7 +102,9 @@ namespace Data
 		{
 		private:
 			Optional<Text::String> name;
+			Double labelRotate;
 		public:
+			Axis() { this->name = 0; this->labelRotate = 0; }
 			virtual ~Axis() { OPTSTR_DEL(this->name); };
 
 			virtual DataType GetType() const = 0;
@@ -110,6 +112,8 @@ namespace Data
 			virtual void CalcY(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minY, Double maxY) const = 0;
 			void SetName(Text::CString name) { OPTSTR_DEL(this->name); this->name = Text::String::NewOrNull(name); }
 			Optional<Text::String> GetName() const { return this->name; }
+			void SetLabelRotate(Double labelRotate) { this->labelRotate = labelRotate; }
+			Double GetLabelRotate() const { return this->labelRotate; }
 		};
 
 		class TimeAxis : public Axis
@@ -264,6 +268,7 @@ namespace Data
 		void SetY2AxisName(Text::CString y2AxisName);
 		Optional<Text::String> GetY2AxisName() const;
 
+		Optional<Axis> GetXAxis() const;
 		DataType GetXAxisType() const;
 		UOSInt GetChartCount() const;
 		Optional<ChartParam> GetChart(UOSInt index) const;
@@ -271,6 +276,7 @@ namespace Data
 		void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height);
 		UOSInt GetLegendCount() const;
 		UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const;
+		Bool SavePng(NN<Media::DrawEngine> deng, Math::Size2D<UOSInt> size, Text::CStringNN fileName);
 
 		static UOSInt CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
 		static UOSInt CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
@@ -284,6 +290,32 @@ namespace Data
 		static NN<Int32Data> NewData(NN<Data::ReadingList<Int32>> data);
 		static NN<DoubleData> NewData(NN<Data::ReadingList<Double>> data);
 		static Optional<Axis> NewAxis(NN<ChartData> data);
+
+		template<class K, class V> static NN<ChartData> NewDataFromKey(NN<Data::ArrayList<TwinItem<K, V>>> vals)
+		{
+			UOSInt i = 0;
+			UOSInt j = vals->GetCount();
+			Data::ArrayList<K> arr(j);
+			while (i < j)
+			{
+				arr.Add(vals->GetItem(i).key);
+				i++;
+			}
+			return NewData(arr);
+		}
+
+		template<class K, class V> static NN<ChartData> NewDataFromValue(NN<Data::ArrayList<TwinItem<K, V>>> vals)
+		{
+			UOSInt i = 0;
+			UOSInt j = vals->GetCount();
+			Data::ArrayList<V> arr(j);
+			while (i < j)
+			{
+				arr.Add(vals->GetItem(i).value);
+				i++;
+			}
+			return NewData(arr);
+		}
 	};
 }
 #endif

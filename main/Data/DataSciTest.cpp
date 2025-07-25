@@ -4,6 +4,7 @@
 #include "Data/ChartPlotter.h"
 #include "DB/CSVFile.h"
 #include "IO/ConsoleWriter.h"
+#include "Media/DrawEngineFactory.h"
 #include "Text/TextWriteUtil.h"
 
 #define DATAPATH "/home/sswroom/Progs/VCClass/Book/GotopDataSci/MathProgramming/"
@@ -27,6 +28,7 @@ Int32 TestPage27()
 	UOSInt tsCols[] = {0};
 	NN<Data::TableData> dfInfo;
 	NN<Data::DataSet> ds;
+	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
 		if (dfInfo->GetDataSet(CSTR("金額")).SetTo(ds))
@@ -40,10 +42,11 @@ Int32 TestPage27()
 //				console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("TS: "))->AppendTSNoZone(groupResult.GetItem(i).key)->Append(CSTR(", Sum: "))->AppendDouble(groupResult.GetItem(i).value)->ToCString());
 //				i++;
 //			}
+			NN<Data::ChartPlotter::Axis> axis;
 			Data::ChartPlotter chart(0);
-//			chart.AddXData(groupResult);
-//			chart.AddLine(groupResult);
-//			chart.GetXAxis().SetRotate(60);
+			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, Double>(groupResult), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, Double>(groupResult), 0xff000000);
+			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(60);
+			chart.SavePng(deng, {640, 480}, CSTR("Chapter1-2.png"));
 			//console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("Item Count:"))->AppendUOSInt(groupResult.GetCount())->ToCString());
 			ds.Delete();
 		}
@@ -53,6 +56,7 @@ Int32 TestPage27()
 		}
 		dfInfo.Delete();
 	}
+	deng.Delete();
 	return 0;
 }
 
