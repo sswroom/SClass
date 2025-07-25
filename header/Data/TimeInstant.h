@@ -285,6 +285,11 @@ namespace Data
 			return (this->sec / 86400) == (ts.sec / 86400);
 		}
 
+		Bool IsZero() const
+		{
+			return this->sec == 0 && this->nanosec == 0;
+		}
+
 		static TimeInstant Now()
 		{
 			UInt32 nanosec;

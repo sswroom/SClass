@@ -347,8 +347,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 					UOSInt recvCnt = currTopic->recvCnt;
 					Data::ChartPlotter *chart;
 					NEW_CLASS(chart, Data::ChartPlotter(CSTR_NULL));
-					chart->AddXDataDate(currTopic->dateList, recvCnt);
-					chart->AddYData(currTopic->topic, currTopic->valueList, recvCnt, 0xFFFF0000, Data::ChartPlotter::LineStyle::Line);
+					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, recvCnt), Data::ChartPlotter::NewDataDate(currTopic->dateList, recvCnt), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 					DEL_CLASS(chart);
 				}
@@ -372,8 +371,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 					
 					Data::ChartPlotter *chart;
 					NEW_CLASS(chart, Data::ChartPlotter(CSTR_NULL));
-					chart->AddXDataDate(currTopic->dateList, 256);
-					chart->AddYData(currTopic->topic, currTopic->valueList, 256, 0xFFFF0000, Data::ChartPlotter::LineStyle::Line);
+					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, 256), Data::ChartPlotter::NewDataDate(currTopic->dateList, 256), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 					DEL_CLASS(chart);
 					MemFree(dateList);

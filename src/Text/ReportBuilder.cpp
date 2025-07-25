@@ -18,7 +18,7 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::ChartPl
 {
 	switch (dataType)
 	{
-	case Data::ChartPlotter::DataType::DateTicks:
+	case Data::ChartPlotter::DataType::Time:
 		return Text::SpreadSheet::AxisType::Date;
 	case Data::ChartPlotter::DataType::None:
 	case Data::ChartPlotter::DataType::DOUBLE:
@@ -803,11 +803,12 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 		}
 
 		NN<Text::SpreadSheet::OfficeChart> shChart = ws->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, OPTSTR_CSTR(chart->GetTitle()));
-		shChart->InitLineChart(Text::String::OrEmpty(chart->GetYAxisName())->ToCString(), Text::String::OrEmpty(chart->GetXAxisName())->ToCString(), FromChartDataType(chart->GetXAxisType()));
+		shChart->InitLineChart(Text::String::OrEmpty(chart->GetY1AxisName())->ToCString(), Text::String::OrEmpty(chart->GetXAxisName())->ToCString(), FromChartDataType(chart->GetXAxisType()));
 		shChart->SetDisplayBlankAs(Text::SpreadSheet::BlankAs::Gap);
 		shChart->AddLegend(Text::SpreadSheet::LegendPos::Bottom);
 
-		if (chart->GetXDataCount() == 1)
+		NN<Data::ChartPlotter::ChartParam> chartParam;
+		if (chart->GetChart(0).SetTo(chartParam))
 		{
 			Text::SpreadSheet::CellStyle *dateStyle = 0;
 			Text::SpreadSheet::CellStyle *intStyle = 0;
@@ -816,23 +817,21 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 			UOSInt i;
 			UOSInt j;
 			UOSInt colCount;
-			switch (chart->GetXAxisType())
+			switch (chartParam->xData->GetType())
 			{
-			case Data::ChartPlotter::DataType::DateTicks:
+			case Data::ChartPlotter::DataType::Time:
 			{
 				if (dateStyle == 0)
 				{
 					dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString()).Ptr();
 				}
-				UnsafeArray<Int64> dateTicks;
-				if (chart->GetXDateTicks(0, colCount).SetTo(dateTicks))
+				UnsafeArray<Data::TimeInstant> dates = NN<Data::ChartPlotter::TimeData>::ConvertFrom(chartParam->xData)->GetData();
+				colCount = chartParam->xData->GetCount();
+				i = 0;
+				while (i < colCount)
 				{
-					i = 0;
-					while (i < colCount)
-					{
-						dataSheet->SetCellTS(0, i + 1, dateStyle, Data::Timestamp(dateTicks[i], Data::DateTimeUtil::GetLocalTzQhr()));
-						i++;
-					}
+					dataSheet->SetCellTS(0, i + 1, dateStyle, Data::Timestamp(dates[i], Data::DateTimeUtil::GetLocalTzQhr()));
+					i++;
 				}
 				break;
 			}
@@ -842,15 +841,13 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				{
 					dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString()).Ptr();
 				}
-				UnsafeArray<Double> dblValues;
-				if (chart->GetXDouble(0, colCount).SetTo(dblValues))
+				UnsafeArray<Double> dblValues = NN<Data::ChartPlotter::DoubleData>::ConvertFrom(chartParam->xData)->GetData();
+				colCount = chartParam->xData->GetCount();
+				i = 0;
+				while (i < colCount)
 				{
-					i = 0;
-					while (i < colCount)
-					{
-						dataSheet->SetCellDouble(0, i + 1, dblStyle, dblValues[i]);
-						i++;
-					}
+					dataSheet->SetCellDouble(0, i + 1, dblStyle, dblValues[i]);
+					i++;
 				}
 				break;
 			}
@@ -860,15 +857,13 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				{
 					intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
 				}
-				UnsafeArray<Int32> intValues;
-				if (chart->GetXInt32(0, colCount).SetTo(intValues))
+				UnsafeArray<Int32> intValues = NN<Data::ChartPlotter::Int32Data>::ConvertFrom(chartParam->xData)->GetData();
+				colCount = chartParam->xData->GetCount();
+				i = 0;
+				while (i < colCount)
 				{
-					i = 0;
-					while (i < colCount)
-					{
-						dataSheet->SetCellInt32(0, i + 1, intStyle, intValues[i]);
-						i++;
-					}
+					dataSheet->SetCellInt32(0, i + 1, intStyle, intValues[i]);
+					i++;
 				}
 				break;
 			}
@@ -877,75 +872,73 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				break;
 			}
 			i = 0;
-			j = chart->GetYDataCount();
+			j = chart->GetChartCount();
 			while (i < j)
 			{
-				dataSheet->SetCellString(1 + i, 0, strStyle, Text::String::OrEmpty(chart->GetYName(i)));
-				switch (chart->GetYType(i))
+				if (chart->GetChart(i).SetTo(chartParam))
 				{
-				case Data::ChartPlotter::DataType::DateTicks:
-				{
-					if (dateStyle == 0)
+					dataSheet->SetCellString(1 + i, 0, strStyle, chartParam->name);
+					switch (chartParam->yData->GetType())
 					{
-						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString()).Ptr();
-					}
-					UnsafeArray<Int64> dateTicks;
-					if (chart->GetYDateTicks(i, colCount).SetTo(dateTicks))
+					case Data::ChartPlotter::DataType::Time:
 					{
+						if (dateStyle == 0)
+						{
+							dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString()).Ptr();
+						}
+						UnsafeArray<Data::TimeInstant> dates = NN<Data::ChartPlotter::TimeData>::ConvertFrom(chartParam->yData)->GetData();
+						colCount = chartParam->yData->GetCount();
 						k = 0;
 						while (k < colCount)
 						{
-							dataSheet->SetCellTS(i + 1, k + 1, dateStyle, Data::Timestamp(dateTicks[k], Data::DateTimeUtil::GetLocalTzQhr()));
+							dataSheet->SetCellTS(i + 1, k + 1, dateStyle, Data::Timestamp(dates[k], Data::DateTimeUtil::GetLocalTzQhr()));
 							k++;
 						}
+						break;
 					}
-					break;
-				}
-				case Data::ChartPlotter::DataType::DOUBLE:
-				{
-					if (dblStyle == 0)
+					case Data::ChartPlotter::DataType::DOUBLE:
 					{
-						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString()).Ptr();
-					}
-					UnsafeArray<Double> dblValues;
-					if (chart->GetYDouble(i, colCount).SetTo(dblValues))
-					{
+						if (dblStyle == 0)
+						{
+							dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString()).Ptr();
+						}
+						UnsafeArray<Double> dblValues = NN<Data::ChartPlotter::DoubleData>::ConvertFrom(chartParam->yData)->GetData();
+						colCount = chartParam->yData->GetCount();
 						k = 0;
 						while (k < colCount)
 						{
 							dataSheet->SetCellDouble(i + 1, k + 1, dblStyle, dblValues[k]);
 							k++;
 						}
+						break;
 					}
-					break;
-				}
-				case Data::ChartPlotter::DataType::Integer:
-				{
-					if (intStyle == 0)
+					case Data::ChartPlotter::DataType::Integer:
 					{
-						intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
-					}
-					UnsafeArray<Int32> intValues;
-					if (chart->GetYInt32(i, colCount).SetTo(intValues))
-					{
+						if (intStyle == 0)
+						{
+							intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
+						}
+						UnsafeArray<Int32> intValues = NN<Data::ChartPlotter::Int32Data>::ConvertFrom(chartParam->yData)->GetData();
+						colCount = chartParam->yData->GetCount();
 						k = 0;
 						while (k < colCount)
 						{
 							dataSheet->SetCellInt32(i + 1, k + 1, intStyle, intValues[k]);
 							k++;
 						}
+						break;
 					}
-					break;
+					case Data::ChartPlotter::DataType::None:
+					default:
+						colCount = 0;
+						break;				
+					}
+					NN<Text::SpreadSheet::WorkbookDataSource> catSource;
+					NEW_CLASSNN(catSource, Text::SpreadSheet::WorkbookDataSource(dataSheet, 0, 0, 1, colCount));
+					NN<Text::SpreadSheet::WorkbookDataSource> valSource;
+					NEW_CLASSNN(valSource, Text::SpreadSheet::WorkbookDataSource(dataSheet, i + 1, i + 1, 1, colCount));
+					shChart->AddSeries(catSource, valSource, chartParam->name, false);
 				}
-				case Data::ChartPlotter::DataType::None:
-					colCount = 0;
-					break;				
-				}
-				NN<Text::SpreadSheet::WorkbookDataSource> catSource;
-				NEW_CLASSNN(catSource, Text::SpreadSheet::WorkbookDataSource(dataSheet, 0, 0, 1, colCount));
-				NN<Text::SpreadSheet::WorkbookDataSource> valSource;
-				NEW_CLASSNN(valSource, Text::SpreadSheet::WorkbookDataSource(dataSheet, i + 1, i + 1, 1, colCount));
-				shChart->AddSeries(catSource, valSource, chart->GetYName(i), false);
 				i++;
 			}
 		}

@@ -19,12 +19,6 @@ namespace Data
 			Circle = 1
 		};
 
-		enum class LineStyle
-		{
-			Line = 0,
-			Fill = 1
-		};
-
 		enum class RefType
 		{
 			None = 0,
@@ -35,35 +29,161 @@ namespace Data
 		enum class DataType
 		{
 			None,
-			DateTicks,
+			Time,
 			DOUBLE,
 			Integer
 		};
 
 		enum class ChartType
 		{
-			Line
+			Line,
+			FilledLine
 		};
-	private:
+
 		class ChartData
+		{
+		protected:
+			UOSInt dataCnt;
+
+		public:
+			ChartData(UOSInt dataCnt) { this->dataCnt = dataCnt; }
+			virtual ~ChartData(){};
+
+			virtual DataType GetType() const = 0;
+			virtual NN<ChartData> Clone() const = 0;
+			UOSInt GetCount() const { return this->dataCnt; }
+		};
+
+		class TimeData : public ChartData
+		{
+		private:
+			UnsafeArray<Data::TimeInstant> timeArr;
+		public:
+			TimeData(UnsafeArray<Data::Timestamp> timeArr, UOSInt dataCnt);
+			TimeData(UnsafeArray<Data::TimeInstant> timeArr, UOSInt dataCnt);
+			TimeData(UnsafeArray<Int64> ticksArr, UOSInt dataCnt);
+			TimeData(NN<ReadingList<Timestamp>> timeArr);
+			virtual ~TimeData();
+
+			virtual DataType GetType() const;
+			virtual NN<ChartData> Clone() const;
+			UnsafeArray<Data::TimeInstant> GetData() const;
+		};
+
+		class Int32Data : public ChartData
+		{
+		private:
+			UnsafeArray<Int32> intArr;
+		public:
+			Int32Data(UnsafeArray<Int32> intArr, UOSInt dataCnt);
+			Int32Data(NN<ReadingList<Int32>> intArr);
+			virtual ~Int32Data();
+
+			virtual DataType GetType() const;
+			virtual NN<ChartData> Clone() const;
+			UnsafeArray<Int32> GetData() const;
+		};
+
+		class DoubleData : public ChartData
+		{
+		private:
+			UnsafeArray<Double> dblArr;
+		public:
+			DoubleData(UnsafeArray<Double> dblArr, UOSInt dataCnt);
+			DoubleData(NN<ReadingList<Double>> dblArr);
+			virtual ~DoubleData();
+
+			virtual DataType GetType() const;
+			virtual NN<ChartData> Clone() const;
+			UnsafeArray<Double> GetData() const;
+		};
+
+		class Axis
+		{
+		private:
+			Optional<Text::String> name;
+		public:
+			virtual ~Axis() { OPTSTR_DEL(this->name); };
+
+			virtual DataType GetType() const = 0;
+			virtual void CalcX(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minX, Double maxX) const = 0;
+			virtual void CalcY(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minY, Double maxY) const = 0;
+			void SetName(Text::CString name) { OPTSTR_DEL(this->name); this->name = Text::String::NewOrNull(name); }
+			Optional<Text::String> GetName() const { return this->name; }
+		};
+
+		class TimeAxis : public Axis
+		{
+		private:
+			Data::TimeInstant min;
+			Data::TimeInstant max;
+		public:
+			TimeAxis(NN<TimeData> data);
+			TimeAxis(Data::TimeInstant val);
+			virtual ~TimeAxis();
+
+			virtual DataType GetType() const;
+			virtual void CalcX(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minX, Double maxX) const;
+			virtual void CalcY(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minY, Double maxY) const;
+			void ExtendRange(NN<TimeData> data);
+			void ExtendRange(Data::TimeInstant inst);
+			Data::TimeInstant GetMax() const { return this->max; }
+			Data::TimeInstant GetMin() const { return this->min; }
+		};
+
+		class Int32Axis : public Axis
+		{
+		private:
+			Int32 min;
+			Int32 max;
+		public:
+			Int32Axis(NN<Int32Data> data);
+			virtual ~Int32Axis();
+
+			virtual DataType GetType() const;
+			virtual void CalcX(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minX, Double maxX) const;
+			virtual void CalcY(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minY, Double maxY) const;
+			void ExtendRange(NN<Int32Data> data);
+			void ExtendRange(Int32 v);
+			Int32 GetMax() const { return this->max; }
+			Int32 GetMin() const { return this->min; }
+		};
+
+		class DoubleAxis : public Axis
+		{
+		private:
+			Double min;
+			Double max;
+		public:
+			DoubleAxis(NN<DoubleData> data);
+			virtual ~DoubleAxis();
+
+			virtual DataType GetType() const;
+			virtual void CalcX(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minX, Double maxX) const;
+			virtual void CalcY(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minY, Double maxY) const;
+			void ExtendRange(NN<DoubleData> data);
+			void ExtendRange(Double v);
+			Double GetMax() const { return this->max; }
+			Double GetMin() const { return this->min; }
+		};
+
+		class ChartParam
 		{
 		public:
 			NN<Text::String> name;
-			void *data;
-			DataType dataType;
+			NN<ChartData> yData;
+			NN<Axis> yAxis;
+			NN<ChartData> xData;
 			UInt32 lineColor;
-			UOSInt dataCnt;
-			LineStyle lineStyle;
+			UInt32 fillColor;
 			ChartType chartType;
 
-			ChartData(NN<Text::String> name, void *data, UOSInt dataCnt, DataType dataType, UInt32 lineColor, LineStyle lineStyle, ChartType chartType);
-			ChartData(Text::CStringNN name, void *data, UOSInt dataCnt, DataType dataType, UInt32 lineColor, LineStyle lineStyle, ChartType chartType);
-			~ChartData();
+			ChartParam(NN<Text::String> name, NN<ChartData> yData, NN<Axis> yAxis, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor, ChartType chartType);
+			ChartParam(Text::CStringNN name, NN<ChartData> yData, NN<Axis> yAxis, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor, ChartType chartType);
+			~ChartParam();
 		};
 	private:
 		Optional<Text::String> title;
-		Optional<Text::String> xAxisName;
-		Optional<Text::String> yAxisName;
 
 		NN<Text::String> dateFormat;
 		NN<Text::String> timeFormat;
@@ -71,11 +191,8 @@ namespace Data
 		Double minDblVal;
 
 		Data::RandomOS rnd;
-		Data::ArrayList<void*> xDatas;
-		Data::ArrayList<UOSInt> xDataCnt;
-		DataType xType;
 
-		Data::ArrayListNN<ChartData> yCharts;
+		Data::ArrayListNN<ChartParam> charts;
 		Optional<Text::String> titleBuff;
 		Text::PString titleLine[3];
 		UOSInt titleLineCnt;
@@ -84,10 +201,9 @@ namespace Data
 
 		Double refDbl;
 		Int32 refInt;
-		Int64 refTime;
+		Data::TimeInstant refTime;
 		Bool refExist;
 		RefType refType;
-//		LineStyle style;
 		PointType pointType;
 		Double pointSize;
 
@@ -102,25 +218,17 @@ namespace Data
 		NN<Text::String> fntName;
 		Double fntSizePt;
 
-		Bool hasXRangeDate;
-		Int64 xRangeDateMin;
-		Int64 xRangeDateMax;
-		Bool hasYRangeInt;
-		Int32 yRangeIntMin;
-		Int32 yRangeIntMax;
-		Bool hasYRangeDbl;
-		Double yRangeDblMin;
-		Double yRangeDblMax;
+		Optional<Axis> xAxis;
+		Optional<Axis> y1Axis;
+		Optional<Axis> y2Axis;
 
+	private:
+		Optional<Axis> GetXAxis(NN<ChartData> data);
+		Optional<Axis> GetYAxis(NN<ChartData> data);
 	public:
 		ChartPlotter(Text::CString title);
 		~ChartPlotter();
 
-		Bool AddXData(UnsafeArray<Data::DateTime*> data, UOSInt dataCnt);
-		Bool AddXData(UnsafeArray<Data::Timestamp> data, UOSInt dataCnt);
-		Bool AddXData(UnsafeArray<Double> data, UOSInt dataCnt);
-		Bool AddXData(UnsafeArray<Int32> data, UOSInt dataCnt);
-		Bool AddXDataDate(UnsafeArray<Int64> data, UOSInt dataCnt);
 		void SetFontHeightPt(Double ptSize);
 		void SetFontName(Text::CStringNN name);
 		void SetYRefVal(Int32 refVal, UInt32 col);
@@ -133,12 +241,10 @@ namespace Data
 		void SetBarLength(Double barLength);
 		void SetPointType(PointType pointType, Double pointSize);
 		UInt32 GetRndColor();
-		void AddYDataDate(NN<Text::String> name, UnsafeArray<Int64> value, UOSInt valCnt, UInt32 lineColor, LineStyle style);
-		void AddYDataDate(Text::CStringNN name, UnsafeArray<Int64> value, UOSInt valCnt, UInt32 lineColor, LineStyle style);
-		void AddYData(NN<Text::String> name, UnsafeArray<Int32> value, UOSInt valCnt, UInt32 lineColor, LineStyle style);
-		void AddYData(Text::CStringNN name, UnsafeArray<Int32> value, UOSInt valCnt, UInt32 lineColor, LineStyle style);
-		void AddYData(NN<Text::String> name, UnsafeArray<Double> value, UOSInt valCnt, UInt32 lineColor, LineStyle style);
-		void AddYData(Text::CStringNN name, UnsafeArray<Double> value, UOSInt valCnt, UInt32 lineColor, LineStyle style);
+		Bool AddLineChart(NN<Text::String> name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor);
+		Bool AddLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor);
+		Bool AddFilledLineChart(NN<Text::String> name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor);
+		Bool AddFilledLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor);
 		void SetXRangeDate(NN<Data::DateTime> xVal);
 		void SetYRangeInt(Int32 yVal);
 		void SetYRangeDbl(Double yVal);
@@ -153,20 +259,14 @@ namespace Data
 
 		void SetXAxisName(Text::CString xAxisName);
 		Optional<Text::String> GetXAxisName() const;
-		void SetYAxisName(Text::CString yAxisName);
-		Optional<Text::String> GetYAxisName() const;
+		void SetY1AxisName(Text::CString y1AxisName);
+		Optional<Text::String> GetY1AxisName() const;
+		void SetY2AxisName(Text::CString y2AxisName);
+		Optional<Text::String> GetY2AxisName() const;
 
 		DataType GetXAxisType() const;
-		UOSInt GetXDataCount() const;
-		UnsafeArrayOpt<Int64> GetXDateTicks(UOSInt index, OutParam<UOSInt> cnt) const;
-		UnsafeArrayOpt<Double> GetXDouble(UOSInt index, OutParam<UOSInt> cnt) const;
-		UnsafeArrayOpt<Int32> GetXInt32(UOSInt index, OutParam<UOSInt> cnt) const;
-		UOSInt GetYDataCount() const;
-		UnsafeArrayOpt<Int64> GetYDateTicks(UOSInt index, OutParam<UOSInt> cnt) const;
-		UnsafeArrayOpt<Double> GetYDouble(UOSInt index, OutParam<UOSInt> cnt) const;
-		UnsafeArrayOpt<Int32> GetYInt32(UOSInt index, OutParam<UOSInt> cnt) const;
-		Optional<Text::String> GetYName(UOSInt index) const;
-		DataType GetYType(UOSInt index) const;
+		UOSInt GetChartCount() const;
+		Optional<ChartParam> GetChart(UOSInt index) const;
 
 		void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height);
 		UOSInt GetLegendCount() const;
@@ -175,6 +275,15 @@ namespace Data
 		static UOSInt CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
 		static UOSInt CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
 		static UOSInt CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat);
+
+		static NN<TimeData> NewData(UnsafeArray<Data::Timestamp> data, UOSInt dataCnt);
+		static NN<Int32Data> NewData(UnsafeArray<Int32> data, UOSInt dataCnt);
+		static NN<DoubleData> NewData(UnsafeArray<Double> data, UOSInt dataCnt);
+		static NN<TimeData> NewDataDate(UnsafeArray<Int64> ticksData, UOSInt dataCnt);
+		static NN<TimeData> NewData(NN<Data::ReadingList<Data::Timestamp>> data);
+		static NN<Int32Data> NewData(NN<Data::ReadingList<Int32>> data);
+		static NN<DoubleData> NewData(NN<Data::ReadingList<Double>> data);
+		static Optional<Axis> NewAxis(NN<ChartData> data);
 	};
 }
 #endif

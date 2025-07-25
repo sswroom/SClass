@@ -91,8 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 				dates[i] = record->timeTicks;
 				i++;
 			}
-			chart.AddXDataDate(dates, j);
-			chart.AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::ChartPlotter::LineStyle::Line);
+			chart.AddLineChart(CSTR("New Cases"), Data::ChartPlotter::NewData(counts, j), Data::ChartPlotter::NewDataDate(dates, j), 0xffff0000);
 			chart.Plot(dimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 			MemFree(counts);
 			MemFree(dates);

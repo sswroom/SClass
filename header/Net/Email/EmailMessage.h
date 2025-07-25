@@ -35,11 +35,12 @@ namespace Net
 			struct Attachment
 			{
 				UnsafeArray<UInt8> content;
+				NN<Text::String> contentType;
 				UOSInt contentLen;
 				NN<Text::String> contentId;
 				NN<Text::String> fileName;
-				Data::DateTime createTime;
-				Data::DateTime modifyTime;
+				Data::Timestamp createTime;
+				Data::Timestamp modifyTime;
 				Bool isInline;
 			};
 			

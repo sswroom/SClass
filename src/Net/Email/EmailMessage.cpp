@@ -101,75 +101,79 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 		stm->Write(CSTR("\r\nContent-Disposition: ").ToByteArray());
 		if (att->isInline)
 		{
-			stm->Write(CSTR("inline;").ToByteArray());
-			k = 21 + 7;
+			stm->Write(CSTR("inline").ToByteArray());
+			k = 21 + 6;
 		}
 		else
 		{
-			stm->Write(CSTR("attachment;").ToByteArray());
-			k = 21 + 11;
+			stm->Write(CSTR("attachment").ToByteArray());
+			k = 21 + 10;
 		}
-		if (k + 13 + att->fileName->leng > LINECHARCNT)
+		if (k + 14 + att->fileName->leng > LINECHARCNT)
 		{
-			stm->Write(CSTR("\r\n\tfilename=\"").ToByteArray());
+			stm->Write(CSTR(";\r\n\tfilename=\"").ToByteArray());
 			stm->Write(att->fileName->ToByteArray());
-			stm->Write(CSTR("\";").ToByteArray());
-			k = 16 + att->fileName->leng;
+			stm->Write(CSTR("\"").ToByteArray());
+			k = 15 + att->fileName->leng;
 		}
 		else
 		{
-			stm->Write(CSTR(" filename=\"").ToByteArray());
+			stm->Write(CSTR("; filename=\"").ToByteArray());
 			stm->Write(att->fileName->ToByteArray());
-			stm->Write(CSTR("\";").ToByteArray());
+			stm->Write(CSTR("\"").ToByteArray());
 			k += 13 + att->fileName->leng;
 		}
 		sptr = Text::StrUOSInt(sbuff, att->contentLen);
-		if (k + 7 + (UOSInt)(sptr - sbuff) > LINECHARCNT)
+		if (k + 8 + (UOSInt)(sptr - sbuff) > LINECHARCNT)
 		{
-			stm->Write(CSTR("\r\n\tsize=").ToByteArray());
+			stm->Write(CSTR(";\r\n\tsize=").ToByteArray());
 			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR(";").ToByteArray());
-			k = 10 + (UOSInt)(sptr - sbuff);
+			k = 9 + (UOSInt)(sptr - sbuff);
 		}
 		else
 		{
-			stm->Write(CSTR(" size=").ToByteArray());
+			stm->Write(CSTR("; size=").ToByteArray());
 			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR(";").ToByteArray());
 			k += 7 + (UOSInt)(sptr - sbuff);
 		}
-		if (k + 47 > LINECHARCNT)
+		if (att->createTime.NotNull())
 		{
-			stm->Write(CSTR("\r\n\tcreation-date=\"").ToByteArray());
-			sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
-			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR("\";").ToByteArray());
-			k = 21 + (UOSInt)(sptr - sbuff);
+			if (k + 48 > LINECHARCNT)
+			{
+				stm->Write(CSTR(";\r\n\tcreation-date=\"").ToByteArray());
+				sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
+				stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+				stm->Write(CSTR("\"").ToByteArray());
+				k = 20 + (UOSInt)(sptr - sbuff);
+			}
+			else
+			{
+				stm->Write(CSTR("; creation-date=\"").ToByteArray());
+				sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
+				stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+				stm->Write(CSTR("\"").ToByteArray());
+				k += 18 + (UOSInt)(sptr - sbuff);
+			}
 		}
-		else
+		if (att->modifyTime.NotNull())
 		{
-			stm->Write(CSTR(" creation-date=\"").ToByteArray());
-			sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
-			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR("\";").ToByteArray());
-			k += 18 + (UOSInt)(sptr - sbuff);
+			if (k + 50 > LINECHARCNT)
+			{
+				stm->Write(CSTR(";\r\n\tmodification-date=\"").ToByteArray());
+				sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
+				stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+				stm->Write(CSTR("\"").ToByteArray());
+			}
+			else
+			{
+				stm->Write(CSTR("; modification-date=\"").ToByteArray());
+				sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
+				stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+				stm->Write(CSTR("\"").ToByteArray());
+				k = 21 + (UOSInt)(sptr - sbuff);
+			}
 		}
-		if (k + 50 > LINECHARCNT)
-		{
-			stm->Write(CSTR("\r\n\tmodification-date=\"").ToByteArray());
-			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
-			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR("\"").ToByteArray());
-		}
-		else
-		{
-			stm->Write(CSTR(" modification-date=\"").ToByteArray());
-			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
-			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
-			stm->Write(CSTR("\"").ToByteArray());
-			k = 21 + (UOSInt)(sptr - sbuff);
-		}
-		stm->Write(CSTR("\r\nContent-ID: <").ToByteArray());
+		stm->Write(CSTR("\r\nContent-Id: <").ToByteArray());
 		stm->Write(att->contentId->ToByteArray());
 		stm->Write(CSTR(">\r\nContent-Transfer-Encoding: base64\r\n\r\n").ToByteArray());
 		WriteB64Data(stm, att->content, att->contentLen);
@@ -586,9 +590,9 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 		MemFreeNN(attachment);
 		return 0;
 	}
-	attachment->createTime.SetValue(0, 0);
-	attachment->modifyTime.SetValue(0, 0);
-	fs.GetFileTimes(&attachment->createTime, 0, &attachment->modifyTime);
+	attachment->createTime = 0;
+	attachment->modifyTime = 0;
+	fs.GetFileTimes(attachment->createTime, 0, attachment->modifyTime);
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
 	attachment->contentId = Text::String::NewP(sbuff, sptr);
@@ -605,8 +609,8 @@ NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment
 	attachment->contentLen = contentLen;
 	attachment->content = MemAllocArr(UInt8, attachment->contentLen);
 	MemCopyNO(attachment->content.Ptr(), content.Ptr(), contentLen);
-	attachment->createTime.SetCurrTimeUTC();
-	attachment->modifyTime.SetValue(attachment->createTime);
+	attachment->createTime = Data::Timestamp::UtcNow();
+	attachment->modifyTime = attachment->createTime;
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
 	attachment->contentId = Text::String::NewP(sbuff, sptr);

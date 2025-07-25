@@ -314,8 +314,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 				valList[i] = this->siteEnergyList.GetItem(i).value;
 				i++;
 			}
-			chart.AddXData(tsList, j);
-			chart.AddYData(CSTR("Wh"), valList, j, 0xffff0000, Data::ChartPlotter::LineStyle::Line);
+			chart.AddLineChart(CSTR("Wh"), Data::ChartPlotter::NewData(valList, j), Data::ChartPlotter::NewData(tsList, j), 0xffff0000);
 			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);
@@ -351,8 +350,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 				valList[i] = this->sitePowerList.GetItem(i).value;
 				i++;
 			}
-			chart.AddXData(tsList, j);
-			chart.AddYData(CSTR("W"), valList, j, 0xffff0000, Data::ChartPlotter::LineStyle::Line);
+			chart.AddLineChart(CSTR("W"), Data::ChartPlotter::NewData(valList, j), Data::ChartPlotter::NewData(tsList, j), 0xffff0000);
 			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);
