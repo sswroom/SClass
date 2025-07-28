@@ -1426,6 +1426,64 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
+Bool Data::VariItem::Equals(NN<VariItem> item) const
+{
+	switch (this->itemType)
+	{
+	default:
+	case ItemType::Unknown:
+		return item->itemType == ItemType::Unknown;
+	case ItemType::Null:
+		return item->itemType == ItemType::Null;
+	case ItemType::F32:
+		return item->itemType == ItemType::F32 && this->val.f32 == item->val.f32;
+	case ItemType::F64:
+		return item->itemType == ItemType::F64 && this->val.f64 == item->val.f64;
+	case ItemType::I8:
+		return item->itemType == ItemType::I8 && this->val.i8 == item->val.i8;
+	case ItemType::U8:
+		return item->itemType == ItemType::U8 && this->val.u8 == item->val.u8;
+	case ItemType::I16:
+		return item->itemType == ItemType::I16 && this->val.i16 == item->val.i16;
+	case ItemType::U16:
+		return item->itemType == ItemType::U16 && this->val.u16 == item->val.u16;
+	case ItemType::I32:
+		return item->itemType == ItemType::I32 && this->val.i32 == item->val.i32;
+	case ItemType::U32:
+		return item->itemType == ItemType::U32 && this->val.u32 == item->val.u32;
+	case ItemType::NI32:
+		return item->itemType == ItemType::NI32 && this->val.i32 == item->val.i32;
+	case ItemType::I64:
+		return item->itemType == ItemType::I64 && this->val.i64 == item->val.i64;
+	case ItemType::U64:
+		return item->itemType == ItemType::U64 && this->val.u64 == item->val.u64;
+	case ItemType::BOOL:
+		return item->itemType == ItemType::BOOL && this->val.boolean == item->val.boolean;
+	case ItemType::Str:
+		if (item->itemType == ItemType::Str)
+			return this->val.str->Equals(item->val.str->ToCString());
+		if (item->itemType == ItemType::CStr)
+			return this->val.str->Equals(item->val.cstr.v, item->val.cstr.leng);
+		return false;
+	case ItemType::CStr:
+		if (item->itemType == ItemType::Str)
+			return Text::CStringNN(this->val.cstr.v, this->val.cstr.leng).Equals(item->val.str->ToCString());
+		if (item->itemType == ItemType::CStr)
+			return Text::CStringNN(this->val.cstr.v, this->val.cstr.leng).Equals(item->val.cstr.v, item->val.cstr.leng);
+		return false;
+	case ItemType::Timestamp:
+		return item->itemType == ItemType::Timestamp && this->val.ts == item->val.ts;
+	case ItemType::Date:
+		return item->itemType == ItemType::Date && this->val.date == item->val.date;
+	case ItemType::ByteArr:
+		return item->itemType == ItemType::ByteArr && this->val.byteArr->Equals(item->val.byteArr);
+	case ItemType::Vector:
+		return item->itemType == ItemType::Vector && this->val.vector->Equals(item->val.vector, true, false, false);
+	case ItemType::UUID:
+		return item->itemType == ItemType::UUID && this->val.uuid->Equals(item->val.uuid);
+	}
+}
+
 NN<Data::VariItem> Data::VariItem::NewUnknown()
 {
 	NN<Data::VariItem> item;

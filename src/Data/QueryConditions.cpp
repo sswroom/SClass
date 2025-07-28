@@ -1660,6 +1660,13 @@ NN<Data::QueryConditions> Data::QueryConditions::NotNull(Text::CStringNN fieldNa
 	return *this;
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::New()
+{
+	NN<Data::QueryConditions> cond;
+	NEW_CLASSNN(cond, QueryConditions());
+	return cond;
+}
+
 Text::CStringNN Data::QueryConditions::CompareConditionGetStr(CompareCondition cond)
 {
 	switch (cond)

@@ -31,13 +31,15 @@ namespace Data
 			None,
 			Time,
 			DOUBLE,
-			Integer
+			Integer,
+			UInteger
 		};
 
 		enum class ChartType
 		{
 			Line,
-			FilledLine
+			FilledLine,
+			Histogram
 		};
 
 		class ChartData
@@ -82,6 +84,20 @@ namespace Data
 			virtual DataType GetType() const;
 			virtual NN<ChartData> Clone() const;
 			UnsafeArray<Int32> GetData() const;
+		};
+
+		class UInt32Data : public ChartData
+		{
+		private:
+			UnsafeArray<UInt32> intArr;
+		public:
+			UInt32Data(UnsafeArray<UInt32> intArr, UOSInt dataCnt);
+			UInt32Data(NN<ReadingList<UInt32>> intArr);
+			virtual ~UInt32Data();
+
+			virtual DataType GetType() const;
+			virtual NN<ChartData> Clone() const;
+			UnsafeArray<UInt32> GetData() const;
 		};
 
 		class DoubleData : public ChartData
@@ -151,6 +167,24 @@ namespace Data
 			void ExtendRange(Int32 v);
 			Int32 GetMax() const { return this->max; }
 			Int32 GetMin() const { return this->min; }
+		};
+
+		class UInt32Axis : public Axis
+		{
+		private:
+			UInt32 min;
+			UInt32 max;
+		public:
+			UInt32Axis(NN<UInt32Data> data);
+			virtual ~UInt32Axis();
+
+			virtual DataType GetType() const;
+			virtual void CalcX(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minX, Double maxX) const;
+			virtual void CalcY(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minY, Double maxY) const;
+			void ExtendRange(NN<UInt32Data> data);
+			void ExtendRange(UInt32 v);
+			UInt32 GetMax() const { return this->max; }
+			UInt32 GetMin() const { return this->min; }
 		};
 
 		class DoubleAxis : public Axis
@@ -249,6 +283,8 @@ namespace Data
 		Bool AddLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor);
 		Bool AddFilledLineChart(NN<Text::String> name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor);
 		Bool AddFilledLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor);
+		Bool AddHistogramCount(Text::CStringNN name, NN<ChartData> data, UOSInt barCount, UInt32 lineColor, UInt32 fillColor);
+
 		void SetXRangeDate(NN<Data::DateTime> xVal);
 		void SetYRangeInt(Int32 yVal);
 		void SetYRangeDbl(Double yVal);
@@ -280,14 +316,17 @@ namespace Data
 
 		static UOSInt CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
 		static UOSInt CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
+		static UOSInt CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, UInt32 min, UInt32 max, Double leng, Double minLeng, Optional<Text::String> unit);
 		static UOSInt CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat);
 
 		static NN<TimeData> NewData(UnsafeArray<Data::Timestamp> data, UOSInt dataCnt);
 		static NN<Int32Data> NewData(UnsafeArray<Int32> data, UOSInt dataCnt);
+		static NN<UInt32Data> NewData(UnsafeArray<UInt32> data, UOSInt dataCnt);
 		static NN<DoubleData> NewData(UnsafeArray<Double> data, UOSInt dataCnt);
 		static NN<TimeData> NewDataDate(UnsafeArray<Int64> ticksData, UOSInt dataCnt);
 		static NN<TimeData> NewData(NN<Data::ReadingList<Data::Timestamp>> data);
 		static NN<Int32Data> NewData(NN<Data::ReadingList<Int32>> data);
+		static NN<UInt32Data> NewData(NN<Data::ReadingList<UInt32>> data);
 		static NN<DoubleData> NewData(NN<Data::ReadingList<Double>> data);
 		static Optional<Axis> NewAxis(NN<ChartData> data);
 

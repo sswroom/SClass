@@ -112,6 +112,46 @@ UnsafeArray<Int32> Data::ChartPlotter::Int32Data::GetData() const
 	return this->intArr;
 }
 
+Data::ChartPlotter::UInt32Data::UInt32Data(UnsafeArray<UInt32> intArr, UOSInt dataCnt) : ChartData(dataCnt)
+{
+	this->intArr = MemAllocArr(UInt32, dataCnt);
+	MemCopyNO(this->intArr.Ptr(), intArr.Ptr(), dataCnt * sizeof(UInt32));
+}
+
+Data::ChartPlotter::UInt32Data::UInt32Data(NN<ReadingList<UInt32>> intArr) : ChartData(intArr->GetCount())
+{
+	this->intArr = MemAllocArr(UInt32, dataCnt);
+	UOSInt i = 0;
+	UOSInt j = dataCnt;
+	while (i < j)
+	{
+		this->intArr[i] = intArr->GetItem(i);
+		i++;
+	}
+}
+
+Data::ChartPlotter::UInt32Data::~UInt32Data()
+{
+	MemFreeArr(this->intArr);
+}
+
+Data::ChartPlotter::DataType Data::ChartPlotter::UInt32Data::GetType() const
+{
+	return DataType::UInteger;
+}
+
+NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::UInt32Data::Clone() const
+{
+	NN<UInt32Data> newData;
+	NEW_CLASSNN(newData, UInt32Data(this->intArr, this->dataCnt));
+	return newData;
+}
+
+UnsafeArray<UInt32> Data::ChartPlotter::UInt32Data::GetData() const
+{
+	return this->intArr;
+}
+
 Data::ChartPlotter::DoubleData::DoubleData(UnsafeArray<Double> dblArr, UOSInt dataCnt) : ChartData(dataCnt)
 {
 	this->dblArr = MemAllocArr(Double, dataCnt);
@@ -309,6 +349,79 @@ void Data::ChartPlotter::Int32Axis::ExtendRange(Int32 v)
 	if (v > max) max = v;
 }
 
+Data::ChartPlotter::UInt32Axis::UInt32Axis(NN<UInt32Data> data)
+{
+	UnsafeArray<UInt32> dataArr = data->GetData();
+	if (data->GetCount() > 0)
+	{
+		this->min = this->max = dataArr[0];
+		this->ExtendRange(data);
+	}
+	else
+	{
+		this->min = 0;
+		this->max = this->min;
+	}
+}
+
+Data::ChartPlotter::UInt32Axis::~UInt32Axis()
+{
+}
+
+Data::ChartPlotter::DataType Data::ChartPlotter::UInt32Axis::GetType() const
+{
+	return DataType::UInteger;
+}
+
+void Data::ChartPlotter::UInt32Axis::CalcX(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minX, Double maxX) const
+{
+	Double leng = (maxX - minX);
+	Double ratio = leng / (Double)(max - min);
+	UOSInt i = 0;
+	UOSInt j = data->GetCount();
+	UnsafeArray<UInt32> iArr = NN<UInt32Data>::ConvertFrom(data)->GetData();
+	while (i < j)
+	{
+		pos[i].x = minX + (iArr[i] - min) * ratio;
+		i++;
+	}
+}
+
+void Data::ChartPlotter::UInt32Axis::CalcY(NN<ChartData> data, UnsafeArray<Math::Coord2DDbl> pos, Double minY, Double maxY) const
+{
+	Double leng = (maxY - minY);
+	Double ratio = leng / (Double)(max - min);
+	UOSInt i = 0;
+	UOSInt j = data->GetCount();
+	UnsafeArray<UInt32> iArr = NN<UInt32Data>::ConvertFrom(data)->GetData();
+	while (i < j)
+	{
+		pos[i].y = minY + (iArr[i] - min) * ratio;
+		i++;
+	}
+}
+
+void Data::ChartPlotter::UInt32Axis::ExtendRange(NN<UInt32Data> data)
+{
+	UnsafeArray<UInt32> dataArr = data->GetData();
+	UInt32 v;
+	UOSInt i = 0;
+	UOSInt j = data->GetCount();
+	while (i < j)
+	{
+		v = dataArr[i];
+		if (v < min) min = v;
+		if (v > max) max = v;
+		i++;
+	}
+}
+
+void Data::ChartPlotter::UInt32Axis::ExtendRange(UInt32 v)
+{
+	if (v < min) min = v;
+	if (v > max) max = v;
+}
+
 Data::ChartPlotter::DoubleAxis::DoubleAxis(NN<DoubleData> data)
 {
 	UnsafeArray<Double> dataArr = data->GetData();
@@ -424,6 +537,11 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis(NN<ChartData> da
 			NN<Int32Axis>::ConvertFrom(axis)->ExtendRange(NN<Int32Data>::ConvertFrom(data));
 			return axis;
 		}
+		else if (axis->GetType() == DataType::UInteger)
+		{
+			NN<UInt32Axis>::ConvertFrom(axis)->ExtendRange(NN<UInt32Data>::ConvertFrom(data));
+			return axis;
+		}
 		else if (axis->GetType() == DataType::DOUBLE)
 		{
 			NN<DoubleAxis>::ConvertFrom(axis)->ExtendRange(NN<DoubleData>::ConvertFrom(data));
@@ -459,6 +577,11 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetYAxis(NN<ChartData> da
 			NN<Int32Axis>::ConvertFrom(axis)->ExtendRange(NN<Int32Data>::ConvertFrom(data));
 			return axis;
 		}
+		else if (axis->GetType() == DataType::UInteger)
+		{
+			NN<UInt32Axis>::ConvertFrom(axis)->ExtendRange(NN<UInt32Data>::ConvertFrom(data));
+			return axis;
+		}
 		else if (axis->GetType() == DataType::DOUBLE)
 		{
 			NN<DoubleAxis>::ConvertFrom(axis)->ExtendRange(NN<DoubleData>::ConvertFrom(data));
@@ -481,6 +604,11 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetYAxis(NN<ChartData> da
 		if (axis->GetType() == DataType::Integer)
 		{
 			NN<Int32Axis>::ConvertFrom(axis)->ExtendRange(NN<Int32Data>::ConvertFrom(data));
+			return axis;
+		}
+		else if (axis->GetType() == DataType::UInteger)
+		{
+			NN<UInt32Axis>::ConvertFrom(axis)->ExtendRange(NN<UInt32Data>::ConvertFrom(data));
 			return axis;
 		}
 		else if (axis->GetType() == DataType::DOUBLE)
@@ -637,66 +765,6 @@ UInt32 Data::ChartPlotter::GetRndColor()
 	return 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
-/*void Data::ChartPlotter::AddYDataDate(NN<Text::String> name, UnsafeArray<Int64> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
-{
-	Int64 *newVals;
-	newVals = MemAlloc(Int64, valCnt);
-	MemCopyNO(newVals, value.Ptr(), sizeof(Int64) * valCnt);
-	NN<ChartParam> data;
-	NEW_CLASSNN(data, ChartParam(name, newVals, valCnt, DataType::DateTicks, lineColor, lineStyle, ChartType::Line));
-	this->yCharts.Add(data);
-}
-
-void Data::ChartPlotter::AddYDataDate(Text::CStringNN name, UnsafeArray<Int64> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
-{
-	Int64 *newVals;
-	newVals = MemAlloc(Int64, valCnt);
-	MemCopyNO(newVals, value.Ptr(), sizeof(Int64) * valCnt);
-	NN<ChartParam> data;
-	NEW_CLASSNN(data, ChartParam(name, newVals, valCnt, DataType::DateTicks, lineColor, lineStyle, ChartType::Line));
-	this->yCharts.Add(data);
-}
-
-void Data::ChartPlotter::AddYData(NN<Text::String> name, UnsafeArray<Int32> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
-{
-	Int32 *newVals;
-	newVals = MemAlloc(Int32, valCnt);
-	MemCopyNO(newVals, value.Ptr(), sizeof(Int32) * valCnt);
-	NN<ChartParam> data;
-	NEW_CLASSNN(data, ChartParam(name, newVals, valCnt, DataType::Integer, lineColor, lineStyle, ChartType::Line));
-	this->yCharts.Add(data);
-}
-
-void Data::ChartPlotter::AddYData(Text::CStringNN name, UnsafeArray<Int32> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
-{
-	Int32 *newVals;
-	newVals = MemAlloc(Int32, valCnt);
-	MemCopyNO(newVals, value.Ptr(), sizeof(Int32) * valCnt);
-	NN<ChartParam> data;
-	NEW_CLASSNN(data, ChartParam(name, newVals, valCnt, DataType::Integer, lineColor, lineStyle, ChartType::Line));
-	this->yCharts.Add(data);
-}
-
-void Data::ChartPlotter::AddYData(NN<Text::String> name, UnsafeArray<Double> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
-{
-	Double *newVals;
-	newVals = MemAlloc(Double, valCnt);
-	MemCopyNO(newVals, value.Ptr(), sizeof(Double) * valCnt);
-	NN<ChartParam> data;
-	NEW_CLASSNN(data, ChartParam(name, newVals, valCnt, DataType::DOUBLE, lineColor, lineStyle, ChartType::Line));
-	this->yCharts.Add(data);
-}
-
-void Data::ChartPlotter::AddYData(Text::CStringNN name, UnsafeArray<Double> value, UOSInt valCnt, UInt32 lineColor, LineStyle lineStyle)
-{
-	Double *newVals;
-	newVals = MemAlloc(Double, valCnt);
-	MemCopyNO(newVals, value.Ptr(), sizeof(Double) * valCnt);
-	NN<ChartParam> data;
-	NEW_CLASSNN(data, ChartParam(name, newVals, valCnt, DataType::DOUBLE, lineColor, lineStyle, ChartType::Line));
-	this->yCharts.Add(data);
-}*/
-
 Bool Data::ChartPlotter::AddLineChart(NN<Text::String> name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor)
 {
 	NN<Axis> xAxis;
@@ -757,6 +825,153 @@ Bool Data::ChartPlotter::AddFilledLineChart(Text::CStringNN name, NN<ChartData> 
 	}
 	NN<ChartParam> chart;
 	NEW_CLASSNN(chart, ChartParam(name, yData, yAxis, xData, lineColor, fillColor, ChartType::FilledLine));
+	this->charts.Add(chart);
+	return true;
+}
+
+Bool Data::ChartPlotter::AddHistogramCount(Text::CStringNN name, NN<ChartData> data, UOSInt barCount, UInt32 lineColor, UInt32 fillColor)
+{
+	NN<ChartData> xData;
+	NN<ChartData> yData;
+	UOSInt i;
+	Double dmin;
+	Double dmax;
+	if (data->GetType() == DataType::Integer)
+	{
+		NN<Int32Data> vdata = NN<Int32Data>::ConvertFrom(data);
+		UnsafeArray<Int32> dataArr = vdata->GetData();
+		UOSInt dataCnt = vdata->GetCount();
+		Int32 min = dataArr[0];
+		Int32 max = min;
+		i = 1;
+		while (i < dataCnt)
+		{
+			if (dataArr[i] < min) min = dataArr[i];
+			if (dataArr[i] > max) max = dataArr[i];
+			i++;
+		}
+		dmin = (Double)min;
+		dmax = (Double)max;
+		Double interval = (dmax - dmin) / (Double)barCount;
+		UnsafeArray<Double> valArr = MemAllocArr(Double, barCount + 1);
+		UnsafeArray<UInt32> cntArr = MemAllocArr(UInt32, barCount + 1);
+		i = 0;
+		while (i < barCount)
+		{
+			cntArr[i] = 0;
+			valArr[i] = dmin + interval * (Double)(i + 1);
+			i++;
+		}
+		cntArr[barCount] = 0;
+		i = 0;
+		while (i < dataCnt)
+		{
+			Double v = (Double)dataArr[i];
+			cntArr[(Int32)((v - dmin) / interval)]++;
+			i++;
+		}
+		cntArr[barCount - 1] += cntArr[barCount];
+		xData = NewData(valArr, barCount);
+		yData = NewData(cntArr, barCount);
+		MemFreeArr(valArr);
+		MemFreeArr(cntArr);
+	}
+	else if (data->GetType() == DataType::UInteger)
+	{
+		NN<UInt32Data> vdata = NN<UInt32Data>::ConvertFrom(data);
+		UnsafeArray<UInt32> dataArr = vdata->GetData();
+		UOSInt dataCnt = vdata->GetCount();
+		UInt32 min = dataArr[0];
+		UInt32 max = min;
+		i = 1;
+		while (i < dataCnt)
+		{
+			if (dataArr[i] < min) min = dataArr[i];
+			if (dataArr[i] > max) max = dataArr[i];
+			i++;
+		}
+		dmin = (Double)min;
+		dmax = (Double)max;
+		printf("min = %lf, max = %lf\r\n", dmin, dmax);
+		Double interval = (dmax - dmin) / (Double)barCount;
+		UnsafeArray<Double> valArr = MemAllocArr(Double, barCount + 1);
+		UnsafeArray<UInt32> cntArr = MemAllocArr(UInt32, barCount + 1);
+		i = 0;
+		while (i < barCount)
+		{
+			cntArr[i] = 0;
+			valArr[i] = dmin + interval * (Double)(i + 1);
+			i++;
+		}
+		cntArr[barCount] = 0;
+		i = 0;
+		while (i < dataCnt)
+		{
+			Double v = (Double)dataArr[i];
+			cntArr[(Int32)((v - dmin) / interval)]++;
+			i++;
+		}
+		cntArr[barCount - 1] += cntArr[barCount];
+		xData = NewData(valArr, barCount);
+		yData = NewData(cntArr, barCount);
+		MemFreeArr(valArr);
+		MemFreeArr(cntArr);
+	}
+	else if (data->GetType() == DataType::DOUBLE)
+	{
+		NN<DoubleData> vdata = NN<DoubleData>::ConvertFrom(data);
+		UnsafeArray<Double> dataArr = vdata->GetData();
+		UOSInt dataCnt = vdata->GetCount();
+		dmin = dataArr[0];
+		dmax = dmin;
+		i = 1;
+		while (i < dataCnt)
+		{
+			if (dataArr[i] < dmin) dmin = dataArr[i];
+			if (dataArr[i] > dmax) dmax = dataArr[i];
+			i++;
+		}
+		Double interval = (dmax - dmin) / (Double)barCount;
+		UnsafeArray<Double> valArr = MemAllocArr(Double, barCount + 1);
+		UnsafeArray<UInt32> cntArr = MemAllocArr(UInt32, barCount + 1);
+		i = 0;
+		while (i < barCount)
+		{
+			cntArr[i] = 0;
+			valArr[i] = dmin + interval * (Double)(i + 1);
+			i++;
+		}
+		cntArr[barCount] = 0;
+		i = 0;
+		while (i < dataCnt)
+		{
+			Double v = dataArr[i];
+			cntArr[(Int32)((v - dmin) / interval)]++;
+			i++;
+		}
+		cntArr[barCount - 1] += cntArr[barCount];
+		xData = NewData(valArr, barCount);
+		yData = NewData(cntArr, barCount);
+		MemFreeArr(valArr);
+		MemFreeArr(cntArr);
+	}
+	else
+	{
+		data.Delete();
+		return false;
+	}
+	data.Delete();
+	NN<Axis> xAxis;
+	NN<Axis> yAxis;
+	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis))
+	{
+		yData.Delete();
+		xData.Delete();
+		return false;
+	}
+	NN<DoubleAxis>::ConvertFrom(xAxis)->ExtendRange(dmin);
+	NN<ChartParam> chart;
+	NEW_CLASSNN(chart, ChartParam(name, yData, yAxis, xData, lineColor, fillColor, ChartType::Histogram));
 	this->charts.Add(chart);
 	return true;
 }
@@ -988,7 +1203,17 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		}
 	}
 
+	Double minXInt = fntH;
+	UOSInt xMode;
 	Double labelRotate = xAxis->GetLabelRotate();
+	if (labelRotate < 45)
+	{
+		xMode = 1;
+	}
+	else
+	{
+		xMode = 0;
+	}
 	Double sRotate = Math_Sin(labelRotate * Math::PI / 180.0);
 	Double cRotate = Math_Cos(labelRotate * Math::PI / 180.0);
 	Double rotLeng;
@@ -1000,12 +1225,58 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(xAxis);
 		sptr = Text::StrInt32(sbuff, iAxis->GetMax());
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		if (xMode == 1)
+		{
+			rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+			if (rcSize.x > minXInt) minXInt = rcSize.x;
+		}
+		else
+		{
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		}
 		xLeng = rotLeng;
 
 		sptr = Text::StrInt32(sbuff, iAxis->GetMin());
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		if (xMode == 1)
+		{
+			rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+			if (rcSize.x > minXInt) minXInt = rcSize.x;
+		}
+		else
+		{
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		}
+		if (rotLeng > xLeng)
+			xLeng = rotLeng;
+	}
+	else if (xAxis->GetType() == DataType::UInteger)
+	{
+		NN<UInt32Axis> iAxis = NN<UInt32Axis>::ConvertFrom(xAxis);
+		sptr = Text::StrUInt32(sbuff, iAxis->GetMax());
+		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
+		if (xMode == 1)
+		{
+			rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+			if (rcSize.x > minXInt) minXInt = rcSize.x;
+		}
+		else
+		{
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		}
+		xLeng = rotLeng;
+
+		sptr = Text::StrUInt32(sbuff, iAxis->GetMin());
+		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
+		if (xMode == 1)
+		{
+			rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+			if (rcSize.x > minXInt) minXInt = rcSize.x;
+		}
+		else
+		{
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		}
 		if (rotLeng > xLeng)
 			xLeng = rotLeng;
 	}
@@ -1014,12 +1285,28 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		NN<DoubleAxis> dAxis = NN<DoubleAxis>::ConvertFrom(xAxis);
 		sptr = Text::StrDoubleFmt(sbuff, dAxis->GetMax(), UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		if (xMode == 1)
+		{
+			rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+			if (rcSize.x > minXInt) minXInt = rcSize.x;
+		}
+		else
+		{
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		}
 		xLeng = rotLeng;
 		
 		sptr = Text::StrDoubleFmt(sbuff, dAxis->GetMin(), UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v));
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-		rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		if (xMode == 1)
+		{
+			rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+			if (rcSize.x > minXInt) minXInt = rcSize.x;
+		}
+		else
+		{
+			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+		}
 		if (rotLeng > xLeng)
 			xLeng = rotLeng;
 	}
@@ -1034,7 +1321,15 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		{
 			sptr = dt1.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			if (xMode == 1)
+			{
+				rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+				if (rcSize.x > minXInt) minXInt = rcSize.x;
+			}
+			else
+			{
+				rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			}
 			xLeng = rotLeng;
 			if (dt2.GetMSPassedDate() == 0)
 			{
@@ -1045,7 +1340,15 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 				sptr = dt2.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 			}
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			if (xMode == 1)
+			{
+				rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+				if (rcSize.x > minXInt) minXInt = rcSize.x;
+			}
+			else
+			{
+				rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			}
 			if (rotLeng > xLeng)
 				xLeng = rotLeng;
 		}
@@ -1053,11 +1356,27 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		{
 			sptr = dt1.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v));
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			if (xMode == 1)
+			{
+				rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+				if (rcSize.x > minXInt) minXInt = rcSize.x;
+			}
+			else
+			{
+				rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			}
 			xLeng = rotLeng;
 			sptr = dt1.ToString(sbuff, UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
-			rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			if (xMode == 1)
+			{
+				rotLeng = rcSize.x * 0.5 * sRotate + rcSize.y * cRotate;
+				if (rcSize.x > minXInt) minXInt = rcSize.x;
+			}
+			else
+			{
+				rotLeng = rcSize.x * sRotate + rcSize.y * 0.5 * cRotate;
+			}
 			if (rotLeng > xLeng)
 				xLeng = rotLeng;
 		}
@@ -1079,6 +1398,22 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		y1Leng = rcSize.x;
 
 		sptr = Text::StrInt32(sbuff, iAxis->GetMin());
+		if (this->yUnit.SetTo(s))
+			sptr = s->ConcatTo(sptr);
+		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
+		if (rcSize.x > y1Leng)
+			y1Leng = rcSize.x;
+	}
+	else if (y1Axis->GetType() == DataType::UInteger)
+	{
+		NN<UInt32Axis> iAxis = NN<UInt32Axis>::ConvertFrom(y1Axis);
+		sptr = Text::StrUInt32(sbuff, iAxis->GetMax());
+		if (this->yUnit.SetTo(s))
+			sptr = s->ConcatTo(sptr);
+		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
+		y1Leng = rcSize.x;
+
+		sptr = Text::StrUInt32(sbuff, iAxis->GetMin());
 		if (this->yUnit.SetTo(s))
 			sptr = s->ConcatTo(sptr);
 		rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
@@ -1128,6 +1463,25 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	if (this->y2Axis.SetTo(y2Axis))
 	{
 		if (y2Axis->GetType() == DataType::Integer)
+		{
+			NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(iAxis);
+			sptr = Text::StrInt32(sbuff, iAxis->GetMax());
+			if (this->yUnit.SetTo(s))
+				sptr = s->ConcatTo(sptr);
+			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
+			y2Leng = rcSize.x;
+
+			sptr = Text::StrInt32(sbuff, iAxis->GetMin());
+			if (this->yUnit.SetTo(s))
+				sptr = s->ConcatTo(sptr);
+			rcSize = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
+			if (rcSize.x > y2Leng)
+				y2Leng = rcSize.x;
+
+			y2Leng += barLeng;
+			y2show = true;
+		}
+		else if (y2Axis->GetType() == DataType::UInteger)
 		{
 			NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(iAxis);
 			sptr = Text::StrInt32(sbuff, iAxis->GetMax());
@@ -1208,12 +1562,17 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	if (xAxis->GetType() == DataType::Integer)
 	{
 		NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(xAxis);
-		CalScaleMarkInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, fntH, 0);
+		CalScaleMarkInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, 0);
+	}
+	else if (xAxis->GetType() == DataType::UInteger)
+	{
+		NN<UInt32Axis> iAxis = NN<UInt32Axis>::ConvertFrom(xAxis);
+		CalScaleMarkUInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, 0);
 	}
 	else if (xAxis->GetType() == DataType::DOUBLE)
 	{
 		NN<DoubleAxis> dAxis = NN<DoubleAxis>::ConvertFrom(xAxis);
-		CalScaleMarkDbl(locations, labels, dAxis->GetMin(), dAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, 0);
+		CalScaleMarkDbl(locations, labels, dAxis->GetMin(), dAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, 0);
 	}
 	else if (xAxis->GetType() == DataType::Time)
 	{
@@ -1222,7 +1581,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetInstant(tAxis->GetMax());
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		CalScaleMarkDate(locations, labels, dt1, dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
+		CalScaleMarkDate(locations, labels, dt1, dt2, width - y1Leng - y2Leng - this->pointSize * 2, minXInt, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 	}
 	else
 	{
@@ -1235,13 +1594,27 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		i++;
 	}
 
-	i = 0;
-	while (i < locations.GetCount())
+	if (xMode == 1)
 	{
-		s = Text::String::OrEmpty(labels.GetItem(i));
-		Math::Size2DDbl strSize = img->GetTextSize(fnt, s->ToCString());
-		img->DrawStringRot(Math::Coord2DDbl((x + y1Leng + this->pointSize + locations.GetItem(i)) - strSize.y * 0.5 * sRotate - strSize.x * cRotate, (y + height - xLeng + barLeng) + strSize.x * sRotate - strSize.y * 0.5 * cRotate), Text::String::OrEmpty(labels.GetItem(i)), fnt, fontBrush, labelRotate);
-		i += 1;
+		i = 0;
+		while (i < locations.GetCount())
+		{
+			s = Text::String::OrEmpty(labels.GetItem(i));
+			Math::Size2DDbl strSize = img->GetTextSize(fnt, s->ToCString());
+			img->DrawStringRot(Math::Coord2DDbl((x + y1Leng + this->pointSize + locations.GetItem(i)) - strSize.y * sRotate - strSize.x * 0.5 * cRotate, (y + height + barLeng) + strSize.x * 0.5 * sRotate - strSize.y * cRotate), Text::String::OrEmpty(labels.GetItem(i)), fnt, fontBrush, labelRotate);
+			i += 1;
+		}
+	}
+	else
+	{
+		i = 0;
+		while (i < locations.GetCount())
+		{
+			s = Text::String::OrEmpty(labels.GetItem(i));
+			Math::Size2DDbl strSize = img->GetTextSize(fnt, s->ToCString());
+			img->DrawStringRot(Math::Coord2DDbl((x + y1Leng + this->pointSize + locations.GetItem(i)) - strSize.y * 0.5 * sRotate - strSize.x * cRotate, (y + height - xLeng + barLeng) + strSize.x * sRotate - strSize.y * 0.5 * cRotate), Text::String::OrEmpty(labels.GetItem(i)), fnt, fontBrush, labelRotate);
+			i += 1;
+		}
 	}
 
 	locations.Clear();
@@ -1256,6 +1629,11 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	{
 		NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(y1Axis);
 		CalScaleMarkInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), height - xLeng - fntH / 2 - this->pointSize * 2, fntH, this->yUnit);
+	}
+	else if (y1Axis->GetType() == DataType::UInteger)
+	{
+		NN<UInt32Axis> iAxis = NN<UInt32Axis>::ConvertFrom(y1Axis);
+		CalScaleMarkUInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), height - xLeng - fntH / 2 - this->pointSize * 2, fntH, this->yUnit);
 	}
 	else if (y1Axis->GetType() == DataType::DOUBLE)
 	{
@@ -1330,32 +1708,9 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		}
 
 		Double xChartLeng = width - y1Leng - y2Leng - this->pointSize * 2.0;
-		if (xAxis->GetType() == DataType::Time)
-		{
-			NN<TimeAxis>::ConvertFrom(xAxis)->CalcX(chart->xData, currPos, x + y1Leng + this->pointSize, x + y1Leng + this->pointSize + xChartLeng);
-		}
-		else if (xAxis->GetType() == DataType::DOUBLE)
-		{
-			NN<DoubleAxis>::ConvertFrom(xAxis)->CalcX(chart->xData, currPos, x + y1Leng + this->pointSize, x + y1Leng + this->pointSize + xChartLeng);
-		}
-		else if (xAxis->GetType() == DataType::Integer)
-		{
-			NN<Int32Axis>::ConvertFrom(xAxis)->CalcX(chart->xData, currPos, x + y1Leng + this->pointSize, x + y1Leng + this->pointSize + xChartLeng);
-		}
-
+		xAxis->CalcX(chart->xData, currPos, x + y1Leng + this->pointSize, x + y1Leng + this->pointSize + xChartLeng);
 		xChartLeng = height - xLeng - fntH / 2 - this->pointSize * 2;
-		if (chart->yAxis->GetType() == DataType::Integer)
-		{
-			NN<Int32Axis>::ConvertFrom(chart->yAxis)->CalcY(chart->yData, currPos, y + height - this->pointSize - xLeng, y + height - this->pointSize - xLeng - xChartLeng);
-		}
-		else if (chart->yAxis->GetType() == DataType::DOUBLE)
-		{
-			NN<DoubleAxis>::ConvertFrom(chart->yAxis)->CalcY(chart->yData, currPos, y + height - this->pointSize - xLeng, y + height - this->pointSize - xLeng - xChartLeng);
-		}
-		else if (chart->yAxis->GetType() == DataType::Time)
-		{
-			NN<TimeAxis>::ConvertFrom(chart->yAxis)->CalcY(chart->yData, currPos, y + height - this->pointSize - xLeng, y + height - this->pointSize - xLeng - xChartLeng);
-		}
+		chart->yAxis->CalcY(chart->yData, currPos, y + height - this->pointSize - xLeng, y + height - this->pointSize - xLeng - xChartLeng);
 
 		if (chart->chartType == ChartType::FilledLine)
 		{
@@ -1391,6 +1746,31 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 					}
 					img->DelBrush(b);
 				}
+			}
+		}
+		else if (chart->chartType == ChartType::Histogram)
+		{
+			if (currPosLen > 0)
+			{
+				NN<Media::DrawPen> p = img->NewPenARGB(chart->lineColor, 1, 0, 0);
+				NN<Media::DrawBrush> b = img->NewBrushARGB(chart->fillColor);
+				Double lastX = x + y1Leng + this->pointSize;
+				Double yBottom = y + height - this->pointSize - xLeng;
+				Math::Coord2DDbl pg[5];
+				j = 0;
+				while (j < currPosLen)
+				{
+					pg[0] = Math::Coord2DDbl(lastX, yBottom);
+					pg[1] = Math::Coord2DDbl(lastX, currPos[j].y);
+					pg[2] = currPos[j];
+					pg[3] = Math::Coord2DDbl(pg[2].x, yBottom);
+					pg[4] = pg[0];
+					img->DrawPolygon(pg, 5, p, b);
+					lastX = pg[2].x;
+					j++;
+				}
+				img->DelBrush(b);
+				img->DelPen(p);
 			}
 		}
 
@@ -1690,6 +2070,62 @@ UOSInt Data::ChartPlotter::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<
 	}
 
 	sptr = Text::StrInt32(sbuff, max);
+	locations->Add(leng);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+	return retCnt;
+}
+
+UOSInt Data::ChartPlotter::CalScaleMarkUInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, UInt32 min, UInt32 max, Double leng, Double minLeng, Optional<Text::String> unit)
+{
+	UOSInt retCnt = 2;
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	Double scale;
+	Double lScale;
+	Double dScale;
+	Single pos;
+	NN<Text::String> s;
+
+	sptr = Text::StrUInt32(sbuff, min);
+	locations->Add(0);
+	if (unit.SetTo(s))
+		sptr = s->ConcatTo(sptr);
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+
+	scale = minLeng * (Double)(max - min) / leng;
+	lScale = (Int32)(Math_Log10(scale));
+	if (scale < 1)
+		dScale = 1;
+	else
+	{
+		dScale = Math_Pow(10, lScale);
+		if (scale / dScale <= 2)
+			dScale = Math_Pow(10, lScale) * 2;
+		else if (scale / dScale <= 5)
+			dScale = Math_Pow(10, lScale) * 5;
+		else
+			dScale = Math_Pow(10, lScale) * 10;
+	}
+
+	scale = (((Int32)(min / dScale)) + 1) * dScale;
+	while (scale < max)
+	{
+		pos = (Single)((scale - min) * leng / (Single)(max - min));
+		if ((pos > minLeng) && (pos < leng - minLeng))
+		{
+			sptr = Text::StrInt32(sbuff, Double2Int32(scale));
+			locations->Add(pos);
+			if (unit.SetTo(s))
+				sptr = s->ConcatTo(sptr);
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
+			retCnt++;
+		}
+		scale += dScale;
+	}
+
+	sptr = Text::StrUInt32(sbuff, max);
 	locations->Add(leng);
 	if (unit.SetTo(s))
 		sptr = s->ConcatTo(sptr);
@@ -2017,6 +2453,13 @@ NN<Data::ChartPlotter::Int32Data> Data::ChartPlotter::NewData(UnsafeArray<Int32>
 	return d;
 }
 
+NN<Data::ChartPlotter::UInt32Data> Data::ChartPlotter::NewData(UnsafeArray<UInt32> data, UOSInt dataCnt)
+{
+	NN<UInt32Data> d;
+	NEW_CLASSNN(d, UInt32Data(data, dataCnt));
+	return d;
+}
+
 NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::NewData(UnsafeArray<Double> data, UOSInt dataCnt)
 {
 	NN<DoubleData> d;
@@ -2045,6 +2488,13 @@ NN<Data::ChartPlotter::Int32Data> Data::ChartPlotter::NewData(NN<Data::ReadingLi
 	return d;
 }
 
+NN<Data::ChartPlotter::UInt32Data> Data::ChartPlotter::NewData(NN<Data::ReadingList<UInt32>> data)
+{
+	NN<UInt32Data> d;
+	NEW_CLASSNN(d, UInt32Data(data));
+	return d;
+}
+
 NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::NewData(NN<Data::ReadingList<Double>> data)
 {
 	NN<DoubleData> d;
@@ -2058,6 +2508,12 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::NewAxis(NN<ChartData> dat
 	{
 		NN<Int32Axis> iAxis;
 		NEW_CLASSNN(iAxis, Int32Axis(NN<Int32Data>::ConvertFrom(data)));
+		return iAxis;
+	}
+	else if (data->GetType() == DataType::UInteger)
+	{
+		NN<UInt32Axis> iAxis;
+		NEW_CLASSNN(iAxis, UInt32Axis(NN<UInt32Data>::ConvertFrom(data)));
 		return iAxis;
 	}
 	else if (data->GetType() == DataType::DOUBLE)

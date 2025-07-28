@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_DATASET
 #define _SM_DATA_DATAEST
 #include "Data/ArrayList.h"
+#include "Data/FastMapNN.h"
 #include "Data/SortableArrayListNative.h"
 #include "Data/TwinItem.h"
 #include "Data/VariItem.h"
@@ -20,6 +21,7 @@ namespace Data
 		virtual UOSInt GetKeyIndex(NN<Data::SortableArrayListNative<K>> keyIndex, UOSInt dataIndex) const = 0;
 	public:
 		void Sum(NN<Data::ArrayList<Data::TwinItem<K, Double>>> result) const;
+		void Count(NN<Data::ArrayList<Data::TwinItem<K, UInt32>>> result) const;
 	};
 
 	class DataSetMonthGrouper : public DataSetGrouper<Data::Timestamp>
@@ -44,9 +46,11 @@ namespace Data
 
 		void AddItem(const VariItem& key, const VariItem& value);
 		UOSInt GetCount() const { return this->itemCnt; }
-		Bool GetKey(UOSInt index, NN<VariItem> key) { if (index < itemCnt) {key->Set(items[index << 1]); return true;} return false; }
-		Bool GetValue(UOSInt index, NN<VariItem> key) { if (index < itemCnt) {key->Set(items[(index << 1) + 1]); return true;} return false; }
+		Bool GetKey(UOSInt index, NN<VariItem> key) const { if (index < itemCnt) {key->Set(items[index << 1]); return true;} return false; }
+		Bool GetValue(UOSInt index, NN<VariItem> key) const { if (index < itemCnt) {key->Set(items[(index << 1) + 1]); return true;} return false; }
 		DataSetMonthGrouper GroupKeyByMonth() { return DataSetMonthGrouper(*this); }
+		void ValueCounts(NN<Data::ArrayList<UInt32>> result) const;
+		NN<DataSet> ValueCountsAsDS() const;
 	};
 
 	template <class K> void DataSetGrouper<K>::Sum(NN<Data::ArrayList<Data::TwinItem<K, Double>>> result) const
@@ -79,6 +83,41 @@ namespace Data
 		while (i < j)
 		{
 			result->Add(Data::TwinItem<K, Double>(indexVal->GetItem(i), sumVal.GetItem(i)));
+			i++;
+		}
+		indexVal.Delete();
+	}
+
+	template <class K> void DataSetGrouper<K>::Count(NN<Data::ArrayList<Data::TwinItem<K, UInt32>>> result) const
+	{
+		NN<Data::SortableArrayListNative<K>> indexVal = this->CreateKeyIndex();
+		Data::ArrayList<UInt32> countVal;
+		while (countVal.GetCount() < indexVal->GetCount())
+		{
+			countVal.Add(0);
+		}
+		VariItem item;
+		UOSInt i = 0;
+		UOSInt j = this->ds->GetCount();
+		UOSInt k;
+		while (i < j)
+		{
+			if (this->ds->GetValue(i, item))
+			{
+				k = this->GetKeyIndex(indexVal, i);
+				countVal.SetItem(k, countVal.GetItem(k) + 1);
+			}
+			else
+			{
+				printf("Failed to get the value\r\n");
+			}
+			i++;
+		}
+		i = 0;
+		j = indexVal->GetCount();
+		while (i < j)
+		{
+			result->Add(Data::TwinItem<K, UInt32>(indexVal->GetItem(i), countVal.GetItem(i)));
 			i++;
 		}
 		indexVal.Delete();

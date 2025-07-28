@@ -10,7 +10,6 @@
 #include "IO/MemoryStream.h"
 #include "IO/OS.h"
 #include "IO/Path.h"
-#include "IO/PrivilegeManager.h"
 #include "IO/Device/AXCAN.h"
 #include "IO/Device/BYDC9RHandler.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"

@@ -182,6 +182,7 @@ namespace Data
 
 		NN<VariItem> Clone() const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		Bool Equals(NN<VariItem> item) const;
 
 		static NN<VariItem> NewUnknown();
 		static NN<VariItem> NewNull();

@@ -436,6 +436,7 @@ namespace Data
 		NN<QueryConditions> IsNull(Text::CStringNN fieldName);
 		NN<QueryConditions> NotNull(Text::CStringNN fieldName);
 
+		static NN<QueryConditions> New();
 		static Text::CStringNN CompareConditionGetStr(CompareCondition cond);
 		static Bool ObjectValid(NN<Data::VariObject> obj, NN<Data::ArrayListNN<BooleanObject>> conditionList, OutParam<Bool> outVal);
 		static Bool ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::ArrayListNN<BooleanObject>> conditionList, OutParam<Bool> outVal);

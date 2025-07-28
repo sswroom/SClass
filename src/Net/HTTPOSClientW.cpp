@@ -39,13 +39,17 @@ struct Net::HTTPOSClient::ClassData
 
 void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, DWORD dwInternetStatus, LPVOID lpvStatusInformation, DWORD dwStatusInformationLength)
 {
+#if defined(VERBOSE)
 	printf("WinHTTP Callback status = 0x%lx\r\n", (UInt32)dwInternetStatus);
+#endif
 
 	if (dwInternetStatus == WINHTTP_CALLBACK_STATUS_SECURE_FAILURE)
 	{
 //		OSInt i = 0;
 		DWORD err = *(DWORD*)lpvStatusInformation;
+#if defined(VERBOSE)
 		printf("WINHTTP_CALLBACK_STATUS_SECURE_FAILURE, info = 0x%lx\r\n", (UInt32)err);
+#endif
 		if (err & WINHTTP_CALLBACK_STATUS_FLAG_CERT_REV_FAILED)
 		{
 //			i = 0;
@@ -117,7 +121,7 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 			data->hSession = WinHttpOpen(wptr.Ptr(), WINHTTP_ACCESS_TYPE_NO_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 			if (data->hSession == 0)
 			{
-				printf("hSession is null, code = %ld\r\n", (UInt32)GetLastError());
+				printf("HTTPOSClient: hSession is null, code = %ld\r\n", (UInt32)GetLastError());
 			}
 		}
 	}

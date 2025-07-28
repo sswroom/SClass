@@ -8,6 +8,7 @@ Data::TableData::TableData(NN<DB::ReadingDB> db, Bool needRelease, Text::CString
 	this->needRelease = needRelease;
 	this->schemaName = Text::String::NewOrNull(schemaName);
 	this->tableName = Text::String::New(tableName);
+	this->cond = 0;
 }
 
 Data::TableData::~TableData()
@@ -16,11 +17,12 @@ Data::TableData::~TableData()
 		this->db.Delete();
 	OPTSTR_DEL(this->schemaName);
 	this->tableName->Release();
+	this->cond.Delete();
 }
 
 Optional<DB::DBReader> Data::TableData::GetTableData()
 {
-	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), 0, 0, 0, 0, 0);
+	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), 0, 0, 0, 0, this->cond);
 }
 
 Bool Data::TableData::GetColumnDataStr(Text::CStringNN columnName, NN<Data::ArrayListStringNN> str)
@@ -121,7 +123,68 @@ Optional<Data::DataSet> Data::TableData::GetDataSet(Text::CStringNN columnName)
 	return ds;
 }
 
+Optional<Data::DataSet> Data::TableData::GetKeyDataSet()
+{
+	NN<DB::DBReader> r;
+	if (!this->GetTableData().SetTo(r))
+	{
+		return 0;
+	}
+	UOSInt keyCol = INVALID_INDEX;
+	DB::ColDef colDef(CSTR(""));
+	UOSInt colCnt = r->ColCount();
+	UOSInt i = 0;
+	while (i < colCnt)
+	{
+		if (r->GetColDef(i, colDef))
+		{
+			if (colDef.IsPK())
+			{
+				if (keyCol == INVALID_INDEX)
+				{
+					keyCol = i;
+				}
+				else
+				{
+					this->CloseReader(r);
+					return 0;
+				}
+			}
+		}
+		i++;
+	}
+	if (keyCol == INVALID_INDEX)
+	{
+		this->CloseReader(r);
+		return 0;
+	}
+	Data::VariItem keyItem;
+	Data::VariItem valItem;
+	NN<Data::DataSet> ds;
+	NEW_CLASSNN(ds, Data::DataSet());
+	while (r->ReadNext())
+	{
+		if (!r->GetVariItem(keyCol, keyItem))
+		{
+			printf("TableData: Error in getting key column value\r\n");
+		}
+		else
+		{
+			valItem.Set(keyItem);
+			ds->AddItem(keyItem, valItem);
+		}
+	}
+	this->CloseReader(r);
+	return ds;
+}
+
 void Data::TableData::CloseReader(NN<DB::DBReader> r)
 {
 	this->db->CloseReader(r);
+}
+
+void Data::TableData::SetCondition(Optional<Data::QueryConditions> cond)
+{
+	this->cond.Delete();
+	this->cond = cond;
 }
