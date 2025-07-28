@@ -29,6 +29,8 @@ IO/Path.h:
 @PathW.o
 IO/PhysicalMem.h:
 @PhysicalMemW.o
+IO/PrivilegeManager.h:
+@PrivilegeManagerW.o
 IO/Registry.h:
 @RegistryW.o
 IO/SerialPort.h:

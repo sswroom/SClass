@@ -74,5 +74,4 @@ UOSInt IO::OS::GetBuildNumber()
 {
 	OS_LoadVersion();
 	return OS_BuildNumber;
-
 }

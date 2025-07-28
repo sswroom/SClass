@@ -32,6 +32,8 @@ IO/Path.h:
 @PathL.o
 IO/PhysicalMem.h:
 @PhysicalMemL.o
+IO/PrivilegeManager.h:
+@PrivilegeManagerL.o
 IO/Registry.h:
 @RegistryLinux.o
 IO/SerialPort.h:

@@ -509,6 +509,8 @@ PowerInfoL.o: ../../src/IO/PowerInfoL.cpp
 PowerInfoMac.o: ../../src/IO/PowerInfoMac.cpp
 PowerInfoW.o: ../../src/IO/PowerInfoW.cpp
 PrintMODBUSDevSim.o: ../../src/IO/PrintMODBUSDevSim.cpp
+PrivilegeManagerL.o: ../../src/IO/PrivilegeManagerL.cpp
+PrivilegeManagerW.o: ../../src/IO/PrivilegeManagerW.cpp
 ProgramLink.o: ../../src/IO/ProgramLink.cpp
 ProgramLinkManagerL.o: ../../src/IO/ProgramLinkManagerL.cpp
 ProgramLinkManagerNull.o: ../../src/IO/ProgramLinkManagerNull.cpp

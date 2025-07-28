@@ -88,6 +88,7 @@ console:
 @InflateTest
 @LLMTest
 @MiscTest
+@NTPTime
 @SortSpeed
 @CSVFileTest
 @DBDataFileTest
@@ -303,6 +304,9 @@ LLMTest:
 @ConsoleStartup.o
 MiscTest:
 @MiscTest.o
+@ConsoleStartup.o
+NTPTime:
+@NTPTimeMain.o
 @ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
@@ -1036,6 +1040,7 @@ DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 InflateTest.o: ../../main/Data/InflateTest.cpp
 LLMTest.o: ../../main/Data/LLMTest.cpp
 MiscTest.o: ../../main/Data/MiscTest.cpp
+NTPTimeMain.o: ../../main/Data/NTPTimeMain.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 CSVFileTest.o: ../../main/DB/CSVFileTest.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp

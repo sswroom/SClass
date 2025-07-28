@@ -8,7 +8,9 @@
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/MemoryStream.h"
+#include "IO/OS.h"
 #include "IO/Path.h"
+#include "IO/PrivilegeManager.h"
 #include "IO/Device/AXCAN.h"
 #include "IO/Device/BYDC9RHandler.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
@@ -28,6 +30,7 @@
 #include "Media/PaperSize.h"
 #include "Net/HKOAPI.h"
 #include "Net/HTTPClient.h"
+#include "Net/NTPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSHManager.h"
 #include "Net/SSLEngineFactory.h"
@@ -1115,9 +1118,43 @@ Int32 RoadNetworkSPTest()
 	return 0;
 }
 
+Int32 NTPTest()
+{
+	Text::CStringNN host = CSTR("stdtime.gov.hk");
+	IO::ConsoleWriter console;
+	Net::OSSocketFactory sockf(false);
+	Net::SocketUtil::AddressInfo addr;
+	if (!sockf.DNSResolveIP(host, addr))
+	{
+		console.WriteLine(CSTR("Error in resolving IP"));
+		return 1;
+	}
+	IO::LogTool log;
+	Net::NTPClient ntp(sockf, 0, log);
+	Data::Timestamp svrTime;
+	if (!ntp.GetServerTime(addr, Net::NTPClient::GetDefaultPort(), svrTime))
+	{
+		console.WriteLine(CSTR("Error in getting time from server"));
+		return 2;
+	}
+/*	IO::PrivilegeManager priv;
+	if (!priv.EnableSystemTime())
+	{
+		console.WriteLine(CSTR("Error in aquiring privilege"));
+		return 3;
+	}*/
+	if (!svrTime.SetAsComputerTime())
+	{
+		console.WriteLine(CSTR("Error in setting as computer time"));
+		return 4;
+	}
+	console.WriteLine(CSTR("Time sync success"));
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 30;
+	UOSInt testType = 31;
 	switch (testType)
 	{
 	case 0:
@@ -1182,6 +1219,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return TriangleRemapTest();
 	case 30:
 		return RoadNetworkSPTest();
+	case 31:
+		return NTPTest();
 	default:
 		return 0;
 	}
