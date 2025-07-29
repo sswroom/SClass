@@ -23,6 +23,7 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::ChartPl
 	case Data::ChartPlotter::DataType::None:
 	case Data::ChartPlotter::DataType::DOUBLE:
 	case Data::ChartPlotter::DataType::Integer:
+	case Data::ChartPlotter::DataType::UInteger:
 		return Text::SpreadSheet::AxisType::Numeric;
 	default:
 		return Text::SpreadSheet::AxisType::Numeric;
@@ -867,6 +868,22 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				}
 				break;
 			}
+			case Data::ChartPlotter::DataType::UInteger:
+			{
+				if (intStyle == 0)
+				{
+					intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
+				}
+				UnsafeArray<UInt32> intValues = NN<Data::ChartPlotter::UInt32Data>::ConvertFrom(chartParam->xData)->GetData();
+				colCount = chartParam->xData->GetCount();
+				i = 0;
+				while (i < colCount)
+				{
+					dataSheet->SetCellInt64(0, i + 1, intStyle, intValues[i]);
+					i++;
+				}
+				break;
+			}
 			case Data::ChartPlotter::DataType::None:
 				colCount = 0;
 				break;
@@ -924,6 +941,22 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 						while (k < colCount)
 						{
 							dataSheet->SetCellInt32(i + 1, k + 1, intStyle, intValues[k]);
+							k++;
+						}
+						break;
+					}
+					case Data::ChartPlotter::DataType::UInteger:
+					{
+						if (intStyle == 0)
+						{
+							intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
+						}
+						UnsafeArray<UInt32> intValues = NN<Data::ChartPlotter::UInt32Data>::ConvertFrom(chartParam->yData)->GetData();
+						colCount = chartParam->yData->GetCount();
+						k = 0;
+						while (k < colCount)
+						{
+							dataSheet->SetCellInt64(i + 1, k + 1, intStyle, intValues[k]);
 							k++;
 						}
 						break;
