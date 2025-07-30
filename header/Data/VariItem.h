@@ -178,11 +178,11 @@ namespace Data
 		void SetUUID(NN<Data::UUID> uuid);
 		void SetVectorDirect(NN<Math::Geometry::Vector2D> vec);
 		void SetUUIDDirect(NN<Data::UUID> uuid);
-		void Set(NN<VariItem> item);
+		void Set(NN<const VariItem> item);
 
 		NN<VariItem> Clone() const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
-		Bool Equals(NN<VariItem> item) const;
+		Bool Equals(NN<const VariItem> item) const;
 
 		static NN<VariItem> NewUnknown();
 		static NN<VariItem> NewNull();

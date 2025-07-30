@@ -1600,6 +1600,7 @@ Data/UUID.h:
 @UUID.o
 Data/VariItem.h:
 @VariItem.o
+Data/VariItemComparator.h:
 Data/VariItemHashCalc.h:
 Data/VariObject.h:
 @VariObject.o

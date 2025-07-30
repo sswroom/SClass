@@ -25,6 +25,16 @@ Optional<DB::DBReader> Data::TableData::GetTableData()
 	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), 0, 0, 0, 0, this->cond);
 }
 
+Optional<DB::DBReader> Data::TableData::GetTableData(NN<Data::QueryConditions> cond)
+{
+	NN<QueryConditions> tabCond;
+	if (this->cond.SetTo(tabCond))
+	{
+		cond->And(NN<Conditions::BooleanObject>::ConvertFrom(tabCond->GetRootCond()->Clone()));
+	}
+	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), 0, 0, 0, 0, cond);
+}
+
 Bool Data::TableData::GetColumnDataStr(Text::CStringNN columnName, NN<Data::ArrayListStringNN> str)
 {
 	UTF8Char sbuff[512];
@@ -187,4 +197,49 @@ void Data::TableData::SetCondition(Optional<Data::QueryConditions> cond)
 {
 	this->cond.Delete();
 	this->cond = cond;
+}
+
+NN<Data::TableData> Data::TableData::Clone() const
+{
+	NN<Data::TableData> data;
+	NEW_CLASSNN(data, TableData(this->db, false, OPTSTR_CSTR(this->schemaName), this->tableName->ToCString()));
+	return data;
+};
+
+NN<Data::TableData> Data::TableData::CreateSubTable(NN<Data::QueryConditions> cond) const
+{
+	NN<Data::TableData> data = this->Clone();
+	data->SetCondition(cond);
+	return data;
+}
+
+UOSInt Data::TableData::GetRowCount()
+{
+	UOSInt cnt = 0;
+	NN<DB::DBReader> r;
+	if (this->GetTableData().SetTo(r))
+	{
+		while (r->ReadNext())
+		{
+			cnt++;
+		}
+		this->db->CloseReader(r);
+	}
+	return cnt;
+}
+
+UOSInt Data::TableData::GetRowCount(NN<Data::QueryConditions> cond)
+{
+	UOSInt cnt = 0;
+	NN<DB::DBReader> r;
+	if (this->GetTableData(cond).SetTo(r))
+	{
+		while (r->ReadNext())
+		{
+			cnt++;
+		}
+		this->db->CloseReader(r);
+	}
+	cond.Delete();
+	return cnt;
 }

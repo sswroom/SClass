@@ -505,6 +505,7 @@ Data::ChartPlotter::ChartParam::ChartParam(NN<Text::String> name, NN<ChartData> 
 	this->lineColor = lineColor;
 	this->fillColor = fillColor;
 	this->chartType = chartType;
+	this->labels = 0;
 }
 
 Data::ChartPlotter::ChartParam::ChartParam(Text::CStringNN name, NN<ChartData> yData, NN<Axis> yAxis, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor, ChartType chartType)
@@ -516,13 +517,25 @@ Data::ChartPlotter::ChartParam::ChartParam(Text::CStringNN name, NN<ChartData> y
 	this->lineColor = lineColor;
 	this->fillColor = fillColor;
 	this->chartType = chartType;
+	this->labels = 0;
 }
 
 Data::ChartPlotter::ChartParam::~ChartParam()
 {
+	UnsafeArray<Optional<Text::String>> labels;
+	if (this->labels.SetTo(labels))
+	{
+		UOSInt i = this->yData->GetCount();
+		while (i-- > 0)
+		{
+			OPTSTR_DEL(labels[i]);
+		}
+		MemFreeArr(labels);
+	}
 	this->name->Release();
 	this->yData.Delete();
 	this->xData.Delete();
+	
 }
 
 Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis(NN<ChartData> data)
@@ -785,7 +798,7 @@ Bool Data::ChartPlotter::AddLineChart(Text::CStringNN name, NN<ChartData> yData,
 {
 	NN<Axis> xAxis;
 	NN<Axis> yAxis;
-	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis))
+	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis) || xData->GetCount() != yData->GetCount())
 	{
 		yData.Delete();
 		xData.Delete();
@@ -801,7 +814,7 @@ Bool Data::ChartPlotter::AddFilledLineChart(NN<Text::String> name, NN<ChartData>
 {
 	NN<Axis> xAxis;
 	NN<Axis> yAxis;
-	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis))
+	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis) || xData->GetCount() != yData->GetCount())
 	{
 		yData.Delete();
 		xData.Delete();
@@ -817,7 +830,7 @@ Bool Data::ChartPlotter::AddFilledLineChart(Text::CStringNN name, NN<ChartData> 
 {
 	NN<Axis> xAxis;
 	NN<Axis> yAxis;
-	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis))
+	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis) || xData->GetCount() != yData->GetCount())
 	{
 		yData.Delete();
 		xData.Delete();
@@ -826,6 +839,39 @@ Bool Data::ChartPlotter::AddFilledLineChart(Text::CStringNN name, NN<ChartData> 
 	NN<ChartParam> chart;
 	NEW_CLASSNN(chart, ChartParam(name, yData, yAxis, xData, lineColor, fillColor, ChartType::FilledLine));
 	this->charts.Add(chart);
+	return true;
+}
+
+Bool Data::ChartPlotter::AddScatter(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor)
+{
+	return AddScatter(name, yData, xData, 0, lineColor);
+}
+
+Bool Data::ChartPlotter::AddScatter(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UnsafeArrayOpt<Optional<Text::String>> labels, UInt32 lineColor)
+{
+	NN<Axis> xAxis;
+	NN<Axis> yAxis;
+	if (!GetXAxis(xData).SetTo(xAxis) || !GetYAxis(yData).SetTo(yAxis) || xData->GetCount() != yData->GetCount())
+	{
+		yData.Delete();
+		xData.Delete();
+		return false;
+	}
+	UnsafeArray<Optional<Text::String>> nnlabels;
+	UnsafeArray<Optional<Text::String>> chartlabels;
+	NN<ChartParam> chart;
+	NEW_CLASSNN(chart, ChartParam(name, yData, yAxis, xData, lineColor, 0, ChartType::Scatter));
+	if (labels.SetTo(nnlabels))
+	{
+		chartlabels = MemAllocArr(Optional<Text::String>, yData->GetCount());
+		MemCopyNO(chartlabels.Ptr(), nnlabels.Ptr(), yData->GetCount() * sizeof(Optional<Text::String>));
+		chart->labels = chartlabels;
+	}
+	this->charts.Add(chart);
+	if (this->pointType == PointType::Null)
+	{
+		this->pointType = PointType::Circle;
+	}
 	return true;
 }
 
@@ -1670,7 +1716,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	if (y1Axis->GetName().SetTo(s))
 	{
 		Math::Size2DDbl sz = img->GetTextSize(fnt, s->ToCString());
-		img->DrawStringRot(Math::Coord2DDbl((x + fntH / 2) - sz.y * 0.5, (y + (height - xLeng) / 2) - sz.x * 0.5), s->ToCString(), fnt, fontBrush, 90);
+		img->DrawStringRot(Math::Coord2DDbl((x + fntH / 2) - sz.y * 0.5, (y + (height - xLeng) / 2) + sz.x * 0.5), s->ToCString(), fnt, fontBrush, 90);
 	}
 
 	if (xAxis->GetName().SetTo(s))
@@ -1771,6 +1817,41 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 				}
 				img->DelBrush(b);
 				img->DelPen(p);
+			}
+		}
+		else if (chart->chartType == ChartType::Scatter)
+		{
+			if (this->pointType == PointType::Circle)
+			{
+				Double pointSize = this->pointSize;
+				if (pointSize <= 0)
+				{
+					pointSize = 3;
+				}
+				NN<Media::DrawBrush> b = img->NewBrushARGB(chart->lineColor);
+				UnsafeArray<Optional<Text::String>> labels;
+				NN<Text::String> s;
+				if (chart->labels.SetTo(labels))
+				{
+					j = currPosLen;
+					while (j-- > 0)
+					{
+						img->DrawEllipse(currPos[j] - pointSize, Math::Size2DDbl(pointSize * 2.0, pointSize * 2.0), 0, b);
+						if (labels[j].SetTo(s))
+						{
+							img->DrawString(Math::Coord2DDbl(currPos[j].x + pointSize, currPos[j].y - fntH * 0.5), s, fnt, b);
+						}
+					}
+				}
+				else
+				{
+					j = currPosLen;
+					while (j-- > 0)
+					{
+						img->DrawEllipse(currPos[j] - pointSize, Math::Size2DDbl(pointSize * 2.0, pointSize * 2.0), 0, b);
+					}
+				}
+				img->DelBrush(b);
 			}
 		}
 

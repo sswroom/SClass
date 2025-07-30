@@ -21,11 +21,18 @@ namespace Data
 		~TableData();
 
 		Optional<DB::DBReader> GetTableData();
+	private:
+		Optional<DB::DBReader> GetTableData(NN<Data::QueryConditions> cond);
+	public:
 		Bool GetColumnDataStr(Text::CStringNN columnName, NN<Data::ArrayListStringNN> str);
 		Optional<Data::DataSet> GetDataSet(Text::CStringNN columnName);
 		Optional<Data::DataSet> GetKeyDataSet();
 		void CloseReader(NN<DB::DBReader> r);
 		void SetCondition(Optional<Data::QueryConditions> cond);
+		NN<TableData> Clone() const;
+		NN<TableData> CreateSubTable(NN<Data::QueryConditions> cond) const;
+		UOSInt GetRowCount();
+		UOSInt GetRowCount(NN<Data::QueryConditions> cond);
 	};
 }
 #endif

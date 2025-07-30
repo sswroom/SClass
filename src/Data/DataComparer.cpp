@@ -1,6 +1,7 @@
 ﻿
 #include "Stdafx.h"
 #include "Data/DataComparer.h"
+#include "Data/ReadonlyArray.h"
 #include "Text/MyString.h"
 
 OSInt Data::DataComparer::Compare(UnsafeArray<const UTF8Char> val1, UnsafeArray<const UTF8Char> val2)
@@ -172,6 +173,24 @@ OSInt Data::DataComparer::Compare(Math::Geometry::Vector2D *val1, Math::Geometry
 	}
 }
 
+OSInt Data::DataComparer::Compare(NN<Math::Geometry::Vector2D> val1, NN<Math::Geometry::Vector2D> val2)
+{
+	OSInt v1 = (OSInt)val1.Ptr();
+	OSInt v2 = (OSInt)val2.Ptr();
+	if (v1 > v2)
+	{
+		return 1;
+	}
+	else if (v1 < v2)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 OSInt Data::DataComparer::Compare(Optional<Data::UUID> val1, Optional<Data::UUID> val2)
 {
 	if (val1 == val2)
@@ -212,4 +231,9 @@ OSInt Data::DataComparer::Compare(Text::String *val1, Text::String *val2)
 OSInt Data::DataComparer::Compare(NN<Text::String> val1, NN<Text::String> val2)
 {
 	return Text::StrCompare(val1->v, val2->v);
+}
+
+OSInt Data::DataComparer::Compare(Data::ReadonlyArray<UInt8> *val1, Data::ReadonlyArray<UInt8> *val2)
+{
+	return Text::StrCompareFastC(val1->GetArray(), val1->GetCount(), val2->GetArray(), val2->GetCount());
 }

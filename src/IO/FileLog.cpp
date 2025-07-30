@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
+#include "IO/BuildTime.h"
 #include "IO/Path.h"
 #include "IO/FileLog.h"
 #include "Sync/MutexUsage.h"
@@ -220,7 +221,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
-		sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat.Ptr()), UTF8STRC("Program running"));
+		sptr = IO::BuildTime::GetBuildTime().ToLocalTime().ToStringNoZone(Text::StrConcatC(time.ToString(buff, this->dateFormat.Ptr()), UTF8STRC("Program running: ")));
 		log->WriteLine(CSTRP(buff, sptr));
 		fileStm->Flush();
 	}

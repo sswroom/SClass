@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
+#include "IO/BuildTime.h"
 #include "IO/Path.h"
 #include "IO/MTFileLog.h"
 #include "Sync/MutexUsage.h"
@@ -138,7 +139,7 @@ void IO::MTFileLog::WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<D
 			NEW_CLASSNN(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
 
-			sptr = Text::StrConcatC(time.ToString(buff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat)), UTF8STRC("Program running"));
+			sptr = IO::BuildTime::GetBuildTime().ToLocalTime().ToStringNoZone(Text::StrConcatC(time.ToString(buff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat)), UTF8STRC("Program running: ")));
 			log->WriteLine(CSTRP(buff, sptr));
 			newFile = false;
 			this->hasNewFile = true;

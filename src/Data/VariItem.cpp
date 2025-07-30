@@ -1184,7 +1184,7 @@ void Data::VariItem::SetUUIDDirect(NN<Data::UUID> uuid)
 	this->itemType = ItemType::UUID;
 }
 
-void Data::VariItem::Set(NN<VariItem> item)
+void Data::VariItem::Set(NN<const VariItem> item)
 {
 	this->FreeItem();
 	this->itemType = item->itemType;
@@ -1426,7 +1426,7 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Bool Data::VariItem::Equals(NN<VariItem> item) const
+Bool Data::VariItem::Equals(NN<const VariItem> item) const
 {
 	switch (this->itemType)
 	{

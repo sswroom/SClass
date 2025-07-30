@@ -2,6 +2,7 @@
 #define _SM_DATA_DATAEST
 #include "Data/ArrayList.h"
 #include "Data/FastMapNN.h"
+#include "Data/Comparator.h"
 #include "Data/SortableArrayListNative.h"
 #include "Data/TwinItem.h"
 #include "Data/VariItem.h"
@@ -47,10 +48,20 @@ namespace Data
 		void AddItem(const VariItem& key, const VariItem& value);
 		UOSInt GetCount() const { return this->itemCnt; }
 		Bool GetKey(UOSInt index, NN<VariItem> key) const { if (index < itemCnt) {key->Set(items[index << 1]); return true;} return false; }
-		Bool GetValue(UOSInt index, NN<VariItem> key) const { if (index < itemCnt) {key->Set(items[(index << 1) + 1]); return true;} return false; }
+		Bool GetValue(UOSInt index, NN<VariItem> val) const { if (index < itemCnt) {val->Set(items[(index << 1) + 1]); return true;} return false; }
 		DataSetMonthGrouper GroupKeyByMonth() { return DataSetMonthGrouper(*this); }
 		void ValueCounts(NN<Data::ArrayList<UInt32>> result) const;
 		NN<DataSet> ValueCountsAsDS() const;
+		void SortByValue(NN<Data::Comparator<NN<VariItem>>> comparator);
+		void SortByKey(NN<Data::Comparator<NN<VariItem>>> comparator);
+		void SortByValue();
+		void SortByValueInv();
+		void SortByKey();
+		void SortByKeyInv();
+	private:
+		void Presort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt left, OSInt right, NN<Data::Comparator<NN<VariItem>>> comparator);
+		void Sort(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt firstIndex, OSInt lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator);
+		void ISortB(UnsafeArray<VariItem> keyArr, UnsafeArray<VariItem> valArr, OSInt firstIndex, OSInt lastIndex, NN<Data::Comparator<NN<VariItem>>> comparator);
 	};
 
 	template <class K> void DataSetGrouper<K>::Sum(NN<Data::ArrayList<Data::TwinItem<K, Double>>> result) const
