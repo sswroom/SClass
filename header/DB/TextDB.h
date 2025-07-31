@@ -13,13 +13,13 @@ namespace DB
 		struct DBData
 		{
 			NN<Text::String> name;
-			Data::ArrayListArr<const UTF8Char> colList;
-			Data::ArrayList<Text::String **> valList;
+			Data::ArrayListStringNN colList;
+			Data::ArrayListArr<Optional<Text::String>> valList;
 		};
 
 	private:
-		Data::StringMap<DBData*> dbMap;
-		DBData *currDB;
+		Data::FastStringMapNN<DBData> dbMap;
+		Optional<DBData> currDB;
 	public:
 		TextDB(Text::CStringNN sourceName);
 		virtual ~TextDB();
@@ -31,8 +31,10 @@ namespace DB
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		Bool AddTable(Text::CStringNN tableName, Data::ArrayList<const UTF8Char*> *colList);
-		Bool AddTableData(Data::ArrayList<const UTF8Char*> *valList);
+		Bool AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN> colList);
+		Bool AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UOSInt colCount);
+		Bool AddTableData(NN<Data::ArrayList<const UTF8Char*>> valList);
+		Bool AddTableData(UnsafeArray<Text::CString> valArr, UOSInt colCount);
 	};
 }
 #endif

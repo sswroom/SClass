@@ -3,6 +3,7 @@
 #include "Data/ArrayListUInt32.h"
 #include "Data/ChartPlotter.h"
 #include "DB/CSVFile.h"
+#include "DB/TextDB.h"
 #include "IO/ConsoleWriter.h"
 #include "Media/DrawEngineFactory.h"
 #include "Text/TextWriteUtil.h"
@@ -510,9 +511,335 @@ Int32 TestPage44()
 	return 0;
 }
 
+Int32 TestPage46()
+{
+	IO::ConsoleWriter console;
+	UOSInt tsCols[] = {0};
+	NN<Data::TableData> dfInfo;
+	NN<Data::TableData> dfInfoPre;
+	NN<Data::TableData> dfInfoPost;
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
+	{
+		Data::Timestamp targetDate = Data::Timestamp::FromTimeValue(2020, 3, 1, 0, 0, 0, 0, Data::DateTimeUtil::GetLocalTzQhr());
+		dfInfoPre = dfInfo->CreateSubTable(Data::QueryConditions::New()->TimeBefore(CSTR("日期"), targetDate));
+		dfInfoPost = dfInfo->CreateSubTable(Data::QueryConditions::New()->TimeOnOrAfter(CSTR("日期"), targetDate));
+		NN<Data::DataSet> ds;
+		NN<Data::DataSet> ds2;
+		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
+		{
+			UInt32 preCnts[200];
+			UInt32 postCnts[200];
+			Data::ChartPlotter chart(0);
+			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+
+			ds2 = ds->ValueCountsAsDS();
+			ds2->SortByValueInv();
+			UInt32 thresholdPost = 50;
+			UOSInt i = 0;
+			UOSInt j = 200;
+			Data::VariItem item;
+			NN<Text::String> id;
+			UInt32 tempColor;
+			while (i < j)
+			{
+				preCnts[i] = 0;
+				postCnts[i] = 0;
+				if (ds2->GetKey(i, item))
+				{
+					if (item.GetAsNewString().SetTo(id))
+					{
+						preCnts[i] = (UInt32)dfInfoPre->GetRowCount(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), id->ToCString()));
+						postCnts[i] = (UInt32)dfInfoPost->GetRowCount(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), id->ToCString()));
+						id->Release();
+					}
+				}
+				i++;
+			}
+			i = 0;
+			while (i < j)
+			{
+				if (ds2->GetKey(i, item))
+				{
+					if (item.GetAsNewString().SetTo(id))
+					{
+						if (postCnts[i] > thresholdPost)
+							tempColor = 0xffff0000;
+						else
+							tempColor = 0xff000000;
+						chart.AddScatter(CSTR(""), Data::ChartPlotter::NewData(&postCnts[i], 1), Data::ChartPlotter::NewData(&preCnts[i], 1), tempColor);
+						id->Release();
+					}
+				}
+				i++;
+			}
+
+			chart.SetXAxisName(CSTR("pre epidemic"));
+			chart.SetY1AxisName(CSTR("post epidemic"));
+			chart.SavePng(deng, {640, 480}, CSTR("Chapter1-9.png"));
+
+			deng.Delete();
+			ds2.Delete();
+			ds.Delete();
+		}
+
+		dfInfoPre.Delete();
+		dfInfoPost.Delete();
+		dfInfo.Delete();
+	}
+	return 0;
+}
+
+Int32 TestPage48()
+{
+	IO::ConsoleWriter console;
+	UOSInt tsCols[] = {0};
+	NN<Data::TableData> dfInfo;
+	NN<Data::TableData> dfInfoPre;
+	NN<Data::TableData> dfInfoPost;
+	UTF8Char sbuff[128];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
+	{
+		Data::Timestamp targetDate = Data::Timestamp::FromTimeValue(2020, 3, 1, 0, 0, 0, 0, Data::DateTimeUtil::GetLocalTzQhr());
+		dfInfoPre = dfInfo->CreateSubTable(Data::QueryConditions::New()->TimeBefore(CSTR("日期"), targetDate));
+		dfInfoPost = dfInfo->CreateSubTable(Data::QueryConditions::New()->TimeOnOrAfter(CSTR("日期"), targetDate));
+		NN<Data::DataSet> ds;
+		NN<Data::DataSet> ds2;
+		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
+		{
+			UInt32 preCnts[200];
+			UInt32 postCnts[200];
+			ds2 = ds->ValueCountsAsDS();
+			ds2->SortByValueInv();
+			UInt32 thresholdPost = 50;
+			UOSInt i = 0;
+			UOSInt j = 200;
+			Data::VariItem item;
+			Data::VariItem item2;
+			NN<Text::String> id;
+			Optional<Text::String> cusName;
+			while (i < j)
+			{
+				preCnts[i] = 0;
+				postCnts[i] = 0;
+				if (ds2->GetKey(i, item))
+				{
+					if (item.GetAsNewString().SetTo(id))
+					{
+						preCnts[i] = (UInt32)dfInfoPre->GetRowCount(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), id->ToCString()));
+						postCnts[i] = (UInt32)dfInfoPost->GetRowCount(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), id->ToCString()));
+						id->Release();
+					}
+				}
+				i++;
+			}
+			DB::TextDB newDB(CSTR("Temp"));
+			Text::CStringNN cols[4] = {CSTR("顧客ID"), CSTR("住宿者姓名"), CSTR("住宿天數（爆發前）"), CSTR("住宿天數（爆發後）")};
+			newDB.AddTable(CSTR("Temp"), cols, 4);
+			Text::CString vals[4];
+			i = 0;
+			while (i < j)
+			{
+				if (postCnts[i] > thresholdPost)
+				{
+					if (ds2->GetKey(i, item))
+					{
+						if (item.GetAsNewString().SetTo(id))
+						{
+							cusName = 0;
+							vals[0] = id->ToCString();
+							if (dfInfo->GetFirstData(CSTR("住宿者姓名"), Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), id->ToCString()), item2))
+							{
+								cusName = item2.GetAsNewString();
+							}
+							vals[1] = OPTSTR_CSTR(cusName);
+							sptr = Text::StrUInt32(sbuff, preCnts[i]);
+							vals[2] = CSTRP(sbuff, sptr);
+							sptr++;
+							sptr2 = Text::StrUInt32(sptr, postCnts[i]);
+							vals[3] = CSTRP(sptr, sptr2);
+							newDB.AddTableData(vals, 4);
+							id->Release();
+							OPTSTR_DEL(cusName);
+						}
+					}
+				}
+				i++;
+			}
+			Data::TableData data2(newDB, false, 0, CSTR("Temp"));
+			Text::TextWriteUtil::WriteTableData(console, data2);
+			ds2.Delete();
+			ds.Delete();
+		}
+
+		dfInfoPre.Delete();
+		dfInfoPost.Delete();
+		dfInfo.Delete();
+	}
+	return 0;
+}
+
+Int32 TestPage52()
+{
+	IO::ConsoleWriter console;
+	UOSInt tsCols[] = {0};
+	NN<Data::TableData> dfInfo;
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter2/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
+	{
+		Text::TextWriteUtil::WriteTableDataPart(console, dfInfo, 5, 5);
+		dfInfo.Delete();
+	}
+	return 0;
+}
+
+Int32 TestPage53()
+{
+	IO::ConsoleWriter console;
+	UOSInt tsCols[] = {0};
+	NN<Data::TableData> dfInfo;
+	NN<Data::DataSet> ds;
+	NN<Data::DataSet> ds2;
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter2/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
+	{
+		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> x0;
+		if (dfInfo->GetKeyDataSet().SetTo(ds))
+		{
+			ds->GroupKeyByMonth().Count(x0);
+			ds.Delete();
+		}
+		Data::VariItem item;
+		UOSInt iRank = 1;
+		UOSInt jRank = 2;
+		Optional<Text::String> iId = 0;
+		Optional<Text::String> jId = 0;
+		NN<Text::String> s;
+		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
+		{
+			ds2 = ds->ValueCountsAsDS();
+			ds2->SortByValueInv();
+			if (ds2->GetKey(iRank, item)) iId = item.GetAsNewString();
+			if (ds2->GetKey(jRank, item)) jId = item.GetAsNewString();
+			ds2.Delete();
+			ds.Delete();
+		}
+		Data::ChartPlotter chart(0);
+		NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+		if (iId.SetTo(s))
+		{
+			dfInfo->SetCondition(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), s->ToCString()));
+			if (dfInfo->GetKeyDataSet().SetTo(ds))
+			{
+				Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cnts;
+				ds->GroupKeyByMonth().Count(cnts);
+				chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, UInt32>(cnts), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, UInt32>(cnts), 0xffff0000);
+				ds.Delete();
+			}
+			s->Release();
+		}
+		if (jId.SetTo(s))
+		{
+			dfInfo->SetCondition(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), s->ToCString()));
+			if (dfInfo->GetKeyDataSet().SetTo(ds))
+			{
+				Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cnts;
+				ds->GroupKeyByMonth().Count(cnts);
+				chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, UInt32>(cnts), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, UInt32>(cnts), 0xff000000);
+				ds.Delete();
+			}
+			s->Release();
+		}
+		NN<Data::ChartPlotter::Axis> axis;
+		if (chart.GetXAxis().SetTo(axis))
+		{
+			NN<Data::ChartPlotter::TimeAxis>::ConvertFrom(axis)->ExtendRange(x0.GetItem(0).key.inst);
+			NN<Data::ChartPlotter::TimeAxis>::ConvertFrom(axis)->ExtendRange(x0.GetItem(x0.GetCount() - 1).key.inst);
+			axis->SetLabelRotate(60);
+		}
+		chart.SavePng(deng, {640, 480}, CSTR("Chapter2-1.png"));
+
+		dfInfo.Delete();
+		deng.Delete();
+	}
+	return 0;
+}
+
+
+Int32 TestPage54()
+{
+	IO::ConsoleWriter console;
+	UOSInt tsCols[] = {0};
+	NN<Data::TableData> dfInfo;
+	NN<Data::DataSet> ds;
+	NN<Data::DataSet> ds2;
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter2/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
+	{
+		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> x0;
+		if (dfInfo->GetKeyDataSet().SetTo(ds))
+		{
+			ds->GroupKeyByMonth().Count(x0);
+			ds.Delete();
+		}
+		Data::VariItem item;
+		UOSInt iRank = 1;
+		UOSInt jRank = 2;
+		Optional<Text::String> iId = 0;
+		Optional<Text::String> jId = 0;
+		NN<Text::String> s;
+		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
+		{
+			ds2 = ds->ValueCountsAsDS();
+			ds2->SortByValueInv();
+			if (ds2->GetKey(iRank, item)) iId = item.GetAsNewString();
+			if (ds2->GetKey(jRank, item)) jId = item.GetAsNewString();
+			ds2.Delete();
+			ds.Delete();
+		}
+		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cntsI;
+		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cntsJ;
+		if (iId.SetTo(s))
+		{
+			dfInfo->SetCondition(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), s->ToCString()));
+			if (dfInfo->GetKeyDataSet().SetTo(ds))
+			{
+				ds->GroupKeyByMonth().Count(cntsI);
+				ds.Delete();
+			}
+			s->Release();
+		}
+		if (jId.SetTo(s))
+		{
+			dfInfo->SetCondition(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), s->ToCString()));
+			if (dfInfo->GetKeyDataSet().SetTo(ds))
+			{
+				ds->GroupKeyByMonth().Count(cntsJ);
+				ds.Delete();
+			}
+			s->Release();
+		}
+		if (cntsI.GetCount() > 0 && cntsI.GetCount() == cntsJ.GetCount())
+		{
+			Data::ArrayListDbl dx;
+			UOSInt i = 0;
+			UOSInt j = cntsI.GetCount();
+			while (i < j)
+			{
+				Double v = (Double)cntsI.GetItem(i).value - (Double)cntsJ.GetItem(i).value;
+				dx.Add(v);
+				i++;
+			}
+			Double norm = dx.FrobeniusNorm();
+			console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("相似度:"))->AppendDouble(norm/(Double)j)->ToCString());
+		}
+
+		dfInfo.Delete();
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 44;
+	UOSInt page = 54;
 	switch (page)
 	{
 	case 26:
@@ -547,10 +874,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	case 44:
 		return TestPage44();
 	case 46: //1-9
+		return TestPage46();
 	case 48: //1-10
+		return TestPage48();
 	case 52: //2-1-1
+		return TestPage52();
 	case 53: //2-1-2
+		return TestPage53();
 	case 54: //2-1-3
+		return TestPage54();
 	default:
 		return 0;
 	}

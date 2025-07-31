@@ -243,3 +243,51 @@ UOSInt Data::TableData::GetRowCount(NN<Data::QueryConditions> cond)
 	cond.Delete();
 	return cnt;
 }
+
+Bool Data::TableData::GetFirstData(Text::CStringNN columnName, Optional<Data::QueryConditions> cond, NN<VariItem> outItem)
+{
+	NN<Data::QueryConditions> nncond;
+	NN<DB::DBReader> r;
+	Bool succ = false;
+	if (cond.SetTo(nncond))
+	{
+		if (!this->GetTableData(nncond).SetTo(r))
+		{
+			nncond.Delete();
+			return false;
+		}
+	}
+	else
+	{
+		if (!this->GetTableData().SetTo(r))
+		{
+			return false;
+		}
+	}
+	if (r->ReadNext())
+	{
+		UTF8Char sbuff[512];
+		UnsafeArray<UTF8Char> sptr;
+		UOSInt i = r->ColCount();
+		while (i-- > 0)
+		{
+			if (r->GetName(i, sbuff).SetTo(sptr))
+			{
+				if (CSTRP(sbuff, sptr).Equals(columnName))
+				{
+					succ = r->GetVariItem(i, outItem);
+					if (succ && outItem->GetItemType() == Data::VariItem::ItemType::CStr)
+					{
+						Optional<Text::String> s = outItem->GetAsNewString();
+						outItem->SetStr(s);
+						OPTSTR_DEL(s);
+					}
+					break;
+				}
+			}
+		}
+	}
+	this->db->CloseReader(r);
+	cond.Delete();
+	return succ;
+}

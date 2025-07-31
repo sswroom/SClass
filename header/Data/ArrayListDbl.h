@@ -11,6 +11,7 @@ namespace Data
 		ArrayListDbl(UOSInt capacity);
 
 		virtual NN<ArrayList<Double>> Clone() const;
+		Double FrobeniusNorm() const;
 	};
 }
 #endif

@@ -18,3 +18,14 @@ NN<Data::ArrayList<Double>> Data::ArrayListDbl::Clone() const
 	newArr->AddAll(*this);
 	return newArr;
 }
+
+Double Data::ArrayListDbl::FrobeniusNorm() const
+{
+	Double sum = 0;
+	UOSInt i = this->objCnt;
+	while (i-- > 0)
+	{
+		sum += this->arr[i] * this->arr[i];
+	}
+	return Math_Sqrt(sum);
+}

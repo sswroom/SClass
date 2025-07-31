@@ -12,7 +12,7 @@ class TextDBReader : public DB::DBReader
 private:
 	NN<DB::TextDB::DBData> data;
 	UOSInt index;
-	Text::String **row;
+	UnsafeArrayOpt<Optional<Text::String>> row;
 public:
 	TextDBReader(NN<DB::TextDB::DBData> data)
 	{
@@ -29,7 +29,7 @@ public:
 	virtual Bool ReadNext()
 	{
 		this->row = data->valList.GetItem(this->index);
-		if (this->row)
+		if (this->row.NotNull())
 		{
 			this->index++;
 			return true;
@@ -49,130 +49,151 @@ public:
 
 	virtual Int32 GetInt32(UOSInt colIndex)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return 0;
 		if (colIndex >= this->data->colList.GetCount())
 			return 0;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return 0;
-		return this->row[colIndex]->ToInt32();
+		return s->ToInt32();
 	}
 
 	virtual Int64 GetInt64(UOSInt colIndex)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return 0;
 		if (colIndex >= this->data->colList.GetCount())
 			return 0;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return 0;
-		return this->row[colIndex]->ToInt64();
+		return s->ToInt64();
 	}
 
 	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return 0;
 		if (colIndex >= this->data->colList.GetCount())
 			return 0;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return 0;
-		return Text::StrUTF8_WChar(buff, this->row[colIndex]->v, 0);
+		return Text::StrUTF8_WChar(buff, s->v, 0);
 	}
 
 	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return false;
 		if (colIndex >= this->data->colList.GetCount())
 			return false;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return false;
-		sb->Append(this->row[colIndex]);
+		sb->Append(s);
 		return true;
 	}
 
 	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return 0;
 		if (colIndex >= this->data->colList.GetCount())
 			return 0;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return 0;
-		return this->row[colIndex]->Clone();
+		return s->Clone();
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return 0;
 		if (colIndex >= this->data->colList.GetCount())
 			return 0;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return 0;
-		return Text::StrConcatS(buff, this->row[colIndex]->v, buffSize);
+		return Text::StrConcatS(buff, s->v, buffSize);
 	}
 
 	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
-		if (this->row == 0)
-			return Data::Timestamp(0);
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
+			return 0;
 		if (colIndex >= this->data->colList.GetCount())
-			return Data::Timestamp(0);
-		if (this->row[colIndex] == 0)
-			return Data::Timestamp(0);
-
-		return Data::Timestamp(this->row[colIndex]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+			return 0;
+		if (!row[colIndex].SetTo(s))
+			return 0;
+		return Data::Timestamp(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 
 	virtual Double GetDblOrNAN(UOSInt colIndex)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return NAN;
 		if (colIndex >= this->data->colList.GetCount())
 			return NAN;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return NAN;
-		return this->row[colIndex]->ToDoubleOrNAN();
+		return s->ToDoubleOrNAN();
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return false;
 		if (colIndex >= this->data->colList.GetCount())
 			return false;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return false;
-		if (this->row[colIndex]->EqualsICase(UTF8STRC("TRUE")))
+		if (s->EqualsICase(UTF8STRC("TRUE")))
 			return true;
-		else if (this->row[colIndex]->EqualsICase(UTF8STRC("FALSE")))
+		else if (s->EqualsICase(UTF8STRC("FALSE")))
 			return false;
-		return this->row[colIndex]->ToInt32() != 0;
+		return s->ToInt32() != 0;
 	}
 
 	virtual UOSInt GetBinarySize(UOSInt colIndex)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return 0;
 		if (colIndex >= this->data->colList.GetCount())
 			return 0;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return 0;
-		return this->row[colIndex]->leng;
+		return s->leng;
 	}
 
 	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return 0;
 		if (colIndex >= this->data->colList.GetCount())
 			return 0;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return 0;
-		UOSInt len = this->row[colIndex]->leng;
-		MemCopyNO(buff.Ptr(), this->row[colIndex]->v.Ptr(), len);
+		UOSInt len = s->leng;
+		MemCopyNO(buff.Ptr(), s->v.Ptr(), len);
 		return len;
 	}
 
@@ -188,21 +209,23 @@ public:
 	
 	virtual Bool IsNull(UOSInt colIndex)
 	{
-		if (this->row == 0)
+		UnsafeArray<Optional<Text::String>> row;
+		NN<Text::String> s;
+		if (!this->row.SetTo(row))
 			return true;
 		if (colIndex >= this->data->colList.GetCount())
 			return true;
-		if (this->row[colIndex] == 0)
+		if (!row[colIndex].SetTo(s))
 			return true;
 		return false;
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 	{
-		UnsafeArray<const UTF8Char> name;
+		NN<Text::String> name;
 		if (this->data->colList.GetItem(colIndex).SetTo(name))
 		{
-			return Text::StrConcat(buff, name.Ptr());
+			return name->ConcatTo(buff);
 		}
 		return 0;
 	}
@@ -222,7 +245,7 @@ public:
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
 			return false;
 		}
-		UnsafeArray<const UTF8Char> colName;
+		NN<Text::String> colName;
 		if (!this->data->colList.GetItem(colIndex).SetTo(colName))
 		{
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
@@ -251,44 +274,40 @@ DB::TextDB::~TextDB()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NN<const Data::ArrayList<DBData*>> dbList = this->dbMap.GetValues();
-	DBData *data;
-	Text::String **vals;
-	UnsafeArray<const UTF8Char> sptr;
-	k = dbList->GetCount();
+	NN<DBData> data;
+	UnsafeArray<Optional<Text::String>> vals;
+	k = this->dbMap.GetCount();
 	while (k-- > 0)
 	{
-		data = dbList->GetItem(k);
+		data = this->dbMap.GetItemNoCheck(k);
 		i = data->valList.GetCount();
 		while (i-- > 0)
 		{
-			vals = data->valList.GetItem(i);
+			vals = data->valList.GetItemNoCheck(i);
 			j = data->colList.GetCount();
 			while (j-- > 0)
 			{
-				SDEL_STRING(vals[j]);
+				OPTSTR_DEL(vals[j]);
 			}
-			MemFree(vals);
+			MemFreeArr(vals);
 		}
-		i = data->colList.GetCount();
-		while (i-- > 0)
-		{
-			if (data->colList.GetItem(i).SetTo(sptr))
-				Text::StrDelNew(sptr.Ptr());
-		}
+		data->colList.FreeAll();
 		data->name->Release();
-		DEL_CLASS(data);
+		data.Delete();
 	}
 }
 
 UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	NN<Data::ArrayList<Text::String*>> keys = this->dbMap.GetKeys();
+	NN<Text::String> key;
 	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
+	UOSInt j = this->dbMap.GetCount();
 	while (i < j)
 	{
-		names->Add(keys->GetItem(i)->Clone());
+		if (this->dbMap.GetKey(i).SetTo(key))
+		{
+			names->Add(key->Clone());
+		}
 		i++;
 	}
 	return j;
@@ -297,7 +316,7 @@ UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DBData> data;
-	if (!data.Set(this->dbMap.Get(tableName)))
+	if (!this->dbMap.GetC(tableName).SetTo(data))
 	{
 		return 0;
 	}
@@ -308,20 +327,18 @@ Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text
 
 Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	DBData *data;
-	data = this->dbMap.Get(tableName);
-	if (data == 0)
+	NN<DBData> data;
+	if (!this->dbMap.GetC(tableName).SetTo(data))
 	{
 		return 0;
 	}
 	DB::TableDef *tab;
 	NN<DB::ColDef> colDef;
 	NEW_CLASS(tab, DB::TableDef(schemaName, data->name->ToCString()));
-	Data::ArrayIterator<UnsafeArray<const UTF8Char>> it = data->colList.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = data->colList.Iterator();
 	while (it.HasNext())
 	{
-		NEW_CLASSNN(colDef, DB::ColDef(Text::String::NewEmpty()));
-		colDef->SetColName(it.Next());
+		NEW_CLASSNN(colDef, DB::ColDef(it.Next()));
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetAttr(CSTR_NULL);
@@ -351,45 +368,87 @@ void DB::TextDB::Reconnect()
 
 }
 
-Bool DB::TextDB::AddTable(Text::CStringNN tableName, Data::ArrayList<const UTF8Char*> *colList)
+Bool DB::TextDB::AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN> colList)
 {
-	DBData *data = this->dbMap.Get(tableName);
-	if (data)
+	NN<DBData> data;
+	if (this->dbMap.GetC(tableName).SetTo(data))
 		return false;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(data, DBData());
+	NEW_CLASSNN(data, DBData());
 	data->name = Text::String::New(tableName);
 	i = 0;
 	j = colList->GetCount();
 	while (i < j)
 	{
-		data->colList.Add(Text::StrCopyNew(colList->GetItem(i)));
+		data->colList.Add(colList->GetItemNoCheck(i)->Clone());
 		i++;
 	}
-	this->dbMap.Put(tableName, data);
+	this->dbMap.PutC(tableName, data);
 	this->currDB = data;
 	return true;
 }
 
-Bool DB::TextDB::AddTableData(Data::ArrayList<const UTF8Char*> *valList)
+Bool DB::TextDB::AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UOSInt colCount)
 {
-	if (this->currDB == 0)
+	NN<DBData> data;
+	if (this->dbMap.GetC(tableName).SetTo(data))
 		return false;
-	if (this->currDB->colList.GetCount() != valList->GetCount())
+	UOSInt i;
+	UOSInt j;
+	NEW_CLASSNN(data, DBData());
+	data->name = Text::String::New(tableName);
+	i = 0;
+	j = colCount;
+	while (i < j)
+	{
+		data->colList.Add(Text::String::New(colArr[i]));
+		i++;
+	}
+	this->dbMap.PutC(tableName, data);
+	this->currDB = data;
+	return true;
+}
+
+Bool DB::TextDB::AddTableData(NN<Data::ArrayList<const UTF8Char*>> valList)
+{
+	NN<DBData> currDB;
+	if (!this->currDB.SetTo(currDB))
+		return false;
+	if (currDB->colList.GetCount() != valList->GetCount())
 	{
 		return false;
 	}
 	UOSInt i = 0;
 	UOSInt j = valList->GetCount();
 	const UTF8Char *csptr;
-	Text::String **vals = MemAlloc(Text::String*, j);
+	UnsafeArray<Optional<Text::String>> vals = MemAllocArr(Optional<Text::String>, j);
 	while (i < j)
 	{
 		csptr = valList->GetItem(i);
-		vals[i] = Text::String::NewOrNullSlow(csptr).OrNull();
+		vals[i] = Text::String::NewOrNullSlow(csptr);
 		i++;
 	}
-	this->currDB->valList.Add(vals);
+	currDB->valList.Add(vals);
+	return true;
+}
+
+Bool DB::TextDB::AddTableData(UnsafeArray<Text::CString> valArr, UOSInt colCount)
+{
+	NN<DBData> currDB;
+	if (!this->currDB.SetTo(currDB))
+		return false;
+	if (currDB->colList.GetCount() != colCount)
+	{
+		return false;
+	}
+	UOSInt i = 0;
+	UnsafeArray<Optional<Text::String>> vals = MemAllocArr(Optional<Text::String>, colCount);
+	while (i < colCount)
+	{
+		vals[i] = Text::String::NewOrNull(valArr[i]);
+		i++;
+	}
+	currDB->valList.Add(vals);
 	return true;
 }
