@@ -1183,6 +1183,16 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis() const
 	return this->xAxis;
 }
 
+Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetY1Axis() const
+{
+	return this->y1Axis;
+}
+
+Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetY2Axis() const
+{
+	return this->y2Axis;
+}
+
 Data::ChartPlotter::DataType Data::ChartPlotter::GetXAxisType() const
 {
 	NN<Axis> axis;
@@ -1800,7 +1810,15 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 			{
 				NN<Media::DrawPen> p = img->NewPenARGB(chart->lineColor, 1, 0, 0);
 				NN<Media::DrawBrush> b = img->NewBrushARGB(chart->fillColor);
-				Double lastX = x + y1Leng + this->pointSize;
+				Double lastX;
+				if (currPosLen >= 2)
+				{
+					lastX = currPos[0].x - currPos[1].x + currPos[0].x;
+				}
+				else
+				{
+					lastX = x + y1Leng + this->pointSize;
+				}
 				Double yBottom = y + height - this->pointSize - xLeng;
 				Math::Coord2DDbl pg[5];
 				j = 0;

@@ -833,6 +833,11 @@ namespace Text
 		{
 			this->leng = (UOSInt)(endPtr - this->v);
 		}
+
+		NN<StringBuilderUTF8> Str(Text::CStringNN s) { return this->Append(s); }
+		NN<StringBuilderUTF8> U32(UInt32 v) { return this->AppendU32(v); }
+		NN<StringBuilderUTF8> UOS(UOSInt v) { return this->AppendUOSInt(v); }
+		NN<StringBuilderUTF8> F64(Double v) { return this->AppendDouble(v); }
  	};
 
 	FORCEINLINE void SBAppendF32(NN<Text::StringBuilderUTF8> sb, Single v)

@@ -309,6 +309,8 @@ namespace Data
 		Optional<Text::String> GetY2AxisName() const;
 
 		Optional<Axis> GetXAxis() const;
+		Optional<Axis> GetY1Axis() const;
+		Optional<Axis> GetY2Axis() const;
 		DataType GetXAxisType() const;
 		UOSInt GetChartCount() const;
 		Optional<ChartParam> GetChart(UOSInt index) const;

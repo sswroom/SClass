@@ -873,6 +873,7 @@ Matrix3.o: ../../src/Math/Matrix3.cpp
 MercatorProjectedCoordinateSystem.o: ../../src/Math/MercatorProjectedCoordinateSystem.cpp
 Mercator1SPProjectedCoordinateSystem.o: ../../src/Math/Mercator1SPProjectedCoordinateSystem.cpp
 MSGeography.o: ../../src/Math/MSGeography.cpp
+NumArrayTool.o: ../../src/Math/NumArrayTool.cpp
 PointMappingCoordinateSystem.o: ../../src/Math/PointMappingCoordinateSystem.cpp
 ProjectedCoordinateSystem.o: ../../src/Math/ProjectedCoordinateSystem.cpp
 Quadrilateral.o: ../../src/Math/Quadrilateral.cpp

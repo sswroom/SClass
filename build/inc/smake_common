@@ -2519,6 +2519,8 @@ Math/MercatorProjectedCoordinateSystem.h:
 @MercatorProjectedCoordinateSystem.o
 Math/MSGeography.h:
 @MSGeography.o
+Math/NumArrayTool.h:
+@NumArrayTool.o
 Math/PointMappingCoordinateSystem.h:
 @PointMappingCoordinateSystem.o
 Math/ProjectedCoordinateSystem.h:

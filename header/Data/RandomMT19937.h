@@ -1,8 +1,9 @@
 #ifndef _SM_DATA_RANDOMMT19937
 #define _SM_DATA_RANDOMMT19937
+#include "Data/Random.h"
 namespace Data
 {
-	class RandomMT19937
+	class RandomMT19937 : public Data::Random
 	{
 	private:
 		UInt32 *mt;

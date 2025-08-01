@@ -33,7 +33,7 @@ namespace DB
 
 		Bool AddTable(Text::CStringNN tableName, NN<Data::ArrayListStringNN> colList);
 		Bool AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN> colArr, UOSInt colCount);
-		Bool AddTableData(NN<Data::ArrayList<const UTF8Char*>> valList);
+		Bool AddTableData(NN<Data::ArrayList<Optional<Text::String>>> valList);
 		Bool AddTableData(UnsafeArray<Text::CString> valArr, UOSInt colCount);
 	};
 }

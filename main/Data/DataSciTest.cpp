@@ -2,9 +2,11 @@
 #include "Core/Core.h"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ChartPlotter.h"
+#include "Data/RandomMT19937.h"
 #include "DB/CSVFile.h"
 #include "DB/TextDB.h"
 #include "IO/ConsoleWriter.h"
+#include "Math/NumArrayTool.h"
 #include "Media/DrawEngineFactory.h"
 #include "Text/TextWriteUtil.h"
 
@@ -97,10 +99,10 @@ Int32 TestPage29()
 		dfInfo->GetColumnDataStr(CSTR("顧客ID"), strs);
 		strs.ValueCounts(cnts);
 		cnts2.AddAll(cnts);
-		console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("最小值:"))->AppendDouble(cnts2.Mean())->ToCString());
-		console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("中位數:"))->AppendU32(cnts2.Median())->ToCString());
-		console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("最小值:"))->AppendU32(cnts2.Min())->ToCString());
-		console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("最大值:"))->AppendU32(cnts2.Max())->ToCString());
+		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->F64(cnts2.Mean())->ToCString());
+		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("中位數:"))->U32(cnts2.Median())->ToCString());
+		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->U32(cnts2.Min())->ToCString());
+		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最大值:"))->U32(cnts2.Max())->ToCString());
 		dfInfo.Delete();
 		strs.FreeAll();
 	}
@@ -119,10 +121,10 @@ Int32 TestPage29_2()
 		{
 			Data::ArrayListUInt32 cnts;
 			ds->ValueCounts(NN<Data::ArrayList<UInt32>>(cnts));
-			console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("最小值:"))->AppendDouble(cnts.Mean())->ToCString());
-			console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("中位數:"))->AppendU32(cnts.Median())->ToCString());
-			console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("最小值:"))->AppendU32(cnts.Min())->ToCString());
-			console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("最大值:"))->AppendU32(cnts.Max())->ToCString());
+			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->F64(cnts.Mean())->ToCString());
+			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("中位數:"))->U32(cnts.Median())->ToCString());
+			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->U32(cnts.Min())->ToCString());
+			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最大值:"))->U32(cnts.Max())->ToCString());
 			ds.Delete();
 		}
 		dfInfo.Delete();
@@ -383,7 +385,7 @@ Int32 TestPage42()
 		UOSInt rowCntPost = dfInfo->GetRowCount();
 		dfInfo->SetCondition(0);
 		UOSInt rowCntAll = dfInfo->GetRowCount();
-		console.WriteLine(Text::StringBuilderUTF8().AppendUOSInt(rowCntPre + rowCntPost)->AppendUTF8Char(' ')->AppendUOSInt(rowCntAll)->ToCString());
+		console.WriteLine(Text::StringBuilderUTF8().UOS(rowCntPre + rowCntPost)->AppendUTF8Char(' ')->UOS(rowCntAll)->ToCString());
 		dfInfo.Delete();
 	}
 	return 0;
@@ -829,7 +831,7 @@ Int32 TestPage54()
 				i++;
 			}
 			Double norm = dx.FrobeniusNorm();
-			console.WriteLine(Text::StringBuilderUTF8().Append(CSTR("相似度:"))->AppendDouble(norm/(Double)j)->ToCString());
+			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("相似度:"))->F64(norm/(Double)j)->ToCString());
 		}
 
 		dfInfo.Delete();
@@ -837,9 +839,73 @@ Int32 TestPage54()
 	return 0;
 }
 
+
+Int32 TestPage81()
+{
+	IO::ConsoleWriter console;
+	UOSInt num = 365*2;
+	Double ave = 0.0;
+	Double std = 1.0;
+	Data::RandomMT19937 random(0);
+	Data::ArrayListDbl x;
+	Math::NumArrayTool::GenerateNormalRandom(x, NN<Data::RandomMT19937>(random), ave, std, num);
+//	Math::NumArrayTool::GenerateExponentialRandom(x, NN<Data::RandomMT19937>(random), 0.5, num);
+	Double xAve = x.Average();
+	Double xStd = x.StdDev();
+	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(xAve)->ToCString());
+	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("標準差:"))->F64(xStd)->ToCString());
+	UOSInt numBin = 21;
+	Data::ChartPlotter chart(0);
+	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+	chart.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(x), numBin, 0xff000000, 0xff000000);
+	NN<Data::ChartPlotter::Axis> axis;
+	if (chart.GetXAxis().SetTo(axis))
+	{
+		NN<Data::ChartPlotter::DoubleAxis>::ConvertFrom(axis)->ExtendRange(-5);
+		NN<Data::ChartPlotter::DoubleAxis>::ConvertFrom(axis)->ExtendRange(5);
+	}
+	if (chart.GetY1Axis().SetTo(axis))
+	{
+		NN<Data::ChartPlotter::UInt32Axis>::ConvertFrom(axis)->ExtendRange(0);
+	}
+	chart.SavePng(deng, {640, 480}, CSTR("Chapter3-1.png"));
+
+	UOSInt numSample = 30;
+	UOSInt numTrial = 10000;
+	Data::ArrayListDbl xTrial;
+	Data::ArrayListDbl xSample;
+	UOSInt i = 0;
+	while (i < numTrial)
+	{
+		xSample.Clear();
+		Math::NumArrayTool::RandomChoice<Double>(xSample, NN<Data::RandomMT19937>(random), x, numSample);
+		xTrial.Add(xSample.Average());
+		i++;
+	}
+	Double xTrialAve = xTrial.Average();
+	Double xTrialStd = xTrial.StdDev();
+	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(xTrialAve)->ToCString());
+	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("標準差:"))->F64(xTrialStd)->ToCString());
+	Data::ChartPlotter chart2(0);
+	chart2.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(xTrial), numBin, 0xff000000, 0xff000000);
+	if (chart2.GetXAxis().SetTo(axis))
+	{
+		NN<Data::ChartPlotter::DoubleAxis>::ConvertFrom(axis)->ExtendRange(-5);
+		NN<Data::ChartPlotter::DoubleAxis>::ConvertFrom(axis)->ExtendRange(5);
+	}
+	if (chart2.GetY1Axis().SetTo(axis))
+	{
+		NN<Data::ChartPlotter::UInt32Axis>::ConvertFrom(axis)->ExtendRange(0);
+	}
+	chart2.SavePng(deng, {640, 480}, CSTR("Chapter3-1-2.png"));
+
+	deng.Delete();
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 54;
+	UOSInt page = 81;
 	switch (page)
 	{
 	case 26:
@@ -852,9 +918,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return TestPage29_2();
 	case 31:
 		return TestPage31();
-	//case 33:
-	//case 34:
-	//case 36:
+	//case 33: //1-5 (polyfit)
+	//case 34: //1-5 (polyfit)
+	//case 36: //1-5 (polyfit)
 	case 37:
 		return TestPage37();
 	case 2037:
@@ -883,6 +949,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return TestPage53();
 	case 54: //2-1-3
 		return TestPage54();
+/*	case 58: //2-3 (PCA)
+		return TestPage58();
+	case 60: //2-4 (PCA extract display)
+		return TestPage60();
+	case 63: //2-5 (KMean)
+		return TestPage63();*/
+
+	case 81: //3-1
+		return TestPage81();
 	default:
 		return 0;
 	}

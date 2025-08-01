@@ -12,6 +12,8 @@ namespace Data
 
 		virtual NN<ArrayList<Double>> Clone() const;
 		Double FrobeniusNorm() const;
+		Double Average() const;
+		Double StdDev() const;
 	};
 }
 #endif

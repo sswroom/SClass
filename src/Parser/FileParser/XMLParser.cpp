@@ -548,9 +548,9 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				UOSInt j;
 				DB::TextDB *db = 0;
 				Text::StringBuilderUTF8 sb;
-				Data::ArrayList<const UTF8Char *> colList;
-				Data::ArrayList<const UTF8Char *> nameList;
-				Data::ArrayList<const UTF8Char *> valList;
+				Data::ArrayListStringNN colList;
+				Data::ArrayListStringNN nameList;
+				Data::ArrayList<Optional<Text::String>> valList;
 				Bool succ = false;
 				while (reader.NextElementName().SetTo(nodeText))
 				{
@@ -560,10 +560,10 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 						{
 							if (nodeText->StartsWith(UTF8STRC("fme:")))
 							{
-								nameList.Add(Text::StrCopyNewC(nodeText->v + 4, nodeText->leng - 4).Ptr());
+								nameList.Add(Text::String::New(nodeText->v + 4, nodeText->leng - 4));
 								sb.ClearStr();
 								reader.ReadNodeText(sb);
-								valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
+								valList.Add(Text::String::New(sb.ToCString()));
 							}
 							else
 							{
@@ -578,11 +578,11 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 								j = nameList.GetCount();
 								while (i < j)
 								{
-									colList.Add(Text::StrCopyNew(nameList.GetItem(i)).Ptr());
+									colList.Add(nameList.GetItemNoCheck(i)->Clone());
 									i++;
 								}
 								NEW_CLASS(db, DB::TextDB(fileName));
-								db->AddTable(sbTableName.ToCString(), &colList);
+								db->AddTable(sbTableName.ToCString(), colList);
 							}
 							Bool eq = true;
 							if (colList.GetCount() == nameList.GetCount())
@@ -590,7 +590,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 								i = colList.GetCount();
 								while (i-- > 0)
 								{
-									if (!Text::StrEquals(colList.GetItem(i), nameList.GetItem(i)))
+									if (!colList.GetItemNoCheck(i)->Equals(nameList.GetItemNoCheck(i)))
 									{
 										eq = false;
 										break;
@@ -604,17 +604,13 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 							
 							if (eq)
 							{
-								db->AddTableData(&valList);
+								db->AddTableData(valList);
 							}
-							i = nameList.GetCount();
-							while (i-- > 0)
-							{
-								Text::StrDelNew(nameList.GetItem(i));
-							}
+							nameList.FreeAll();
 							i = valList.GetCount();
 							while (i-- > 0)
 							{
-								Text::StrDelNew(valList.GetItem(i));
+								OPTSTR_DEL(valList.GetItem(i));
 							}
 							nameList.Clear();
 							valList.Clear();
@@ -626,20 +622,12 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 					}
 				}
 				succ = !reader.HasError();
-				i = colList.GetCount();
-				while (i-- > 0)
-				{
-					Text::StrDelNew(colList.GetItem(i));
-				}
-				i = nameList.GetCount();
-				while (i-- > 0)
-				{
-					Text::StrDelNew(nameList.GetItem(i));
-				}
+				colList.FreeAll();
+				nameList.FreeAll();
 				i = valList.GetCount();
 				while (i-- > 0)
 				{
-					Text::StrDelNew(valList.GetItem(i));
+					OPTSTR_DEL(valList.GetItem(i));
 				}
 				if (!succ)
 				{

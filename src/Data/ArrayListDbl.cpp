@@ -29,3 +29,28 @@ Double Data::ArrayListDbl::FrobeniusNorm() const
 	}
 	return Math_Sqrt(sum);
 }
+
+Double Data::ArrayListDbl::Average() const
+{
+	Double sum = 0;
+	UOSInt i = this->objCnt;
+	while (i-- > 0)
+	{
+		sum += this->arr[i];
+	}
+	return sum / (Double)this->objCnt;
+}
+
+Double Data::ArrayListDbl::StdDev() const
+{
+	Double avg = this->Average();
+	Double sum = 0;
+	Double d;
+	UOSInt i = this->objCnt;
+	while (i-- > 0)
+	{
+		d = this->arr[i] - avg;
+		sum += d * d;
+	}
+	return Math_Sqrt(sum / (Double)this->objCnt);
+}

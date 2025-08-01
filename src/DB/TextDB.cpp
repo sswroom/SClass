@@ -410,7 +410,7 @@ Bool DB::TextDB::AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN
 	return true;
 }
 
-Bool DB::TextDB::AddTableData(NN<Data::ArrayList<const UTF8Char*>> valList)
+Bool DB::TextDB::AddTableData(NN<Data::ArrayList<Optional<Text::String>>> valList)
 {
 	NN<DBData> currDB;
 	if (!this->currDB.SetTo(currDB))
@@ -421,12 +421,10 @@ Bool DB::TextDB::AddTableData(NN<Data::ArrayList<const UTF8Char*>> valList)
 	}
 	UOSInt i = 0;
 	UOSInt j = valList->GetCount();
-	const UTF8Char *csptr;
 	UnsafeArray<Optional<Text::String>> vals = MemAllocArr(Optional<Text::String>, j);
 	while (i < j)
 	{
-		csptr = valList->GetItem(i);
-		vals[i] = Text::String::NewOrNullSlow(csptr);
+		vals[i] = Text::String::CopyOrNull(valList->GetItem(i));
 		i++;
 	}
 	currDB->valList.Add(vals);
