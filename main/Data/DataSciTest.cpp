@@ -6,6 +6,7 @@
 #include "DB/CSVFile.h"
 #include "DB/TextDB.h"
 #include "IO/ConsoleWriter.h"
+#include "IO/TextFileLoader.h"
 #include "Math/NumArrayTool.h"
 #include "Media/DrawEngineFactory.h"
 #include "Text/TextWriteUtil.h"
@@ -903,11 +904,78 @@ Int32 TestPage81()
 	return 0;
 }
 
+Int32 TestPage112()
+{
+	IO::ConsoleWriter console;
+	UOSInt n = 8;
+	NN<Data::TableData> vertices;
+	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter4/vertices.csv"), 65001, INVALID_INDEX, 0).SetTo(vertices))
+	{
+		console.WriteLine(CSTR("倉庫的座標"));
+		Text::TextWriteUtil::WriteTableData(console, vertices);
+		////////////////////////////////
+		vertices.Delete();
+	}
+	return 0;
+}
+
+Int32 TestPage323()
+{
+	IO::ConsoleWriter console;
+	Data::ArrayListDbl data;
+	if (IO::TextFileLoader::LoadDoubleList(CSTR(DATAPATH "Chapter9/rnn_sin_40_80.csv"), data))
+	{
+		NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+		Data::ChartPlotter chart(0);
+		chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(data.Arr(), 500), Data::ChartPlotter::NewDataSeq(0, 500), 0xff0000ff);
+		chart.SavePng(deng, {640, 480}, CSTR("Chapter9-1.png"));
+		deng.Delete();
+	}
+	return 0;
+}
+
+void CreateDataSet(NN<Data::ArrayListDbl> srcData, NN<Data::ArrayListArr<Double>> historyData, NN<Data::ArrayListArr<Double>> futureData, UOSInt historySteps, UOSInt futureSteps)
+{
+	UOSInt i = 0;
+	UOSInt j = srcData->GetCount() - historySteps - futureSteps;
+	while (i < j)
+	{
+		
+		futureData->Add(&srcData->Arr()[i + historySteps]);
+		i++;
+	}
+}
+
+Int32 TestPage324()
+{
+	IO::ConsoleWriter console;
+	Data::ArrayListDbl data;
+	if (IO::TextFileLoader::LoadDoubleList(CSTR(DATAPATH "Chapter9/rnn_sin_40_80.csv"), data))
+	{
+		Data::ArrayListDbl trainData;
+		Data::ArrayListDbl testData;
+		UOSInt splitIndex = data.GetCount() * 3 / 4;
+		data.Subset(trainData, 0, splitIndex);
+		data.Subset(testData, splitIndex);
+		UOSInt historySteps = 10;
+		UOSInt futureSteps = 5;
+		Data::ArrayListArr<Double> xTrain;
+		Data::ArrayListArr<Double> yTrain;
+		Data::ArrayListArr<Double> xTest;
+		Data::ArrayListArr<Double> yTest;
+		//////////////////////////////////////////////
+		CreateDataSet(trainData, xTrain, yTrain, historySteps, futureSteps);
+		CreateDataSet(testData, xTest, yTest, historySteps, futureSteps);
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 81;
+	UOSInt page = 324;
 	switch (page)
 	{
+	// Chapter 1
 	case 26:
 		return TestPage26();
 	case 27:
@@ -943,6 +1011,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return TestPage46();
 	case 48: //1-10
 		return TestPage48();
+
+	// Chapter 2
 	case 52: //2-1-1
 		return TestPage52();
 	case 53: //2-1-2
@@ -955,9 +1025,30 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return TestPage60();
 	case 63: //2-5 (KMean)
 		return TestPage63();*/
+	/////////////////////////////
 
+	// Chapter 3
 	case 81: //3-1
 		return TestPage81();
+	/////////////////////////////
+
+	// Chapter 4
+	case 112:
+		return TestPage112();
+	/////////////////////////////
+
+	// Chapter 5
+	/////////////////////////////
+
+	// Chapter 6
+	/////////////////////////////
+
+	// Chapter 9
+	case 323:
+		return TestPage323();
+	case 324:
+		return TestPage324();
+	/////////////////////////////
 	default:
 		return 0;
 	}

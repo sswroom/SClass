@@ -598,6 +598,7 @@ SystemInfoRPi.o: ../../src/IO/SystemInfoRPi.cpp
 SystemInfoSolaris.o: ../../src/IO/SystemInfoSolaris.cpp
 SystemInfoSynology.o: ../../src/IO/SystemInfoSynology.cpp
 SystemInfoW.o: ../../src/IO/SystemInfoW.cpp
+TextFileLoader.o: ../../src/IO/TextFileLoader.cpp
 TVControl.o: ../../src/IO/TVControl.cpp
 UDPFileLog.o: ../../src/IO/UDPFileLog.cpp
 UDPLog.o: ../../src/IO/UDPLog.cpp

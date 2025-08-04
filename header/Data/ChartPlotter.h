@@ -334,6 +334,7 @@ namespace Data
 		static NN<Int32Data> NewData(NN<Data::ReadingList<Int32>> data);
 		static NN<UInt32Data> NewData(NN<Data::ReadingList<UInt32>> data);
 		static NN<DoubleData> NewData(NN<Data::ReadingList<Double>> data);
+		static NN<Int32Data> NewDataSeq(Int32 startSeq, UOSInt count);
 		static Optional<Axis> NewAxis(NN<ChartData> data);
 
 		template<class K, class V> static NN<ChartData> NewDataFromKey(NN<Data::ArrayList<TwinItem<K, V>>> vals)

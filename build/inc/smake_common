@@ -2053,6 +2053,8 @@ IO/StringLogger.h:
 @StringLogger.o
 IO/SystemInfoLog.h:
 @SystemInfoLog.o
+IO/TextFileLoader.h:
+@TextFileLoader.o
 IO/TVControl.h:
 @TVControl.o
 IO/UDPFileLog.h:

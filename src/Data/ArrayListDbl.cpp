@@ -54,3 +54,22 @@ Double Data::ArrayListDbl::StdDev() const
 	}
 	return Math_Sqrt(sum / (Double)this->objCnt);
 }
+
+UOSInt Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UOSInt firstIndex, UOSInt endIndex) const
+{
+	if (firstIndex > this->objCnt)
+		firstIndex = this->objCnt;
+	if (endIndex > this->objCnt)
+		endIndex = this->objCnt;
+	if (firstIndex < endIndex)
+	{
+		outList->AddRange(&this->arr[firstIndex], endIndex - firstIndex);
+		return endIndex - firstIndex;
+	}
+	return 0;
+}
+
+UOSInt Data::ArrayListDbl::Subset(NN<ArrayListDbl> outList, UOSInt firstIndex) const
+{
+	return Subset(outList, firstIndex, this->objCnt);
+}

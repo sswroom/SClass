@@ -2601,6 +2601,22 @@ NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::NewData(NN<Data::ReadingL
 	return d;
 }
 
+NN<Data::ChartPlotter::Int32Data> Data::ChartPlotter::NewDataSeq(Int32 startSeq, UOSInt count)
+{
+	UnsafeArray<Int32> iArr = MemAllocArr(Int32, count);
+	UOSInt i = 0;
+	while (i < count)
+	{
+		iArr[i] = startSeq;
+		i++;
+		startSeq++;
+	}
+	NN<Int32Data> d;
+	NEW_CLASSNN(d, Int32Data(iArr, count));
+	MemFreeArr(iArr);
+	return d;
+}
+
 Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::NewAxis(NN<ChartData> data)
 {
 	if (data->GetType() == DataType::Integer)

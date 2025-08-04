@@ -1151,9 +1151,18 @@ Int32 NTPTest()
 	return 0;
 }
 
+Int32 StrDoubleTest()
+{
+	Text::CStringNN s = CSTR("9.536700269355047332e-01");
+	Double dVal = 0;
+	s.ToDouble(dVal);
+	printf("%lf\r\n", dVal);
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 31;
+	UOSInt testType = 32;
 	switch (testType)
 	{
 	case 0:
@@ -1220,6 +1229,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return RoadNetworkSPTest();
 	case 31:
 		return NTPTest();
+	case 32:
+		return StrDoubleTest();
 	default:
 		return 0;
 	}

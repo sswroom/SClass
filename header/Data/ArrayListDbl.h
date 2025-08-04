@@ -14,6 +14,8 @@ namespace Data
 		Double FrobeniusNorm() const;
 		Double Average() const;
 		Double StdDev() const;
+		UOSInt Subset(NN<ArrayListDbl> outList, UOSInt firstIndex, UOSInt endIndex) const;
+		UOSInt Subset(NN<ArrayListDbl> outList, UOSInt firstIndex) const;
 	};
 }
 #endif

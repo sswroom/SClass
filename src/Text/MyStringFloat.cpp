@@ -2000,14 +2000,13 @@ Bool Text::StrToDouble(UnsafeArray<const UTF8Char> str1, OutParam<Double> outVal
 		++str1;
 	}
 #if _OSINT_SIZE == 64
-	Double r;
-	Int64 ir = 0;
+	Double r = 0;
 	while (true)
 	{
 		c = *str1++;
 		if (c < '0' || c > '9')
 			break;
-		ir = ir * 10 + (c - '0');
+		r = r * 10 + (c - '0');
 	}
 	if (c == '.')
 	{
@@ -2018,20 +2017,19 @@ Bool Text::StrToDouble(UnsafeArray<const UTF8Char> str1, OutParam<Double> outVal
 			if (c < '0' || c > '9')
 				break;
 			fmul *= 0.1;
-			ir = ir * 10 + (c - '0');
+			r = r + (c - '0') * fmul;
         }
-		r = (Double)ir * fmul;
     }
 	else if (c == 0)
 	{
 		if (neg)
 		{
-			outVal.Set(-(Double)ir);
+			outVal.Set(-r);
 			return true;
 		}
 		else
 		{
-			outVal.Set((Double)ir);
+			outVal.Set(r);
 			return true;
 		}
 	}
