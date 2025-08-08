@@ -3,8 +3,10 @@
 #include "Data/ArrayListUInt32.h"
 #include "Data/ChartPlotter.h"
 #include "Data/RandomMT19937.h"
+#include "Data/ML/Keras.h"
 #include "DB/CSVFile.h"
 #include "DB/TextDB.h"
+#include "IO/ConsoleLogHandler.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/TextFileLoader.h"
 #include "Math/NumArrayTool.h"
@@ -934,24 +936,84 @@ Int32 TestPage323()
 	return 0;
 }
 
-void CreateDataSet(NN<Data::ArrayListDbl> srcData, NN<Data::ArrayListArr<Double>> historyData, NN<Data::ArrayListArr<Double>> futureData, UOSInt historySteps, UOSInt futureSteps)
+void CreateDataSet(NN<Data::ArrayListDbl> srcData, NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData, NN<Data::ArrayListArr<Double>> futureData, UOSInt historySteps, UOSInt futureSteps)
 {
+	UnsafeArray<UnsafeArray<Double>> data;
 	UOSInt i = 0;
 	UOSInt j = srcData->GetCount() - historySteps - futureSteps;
+	UOSInt k;
 	while (i < j)
 	{
-		
+		data = MemAllocArr(UnsafeArray<Double>, historySteps);
+		k = 0;
+		while (k < historySteps)
+		{
+			data[k] = &srcData->Arr()[i + k];
+			k++;
+		}
+		historyData->Add(data);
 		futureData->Add(&srcData->Arr()[i + historySteps]);
 		i++;
 	}
 }
 
-Int32 TestPage324()
+void FreeDataSet(NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData)
 {
-	IO::ConsoleWriter console;
+	UOSInt i = historyData->GetCount();
+	while (i-- > 0)
+	{
+		MemFreeArr(historyData->GetItemNoCheck(i));
+	}
+	historyData->Clear();
+}
+
+void PredictAll(NN<Data::ML::MLModel> model, NN<Data::ArrayListArr<UnsafeArray<Double>>> xTest, NN<Data::ArrayListArr<Double>> yTest, UOSInt historySteps, Text::CStringNN imgFileName)
+{
+	UnsafeArray<UnsafeArray<Double>> dataArr = MemAllocArr(UnsafeArray<Double>, historySteps);
+	UnsafeArray<UnsafeArray<Double>> xTmp = xTest->GetItemNoCheck(0);
+	UOSInt i = 0;
+	UOSInt j;
+	UOSInt k;
+	while (i < historySteps)
+	{
+		dataArr[i] = xTmp[i];
+		i++;
+	}
+	Data::ArrayListDbl pred;
+	Data::ArrayListDbl yPred;
+	Data::ArrayListDbl yData;
+	i = 0;
+	j = yTest->GetCount();
+	while (i < j)
+	{
+		pred.Clear();
+		model->Predict(dataArr, historySteps, pred);
+		yPred.Add(pred.GetItem(0));
+		yData.Add(yTest->GetItemNoCheck(i)[0]);
+		k = 1;
+		while (k < historySteps)
+		{
+			dataArr[k - 1] = dataArr[k];
+			k++;
+		}
+		dataArr[historySteps - 1] = &yPred.Arr()[yPred.GetCount() - 1];
+		i++;
+	}
+	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+	Data::ChartPlotter chart(0);
+	chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(yPred), Data::ChartPlotter::NewDataSeq(0, j), 0xff0000ff);
+	chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(yData), Data::ChartPlotter::NewDataSeq(0, j), 0xffff0000);
+	chart.SavePng(deng, {640, 480}, imgFileName);
+	deng.Delete();
+	MemFreeArr(dataArr);
+}
+
+Int32 TestPage330()
+{
 	Data::ArrayListDbl data;
 	if (IO::TextFileLoader::LoadDoubleList(CSTR(DATAPATH "Chapter9/rnn_sin_40_80.csv"), data))
 	{
+		IO::LogTool log;
 		Data::ArrayListDbl trainData;
 		Data::ArrayListDbl testData;
 		UOSInt splitIndex = data.GetCount() * 3 / 4;
@@ -959,20 +1021,95 @@ Int32 TestPage324()
 		data.Subset(testData, splitIndex);
 		UOSInt historySteps = 10;
 		UOSInt futureSteps = 5;
-		Data::ArrayListArr<Double> xTrain;
+		Data::ArrayListArr<UnsafeArray<Double>> xTrain;
 		Data::ArrayListArr<Double> yTrain;
-		Data::ArrayListArr<Double> xTest;
+		Data::ArrayListArr<UnsafeArray<Double>> xTest;
 		Data::ArrayListArr<Double> yTest;
-		//////////////////////////////////////////////
+		Data::ArrayListArr<Double> yPred;
 		CreateDataSet(trainData, xTrain, yTrain, historySteps, futureSteps);
 		CreateDataSet(testData, xTest, yTest, historySteps, futureSteps);
+
+		UOSInt i;
+		UOSInt j;
+		NN<Data::ML::MLModel> model;
+		if (Data::ML::Keras::LoadModel(CSTR("/home/sswroom/Temp/cnn_model.json"), log).SetTo(model))
+		{
+			model->PredictMulti(xTest, historySteps, yPred);
+			if (xTest.GetCount() == yPred.GetCount())
+			{
+				NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+				Data::ChartPlotter chart(0);
+				Data::ArrayListDbl dbl;
+				j = xTest.GetCount();
+				i = 0;
+				while (i < j)
+				{
+					dbl.Add(yPred.GetItemNoCheck(i)[0]);
+					i++;
+				}
+				chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(dbl), Data::ChartPlotter::NewDataSeq(0, j), 0xff0000ff);
+
+				dbl.Clear();
+				i = 0;
+				while (i < j)
+				{
+					dbl.Add(yTest.GetItemNoCheck(i)[0]);
+					i++;
+				}
+				chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(dbl), Data::ChartPlotter::NewDataSeq(0, j), 0xffff0000);
+				chart.SavePng(deng, {640, 480}, CSTR("Chapter9-4.png"));
+				deng.Delete();
+			}
+			model.Delete();
+		}
+
+		FreeDataSet(xTrain);
+		FreeDataSet(xTest);
+		i = yPred.GetCount();
+		while (i-- > 0)
+		{
+			MemFreeArr(yPred.GetItemNoCheck(i));
+		}
+	}
+	return 0;
+}
+
+Int32 TestPage331()
+{
+	Data::ArrayListDbl data;
+	if (IO::TextFileLoader::LoadDoubleList(CSTR(DATAPATH "Chapter9/rnn_sin_40_80.csv"), data))
+	{
+		IO::LogTool log;
+		Data::ArrayListDbl trainData;
+		Data::ArrayListDbl testData;
+		UOSInt splitIndex = data.GetCount() * 3 / 4;
+		data.Subset(trainData, 0, splitIndex);
+		data.Subset(testData, splitIndex);
+		UOSInt historySteps = 10;
+		UOSInt futureSteps = 5;
+		Data::ArrayListArr<UnsafeArray<Double>> xTrain;
+		Data::ArrayListArr<Double> yTrain;
+		Data::ArrayListArr<UnsafeArray<Double>> xTest;
+		Data::ArrayListArr<Double> yTest;
+		CreateDataSet(trainData, xTrain, yTrain, historySteps, futureSteps);
+		CreateDataSet(testData, xTest, yTest, historySteps, futureSteps);
+
+		NN<Data::ML::MLModel> model;
+		if (Data::ML::Keras::LoadModel(CSTR("/home/sswroom/Temp/cnn_model.json"), log).SetTo(model))
+		{
+			PredictAll(model, xTest, yTest, historySteps, CSTR("Chapter9-4-2.png"));
+			model.Delete();
+		}
+
+		FreeDataSet(xTrain);
+		FreeDataSet(xTest);
 	}
 	return 0;
 }
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 324;
+	UOSInt page = 331;
 	switch (page)
 	{
 	// Chapter 1
@@ -1046,8 +1183,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	// Chapter 9
 	case 323:
 		return TestPage323();
-	case 324:
-		return TestPage324();
+	case 330:
+		return TestPage330();
+	case 331:
+		return TestPage331();
 	/////////////////////////////
 	default:
 		return 0;

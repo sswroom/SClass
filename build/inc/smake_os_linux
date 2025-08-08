@@ -5,6 +5,10 @@ Crypto/Cert/TrustStore.h:
 Crypto/Encrypt/RSAEnc.h:
 @RSAEnc.o
 
+Data/ML/Keras.h:
+@?(USE_FDEEP > 0)Keras.o
+@?(USE_FDEEP == 0)Keras_Null.o
+
 DB/MDBFileConn.h:
 @MDBFileConnL.o
 DB/MongoDB.h:

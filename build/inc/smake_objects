@@ -179,6 +179,9 @@ LZWDecompressor.o: ../../src/Data/Compress/LZWDecompressor.cpp
 LZWDecStream.o: ../../src/Data/Compress/LZWDecStream.cpp
 LZWEncStream2.o: ../../src/Data/Compress/LZWEncStream2.cpp
 PackBits.o: ../../src/Data/Compress/PackBits.cpp
+Keras.o: ../../src/Data/ML/Keras.cpp
+$`$(PKG-CONFIG) --cflags eigen3`
+Keras_Null.o: ../../src/Data/ML/Keras_Null.cpp
 ArtificialQuickSort.o: ../../src/Data/Sort/ArtificialQuickSort.cpp
 ArtificialQuickSort_CPP.o: ../../src/Data/Sort/ArtificialQuickSort_CPP.cpp
 BitonicSort.o: ../../src/Data/Sort/BitonicSort.cpp

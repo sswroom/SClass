@@ -22,3 +22,7 @@ freetds-dev
 libpulse-dev
 libssh2-1-dev
 libpq-dev
+libfdeep-dev
+libeigen3-dev
+libfplus-dev
+nlohmann-json3-dev

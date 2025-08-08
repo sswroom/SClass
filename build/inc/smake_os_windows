@@ -10,6 +10,9 @@ Crypto/Cert/WinHttpCert.h:
 Crypto/Encrypt/RSAEnc.h:
 @RSAEncNull.o
 
+Data/ML/Keras.h:
+@Keras_Null.o
+
 DB/MDBFileConn.h:
 @MDBFileConn.o
 DB/MongoDB.h:
