@@ -35,6 +35,7 @@ namespace Text
 		static OSInt Compare(Optional<Text::String> s1, Optional<Text::String> s2);
 		static OSInt CompareICase(Optional<Text::String> s1, Optional<Text::String> s2);
 		static Math::Size2D<UOSInt> GetMonospaceSize(UnsafeArray<const UTF8Char> s);
+		static void RemoveEmptyOrWS(NN<Data::ArrayListStringNN> strList);
 	};
 }
 

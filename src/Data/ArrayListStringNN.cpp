@@ -176,3 +176,35 @@ void Data::ArrayListStringNN::ValueCounts(NN<Data::FastStringMap<UInt32>> counts
 		}
 	}
 }
+
+void Data::ArrayListStringNN::RemoveDuplicates()
+{
+	if (this->objCnt > 0)
+	{
+		NN<Text::String> lastS;
+		NN<Text::String> s;
+		UOSInt newCnt = 1;
+		UOSInt objCnt = this->objCnt;
+		UOSInt i;
+		UnsafeArray<NN<Text::String>> newArr = MemAllocArr(NN<Text::String>, this->capacity);
+		i = 1;
+		lastS = newArr[0] = this->arr[0];
+		while (i < objCnt)
+		{
+			s = this->arr[i];
+			if (!lastS->Equals(s))
+			{
+				lastS = newArr[newCnt++] = s;
+			}
+			else
+			{
+				s->Release();
+			}
+			i++;
+		}
+		MemFreeArr(this->arr);
+		this->arr = newArr;
+		this->objCnt = newCnt;
+	}
+
+}

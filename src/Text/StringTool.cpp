@@ -451,3 +451,18 @@ Math::Size2D<UOSInt> Text::StringTool::GetMonospaceSize(UnsafeArray<const UTF8Ch
 			w += 1;
 	}
 }
+
+void Text::StringTool::RemoveEmptyOrWS(NN<Data::ArrayListStringNN> strList)
+{
+	NN<Text::String> s;
+	UOSInt i = strList->GetCount();
+	while (i-- > 0)
+	{
+		s = strList->GetItemNoCheck(i);
+		if (s->IsEmpty() || s->IsWhitespace())
+		{
+			s->Release();
+			strList->RemoveAt(i);
+		}
+	}
+}

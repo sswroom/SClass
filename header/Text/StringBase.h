@@ -2,6 +2,7 @@
 #define _SM_TEXT_STRINGBASE
 #include "Data/ByteTool.h"
 #include "Data/ByteArray.h"
+#include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
@@ -90,6 +91,8 @@ namespace Text
 		Double MatchRating(UnsafeArray<const UTF8Char> targetStr, UOSInt strLen) const;
 		UOSInt BranketSearch(UOSInt startIndex, UTF8Char c) const;
 		Bool HasAlphaNumeric() const;
+		Bool IsEmpty() const;
+		Bool IsWhitespace() const;
 
 		Bool operator==(StringBase<T> s) const;
 	};
@@ -674,6 +677,24 @@ template <typename T> Bool Text::StringBase<T>::HasAlphaNumeric() const
 template <typename T> Bool Text::StringBase<T>::operator==(StringBase<T> s) const
 {
 	return Text::StrEqualsC(this->v, this->leng, s.v, s.leng);
+}
+
+template <typename T> Bool Text::StringBase<T>::IsEmpty() const
+{
+	return this->leng == 0;
+}
+
+template <typename T> Bool Text::StringBase<T>::IsWhitespace() const
+{
+	UOSInt i = 0;
+	UOSInt j = this->leng;
+	while (i < j)
+	{
+		if (!Text::CharUtil::IsWS(&this->v[i]))
+			return false;
+		i++;
+	}
+	return true;
 }
 
 #endif

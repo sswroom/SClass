@@ -33,9 +33,43 @@ void Text::TextWriteUtil::WriteArrayRange(NN<Text::StyledTextWriter> writer, NN<
 	writer->WriteChar(']');
 }
 
+void Text::TextWriteUtil::WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayList<UOSInt>> arr, UOSInt startIndex, UOSInt endIndex)
+{
+	UTF8Char sbuff[32];
+	UnsafeArray<UTF8Char> sptr;
+	writer->WriteChar('[');
+	if (endIndex > arr->GetCount())
+	{
+		endIndex = arr->GetCount();
+	}
+	if (startIndex < endIndex)
+	{
+		sptr = Text::StrUOSInt(sbuff, arr->GetItem(startIndex));
+		writer->SetTextColor(Text::StandardColor::Magenta);
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->ResetTextColor();
+		startIndex++;
+		while (startIndex < endIndex)
+		{
+			writer->Write(CSTR(", "));
+			sptr = Text::StrUOSInt(sbuff, arr->GetItem(startIndex));
+			writer->SetTextColor(Text::StandardColor::Magenta);
+			writer->Write(CSTRP(sbuff, sptr));
+			writer->ResetTextColor();
+			startIndex++;
+		}
+	}
+	writer->WriteChar(']');
+}
+
 void Text::TextWriteUtil::WriteArray(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListStringNN> arr)
 {
 	WriteArrayRange(writer, arr, 0, arr->GetCount());
+}
+
+void Text::TextWriteUtil::WriteArrayUOS(NN<Text::StyledTextWriter> writer, NN<Data::ArrayList<UOSInt>> arr)
+{
+	WriteArrayUOSRange(writer, arr, 0, arr->GetCount());
 }
 
 void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<Data::TableData> data)

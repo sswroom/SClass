@@ -21,6 +21,7 @@ namespace Data
 		NN<Text::String> JoinString(Text::CStringNN s) const;
 		void FreeAll();
 		void ValueCounts(NN<Data::FastStringMap<UInt32>> counts) const;
+		void RemoveDuplicates(); //Assume sorted
 	};
 }
 #endif
