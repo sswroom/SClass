@@ -78,7 +78,7 @@ Bool Data::Conditions::BooleanAnd::ToWhereClauseOrClient(NN<Text::StringBuilderU
 	{
 		cond = this->andList.GetItemNoCheck(i);
 		sbTmp.ClearStr();
-		if (!cond->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+		if (!cond->ToWhereClause(sbTmp, sqlType, tzQhr, maxDBItem))
 		{
 			clientConditions->Add(cond);
 		}
