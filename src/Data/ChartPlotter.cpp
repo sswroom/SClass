@@ -1212,7 +1212,7 @@ Optional<Data::ChartPlotter::ChartParam> Data::ChartPlotter::GetChart(UOSInt ind
 
 void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height)
 {
-	if (height == 0 || width == 0)
+	if (height <= 0 || width <= 0)
 		return;
 	NN<Axis> xAxis;
 	NN<Axis> y1Axis;
