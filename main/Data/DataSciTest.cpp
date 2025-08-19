@@ -1109,7 +1109,7 @@ Int32 TestPage331()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 331;
+	UOSInt page = 27;
 	switch (page)
 	{
 	// Chapter 1

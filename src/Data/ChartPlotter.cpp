@@ -1520,7 +1520,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	{
 		if (y2Axis->GetType() == DataType::Integer)
 		{
-			NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(iAxis);
+			NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(y2Axis);
 			sptr = Text::StrInt32(sbuff, iAxis->GetMax());
 			if (this->yUnit.SetTo(s))
 				sptr = s->ConcatTo(sptr);
@@ -1539,7 +1539,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		}
 		else if (y2Axis->GetType() == DataType::UInteger)
 		{
-			NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(iAxis);
+			NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(y2Axis);
 			sptr = Text::StrInt32(sbuff, iAxis->GetMax());
 			if (this->yUnit.SetTo(s))
 				sptr = s->ConcatTo(sptr);
