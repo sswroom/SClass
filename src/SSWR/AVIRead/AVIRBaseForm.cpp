@@ -130,6 +130,7 @@
 #include "SSWR/AVIRead/AVIRImageBatchForm.h"
 #include "SSWR/AVIRead/AVIRImagePSNRForm.h"
 #include "SSWR/AVIRead/AVIRImageViewerForm.h"
+#include "SSWR/AVIRead/AVIRInvestmentForm.h"
 #include "SSWR/AVIRead/AVIRIOPinTestForm.h"
 #include "SSWR/AVIRead/AVIRIPScanDetectorForm.h"
 #include "SSWR/AVIRead/AVIRIPScanForm.h"
@@ -548,7 +549,8 @@ typedef enum
 	MNU_CHROME_DEVTOOLS,
 	MNU_EDGE_ANALYSE,
 	MNU_LB_UDP,
-	MNU_LB_TCP
+	MNU_LB_TCP,
+	MNU_INVESTMENT
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -717,6 +719,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("Windows Error"), MNU_WINDOWS_ERROR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Timestamp"), MNU_TIMESTAMP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("VirtualBox Manager"), MNU_VBOX_MANAGER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Investment"), MNU_INVESTMENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("RAM Speed"), MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Thread Speed"), MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3196,6 +3199,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRTCPLoadBalancerForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPLoadBalancerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_INVESTMENT:
+		{
+			NN<SSWR::AVIRead::AVIRInvestmentForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRInvestmentForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

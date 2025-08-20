@@ -4208,6 +4208,8 @@ SSWR/AVIRead/AVIRImageResizeForm.h:
 @AVIRImageResizeForm.o
 SSWR/AVIRead/AVIRImageViewerForm.h:
 @AVIRImageViewerForm.o
+SSWR/AVIRead/AVIRInvestmentForm.h:
+@AVIRInvestmentForm.o
 SSWR/AVIRead/AVIRIOPinTestForm.h:
 @AVIRIOPinTestForm.o
 SSWR/AVIRead/AVIRIPScanDetectorForm.h:
