@@ -102,7 +102,7 @@ Int32 TestPage29()
 		dfInfo->GetColumnDataStr(CSTR("顧客ID"), strs);
 		strs.ValueCounts(cnts);
 		cnts2.AddAll(cnts);
-		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->F64(cnts2.Mean())->ToCString());
+		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(cnts2.Mean())->ToCString());
 		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("中位數:"))->U32(cnts2.Median())->ToCString());
 		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->U32(cnts2.Min())->ToCString());
 		console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最大值:"))->U32(cnts2.Max())->ToCString());
@@ -124,7 +124,7 @@ Int32 TestPage29_2()
 		{
 			Data::ArrayListUInt32 cnts;
 			ds->ValueCounts(NN<Data::ArrayList<UInt32>>(cnts));
-			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->F64(cnts.Mean())->ToCString());
+			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(cnts.Mean())->ToCString());
 			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("中位數:"))->U32(cnts.Median())->ToCString());
 			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->U32(cnts.Min())->ToCString());
 			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最大值:"))->U32(cnts.Max())->ToCString());
@@ -1109,7 +1109,7 @@ Int32 TestPage331()
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt page = 27;
+	UOSInt page = 81;
 	switch (page)
 	{
 	// Chapter 1
