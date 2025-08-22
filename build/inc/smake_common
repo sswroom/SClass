@@ -1495,6 +1495,8 @@ Data/ArrayListStringNN.h:
 Data/ArrayListStrUTF8.h:
 @ArrayListStrUTF8.o
 Data/ArrayListT.h:
+Data/ArrayListTS.h:
+@ArrayListTS.o
 Data/ArrayListUInt32.h:
 @ArrayListUInt32.o
 Data/ArrayListUInt64.h:
@@ -1632,6 +1634,8 @@ Data/Compress/LZWEncStream2.h:
 @LZWEncStream2.o
 Data/Compress/PackBits.h:
 @PackBits.o
+Data/Invest/InvestmentManager.h:
+@InvestmentManager.o
 Data/ML/MLModel.h:
 Data/Sort/ArtificialQuickSort.h:
 @ArtificialQuickSort.o
@@ -4208,8 +4212,12 @@ SSWR/AVIRead/AVIRImageResizeForm.h:
 @AVIRImageResizeForm.o
 SSWR/AVIRead/AVIRImageViewerForm.h:
 @AVIRImageViewerForm.o
+SSWR/AVIRead/AVIRInvestmentAccountForm.h:
+@AVIRInvestmentAccountForm.o
 SSWR/AVIRead/AVIRInvestmentForm.h:
 @AVIRInvestmentForm.o
+SSWR/AVIRead/AVIRInvestmentImportForm.h:
+@AVIRInvestmentImportForm.o
 SSWR/AVIRead/AVIRIOPinTestForm.h:
 @AVIRIOPinTestForm.o
 SSWR/AVIRead/AVIRIPScanDetectorForm.h:

@@ -127,6 +127,7 @@ ArrayListStrW.o: ../../src/Data/ArrayListStrW.cpp
 ArrayListString.o: ../../src/Data/ArrayListString.cpp
 ArrayListStringNN.o: ../../src/Data/ArrayListStringNN.cpp
 ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp
+ArrayListTS.o: ../../src/Data/ArrayListTS.cpp
 ArrayListUInt32.o: ../../src/Data/ArrayListUInt32.cpp
 ArrayListUInt64.o: ../../src/Data/ArrayListUInt64.cpp
 BinaryBuilder.o: ../../src/Data/BinaryBuilder.cpp
@@ -179,6 +180,7 @@ LZWDecompressor.o: ../../src/Data/Compress/LZWDecompressor.cpp
 LZWDecStream.o: ../../src/Data/Compress/LZWDecStream.cpp
 LZWEncStream2.o: ../../src/Data/Compress/LZWEncStream2.cpp
 PackBits.o: ../../src/Data/Compress/PackBits.cpp
+InvestmentManager.o: ../../src/Data/Invest/InvestmentManager.cpp
 Keras.o: ../../src/Data/ML/Keras.cpp
 $`$(PKG-CONFIG) --cflags eigen3`
 Keras_Null.o: ../../src/Data/ML/Keras_Null.cpp
@@ -1921,7 +1923,9 @@ AVIRImageGRForm.o: ../../src/SSWR/AVIRead/AVIRImageGRForm.cpp
 AVIRImagePSNRForm.o: ../../src/SSWR/AVIRead/AVIRImagePSNRForm.cpp
 AVIRImageResizeForm.o: ../../src/SSWR/AVIRead/AVIRImageResizeForm.cpp
 AVIRImageViewerForm.o: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
+AVIRInvestmentAccountForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAccountForm.cpp
 AVIRInvestmentForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentForm.cpp
+AVIRInvestmentImportForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentImportForm.cpp
 AVIRIOPinTestForm.o: ../../src/SSWR/AVIRead/AVIRIOPinTestForm.cpp
 AVIRIPScanDetectorForm.o: ../../src/SSWR/AVIRead/AVIRIPScanDetectorForm.cpp
 AVIRIPScanForm.o: ../../src/SSWR/AVIRead/AVIRIPScanForm.cpp

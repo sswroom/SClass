@@ -5,14 +5,14 @@
 
 namespace Data
 {
-	class ArrayListCStr : public Data::SortableArrayList<Text::CString>
+	class ArrayListCStr : public Data::SortableArrayList<Text::CStringNN>
 	{
 	public:
 		ArrayListCStr();
 		ArrayListCStr(UOSInt capacity);
 
-		virtual NN<Data::ArrayList<Text::CString>> Clone() const;
-		virtual OSInt Compare(Text::CString obj1, Text::CString obj2) const;
+		virtual NN<Data::ArrayList<Text::CStringNN>> Clone() const;
+		virtual OSInt Compare(Text::CStringNN obj1, Text::CStringNN obj2) const;
 	};
 }
 #endif
