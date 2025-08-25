@@ -255,6 +255,63 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsImportDivClicked(AnyTy
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsHistUpdateClicked(AnyType userObj)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::Asset> ass;
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr) && me->lbAssets->GetSelectedItem().GetOpt<Data::Invest::Asset>().SetTo(ass))
+	{
+		Data::Timestamp ts;
+		Double val;
+		Double divVal;
+		Text::StringBuilderUTF8 sb;
+		me->txtAssetsHistDate->GetText(sb);
+		ts = Data::Timestamp::FromStr(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		if (ts.IsNull())
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid date"), TITLE, me);
+			return;
+		}
+		sb.ClearStr();
+		me->txtAssetsHistValue->GetText(sb);
+		if (!sb.ToDouble(val))
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid value"), TITLE, me);
+			return;
+		}
+		sb.ClearStr();
+		me->txtAssetsHistDiv->GetText(sb);
+		if (!sb.ToDouble(divVal))
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid div"), TITLE, me);
+			return;
+		}
+		if (mgr->UpdateAsset(ass, ts, val, divVal))
+		{
+			me->DisplayAsset(ass);
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsHistSelChg(AnyType userObj)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Text::String> s;
+	UOSInt i = me->lvAssetsHist->GetSelectedIndex();
+	if (me->lvAssetsHist->GetItemTextNew(i).SetTo(s))
+	{
+		me->txtAssetsHistDate->SetText(s->ToCString());
+		s->Release();
+		Text::StringBuilderUTF8 sb;
+		me->lvAssetsHist->GetSubItem(i, 1, sb);
+		me->txtAssetsHistValue->SetText(sb.ToCString());
+		sb.ClearStr();
+		me->lvAssetsHist->GetSubItem(i, 2, sb);
+		me->txtAssetsHistDiv->SetText(sb.ToCString());
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAccountsClicked(AnyType userObj)
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
@@ -325,6 +382,8 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Curr
 	NN<Media::StaticImage> simg;
 	if (this->deng->CreateImage32(sz, Media::AT_IGNORE_ALPHA).SetTo(dimg))
 	{
+		dimg->SetHDPI(this->pbCurrency->GetHDPI());
+		dimg->SetVDPI(this->pbCurrency->GetHDPI());
 		if (curr->tsList.GetCount() < 2)
 		{
 			NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
@@ -349,19 +408,42 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Curr
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass)
 {
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
 	this->txtAssetsShortName->SetText(ass->shortName->ToCString());
 	this->txtAssetsFullName->SetText(ass->fullName->ToCString());
 	this->txtAssetsCurrency->SetText(CURRENCYSTR(ass->currency));
+	this->lvAssetsHist->ClearItems();
+	UOSInt i = 0;
+	UOSInt j = ass->tsList.GetCount();
+	UOSInt k;
+	if (j > 20)
+	{
+		i = j - 20;
+	}
+	while (i < j)
+	{
+		sptr = ass->tsList.GetItem(i).ToString(sbuff, "yyyy-MM-dd HH:mm");
+		k = this->lvAssetsHist->AddItem(CSTRP(sbuff, sptr), 0);
+		sptr = Text::StrDouble(sbuff, ass->valList.GetItem(i));
+		this->lvAssetsHist->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, ass->divList.GetItem(i));
+		this->lvAssetsHist->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+		i++;
+	}
+
 	this->DisplayAssetImg(ass);
 }
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> ass)
 {
-	Math::Size2D<UOSInt> sz = this->pbCurrency->GetSizeP();
+	Math::Size2D<UOSInt> sz = this->pbAssets->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	NN<Media::StaticImage> simg;
 	if (this->deng->CreateImage32(sz, Media::AT_IGNORE_ALPHA).SetTo(dimg))
 	{
+		dimg->SetHDPI(this->pbAssets->GetHDPI());
+		dimg->SetVDPI(this->pbAssets->GetHDPI());
 		if (ass->tsList.GetCount() < 2)
 		{
 			NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
@@ -410,13 +492,13 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCurrency = this->tcMain->AddTabPage(CSTR("Currency"));
-	this->tcCurrency = ui->NewTabControl(this->tpCurrency);
-	this->tcCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpCurrencySummary = this->tcCurrency->AddTabPage(CSTR("Summary"));
-	this->lbCurrency = ui->NewListBox(this->tpCurrencySummary, false);
+	this->lbCurrency = ui->NewListBox(this->tpCurrency, false);
 	this->lbCurrency->SetRect(0, 0, 75, 23, false);
 	this->lbCurrency->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbCurrency->HandleSelectionChange(OnCurrencySelChg, this);
+	this->tcCurrency = ui->NewTabControl(this->tpCurrency);
+	this->tcCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpCurrencySummary = this->tcCurrency->AddTabPage(CSTR("Summary"));
 	this->pnlCurrency = ui->NewPanel(this->tpCurrencySummary);
 	this->pnlCurrency->SetRect(0, 0, 100, 55, false);
 	this->pnlCurrency->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -465,7 +547,10 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lbAssets = ui->NewListBox(this->pnlAssets, false);
 	this->lbAssets->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbAssets->HandleSelectionChange(OnAssetsSelChg, this);
-	this->pnlAssetsDetail = ui->NewPanel(this->tpAssets);
+	this->tcAssets = ui->NewTabControl(this->tpAssets);
+	this->tcAssets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpAssetsSummary = this->tcAssets->AddTabPage(CSTR("Summary"));
+	this->pnlAssetsDetail = ui->NewPanel(this->tpAssetsSummary);
 	this->pnlAssetsDetail->SetRect(0, 0, 100, 103, false);
 	this->pnlAssetsDetail->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblAssetsShortName = ui->NewLabel(this->pnlAssetsDetail, CSTR("Short Name"));
@@ -489,9 +574,36 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnAssetsImportDiv = ui->NewButton(this->pnlAssetsDetail, CSTR("Import Div"));
 	this->btnAssetsImportDiv->SetRect(184, 76, 75, 23, false);
 	this->btnAssetsImportDiv->HandleButtonClick(OnAssetsImportDivClicked, this);
-	this->pbAssets = ui->NewPictureBox(this->tpAssets, this->deng, false, false);
+	this->pbAssets = ui->NewPictureBox(this->tpAssetsSummary, this->deng, false, false);
 	this->pbAssets->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbAssets->HandleSizeChanged(OnAssetsSizeChg, this);
+	this->tpAssetsHist = this->tcAssets->AddTabPage(CSTR("History"));
+	this->pnlAssetsHist = ui->NewPanel(this->tpAssetsHist);
+	this->pnlAssetsHist->SetRect(0, 0, 100, 47, false);
+	this->pnlAssetsHist->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblAssetsHistDate = ui->NewLabel(this->pnlAssetsHist, CSTR("Date"));
+	this->lblAssetsHistDate->SetRect(0, 0, 100, 23, false);
+	this->txtAssetsHistDate = ui->NewTextBox(this->pnlAssetsHist, CSTR(""));
+	this->txtAssetsHistDate->SetRect(0, 24, 100, 23, false);
+	this->lblAssetsHistValue = ui->NewLabel(this->pnlAssetsHist, CSTR("Value"));
+	this->lblAssetsHistValue->SetRect(100, 0, 50, 23, false);
+	this->txtAssetsHistValue = ui->NewTextBox(this->pnlAssetsHist, CSTR(""));
+	this->txtAssetsHistValue->SetRect(100, 24, 50, 23, false);
+	this->lblAssetsHistDiv = ui->NewLabel(this->pnlAssetsHist, CSTR("Div"));
+	this->lblAssetsHistDiv->SetRect(150, 0, 50, 23, false);
+	this->txtAssetsHistDiv = ui->NewTextBox(this->pnlAssetsHist, CSTR(""));
+	this->txtAssetsHistDiv->SetRect(150, 24, 50, 23, false);
+	this->btnAssetsHistUpdate = ui->NewButton(this->pnlAssetsHist, CSTR("Update"));
+	this->btnAssetsHistUpdate->SetRect(200, 24, 75, 23, false);
+	this->btnAssetsHistUpdate->HandleButtonClick(OnAssetsHistUpdateClicked, this);
+	this->lvAssetsHist = ui->NewListView(this->tpAssetsHist, UI::ListViewStyle::Table, 3);
+	this->lvAssetsHist->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvAssetsHist->AddColumn(CSTR("Date"), 100);
+	this->lvAssetsHist->AddColumn(CSTR("Value"), 100);
+	this->lvAssetsHist->AddColumn(CSTR("Div"), 100);
+	this->lvAssetsHist->SetShowGrid(true);
+	this->lvAssetsHist->SetFullRowSelect(true);
+	this->lvAssetsHist->HandleSelChg(OnAssetsHistSelChg, this);
 
 	this->tpAccounts = this->tcMain->AddTabPage(CSTR("Accounts"));
 	this->pnlAccounts = ui->NewPanel(this->tpAccounts);

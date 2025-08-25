@@ -50,6 +50,8 @@ namespace SSWR
 			NN<UI::GUIListView> lvCurrencyHist;
 
 			NN<UI::GUITabPage> tpAssets;
+			NN<UI::GUITabControl> tcAssets;
+			NN<UI::GUITabPage> tpAssetsSummary;
 			NN<UI::GUIPanel> pnlAssets;
 			NN<UI::GUIButton> btnAssetsAdd;
 			NN<UI::GUIListBox> lbAssets;
@@ -63,6 +65,16 @@ namespace SSWR
 			NN<UI::GUIButton> btnAssetsImport;
 			NN<UI::GUIButton> btnAssetsImportDiv;
 			NN<UI::GUIPictureBox> pbAssets;
+			NN<UI::GUITabPage> tpAssetsHist;
+			NN<UI::GUIPanel> pnlAssetsHist;
+			NN<UI::GUILabel> lblAssetsHistDate;
+			NN<UI::GUITextBox> txtAssetsHistDate;
+			NN<UI::GUILabel> lblAssetsHistValue;
+			NN<UI::GUITextBox> txtAssetsHistValue;
+			NN<UI::GUILabel> lblAssetsHistDiv;
+			NN<UI::GUITextBox> txtAssetsHistDiv;
+			NN<UI::GUIButton> btnAssetsHistUpdate;
+			NN<UI::GUIListView> lvAssetsHist;
 
 			NN<UI::GUITabPage> tpAccounts;
 			NN<UI::GUIPanel> pnlAccounts;
@@ -86,6 +98,8 @@ namespace SSWR
 			static void __stdcall OnAssetsSizeChg(AnyType userObj);
 			static void __stdcall OnAssetsImportClicked(AnyType userObj);
 			static void __stdcall OnAssetsImportDivClicked(AnyType userObj);
+			static void __stdcall OnAssetsHistUpdateClicked(AnyType userObj);
+			static void __stdcall OnAssetsHistSelChg(AnyType userObj);
 			static void __stdcall OnAccountsClicked(AnyType userObj);
 		
 			void UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr);

@@ -597,3 +597,29 @@ Bool Data::Invest::InvestmentManager::AssetImportDiv(NN<Asset> ass, NN<DB::Readi
 	}
 	return found;
 }
+
+Bool Data::Invest::InvestmentManager::UpdateAsset(NN<Asset> ass, Data::Timestamp ts, Double value, Double divValue)
+{
+	OSInt i = ass->tsList.SortedIndexOf(ts);
+	if (i >= 0)
+	{
+		ass->valList.SetItem((UOSInt)i, value);
+		ass->divList.SetItem((UOSInt)i, divValue);
+		if ((UOSInt)i == ass->valList.GetCount() - 1)
+		{
+			ass->current = value;
+		}
+	}
+	else
+	{
+		UOSInt ui = ass->tsList.SortedInsert(ts);
+		ass->valList.Insert(ui, value);
+		ass->divList.Insert(ui, divValue);
+		if (ui == ass->valList.GetCount() - 1)
+		{
+			ass->current = value;
+		}
+	}
+	this->SaveAsset(ass);
+	return true;
+}

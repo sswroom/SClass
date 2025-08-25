@@ -85,6 +85,7 @@ namespace Data
 			Optional<Asset> AddAsset(NN<Text::String> shortName, NN<Text::String> fullName, UInt32 currency);
 			Bool AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
 			Bool AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
+			Bool UpdateAsset(NN<Asset> ass, Data::Timestamp ts, Double value, Double divValue);
 		};
 	}
 }
