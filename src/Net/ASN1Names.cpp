@@ -2,6 +2,7 @@
 #include "Net/ASN1Names.h"
 #include "Net/Names/PKCS1.h"
 #include "Net/Names/PKCS7.h"
+#include "Net/Names/PKCS8.h"
 #include "Net/Names/PKCS10.h"
 #include "Net/Names/PKCS12.h"
 #include "Net/Names/PKIX1Explicit88.h"
@@ -335,6 +336,12 @@ NN<Net::ASN1Names> Net::ASN1Names::SetRSAPrivateKey()
 NN<Net::ASN1Names> Net::ASN1Names::SetPKCS7ContentInfo()
 {
 	Names::PKCS7::ContentInfo(*this);
+	return *this;
+}
+
+NN<Net::ASN1Names> Net::ASN1Names::SetEncryptedPrivateKey()
+{
+	Names::PKCS8::EncryptedPrivateKeyInfo(*this);
 	return *this;
 }
 

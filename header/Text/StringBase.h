@@ -93,6 +93,7 @@ namespace Text
 		Bool HasAlphaNumeric() const;
 		Bool IsEmpty() const;
 		Bool IsWhitespace() const;
+		Bool IsBlockLetters() const;
 
 		Bool operator==(StringBase<T> s) const;
 	};
@@ -697,4 +698,16 @@ template <typename T> Bool Text::StringBase<T>::IsWhitespace() const
 	return true;
 }
 
+template <typename T> Bool Text::StringBase<T>::IsBlockLetters() const
+{
+	UOSInt i = 0;
+	UOSInt j = this->leng;
+	while (i < j)
+	{
+		if (!Text::CharUtil::IsUpperCase(this->v[i]))
+			return false;
+		i++;
+	}
+	return true;
+}
 #endif

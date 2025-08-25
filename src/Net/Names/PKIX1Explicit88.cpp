@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Net/Names/General.h"
 #include "Net/Names/PKCS1.h"
+#include "Net/Names/PKCS5.h"
 #include "Net/Names/PKIX1Explicit88.h"
 #include "Net/Names/PKIX1Implicit88.h"
 #include "Net/Names/RFC2459.h"
@@ -183,5 +184,16 @@ void Net::Names::PKIX1Explicit88::AlgorithmIdentifierCont(NN<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("algorithm"));
 	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.1.3"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("parameters"), General::PBEParam); //pbeWithSHAAnd3-KeyTripleDES-CBC
 	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.1.6"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("parameters"), General::PBEParam); //pbeWithSHAAnd40BitRC2-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.1"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBEParameter"), PKCS5::PBEParameter); //pbeWithMD2AndDES-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.3"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBEParameter"), PKCS5::PBEParameter); //pbeWithMD5AndDES-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.4"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBEParameter"), PKCS5::PBEParameter); //pbeWithMD2AndRC2-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.6"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBEParameter"), PKCS5::PBEParameter); //pbeWithMD5AndRC2-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.10"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBEParameter"), PKCS5::PBEParameter); //pbeWithSHA1AndDES-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.11"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBEParameter"), PKCS5::PBEParameter); //pbeWithSHA1AndRC2-CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.12"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBKDF2-parameters"), PKCS5::PBKDF2Params); //id-PBKDF2
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.13"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBES2-parameters"), PKCS5::PBES2Params); //id-PBES2
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.5.14"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("PBMAC1-parameters"), PKCS5::PBMAC1Params); //id-PBMAC1
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.3.2"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("RC2-CBC-Parameter"), PKCS5::RC2CBCParam); //rc2CBC
+	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.3.9"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("RC5-CBC-Parameters"), PKCS5::RC5CBCParams); //rc5-CBC-PAD
 	names->NextValue(CSTR("parameters"));
 }

@@ -67,7 +67,8 @@ namespace Crypto
 				PKCS7,
 				PKCS12,
 				CRL,
-				FileList
+				FileList,
+				EPrivateKey
 			};
 
 			enum class KeyType

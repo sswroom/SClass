@@ -11,6 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentImportForm::OnOKClicked(AnyType user
 	{
 		me->timeCol = me->cboTimeCol->GetSelectedIndex();
 		me->valueCol = me->cboValueCol->GetSelectedIndex();
+		me->fmt = (Data::Invest::DateFormat)me->cboDateFormat->GetSelectedItem().GetOSInt();
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
@@ -54,6 +55,7 @@ void SSWR::AVIRead::AVIRInvestmentImportForm::LoadFile(Text::CStringNN fileName)
 			{
 				UOSInt timeCol = 0;
 				UOSInt priceCol = 0;
+				Data::Invest::DateFormat fmt = Data::Invest::DateFormat::MMDDYYYY;
 				succ = true;
 				this->cboTimeCol->ClearItems();
 				this->cboValueCol->ClearItems();
@@ -69,12 +71,32 @@ void SSWR::AVIRead::AVIRInvestmentImportForm::LoadFile(Text::CStringNN fileName)
 						if (CSTRP(sbuff, sptr).IndexOfICase(CSTR("DATE")) != INVALID_INDEX)
 						{
 							timeCol = i;
+							fmt = Data::Invest::DateFormat::MMDDYYYY;
 						}
 						else if (CSTRP(sbuff, sptr).IndexOfICase(CSTR("TIME")) != INVALID_INDEX)
 						{
 							timeCol = i;
+							fmt = Data::Invest::DateFormat::MMDDYYYY;
+						}
+						else if (CSTRP(sbuff, sptr).Equals(CSTR("日期")))
+						{
+							timeCol = i;
+							fmt = Data::Invest::DateFormat::DDMMYYYY;
+						}
+						else if (CSTRP(sbuff, sptr).Equals(CSTR("除息日")))
+						{
+							timeCol = i;
+							fmt = Data::Invest::DateFormat::DDMMYYYY;
 						}
 						else if (CSTRP(sbuff, sptr).IndexOfICase(CSTR("PRICE")) != INVALID_INDEX)
+						{
+							priceCol = i;
+						}
+						else if (CSTRP(sbuff, sptr).Equals(CSTR("資產淨值")))
+						{
+							priceCol = i;
+						}
+						else if (CSTRP(sbuff, sptr).Equals(CSTR("單位派息")))
 						{
 							priceCol = i;
 						}
@@ -89,6 +111,7 @@ void SSWR::AVIRead::AVIRInvestmentImportForm::LoadFile(Text::CStringNN fileName)
 				}
 				this->cboTimeCol->SetSelectedIndex(timeCol);
 				this->cboValueCol->SetSelectedIndex(priceCol);
+				this->cboDateFormat->SetSelectedIndex((UOSInt)fmt);
 				k = 100;
 				while (k-- > 0 && r->ReadNext())
 				{
@@ -140,10 +163,11 @@ SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::G
 	this->db = 0;
 	this->timeCol = 0;
 	this->valueCol = 0;
+	this->fmt = Data::Invest::DateFormat::MMDDYYYY;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlMain = ui->NewPanel(*this);
-	this->pnlMain->SetRect(0, 0, 100, 79, false);
+	this->pnlMain->SetRect(0, 0, 100, 103, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvMain = ui->NewListView(*this, UI::ListViewStyle::Table, 1);
 	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -158,11 +182,18 @@ SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::G
 	this->lblValueCol->SetRect(4, 28, 100, 23, false);
 	this->cboValueCol = ui->NewComboBox(this->pnlMain, false);
 	this->cboValueCol->SetRect(104, 28, 200, 23, false);
+	this->lblDateFormat = ui->NewLabel(this->pnlMain, CSTR("Date Format"));
+	this->lblDateFormat->SetRect(4, 52, 100, 23, false);
+	this->cboDateFormat = ui->NewComboBox(this->pnlMain, false);
+	this->cboDateFormat->SetRect(104, 52, 200, 23, false);
+	this->cboDateFormat->AddItem(CSTR("MMDDYYYY"), (void*)(OSInt)Data::Invest::DateFormat::MMDDYYYY);
+	this->cboDateFormat->AddItem(CSTR("DDMMYYYY"), (void*)(OSInt)Data::Invest::DateFormat::DDMMYYYY);
+	this->cboDateFormat->SetSelectedIndex(0);
 	this->btnCancel = ui->NewButton(this->pnlMain, CSTR("Cancel"));
-	this->btnCancel->SetRect(104, 52, 75, 23, false);
+	this->btnCancel->SetRect(104, 76, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->btnOK = ui->NewButton(this->pnlMain, CSTR("OK"));
-	this->btnOK->SetRect(184, 52, 75, 23, false);
+	this->btnOK->SetRect(184, 76, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->SetDefaultButton(this->btnOK);
 	this->SetDefaultButton(this->btnCancel);

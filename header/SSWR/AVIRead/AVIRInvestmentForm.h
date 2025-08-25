@@ -23,6 +23,7 @@ namespace SSWR
 			Optional<Data::Invest::InvestmentManager> mgr;
 			NN<Media::DrawEngine> deng;
 			Optional<Media::StaticImage> currencyImg;
+			Optional<Media::StaticImage> assetsImg;
 
 			NN<UI::GUIPanel> pnlDir;
 			NN<UI::GUILabel> lblDir;
@@ -31,12 +32,37 @@ namespace SSWR
 			NN<UI::GUITabControl> tcMain;
 
 			NN<UI::GUITabPage> tpCurrency;
+			NN<UI::GUITabControl> tcCurrency;
+			NN<UI::GUITabPage> tpCurrencySummary;
 			NN<UI::GUIListBox> lbCurrency;
 			NN<UI::GUIPanel> pnlCurrency;
 			NN<UI::GUILabel> lblCurrencyCurr;
 			NN<UI::GUITextBox> txtCurrencyCurr;
 			NN<UI::GUIButton> btnCurrencyImport;
 			NN<UI::GUIPictureBox> pbCurrency;
+			NN<UI::GUITabPage> tpCurrencyHist;
+			NN<UI::GUIPanel> pnlCurrencyHist;
+			NN<UI::GUILabel> lblCurrencyHistDate;
+			NN<UI::GUITextBox> txtCurrencyHistDate;
+			NN<UI::GUILabel> lblCurrencyHistValue;
+			NN<UI::GUITextBox> txtCurrencyHistValue;
+			NN<UI::GUIButton> btnCurrencyHistUpdate;
+			NN<UI::GUIListView> lvCurrencyHist;
+
+			NN<UI::GUITabPage> tpAssets;
+			NN<UI::GUIPanel> pnlAssets;
+			NN<UI::GUIButton> btnAssetsAdd;
+			NN<UI::GUIListBox> lbAssets;
+			NN<UI::GUIPanel> pnlAssetsDetail;
+			NN<UI::GUILabel> lblAssetsShortName;
+			NN<UI::GUITextBox> txtAssetsShortName;
+			NN<UI::GUILabel> lblAssetsFullName;
+			NN<UI::GUITextBox> txtAssetsFullName;
+			NN<UI::GUILabel> lblAssetsCurrency;
+			NN<UI::GUITextBox> txtAssetsCurrency;
+			NN<UI::GUIButton> btnAssetsImport;
+			NN<UI::GUIButton> btnAssetsImportDiv;
+			NN<UI::GUIPictureBox> pbAssets;
 
 			NN<UI::GUITabPage> tpAccounts;
 			NN<UI::GUIPanel> pnlAccounts;
@@ -53,11 +79,20 @@ namespace SSWR
 			static void __stdcall OnCurrencyImportClicked(AnyType userObj);
 			static void __stdcall OnCurrencySelChg(AnyType userObj);
 			static void __stdcall OnCurrencySizeChg(AnyType userObj);
+			static void __stdcall OnCurrencyHistUpdateClicked(AnyType userObj);
+			static void __stdcall OnCurrencyHistSelChg(AnyType userObj);
+			static void __stdcall OnAssetsAddClicked(AnyType userObj);
+			static void __stdcall OnAssetsSelChg(AnyType userObj);
+			static void __stdcall OnAssetsSizeChg(AnyType userObj);
+			static void __stdcall OnAssetsImportClicked(AnyType userObj);
+			static void __stdcall OnAssetsImportDivClicked(AnyType userObj);
 			static void __stdcall OnAccountsClicked(AnyType userObj);
 		
 			void UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr);
 			void DisplayCurrency(NN<Data::Invest::Currency> curr);
 			void DisplayCurrencyImg(NN<Data::Invest::Currency> curr);
+			void DisplayAsset(NN<Data::Invest::Asset> ass);
+			void DisplayAssetImg(NN<Data::Invest::Asset> ass);
 		public:
 			AVIRInvestmentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRInvestmentForm();

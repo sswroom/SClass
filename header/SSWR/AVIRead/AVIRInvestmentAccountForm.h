@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRINVESTMENTACCOUNTFORM
 #define _SM_SSWR_AVIREAD_AVIRINVESTMENTACCOUNTFORM
-#include "DB/ReadingDB.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUILabel.h"

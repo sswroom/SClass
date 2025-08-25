@@ -39,6 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, 
 				case Crypto::Cert::X509File::FileType::PrivateKey:
 					me->txtKey->SetText(files[i]->ToCString());
 					break;
+				case Crypto::Cert::X509File::FileType::EPrivateKey:
 				case Crypto::Cert::X509File::FileType::FileList:
 				case Crypto::Cert::X509File::FileType::PublicKey:
 				case Crypto::Cert::X509File::FileType::PKCS12:
@@ -101,6 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 		case Crypto::Cert::X509File::FileType::Cert:
 		case Crypto::Cert::X509File::FileType::CertRequest:
 		case Crypto::Cert::X509File::FileType::FileList:
+		case Crypto::Cert::X509File::FileType::EPrivateKey:
 		case Crypto::Cert::X509File::FileType::PublicKey:
 		case Crypto::Cert::X509File::FileType::PKCS12:
 		case Crypto::Cert::X509File::FileType::PKCS7:

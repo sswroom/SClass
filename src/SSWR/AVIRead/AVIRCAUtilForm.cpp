@@ -172,6 +172,9 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 						}
 						x509.Delete();
 						break;
+					case Crypto::Cert::X509File::FileType::EPrivateKey:
+						x509.Delete();
+						break;
 					case Crypto::Cert::X509File::FileType::PublicKey:
 						x509.Delete();
 						break;

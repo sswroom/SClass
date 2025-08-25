@@ -42,6 +42,12 @@ namespace Data
 			Data::ArrayListNN<TradeDetail> trades;
 		};
 
+		enum class DateFormat
+		{
+			MMDDYYYY,
+			DDMMYYYY
+		};
+
 		class InvestmentManager
 		{
 		private:
@@ -54,6 +60,7 @@ namespace Data
 
 			NN<Currency> LoadCurrency(UInt32 c);
 			Bool LoadAsset(NN<Asset> ass);
+			static Data::Timestamp ParseTime(NN<Text::String> s, DateFormat fmt);
 		public:
 			InvestmentManager(Text::CStringNN path);
 			~InvestmentManager();
@@ -63,17 +70,21 @@ namespace Data
 			Bool SaveAccounts() const;
 			Bool SaveAssets() const;
 			Bool SaveCurrency(NN<Currency> curr) const;
-			Bool CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol) const;
+			Bool SaveAsset(NN<Asset> ass) const;
+			Bool CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
 			UInt32 GetLocalCurrency() const { return this->localCurrency; }
 			UInt32 GetRefCurrency() const { return this->refCurrency; }
 			UOSInt GetCurrencyCount() const { return this->currMap.GetCount(); }
 			Optional<Currency> GetCurrencyInfo(UOSInt index) const { return this->currMap.GetItem(index); }
+			Bool UpdateCurrency(NN<Currency> curr, Data::Timestamp ts, Double value);
 			Optional<Text::String> GetAccount(UOSInt index) const { return this->accounts.GetItem(index); }
 			UOSInt GetAccountCount() const { return this->accounts.GetCount(); }
 			Bool AddAccount(NN<Text::String> accountName);
 			UOSInt GetAssetCount() const { return this->assetList.GetCount(); }
 			Optional<Asset> GetAsset(UOSInt index) const { return this->assetList.GetItem(index); }
-			Bool AddAsset(NN<Text::String> shortName, NN<Text::String> fullName, UInt32 currency);
+			Optional<Asset> AddAsset(NN<Text::String> shortName, NN<Text::String> fullName, UInt32 currency);
+			Bool AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
+			Bool AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
 		};
 	}
 }

@@ -52,6 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(AnyType userObj, Dat
 				case Crypto::Cert::X509File::FileType::FileList:
 					me->txtSignCert->SetText(files[i]->ToCString());
 					break;
+				case Crypto::Cert::X509File::FileType::EPrivateKey:
 				case Crypto::Cert::X509File::FileType::PublicKey:
 				case Crypto::Cert::X509File::FileType::PKCS12:
 				case Crypto::Cert::X509File::FileType::PKCS7:

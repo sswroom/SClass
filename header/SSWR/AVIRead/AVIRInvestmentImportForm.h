@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRINVESTMENTIMPORTFORM
 #define _SM_SSWR_AVIREAD_AVIRINVESTMENTIMPORTFORM
+#include "Data/Invest/InvestmentManager.h"
 #include "DB/ReadingDB.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -19,6 +20,7 @@ namespace SSWR
 			Optional<DB::ReadingDB> db;
 			UOSInt timeCol;
 			UOSInt valueCol;
+			Data::Invest::DateFormat fmt;
 
 			NN<UI::GUIListView> lvMain;
 			NN<UI::GUIPanel> pnlMain;
@@ -26,6 +28,8 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboTimeCol;
 			NN<UI::GUILabel> lblValueCol;
 			NN<UI::GUIComboBox> cboValueCol;
+			NN<UI::GUILabel> lblDateFormat;
+			NN<UI::GUIComboBox> cboDateFormat;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 
@@ -42,6 +46,7 @@ namespace SSWR
 
 			UOSInt GetTimeCol() const { return this->timeCol; }
 			UOSInt GetValueCol() const { return this->valueCol; }
+			Data::Invest::DateFormat GetDateFormat() const { return this->fmt; }
 			Optional<DB::ReadingDB> GetDB() const { return this->db; }
 		};
 	}

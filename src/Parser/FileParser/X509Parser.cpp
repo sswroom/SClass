@@ -4,6 +4,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509CRL.h"
+#include "Crypto/Cert/X509EPrivKey.h"
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509Key.h"
@@ -300,6 +301,44 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				else
 				{
 					NEW_CLASS(file, Crypto::Cert::X509PrivKey(fileName, Data::ByteArrayR(dataBuff, dataLen)));
+				}
+			}
+			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN ENCRYPTED PRIVATE KEY-----")))
+			{
+				sb.ClearStr();
+				while (true)
+				{
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
+					{
+						SDEL_CLASS(fileList);
+						SDEL_CLASS(file);
+						return 0;
+					}
+					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END ENCRYPTED PRIVATE KEY-----")))
+					{
+						break;
+					}
+					else
+					{
+						sb.AppendP(dataBuff, sptr);
+					}
+				}
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
+				NN<Crypto::Cert::X509Cert> certFile;
+				if (certFile.Set((Crypto::Cert::X509Cert*)file))
+				{
+					NEW_CLASS(fileList, Crypto::Cert::X509FileList(fileName, certFile));
+					file = 0;
+				}
+				if (fileList)
+				{
+					NN<Crypto::Cert::X509EPrivKey> subFile;
+					NEW_CLASSNN(subFile, Crypto::Cert::X509EPrivKey(fileName, Data::ByteArrayR(dataBuff, dataLen)));
+					fileList->AddFile(subFile);
+				}
+				else
+				{
+					NEW_CLASS(file, Crypto::Cert::X509EPrivKey(fileName, Data::ByteArrayR(dataBuff, dataLen)));
 				}
 			}
 			else if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN PUBLIC KEY-----")))

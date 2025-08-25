@@ -1314,6 +1314,8 @@ Crypto/Cert/X509CertReq.h:
 @X509CertReq.o
 Crypto/Cert/X509CRL.h:
 @X509CRL.o
+Crypto/Cert/X509EPrivKey.h:
+@X509EPrivKey.o
 Crypto/Cert/X509File.h:
 @X509File.o
 Crypto/Cert/X509FileList.h:
@@ -3544,6 +3546,8 @@ Net/Names/InformationFramework.h:
 @NamesInformationFramework.o
 Net/Names/PKCS1.h:
 @NamesPKCS1.o
+Net/Names/PKCS5.h:
+@NamesPKCS5.o
 Net/Names/PKCS7.h:
 @NamesPKCS7.o
 Net/Names/PKCS8.h:
@@ -4214,6 +4218,8 @@ SSWR/AVIRead/AVIRImageViewerForm.h:
 @AVIRImageViewerForm.o
 SSWR/AVIRead/AVIRInvestmentAccountForm.h:
 @AVIRInvestmentAccountForm.o
+SSWR/AVIRead/AVIRInvestmentAssetForm.h:
+@AVIRInvestmentAssetForm.o
 SSWR/AVIRead/AVIRInvestmentForm.h:
 @AVIRInvestmentForm.o
 SSWR/AVIRead/AVIRInvestmentImportForm.h:

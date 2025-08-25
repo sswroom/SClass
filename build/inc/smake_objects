@@ -30,6 +30,7 @@ WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 X509Cert.o: ../../src/Crypto/Cert/X509Cert.cpp
 X509CertReq.o: ../../src/Crypto/Cert/X509CertReq.cpp
 X509CRL.o: ../../src/Crypto/Cert/X509CRL.cpp
+X509EPrivKey.o: ../../src/Crypto/Cert/X509EPrivKey.cpp
 X509File.o: ../../src/Crypto/Cert/X509File.cpp
 X509FileList.o: ../../src/Crypto/Cert/X509FileList.cpp
 X509Key.o: ../../src/Crypto/Cert/X509Key.cpp
@@ -1565,6 +1566,7 @@ JMeterHTTPSamplerProxy.o: ../../src/Net/JMeter/JMeterHTTPSamplerProxy.cpp
 NamesGeneral.o: ../../src/Net/Names/General.cpp
 NamesInformationFramework.o: ../../src/Net/Names/InformationFramework.cpp
 NamesPKCS1.o: ../../src/Net/Names/PKCS1.cpp
+NamesPKCS5.o: ../../src/Net/Names/PKCS5.cpp
 NamesPKCS7.o: ../../src/Net/Names/PKCS7.cpp
 NamesPKCS8.o: ../../src/Net/Names/PKCS8.cpp
 NamesPKCS9.o: ../../src/Net/Names/PKCS9.cpp
@@ -1924,6 +1926,7 @@ AVIRImagePSNRForm.o: ../../src/SSWR/AVIRead/AVIRImagePSNRForm.cpp
 AVIRImageResizeForm.o: ../../src/SSWR/AVIRead/AVIRImageResizeForm.cpp
 AVIRImageViewerForm.o: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
 AVIRInvestmentAccountForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAccountForm.cpp
+AVIRInvestmentAssetForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAssetForm.cpp
 AVIRInvestmentForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentForm.cpp
 AVIRInvestmentImportForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentImportForm.cpp
 AVIRIOPinTestForm.o: ../../src/SSWR/AVIRead/AVIRIOPinTestForm.cpp

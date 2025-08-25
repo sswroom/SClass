@@ -591,6 +591,7 @@ Optional<Crypto::Cert::X509Key> SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
 		return NN<Crypto::Cert::X509PrivKey>::ConvertFrom(x509)->CreateKey();
 	case Crypto::Cert::X509File::FileType::PublicKey:
 		return NN<Crypto::Cert::X509PubKey>::ConvertFrom(x509)->CreateKey();
+	case Crypto::Cert::X509File::FileType::EPrivateKey:
 	case Crypto::Cert::X509File::FileType::CertRequest:
 	case Crypto::Cert::X509File::FileType::PKCS7:
 	case Crypto::Cert::X509File::FileType::PKCS12:
@@ -788,6 +789,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 			hasPubKey = true;
 			this->keyType = NN<Crypto::Cert::X509PubKey>::ConvertFrom(x509)->GetKeyType();
 			break;
+		case Crypto::Cert::X509File::FileType::EPrivateKey:
 		case Crypto::Cert::X509File::FileType::CertRequest:
 		case Crypto::Cert::X509File::FileType::PKCS7:
 		case Crypto::Cert::X509File::FileType::PKCS12:

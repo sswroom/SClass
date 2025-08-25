@@ -3187,6 +3187,8 @@ Text::CStringNN Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 		return CSTR("PrivateKey");
 	case FileType::PublicKey:
 		return CSTR("PublicKey");
+	case FileType::EPrivateKey:
+		return CSTR("EPrivateKey");
 	case FileType::PKCS7:
 		return CSTR("PKCS7");
 	case FileType::PKCS12:

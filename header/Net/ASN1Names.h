@@ -83,6 +83,7 @@ namespace Net
 		NN<ASN1Names> SetRSAPublicKey(); //PKCS-1
 		NN<ASN1Names> SetRSAPrivateKey(); //PKCS-1
 		NN<ASN1Names> SetPKCS7ContentInfo(); //PKCS-7
+		NN<ASN1Names> SetEncryptedPrivateKey(); //PKCS-8
 		NN<ASN1Names> SetCertificationRequest(); //PKCS-10
 		NN<ASN1Names> SetCertificationList(); //RFC5280
 		NN<ASN1Names> SetPFX(); //PKCS-12
