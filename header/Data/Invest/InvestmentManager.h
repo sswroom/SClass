@@ -13,11 +13,32 @@ namespace Data
 {
 	namespace Invest
 	{
+		enum class TradeType
+		{
+			ForeignExchange,
+			FixedDeposit,
+			CashToAsset,
+			AssetInterest,
+			AccountInterest
+		};
+
 		struct TradeDetail
 		{
 			Data::Timestamp priceDate;
 			Double cost;
 			Double amount;
+		};
+
+		struct TradeEntry
+		{
+			TradeType type;
+			Data::Timestamp startDate;
+			Data::Timestamp endDate;
+			UOSInt fromIndex;
+			UOSInt toIndex;
+			TradeDetail fromDetail;
+			TradeDetail toDetail;
+			Double refRate;
 		};
 
 		struct Currency
@@ -57,6 +78,7 @@ namespace Data
 			Data::FastMapNN<UInt32, Currency> currMap;
 			Data::ArrayListStringNN accounts;
 			Data::ArrayListNN<Asset> assetList;
+			Data::ArrayListNN<TradeEntry> tradeList;
 
 			NN<Currency> LoadCurrency(UInt32 c);
 			Bool LoadAsset(NN<Asset> ass);

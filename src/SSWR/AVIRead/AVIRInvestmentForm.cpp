@@ -491,6 +491,23 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
+	this->tpTransaction = this->tcMain->AddTabPage(CSTR("Transaction"));
+	this->pnlTransaction = ui->NewPanel(this->tpTransaction);
+	this->pnlTransaction->SetRect(0, 0, 100, 31, false);
+	this->pnlTransaction->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->btnTransactionFX = ui->NewButton(this->pnlTransaction, CSTR("FX"));
+	this->btnTransactionFX->SetRect(4, 4, 75, 23, false);
+	this->lvTransaction = ui->NewListView(this->tpTransaction, UI::ListViewStyle::Table, 6);
+	this->lvTransaction->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvTransaction->SetShowGrid(true);
+	this->lvTransaction->SetFullRowSelect(true);
+	this->lvTransaction->AddColumn(CSTR("Begin Date"), 70);
+	this->lvTransaction->AddColumn(CSTR("End Date"), 70);
+	this->lvTransaction->AddColumn(CSTR("Asset 1"), 120);
+	this->lvTransaction->AddColumn(CSTR("Amount 1"), 50);
+	this->lvTransaction->AddColumn(CSTR("Asset 2"), 120);
+	this->lvTransaction->AddColumn(CSTR("Amount 2"), 50);
+
 	this->tpCurrency = this->tcMain->AddTabPage(CSTR("Currency"));
 	this->lbCurrency = ui->NewListBox(this->tpCurrency, false);
 	this->lbCurrency->SetRect(0, 0, 75, 23, false);

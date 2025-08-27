@@ -15,13 +15,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::WebServer::WebStandardHandler baseHdlr;
 	NN<Net::WebServer::HTTPDirectoryHandler> hdlr;
 	NN<Net::WebServer::NodeModuleHandler> hdlr2;
-	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/SClass/js/aviread"));
+	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/SJSClass/aviread"));
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), true, 0, false));
 	baseHdlr.HandlePath(CSTR("/aviread"), hdlr, true);
 	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/VCClass/Release/SMonitorSvr/node_modules"));
 	NEW_CLASSNN(hdlr2, Net::WebServer::NodeModuleHandler(CSTRP(sbuff, sptr), 0));
 	baseHdlr.HandlePath(CSTR("/js"), hdlr2, true);
-	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/SClass/js/@sswroom/sswr"));
+	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/SJSClass/@sswroom/sswr"));
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), true, 0, false));
 	hdlr2->HandlePath(CSTR("/@sswroom/sswr"), hdlr, true);
 	{

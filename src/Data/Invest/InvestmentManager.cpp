@@ -235,6 +235,7 @@ Data::Invest::InvestmentManager::~InvestmentManager()
 		ass.Delete();
 	}
 	this->assetList.Clear();
+	this->tradeList.MemFreeAll();
 }
 
 Bool Data::Invest::InvestmentManager::IsError() const

@@ -31,6 +31,11 @@ namespace SSWR
 			NN<UI::GUIButton> btnDir;
 			NN<UI::GUITabControl> tcMain;
 
+			NN<UI::GUITabPage> tpTransaction;
+			NN<UI::GUIPanel> pnlTransaction;
+			NN<UI::GUIButton> btnTransactionFX;
+			NN<UI::GUIListView> lvTransaction;
+
 			NN<UI::GUITabPage> tpCurrency;
 			NN<UI::GUITabControl> tcCurrency;
 			NN<UI::GUITabPage> tpCurrencySummary;
