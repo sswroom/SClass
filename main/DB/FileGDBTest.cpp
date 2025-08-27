@@ -968,7 +968,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 		NN<Data::NamedClass<Lamppost>> cls = Lamppost().CreateClass();
 
-		if (fileGDB->QueryTableData(CSTR_NULL, CSTR("LAMPPOST"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (fileGDB->QueryTableData(nullptr, CSTR("LAMPPOST"), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			Double t1;
 			Double t2;
@@ -996,7 +996,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
-			if (csv->QueryTableData(CSTR_NULL, CSTR("Lamppost"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+			if (csv->QueryTableData(nullptr, CSTR("Lamppost"), 0, 0, 0, nullptr, 0).SetTo(r))
 			{
 				clk.Start();
 				{

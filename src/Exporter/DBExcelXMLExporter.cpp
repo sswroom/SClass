@@ -57,5 +57,5 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::
 	}
 
 	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	return DB::DBExporter::GenerateExcelXMLAllTables(db, CSTR_NULL, stm, this->codePage);
+	return DB::DBExporter::GenerateExcelXMLAllTables(db, nullptr, stm, this->codePage);
 }

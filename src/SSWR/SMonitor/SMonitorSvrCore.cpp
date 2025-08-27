@@ -633,7 +633,7 @@ void SSWR::SMonitor::SMonitorSvrCore::NewNotify(NN<const Net::SocketUtil::Addres
 	Net::Email::SMTPClient cli(this->clif, this->ssl, CSTR("webmail.caronline.hk"), 465, Net::Email::SMTPConn::ConnType::SSL, &logWriter, 60);
 	cli.SetPlainAuth(CSTR("alert@caronline.hk"), CSTR("caronlineskypower"));
 
-	msg.SetFrom(CSTR_NULL, smtpFrom);
+	msg.SetFrom(nullptr, smtpFrom);
 	sb.ClearStr();
 	Net::Email::EmailMessage::GenerateMessageID(sb, smtpFrom);
 	msg.SetMessageId(sb.ToCString());
@@ -1329,7 +1329,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 						this->listener->SetRequestLog(this);
 						if (this->notifyPwd)
 						{
-							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnNotifyUDPPacket, this, this->log, CSTR("Not: "), 2, false));
+							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, nullptr, OnNotifyUDPPacket, this, this->log, CSTR("Not: "), 2, false));
 							if (this->notifyUDP->IsError())
 							{
 								writer->WriteLine(CSTR("Error in listening web(notify) port"));
@@ -1385,7 +1385,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 				NN<Crypto::Hash::CRC16> crc;
 				NEW_CLASSNN(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
 				NEW_CLASS(this->dataCRC, Crypto::Hash::HashCalc(crc));
-				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnDataUDPPacket, this, this->log, CSTR("DUDP: "), 4, false));
+				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, nullptr, OnDataUDPPacket, this, this->log, CSTR("DUDP: "), 4, false));
 				if (this->dataUDP->IsError())
 				{
 					DEL_CLASS(this->dataUDP);

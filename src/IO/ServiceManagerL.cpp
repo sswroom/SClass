@@ -82,7 +82,7 @@ Bool IO::ServiceManager::ServiceDelete(Text::CStringNN svcName)
 	{
 		return false;
 	}
-	Text::CString svcFile = CSTR_NULL;
+	Text::CString svcFile = nullptr;
 	Text::CStringNN nnsvcFile;
 	Text::PString lines[2];
 	UOSInt lineCnt;

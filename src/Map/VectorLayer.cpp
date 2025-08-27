@@ -628,8 +628,8 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		colDef->SetColType(this->cols[colIndex].colType);
 		colDef->SetColSize(this->cols[colIndex].colSize);
 		colDef->SetColDP(this->cols[colIndex].colDP);
-		colDef->SetAttr(CSTR_NULL);
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetAttr(Text::CString(nullptr));
+		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetAutoIncNone();
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
@@ -639,8 +639,8 @@ Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 		colDef->SetColSize(this->maxStrLen[colIndex]);
 		colDef->SetColDP(0);
-		colDef->SetAttr(CSTR_NULL);
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetAttr(Text::CString(nullptr));
+		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetAutoIncNone();
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);

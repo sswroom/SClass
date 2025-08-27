@@ -455,7 +455,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 		NN<IO::PackageFile> pkg;
 		if (this->packFile->GetItemPack(index, needRelease).SetTo(pkg))
 		{
-			this->UpdatePackFile(pkg, needRelease, CSTR_NULL);
+			this->UpdatePackFile(pkg, needRelease, nullptr);
 //			this->core->OpenObject(pkg);
 		}
 	}
@@ -869,7 +869,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->readTotal = 0;
 	this->readCurr = 0;
 	this->readLast = 0;
-	this->readCurrFile = CSTR_NULL;
+	this->readCurrFile = nullptr;
 	this->readFileCnt = 0;
 	this->statusFileChg = false;
 	this->statusFile = 0;

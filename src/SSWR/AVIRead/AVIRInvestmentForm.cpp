@@ -5,6 +5,7 @@
 #include "SSWR/AVIRead/AVIRInvestmentAccountForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentAssetForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentForm.h"
+#include "SSWR/AVIRead/AVIRInvestmentFXForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentImportForm.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
@@ -330,6 +331,40 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAccountsClicked(AnyType user
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionFXClicked(AnyType userObj)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr))
+	{
+		AVIRInvestmentFXForm frm(0, me->ui, me->core, mgr);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+		{
+			me->DisplayTransactions(mgr);
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDepositClicked(AnyType userObj)
+{
+
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionAssetClicked(AnyType userObj)
+{
+
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionAInterestClicked(AnyType userObj)
+{
+
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionCInterestClicked(AnyType userObj)
+{
+
+}
+
 void SSWR::AVIRead::AVIRInvestmentForm::UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr)
 {
 	NN<Data::Invest::Currency> curr;
@@ -466,6 +501,11 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> 
 	}
 }
 
+void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::InvestmentManager> mgr)
+{
+
+}
+
 SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -497,6 +537,19 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->pnlTransaction->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnTransactionFX = ui->NewButton(this->pnlTransaction, CSTR("FX"));
 	this->btnTransactionFX->SetRect(4, 4, 75, 23, false);
+	this->btnTransactionFX->HandleButtonClick(OnTransactionFXClicked, this);
+	this->btnTransactionDeposit = ui->NewButton(this->pnlTransaction, CSTR("Deposit"));
+	this->btnTransactionDeposit->SetRect(84, 4, 75, 23, false);
+	this->btnTransactionDeposit->HandleButtonClick(OnTransactionDepositClicked, this);
+	this->btnTransactionAsset = ui->NewButton(this->pnlTransaction, CSTR("Asset"));
+	this->btnTransactionAsset->SetRect(164, 4, 75, 23, false);
+	this->btnTransactionAsset->HandleButtonClick(OnTransactionAssetClicked, this);
+	this->btnTransactionAInterest = ui->NewButton(this->pnlTransaction, CSTR("Asset Interest"));
+	this->btnTransactionAInterest->SetRect(244, 4, 115, 23, false);
+	this->btnTransactionAInterest->HandleButtonClick(OnTransactionAInterestClicked, this);
+	this->btnTransactionCInterest = ui->NewButton(this->pnlTransaction, CSTR("Cash Interest"));
+	this->btnTransactionCInterest->SetRect(364, 4, 115, 23, false);
+	this->btnTransactionCInterest->HandleButtonClick(OnTransactionCInterestClicked, this);
 	this->lvTransaction = ui->NewListView(this->tpTransaction, UI::ListViewStyle::Table, 6);
 	this->lvTransaction->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTransaction->SetShowGrid(true);

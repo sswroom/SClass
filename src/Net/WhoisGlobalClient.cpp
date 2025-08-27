@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/WhoisGlobalClient.h"
 
-Net::WhoisGlobalClient::WhoisGlobalClient(NN<Net::SocketFactory> sockf) : Net::WhoisClient(sockf, 0, CSTR_NULL)
+Net::WhoisGlobalClient::WhoisGlobalClient(NN<Net::SocketFactory> sockf) : Net::WhoisClient(sockf, 0, nullptr)
 {
 }
 
@@ -14,7 +14,7 @@ NN<Net::WhoisRecord> Net::WhoisGlobalClient::RequestIP(UInt32 ip, Data::Duration
 {
 	UInt32 ipCmp = Net::SocketUtil::IPv4ToSortable(ip);
 	Text::CStringNN whoisHost;
-	Text::CString prefix = CSTR_NULL;
+	Text::CString prefix = nullptr;
 	switch (ipCmp >> 24)
 	{
 	case 41:

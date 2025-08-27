@@ -11,14 +11,14 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 	{
 		if (addr->addrType == Net::AddrType::IPv4)
 		{
-			Text::CString time = CSTR_NULL;
-			Text::CString location = CSTR_NULL;
-			Text::CString opt = CSTR_NULL;
-			Text::CString server = CSTR_NULL;
-			Text::CString st = CSTR_NULL;
-			Text::CString usn = CSTR_NULL;
+			Text::CString time = nullptr;
+			Text::CString location = nullptr;
+			Text::CString opt = nullptr;
+			Text::CString server = nullptr;
+			Text::CString st = nullptr;
+			Text::CString usn = nullptr;
 			Text::CStringNN nnusn;
-			Text::CString userAgent = CSTR_NULL;
+			Text::CString userAgent = nullptr;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(&data[0], data.GetSize());
 			Text::PString sarr[2];
@@ -126,7 +126,7 @@ void __stdcall Net::SSDPClient::SSDPDeviceFree(NN<SSDPDevice> dev)
 Net::SSDPClient::SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log)
 {
 	this->userAgent = Text::String::NewOrNull(userAgent);
-	NEW_CLASS(this->udp, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnPacketRecv, this, log, CSTR_NULL, 2, false));
+	NEW_CLASS(this->udp, Net::UDPServer(sockf, 0, 0, nullptr, OnPacketRecv, this, log, nullptr, 2, false));
 	this->udp->SetBroadcast(true);
 }
 

@@ -111,7 +111,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_EDIT_SEARCH:
-		this->OpenSearch(CSTR_NULL);
+		this->OpenSearch(nullptr);
 		break;
 	}
 }

@@ -323,7 +323,7 @@ Net::DHCPServer::DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 s
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(addr, infIP);
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 2, true));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, nullptr, PacketHdlr, this, log, nullptr, 2, true));
 	this->svr->AddMulticastIP(0xffffffff);
 }
 

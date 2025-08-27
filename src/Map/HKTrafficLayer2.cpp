@@ -115,7 +115,7 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<N
 	if(rn2->GetDB().SetTo(db))
 	{
 		NN<DB::DBReader> r;
-		if (db->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (db->QueryTableData(nullptr, CSTR("CENTERLINE"), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			UOSInt shapeCol = INVALID_INDEX;
 			UOSInt idCol = INVALID_INDEX;

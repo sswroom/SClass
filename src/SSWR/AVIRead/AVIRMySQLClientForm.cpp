@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userOb
 	}
 	else
 	{
-		sDatabase = CSTR_NULL;
+		sDatabase = nullptr;
 	}
 	
 	me->cliConnected = false;

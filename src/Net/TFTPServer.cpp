@@ -368,13 +368,13 @@ Net::TFTPServer::TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::Lo
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}
 	this->path = Text::String::New(sb.ToString(), sb.GetLength());
-	NEW_CLASS(this->dataSvr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnDataPacket, this, log, CSTR("TFTP: "), 2, false));
+	NEW_CLASS(this->dataSvr, Net::UDPServer(sockf, 0, 0, nullptr, OnDataPacket, this, log, CSTR("TFTP: "), 2, false));
 	if (this->dataSvr->IsError())
 	{
 		DEL_CLASS(this->dataSvr);
 		this->dataSvr = 0;
 	}
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, OnCommandPacket, this, log, CSTR("TFTP: "), 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, nullptr, OnCommandPacket, this, log, CSTR("TFTP: "), 2, false));
 	if (this->svr->IsError())
 	{
 		DEL_CLASS(this->svr);

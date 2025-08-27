@@ -336,7 +336,7 @@ void Media::RasterImage::ToString(NN<Text::StringBuilderUTF8> sb) const
 	if (this->exif.SetTo(exif))
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		exif->ToString(sb, CSTR_NULL);
+		exif->ToString(sb, nullptr);
 	}
 }
 

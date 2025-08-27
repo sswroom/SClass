@@ -94,7 +94,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	DB::ColDef colDef(CSTR(""));
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	mdb->QueryTableNames(CSTR_NULL, tableNames);
+	mdb->QueryTableNames(nullptr, tableNames);
 	
 	Bool hasSpRef = false;
 	UOSInt i = tableNames.GetCount();
@@ -106,7 +106,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		{
 			if (tableName->leng > 0 && tableName->EqualsICase(UTF8STRC("GDB_SpatialRefs")))
 				hasSpRef = true;
-			if (mdb->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(rdr))
+			if (mdb->QueryTableData(nullptr, tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(rdr))
 			{
 				if (rdr->ColCount() >= 2)
 				{
@@ -149,7 +149,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		if (hasSpRef && this->prjParser.SetTo(prjParser))
 		{
 			NN<DB::DBReader> rdr;
-			if (mdb->QueryTableData(CSTR_NULL, CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0).SetTo(rdr))
+			if (mdb->QueryTableData(nullptr, CSTR("GDB_SpatialRefs"), 0, 0, 0, nullptr, 0).SetTo(rdr))
 			{
 				if (rdr->ColCount() >= 2)
 				{

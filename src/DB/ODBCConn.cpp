@@ -2453,8 +2453,8 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	colDef->SetNotNull(notNull == SQL_NO_NULLS);
 	colDef->SetPK(false);
 	colDef->SetAutoIncNone();
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
+	colDef->SetAttr(Text::CString(nullptr));
 	return true;
 }
 

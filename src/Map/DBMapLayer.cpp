@@ -131,7 +131,7 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<
 		NN<Math::Geometry::Vector2D> vec;
 		if (this->db.SetTo(db) && this->objCondition.SetTo(cond))
 		{
-			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, nullptr, cond).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
@@ -163,7 +163,7 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<
 	{
 		if (this->db.SetTo(db) && this->objCondition.SetTo(cond))
 		{
-			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, nullptr, cond).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
@@ -200,7 +200,7 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOu
 		Int64 id;
 		if (this->mixedData != MixedData::AllData)
 		{
-			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, nullptr, cond).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
@@ -219,7 +219,7 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOu
 		}
 		else
 		{
-			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, nullptr, cond).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
@@ -607,7 +607,7 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 	}
 
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (!db->QueryTableData(schemaName, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		return false;
 	}

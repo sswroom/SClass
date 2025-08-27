@@ -959,7 +959,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					{
 						if (xmlValSt == 0)
 						{
-							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, currPtr), CSTR_NULL));
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, currPtr), nullptr));
 							node->AddAttrib(attr);
 						}
 						else
@@ -1060,7 +1060,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					{
 						if (xmlNameSt)
 						{
-							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), CSTR_NULL));
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), nullptr));
 							node->AddAttrib(attr);
 							xmlNameSt = 0;
 						}
@@ -1131,7 +1131,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					{
 						if (optnode.SetTo(node))
 						{
-							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), CSTR_NULL));
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), nullptr));
 							node->AddAttrib(attr);
 						}
 

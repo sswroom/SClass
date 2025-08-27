@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 	}
 	else
 	{
-		name = CSTR_NULL;
+		name = nullptr;
 	}
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -153,7 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 	}
 	else
 	{
-		name = CSTR_NULL;
+		name = nullptr;
 	}
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, &buff[2], name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)

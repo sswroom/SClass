@@ -1036,7 +1036,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 	UnsafeArray<UTF8Char> fileNameEnd;
 	UnsafeArray<const UInt8> fileCont;
 	NN<Text::String> location;
-	Text::CString msg = CSTR_NULL;
+	Text::CString msg = nullptr;
 	Bool succ = true;
 	req->ParseHTTPForm();
 

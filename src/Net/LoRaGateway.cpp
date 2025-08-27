@@ -70,7 +70,7 @@ Bool Net::LoRaGateway::SendStatData()
 	return this->SendPushData(sb.ToString(), sb.GetLength());
 }
 
-Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, NN<IO::LogTool> log) : udp(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
+Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, NN<IO::LogTool> log) : udp(sockf, 0, 0, nullptr, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
 {
 	this->svrAddr = svrAddr.Ptr()[0];
 	this->svrPort = svrPort;

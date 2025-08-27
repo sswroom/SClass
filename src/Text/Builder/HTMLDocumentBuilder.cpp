@@ -47,7 +47,7 @@ Text::CStringNN Text::Builder::HTMLDocumentBuilder::Build()
 {
 	if (this->headerBuilder)
 	{
-		this->StartBody(CSTR_NULL);
+		this->StartBody(nullptr);
 	}
 	if (this->bodyBuilder)
 	{

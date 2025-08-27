@@ -86,11 +86,11 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, 0, false);
 	if (cfg->GetValue(CSTR("MySQLDB")).SetTo(cfgMySQLDB) && cfg->GetValue(CSTR("MySQLHost")).SetTo(cfgMySQLHost))
 	{
-		this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, CSTR_NULL);
+		this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, nullptr);
 	}
 	else if (cfg->GetValue(CSTR("DBDSN")).SetTo(cfgDSN))
 	{
-		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, 0, this->log, CSTR_NULL);
+		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, 0, this->log, nullptr);
 	}
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -636,7 +636,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 	NN<OrganImageItem> imgItem;
 	if (coverId != 0)
 	{
-		coverName = CSTR_NULL;
+		coverName = nullptr;
 	}
 	else
 	{
@@ -646,7 +646,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 		}
 		if (coverName.SetTo(nncoverName) && nncoverName.leng == 0)
 		{
-			coverName = CSTR_NULL;
+			coverName = nullptr;
 		}
 	}
 
@@ -3261,7 +3261,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 		{
 			NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(nnpobj);
 			Data::ArrayListStringNN tables;
-			db->QueryTableNames(CSTR_NULL, tables);
+			db->QueryTableNames(nullptr, tables);
 			if (tables.GetCount() == 2)
 			{
 				NN<Text::String> t1;
@@ -3270,7 +3270,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 				{
 					NN<DB::DBReader> reader;
 					Bool found = false;
-					if (db->QueryTableData(CSTR_NULL, CSTR("Records"), 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
+					if (db->QueryTableData(nullptr, CSTR("Records"), 0, 0, 0, nullptr, 0).SetTo(reader))
 					{
 						while (reader->ReadNext())
 						{

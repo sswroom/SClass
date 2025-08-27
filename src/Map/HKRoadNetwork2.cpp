@@ -88,7 +88,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	NN<DB::DBReader> r;
-	if (fgdb->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (fgdb->QueryTableData(nullptr, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -186,7 +186,7 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 	UnsafeArray<UTF8Char> sptr;
 	if (this->fgdb.SetTo(fgdb))
 	{
-		if (fgdb->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, 0, 0).SetTo(r))
+		if (fgdb->QueryTableData(nullptr, CSTR("CENTERLINE"), 0, 0, 0, 0, 0).SetTo(r))
 		{
 			UOSInt routeIdCol = INVALID_INDEX;
 			UOSInt travelDirCol = INVALID_INDEX;
@@ -244,7 +244,7 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 
 			if (ret.SetTo(shortestPath))
 			{
-				if (fgdb->QueryTableData(CSTR_NULL, CSTR("INTERSECTION"), 0, 0, 0, 0, 0).SetTo(r))
+				if (fgdb->QueryTableData(nullptr, CSTR("INTERSECTION"), 0, 0, 0, 0, 0).SetTo(r))
 				{
 					UOSInt id1 = INVALID_INDEX;
 					UOSInt id2 = INVALID_INDEX;

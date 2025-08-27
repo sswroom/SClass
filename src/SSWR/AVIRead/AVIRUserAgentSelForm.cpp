@@ -230,7 +230,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 		i++;
 	}
 	this->cboFilterBrowser->SetSelectedIndex(0);
-	this->UpdateUAList(Manage::OSInfo::OT_UNKNOWN, CSTR_NULL, Net::BrowserInfo::BT_UNKNOWN);
+	this->UpdateUAList(Manage::OSInfo::OT_UNKNOWN, nullptr, Net::BrowserInfo::BT_UNKNOWN);
 }
 
 SSWR::AVIRead::AVIRUserAgentSelForm::~AVIRUserAgentSelForm()

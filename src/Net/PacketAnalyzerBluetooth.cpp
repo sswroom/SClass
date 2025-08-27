@@ -1194,7 +1194,7 @@ void Net::PacketAnalyzerBluetooth::AddBDAddr(NN<IO::FileAnalyse::FrameDetailHand
 
 void Net::PacketAnalyzerBluetooth::AddScanType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 scanType)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (scanType)
 	{
 	case 1:
@@ -1206,7 +1206,7 @@ void Net::PacketAnalyzerBluetooth::AddScanType(NN<IO::FileAnalyse::FrameDetailHa
 
 void Net::PacketAnalyzerBluetooth::AddScanFilterPolicy(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 scanType)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (scanType)
 	{
 	case 0:
@@ -1238,7 +1238,7 @@ void Net::PacketAnalyzerBluetooth::AddScanWindow(NN<IO::FileAnalyse::FrameDetail
 
 void Net::PacketAnalyzerBluetooth::AddAddrType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, UInt8 addrType)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (addrType)
 	{
 	case 0:
@@ -1263,7 +1263,7 @@ void Net::PacketAnalyzerBluetooth::AddLESubEvent(NN<IO::FileAnalyse::FrameDetail
 
 void Net::PacketAnalyzerBluetooth::AddAdvEvtType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 evtType)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (evtType)
 	{
 	case 0:
@@ -1305,7 +1305,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 		}
 		if (len == 0)
 		{
-			frame->AddField(frameOfst + i, (UInt32)packetSize - i, CSTR("Unused"), CSTR_NULL);
+			frame->AddField(frameOfst + i, (UInt32)packetSize - i, CSTR("Unused"), nullptr);
 			return;
 		}
 		frame->AddUInt(frameOfst + i, 1, CSTR("Adv Item Len"), len);
@@ -1350,7 +1350,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 		else if (packet[i + 1] == 2 && len == 3)
 		{
 			u16 = ReadUInt16(&packet[i + 2]);
-			vName = CSTR_NULL;
+			vName = nullptr;
 			switch (u16)
 			{
 			case 0xFE24:
@@ -1459,7 +1459,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 				j = 4;
 				while (j < (UInt32)len - 1)
 				{
-					vName = CSTR_NULL;
+					vName = nullptr;
 					switch (packet[i + j])
 					{
 					case 2:
@@ -1602,7 +1602,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 						else if (packet[i + j] == 15 && appLen >= 2)
 						{
 							frame->AddHex8(frameOfst + i + j + 2, CSTR("Flags"), packet[i + j + 2]);
-							vName = CSTR_NULL;
+							vName = nullptr;
 							switch (packet[i + j + 3])
 							{
 							case 1:
@@ -1804,7 +1804,7 @@ void Net::PacketAnalyzerBluetooth::AddLAP(NN<IO::FileAnalyse::FrameDetailHandler
 
 void Net::PacketAnalyzerBluetooth::AddInquiryLen(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 len)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (len)
 	{
 	case 4:
@@ -1816,7 +1816,7 @@ void Net::PacketAnalyzerBluetooth::AddInquiryLen(NN<IO::FileAnalyse::FrameDetail
 
 void Net::PacketAnalyzerBluetooth::AddPageScanMode(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 mode)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (mode)
 	{
 	case 1:
@@ -1931,7 +1931,7 @@ void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(NN<IO::FileAnalyse::FrameDeta
 
 void Net::PacketAnalyzerBluetooth::AddPHYType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, UInt8 phyType)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (phyType)
 	{
 	case 0:
@@ -1946,7 +1946,7 @@ void Net::PacketAnalyzerBluetooth::AddPHYType(NN<IO::FileAnalyse::FrameDetailHan
 
 void Net::PacketAnalyzerBluetooth::AddAdvSID(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 sid)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (sid)
 	{
 	case 0xFF:
@@ -1966,7 +1966,7 @@ void Net::PacketAnalyzerBluetooth::AddTxPower(NN<IO::FileAnalyse::FrameDetailHan
 
 void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 interval)
 {
-	Text::CString vName = CSTR_NULL;
+	Text::CString vName = nullptr;
 	switch (interval)
 	{
 	case 0:
@@ -2198,7 +2198,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 		switch (packet[5])
 		{
 		case 0x01: //Inquiry Complete
-			vName = CSTR_NULL;
+			vName = nullptr;
 			switch (packet[7])
 			{
 			case 0:
@@ -2214,7 +2214,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 		case 0x0E: //Command Complete
 			frame->AddUInt(frameOfst + 7, 1, CSTR("Number of Allowed Command Packets"), packet[7]);
 			AddCmdOpcode(frame, frameOfst + 8, ReadUInt16(&packet[8]));
-			vName = CSTR_NULL;
+			vName = nullptr;
 			switch (packet[10])
 			{
 			case 0:
@@ -2228,7 +2228,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> pack
 			}
 			break;
 		case 0x0F: //Command Status
-			vName = CSTR_NULL;
+			vName = nullptr;
 			switch (packet[7])
 			{
 			case 0:
@@ -2352,7 +2352,7 @@ Text::CString Net::PacketAnalyzerBluetooth::CompanyGetName(UInt16 company)
 			return vendorList[k].vendorName;
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Text::CString Net::PacketAnalyzerBluetooth::CmdGetName(UInt16 cmd)
@@ -2368,7 +2368,7 @@ Text::CString Net::PacketAnalyzerBluetooth::CmdGetName(UInt16 cmd)
 	case 0x200C:
 		return CSTR("LE Set Scan Enable");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 
@@ -2381,7 +2381,7 @@ Text::CString Net::PacketAnalyzerBluetooth::HCIPacketTypeGetName(UInt8 packetTyp
 	case 4:
 		return CSTR("HCI Event");
 	default:
-		return CSTR_NULL;	
+		return nullptr;	
 	}
 }
 
@@ -2398,7 +2398,7 @@ Text::CString Net::PacketAnalyzerBluetooth::HCIEventGetName(UInt8 evt)
 	case 0x3E:
 		return CSTR("LE Meta");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 
@@ -2411,6 +2411,6 @@ Text::CString Net::PacketAnalyzerBluetooth::LESubEventGetName(UInt8 subEvt)
 	case 0x0D:
 		return CSTR("LE Extended Advertising Report");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }

@@ -87,7 +87,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 				NN<Text::String> viewFormat = Text::String::NewEmpty();
 				Map::NetworkLinkLayer::RefreshMode mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 				Int32 interval = 0;
-				NEW_CLASSNN(lyr, Map::NetworkLinkLayer(sourceName, nnparsers, nnbrowser, CSTR_NULL));
+				NEW_CLASSNN(lyr, Map::NetworkLinkLayer(sourceName, nnparsers, nnbrowser, nullptr));
 			
 				while (reader->NextElementName().SetTo(nodeName))
 				{

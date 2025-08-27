@@ -162,7 +162,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 			if (nodeText->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 			{
 				Map::GPSTrack *track;
-				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, CSTR_NULL));
+				NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, nullptr));
 				track->SetTrackName({shortName, (UOSInt)(fileName.v + fileName.leng - shortName)});
 				while (reader.NextElementName().SetTo(nodeText))
 				{

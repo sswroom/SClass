@@ -295,7 +295,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 	}
 	csv->SetNoHeader(true);
 	NN<DB::DBReader> r;
-	if (csv->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (csv->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		while (loader->IsProcessing())
 		{
@@ -316,7 +316,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 				outParam = (UInt32)r->GetInt32(5);
 				sptr = r->GetStr(0, sbuff, sizeof(sbuff)).Or(sbuff);
 				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2)).Or(sbuff2);
-				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, CSTR_NULL, ST_MAXSIZE);
+				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, nullptr, ST_MAXSIZE);
 			}
 			else if (r->ColCount() == 7)
 			{

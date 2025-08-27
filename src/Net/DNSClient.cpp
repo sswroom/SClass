@@ -59,7 +59,7 @@ Net::DNSClient::DNSClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 	this->sockf = sockf;
 	this->serverAddr = serverAddr.Ptr()[0];
 	this->lastID = random.NextInt15();
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, nullptr, PacketHdlr, this, log, nullptr, 1, false));
 }
 
 Net::DNSClient::~DNSClient()
@@ -790,5 +790,5 @@ Text::CString Net::DNSClient::TypeGetID(UInt16 type)
 	case 32769:
 		return CSTR("DLV");
 	}
-	return CSTR_NULL;
+	return nullptr;
 }

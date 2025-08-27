@@ -61,7 +61,7 @@ Bool Exporter::DBCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStri
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	return DB::DBExporter::GenerateCSV(db, CSTR_NULL, Text::String::OrEmpty(name)->ToCString(), 0, CSTR("\"\""), stm, this->codePage);
+	return DB::DBExporter::GenerateCSV(db, nullptr, Text::String::OrEmpty(name)->ToCString(), 0, CSTR("\"\""), stm, this->codePage);
 }
 
 UOSInt Exporter::DBCSVExporter::GetParamCnt()
@@ -74,7 +74,7 @@ Optional<IO::FileExporter::ParamData> Exporter::DBCSVExporter::CreateParam(NN<IO
 	DBParam *param;
 	NEW_CLASS(param, DBParam());
 	param->db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	param->db->QueryTableNames(CSTR_NULL, param->names);
+	param->db->QueryTableNames(nullptr, param->names);
 	param->tableIndex = 0;
 	return (ParamData*)param;
 }

@@ -145,7 +145,7 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::DBReader> r;
-	if (this->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (this->QueryTableData(schemaName, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		DB::TableDef *tab;
 		NN<DB::ColDef> col;
@@ -1030,8 +1030,8 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	colDef->SetNotNull(true);
 	colDef->SetPK(colIndex == this->indexCol);
 	colDef->SetAutoInc(DB::ColDef::AutoIncType::None, 1, 1);
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
+	colDef->SetAttr(Text::CString(nullptr));
 	return true;
 }
 

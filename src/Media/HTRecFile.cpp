@@ -511,7 +511,7 @@ Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, Bool setti
 			return CSTR("rh");
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, Bool setting)
@@ -519,8 +519,8 @@ Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> c
 	colDef->SetNotNull(true);
 	colDef->SetPK(colIndex == 0);
 	colDef->SetAutoIncNone();
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
+	colDef->SetAttr(Text::CString(nullptr));
 	if (setting)
 	{
 		switch (colIndex)
@@ -690,7 +690,7 @@ Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, T
 	DB::TableDef *tab = 0;
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
-		NEW_CLASS(tab, DB::TableDef(CSTR_NULL, tableName));
+		NEW_CLASS(tab, DB::TableDef(nullptr, tableName));
 		j = 2;
 		while (i < j)
 		{
@@ -702,7 +702,7 @@ Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, T
 	}
 	else if (tableName.Equals(UTF8STRC("Records")))
 	{
-		NEW_CLASS(tab, DB::TableDef(CSTR_NULL, tableName));
+		NEW_CLASS(tab, DB::TableDef(nullptr, tableName));
 		j = 4;
 		while (i < j)
 		{

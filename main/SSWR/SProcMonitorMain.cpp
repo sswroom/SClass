@@ -219,7 +219,7 @@ private:
 	}
 
 public:
-	ProcMonitorCore() : sockf(false), udp(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, myLog, CSTR(""), 1, true)
+	ProcMonitorCore() : sockf(false), udp(sockf, 0, 0, nullptr, OnUDPPacket, this, myLog, CSTR(""), 1, true)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Log"));

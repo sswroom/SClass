@@ -48,11 +48,11 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 				if (sqlType == DB::SQLType::SQLite && sb.StartsWith('\"') && sb.EndsWith('\"'))
 				{
 					sb.RemoveChars(1);
-					NEW_CLASS(tab, DB::TableDef(CSTR_NULL, sb.ToCString().Substring(1)));
+					NEW_CLASS(tab, DB::TableDef(nullptr, sb.ToCString().Substring(1)));
 				}
 				else
 				{
-					NEW_CLASS(tab, DB::TableDef(CSTR_NULL, sb.ToCString()));
+					NEW_CLASS(tab, DB::TableDef(nullptr, sb.ToCString()));
 				}
 				sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 				if (sb.Equals(UTF8STRC("(")))

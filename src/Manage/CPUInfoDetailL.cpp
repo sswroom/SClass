@@ -17,7 +17,7 @@
 
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
-	this->cpuModel = CSTR_NULL;
+	this->cpuModel = nullptr;
 
 #if defined(__APPLE__)
 	UTF8Char sbuff[256];

@@ -330,7 +330,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 		NN<Text::String> press = title;
 		NN<Text::String> pubDate = title;
 		NN<Text::String> url = title;
-		Text::CString errMsg = CSTR_NULL;
+		Text::CString errMsg = nullptr;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();

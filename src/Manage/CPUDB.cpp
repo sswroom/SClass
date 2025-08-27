@@ -886,7 +886,7 @@ Text::CString Manage::CPUDB::X86CPUNameToModel(Text::CStringNN x86CPUName)
 			return {cpu->model, cpu->modelLen};
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
@@ -1105,5 +1105,5 @@ Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 			return Text::CString(nncpu->model, nncpu->modelLen);
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }

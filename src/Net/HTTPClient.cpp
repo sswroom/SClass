@@ -180,7 +180,7 @@ Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 			return Text::CStringNN(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff)).LTrim();
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Optional<Text::String> Net::HTTPClient::GetRespHeader(UOSInt index) const
@@ -580,7 +580,7 @@ NN<Net::HTTPClient> Net::HTTPClient::CreateClient(NN<Net::TCPClientFactory> clif
 
 NN<Net::HTTPClient> Net::HTTPClient::CreateConnect(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }
@@ -590,7 +590,7 @@ NN<Net::HTTPClient> Net::HTTPClient::CreateGet(NN<Net::TCPClientFactory> clif, O
 	Data::ArrayListStringNN urlList;
 	while (true)
 	{
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		Net::WebStatus::StatusCode status = cli->GetRespStatus();
 		if (status != Net::WebStatus::SC_MOVED_TEMPORARILY && status != Net::WebStatus::SC_MOVED_PERMANENTLY)

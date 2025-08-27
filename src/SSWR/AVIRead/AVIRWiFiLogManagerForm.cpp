@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 		}
 		else
 		{
-			name = CSTR_NULL;
+			name = nullptr;
 		}
 		SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)

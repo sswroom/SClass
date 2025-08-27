@@ -25,7 +25,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 	mstm.SeekFromBeginning(0);
 	DB::CSVFile csv(mstm, 65001);
 	NN<DB::DBReader> r;
-	if (csv.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		UOSInt colInd[15];
 		UOSInt i = 15;
@@ -169,7 +169,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 		mstm.SeekFromBeginning(0);
 		DB::CSVFile csv(mstm, 65001);
 		NN<DB::DBReader> r;
-		if (csv.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			UOSInt colInd[3];
 			UOSInt i = 3;

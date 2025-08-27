@@ -61,7 +61,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			{
 				if (i == 0)
 				{
-					return CSTR_NULL;
+					return nullptr;
 				}
 				i--;
 				if (this->srchParts[i].sess.SetTo(sess) && IO::Path::IsSearchPattern(this->srcStrs[i].v))
@@ -104,7 +104,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 						{
 							if (i == 0)
 							{
-								return CSTR_NULL;
+								return nullptr;
 							}
 							i--;
 							if (this->srchParts[i].sess.SetTo(sess) && IO::Path::IsSearchPattern(this->srcStrs[i].v))
@@ -128,7 +128,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 					{
 						if (i == 0)
 						{
-							return CSTR_NULL;
+							return nullptr;
 						}
 						i--;
 						if (this->srchParts[i].sess.SetTo(sess) && IO::Path::IsSearchPattern(this->srcStrs[i].v))

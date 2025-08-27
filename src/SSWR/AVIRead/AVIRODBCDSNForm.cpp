@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(AnyType userObj)
 	me->txtPWD->GetText(sb3);
 
 	DB::ODBCConn *conn;
-	NEW_CLASS(conn, DB::ODBCConn(sb.ToCString(), sb2.ToCString(), sb3.ToCString(), CSTR_NULL, me->core->GetLog()));
+	NEW_CLASS(conn, DB::ODBCConn(sb.ToCString(), sb2.ToCString(), sb3.ToCString(), nullptr, me->core->GetLog()));
 	if (conn->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		sb.ClearStr();

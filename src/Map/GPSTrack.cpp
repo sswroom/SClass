@@ -288,33 +288,33 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		colDef->SetColSize(256);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		colDef->SetAutoIncNone();
-		colDef->SetAttr(CSTR_NULL);
+		colDef->SetAttr(Text::CString(nullptr));
 		return true;
 	case 1:
 		colDef->SetColName(CSTR("Start Time"));
 		colDef->SetColSize(3);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		colDef->SetAutoIncNone();
-		colDef->SetAttr(CSTR_NULL);
+		colDef->SetAttr(Text::CString(nullptr));
 		return true;
 	case 2:
 		colDef->SetColName(CSTR("End Time"));
 		colDef->SetColSize(3);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		colDef->SetAutoIncNone();
-		colDef->SetAttr(CSTR_NULL);
+		colDef->SetAttr(Text::CString(nullptr));
 		return true;
 	default:
 		return false;
@@ -1535,10 +1535,10 @@ Text::CString Map::GPSDataReader::GetName(UOSInt colIndex, Bool hasAltitude)
 		}
 		else
 		{
-			return CSTR_NULL;
+			return nullptr;
 		}
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 
@@ -1547,8 +1547,8 @@ Bool Map::GPSDataReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, Bool
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
 	colDef->SetAutoIncNone();
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
+	colDef->SetAttr(Text::CString(nullptr));
 	switch (colIndex)
 	{
 	case 0:

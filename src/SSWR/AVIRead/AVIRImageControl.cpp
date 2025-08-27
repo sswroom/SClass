@@ -530,7 +530,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUI
 
 SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 {
-	SetFolder(CSTR_NULL);
+	SetFolder(nullptr);
 	this->threadCtrlCode = 2;
 	this->folderThreadEvt.Set();
 	while (this->threadState != 0)
@@ -825,7 +825,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 					}
 					else
 					{
-						this->dispHdlr(this->dispHdlrObj, CSTR_NULL, 0);
+						this->dispHdlr(this->dispHdlrObj, nullptr, 0);
 					}
 				}
 			}
@@ -1199,7 +1199,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 		this->dispImg = 0;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, CSTR_NULL, 0);
+			this->dispHdlr(this->dispHdlrObj, nullptr, 0);
 		}
 	}
 	else
@@ -1261,7 +1261,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 		this->dispImg = 0;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, CSTR_NULL, 0);
+			this->dispHdlr(this->dispHdlrObj, nullptr, 0);
 		}
 	}
 	else

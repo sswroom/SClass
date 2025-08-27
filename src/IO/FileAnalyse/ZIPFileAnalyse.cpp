@@ -28,7 +28,7 @@ Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetTagName(UInt32 tagType)
 	case 0x504B0708:
 		return CSTR("Data Descriptor");
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetCompName(UInt16 comp)
@@ -92,7 +92,7 @@ Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetCompName(UInt16 comp)
 	case 99:
 		return CSTR("AE-x encryption marker");
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst)

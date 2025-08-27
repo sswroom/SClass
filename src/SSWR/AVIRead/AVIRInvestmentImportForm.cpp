@@ -41,7 +41,7 @@ void SSWR::AVIRead::AVIRInvestmentImportForm::LoadFile(Text::CStringNN fileName)
 		NN<DB::CSVFile> db;
 		NEW_CLASSNN(db, DB::CSVFile(fileName, 0));
 		NN<DB::DBReader> r;
-		if (db->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, nullptr).SetTo(r))
+		if (db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;

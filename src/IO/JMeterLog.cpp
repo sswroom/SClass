@@ -62,7 +62,7 @@ IO::JMeterLog::JMeterLog(Text::CStringNN fileName)
 	NN<DB::DBReader> r;
 	this->minTime = 0;
 	this->maxTime = 0;
-	if (csv.QueryTableData(CSTR_NULL, CSTR("csv"), 0, 0, 0, 0, 0).SetTo(r))
+	if (csv.QueryTableData(nullptr, CSTR("csv"), 0, 0, 0, 0, 0).SetTo(r))
 	{
 		Bool succ = true;
 		DB::ColDef colDef(CSTR(""));

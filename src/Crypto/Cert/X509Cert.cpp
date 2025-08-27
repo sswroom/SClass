@@ -234,7 +234,7 @@ void Crypto::Cert::X509Cert::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsCertificate(this->buff.Arr(), this->buff.ArrEnd(), "1"))
 	{
-		AppendCertificate(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, CSTR_NULL);
+		AppendCertificate(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, nullptr);
 	}
 }
 

@@ -53,7 +53,7 @@ Net::TFTPClient::TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUt
 	this->replyRecv = false;
 	this->nextId = 0;
 	NN<Net::UDPServer> svr;
-	NEW_CLASSNN(svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnDataPacket, this, log, CSTR_NULL, 2, false));
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, 0, 0, nullptr, OnDataPacket, this, log, nullptr, 2, false));
 	if (svr->IsError())
 	{
 		svr.Delete();

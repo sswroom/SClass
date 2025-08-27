@@ -378,7 +378,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(NN<Data::ArrayListStringNN> codePh
 		if (codePhases->GetCount() <= cpIndex || !codePhases->GetItem(cpIndex).SetTo(phase1) || !phase1->Equals(UTF8STRC("(")))
 		{
 			Text::StringBuilderUTF8 sb;
-			status->GetDefineVal(phase->ToCString(), CSTR_NULL, sb);
+			status->GetDefineVal(phase->ToCString(), nullptr, sb);
 			phase->Release();
 			this->ParseSharpIfParam(sb.ToCString(), status, errMsgs, codePhases, cpIndex);
 			return this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, outVal, priority);
@@ -1872,7 +1872,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 								{
 									if (paramPtr == 0)
 									{
-										if (status->AddDef(CSTRP(nnwordStart, tmpPtr - 1), CSTR_NULL, CSTR_NULL, fileStatus->lineNum))
+										if (status->AddDef(CSTRP(nnwordStart, tmpPtr - 1), nullptr, nullptr, fileStatus->lineNum))
 										{
 											fileStatus->modeStatus = 1;
 										}
@@ -1886,7 +1886,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 									}
 									else
 									{
-										if (status->AddDef(CSTRP(nnwordStart, wordEnd.Ptr()), CSTRP(paramPtr.Ptr(), tmpPtr - 1), CSTR_NULL, fileStatus->lineNum))
+										if (status->AddDef(CSTRP(nnwordStart, wordEnd.Ptr()), CSTRP(paramPtr.Ptr(), tmpPtr - 1), nullptr, fileStatus->lineNum))
 										{
 											fileStatus->modeStatus = 1;
 										}

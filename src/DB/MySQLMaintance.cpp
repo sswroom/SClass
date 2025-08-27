@@ -25,7 +25,7 @@ void DB::MySQLMaintance::RepairSchema(UnsafeArray<const UTF8Char> schema, NN<Tex
 		sb->AppendC(UTF8STRC("\r\n"));
 		return;
 	}
-	this->cli->QueryTableNames(CSTR_NULL, tableNames);
+	this->cli->QueryTableNames(nullptr, tableNames);
 	Text::StringBuilderUTF8 sbDbg;
 	UOSInt i = 0;
 	UOSInt j = tableNames.GetCount();

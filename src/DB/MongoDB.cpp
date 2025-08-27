@@ -102,8 +102,8 @@ Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::
 	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetColSize(65536);
 	colDef->SetColDP(0);
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
+	colDef->SetAttr(Text::CString(nullptr));
 	colDef->SetAutoIncNone();
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
@@ -379,8 +379,8 @@ Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 	colDef->SetColSize(65536);
 	colDef->SetColDP(0);
-	colDef->SetDefVal(CSTR_NULL);
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
+	colDef->SetAttr(Text::CString(nullptr));
 	colDef->SetAutoIncNone();
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);

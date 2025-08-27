@@ -61,7 +61,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	return DB::DBExporter::GenerateHTML(db, CSTR_NULL, Text::String::OrEmpty(name)->ToCString(), 0, stm, this->codePage);
+	return DB::DBExporter::GenerateHTML(db, nullptr, Text::String::OrEmpty(name)->ToCString(), 0, stm, this->codePage);
 }
 
 UOSInt Exporter::DBHTMLExporter::GetParamCnt()
@@ -74,7 +74,7 @@ Optional<IO::FileExporter::ParamData> Exporter::DBHTMLExporter::CreateParam(NN<I
 	DBParam *param;
 	NEW_CLASS(param, DBParam());
 	param->db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	param->db->QueryTableNames(CSTR_NULL, param->names);
+	param->db->QueryTableNames(nullptr, param->names);
 	param->tableIndex = 0;
 	return (ParamData*)param;
 }

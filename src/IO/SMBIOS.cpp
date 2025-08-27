@@ -353,7 +353,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 		k = 32;
 		while (k-- > 0)
 		{
-			carr[k] = CSTR_NULL;
+			carr[k] = nullptr;
 		}
 		dataBuff = &buff[i];
 		l = dataBuff[1];

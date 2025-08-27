@@ -754,7 +754,7 @@ void Crypto::Cert::X509File::AppendCertificateRequest(UnsafeArray<const UInt8> p
 	Char sbuff[256];
 	Text::StrConcat(Text::StrConcat(sbuff, path), ".1");
 	AppendCertificateRequestInfo(pdu, pduEnd, sbuff, sb);
-	AppendSigned(pdu, pduEnd, path, sb, CSTR_NULL);
+	AppendSigned(pdu, pduEnd, path, sb, nullptr);
 }
 
 Bool Crypto::Cert::X509File::IsPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path)

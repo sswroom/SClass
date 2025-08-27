@@ -180,7 +180,7 @@ Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const
 	else
 	{
 		Text::MIMEObj::MultipartMIMEObj *mpart;
-		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/related"), CSTR_NULL));
+		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/related"), nullptr));
 		NEW_CLASSNN(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
 		i = mpart->AddPart(obj);
 		Text::CStringNN contType = obj->GetContentType();

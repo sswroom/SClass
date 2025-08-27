@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 		if (useWS)
 		{
 			NN<Net::WebSocketClient> ws;
-			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));
+			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
 			if (ws->IsDown())
 			{
 				ws.Delete();
@@ -97,8 +97,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 		me->client = client;
 		client->HandlePublishMessage(OnPublishMessage, me);
 
-		Text::CString username = CSTR_NULL;
-		Text::CString password = CSTR_NULL;
+		Text::CString username = nullptr;
+		Text::CString password = nullptr;
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
@@ -484,7 +484,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 				{
 					UOSInt recvCnt = currTopic->recvCnt;
 					Data::ChartPlotter *chart;
-					NEW_CLASS(chart, Data::ChartPlotter(CSTR_NULL));
+					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					;
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, recvCnt), Data::ChartPlotter::NewData(currTopic->dateList, recvCnt), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
@@ -509,7 +509,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 					}
 					
 					Data::ChartPlotter *chart;
-					NEW_CLASS(chart, Data::ChartPlotter(CSTR_NULL));
+					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, 256), Data::ChartPlotter::NewData(currTopic->dateList, 256), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 					DEL_CLASS(chart);

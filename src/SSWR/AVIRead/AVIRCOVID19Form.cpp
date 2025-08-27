@@ -142,7 +142,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 	{
 		DB::CSVFile csv(stm, 65001);
 		NN<DB::DBReader> r;
-		if (!csv.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (!csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			return false;
 		}

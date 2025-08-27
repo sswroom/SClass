@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 		}
 	}
 	NN<DB::DBReader> reader;
-	if (!nndb->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
+	if (!nndb->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(reader))
 	{
 		me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
 		nndb.Delete();
@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sarr;
 	sarr = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, colCnt + 2);
 	i = 0;
-	if (!nndb->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
+	if (!nndb->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(reader))
 	{
 		MemFreeArr(sarr);
 		nndb.Delete();

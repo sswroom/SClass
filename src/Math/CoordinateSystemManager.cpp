@@ -859,5 +859,5 @@ Text::CString Math::CoordinateSystemManager::ProjCoordSysTypeGetName(ProjCoordSy
 	case PCST_TWD97:
 		return CSTR("Taiwan 1997 Grid");
 	}
-	return CSTR_NULL;
+	return nullptr;
 }

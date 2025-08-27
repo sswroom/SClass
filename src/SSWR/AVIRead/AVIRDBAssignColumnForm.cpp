@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 		i++;
 	}
 
-	if (this->dataFile->QueryTableData(this->schema, this->table, 0, 0, 1, CSTR_NULL, 0).SetTo(r))
+	if (this->dataFile->QueryTableData(this->schema, this->table, 0, 0, 1, nullptr, 0).SetTo(r))
 	{
 		k = 0;
 		l = r->ColCount();

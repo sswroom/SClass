@@ -288,7 +288,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			}
 			NEW_CLASSNN(db, DB::WorkbookDB(wb));
 			NEW_CLASS(layer, Map::DBMapLayer(wb->GetSourceNameObj()));
-			if (layer->SetDatabase(db, CSTR_NULL, sheet->GetName()->ToCString(), true))
+			if (layer->SetDatabase(db, nullptr, sheet->GetName()->ToCString(), true))
 			{
 				return layer;
 			}

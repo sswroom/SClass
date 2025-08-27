@@ -90,7 +90,7 @@ void UI::GTK::GTKButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nam
 	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd.OrNull());
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-	builder.NewStyle(CSTR("label"), CSTR_NULL);
+	builder.NewStyle(CSTR("label"), nullptr);
 	UnsafeArray<const UTF8Char> nnname;
 	if (name.SetTo(nnname)) builder.AddFontFamily(nnname);
 	if (fontHeightPt != 0) builder.AddFontSize(fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);

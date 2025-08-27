@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientCont
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASSNN(this->mgr, Net::SNS::SNSManager(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), userAgent, CSTR_NULL, this->core->GetLog()));
+	NEW_CLASSNN(this->mgr, Net::SNS::SNSManager(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), userAgent, nullptr, this->core->GetLog()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlChannel = ui->NewPanel(*this);

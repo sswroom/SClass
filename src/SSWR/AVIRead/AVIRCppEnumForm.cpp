@@ -111,7 +111,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 					destSb.AppendC(UTF8STRC("\");\r\n"));
 				}
 				destSb.AppendC(UTF8STRC("\tdefault:\r\n"));
-				destSb.AppendC(UTF8STRC("\t\treturn CSTR_NULL;\r\n"));
+				destSb.AppendC(UTF8STRC("\t\treturn nullptr;\r\n"));
 				destSb.AppendC(UTF8STRC("\t}\r\n"));
 				destSb.AppendC(UTF8STRC("}\r\n"));
 			}

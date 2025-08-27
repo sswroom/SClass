@@ -858,7 +858,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EXEFileAnalyse::GetFrame
 		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddField(0, 4, CSTR("Magic number"), CSTR("PE\\0\\0"));
-		vName = CSTR_NULL;
+		vName = nullptr;
 		switch (ReadUInt16(&packBuff[4]))
 		{
 		case 0x0:
@@ -1002,7 +1002,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EXEFileAnalyse::GetFrame
 		frame->AddUInt(56, 4, CSTR("SizeOfImage"), ReadUInt32(&packBuff[56]));
 		frame->AddUInt(60, 4, CSTR("SizeOfHeaders"), ReadUInt32(&packBuff[60]));
 		frame->AddHex32(64, CSTR("CheckSum"), ReadUInt32(&packBuff[64]));
-		vName = CSTR_NULL;
+		vName = nullptr;
 		switch (ReadUInt16(&packBuff[68]))
 		{
 		case 0:

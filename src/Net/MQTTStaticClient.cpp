@@ -55,7 +55,7 @@ void Net::MQTTStaticClient::Connect()
 	if (this->webSocket)
 	{
 		NN<Net::WebSocketClient> ws;
-		NEW_CLASSNN(ws, Net::WebSocketClient(this->clif, this->ssl, host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
+		NEW_CLASSNN(ws, Net::WebSocketClient(this->clif, this->ssl, host->ToCString(), this->port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
 		if (ws->IsDown())
 		{
 			ws.Delete();

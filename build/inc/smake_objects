@@ -1928,6 +1928,7 @@ AVIRImageViewerForm.o: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
 AVIRInvestmentAccountForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAccountForm.cpp
 AVIRInvestmentAssetForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAssetForm.cpp
 AVIRInvestmentForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentForm.cpp
+AVIRInvestmentFXForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentFXForm.cpp
 AVIRInvestmentImportForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentImportForm.cpp
 AVIRIOPinTestForm.o: ../../src/SSWR/AVIRead/AVIRIOPinTestForm.cpp
 AVIRIPScanDetectorForm.o: ../../src/SSWR/AVIRead/AVIRIPScanDetectorForm.cpp

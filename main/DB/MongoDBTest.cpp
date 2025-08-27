@@ -47,7 +47,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	console->WriteLine();
 	console->WriteLine(CSTR("Table List:"));
-	mongoDB->QueryTableNames(CSTR_NULL, tableList);
+	mongoDB->QueryTableNames(nullptr, tableList);
 	it = tableList.Iterator();
 	while (it.HasNext())
 	{

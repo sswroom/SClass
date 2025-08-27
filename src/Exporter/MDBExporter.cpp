@@ -76,15 +76,15 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	DB::SQLBuilder sql(mdb);
 	Text::StringBuilderUTF8 sb;
 	srcDB = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	srcDB->QueryTableNames(CSTR_NULL, tables);
+	srcDB->QueryTableNames(nullptr, tables);
 	Data::ArrayIterator<NN<Text::String>> it = tables.Iterator();
 	NN<Text::String> tabName;
 	while (it.HasNext())
 	{
 		tabName = it.Next();
-		if (srcDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (srcDB->QueryTableData(nullptr, tabName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
-			DB::TableDef tabDef(CSTR_NULL, tabName->ToCString());
+			DB::TableDef tabDef(nullptr, tabName->ToCString());
 			k = 0;
 			l = r->ColCount();
 			while (k < l)
@@ -95,7 +95,7 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				k++;
 			}
 			sql.Clear();
-			DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tabName->ToCString(), tabDef, false);
+			DB::SQLGenerator::GenCreateTableCmd(sql, nullptr, tabName->ToCString(), tabDef, false);
 			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 /*				IO::FileStream *debugFS;
@@ -112,7 +112,7 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			while (r->ReadNext())
 			{
 				sql.Clear();
-				DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tabName->ToCString(), r);
+				DB::SQLGenerator::GenInsertCmd(sql, nullptr, tabName->ToCString(), r);
 				if (mdb->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();

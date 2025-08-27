@@ -585,7 +585,7 @@ Text::CString UI::GUIHexFileView::GetAnalyzerName()
 	{
 		return analyse->GetFormatName();
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Bool UI::GUIHexFileView::GetFrameName(NN<Text::StringBuilderUTF8> sb)

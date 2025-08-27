@@ -64,7 +64,7 @@ void Crypto::Cert::X509PKCS12::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsPFX(this->buff.Arr(), this->buff.ArrEnd(), "1"))
 	{
-		AppendPFX(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, CSTR_NULL);
+		AppendPFX(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, nullptr);
 	}
 }
 

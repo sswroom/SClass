@@ -72,7 +72,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 		NN<DB::DBReader> r;
 		Data::ArrayListStringNN layers;
 		NN<Text::String> layerName;
-		if (fgdb->QueryTableData(CSTR_NULL, CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (fgdb->QueryTableData(nullptr, CSTR("GDB_Items"), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			while (r->ReadNext())
 			{

@@ -12,8 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(AnyType user
 	Text::StringBuilderUTF8 sbHost;
 	NN<Text::String> topic;
 	NN<Text::String> message;
-	Text::CString username = CSTR_NULL;
-	Text::CString password = CSTR_NULL;
+	Text::CString username = nullptr;
+	Text::CString password = nullptr;
 	UInt16 port;
 	me->txtHost->GetText(sbHost);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToCString(), addr))

@@ -181,7 +181,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 
 Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	Text::CString msg = CSTR_NULL;
+	Text::CString msg = nullptr;
 	UTF8Char fileName[512];
 	UTF8Char *fileNameEnd;
 	UTF8Char path[512];

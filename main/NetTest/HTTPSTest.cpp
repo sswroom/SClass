@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::OSSocketFactory sockf(false);
 	Net::TCPClientFactory clif(sockf);
 	ssl = Net::SSLEngineFactory::Create(clif, true);
-	cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, true, url.StartsWith(UTF8STRC("https://")));
 	printf("Connecting to %s\r\n", url.v.Ptr());
 	cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	while ((readSize = cli->Read(BYTEARR(buff))) > 0)

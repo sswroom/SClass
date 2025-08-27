@@ -44,7 +44,7 @@ IO::SystemInfo::SystemInfo()
 					{
 						u8arr2[0].RemoveChars(1);
 						u8arr2[1].RemoveChars(1);
-						cfg->SetValue(CSTR_NULL, u8arr2[0].ToCString().Substring(1), u8arr2[1].ToCString().Substring(1));
+						cfg->SetValue(nullptr, u8arr2[0].ToCString().Substring(1), u8arr2[1].ToCString().Substring(1));
 					}
 				}
 			}

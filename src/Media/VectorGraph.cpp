@@ -492,7 +492,7 @@ Bool Media::VectorGraph::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, 0);
-	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, tl.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, tl.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
 	style->pen = 0;
 	style->brush = 0;
@@ -510,7 +510,7 @@ Bool Media::VectorGraph::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DD
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	Media::SharedImage simg(imgList, 0);
-	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, tl.y + UOSInt2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, CSTR_NULL, 0, 0));
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, tl.y + UOSInt2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
 	style->pen = 0;
 	style->brush = 0;
@@ -531,7 +531,7 @@ Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, 0);
-	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, Math::Coord2DDbl(destTL.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, destTL.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
+	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, Math::Coord2DDbl(destTL.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, destTL.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
 	style->pen = 0;
 	style->brush = 0;

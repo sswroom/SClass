@@ -130,7 +130,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, UnsafeArray<
 
 IO::Device::SIM7000::SIM7000(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
-	this->dnsReq = CSTR_NULL;
+	this->dnsReq = nullptr;
 	this->dnsResp = 0;
 	this->nextReceive = false;
 	this->recvHdlr = 0;
@@ -444,7 +444,7 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CStringNN domain, NN<Net::Socket
 	Bool ret;
 	mutUsage.BeginUse();
 	ret = this->dnsResult;
-	this->dnsReq = CSTR_NULL;
+	this->dnsReq = nullptr;
 	this->dnsResp = 0;
 	mutUsage.EndUse();
 	return ret;

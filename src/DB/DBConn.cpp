@@ -55,7 +55,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		if (r->ReadNext())
 		{
 			ptr = r->GetStr(0, buff, sizeof(buff)).Or(buff);
-			NEW_CLASS(tab, DB::TableDef(CSTR_NULL, CSTRP(buff, ptr)));
+			NEW_CLASS(tab, DB::TableDef(nullptr, CSTRP(buff, ptr)));
 			if (r->GetStr(1, buff, sizeof(buff)).SetTo(ptr))
 			{
 				tab->SetEngine(CSTRP(buff, ptr));
@@ -77,7 +77,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				tab->SetAttr(0);
 			}
 			tab->SetSQLType(DB::SQLType::MySQL);
-			tab->SetCharset(CSTR_NULL);
+			tab->SetCharset(nullptr);
 			this->CloseReader(r);
 		}
 		else
@@ -104,14 +104,14 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				}
 				else
 				{
-					col->SetDefVal(CSTR_NULL);
+					col->SetDefVal(Text::CString(nullptr));
 				}
 				if (r->GetStr(5, buff, sizeof(buff)).SetTo(ptr))
 				{
 					if (Text::StrEqualsC(buff, (UOSInt)(ptr - buff), UTF8STRC("auto_increment")))
 					{
 						col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
-						col->SetAttr(CSTR_NULL);
+						col->SetAttr(Text::CString(nullptr));
 					}
 					else
 					{
@@ -120,7 +120,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				}
 				else
 				{
-					col->SetAttr(CSTR_NULL);
+					col->SetAttr(Text::CString(nullptr));
 				}
 				ptr = r->GetStr(1, buff, sizeof(buff)).Or(buff);
 				UOSInt colSize = 0;
@@ -138,7 +138,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 					NN<Text::String> defVal;
 					if (col->GetDefVal().SetTo(defVal) && defVal->StartsWith(UTF8STRC("0000-00-00 00:00:00")))
 					{
-						col->SetDefVal(CSTR_NULL);
+						col->SetDefVal(Text::CString(nullptr));
 					}
 				}
 				tab->AddCol(col);
@@ -172,10 +172,10 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 
 		DB::TableDef *tab;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-		tab->SetEngine(CSTR_NULL);
+		tab->SetEngine(nullptr);
 		tab->SetComments(0);
 		tab->SetAttr(0);
-		tab->SetCharset(CSTR_NULL);
+		tab->SetCharset(nullptr);
 		tab->SetSQLType(DB::SQLType::MSSQL);
 
 		NN<DB::ColDef> col;

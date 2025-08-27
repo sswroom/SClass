@@ -11,7 +11,6 @@ namespace
 #endif
 
 #define CSTR(str) Text::CStringNN(UTF8STRC(str))
-#define CSTR_NULL Text::CString(0, 0)
 #if defined(DEBUGNULL)
 #define CSTRP(str, strEnd) Text::CString::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
@@ -58,7 +57,7 @@ namespace Text
 			if (strEnd == 0)
 			{
 				printf("CSTRP found null at %s (%d)\r\n", fileName, lineNum);
-				return CSTR_NULL;
+				return nullptr;
 			}
 			return CString(str, (UOSInt)(strEnd - str));
 		}

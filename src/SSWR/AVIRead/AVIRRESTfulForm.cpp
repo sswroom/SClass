@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 		NEW_CLASSNN(dbModel, DB::DBModel());
 		this->db = db;
 		this->dbModel = dbModel;
-		dbModel->LoadDatabase(db, CSTR_NULL, CSTR_NULL);
+		dbModel->LoadDatabase(db, nullptr, nullptr);
 		NEW_CLASSOPT(this->dbCache, DB::DBCache(dbModel, db));
 		this->txtDatabase->SetText(sb.ToCString());
 	}

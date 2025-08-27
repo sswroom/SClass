@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(AnyType userObj
 			return;
 		}
 		NN<Net::UDPServer> svr;
-		NEW_CLASSNN(svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
+		NEW_CLASSNN(svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, nullptr, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
 		if (svr->IsError())
 		{
 			svr.Delete();

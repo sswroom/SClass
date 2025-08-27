@@ -205,8 +205,8 @@ void Net::WebServer::WebServerRequest::ParseFormPart(UInt8 *data, UOSInt dataSiz
 	UOSInt j;
 	UOSInt lineStart;
 	Int32 contType = 0;
-	Text::CString formName = CSTR_NULL;
-	Text::CString fileName = CSTR_NULL;
+	Text::CString formName = nullptr;
+	Text::CString fileName = nullptr;
 	i = 0;
 	lineStart = 0;
 	while (i < dataSize)

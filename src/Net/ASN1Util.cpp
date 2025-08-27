@@ -282,7 +282,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 		Text::CStringNN nnname;
 		NN<ASN1Names> nnnames;
 		if (!names.SetTo(nnnames))
-			name = CSTR_NULL;
+			name = nullptr;
 		else
 			name = nnnames->ReadNameNoDef((Net::ASN1Util::ItemType)type, len, &pdu[ofst]);
 		switch (type)

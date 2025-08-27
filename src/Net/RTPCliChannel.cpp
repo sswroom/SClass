@@ -344,7 +344,7 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 	{
 		port = (UInt16)(port + 1);
 	}
-	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this->chData, log, CSTR_NULL, this->chData->threadCnt, false));
+	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->chData->rtpUDP->GetPort();
@@ -352,11 +352,11 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 		{
 			port = (UInt16)(port + 1);
 			DEL_CLASS(this->chData->rtpUDP);
-			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this->chData, log, CSTR_NULL, this->chData->threadCnt, false));
+			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
 		}
 	}
 	this->chData->rtpUDP->SetBuffSize(1048576);
-	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, 0, (UInt16)(port + 1), CSTR_NULL, PacketCtrlHdlr, this->chData, log, CSTR_NULL, 1, false));
+	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, 0, (UInt16)(port + 1), nullptr, PacketCtrlHdlr, this->chData, log, nullptr, 1, false));
 }
 
 Net::RTPCliChannel::RTPCliChannel(Net::RTPCliChannel *ch)

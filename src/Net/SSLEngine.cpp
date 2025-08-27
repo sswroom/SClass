@@ -232,7 +232,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 
 Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile)
 {
-	return ServerSetCerts(certFile, keyFile, CSTR_NULL);
+	return ServerSetCerts(certFile, keyFile, nullptr);
 }
 
 void Net::SSLEngine::ServerInit(NN<Socket> s, ClientReadyHandler readyHdlr, AnyType userObj)

@@ -110,7 +110,7 @@ void __stdcall Net::NTPServer::CheckThread(NN<Sync::Thread> thread)
 void Net::NTPServer::InitServer(NN<Net::SocketFactory> sockf, UInt16 port)
 {
 	Net::UDPServer *svr;
-	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, this->log, CSTR_NULL, 2, false));
+	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, this->log, nullptr, 2, false));
 	if (svr->IsError())
 	{
 		DEL_CLASS(svr);

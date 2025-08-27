@@ -32,7 +32,7 @@ UI::GTK::GTKProgressBar::GTKProgressBar(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	gtk_progress_bar_set_show_text((GtkProgressBar*)this->hwnd.OrNull(), false);
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-	builder.NewStyle(CSTR("progress, trough"), CSTR_NULL);
+	builder.NewStyle(CSTR("progress, trough"), nullptr);
 	builder.AddMinHeight(24, Math::Unit::Distance::DU_PIXEL);
 	GtkWidget *widget = (GtkWidget*)this->hwnd.OrNull();
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);

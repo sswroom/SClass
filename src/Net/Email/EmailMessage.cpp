@@ -468,7 +468,7 @@ Bool Net::Email::EmailMessage::AddToList(Text::CStringNN addrs)
 		}
 		else
 		{
-			succ = succ && this->AddTo(CSTR_NULL, sarr[0].ToCString());
+			succ = succ && this->AddTo(nullptr, sarr[0].ToCString());
 		}
 		if (i == 1)
 			break;
@@ -527,7 +527,7 @@ Bool Net::Email::EmailMessage::AddCcList(Text::CStringNN addrs)
 		}
 		else
 		{
-			succ = succ && this->AddCc(CSTR_NULL, sarr[0].ToCString());
+			succ = succ && this->AddCc(nullptr, sarr[0].ToCString());
 		}
 		if (i == 1)
 			break;
@@ -537,7 +537,7 @@ Bool Net::Email::EmailMessage::AddCcList(Text::CStringNN addrs)
 
 Bool Net::Email::EmailMessage::AddBcc(Text::CStringNN addr)
 {
-	this->recpList.Add(EmailAddressCreate(RecipientType::Bcc, CSTR_NULL, addr));
+	this->recpList.Add(EmailAddressCreate(RecipientType::Bcc, nullptr, addr));
 	return true;
 }
 

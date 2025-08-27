@@ -34,6 +34,10 @@ namespace SSWR
 			NN<UI::GUITabPage> tpTransaction;
 			NN<UI::GUIPanel> pnlTransaction;
 			NN<UI::GUIButton> btnTransactionFX;
+			NN<UI::GUIButton> btnTransactionDeposit;
+			NN<UI::GUIButton> btnTransactionAsset;
+			NN<UI::GUIButton> btnTransactionAInterest;
+			NN<UI::GUIButton> btnTransactionCInterest;
 			NN<UI::GUIListView> lvTransaction;
 
 			NN<UI::GUITabPage> tpCurrency;
@@ -106,12 +110,18 @@ namespace SSWR
 			static void __stdcall OnAssetsHistUpdateClicked(AnyType userObj);
 			static void __stdcall OnAssetsHistSelChg(AnyType userObj);
 			static void __stdcall OnAccountsClicked(AnyType userObj);
+			static void __stdcall OnTransactionFXClicked(AnyType userObj);
+			static void __stdcall OnTransactionDepositClicked(AnyType userObj);
+			static void __stdcall OnTransactionAssetClicked(AnyType userObj);
+			static void __stdcall OnTransactionAInterestClicked(AnyType userObj);
+			static void __stdcall OnTransactionCInterestClicked(AnyType userObj);
 		
 			void UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr);
 			void DisplayCurrency(NN<Data::Invest::Currency> curr);
 			void DisplayCurrencyImg(NN<Data::Invest::Currency> curr);
 			void DisplayAsset(NN<Data::Invest::Asset> ass);
 			void DisplayAssetImg(NN<Data::Invest::Asset> ass);
+			void DisplayTransactions(NN<Data::Invest::InvestmentManager> mgr);
 		public:
 			AVIRInvestmentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRInvestmentForm();

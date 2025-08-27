@@ -15,7 +15,7 @@ Map::ESRI::FileGDBDir::FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> syst
 	this->pkg = pkg->Clone();
 	this->prjParser = prjParser;
 	NN<FileGDBReader> reader;
-	if (!Optional<FileGDBReader>::ConvertFrom(systemCatalog->OpenReader(0, 0, 0, CSTR_NULL, 0)).SetTo(reader))
+	if (!Optional<FileGDBReader>::ConvertFrom(systemCatalog->OpenReader(0, 0, 0, nullptr, 0)).SetTo(reader))
 	{
 		systemCatalog.Delete();
 		return;
@@ -91,7 +91,7 @@ Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaNa
 	DB::TableDef *tab;
 	NN<DB::DBReader> r;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	if (table->OpenReader(0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (table->OpenReader(0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		tab->ColFromReader(r);
 		this->CloseReader(r);

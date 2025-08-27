@@ -62,7 +62,7 @@ Bool Exporter::DBPListExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	return DB::DBExporter::GeneratePList(db, CSTR_NULL, Text::String::OrEmpty(name)->ToCString(), 0, stm, this->codePage);
+	return DB::DBExporter::GeneratePList(db, nullptr, Text::String::OrEmpty(name)->ToCString(), 0, stm, this->codePage);
 }
 
 UOSInt Exporter::DBPListExporter::GetParamCnt()
@@ -75,7 +75,7 @@ Optional<IO::FileExporter::ParamData> Exporter::DBPListExporter::CreateParam(NN<
 	DBParam *param;
 	NEW_CLASS(param, DBParam());
 	param->db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	param->db->QueryTableNames(CSTR_NULL, param->names);
+	param->db->QueryTableNames(nullptr, param->names);
 	param->tableIndex = 0;
 	return (ParamData*)param;
 }

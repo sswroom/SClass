@@ -4,7 +4,7 @@
 
 Bool Net::JMeter::JMeterHTTPSamplerProxy::Step(NN<JMeterIteration> iter, NN<JMeterResult> result) const
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(iter->GetTCPClientFactory(), iter->GetSSLEngine(), CSTR_NULL, this->useKeepalive, this->url->StartsWith(UTF8STRC("https://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(iter->GetTCPClientFactory(), iter->GetSSLEngine(), nullptr, this->useKeepalive, this->url->StartsWith(UTF8STRC("https://")));
 	Double timeDNS;
 	Double timeConn;
 	Double timeReq;

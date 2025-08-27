@@ -21,7 +21,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, nullptr, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char fname[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -556,11 +556,11 @@ Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
 	colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
-	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
 	colDef->SetAutoIncNone();
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetAttr(Text::CString(nullptr));
 	return true;
 }
 

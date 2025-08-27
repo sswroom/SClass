@@ -562,7 +562,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 	packEnd = packBuff + pack->headerSize;
 	packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Header Size"), packPtr);
 	nextPtr = ReadVInt(packPtr, &iVal);
-	vName = CSTR_NULL;
+	vName = nullptr;
 	switch (iVal)
 	{
 	case 1:
@@ -659,7 +659,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 				}
 				else
 				{
-					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, CSTR_NULL);
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, nullptr);
 				}
 				packPtr = nextPtr;
 			}
@@ -726,7 +726,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Extra Rec Size"), extraSize);
 				packPtr = nextPtr2;
 				nextPtr2 = ReadVInt(packPtr, &iVal);
-				vName = CSTR_NULL;
+				vName = nullptr;
 				switch (iVal)
 				{
 				case 1:

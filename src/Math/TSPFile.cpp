@@ -556,19 +556,19 @@ Text::CString Math::TSPReader::GetName(UOSInt colIndex, UOSInt rowSize)
 		if (rowSize >= 128)
 			return CSTR("RequestX");
 		else
-			return CSTR_NULL;
+			return nullptr;
 	case 10:
 		if (rowSize >= 128)
 			return CSTR("RequestY");
 		else
-			return CSTR_NULL;
+			return nullptr;
 	case 11:
 		if (rowSize >= 128)
 			return CSTR("RequestZ");
 		else
-			return CSTR_NULL;
+			return nullptr;
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 
@@ -790,7 +790,7 @@ Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
 	case 7:
 		return CSTR("Azimuth");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 

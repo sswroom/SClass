@@ -79,7 +79,7 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
-	if (qry.QueryTableData(CSTR_NULL, CSTR("CIM_LogicalDevice"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (qry.QueryTableData(nullptr, CSTR("CIM_LogicalDevice"), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		UOSInt descCol = INVALID_INDEX;
 		UOSInt devIdCol = INVALID_INDEX;

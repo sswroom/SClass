@@ -54,7 +54,7 @@ void UI::GTK::GTKLabel::SetTextColor(UInt32 textColor)
 	this->hasTextColor = true;
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-	builder.NewStyle(CSTR_NULL, CSTR_NULL);
+	builder.NewStyle(nullptr, nullptr);
 	builder.AddColorRGBA(textColor);
 	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd.OrNull());
 	GtkCssProvider *styleProvider = gtk_css_provider_new();

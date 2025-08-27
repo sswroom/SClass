@@ -205,7 +205,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("QUIT")))
 	{
-		WriteMessage(cli, true, CSTR_NULL);
+		WriteMessage(cli, true, nullptr);
 		cli->ShutdownSend();
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STLS")))
@@ -533,7 +533,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 	{
 		SDEL_STRING(cliStatus->userName);
 		cliStatus->userName = Text::String::New(&cmd[5], cmdLen - 5).Ptr();
-		WriteMessage(cli, true, CSTR_NULL);
+		WriteMessage(cli, true, nullptr);
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("PASS ")))
 	{
@@ -549,7 +549,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 		}
 		if (succ)
 		{
-			WriteMessage(cli, true, CSTR_NULL);
+			WriteMessage(cli, true, nullptr);
 		}
 		else
 		{
@@ -558,7 +558,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("NOOP")))
 	{
-		WriteMessage(cli, true, CSTR_NULL);
+		WriteMessage(cli, true, nullptr);
 	}
 	else
 	{
@@ -574,7 +574,7 @@ Net::Email::POP3Server::POP3Server(NN<Net::SocketFactory> sockf, Optional<Net::S
 	this->log = log;
 	this->greeting = Text::String::New(greeting);
 	this->mailCtrl = mailCtrl;
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, 0, port, log, ConnHdlr, this, CSTR_NULL, autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, 0, port, log, ConnHdlr, this, nullptr, autoStart));
 	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("POP3Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 

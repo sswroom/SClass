@@ -375,7 +375,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 			j = Text::StrIndexOfC(buff, buffSize, boundary.ToString(), boundary.GetLength());
 			if (j == INVALID_INDEX)
 			{
-				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, CSTR_NULL, boundary.ToCString()));
+				NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, nullptr, boundary.ToCString()));
 				i = 0;
 			}
 			else

@@ -379,7 +379,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 
 		if (this->tableBorders)
 		{
-			tableStyle = wb->NewCellStyle(0, Text::HAlignment::Unknown, Text::VAlignment::Unknown, CSTR_NULL).Ptr();
+			tableStyle = wb->NewCellStyle(0, Text::HAlignment::Unknown, Text::VAlignment::Unknown, nullptr).Ptr();
 			tableStyle->SetBorderLeft(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
 			tableStyle->SetBorderTop(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
 			tableStyle->SetBorderRight(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));

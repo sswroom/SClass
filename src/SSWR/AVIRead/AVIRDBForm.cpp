@@ -78,13 +78,13 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 	{
 		tabDef = dbt->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, nullptr, 0);
 	}
 	else
 	{
 		tabDef = me->db->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, nullptr, 0);
 		if (tmpr.SetTo(r) && tabDef.IsNull())
 		{
 			tabDef = r->GenTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));

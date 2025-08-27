@@ -53,7 +53,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(NN<const Net::SocketUtil::AddressIn
 Net::SNMPClient::SNMPClient(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
 	this->scanList = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnSNMPPacket, this, log, CSTR_NULL, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, nullptr, OnSNMPPacket, this, log, nullptr, 1, false));
 	this->reqId = 1;
 	this->hasResp = true;
 	this->respStatus = Net::SNMPUtil::ES_NOERROR;

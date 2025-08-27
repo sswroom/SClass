@@ -262,7 +262,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
 		DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem().p);
-		if (dbf.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (dbf.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			while (r->ReadNext())
 			{
@@ -405,7 +405,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem().p);
-			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0);
+			dbfr = dbf.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0);
 			StrRecord *strRec;
 
 //			tmpWriter = New IO.StreamWriter(sourceFile.Substring(0, sourceFile.LastIndexOf(".")) + ".txt")
@@ -813,7 +813,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 			sb.AppendC(UTF8STRC(".dbf"));
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			DB::DBFFile dbf(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem().p);
-			dbfr = dbf.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0);
+			dbfr = dbf.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0);
 
 			StrRecord *strRec;
 
@@ -1495,7 +1495,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> p
 	this->lblProgress->SetRect(0, 416, 570, 23, false);
 	this->lblProgress->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 
-	this->progressName = CSTR_NULL;
+	this->progressName = nullptr;
 	this->totalVal = 1;
 	UInt32 sysCP = Text::EncodingFactory::GetSystemCodePage();
 	UInt32 cp;
@@ -1579,7 +1579,7 @@ void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(UInt64 currCount, UInt64 new
 
 void SSWR::SHPConv::SHPConvMainForm::ProgressEnd()
 {
-	this->progressName = CSTR_NULL;
+	this->progressName = nullptr;
 	this->totalVal = 1;
 	this->lblProgress->SetText(CSTR(""));
 }

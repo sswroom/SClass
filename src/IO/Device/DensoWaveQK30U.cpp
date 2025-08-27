@@ -730,7 +730,7 @@ Text::CString IO::Device::DensoWaveQK30U::GetCommandParamName(DeviceCommand dcmd
 	case DC_GET_BUZZER_OFF:
 	case DC_SET_BUZZER_OFF:
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 

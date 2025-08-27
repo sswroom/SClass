@@ -129,7 +129,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	k = 32;
 	while (k-- > 0)
 	{
-		carr[k] = CSTR_NULL;
+		carr[k] = nullptr;
 	}
 	l = packBuff[1];
 	k = 1;
@@ -1728,7 +1728,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(NN<FrameDetail> frame, UOSInt
 	Text::CString val;
 	if (ind >= 32)
 	{
-		val = CSTR_NULL;
+		val = nullptr;
 	}
 	else
 	{

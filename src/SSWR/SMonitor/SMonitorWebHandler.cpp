@@ -1810,7 +1810,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMon
 	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	NN<Net::WebServer::WebSession> sess;
-	Text::CString msg = CSTR_NULL;
+	Text::CString msg = nullptr;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);

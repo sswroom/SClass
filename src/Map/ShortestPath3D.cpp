@@ -471,7 +471,7 @@ void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 	NN<Math::Geometry::Vector2D> vec;
 	if (this->propDef.IsNull())
 	{
-		this->propDef = layer->GetTableDef(CSTR_NULL, layer->GetSourceNameObj()->ToCString());
+		this->propDef = layer->GetTableDef(nullptr, layer->GetSourceNameObj()->ToCString());
 	}
 	NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 	layer->GetAllObjectIds(idArr, nameArr);

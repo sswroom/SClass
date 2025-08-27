@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
 	db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	if (db->QueryTableData(CSTR_NULL, CSTR("IT_TGVLib"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (db->QueryTableData(nullptr, CSTR("IT_TGVLib"), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		valid = true;
 		if (!r->GetName(0, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fUserType")))
@@ -66,7 +66,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	Data::DateTime dt;
 	UOSInt i;
 	UOSInt j;
-	if (db->QueryTableData(CSTR_NULL, CSTR("GPSLog"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (db->QueryTableData(nullptr, CSTR("GPSLog"), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		Int32 id;
 		Int32 times[2];
@@ -108,7 +108,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 		valid = false;
 	}
 	
-	if (db->QueryTableData(CSTR_NULL, CSTR("WP"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (db->QueryTableData(nullptr, CSTR("WP"), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		Int32 id;
 		Int32 gpsLogId;
@@ -148,7 +148,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 
 	if (valid)
 	{
-		if (db->QueryTableData(CSTR_NULL, CSTR("Line"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (db->QueryTableData(nullptr, CSTR("Line"), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			Map::GPSTrack::GPSRecord3 gpsRec;
 			NEW_CLASS(trk, Map::GPSTrack(pobj->GetSourceNameObj(), true, 0, 0));

@@ -157,7 +157,7 @@ Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
 			Text::CString name = sarr[1].ToCString();
 			if (name.leng == 0)
 			{
-				name = CSTR_NULL;
+				name = nullptr;
 			}
 			IO::BTScanLog::RadioType radioType = IO::BTScanLog::RT_UNKNOWN;
 			IO::BTScanLog::AddressType addrType = IO::BTScanLog::AT_UNKNOWN;

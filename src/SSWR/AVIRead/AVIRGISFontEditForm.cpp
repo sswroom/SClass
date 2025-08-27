@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 	NN<UI::GUIFontDialog> dlg;
 	if (me->currFontName.IsNull())
 	{
-		dlg = me->ui->NewFontDialog(CSTR_NULL, 0, me->isBold, false);
+		dlg = me->ui->NewFontDialog(Text::CString(nullptr), 0, me->isBold, false);
 	}
 	else
 	{

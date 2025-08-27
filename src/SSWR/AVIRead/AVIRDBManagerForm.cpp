@@ -313,7 +313,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(AnyType
 		{
 			if (currDB->ChangeDatabase(dbName->ToCString()))
 			{
-				me->UpdateTableData(CSTR_NULL, 0);
+				me->UpdateTableData(nullptr, 0);
 				me->UpdateSchemaList();
 			}
 			dbName->Release();
@@ -728,7 +728,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	NN<DB::DBReader> r;
 	tabDef = currDB->GetTableDef(schemaName, nntableName->ToCString());
 
-	if (currDB->QueryTableData(schemaName, nntableName->ToCString(), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0).SetTo(r))
+	if (currDB->QueryTableData(schemaName, nntableName->ToCString(), 0, 0, MAX_ROW_CNT, nullptr, 0).SetTo(r))
 	{
 		UpdateResult(r, this->lvTableResult);
 
@@ -967,7 +967,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateFilter()
 			return;
 		}
 	}
-	if (currDB->QueryTableData(OPTSTR_CSTR(schemaName), nntableName->ToCString(), 0, 0, MAX_ROW_CNT, CSTR_NULL, cond).SetTo(r))
+	if (currDB->QueryTableData(OPTSTR_CSTR(schemaName), nntableName->ToCString(), 0, 0, MAX_ROW_CNT, nullptr, cond).SetTo(r))
 	{
 		this->currCond.Delete();
 		this->currCond = cond;

@@ -276,7 +276,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 	{
 		Map::DBMapLayer *layer;
 		NEW_CLASS(layer, Map::DBMapLayer(sourceName));
-		if (layer->SetDatabase(db, CSTR_NULL, layerName, true))
+		if (layer->SetDatabase(db, nullptr, layerName, true))
 		{
 			return layer;
 		}

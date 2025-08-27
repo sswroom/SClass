@@ -70,7 +70,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 		if (kaConn)
 		{
 			url = CSTR(URL);
-			cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, false);
+			cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, true, false);
 			while (!status->threadToStop)
 			{
 				if (Interlocked_DecrementI32(&connLeft) < 0)
@@ -132,13 +132,13 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 					if (cli->IsError())
 					{
 						cli.Delete();
-						cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+						cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, true, url.StartsWith(UTF8STRC("https://")));
 					}
 				}
 				else
 				{
 					cli.Delete();
-					cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+					cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, true, url.StartsWith(UTF8STRC("https://")));
 					status->failCnt++;
 				}
 			}
@@ -152,7 +152,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 				if (Sync::Interlocked::DecrementI32(connLeft) < 0)
 					break;
 				respClk.Start();
-				cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+				cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, true, url.StartsWith(UTF8STRC("https://")));
 				if (cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, timeDNS, timeConn, false))
 				{
 					cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));

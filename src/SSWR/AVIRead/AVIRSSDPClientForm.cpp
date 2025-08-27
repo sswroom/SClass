@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(Optional<UI::GUIClientCont
 	this->core = core;
 	this->clif = this->core->GetTCPClientFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
-	NEW_CLASSNN(this->ssdp, Net::SSDPClient(this->clif->GetSocketFactory(), CSTR_NULL, this->core->GetLog()));
+	NEW_CLASSNN(this->ssdp, Net::SSDPClient(this->clif->GetSocketFactory(), nullptr, this->core->GetLog()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lbDevice = ui->NewListBox(*this, false);

@@ -45,8 +45,8 @@ namespace Data
 		static Int8 localTzQhr;
 		static Bool localTzValid;
 
-		static void DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs);
-		static void TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec);
+		static Bool DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs);
+		static Bool TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec);
 	public:
 		static Int64 Date2TotalDays(Int32 year, Int32 month, Int32 day);
 		static Int64 DateValue2TotalDays(NN<const DateValue> d);

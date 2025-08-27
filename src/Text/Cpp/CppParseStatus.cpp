@@ -228,7 +228,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CStr
 					Text::CStringNN defParamNN = defParam.OrEmpty();
 					if (this->IsDefined(defParamNN))
 					{
-						this->GetDefineVal(defParamNN, CSTR_NULL, sb3);
+						this->GetDefineVal(defParamNN, nullptr, sb3);
 					}
 					else
 					{

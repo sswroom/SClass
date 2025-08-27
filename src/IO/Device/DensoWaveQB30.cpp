@@ -1244,7 +1244,7 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Indirect Software Trigger Mode");
 		if (cmdVal == 6)
 			return CSTR("Auto Sense Mode");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BW_MODE:
 	case DC_SET_BW_MODE:
 		if (cmdVal == 0)
@@ -1253,10 +1253,10 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Inverted Code");
 		if (cmdVal == 2)
 			return CSTR("Auto Detect");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_READ_REPEAT_TIME:
 	case DC_SET_READ_REPEAT_TIME:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BRIGHTNESS:
 	case DC_SET_BRIGHTNESS:
 		if (cmdVal == 0)
@@ -1265,14 +1265,14 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Fixed Shutter, Auto Gain");
 		if (cmdVal == 2)
 			return CSTR("Fixed Shutter, Fixed Gain");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SHT_SIGNAL:
 	case DC_SET_SHT_SIGNAL:
 		if (cmdVal == 0)
 			return CSTR("Tr OFF");
 		if (cmdVal == 1)
 			return CSTR("Tr ON");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SCAN_MODE:
 	case DC_SET_SCAN_MODE:
 		if (cmdVal == 0)
@@ -1281,13 +1281,13 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Scan Entry Mode");
 		if (cmdVal == 2)
 			return CSTR("File Entry Mode");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SHUTTER_TIME:
 	case DC_SET_SHUTTER_TIME:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_GAIN:
 	case DC_SET_GAIN:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_LED_LEVEL:
 	case DC_SET_LED_LEVEL:
 		if (cmdVal == 0)
@@ -1296,40 +1296,40 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Medium");
 		if (cmdVal == 2)
 			return CSTR("Weak");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_LED_MODE:
 	case DC_SET_LED_MODE:
 		if (cmdVal == 0)
 			return CSTR("LED Off");
 		if (cmdVal == 1)
 			return CSTR("LED On");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_OUTPUT_TIMING:
 	case DC_SET_OUTPUT_TIMING:
 		if (cmdVal == 0)
 			return CSTR("Sync");
 		if (cmdVal == 1)
 			return CSTR("Async");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_UNREAD_DATA_SEND:
 	case DC_SET_UNREAD_DATA_SEND:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_INDIR_TIME:
 	case DC_SET_INDIR_TIME:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_TRIGGER_DELAY:
 	case DC_SET_TRIGGER_DELAY:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SIGNAL_ON_DUR:
 	case DC_SET_SIGNAL_ON_DUR:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SIGNAL_DELAY:
 	case DC_SET_SIGNAL_DELAY:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_LIGHT_LED:
 	case DC_SET_LIGHT_LED:
 		if (cmdVal == 0)
@@ -1338,17 +1338,17 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Auto");
 		if (cmdVal == 2)
 			return CSTR("Always On");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_MARKER_LIGHT:
 	case DC_SET_MARKER_LIGHT:
 		if (cmdVal == 0)
 			return CSTR("Always Off");
 		if (cmdVal == 1)
 			return CSTR("Normal");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_DECODE_TIME_LIMIT:
 	case DC_SET_DECODE_TIME_LIMIT:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_OUTPUT1_TYPE:
 	case DC_SET_OUTPUT1_TYPE:
 		if (cmdVal == 0)
@@ -1363,7 +1363,7 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Output Scan NG Signal");
 		if (cmdVal == 5)
 			return CSTR("Output READY Signal");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_OUTPUT2_TYPE:
 	case DC_SET_OUTPUT2_TYPE:
 		if (cmdVal == 0)
@@ -1380,56 +1380,56 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Output READY Signal");
 		if (cmdVal == 6)
 			return CSTR("Output SHT Signal");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_AUTO_SENSE_MODE:
 	case DC_SET_AUTO_SENSE_MODE:
 		if (cmdVal == 0)
 			return CSTR("Disable");
 		if (cmdVal == 1)
 			return CSTR("Enable");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CONT_READ_MODE_B:
 	case DC_SET_CONT_READ_MODE_B:
 		if (cmdVal == 0)
 			return CSTR("Disable");
 		if (cmdVal == 1)
 			return CSTR("Enable");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_QRCODE:
 	case DC_SET_QRCODE:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_MICRO_QRCODE:
 	case DC_SET_MICRO_QRCODE:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_PDF417:
 	case DC_SET_PDF417:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_DATAMATRIX:
 	case DC_SET_DATAMATRIX:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BARCODE:
 	case DC_SET_BARCODE:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_INTERLEAVED_2OF5:
 	case DC_SET_INTERLEAVED_2OF5:
 		if (cmdVal == 0)
@@ -1440,7 +1440,7 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Has C/D, Allow read, C/D Transfer not Allowed");
 		if (cmdVal == 3)
 			return CSTR("Read not allowed");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CODABAR:
 	case DC_SET_CODABAR:
 		if (cmdVal == 0)
@@ -1451,14 +1451,14 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Has C/D, Allow read, C/D Transfer not Allowed");
 		if (cmdVal == 3)
 			return CSTR("Read not allowed");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CODABAR_START_STOP:
 	case DC_SET_CODEBAR_START_STOP:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CODE39:
 	case DC_SET_CODE39:
 		if (cmdVal == 0)
@@ -1469,21 +1469,21 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Has C/D, Allow read, C/D Transfer not Allowed");
 		if (cmdVal == 3)
 			return CSTR("Read not allowed");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CODE128:
 	case DC_SET_CODE128:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_QRCODE_REVERSE:
 	case DC_SET_QRCODE_REVERSE:
 		if (cmdVal == 0)
 			return CSTR("Normal Code");
 		if (cmdVal == 1)
 			return CSTR("Inverted Code");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_QRLINK_CODE:
 	case DC_SET_QRLINK_CODE:
 		if (cmdVal == 0)
@@ -1492,98 +1492,98 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("All Editing Mode");
 		if (cmdVal == 1)
 			return CSTR("Editing Mode");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_GS1_DATABAR:
 	case DC_SET_GS1_DATABAR:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_GS1_COMPOSITE:
 	case DC_SET_GS1_COMPOSITE:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_MICRO_PDF417:
 	case DC_SET_MICRO_PDF417:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BARCODE_READ_MODE:
 	case DC_SET_BARCODE_READ_MODE:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SQRC:
 	case DC_SET_SQRC:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SQRC_KEY_UNMATCH:
 	case DC_SET_SQRC_KEY_UNMATCH:
 		if (cmdVal == 0)
 			return CSTR("Reading not allowed");
 		if (cmdVal == 1)
 			return CSTR("Only Output Public Data");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SQRC_KEY_MATCH:
 	case DC_SET_SQRC_KEY_MATCH:
 		if (cmdVal == 0)
 			return CSTR("Output Public Data+Private Data");
 		if (cmdVal == 1)
 			return CSTR("Only Output Private Data");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_IQRCODE_SQUARE:
 	case DC_SET_IQRCODE_SQUARE:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_IQRCODE_RECT:
 	case DC_SET_IQRCODE_RECT:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_AZTEC_FULL:
 	case DC_SET_AZTEC_FULL:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_AZTEC_COMPACT:
 	case DC_SET_AZTEC_COMPACT:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_MENU_READ:
 	case DC_SET_MENU_READ:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Disallow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_COMM_SEQ:
 	case DC_SET_COMM_SEQ:
 		if (cmdVal == 0)
 			return CSTR("No Protocol");
 		if (cmdVal == 1)
 			return CSTR("ACK/NCK");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BAUD_RATE:
 	case DC_SET_BAUD_RATE:
 		if (cmdVal == 0)
@@ -1598,14 +1598,14 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("57600bps");
 		if (cmdVal == 5)
 			return CSTR("115200bps");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CODE_MARK:
 	case DC_SET_CODE_MARK:
 		if (cmdVal == 0)
 			return CSTR("Not Allow");
 		if (cmdVal == 1)
 			return CSTR("Allow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_LINE_NUM:
 	case DC_SET_LINE_NUM:
 		if (cmdVal == 0)
@@ -1614,34 +1614,34 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("Transfer in 2 Lines");
 		if (cmdVal == 2)
 			return CSTR("Transfer in 4 Lines");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BCC:
 	case DC_SET_BCC:
 		if (cmdVal == 0)
 			return CSTR("Not Allow");
 		if (cmdVal == 1)
 			return CSTR("Allow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CTS_SIGNAL:
 	case DC_SET_CTS_SIGNAL:
 		if (cmdVal == 0)
 			return CSTR("No Control");
 		if (cmdVal == 1)
 			return CSTR("Has Control");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_CTS_TIME:
 	case DC_SET_CTS_TIME:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_ACK_NAK_TIME:
 	case DC_SET_ACK_NAK_TIME:
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_RECV_HDR:
 	case DC_SET_RECV_HDR:
 		if (cmdVal == 0)
 			return CSTR("No");
 		if (cmdVal == 1)
 			return CSTR("STX");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_RECV_TERMINATOR:
 		if (cmdVal == 0)
 			return CSTR("ETX");
@@ -1651,7 +1651,7 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("LF");
 		if (cmdVal == 3)
 			return CSTR("CR+LF");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_SEND_TERMINATOR:
 		if (cmdVal == 0)
 			return CSTR("No");
@@ -1665,44 +1665,44 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd,
 			return CSTR("CR+LF");
 		if (cmdVal == 5)
 			return CSTR("Custom");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BUZZER:
 	case DC_SET_BUZZER:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Not Allow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_READ_ERR_BUZZER:
 	case DC_SET_READ_ERR_BUZZER:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Not Allow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_MAGIC_KEY:
 	case DC_SET_MAGIC_KEY:
 		if (cmdVal == 0)
 			return CSTR("No Function");
 		if (cmdVal == 1)
 			return CSTR("Marker Switch Mode");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_POWER_ON_BUZZER:
 	case DC_SET_POWER_ON_BUZZER:
 		if (cmdVal == 0)
 			return CSTR("Allow");
 		if (cmdVal == 1)
 			return CSTR("Not Allow");
-		return CSTR_NULL;
+		return nullptr;
 	case DC_GET_BUZZER_OFF:
 	case DC_SET_BUZZER_OFF:
 		if (cmdVal == 0)
 			return CSTR("Not Allow");
 		if (cmdVal == 1)
 			return CSTR("Allow");
-		return CSTR_NULL;
+		return nullptr;
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 

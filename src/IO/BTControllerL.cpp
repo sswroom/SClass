@@ -184,7 +184,7 @@ UInt32 __stdcall IO::BTController::LEScanThread(AnyType userObj)
 					{
 						UTF8Char sbuff[64];
 						Int32 rssi = 0;
-						Text::CString name = CSTR_NULL;
+						Text::CString name = nullptr;
 						UInt8 len = ainfo->length;
 						UInt8 eirSize;
 						OSInt ofst = 0;

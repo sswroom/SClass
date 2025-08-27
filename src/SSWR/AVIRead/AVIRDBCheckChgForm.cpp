@@ -219,7 +219,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj
 	{
 		return;
 	}
-	me->GetColIndex(me->colInd, table, CSTR_NULL, sbTable.ToCString());
+	me->GetColIndex(me->colInd, table, nullptr, sbTable.ToCString());
 	table.Delete();
 }
 
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 	{
 		return;
 	}
-	SSWR::AVIRead::AVIRDBAssignColumnForm frm(0, me->ui, me->core, table, dataFile, CSTR_NULL, sbTable.ToCString(), me->dataFileNoHeader, me->dataFileTz, me->colInd, me->colStr);
+	SSWR::AVIRead::AVIRDBAssignColumnForm frm(0, me->ui, me->core, table, dataFile, nullptr, sbTable.ToCString(), me->dataFileNoHeader, me->dataFileTz, me->colInd, me->colStr);
 	frm.ShowDialog(me);
 	table.Delete();
 }
@@ -284,7 +284,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		NEW_CLASSNN(csv, DB::CSVFile(fileName, 65001))
 		if (noHeader) csv->SetNoHeader(true);
 		NN<DB::DBReader> r;
-		if (!csv->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (!csv->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			csv.Delete();
 			this->ui->ShowMsgOK(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
@@ -332,7 +332,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		}
 	}
 	Data::ArrayListStringNN tableNames;
-	nndataFile->QueryTableNames(CSTR_NULL, tableNames);
+	nndataFile->QueryTableNames(nullptr, tableNames);
 	this->cboDataTable->ClearItems();
 	if (tableNames.GetCount() > 0)
 	{
@@ -374,7 +374,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> 
 	}
 
 	NN<DB::ReadingDB> dataFile;
-	if (!this->dataFile.SetTo(dataFile) || !dataFile->QueryTableData(srcSchema, srcTable, 0, 0, 1, CSTR_NULL, 0).SetTo(r))
+	if (!this->dataFile.SetTo(dataFile) || !dataFile->QueryTableData(srcSchema, srcTable, 0, 0, 1, nullptr, 0).SetTo(r))
 	{
 		return false;
 	}
@@ -529,7 +529,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		table.Delete();
 		return false;
 	}
-	if (!dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, dataDBCond).SetTo(r))
+	if (!dataFile->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, dataDBCond).SetTo(r))
 	{
 		srcDBCond.Delete();
 		dataDBCond.Delete();
@@ -713,7 +713,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 
 	if (succ && keyCol1 != INVALID_INDEX)
 	{
-		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond).SetTo(r))
+		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, nullptr, srcDBCond).SetTo(r))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 			succ = false;
@@ -1030,7 +1030,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	NN<DB::TableDef> table;
 	NN<DB::ColDef> col;
 	UInt32 srid = 0;
-	if (dataFile->GetTableDef(CSTR_NULL, sbTable.ToCString()).SetTo(table))
+	if (dataFile->GetTableDef(nullptr, sbTable.ToCString()).SetTo(table))
 	{
 		UOSInt i = table->GetColCnt();
 		while (i-- > 0)
@@ -1119,7 +1119,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		table.Delete();
 		return false;
 	}
-	if (!dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (!dataFile->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		table.Delete();
 		srcDBCond.Delete();
@@ -1350,7 +1350,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 	if (keyCol1 != INVALID_INDEX)
 	{
-		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, CSTR_NULL, srcDBCond).SetTo(r))
+		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, nullptr, srcDBCond).SetTo(r))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 		}

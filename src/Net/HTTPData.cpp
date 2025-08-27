@@ -340,7 +340,7 @@ NN<Text::String> Net::HTTPData::GetFullName() const
 Text::CString Net::HTTPData::GetShortName() const
 {
 	if (fdh == 0)
-		return CSTR_NULL;
+		return nullptr;
 	return fdh->fileName;
 }
 

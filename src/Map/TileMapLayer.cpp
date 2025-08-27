@@ -155,7 +155,7 @@ void Map::TileMapLayer::CheckCache(NN<Data::ArrayListInt64> currIDs)
 	idleMutUsage.EndUse();
 }
 
-Map::TileMapLayer::TileMapLayer(NN<Map::TileMap> tileMap, NN<Parser::ParserList> parsers) : Map::MapDrawLayer(tileMap->GetName(), 0, CSTR_NULL, tileMap->GetCoordinateSystem()->Clone())
+Map::TileMapLayer::TileMapLayer(NN<Map::TileMap> tileMap, NN<Parser::ParserList> parsers) : Map::MapDrawLayer(tileMap->GetName(), 0, nullptr, tileMap->GetCoordinateSystem()->Clone())
 {
 	this->parsers = parsers;
 	this->tileMap = tileMap;

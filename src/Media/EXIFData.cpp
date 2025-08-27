@@ -2084,7 +2084,7 @@ Text::CString Media::EXIFData::GetPhotoMake() const
 			}
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Text::CString Media::EXIFData::GetPhotoModel() const
@@ -2110,7 +2110,7 @@ Text::CString Media::EXIFData::GetPhotoModel() const
 			}
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Text::CString Media::EXIFData::GetPhotoLens() const
@@ -2136,7 +2136,7 @@ Text::CString Media::EXIFData::GetPhotoLens() const
 			}
 		}
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Double Media::EXIFData::GetPhotoFNumber() const

@@ -118,7 +118,7 @@ void Crypto::Cert::X509PKCS7::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsContentInfo(this->buff.Arr(), this->buff.ArrEnd(), "1"))
 	{
-		AppendContentInfo(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, CSTR_NULL, Crypto::Cert::X509File::ContentDataType::Unknown);
+		AppendContentInfo(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, nullptr, Crypto::Cert::X509File::ContentDataType::Unknown);
 	}
 }
 

@@ -232,7 +232,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 			{
 				if (reader->IsElementEmpty())
 				{
-					report->AddParameter(nameStr, classNameStr, CSTR_NULL);
+					report->AddParameter(nameStr, classNameStr, nullptr);
 				}
 				else
 				{

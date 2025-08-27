@@ -35,7 +35,7 @@ OSInt Map::DBAssistedRReverseGeocoder::GetLangIndex(UInt32 lcid)
 Map::DBAssistedRReverseGeocoder::DBAssistedRReverseGeocoder(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Optional<IO::Writer> errWriter)
 {
 	this->conn = 0;
-	this->conn = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, CSTR_NULL, log, CSTR("MAPDB: "));
+	this->conn = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, nullptr, log, CSTR("MAPDB: "));
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
 }

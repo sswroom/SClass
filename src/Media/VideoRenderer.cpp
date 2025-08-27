@@ -2393,7 +2393,7 @@ void Media::VideoRenderer::GetStatus(NN<RendererStatus2> status)
 	}
 	else
 	{
-		status->decoderName = CSTR_NULL;
+		status->decoderName = nullptr;
 	}
 	if (this->video.SetTo(video))
 	{

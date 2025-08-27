@@ -12,7 +12,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
 	NN<DB::DBReader> r;
-	if (this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (this->currDB->QueryTableData(nullptr, this->tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
@@ -79,7 +79,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
 	NN<DB::DBReader> r;
-	if (this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (this->currDB->QueryTableData(nullptr, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;

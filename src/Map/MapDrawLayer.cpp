@@ -1251,7 +1251,7 @@ void Map::MapLayerReader::GetShapeColDef(NN<DB::ColDef> colDef, NN<Map::MapDrawL
 	}
 	colDef->SetColDP(csys->GetSRID());
 	colDef->SetAttr(CSTR(""));
-	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetDefVal(Text::CString(nullptr));
 	colDef->SetAutoIncNone();
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);

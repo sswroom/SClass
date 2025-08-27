@@ -634,7 +634,7 @@ Net::DNSProxy::DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO:
 	this->currServerIndex = 0;
 	this->currIPTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, ClientPacket, this, log, CSTR_NULL, 2, false));
+	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, 0, 0, nullptr, ClientPacket, this, log, nullptr, 2, false));
 	NEW_CLASS(this->svr, Net::DNSServer(this->sockf, log));
 	this->svr->HandleRequest(OnDNSRequest, this);
 }

@@ -94,7 +94,7 @@ UInt64 IO::StmData::FileViewData::GetDataSize() const
 Text::CString IO::StmData::FileViewData::GetShortName() const
 {
 	if (fdh == 0)
-		return CSTR_NULL;
+		return nullptr;
 	return fdh->fileName;
 }
 

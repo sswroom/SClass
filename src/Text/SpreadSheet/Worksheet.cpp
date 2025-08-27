@@ -1070,6 +1070,6 @@ Text::CString Text::SpreadSheet::CellDataTypeGetName(Text::SpreadSheet::CellData
 	case Text::SpreadSheet::CellDataType::MergedUp:
 		return CSTR("MergedUp");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }

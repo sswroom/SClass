@@ -106,22 +106,22 @@ void IO::FileAnalyse::FrameDetail::AddSubfield(UInt64 ofst, UInt64 size, Text::C
 
 void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UInt64 ofst, Text::CStringNN name)
 {
-	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_SEPERATOR);
+	this->AddFieldInfo(ofst, 0, name, nullptr, FT_SEPERATOR);
 }
 
 void IO::FileAnalyse::FrameDetail::AddText(UInt64 ofst, Text::CStringNN name)
 {
-	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_TEXT);
+	this->AddFieldInfo(ofst, 0, name, nullptr, FT_TEXT);
 }
 
 void IO::FileAnalyse::FrameDetail::AddSubframe(UInt64 ofst, UInt64 size)
 {
-	this->AddFieldInfo(ofst, size, CSTR("Subframe"), CSTR_NULL, FT_SUBFRAME);
+	this->AddFieldInfo(ofst, size, CSTR("Subframe"), nullptr, FT_SUBFRAME);
 }
 
 void IO::FileAnalyse::FrameDetail::AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name)
 {
-	this->AddFieldInfo(ofst, size, name, CSTR_NULL, FT_AREA);
+	this->AddFieldInfo(ofst, size, name, nullptr, FT_AREA);
 }
 
 void IO::FileAnalyse::FrameDetail::ToString(NN<Text::StringBuilderUTF8> sb) const

@@ -61,7 +61,7 @@ Text::CString IO::ED527Sim::GetValueName(UOSInt index)
 	case 15:
 		return CSTR("Relay 15");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 

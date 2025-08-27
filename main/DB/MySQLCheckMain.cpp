@@ -211,8 +211,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.ClearStr();
 			Net::Email::EmailMessage::GenerateMessageID(sb, smtpFrom->ToCString());
 			msg.SetMessageId(sb.ToCString());
-			msg.SetFrom(CSTR_NULL, smtpFrom->ToCString());
-			msg.AddTo(CSTR_NULL, smtpTo->ToCString());
+			msg.SetFrom(nullptr, smtpFrom->ToCString());
+			msg.AddTo(nullptr, smtpTo->ToCString());
 			msg.SetSentDate(currTime);
 			msg.SetSubject(CSTR("MySQL Check Report"));
 			msg.SetContent(sbMsg.ToCString(), CSTR("text/plain"));

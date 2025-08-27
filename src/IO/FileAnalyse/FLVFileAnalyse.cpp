@@ -360,7 +360,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	this->fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
 	frame->AddUInt(0, 1, CSTR("Reserved"), (UInt16)(buff[0] >> 6));
 	frame->AddUInt(0, 1, CSTR("Filter"), (UInt16)((buff[0] >> 5) & 1));
-	vName = CSTR_NULL;
+	vName = nullptr;
 	switch (tag->tagType)
 	{
 	case 8:

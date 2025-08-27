@@ -27,7 +27,7 @@ void Net::SNMPInfo::PDUSeqGetDetail(Data::ByteArrayR pdu, UOSInt level, NN<Text:
 	UOSInt i = 0;
 	while (i < pdu.GetSize())
 	{
-		i += this->PDUGetDetail(CSTR_NULL, pdu.SubArray(i), level + 1, sb);
+		i += this->PDUGetDetail(nullptr, pdu.SubArray(i), level + 1, sb);
 		if (i < pdu.GetSize())
 		{
 			sb->AppendC(UTF8STRC(",\r\n"));

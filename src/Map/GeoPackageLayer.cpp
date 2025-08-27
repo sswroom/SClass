@@ -7,7 +7,7 @@ NN<Map::GeoPackageLayer::StringSession> Map::GeoPackageLayer::StringSessCreate()
 {
 	NN<StringSession> sess = MemAllocNN(StringSession);
 	NN<DB::DBReader> r;
-	sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+	sess->r = this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), 0, 0, 0, nullptr, 0);
 	if (sess->r.SetTo(r) && r->ReadNext())
 	{
 		sess->thisId = 0;
@@ -30,7 +30,7 @@ Bool Map::GeoPackageLayer::StringSessGoRow(NN<StringSession> sess, UOSInt index)
 	{
 		if (sess->r.SetTo(r))
 			this->gpkg->CloseReader(r);
-		sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, index, 0, CSTR_NULL, 0);
+		sess->r = this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), 0, index, 0, nullptr, 0);
 		if (sess->r.SetTo(r) && r->ReadNext())
 		{
 			sess->thisId = index;
@@ -61,7 +61,7 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NN<Map::GeoPackage:
 {
 	this->gpkg = gpkg;
 	this->layerContent = layerContent;
-	this->tabDef = this->gpkg->GetTableDef(CSTR_NULL, layerContent->tableName->ToCString());
+	this->tabDef = this->gpkg->GetTableDef(nullptr, layerContent->tableName->ToCString());
 	this->geomCol = INVALID_INDEX;
 	this->mixedData = MixedData::AllData;
 	NN<DB::TableDef> tabDef;
@@ -84,7 +84,7 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NN<Map::GeoPackage:
 		if (this->geomCol != INVALID_INDEX)
 		{
 			NN<DB::DBReader> r;
-			if (this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+			if (this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
 			{
 				while (r->ReadNext())
 				{

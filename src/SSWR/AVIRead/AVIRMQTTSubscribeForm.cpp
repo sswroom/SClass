@@ -57,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 		me->client = client;
 		client->HandlePublishMessage(OnPublishMessage, me);
 
-		Text::CString username = CSTR_NULL;
-		Text::CString password = CSTR_NULL;
+		Text::CString username = nullptr;
+		Text::CString password = nullptr;
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				{
 					UOSInt recvCnt = currTopic->recvCnt;
 					Data::ChartPlotter *chart;
-					NEW_CLASS(chart, Data::ChartPlotter(CSTR_NULL));
+					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, recvCnt), Data::ChartPlotter::NewDataDate(currTopic->dateList, recvCnt), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 					DEL_CLASS(chart);
@@ -370,7 +370,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 					}
 					
 					Data::ChartPlotter *chart;
-					NEW_CLASS(chart, Data::ChartPlotter(CSTR_NULL));
+					NEW_CLASS(chart, Data::ChartPlotter(nullptr));
 					chart->AddLineChart(currTopic->topic, Data::ChartPlotter::NewData(currTopic->valueList, 256), Data::ChartPlotter::NewDataDate(currTopic->dateList, 256), 0xFFFF0000);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 					DEL_CLASS(chart);

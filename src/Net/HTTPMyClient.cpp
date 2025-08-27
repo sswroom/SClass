@@ -596,7 +596,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 	else
 	{
-		optptr2 = CSTR_NULL;
+		optptr2 = nullptr;
 		ptr1.ConcatTo(urltmp);
 	}
 	NN<Text::String> hostName;

@@ -833,7 +833,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				else
 				{
 					NN<IO::ParsedObject> pobj;
-					if (!Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetTCPClientFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
+					if (!Net::URL::OpenObject(fname->ToCString(), nullptr, this->core->GetTCPClientFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}

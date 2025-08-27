@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			lyr = Optional<Map::MapDrawLayer>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer));
 		}
-		Optional<DB::DBTool> db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), me->core->GetLog(), CSTR_NULL);
+		Optional<DB::DBTool> db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), me->core->GetLog(), nullptr);
 		NN<DB::DBTool> nndb;
 		NN<Map::MapDrawLayer> nnlyr;
 		if (lyr.SetTo(nnlyr) && db.SetTo(nndb))

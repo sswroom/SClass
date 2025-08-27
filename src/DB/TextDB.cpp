@@ -254,9 +254,9 @@ public:
 		colDef->SetColName(colName);
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
-		colDef->SetAttr(CSTR_NULL);
+		colDef->SetAttr(Text::CString(nullptr));
 		colDef->SetColDP(0);
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetAutoIncNone();
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
@@ -341,9 +341,9 @@ Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::C
 		NEW_CLASSNN(colDef, DB::ColDef(it.Next()));
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
-		colDef->SetAttr(CSTR_NULL);
+		colDef->SetAttr(Text::CString(nullptr));
 		colDef->SetColDP(0);
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetDefVal(Text::CString(nullptr));
 		colDef->SetAutoIncNone();
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);

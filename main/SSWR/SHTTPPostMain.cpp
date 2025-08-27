@@ -54,7 +54,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 		if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")) && fileBuff && fileSize > 0)
 		{
-			Text::CString mime = CSTR_NULL;
+			Text::CString mime = nullptr;
 			Text::CStringNN nnmime;
 			UOSInt fileLen = Text::StrCharCnt(file);
 			i = Text::StrLastIndexOfCharC(file, fileLen, '.');

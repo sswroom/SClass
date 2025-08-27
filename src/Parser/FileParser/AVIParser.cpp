@@ -690,12 +690,12 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			if (chap[chapOfst] == 0xff && chap[chapOfst + 1] == 0xfe)
 			{
 				sptr = Text::StrUTF16_UTF8(sbuff, (UTF16Char*)&chap[chapOfst + 2]);
-				chapters->AddChapter(chapTime, CSTRP(sbuff, sptr), CSTR_NULL);
+				chapters->AddChapter(chapTime, CSTRP(sbuff, sptr), nullptr);
 			}
 			else
 			{
 				sptr = enc.UTF8FromBytes(sbuff, &chap[chapOfst], Text::StrCharCnt(&chap[chapOfst]), 0);
-				chapters->AddChapter(chapTime, CSTRP(sbuff, sptr), CSTR_NULL);
+				chapters->AddChapter(chapTime, CSTRP(sbuff, sptr), nullptr);
 			}
 			i++;
 		}

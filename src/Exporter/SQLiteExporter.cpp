@@ -68,7 +68,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	DB::SQLBuilder sql(destDB);
 	Text::StringBuilderUTF8 sb;
 	sDB = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	sDB->QueryTableNames(CSTR_NULL, tables);
+	sDB->QueryTableNames(nullptr, tables);
 	if (sDB->IsFullConn())
 	{
 		NEW_CLASS(srcDB, DB::ReadingDBTool(NN<DB::DBConn>::ConvertFrom(sDB), false, log, CSTR("SDB: ")));
@@ -84,9 +84,9 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		tabName = it.Next();
 		if (srcDB)
 		{
-			if (srcDB->GetTableDef(CSTR_NULL, tabName->ToCString()).SetTo(nntabDef))
+			if (srcDB->GetTableDef(nullptr, tabName->ToCString()).SetTo(nntabDef))
 			{
-				r = srcDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+				r = srcDB->QueryTableData(nullptr, tabName->ToCString(), 0, 0, 0, nullptr, 0);
 				if (r.IsNull())
 				{
 					nntabDef.Delete();
@@ -105,10 +105,10 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		}
 		else
 		{
-			r = sDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
+			r = sDB->QueryTableData(nullptr, tabName->ToCString(), 0, 0, 0, nullptr, 0);
 			if (r.SetTo(nnr))
 			{
-				tabDef = nnr->GenTableDef(CSTR_NULL, tabName->ToCString());
+				tabDef = nnr->GenTableDef(nullptr, tabName->ToCString());
 			}
 			else
 			{
@@ -130,7 +130,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				break;
 			}
 			sql.Clear();
-			DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tabName->ToCString(), nntabDef, false);
+			DB::SQLGenerator::GenCreateTableCmd(sql, nullptr, tabName->ToCString(), nntabDef, false);
 			if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 				{
@@ -157,7 +157,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					k = 10000;
 				}
 				sql.Clear();
-				DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tabName->ToCString(), nnr);
+				DB::SQLGenerator::GenInsertCmd(sql, nullptr, tabName->ToCString(), nnr);
 				if (destDB->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();

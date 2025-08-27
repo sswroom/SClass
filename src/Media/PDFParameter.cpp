@@ -127,7 +127,7 @@ Media::PDFParameter *Media::PDFParameter::Parse(Text::CStringNN parameter)
 				k--;
 			if (startValue == 0 || k == endType)
 			{
-				param->AddEntry(Text::CStringNN(&parameter.v[startType], k - startType), CSTR_NULL);
+				param->AddEntry(Text::CStringNN(&parameter.v[startType], k - startType), nullptr);
 			}
 			else
 			{

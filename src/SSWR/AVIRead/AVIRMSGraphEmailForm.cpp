@@ -322,7 +322,7 @@ Optional<Net::MSGraphAccessToken> SSWR::AVIRead::AVIRMSGraphEmailForm::GetToken(
 		return 0;
 	}
 
-    if (cli->AccessTokenGet(sbTenantId.ToCString(), sbClientId.ToCString(), sbClientSecret.ToCString(), CSTR_NULL).SetTo(token))
+    if (cli->AccessTokenGet(sbTenantId.ToCString(), sbClientId.ToCString(), sbClientSecret.ToCString(), nullptr).SetTo(token))
     {
 		this->token = token;
 		return token;

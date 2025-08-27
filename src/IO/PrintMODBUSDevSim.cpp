@@ -23,7 +23,7 @@ UOSInt IO::PrintMODBUSDevSim::GetValueCount()
 
 Text::CString IO::PrintMODBUSDevSim::GetValueName(UOSInt index)
 {
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Bool IO::PrintMODBUSDevSim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)

@@ -572,7 +572,7 @@ Bool Text::XMLReader::ReadNext()
 							else
 							{
 								NN<Text::XMLAttrib> attr;
-								NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), CSTR_NULL));
+								NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), nullptr));
 								this->attrList.Add(attr);
 							}
 							sb->ClearStr();
@@ -596,7 +596,7 @@ Bool Text::XMLReader::ReadNext()
 						if (sb->GetLength() > 0)
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), nullptr));
 							this->attrList.Add(attr);
 							sb->ClearStr();
 						}
@@ -626,7 +626,7 @@ Bool Text::XMLReader::ReadNext()
 						if (!isEqual)
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(CSTR("body"), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(CSTR("body"), nullptr));
 							this->attrList.Add(attr);
 							isEqual = true;
 						}
@@ -637,7 +637,7 @@ Bool Text::XMLReader::ReadNext()
 						if (!isEqual)
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(CSTR("body"), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(CSTR("body"), nullptr));
 							this->attrList.Add(attr);
 							isEqual = true;
 						}
@@ -774,7 +774,7 @@ Bool Text::XMLReader::ReadNext()
 						else
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), nullptr));
 							this->attrList.Add(attr);
 						}
 						sb->ClearStr();
@@ -798,7 +798,7 @@ Bool Text::XMLReader::ReadNext()
 						else
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), nullptr));
 							this->attrList.Add(attr);
 						}
 						sb->ClearStr();
@@ -850,7 +850,7 @@ Bool Text::XMLReader::ReadNext()
 					if (sb->GetLength() > 0)
 					{
 						NN<Text::XMLAttrib> attr;
-						NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), CSTR_NULL));
+						NEW_CLASSNN(attr, Text::XMLAttrib(sb->ToCString(), nullptr));
 						this->attrList.Add(attr);
 						sb->ClearStr();
 					}
@@ -1074,7 +1074,7 @@ Bool Text::XMLReader::ReadNext()
 						else
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), nullptr));
 							this->attrList.Add(attr);
 						}
 						sbText->ClearStr();
@@ -1255,7 +1255,7 @@ Bool Text::XMLReader::ReadNext()
 						else
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), nullptr));
 							this->attrList.Add(attr);
 						}
 						sbText->ClearStr();
@@ -1298,7 +1298,7 @@ Bool Text::XMLReader::ReadNext()
 						else
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), nullptr));
 							this->attrList.Add(attr);
 						}
 						sbText->ClearStr();
@@ -1370,7 +1370,7 @@ Bool Text::XMLReader::ReadNext()
 						else
 						{
 							NN<Text::XMLAttrib> attr;
-							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), CSTR_NULL));
+							NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), nullptr));
 							this->attrList.Add(attr);
 						}
 						sbText->ClearStr();
@@ -1389,7 +1389,7 @@ Bool Text::XMLReader::ReadNext()
 					if (sbText->GetLength() > 0)
 					{
 						NN<Text::XMLAttrib> attr;
-						NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), CSTR_NULL));
+						NEW_CLASSNN(attr, Text::XMLAttrib(sbText->ToCString(), nullptr));
 						this->attrList.Add(attr);
 						sbText->ClearStr();
 						sbOri.ClearStr();

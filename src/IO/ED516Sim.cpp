@@ -94,7 +94,7 @@ Text::CString IO::ED516Sim::GetValueName(UOSInt index)
 	case 31:
 		return CSTR("Din 15 Count");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 

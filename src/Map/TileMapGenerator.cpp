@@ -202,7 +202,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::Map
 		{
 			dimg->SetHDPI(96);
 			dimg->SetVDPI(96);
-			mcfg->DrawMap(dimg, view, isLayerEmpty, mapSch, resizer, CSTR_NULL, params);
+			mcfg->DrawMap(dimg, view, isLayerEmpty, mapSch, resizer, nullptr, params);
 		}
 		else
 		{
@@ -210,7 +210,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::Map
 			{
 				dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 				dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-				mcfg->DrawMap(dimg2, view, isLayerEmpty, mapSch, resizer, CSTR_NULL, params);
+				mcfg->DrawMap(dimg2, view, isLayerEmpty, mapSch, resizer, nullptr, params);
 				
 				Bool revOrder;
 				UnsafeArray<UInt8> imgPtr;

@@ -28,7 +28,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	Data::ArrayListStringNN colList;
 	NN<DB::DBReader> r;
 	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', colList);
-	if (!this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_contents"), &colList, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (!this->conn->QueryTableData(nullptr, CSTR("gpkg_contents"), &colList, 0, 0, nullptr, 0).SetTo(r))
 	{
 		colList.FreeAll();
 		return;
@@ -62,7 +62,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	this->conn->CloseReader(r);
 
 	Text::StringTool::SplitAsNewString(CSTR("table_name,z,m"), ',', colList);
-	if (this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_geometry_columns"), &colList, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (this->conn->QueryTableData(nullptr, CSTR("gpkg_geometry_columns"), &colList, 0, 0, nullptr, 0).SetTo(r))
 	{
 		colList.FreeAll();
 		while (r->ReadNext())

@@ -270,7 +270,7 @@ Text::CString Media::RotateTypeGetName(RotateType val)
 	case RotateType::HFLIP_CW_270:
 		return CSTR("HFLIP_CW_270");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 

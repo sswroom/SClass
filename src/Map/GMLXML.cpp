@@ -150,7 +150,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 						{
 							csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 						}
-						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
+						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, nullptr));
 					}
 
 					if (colCnt == valList.GetCount())

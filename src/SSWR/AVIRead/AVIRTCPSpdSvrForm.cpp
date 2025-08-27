@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(AnyType userObj)
 	{
 		NEW_CLASSOPT(me->cliMgr, Net::TCPClientMgr(60, OnClientEvent, OnClientData, me, 4, OnClientTimeout));
 	}
-	NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, CSTR_NULL, true));
+	NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, nullptr, true));
 	if (svr->IsV4Error())
 	{
 		svr.Delete();

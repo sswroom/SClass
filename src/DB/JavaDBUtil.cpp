@@ -212,7 +212,7 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *u
 		UOSInt scnt2;
 		Bool encrypt = false;
 		UInt16 port = 1433;
-		Text::CString dbName = CSTR_NULL;
+		Text::CString dbName = nullptr;
 		sb.AppendC(&url->v[17], url->leng - 17);
 		sarr[1] = sb;
 		scnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
@@ -351,7 +351,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 	else
 	{
 		NN<DB::DBReader> r;
-		if (db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
 		{
 			DB::ColDef colDef(CSTR(""));
 			UOSInt j = 0;

@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 	Manage::Process::ProcessInfo proc;
 	UOSInt i;
 	OSInt si;
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(CSTR_NULL);
+	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(nullptr);
 	if (sess)
 	{
 		i = me->procList.GetCount();

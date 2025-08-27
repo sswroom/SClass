@@ -53,7 +53,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBMapParser::ParseObject(NN<IO::Pa
 	
 	NEW_CLASS(layerColl, Map::MapLayerCollection(pobj->GetSourceNameObj()));
 	db = (DB::ReadingDB*)pobj;
-	db->QueryTableNames(CSTR_NULL, &tableNames);
+	db->QueryTableNames(nullptr, &tableNames);
 	i = 0;
 	j = tableNames.GetCount();
 	while (i < j)

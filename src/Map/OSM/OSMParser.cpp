@@ -36,12 +36,12 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 		CSTR("SchoolArea"),
 		CSTR("ParkingArea"),
 		CSTR("RiverBank"),
-		CSTR_NULL,
+		nullptr,
 		CSTR("Pool"), //10
 		CSTR("Stream"),
-		CSTR_NULL,
-		CSTR_NULL,
-		CSTR_NULL,
+		nullptr,
+		nullptr,
+		nullptr,
 		CSTR("Railline"), //15
 		CSTR("Centerline"),
 		CSTR("Footpath"),
@@ -50,14 +50,14 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 		CSTR("Test"), //20
 		CSTR("WireFence"),
 		CSTR("GardenCentre"),
-		CSTR_NULL,
-		CSTR_NULL,
-		CSTR_NULL, //25
-		CSTR_NULL,
-		CSTR_NULL,
-		CSTR_NULL,
-		CSTR_NULL,
-		CSTR_NULL, //30
+		nullptr,
+		nullptr,
+		nullptr, //25
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr, //30
 		CSTR("GuidePost"),
 		CSTR("InfoMap"),
 		CSTR("LiftGate"),

@@ -121,7 +121,7 @@ Net::LogServer::LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStri
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, ClientEvent, ClientData, this, 4, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, 0, port, log, ConnHdlr, this, CSTR_NULL, autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, 0, port, log, ConnHdlr, this, nullptr, autoStart));
 }
 
 Net::LogServer::~LogServer()

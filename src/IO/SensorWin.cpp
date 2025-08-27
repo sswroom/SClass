@@ -29,7 +29,7 @@ IO::SensorWin::~SensorWin()
 
 Text::CString IO::SensorWin::GetVendor()
 {
-	return CSTR_NULL;
+	return nullptr;
 }
 
 Text::CString IO::SensorWin::GetName()

@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				NN<Media::RasterImage> stimg;
 				if (NN<Media::ImageList>::ConvertFrom(nnpobj)->GetImage(0, 0).SetTo(stimg))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), Math::CoordinateSystemManager::CreateWGS84Csys(), CSTR_NULL));
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), Math::CoordinateSystemManager::CreateWGS84Csys(), nullptr));
 					Double calcImgW;
 					Double calcImgH;
 					if (stimg->HasHotSpot())
@@ -955,7 +955,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
 			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
-			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, CSTR("Image Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, CSTR("Image Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, nullptr));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -967,7 +967,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
 			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
-			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("Point Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("Point Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, nullptr));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -979,7 +979,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
 			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
-			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Polyline Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Polyline Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, nullptr));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -991,7 +991,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
 			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
-			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, CSTR("Polygon Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
+			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, CSTR("Polygon Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, nullptr));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -1453,7 +1453,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, true));
 				if (mtk->IsMTKDevice())
 				{
-					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
+					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, nullptr));
 					if (mtk->ParseLog(trk))
 					{
 						Data::DateTime dt;
@@ -1537,7 +1537,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASSNN(gps, IO::GPSNMEA(frm.GetStream(), true));
 				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
-				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
+				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, nullptr));
 				gpsFrm->SetGPSTrack(trk.Ptr());
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
@@ -1557,7 +1557,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASSNN(gps, IO::Device::MTKGPSNMEA(frm.GetStream(), true));
 				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
-				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));
+				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, nullptr));
 				gpsFrm->SetGPSTrack(trk.Ptr());
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
@@ -1571,7 +1571,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetPolyline().SetTo(pl))
 			{
 				NN<Map::VectorLayer> lyr;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), Math::CoordinateSystemManager::CreateWGS84Csys(), CSTR_NULL));
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), Math::CoordinateSystemManager::CreateWGS84Csys(), nullptr));
 				lyr->AddVector2(pl, (Text::String**)0);
 				this->AddLayer(lyr);
 			}
@@ -1598,19 +1598,19 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					this->OpenURL(fname->ToCString(), CSTR_NULL);
+					this->OpenURL(fname->ToCString(), nullptr);
 				}
 			}
 		}
 		break;
 	case MNU_HKO_RADAR_64:
-		this->OpenURL(CSTR("http://www.weather.gov.hk/wxinfo/radars/radar_064_kml/Radar_064k.kml"), CSTR_NULL);
+		this->OpenURL(CSTR("http://www.weather.gov.hk/wxinfo/radars/radar_064_kml/Radar_064k.kml"), nullptr);
 		break;
 	case MNU_HKO_RADAR_128:
-		this->OpenURL(CSTR("http://www.weather.gov.hk/wxinfo/radars/radar_128_kml/Radar_128k.kml"), CSTR_NULL);
+		this->OpenURL(CSTR("http://www.weather.gov.hk/wxinfo/radars/radar_128_kml/Radar_128k.kml"), nullptr);
 		break;
 	case MNU_HKO_RADAR_256:
-		this->OpenURL(CSTR("http://www.weather.gov.hk/wxinfo/radars/radar_256_kml/Radar_256k.kml"), CSTR_NULL);
+		this->OpenURL(CSTR("http://www.weather.gov.hk/wxinfo/radars/radar_256_kml/Radar_256k.kml"), nullptr);
 		break;
 	case MNU_HKO_CYCLONE:
 		{
@@ -1645,13 +1645,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						sb.AppendC(sbuff, 4);
 						sb.AppendC(UTF8STRC(".kml?rand="));
 						sb.AppendI64(dt.ToTicks());
-						this->OpenURL(sb.ToCString(), CSTR_NULL);
+						this->OpenURL(sb.ToCString(), nullptr);
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_track_15a_e_"));
 						sb.AppendC(sbuff, 4);
 						sb.AppendC(UTF8STRC(".xml?rand="));
 						sb.AppendI64(dt.ToTicks());
-						this->OpenURL(sb.ToCString(), CSTR_NULL);
+						this->OpenURL(sb.ToCString(), nullptr);
 					}
 				}
 			}

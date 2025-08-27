@@ -399,7 +399,7 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, CSTR_NULL));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, nullptr));
 		return db;
 	}
 	else
@@ -750,9 +750,9 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	}
 	else
 	{
-		colDef->SetDefVal(CSTR_NULL);
+		colDef->SetDefVal(Text::CString(nullptr));
 	}
-	colDef->SetAttr(CSTR_NULL);
+	colDef->SetAttr(Text::CString(nullptr));
 	if (field->flags & AUTO_INCREMENT_FLAG)
 	{
 		colDef->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);

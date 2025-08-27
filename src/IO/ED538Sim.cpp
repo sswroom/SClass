@@ -75,7 +75,7 @@ Text::CString IO::ED538Sim::GetValueName(UOSInt index)
 	case 19:
 		return CSTR("Relay 3");
 	default:
-		return CSTR_NULL;
+		return nullptr;
 	}
 }
 

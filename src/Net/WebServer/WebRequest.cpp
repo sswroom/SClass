@@ -31,7 +31,7 @@ void Net::WebServer::WebRequest::ParseUserAgent()
 		}
 		else
 		{
-			this->reqBrowserVer = CSTR_NULL;
+			this->reqBrowserVer = nullptr;
 		}
 		this->reqOS = ent->os;
 		if (ent->osVer.SetTo(nns))
@@ -41,7 +41,7 @@ void Net::WebServer::WebRequest::ParseUserAgent()
 		}
 		else
 		{
-			this->reqOSVer = CSTR_NULL;
+			this->reqOSVer = nullptr;
 		}
 		if (ent->devName.SetTo(nns))
 		{
@@ -63,10 +63,10 @@ Net::WebServer::WebRequest::WebRequest()
 {
 	this->uaParsed = false;
 	this->reqBrowser = Net::BrowserInfo::BT_UNKNOWN;
-	this->reqBrowserVer = CSTR_NULL;
+	this->reqBrowserVer = nullptr;
 	this->reqOS = Manage::OSInfo::OT_UNKNOWN;
-	this->reqOSVer = CSTR_NULL;
-	this->reqDevModel = CSTR_NULL;
+	this->reqOSVer = nullptr;
+	this->reqDevModel = nullptr;
 }
 
 Net::WebServer::WebRequest::~WebRequest()

@@ -40,7 +40,7 @@ Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetTagName(UInt8 tagType)
 	case 0XC3:
 		return CSTR("WiFi information collection package");
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NN<Sync::Thread> thread)

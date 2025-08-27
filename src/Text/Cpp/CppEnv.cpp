@@ -238,7 +238,7 @@ void Text::Cpp::CppEnv::InitEnvStatus(NN<Text::Cpp::CppParseStatus> status)
 {
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
-		status->AddGlobalDef(CSTR("_WIN32"), CSTR_NULL);
+		status->AddGlobalDef(CSTR("_WIN32"), nullptr);
 		if (this->vsv == Text::VSProject::VSV_VS8 || this->vsv == Text::VSProject::VSV_VS9 || this->vsv == Text::VSProject::VSV_VS10)
 		{
 			status->AddGlobalDef(CSTR("_USE_ATTRIBUTES_FOR_SAL"), CSTR("0")); // /analyze

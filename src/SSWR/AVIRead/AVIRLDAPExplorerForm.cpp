@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 	Bool succ = false;
 	if (me->cboAuthType->GetSelectedIndex() == 0)
 	{
-		succ = cli->Bind(CSTR_NULL, CSTR_NULL);
+		succ = cli->Bind(nullptr, nullptr);
 	}
 	else if (me->cboAuthType->GetSelectedIndex() == 1)
 	{

@@ -99,7 +99,7 @@ Text::CString IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 	case 0xfe:
 		return CSTR("COM"); //comment
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
 
 void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NN<Sync::Thread> thread)
@@ -466,7 +466,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 			if (Media::EXIFData::ParseExifDirect(tagData.Arr() + 10, tag->size - 10).SetTo(exif))
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
-				exif->ToString(sb, CSTR_NULL);
+				exif->ToString(sb, nullptr);
 				exif.Delete();
 			}
 		}
@@ -724,7 +724,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 		}
 		else if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'X' && tagData[7] == 'X' && tagData[8] == 0)
 		{
-			Text::CString vName = CSTR_NULL;
+			Text::CString vName = nullptr;
 			switch (tagData[9])
 			{
 				case 10:

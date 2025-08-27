@@ -159,7 +159,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::Web
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	Text::Builder::HTMLDocumentBuilder builder(Text::Builder::HTMLDocumentBuilder::DocType::HTML5, CSTR("Devices"));
-	Text::Builder::HTMLBodyBuilder *body = builder.StartBody(CSTR_NULL);
+	Text::Builder::HTMLBodyBuilder *body = builder.StartBody(nullptr);
 	body->BeginTable();
 	body->BeginTableRow();
 	body->AddTableHeader(CSTR("UserName"));

@@ -397,7 +397,7 @@ Bool Data::Invest::InvestmentManager::SaveAsset(NN<Asset> ass) const
 Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, nullptr).SetTo(r))
+	if (!db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
 	UOSInt colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
@@ -499,7 +499,7 @@ Optional<Data::Invest::Asset> Data::Invest::InvestmentManager::AddAsset(NN<Text:
 Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, nullptr).SetTo(r))
+	if (!db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
 	UOSInt colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
@@ -558,7 +558,7 @@ Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingD
 Bool Data::Invest::InvestmentManager::AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, nullptr).SetTo(r))
+	if (!db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
 	UOSInt colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)

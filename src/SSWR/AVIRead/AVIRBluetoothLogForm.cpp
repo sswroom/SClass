@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTDevLog::DevEntry>().SetTo(log))
 		return;
 	NN<const Net::MACInfo::MACEntry> entry;
-	Text::CString name = me->macList.GetEntry(log->macInt).SetTo(entry)?Text::CString(entry->name, entry->nameLen):CSTR_NULL;
+	Text::CString name = me->macList.GetEntry(log->macInt).SetTo(entry)?Text::CString(entry->name, entry->nameLen):nullptr;
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{

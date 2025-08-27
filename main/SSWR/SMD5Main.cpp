@@ -88,7 +88,7 @@ public:
 		this->currCount = 0;
 		this->lastCount = 0;
 		this->name = 0;
-		this->fileName = CSTR_NULL;
+		this->fileName = nullptr;
 
 		this->threadRunning = false;
 		this->threadToStop = false;
@@ -110,7 +110,7 @@ public:
 		}
 		DEL_CLASS(this->evt);
 		OPTSTR_DEL(this->name);
-		this->fileName = CSTR_NULL;
+		this->fileName = nullptr;
 	}
 
 	virtual void ProgressStart(Text::CStringNN name, UInt64 count)
@@ -135,7 +135,7 @@ public:
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		OPTSTR_DEL(this->name);
-		this->fileName = CSTR_NULL;
+		this->fileName = nullptr;
 	}
 };
 
@@ -206,7 +206,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Bool flagVerbose = false;
 		Bool foundFiles = false;
 		ProgressHandler progress;
-		Text::CString md5File = CSTR_NULL;
+		Text::CString md5File = nullptr;
 		IO::FileCheck *fileChk = 0;
 		NN<IO::FileCheck> thisChk;
 		NN<IO::FileCheck> nnfileChk;

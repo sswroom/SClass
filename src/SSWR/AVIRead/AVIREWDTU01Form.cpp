@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(AnyType userObj)
 		return;
 	}
 	NN<Net::MQTTStaticClient> cli;
-	NEW_CLASSNN(cli, Net::MQTTStaticClient(me->core->GetTCPClientFactory(), 0, sbHost.ToCString(), port, CSTR_NULL, CSTR_NULL, false, OnMQTTMessage, me, 30, 0));
+	NEW_CLASSNN(cli, Net::MQTTStaticClient(me->core->GetTCPClientFactory(), 0, sbHost.ToCString(), port, nullptr, nullptr, false, OnMQTTMessage, me, 30, 0));
 	if (cli->ChannelFailure())
 	{
 		me->ui->ShowMsgOK(CSTR("Error in connecting to MQTT server"), CSTR("EasyWay EW-DTU01"), me);

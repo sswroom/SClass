@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 		if (useWS)
 		{
 			NN<Net::WebSocketClient> ws;
-			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 10000));
+			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
 				ws.Delete();
@@ -100,8 +100,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 		me->client = client;
 		client->HandlePublishMessage(OnPublishMessage, me);
 
-		Text::CString username = CSTR_NULL;
-		Text::CString password = CSTR_NULL;
+		Text::CString username = nullptr;
+		Text::CString password = nullptr;
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();

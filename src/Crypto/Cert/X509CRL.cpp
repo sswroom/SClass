@@ -111,7 +111,7 @@ void Crypto::Cert::X509CRL::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsCertificateList(this->buff.Arr(), this->buff.ArrEnd(), "1"))
 	{
-		AppendCertificateList(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, CSTR_NULL);
+		AppendCertificateList(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, nullptr);
 	}
 }
 

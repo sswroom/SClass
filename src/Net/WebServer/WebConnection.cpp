@@ -493,7 +493,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			clk.Start();
 			if (this->allowProxy)
 			{
-				httpCli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR_NULL, true, reqURI->StartsWith(UTF8STRC("https://")));
+				httpCli = Net::HTTPClient::CreateClient(this->clif, this->ssl, nullptr, true, reqURI->StartsWith(UTF8STRC("https://")));
 				httpCli->SetTimeout(5000);
 				httpCli->Connect(reqURI->ToCString(), reqMeth, 0, 0, false);
 

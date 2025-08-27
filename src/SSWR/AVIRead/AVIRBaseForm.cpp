@@ -1088,7 +1088,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				IO::Device::MTKGPSNMEA mtk(port, false);
 				if (mtk.IsMTKDevice())
 				{
-					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
+					NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, nullptr));
 					if (mtk.ParseLog(trk))
 					{
 						core->OpenObject(trk);
@@ -1264,7 +1264,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				else
 				{
 					NN<IO::ParsedObject> pobj;
-					if (!Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetTCPClientFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
+					if (!Net::URL::OpenObject(fname->ToCString(), nullptr, this->core->GetTCPClientFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}

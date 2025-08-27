@@ -80,7 +80,7 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 	}
 	if (this->readIndex == INVALID_INDEX)
 	{
-		return CSTR_NULL;
+		return nullptr;
 	}
 	Optional<NameRule> rule;
 	NN<NameRule> nnrule;
@@ -96,7 +96,7 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 		}
 		if (!rule.SetTo(nnrule))
 		{
-			return CSTR_NULL;
+			return nullptr;
 		}
 		switch (nnrule->cond)
 		{
@@ -213,7 +213,7 @@ NN<Net::ASN1Names> Net::ASN1Names::AnyCond()
 {
 	this->currCond = RuleCond::Any;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
-	this->currCondParam = CSTR_NULL;
+	this->currCondParam = nullptr;
 	return *this;
 }
 
@@ -221,7 +221,7 @@ NN<Net::ASN1Names> Net::ASN1Names::TypeIs(Net::ASN1Util::ItemType itemType)
 {
 	this->currCond = RuleCond::TypeIsItemType;
 	this->currItemType = itemType;
-	this->currCondParam = CSTR_NULL;
+	this->currCondParam = nullptr;
 	return *this;
 }
 
@@ -229,7 +229,7 @@ NN<Net::ASN1Names> Net::ASN1Names::TypeIsTime()
 {
 	this->currCond = RuleCond::TypeIsTime;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
-	this->currCondParam = CSTR_NULL;
+	this->currCondParam = nullptr;
 	return *this;
 }
 
@@ -237,7 +237,7 @@ NN<Net::ASN1Names> Net::ASN1Names::TypeIsString()
 {
 	this->currCond = RuleCond::TypeIsString;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
-	this->currCondParam = CSTR_NULL;
+	this->currCondParam = nullptr;
 	return *this;
 }
 
@@ -245,7 +245,7 @@ NN<Net::ASN1Names> Net::ASN1Names::TypeIsOpt(UInt8 index)
 {
 	this->currCond = RuleCond::TypeIsOpt;
 	this->currItemType = (Net::ASN1Util::ItemType)index;
-	this->currCondParam = CSTR_NULL;
+	this->currCondParam = nullptr;
 	return *this;
 }
 
@@ -253,7 +253,7 @@ NN<Net::ASN1Names> Net::ASN1Names::RepeatIfTypeIs(Net::ASN1Util::ItemType itemTy
 {
 	this->currCond = RuleCond::RepeatIfTypeIs;
 	this->currItemType = itemType;
-	this->currCondParam = CSTR_NULL;
+	this->currCondParam = nullptr;
 	return *this;
 }
 
@@ -269,7 +269,7 @@ NN<Net::ASN1Names> Net::ASN1Names::AllNotMatch()
 {
 	this->currCond = RuleCond::AllNotMatch;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
-	this->currCondParam = CSTR_NULL;
+	this->currCondParam = nullptr;
 	return *this;
 }
 

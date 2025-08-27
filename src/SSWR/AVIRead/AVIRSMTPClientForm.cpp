@@ -42,14 +42,14 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(AnyType userObj)
 	sb2.ClearStr();
 	me->txtFromAddr->GetText(sb1);
 	me->txtToAddr->GetText(sb2);
-	if (sb1.GetCharCnt() == 0 || !msg.SetFrom(CSTR_NULL, sb1.ToCString()))
+	if (sb1.GetCharCnt() == 0 || !msg.SetFrom(nullptr, sb1.ToCString()))
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter valid From Address"), CSTR("SMTP Client"), me);
 		me->txtFromAddr->Focus();
 		DEL_CLASS(cli);
 		return;
 	}
-	if (sb2.GetCharCnt() == 0 || !msg.AddTo(CSTR_NULL, sb2.ToCString()))
+	if (sb2.GetCharCnt() == 0 || !msg.AddTo(nullptr, sb2.ToCString()))
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter valid To Address"), CSTR("SMTP Client"), me);
 		me->txtToAddr->Focus();
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(AnyType userObj)
 	}
 	sb1.ClearStr();
 	me->txtCcAddr->GetText(sb1);
-	if (sb1.GetCharCnt() > 0 && !msg.AddCc(CSTR_NULL, sb1.ToCString()))
+	if (sb1.GetCharCnt() > 0 && !msg.AddCc(nullptr, sb1.ToCString()))
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter valid Cc Address"), CSTR("SMTP Client"), me);
 		me->txtCcAddr->Focus();

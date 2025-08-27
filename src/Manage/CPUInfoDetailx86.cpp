@@ -38,7 +38,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	this->cpuModel = CSTR_NULL;
+	this->cpuModel = nullptr;
 	if (this->GetCPUName(sbuff).SetTo(sptr))
 	{
 		this->cpuModel = Manage::CPUDB::X86CPUNameToModel(CSTRP(sbuff, sptr));

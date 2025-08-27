@@ -1463,7 +1463,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			val2 = this->Evals(sptr, sess, 0, 0, CSTR_NULL, valid);
+			val2 = this->Evals(sptr, sess, 0, 0, nullptr, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1510,7 +1510,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			val2 = this->Evals(sptr, sess, 0, 0, CSTR_NULL, valid);
+			val2 = this->Evals(sptr, sess, 0, 0, nullptr, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1557,7 +1557,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			val2 = this->Evals(sptr, sess, 0, 0, CSTR_NULL, valid);
+			val2 = this->Evals(sptr, sess, 0, 0, nullptr, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1604,7 +1604,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(sptr));
-			val2 = this->Evals(sptr, sess, 0, 0, CSTR_NULL, valid);
+			val2 = this->Evals(sptr, sess, 0, 0, nullptr, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1692,7 +1692,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 						while (true)
 						{
 							while (Text::CharUtil::PtrIsWS(sptr));
-							sVal = this->Evals(sptr, sess, 0, 0, CSTR_NULL, &v);
+							sVal = this->Evals(sptr, sess, 0, 0, nullptr, &v);
 							if (!v)
 							{
 								*valid = false;
@@ -2343,7 +2343,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 				{
 					while (Text::CharUtil::PtrIsWS(sptr1));
 					Bool valid = true;
-					Text::String *val = this->Evals(sptr1, sess, 0, 0, CSTR_NULL, &valid);
+					Text::String *val = this->Evals(sptr1, sess, 0, 0, nullptr, &valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2632,7 +2632,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 				if (valid)
 				{
 					while (Text::CharUtil::PtrIsWS(sptr1));
-					Text::String *val = this->Evals(sptr1, sess, 0, 0, CSTR_NULL, &valid);
+					Text::String *val = this->Evals(sptr1, sess, 0, 0, nullptr, &valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2758,7 +2758,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 				{
 					while (Text::CharUtil::PtrIsWS(sptr1));
 					Bool valid = true;
-					Text::String *val = this->Evals(sptr1, sess, 0, 0, CSTR_NULL, &valid);
+					Text::String *val = this->Evals(sptr1, sess, 0, 0, nullptr, &valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2918,7 +2918,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 				if (sptr1[0] == '\'')
 				{
 					Bool valid = true;
- 					Text::String *val = this->Evals(sptr1, sess, 0, 0, CSTR_NULL, &valid);
+ 					Text::String *val = this->Evals(sptr1, sess, 0, 0, nullptr, &valid);
 					if (!valid)
 					{
 						SDEL_STRING(val);

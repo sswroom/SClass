@@ -26,5 +26,5 @@ Text::CString IO::RAWMonitor::LinkTypeGetName(UInt32 linkType)
 	case 201:
 		return CSTR("Bluetooth");
 	}
-	return CSTR_NULL;
+	return nullptr;
 }
