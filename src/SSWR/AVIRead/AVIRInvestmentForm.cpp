@@ -3,10 +3,13 @@
 #include "IO/Path.h"
 #include "IO/Registry.h"
 #include "SSWR/AVIRead/AVIRInvestmentAccountForm.h"
+#include "SSWR/AVIRead/AVIRInvestmentAInterestForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentAssetForm.h"
+#include "SSWR/AVIRead/AVIRInvestmentDepositForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentFXForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentImportForm.h"
+#include "SSWR/AVIRead/AVIRInvestmentTAssetForm.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -20,7 +23,6 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnDirClicked(AnyType userObj)
 		me->mgr.Delete();
 		me->txtDir->SetReadOnly(false);
 		me->lbCurrency->ClearItems();
-		me->lbAccounts->ClearItems();
 		me->lbAssets->ClearItems();
 		return;
 	}
@@ -56,16 +58,9 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnDirClicked(AnyType userObj)
 	me->mgr = mgr;
 	me->txtDir->SetReadOnly(true);
 	me->UpdateCurrencyList(mgr);
-	UOSInt i = 0;
-	UOSInt j = mgr->GetAccountCount();
-	while (i < j)
-	{
-		me->lbAccounts->AddItem(Text::String::OrEmpty(mgr->GetAccount(i)), 0);
-		i++;
-	}
 	NN<Data::Invest::Asset> ass;
-	i = 0;
-	j = mgr->GetAssetCount();
+	UOSInt i = 0;
+	UOSInt j = mgr->GetAssetCount();
 	while (i < j)
 	{
 		if (mgr->GetAsset(i).SetTo(ass))
@@ -74,6 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnDirClicked(AnyType userObj)
 		}
 		i++;
 	}
+	me->DisplayTransactions(mgr);
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnCurrencyImportClicked(AnyType userObj)
@@ -313,24 +309,6 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsHistSelChg(AnyType use
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAccountsClicked(AnyType userObj)
-{
-	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
-	NN<Data::Invest::InvestmentManager> mgr;
-	if (me->mgr.SetTo(mgr))
-	{
-		AVIRInvestmentAccountForm frm(0, me->ui, me->core);
-		NN<Text::String> s;
-		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK && frm.GetInputName().SetTo(s))
-		{
-			if (mgr->AddAccount(s))
-			{
-				me->lbAccounts->AddItem(s, 0);
-			}
-		}
-	}
-}
-
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionFXClicked(AnyType userObj)
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
@@ -347,17 +325,44 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionFXClicked(AnyType
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDepositClicked(AnyType userObj)
 {
-
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr))
+	{
+		AVIRInvestmentDepositForm frm(0, me->ui, me->core, mgr);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+		{
+			me->DisplayTransactions(mgr);
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionAssetClicked(AnyType userObj)
 {
-
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr))
+	{
+		AVIRInvestmentTAssetForm frm(0, me->ui, me->core, mgr);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+		{
+			me->DisplayTransactions(mgr);
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionAInterestClicked(AnyType userObj)
 {
-
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr))
+	{
+		AVIRInvestmentAInterestForm frm(0, me->ui, me->core, mgr);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+		{
+			me->DisplayTransactions(mgr);
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionCInterestClicked(AnyType userObj)
@@ -391,9 +396,34 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrDouble(sbuff, curr->current);
 	this->txtCurrencyCurr->SetText(CSTRP(sbuff, sptr));
+	Double val = 0;
+	UOSInt i;
+	UOSInt j;
+	i = 0;
+	j = curr->trades.GetCount();
+	while (i < j)
+	{
+		val += curr->trades.GetItemNoCheck(i)->amount;
+		i++;
+	}
+	sptr = Text::StrDouble(sbuff, val);
+	this->txtCurrencyTotal->SetText(CSTRP(sbuff, sptr));
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (this->mgr.SetTo(mgr))
+	{
+		if (curr->c == mgr->GetRefCurrency())
+		{
+			this->txtCurrencyValue->SetText(CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			sptr = Text::StrDouble(sbuff, val / curr->current);
+			this->txtCurrencyValue->SetText(CSTRP(sbuff, sptr));
+		}
+	}
 	this->lvCurrencyHist->ClearItems();
-	UOSInt i = 0;
-	UOSInt j = curr->tsList.GetCount();
+	i = 0;
+	j = curr->tsList.GetCount();
 	UOSInt k;
 	if (j > 20)
 	{
@@ -503,7 +533,72 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> 
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::InvestmentManager> mgr)
 {
-
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	this->lvTransaction->ClearItems();
+	UOSInt i = 0;
+	UOSInt j = mgr->GetTransactionCount();
+	NN<Data::Invest::TradeEntry> ent;
+	UOSInt k;
+	while (i < j)
+	{
+		if (mgr->GetTransactionEntry(i).SetTo(ent))
+		{
+			sptr = ent->fromDetail.tranDate.ToStringNoZone(sbuff);
+			k = this->lvTransaction->AddItem(CSTRP(sbuff, sptr), ent);
+			if (!ent->toDetail.tranDate.IsNull())
+			{
+				sptr = ent->toDetail.tranDate.ToStringNoZone(sbuff);
+				this->lvTransaction->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			}
+			this->lvTransaction->SetSubItem(k, 2, Data::Invest::InvestmentManager::TradeTypeGetName(ent->type));
+			if (ent->type == Data::Invest::TradeType::ForeignExchange)
+			{
+				UInt32 c = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
+				c = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+			}
+			else if (ent->type == Data::Invest::TradeType::FixedDeposit)
+			{
+				UInt32 c = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
+				c = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+			}
+			else if (ent->type == Data::Invest::TradeType::CashToAsset)
+			{
+				UInt32 c = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
+				NN<Data::Invest::Asset> ass;
+				if (mgr->GetAsset(ent->toIndex).SetTo(ass))
+				{
+					this->lvTransaction->SetSubItem(k, 6, ass->shortName);
+				}
+			}
+			else if (ent->type == Data::Invest::TradeType::AssetInterest)
+			{
+				NN<Data::Invest::Asset> ass;
+				if (mgr->GetAsset(ent->fromIndex).SetTo(ass))
+				{
+					this->lvTransaction->SetSubItem(k, 3, ass->shortName);
+				}
+				UInt32 c = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+			}
+			sptr = Text::StrDouble(sbuff, ent->fromDetail.amount);
+			this->lvTransaction->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ent->fromDetail.cost);
+			this->lvTransaction->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ent->toDetail.amount);
+			this->lvTransaction->SetSubItem(k, 7, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ent->toDetail.cost);
+			this->lvTransaction->SetSubItem(k, 8, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ent->refRate);
+			this->lvTransaction->SetSubItem(k, 9, CSTRP(sbuff, sptr));
+		}
+		i++;
+	}
 }
 
 SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -550,16 +645,20 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnTransactionCInterest = ui->NewButton(this->pnlTransaction, CSTR("Cash Interest"));
 	this->btnTransactionCInterest->SetRect(364, 4, 115, 23, false);
 	this->btnTransactionCInterest->HandleButtonClick(OnTransactionCInterestClicked, this);
-	this->lvTransaction = ui->NewListView(this->tpTransaction, UI::ListViewStyle::Table, 6);
+	this->lvTransaction = ui->NewListView(this->tpTransaction, UI::ListViewStyle::Table, 10);
 	this->lvTransaction->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTransaction->SetShowGrid(true);
 	this->lvTransaction->SetFullRowSelect(true);
 	this->lvTransaction->AddColumn(CSTR("Begin Date"), 70);
 	this->lvTransaction->AddColumn(CSTR("End Date"), 70);
+	this->lvTransaction->AddColumn(CSTR("Type"), 70);
 	this->lvTransaction->AddColumn(CSTR("Asset 1"), 120);
-	this->lvTransaction->AddColumn(CSTR("Amount 1"), 50);
+	this->lvTransaction->AddColumn(CSTR("Amount 1"), 70);
+	this->lvTransaction->AddColumn(CSTR("Cost 1"), 70);
 	this->lvTransaction->AddColumn(CSTR("Asset 2"), 120);
-	this->lvTransaction->AddColumn(CSTR("Amount 2"), 50);
+	this->lvTransaction->AddColumn(CSTR("Amount 2"), 70);
+	this->lvTransaction->AddColumn(CSTR("Cost 2"), 70);
+	this->lvTransaction->AddColumn(CSTR("Ref Rate"), 70);
 
 	this->tpCurrency = this->tcMain->AddTabPage(CSTR("Currency"));
 	this->lbCurrency = ui->NewListBox(this->tpCurrency, false);
@@ -570,15 +669,25 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tcCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpCurrencySummary = this->tcCurrency->AddTabPage(CSTR("Summary"));
 	this->pnlCurrency = ui->NewPanel(this->tpCurrencySummary);
-	this->pnlCurrency->SetRect(0, 0, 100, 55, false);
+	this->pnlCurrency->SetRect(0, 0, 100, 103, false);
 	this->pnlCurrency->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCurrencyCurr = ui->NewLabel(this->pnlCurrency, CSTR("Current Rate"));
 	this->lblCurrencyCurr->SetRect(4, 4, 100, 23, false);
 	this->txtCurrencyCurr = ui->NewTextBox(this->pnlCurrency, CSTR("-"));
 	this->txtCurrencyCurr->SetRect(104, 4, 75, 23, false);
 	this->txtCurrencyCurr->SetReadOnly(true);
+	this->lblCurrencyTotal = ui->NewLabel(this->pnlCurrency, CSTR("Total Amount"));
+	this->lblCurrencyTotal->SetRect(4, 28, 100, 23, false);
+	this->txtCurrencyTotal = ui->NewTextBox(this->pnlCurrency, CSTR("-"));
+	this->txtCurrencyTotal->SetRect(104, 28, 75, 23, false);
+	this->txtCurrencyTotal->SetReadOnly(true);
+	this->lblCurrencyValue = ui->NewLabel(this->pnlCurrency, CSTR("Ref Value"));
+	this->lblCurrencyValue->SetRect(4, 52, 100, 23, false);
+	this->txtCurrencyValue = ui->NewTextBox(this->pnlCurrency, CSTR("-"));
+	this->txtCurrencyValue->SetRect(104, 52, 75, 23, false);
+	this->txtCurrencyValue->SetReadOnly(true);
 	this->btnCurrencyImport = ui->NewButton(this->pnlCurrency, CSTR("Import"));
-	this->btnCurrencyImport->SetRect(4, 28, 75, 23, false);
+	this->btnCurrencyImport->SetRect(4, 76, 75, 23, false);
 	this->btnCurrencyImport->HandleButtonClick(OnCurrencyImportClicked, this);
 	this->pbCurrency = ui->NewPictureBox(this->tpCurrencySummary, this->deng, false, false);
 	this->pbCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -674,16 +783,6 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lvAssetsHist->SetShowGrid(true);
 	this->lvAssetsHist->SetFullRowSelect(true);
 	this->lvAssetsHist->HandleSelChg(OnAssetsHistSelChg, this);
-
-	this->tpAccounts = this->tcMain->AddTabPage(CSTR("Accounts"));
-	this->pnlAccounts = ui->NewPanel(this->tpAccounts);
-	this->pnlAccounts->SetRect(0, 0, 100, 31, false);
-	this->pnlAccounts->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->btnAccounts = ui->NewButton(this->pnlAccounts, CSTR("Add"));
-	this->btnAccounts->SetRect(4, 4, 75, 23, false);
-	this->btnAccounts->HandleButtonClick(OnAccountsClicked, this);
-	this->lbAccounts = ui->NewListBox(this->tpAccounts, false);
-	this->lbAccounts->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSettings = this->tcMain->AddTabPage(CSTR("Settings"));
 	this->lblLocalCurrency = ui->NewLabel(this->tpSettings, CSTR("Local Currency"));

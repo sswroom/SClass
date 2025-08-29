@@ -47,6 +47,10 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlCurrency;
 			NN<UI::GUILabel> lblCurrencyCurr;
 			NN<UI::GUITextBox> txtCurrencyCurr;
+			NN<UI::GUILabel> lblCurrencyTotal;
+			NN<UI::GUITextBox> txtCurrencyTotal;
+			NN<UI::GUILabel> lblCurrencyValue;
+			NN<UI::GUITextBox> txtCurrencyValue;
 			NN<UI::GUIButton> btnCurrencyImport;
 			NN<UI::GUIPictureBox> pbCurrency;
 			NN<UI::GUITabPage> tpCurrencyHist;
@@ -85,11 +89,6 @@ namespace SSWR
 			NN<UI::GUIButton> btnAssetsHistUpdate;
 			NN<UI::GUIListView> lvAssetsHist;
 
-			NN<UI::GUITabPage> tpAccounts;
-			NN<UI::GUIPanel> pnlAccounts;
-			NN<UI::GUIButton> btnAccounts;
-			NN<UI::GUIListBox> lbAccounts;
-			
 			NN<UI::GUITabPage> tpSettings;
 			NN<UI::GUILabel> lblLocalCurrency;
 			NN<UI::GUITextBox> txtLocalCurrency;
@@ -109,7 +108,6 @@ namespace SSWR
 			static void __stdcall OnAssetsImportDivClicked(AnyType userObj);
 			static void __stdcall OnAssetsHistUpdateClicked(AnyType userObj);
 			static void __stdcall OnAssetsHistSelChg(AnyType userObj);
-			static void __stdcall OnAccountsClicked(AnyType userObj);
 			static void __stdcall OnTransactionFXClicked(AnyType userObj);
 			static void __stdcall OnTransactionDepositClicked(AnyType userObj);
 			static void __stdcall OnTransactionAssetClicked(AnyType userObj);

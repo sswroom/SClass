@@ -8,8 +8,8 @@
 #include "Text/UTF8Writer.h"
 
 #define SETTINGFILE CSTR("Setting.txt")
-#define ACCOUNTFILE CSTR("Accounts.txt")
 #define ASSETSFILE CSTR("Assets.csv")
+#define TRADEFILE CSTR("Trade.csv")
 
 NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 c)
 {
@@ -47,6 +47,11 @@ NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 
 		csv.CloseReader(r);
 	}
 	return curr;
+}
+
+Optional<Data::Invest::Currency> Data::Invest::InvestmentManager::FindCurrency(UInt32 c) const
+{
+	return this->currMap.Get(c);
 }
 
 Bool Data::Invest::InvestmentManager::LoadAsset(NN<Asset> ass)
@@ -108,6 +113,44 @@ Data::Timestamp Data::Invest::InvestmentManager::ParseTime(NN<Text::String> s, D
 	return nullptr;
 }
 
+void Data::Invest::InvestmentManager::AddTradeEntry(NN<TradeEntry> ent)
+{
+	OSInt i = 0;
+	OSInt j = (OSInt)this->tradeList.GetCount() - 1;
+	OSInt k; 
+	NN<TradeEntry> e;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		e = this->tradeList.GetItemNoCheck((UOSInt)k);
+		if (e->fromDetail.tranDate > ent->fromDetail.tranDate)
+		{
+			j = k - 1;
+		}
+		else if (e->fromDetail.tranDate < ent->fromDetail.tranDate)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			i++;
+			while (i <= j)
+			{
+				e = this->tradeList.GetItemNoCheck((UOSInt)i);
+				if (e->fromDetail.tranDate > ent->fromDetail.tranDate)
+				{
+					break;
+				}
+				i++;
+			}
+			this->tradeList.Insert((UOSInt)i, ent);
+			return;
+		}
+	}
+	this->tradeList.Insert((UOSInt)i, ent);
+	return;
+}
+
 Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 {
 	Text::StringBuilderUTF8 sb;
@@ -119,6 +162,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 	this->path = Text::String::New(sb.ToCString());
 	this->localCurrency = 0;
 	this->refCurrency = 0;
+	this->inited = false;
 	sb.Append(SETTINGFILE);
 	IO::Path::PathType pt = IO::Path::GetPathType(sb.ToCString());
 	if (pt == IO::Path::PathType::Unknown)
@@ -151,23 +195,6 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 		{
 			this->refCurrency = CURRENCY(sb.v.Ptr());
 			this->LoadCurrency(this->refCurrency);
-		}
-	}
-
-	sb.ClearStr();
-	sb.Append(this->path);
-	sb.Append(ACCOUNTFILE);
-	{
-		IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		Text::UTF8Reader reader(fs);
-		sb.ClearStr();
-		while (reader.ReadLine(sb, 512))
-		{
-			if (sb.leng > 0)
-			{
-				this->accounts.Add(Text::String::New(sb.ToCString()));
-			}
-			sb.ClearStr();
 		}
 	}
 
@@ -211,6 +238,60 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 			csv.CloseReader(r);
 		}
 	}
+
+	sb.ClearStr();
+	sb.Append(this->path);
+	sb.Append(TRADEFILE);
+	{
+		DB::CSVFile csv(sb.ToCString(), 65001);
+		NN<DB::DBReader> r;
+		if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+		{
+			TradeType type;
+			while (r->ReadNext())
+			{
+				type = (TradeType)r->GetInt32(0);
+				//	0   , 1      , 2    , 3       , 4           , 5        , 6     , 7         , 8      , 9
+				//	Type,FromDate,ToDate,FromIndex,FromPriceDate,FromAmount,ToIndex,ToPriceDate,ToAmount,RefRate
+
+				if (type == TradeType::ForeignExchange)
+				{
+					this->AddTransactionFX(Data::Timestamp(r->GetInt64(1), Data::DateTimeUtil::GetLocalTzQhr()), (UInt32)r->GetInt64(3), r->GetDblOrNAN(5), (UInt32)r->GetInt64(6), r->GetDblOrNAN(8), r->GetDblOrNAN(9));
+				}
+				else if (type == TradeType::FixedDeposit)
+				{
+					this->AddTransactionDeposit(Data::Timestamp(r->GetInt64(1), Data::DateTimeUtil::GetLocalTzQhr()), Data::Timestamp(r->GetInt64(2), Data::DateTimeUtil::GetLocalTzQhr()), (UInt32)r->GetInt64(3), -r->GetDblOrNAN(5), r->GetDblOrNAN(8));
+				}
+				else if (type == TradeType::CashToAsset)
+				{
+					Data::Timestamp startTime = Data::Timestamp(r->GetInt64(1), Data::DateTimeUtil::GetLocalTzQhr());
+					Data::Timestamp endTime = Data::Timestamp(r->GetInt64(2), Data::DateTimeUtil::GetLocalTzQhr());
+					Data::Timestamp priceTime = Data::Timestamp(r->GetInt64(7), Data::DateTimeUtil::GetLocalTzQhr());
+					if (endTime.ToTicks() == 0)
+					{
+						endTime = 0;
+					}
+					if (priceTime.ToTicks() == 0)
+					{
+						priceTime = 0;
+					}
+					this->AddTransactionAsset(startTime, endTime, priceTime, (UOSInt)r->GetInt64(6), r->GetDblOrNAN(8), r->GetDblOrNAN(5));
+				}
+				else if (type == TradeType::AssetInterest)
+				{
+					Data::Timestamp startTime = Data::Timestamp(r->GetInt64(1), Data::DateTimeUtil::GetLocalTzQhr());
+					Data::Timestamp endTime = Data::Timestamp(r->GetInt64(2), Data::DateTimeUtil::GetLocalTzQhr());
+					if (endTime.ToTicks() == 0)
+					{
+						endTime = 0;
+					}
+					this->AddTransactionAInterest(startTime, endTime, (UOSInt)r->GetInt64(3), r->GetDblOrNAN(8));
+				}
+			}
+			csv.CloseReader(r);
+		}
+	}
+	this->inited = true;
 }
 
 Data::Invest::InvestmentManager::~InvestmentManager()
@@ -224,7 +305,6 @@ Data::Invest::InvestmentManager::~InvestmentManager()
 		curr.Delete();
 	}
 	this->currMap.Clear();
-	this->accounts.FreeAll();
 	NN<Asset> ass;
 	i = this->assetList.GetCount();
 	while (i-- > 0)
@@ -235,7 +315,7 @@ Data::Invest::InvestmentManager::~InvestmentManager()
 		ass.Delete();
 	}
 	this->assetList.Clear();
-	this->tradeList.MemFreeAll();
+	this->tradeList.DeleteAll();
 }
 
 Bool Data::Invest::InvestmentManager::IsError() const
@@ -257,28 +337,6 @@ Bool Data::Invest::InvestmentManager::SaveSettings() const
 	Text::UTF8Writer writer(fs);
 	succ = succ && writer.WriteLine(CURRENCYSTR(this->localCurrency));
 	succ = succ && writer.WriteLine(CURRENCYSTR(this->refCurrency));
-	return succ;
-}
-
-Bool Data::Invest::InvestmentManager::SaveAccounts() const
-{
-	Text::StringBuilderUTF8 sb;
-	sb.Append(this->path);
-	sb.Append(ACCOUNTFILE);
-	IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	if (fs.IsError())
-	{
-		return false;
-	}
-	Bool succ = true;
-	Text::UTF8Writer writer(fs);
-	UOSInt i = 0;
-	UOSInt j = this->accounts.GetCount();
-	while (i < j)
-	{
-		succ = succ && writer.WriteLine(this->accounts.GetItemNoCheck(i)->ToCString());
-		i++;
-	}
 	return succ;
 }
 
@@ -394,6 +452,60 @@ Bool Data::Invest::InvestmentManager::SaveAsset(NN<Asset> ass) const
 	return true;
 }
 
+Bool Data::Invest::InvestmentManager::SaveTransactions() const
+{
+	if (!inited)
+	{
+		return false;
+	}
+	Text::StringBuilderUTF8 sb;
+	sb.Append(this->path);
+	sb.Append(TRADEFILE);
+	IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+		return false;
+	sb.ClearStr();
+	sb.Append(CSTR("Type,FromDate,ToDate,FromIndex,FromPriceDate,FromAmount,ToIndex,ToPriceDate,ToAmount,RefRate\r\n"));
+	NN<TradeEntry> ent;
+	UOSInt i = 0;
+	UOSInt j = this->tradeList.GetCount();;
+	while (i < j)
+	{
+		ent = this->tradeList.GetItemNoCheck(i);
+		sb.AppendUOSInt((UOSInt)ent->type);
+		sb.AppendUTF8Char(',');
+		sb.AppendI64(ent->fromDetail.tranDate.ToTicks());
+		sb.AppendUTF8Char(',');
+		sb.AppendI64(ent->toDetail.tranDate.ToTicks());
+		sb.AppendUTF8Char(',');
+		sb.AppendUOSInt(ent->fromIndex);
+		sb.AppendUTF8Char(',');
+		sb.AppendI64(ent->fromDetail.priceDate.ToTicks());
+		sb.AppendUTF8Char(',');
+		sb.AppendDouble(ent->fromDetail.amount);
+		sb.AppendUTF8Char(',');
+		sb.AppendUOSInt(ent->toIndex);
+		sb.AppendUTF8Char(',');
+		sb.AppendI64(ent->toDetail.priceDate.ToTicks());
+		sb.AppendUTF8Char(',');
+		sb.AppendDouble(ent->toDetail.amount);
+		sb.AppendUTF8Char(',');
+		sb.AppendDouble(ent->refRate);
+		sb.Append(CSTR("\r\n"));
+		if (sb.leng >= 4096)
+		{
+			fs.Write(sb.ToByteArray());
+			sb.ClearStr();
+		}
+		i++;
+	}
+	if (sb.leng > 0)
+	{
+		fs.Write(sb.ToByteArray());
+	}
+	return true;
+}
+
 Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
@@ -473,12 +585,6 @@ Bool Data::Invest::InvestmentManager::UpdateCurrency(NN<Currency> curr, Data::Ti
 	}
 	this->SaveCurrency(curr);
 	return true;
-}
-
-Bool Data::Invest::InvestmentManager::AddAccount(NN<Text::String> accountName)
-{
-	this->accounts.Add(accountName->Clone());
-	return this->SaveAccounts();
 }
 
 Optional<Data::Invest::Asset> Data::Invest::InvestmentManager::AddAsset(NN<Text::String> shortName, NN<Text::String> fullName, UInt32 currency)
@@ -623,4 +729,395 @@ Bool Data::Invest::InvestmentManager::UpdateAsset(NN<Asset> ass, Data::Timestamp
 	}
 	this->SaveAsset(ass);
 	return true;
+}
+
+Double Data::Invest::InvestmentManager::AssetGetPrice(NN<Asset> ass, Data::Timestamp ts) const
+{
+	OSInt i = ass->tsList.SortedIndexOf(ts);
+	if (i >= 0)
+	{
+		return ass->valList.GetItem((UOSInt)i);
+	}
+	else
+	{
+		i = ~i;
+		if (i == 0)
+		{
+			return 0;
+		}
+		return ass->valList.GetItem((UOSInt)i - 1);
+	}
+}
+
+Double Data::Invest::InvestmentManager::AssetGetAmount(NN<Asset> ass, Data::Timestamp ts) const
+{
+	NN<TradeDetail> t;
+	Double total = 0;
+	UOSInt i = 0;
+	UOSInt j = ass->trades.GetCount();
+	while (i < j)
+	{
+		t = ass->trades.GetItemNoCheck(i);
+		if (t->tranDate.NotNull() && t->tranDate <= ts)
+		{
+			total += t->amount;
+		}
+		i++;
+	}
+	return total;
+}
+
+Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt32 curr1, Double value1, UInt32 curr2, Double value2, Double refRate)
+{
+	UOSInt negCnt = 0;
+	if (value1 < 0)
+	{
+		negCnt++;
+	}
+	if (value2 < 0)
+	{
+		negCnt++;
+	}
+	if (negCnt != 1)
+	{
+		return false;
+	}
+	NN<Currency> c;
+	NN<TradeDetail> t;
+	if (value1 < 0)
+	{
+		if (curr1 != this->localCurrency)
+		{
+			c = this->LoadCurrency(curr1);
+			Double sum = 0;
+			UOSInt i = 0;
+			UOSInt j = c->trades.GetCount();
+			while (i < j)
+			{
+
+				t = c->trades.GetItemNoCheck(i);
+				if (!t->tranDate.IsNull() && t->tranDate <= ts)
+				{
+					sum += t->amount;
+				}
+				i++;
+			}
+			if (sum + value1 < 0)
+			{
+				return false;
+			}
+		}
+	}
+	else
+	{
+		if (curr2 != this->localCurrency)
+		{
+			c = this->LoadCurrency(curr2);
+			Double sum = 0;
+			UOSInt i = 0;
+			UOSInt j = c->trades.GetCount();
+			while (i < j)
+			{
+
+				t = c->trades.GetItemNoCheck(i);
+				if (!t->tranDate.IsNull() && t->tranDate <= ts)
+				{
+					sum += t->amount;
+				}
+				i++;
+			}
+			if (sum + value2 < 0)
+			{
+				return false;
+			}
+		}
+	}
+	NN<TradeEntry> ent;
+	NEW_CLASSNN(ent, TradeEntry());
+	ent->type = TradeType::ForeignExchange;
+	ent->fromIndex = curr1;
+	ent->fromDetail.tranDate = ts;
+	ent->fromDetail.priceDate = ts;
+	ent->fromDetail.amount = value1;
+	if (curr1 == this->localCurrency)
+	{
+		if (curr2 == this->refCurrency)
+		{
+			ent->fromDetail.cost = -value1 / value2;
+		}
+		else
+		{
+			ent->fromDetail.cost = refRate;
+		}
+	}
+	else if (curr1 == this->refCurrency)
+	{
+		ent->fromDetail.cost = 1.0;
+	}
+	else
+	{
+		if (curr2 == this->refCurrency)
+		{
+			ent->fromDetail.cost = -value1 / value2;
+		}
+		else
+		{
+			ent->fromDetail.cost = -value1 / value2 * refRate;
+		}
+	}
+	ent->toIndex = curr2;
+	ent->toDetail.tranDate = ts;
+	ent->toDetail.priceDate = ts;
+	ent->toDetail.amount = value2;
+	if (curr2 == this->localCurrency)
+	{
+		if (curr1 == this->refCurrency)
+		{
+			ent->fromDetail.cost = -value2 / value1;
+		}
+		else
+		{
+			ent->toDetail.cost = refRate;
+		}
+	}
+	else if (curr2 == this->refCurrency)
+	{
+		ent->toDetail.cost = 1.0;
+	}
+	else
+	{
+		if (curr1 == this->refCurrency)
+		{
+			ent->toDetail.cost = -value2 / value1;
+		}
+		else
+		{
+			ent->toDetail.cost = -value2 / value1 * refRate;
+		}
+	}
+	ent->refRate = refRate;
+	c = this->LoadCurrency(curr1);
+	c->trades.Add(ent->fromDetail);
+	c = this->LoadCurrency(curr2);
+	c->trades.Add(ent->toDetail);
+	this->AddTradeEntry(ent);
+	this->SaveTransactions();
+	return true;
+}
+
+Bool Data::Invest::InvestmentManager::AddTransactionDeposit(Data::Timestamp startTime, Data::Timestamp endTime, UInt32 curr, Double startValue, Double endValue)
+{
+	if (startTime.IsNull() || endTime.IsNull() || startValue <= 0 || endValue <= startValue)
+	{
+		return false;
+	}
+	NN<Currency> c;
+	if (!this->FindCurrency(curr).SetTo(c))
+	{
+		return false;
+	}
+	UOSInt i;
+	UOSInt j;
+	if (curr != this->localCurrency)
+	{
+		NN<TradeDetail> t;
+		Double totalVal = 0;
+		i = 0;
+		j = c->trades.GetCount();
+		while (i < j)
+		{
+			t = c->trades.GetItemNoCheck(i);
+			if (!t->tranDate.IsNull() && t->tranDate <= startTime)
+			{
+				totalVal += c->trades.GetItemNoCheck(i)->amount;
+			}
+			i++;
+		}
+		if (startValue > totalVal)
+		{
+			return false;
+		}
+	}
+	NN<TradeEntry> ent;
+	NEW_CLASSNN(ent, TradeEntry());
+	ent->type = TradeType::FixedDeposit;
+	ent->fromIndex = curr;
+	ent->fromDetail.tranDate = startTime;
+	ent->fromDetail.priceDate = startTime;
+	ent->fromDetail.amount = -startValue;
+	ent->fromDetail.cost = 1.0;
+	ent->toIndex = curr;
+	ent->toDetail.tranDate = endTime;
+	ent->toDetail.priceDate = startTime;
+	ent->toDetail.amount = endValue;
+	ent->toDetail.cost = 1.0;
+	ent->refRate = (endValue / startValue - 1) * 36500 / endTime.Diff(startTime).GetTotalDays();
+	c = this->LoadCurrency(curr);
+	c->trades.Add(ent->fromDetail);
+	c->trades.Add(ent->toDetail);
+	this->AddTradeEntry(ent);
+	this->SaveTransactions();
+	return true;
+}
+
+Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startTime, Data::Timestamp endTime, Data::Timestamp priceTime, UOSInt assetIndex, Double assetAmount, Double currencyValue)
+{
+	if (endTime.NotNull())
+	{
+		if (startTime > endTime || priceTime > endTime || priceTime < startTime)
+		{
+			return false;
+		}
+	}
+	else if (priceTime.NotNull())
+	{
+		if (priceTime < startTime)
+		{
+			return false;
+		}
+	}
+	NN<Asset> ass;
+	if (!this->assetList.GetItem(assetIndex).SetTo(ass))
+	{
+		return false;
+	}
+	UOSInt negCnt = 0;
+	if (assetAmount < 0)
+	{
+		negCnt++;
+	}
+	if (currencyValue < 0)
+	{
+		negCnt++;
+	}
+	if (negCnt != 1)
+	{
+		return false;
+	}
+
+	NN<TradeDetail> t;
+	NN<Currency> c;
+	UOSInt i;
+	UOSInt j;
+	if (assetAmount < 0)
+	{
+		Double totalAmount = 0;
+		i = 0;
+		j = ass->trades.GetCount();
+		while (i < j)
+		{
+			t = ass->trades.GetItemNoCheck(i);
+			if (t->tranDate.NotNull() && t->tranDate <= startTime)
+			{
+				totalAmount += t->amount;
+			}
+			i++;
+		}
+		if (assetAmount + totalAmount < 0)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (ass->currency != this->localCurrency)
+		{
+			Double totalValue = 0;
+			c = this->LoadCurrency(ass->currency);
+			i = 0;
+			j = c->trades.GetCount();
+			while (i < j)
+			{
+				t = c->trades.GetItemNoCheck(i);
+				if (t->tranDate.NotNull() && t->tranDate <= startTime)
+				{
+					totalValue += t->amount;
+				}
+				i++;
+			}
+			if (currencyValue + totalValue < 0)
+			{
+				return false;
+			}
+		}
+	}
+	NN<TradeEntry> ent;
+	NEW_CLASSNN(ent, TradeEntry());
+	ent->type = TradeType::CashToAsset;
+	ent->fromIndex = ass->currency;
+	ent->fromDetail.tranDate = startTime;
+	ent->fromDetail.priceDate = startTime;
+	ent->fromDetail.amount = currencyValue;
+	ent->fromDetail.cost = 1.0;
+	ent->toIndex = ass->index;
+	ent->toDetail.tranDate = endTime;
+	ent->toDetail.priceDate = priceTime;
+	ent->toDetail.amount = assetAmount;
+	ent->toDetail.cost = -currencyValue / assetAmount;
+	ent->refRate = -currencyValue / assetAmount;
+	c = this->LoadCurrency(ass->currency);
+	c->trades.Add(ent->fromDetail);
+	ass->trades.Add(ent->toDetail);
+	this->AddTradeEntry(ent);
+	this->SaveTransactions();
+	return true;
+}
+
+Bool Data::Invest::InvestmentManager::AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UOSInt assetIndex, Double currencyValue)
+{
+	if (endTime.NotNull())
+	{
+		if (startTime > endTime)
+		{
+			return false;
+		}
+	}
+	NN<Asset> ass;
+	if (!this->assetList.GetItem(assetIndex).SetTo(ass))
+	{
+		return false;
+	}
+	if (currencyValue <= 0)
+	{
+		return false;
+	}
+	NN<TradeEntry> ent;
+	NEW_CLASSNN(ent, TradeEntry());
+	ent->type = TradeType::AssetInterest;
+	ent->fromIndex = ass->index;
+	ent->fromDetail.tranDate = startTime;
+	ent->fromDetail.priceDate = startTime;
+	ent->fromDetail.amount = 0;
+	ent->fromDetail.cost = -currencyValue / AssetGetAmount(ass, startTime);
+	ent->toIndex = ass->currency;
+	ent->toDetail.tranDate = endTime;
+	ent->toDetail.priceDate = startTime;
+	ent->toDetail.amount = currencyValue;
+	ent->toDetail.cost = 1.0;
+	ent->refRate = 0.0;
+	ass->trades.Add(ent->fromDetail);
+	NN<Currency> c = this->LoadCurrency(ass->currency);
+	c->trades.Add(ent->toDetail);
+	this->AddTradeEntry(ent);
+	this->SaveTransactions();
+	return true;
+}
+
+Text::CStringNN Data::Invest::InvestmentManager::TradeTypeGetName(TradeType type)
+{
+	switch (type)
+	{
+	case TradeType::ForeignExchange:
+		return CSTR("FX");
+	case TradeType::FixedDeposit:
+		return CSTR("Deposit");
+	case TradeType::CashToAsset:
+		return CSTR("Asset");
+	case TradeType::AssetInterest:
+		return CSTR("AInterest");
+	case TradeType::AccountInterest:
+		return CSTR("Interest");
+	default:
+		return CSTR("?");
+	}
 }

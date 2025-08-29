@@ -91,6 +91,14 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentFXForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Date is not valid"), TITLE, me);
 		return;
 	}
+	if (me->mgr->AddTransactionFX(Data::Timestamp::FromDate(dt, Data::DateTimeUtil::GetLocalTzQhr()), curr1, val1, curr2, val2, refRate))
+	{
+		me->SetDialogResult(UI::GUIForm::DR_OK);
+	}
+	else
+	{
+		me->ui->ShowMsgOK(CSTR("Error in adding transaction"), TITLE, me);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentFXForm::OnCancelClicked(AnyType userObj)

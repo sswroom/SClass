@@ -64,6 +64,11 @@ namespace Data
 			return Int64_Double(this->seconds) + (this->ns * 0.000000001);
 		}
 
+		Double GetTotalDays() const
+		{
+			return GetTotalSec() / 86400.0;
+		}
+
 		Bool NotZero() const
 		{
 			return this->seconds != 0 || this->ns != 0;

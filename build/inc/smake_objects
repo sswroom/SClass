@@ -1926,10 +1926,13 @@ AVIRImagePSNRForm.o: ../../src/SSWR/AVIRead/AVIRImagePSNRForm.cpp
 AVIRImageResizeForm.o: ../../src/SSWR/AVIRead/AVIRImageResizeForm.cpp
 AVIRImageViewerForm.o: ../../src/SSWR/AVIRead/AVIRImageViewerForm.cpp
 AVIRInvestmentAccountForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAccountForm.cpp
+AVIRInvestmentAInterestForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAInterestForm.cpp
 AVIRInvestmentAssetForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentAssetForm.cpp
+AVIRInvestmentDepositForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentDepositForm.cpp
 AVIRInvestmentForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentForm.cpp
 AVIRInvestmentFXForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentFXForm.cpp
 AVIRInvestmentImportForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentImportForm.cpp
+AVIRInvestmentTAssetForm.o: ../../src/SSWR/AVIRead/AVIRInvestmentTAssetForm.cpp
 AVIRIOPinTestForm.o: ../../src/SSWR/AVIRead/AVIRIOPinTestForm.cpp
 AVIRIPScanDetectorForm.o: ../../src/SSWR/AVIRead/AVIRIPScanDetectorForm.cpp
 AVIRIPScanForm.o: ../../src/SSWR/AVIRead/AVIRIPScanForm.cpp
