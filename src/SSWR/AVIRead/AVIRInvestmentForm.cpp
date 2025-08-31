@@ -5,6 +5,7 @@
 #include "SSWR/AVIRead/AVIRInvestmentAccountForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentAInterestForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentAssetForm.h"
+#include "SSWR/AVIRead/AVIRInvestmentCInterestForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentDepositForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentForm.h"
 #include "SSWR/AVIRead/AVIRInvestmentFXForm.h"
@@ -367,7 +368,16 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionAInterestClicked(
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionCInterestClicked(AnyType userObj)
 {
-
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr))
+	{
+		AVIRInvestmentCInterestForm frm(0, me->ui, me->core, mgr);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+		{
+			me->DisplayTransactions(mgr);
+		}
+	}
 }
 
 void SSWR::AVIRead::AVIRInvestmentForm::UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr)
@@ -475,13 +485,31 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	NN<Data::Invest::TradeDetail> t;
 	this->txtAssetsShortName->SetText(ass->shortName->ToCString());
 	this->txtAssetsFullName->SetText(ass->fullName->ToCString());
 	this->txtAssetsCurrency->SetText(CURRENCYSTR(ass->currency));
+	sptr = Text::StrDouble(sbuff, ass->current);
+	this->txtAssetsCurrent->SetText(CSTRP(sbuff, sptr));
+	Double total = 0;
+	i = 0;
+	j = ass->trades.GetCount();
+	while (i < j)
+	{
+		t = ass->trades.GetItemNoCheck(i);
+		total += t->amount;
+		i++;
+	}
+	sptr = Text::StrDouble(sbuff, total);
+	this->txtAssetsAmount->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, ass->current * total);
+	this->txtAssetsValue->SetText(CSTRP(sbuff, sptr));
 	this->lvAssetsHist->ClearItems();
-	UOSInt i = 0;
-	UOSInt j = ass->tsList.GetCount();
-	UOSInt k;
+	i = 0;
+	j = ass->tsList.GetCount();
 	if (j > 20)
 	{
 		i = j - 20;
@@ -496,7 +524,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 		this->lvAssetsHist->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		i++;
 	}
-
+	
 	this->DisplayAssetImg(ass);
 }
 
@@ -584,6 +612,13 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 					this->lvTransaction->SetSubItem(k, 3, ass->shortName);
 				}
 				UInt32 c = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+			}
+			else if (ent->type == Data::Invest::TradeType::AccountInterest)
+			{
+				UInt32 c = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
+				c = (UInt32)ent->toIndex;
 				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
 			}
 			sptr = Text::StrDouble(sbuff, ent->fromDetail.amount);
@@ -730,7 +765,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tcAssets->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpAssetsSummary = this->tcAssets->AddTabPage(CSTR("Summary"));
 	this->pnlAssetsDetail = ui->NewPanel(this->tpAssetsSummary);
-	this->pnlAssetsDetail->SetRect(0, 0, 100, 103, false);
+	this->pnlAssetsDetail->SetRect(0, 0, 100, 175, false);
 	this->pnlAssetsDetail->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblAssetsShortName = ui->NewLabel(this->pnlAssetsDetail, CSTR("Short Name"));
 	this->lblAssetsShortName->SetRect(4, 4, 100, 23, false);
@@ -747,11 +782,26 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->txtAssetsCurrency = ui->NewTextBox(this->pnlAssetsDetail, CSTR(""));
 	this->txtAssetsCurrency->SetRect(104, 52, 50, 23, false);
 	this->txtAssetsCurrency->SetReadOnly(true);
+	this->lblAssetsCurrent = ui->NewLabel(this->pnlAssetsDetail, CSTR("Current"));
+	this->lblAssetsCurrent->SetRect(4, 76, 100, 23, false);
+	this->txtAssetsCurrent = ui->NewTextBox(this->pnlAssetsDetail, CSTR(""));
+	this->txtAssetsCurrent->SetRect(104, 76, 50, 23, false);
+	this->txtAssetsCurrent->SetReadOnly(true);
+	this->lblAssetsAmount = ui->NewLabel(this->pnlAssetsDetail, CSTR("Amount"));
+	this->lblAssetsAmount->SetRect(4, 100, 100, 23, false);
+	this->txtAssetsAmount = ui->NewTextBox(this->pnlAssetsDetail, CSTR(""));
+	this->txtAssetsAmount->SetRect(104, 100, 50, 23, false);
+	this->txtAssetsAmount->SetReadOnly(true);
+	this->lblAssetsValue = ui->NewLabel(this->pnlAssetsDetail, CSTR("Value"));
+	this->lblAssetsValue->SetRect(4, 124, 100, 23, false);
+	this->txtAssetsValue = ui->NewTextBox(this->pnlAssetsDetail, CSTR(""));
+	this->txtAssetsValue->SetRect(104, 124, 50, 23, false);
+	this->txtAssetsValue->SetReadOnly(true);
 	this->btnAssetsImport = ui->NewButton(this->pnlAssetsDetail, CSTR("Import"));
-	this->btnAssetsImport->SetRect(104, 76, 75, 23, false);
+	this->btnAssetsImport->SetRect(104, 148, 75, 23, false);
 	this->btnAssetsImport->HandleButtonClick(OnAssetsImportClicked, this);
 	this->btnAssetsImportDiv = ui->NewButton(this->pnlAssetsDetail, CSTR("Import Div"));
-	this->btnAssetsImportDiv->SetRect(184, 76, 75, 23, false);
+	this->btnAssetsImportDiv->SetRect(184, 148, 75, 23, false);
 	this->btnAssetsImportDiv->HandleButtonClick(OnAssetsImportDivClicked, this);
 	this->pbAssets = ui->NewPictureBox(this->tpAssetsSummary, this->deng, false, false);
 	this->pbAssets->SetDockType(UI::GUIControl::DOCK_FILL);

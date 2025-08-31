@@ -117,6 +117,7 @@ namespace Data
 			Bool AddTransactionAsset(Data::Timestamp startTime, Data::Timestamp endTime, Data::Timestamp priceTime, UOSInt assetIndex, Double assetAmount, Double currencyValue);
 			Bool AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UOSInt assetIndex, Double currencyValue);
 			Bool UpdateTransactionAssetTime(NN<TradeEntry> t, Data::Timestamp endTime, Data::Timestamp priceTime);
+			Bool AddTransactionCInterest(Data::Timestamp ts, UInt32 curr, Double currencyValue);
 			
 			static Text::CStringNN TradeTypeGetName(TradeType type);
 		};

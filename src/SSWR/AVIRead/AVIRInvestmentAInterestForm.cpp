@@ -76,7 +76,59 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentAInterestForm::OnAssetSelChg(AnyType
 		sb.Append(CURRENCYSTR(ass->currency));
 		sb.AppendUTF8Char(')');
 		me->lblCurrencyValue->SetText(sb.ToCString());
+		OnStartDateChg(me);
+		OnCurrencyValueChg(me);
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentAInterestForm::OnStartDateChg(AnyType userObj)
+{
+	NN<AVIRInvestmentAInterestForm> me = userObj.GetNN<AVIRInvestmentAInterestForm>();
+	NN<Data::Invest::Asset> ass;
+	if (me->cboAsset->GetSelectedItem().GetOpt<Data::Invest::Asset>().SetTo(ass))
+	{
+		Text::StringBuilderUTF8 sb;
+		me->txtStartDate->GetText(sb);
+		Data::Date dt = Data::Date(sb.ToCString());
+		if (dt.IsNull())
+		{
+			me->txtAssetAmount->SetText(CSTR(""));
+		}
+		else
+		{
+			sb.ClearStr();
+			sb.AppendDouble(me->mgr->AssetGetAmount(ass, Data::Timestamp::FromDate(dt, Data::DateTimeUtil::GetLocalTzQhr())));
+			me->txtAssetAmount->SetText(sb.ToCString());
+		}
+	}
+	else
+	{
+		me->txtAssetAmount->SetText(CSTR(""));
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRInvestmentAInterestForm::OnCurrencyValueChg(AnyType userObj)
+{
+	NN<AVIRInvestmentAInterestForm> me = userObj.GetNN<AVIRInvestmentAInterestForm>();
+	Text::StringBuilderUTF8 sb;
+	Double amount;
+	Double value;
+	me->txtAssetAmount->GetText(sb);
+	if (!sb.ToDouble(amount))
+	{
+		me->txtAssetDiv->SetText(CSTR(""));
+		return;
+	}
+	sb.ClearStr();
+	me->txtCurrencyValue->GetText(sb);
+	if (!sb.ToDouble(value))
+	{
+		me->txtAssetDiv->SetText(CSTR(""));
+		return;
+	}
+	sb.ClearStr();
+	sb.AppendDouble(value / amount);
+	me->txtAssetDiv->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRInvestmentAInterestForm::AVIRInvestmentAInterestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::Invest::InvestmentManager> mgr) : UI::GUIForm(parent, 1024, 300, ui)
@@ -96,6 +148,7 @@ SSWR::AVIRead::AVIRInvestmentAInterestForm::AVIRInvestmentAInterestForm(Optional
 	sptr = Data::Date::Today().ToString(sbuff);
 	this->txtStartDate = ui->NewTextBox(*this, CSTRP(sbuff, sptr));
 	this->txtStartDate->SetRect(104, 4, 150, 23, false);
+	this->txtStartDate->HandleTextChanged(OnStartDateChg, this);
 	this->lblEndDate = ui->NewLabel(*this, CSTR("End Date"));
 	this->lblEndDate->SetRect(4, 28, 100, 23, false);
 	this->txtEndDate = ui->NewTextBox(*this, CSTR(""));
@@ -105,15 +158,26 @@ SSWR::AVIRead::AVIRInvestmentAInterestForm::AVIRInvestmentAInterestForm(Optional
 	this->cboAsset = ui->NewComboBox(*this, false);
 	this->cboAsset->SetRect(104, 52, 50, 23, false);
 	this->cboAsset->HandleSelectionChange(OnAssetSelChg, this);
+	this->lblAssetAmount = ui->NewLabel(*this, CSTR("Amount"));
+	this->lblAssetAmount->SetRect(4, 76, 100, 23, false);
+	this->txtAssetAmount = ui->NewTextBox(*this, CSTR(""));
+	this->txtAssetAmount->SetRect(104, 76, 100, 23, false);
+	this->txtAssetAmount->SetReadOnly(true);
 	this->lblCurrencyValue = ui->NewLabel(*this, CSTR("Value"));
-	this->lblCurrencyValue->SetRect(4, 76, 100, 23, false);
+	this->lblCurrencyValue->SetRect(4, 100, 100, 23, false);
 	this->txtCurrencyValue = ui->NewTextBox(*this, CSTR("0.0"));
-	this->txtCurrencyValue->SetRect(104, 76, 100, 23, false);
+	this->txtCurrencyValue->SetRect(104, 100, 100, 23, false);
+	this->txtCurrencyValue->HandleTextChanged(OnCurrencyValueChg, this);
+	this->lblAssetDiv = ui->NewLabel(*this, CSTR("Div"));
+	this->lblAssetDiv->SetRect(4, 124, 100, 23, false);
+	this->txtAssetDiv = ui->NewTextBox(*this, CSTR(""));
+	this->txtAssetDiv->SetRect(104, 124, 100, 23, false);
+	this->txtAssetDiv->SetReadOnly(true);
 	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
-	this->btnCancel->SetRect(104, 100, 75, 23, false);
+	this->btnCancel->SetRect(104, 148, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->btnOK = ui->NewButton(*this, CSTR("OK"));
-	this->btnOK->SetRect(184, 100, 75, 23, false);
+	this->btnOK->SetRect(184, 148, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	NN<Data::Invest::Asset> ass;
 	UOSInt i = 0;

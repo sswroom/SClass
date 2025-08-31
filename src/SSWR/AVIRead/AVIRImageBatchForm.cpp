@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 		{
 			if (!me->resizer->IsSupported(simg->info))
 			{
-				printf("AVIRImageBatchForm: Pixel Format not supported\r\n");
+				printf("AVIRImageBatchForm: Pixel Format not supported: %s\r\n", Media::PixelFormatGetName(simg->info.pf).v.Ptr());
 				simg->ToB8G8R8A8();
 			}
 			Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();

@@ -75,6 +75,12 @@ namespace SSWR
 			NN<UI::GUITextBox> txtAssetsFullName;
 			NN<UI::GUILabel> lblAssetsCurrency;
 			NN<UI::GUITextBox> txtAssetsCurrency;
+			NN<UI::GUILabel> lblAssetsCurrent;
+			NN<UI::GUITextBox> txtAssetsCurrent;
+			NN<UI::GUILabel> lblAssetsAmount;
+			NN<UI::GUITextBox> txtAssetsAmount;
+			NN<UI::GUILabel> lblAssetsValue;
+			NN<UI::GUITextBox> txtAssetsValue;
 			NN<UI::GUIButton> btnAssetsImport;
 			NN<UI::GUIButton> btnAssetsImportDiv;
 			NN<UI::GUIPictureBox> pbAssets;

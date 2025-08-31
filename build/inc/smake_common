@@ -4222,6 +4222,8 @@ SSWR/AVIRead/AVIRInvestmentAInterestForm.h:
 @AVIRInvestmentAInterestForm.o
 SSWR/AVIRead/AVIRInvestmentAssetForm.h:
 @AVIRInvestmentAssetForm.o
+SSWR/AVIRead/AVIRInvestmentCInterestForm.h:
+@AVIRInvestmentCInterestForm.o
 SSWR/AVIRead/AVIRInvestmentDepositForm.h:
 @AVIRInvestmentDepositForm.o
 SSWR/AVIRead/AVIRInvestmentForm.h:

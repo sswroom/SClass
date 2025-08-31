@@ -287,6 +287,11 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 					}
 					this->AddTransactionAInterest(startTime, endTime, (UOSInt)r->GetInt64(3), r->GetDblOrNAN(8));
 				}
+				else if (type == TradeType::AccountInterest)
+				{
+					Data::Timestamp startTime = Data::Timestamp(r->GetInt64(1), Data::DateTimeUtil::GetLocalTzQhr());
+					this->AddTransactionCInterest(startTime, (UInt32)r->GetInt64(6), r->GetDblOrNAN(8));
+				}
 			}
 			csv.CloseReader(r);
 		}
@@ -1097,6 +1102,41 @@ Bool Data::Invest::InvestmentManager::AddTransactionAInterest(Data::Timestamp st
 	ent->refRate = 0.0;
 	ass->trades.Add(ent->fromDetail);
 	NN<Currency> c = this->LoadCurrency(ass->currency);
+	c->trades.Add(ent->toDetail);
+	this->AddTradeEntry(ent);
+	this->SaveTransactions();
+	return true;
+}
+
+Bool Data::Invest::InvestmentManager::AddTransactionCInterest(Data::Timestamp ts, UInt32 curr, Double currencyValue)
+{
+	NN<Currency> c;
+	if (!this->FindCurrency(curr).SetTo(c))
+	{
+		return false;
+	}
+	if (currencyValue <= 0)
+	{
+		return false;
+	}
+	if (ts.IsNull())
+	{
+		return false;
+	}
+	NN<TradeEntry> ent;
+	NEW_CLASSNN(ent, TradeEntry());
+	ent->type = TradeType::AccountInterest;
+	ent->fromIndex = curr;
+	ent->fromDetail.tranDate = ts;
+	ent->fromDetail.priceDate = ts;
+	ent->fromDetail.amount = 0;
+	ent->fromDetail.cost = 0;
+	ent->toIndex = curr;
+	ent->toDetail.tranDate = ts;
+	ent->toDetail.priceDate = ts;
+	ent->toDetail.amount = currencyValue;
+	ent->toDetail.cost = 1.0;
+	ent->refRate = 0.0;
 	c->trades.Add(ent->toDetail);
 	this->AddTradeEntry(ent);
 	this->SaveTransactions();

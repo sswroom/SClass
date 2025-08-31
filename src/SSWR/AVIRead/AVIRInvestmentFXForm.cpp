@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentFXForm::OnCurrencyChanged(AnyType us
 		sb.ClearStr();
 		sb.Append(CURRENCYSTR(refC));
 		sb.AppendUTF8Char('/');
-		sb.Append(CURRENCYSTR(foreignC));
+		sb.Append(CURRENCYSTR(localC));
 		me->txtRefRateName->SetText(sb.ToCString());
 	}
 	else
