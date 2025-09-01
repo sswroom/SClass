@@ -24,7 +24,8 @@ namespace Data
 
 		struct TradeDetail
 		{
-			Data::Timestamp tranDate;
+			Data::Timestamp tranBeginDate;
+			Data::Timestamp tranEndDate;
 			Data::Timestamp priceDate;
 			Double cost;
 			Double amount;
@@ -80,7 +81,6 @@ namespace Data
 			Bool inited;
 
 			NN<Currency> LoadCurrency(UInt32 c);
-			Optional<Currency> FindCurrency(UInt32 c) const;
 			Bool LoadAsset(NN<Asset> ass);
 			static Data::Timestamp ParseTime(NN<Text::String> s, DateFormat fmt);
 			void AddTradeEntry(NN<TradeEntry> ent);
@@ -100,7 +100,10 @@ namespace Data
 			UInt32 GetRefCurrency() const { return this->refCurrency; }
 			UOSInt GetCurrencyCount() const { return this->currMap.GetCount(); }
 			Optional<Currency> GetCurrencyInfo(UOSInt index) const { return this->currMap.GetItem(index); }
+			Optional<Currency> FindCurrency(UInt32 c) const { return this->currMap.Get(c); }
 			Bool UpdateCurrency(NN<Currency> curr, Data::Timestamp ts, Double value);
+			void CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList);
+			Double CurrencyGetRate(NN<Currency> curr, Data::Timestamp ts);
 			UOSInt GetAssetCount() const { return this->assetList.GetCount(); }
 			Optional<Asset> GetAsset(UOSInt index) const { return this->assetList.GetItem(index); }
 			Optional<Asset> AddAsset(NN<Text::String> shortName, NN<Text::String> fullName, UInt32 currency);
@@ -109,6 +112,7 @@ namespace Data
 			Bool UpdateAsset(NN<Asset> ass, Data::Timestamp ts, Double value, Double divValue);
 			Double AssetGetPrice(NN<Asset> ass, Data::Timestamp ts) const;
 			Double AssetGetAmount(NN<Asset> ass, Data::Timestamp ts) const;
+			void AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList);
 
 			UOSInt GetTransactionCount() const { return this->tradeList.GetCount(); }
 			Optional<TradeEntry> GetTransactionEntry(UOSInt index) const { return this->tradeList.GetItem(index); }
@@ -118,6 +122,7 @@ namespace Data
 			Bool AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UOSInt assetIndex, Double currencyValue);
 			Bool UpdateTransactionAssetTime(NN<TradeEntry> t, Data::Timestamp endTime, Data::Timestamp priceTime);
 			Bool AddTransactionCInterest(Data::Timestamp ts, UInt32 curr, Double currencyValue);
+			Data::Timestamp GetFirstTradeTime() const;
 			
 			static Text::CStringNN TradeTypeGetName(TradeType type);
 		};

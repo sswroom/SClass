@@ -49,11 +49,6 @@ NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 
 	return curr;
 }
 
-Optional<Data::Invest::Currency> Data::Invest::InvestmentManager::FindCurrency(UInt32 c) const
-{
-	return this->currMap.Get(c);
-}
-
 Bool Data::Invest::InvestmentManager::LoadAsset(NN<Asset> ass)
 {
 	Text::StringBuilderUTF8 sb;
@@ -123,11 +118,11 @@ void Data::Invest::InvestmentManager::AddTradeEntry(NN<TradeEntry> ent)
 	{
 		k = (i + j) >> 1;
 		e = this->tradeList.GetItemNoCheck((UOSInt)k);
-		if (e->fromDetail.tranDate > ent->fromDetail.tranDate)
+		if (e->fromDetail.tranBeginDate > ent->fromDetail.tranBeginDate)
 		{
 			j = k - 1;
 		}
-		else if (e->fromDetail.tranDate < ent->fromDetail.tranDate)
+		else if (e->fromDetail.tranBeginDate < ent->fromDetail.tranBeginDate)
 		{
 			i = k + 1;
 		}
@@ -137,7 +132,7 @@ void Data::Invest::InvestmentManager::AddTradeEntry(NN<TradeEntry> ent)
 			while (i <= j)
 			{
 				e = this->tradeList.GetItemNoCheck((UOSInt)i);
-				if (e->fromDetail.tranDate > ent->fromDetail.tranDate)
+				if (e->fromDetail.tranBeginDate > ent->fromDetail.tranBeginDate)
 				{
 					break;
 				}
@@ -479,9 +474,9 @@ Bool Data::Invest::InvestmentManager::SaveTransactions() const
 		ent = this->tradeList.GetItemNoCheck(i);
 		sb.AppendUOSInt((UOSInt)ent->type);
 		sb.AppendUTF8Char(',');
-		sb.AppendI64(ent->fromDetail.tranDate.ToTicks());
+		sb.AppendI64(ent->fromDetail.tranBeginDate.ToTicks());
 		sb.AppendUTF8Char(',');
-		sb.AppendI64(ent->toDetail.tranDate.ToTicks());
+		sb.AppendI64(ent->toDetail.tranEndDate.ToTicks());
 		sb.AppendUTF8Char(',');
 		sb.AppendUOSInt(ent->fromIndex);
 		sb.AppendUTF8Char(',');
@@ -590,6 +585,108 @@ Bool Data::Invest::InvestmentManager::UpdateCurrency(NN<Currency> curr, Data::Ti
 	}
 	this->SaveCurrency(curr);
 	return true;
+}
+
+void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList)
+{
+	Data::DateTimeUtil::Weekday wd = startDate.GetWeekday();
+	if (wd == Data::DateTimeUtil::Weekday::Saturday)
+	{
+		startDate = startDate.AddDay(2);
+	}
+	else if (wd == Data::DateTimeUtil::Weekday::Sunday)
+	{
+		startDate = startDate.AddDay(1);
+	}
+	Data::Timestamp startTS = Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr());
+	Data::Timestamp endTS = Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr());
+	Data::ArrayListNN<TradeEntry> depositList;
+	NN<TradeEntry> ent;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	i = 0;
+	j = this->tradeList.GetCount();
+	while (i < j)
+	{
+		ent = this->tradeList.GetItemNoCheck(i);
+		if (ent->type == TradeType::FixedDeposit && ent->fromIndex == curr->c && ent->fromDetail.tranBeginDate < endTS && ent->toDetail.tranBeginDate > startTS)
+		{
+			depositList.Add(ent);
+		}
+		i++;
+	}
+	Double totalValue = 0;
+	Double depositValue;
+	NN<TradeDetail> t;
+	i = 0;
+	j = curr->trades.GetCount();
+	while (i < j)
+	{
+		t = curr->trades.GetItemNoCheck(i);
+		if (t->tranBeginDate > startTS)
+		{
+			break;
+		}
+		totalValue += t->amount;
+		i++;
+	}
+	while (startDate < endDate)
+	{
+		startTS = Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr());
+		while (i < j)
+		{
+			t = curr->trades.GetItemNoCheck(i);
+			if (t->tranBeginDate > startTS)
+			{
+				break;
+			}
+			totalValue += t->amount;
+			i++;
+		}
+		depositValue = 0;
+		k = depositList.GetCount();
+		while (k-- > 0)
+		{
+			ent = depositList.GetItemNoCheck(k);
+			if (ent->fromDetail.tranBeginDate <= startTS && ent->toDetail.tranBeginDate > startTS)
+			{
+				depositValue += -ent->fromDetail.amount + (ent->fromDetail.amount + ent->toDetail.amount) * startTS.Diff(ent->fromDetail.tranBeginDate).GetTotalDays() / ent->toDetail.tranBeginDate.Diff(ent->fromDetail.tranBeginDate).GetTotalDays();
+			}
+		}
+		dateList->Add(startTS);
+		valueList->Add(totalValue + depositValue);
+		startDate = startDate.AddDay(1);
+		wd = startDate.GetWeekday();
+		if (wd == Data::DateTimeUtil::Weekday::Saturday)
+		{
+			startDate = startDate.AddDay(2);
+		}
+		else if (wd == Data::DateTimeUtil::Weekday::Sunday)
+		{
+			startDate = startDate.AddDay(1);
+		}
+	}
+}
+
+Double Data::Invest::InvestmentManager::CurrencyGetRate(NN<Currency> curr, Data::Timestamp ts)
+{
+	OSInt i = curr->tsList.SortedIndexOf(ts);
+	if (i >= 0)
+	{
+		return curr->valList.GetItem((UOSInt)i);
+	}
+	else if (i == -1)
+	{
+		if (curr->valList.GetCount() == 0)
+			return 1.0;
+		else
+			return curr->valList.GetItem(0);
+	}
+	else
+	{
+		return curr->valList.GetItem((UOSInt)~i - 1);
+	}
 }
 
 Optional<Data::Invest::Asset> Data::Invest::InvestmentManager::AddAsset(NN<Text::String> shortName, NN<Text::String> fullName, UInt32 currency)
@@ -763,13 +860,85 @@ Double Data::Invest::InvestmentManager::AssetGetAmount(NN<Asset> ass, Data::Time
 	while (i < j)
 	{
 		t = ass->trades.GetItemNoCheck(i);
-		if (t->tranDate.NotNull() && t->tranDate <= ts)
+		if (t->tranBeginDate.NotNull() && t->tranBeginDate <= ts)
 		{
 			total += t->amount;
 		}
 		i++;
 	}
 	return total;
+}
+
+void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList)
+{
+	Data::DateTimeUtil::Weekday wd = startDate.GetWeekday();
+	if (wd == Data::DateTimeUtil::Weekday::Saturday)
+	{
+		startDate = startDate.AddDay(2);
+	}
+	else if (wd == Data::DateTimeUtil::Weekday::Sunday)
+	{
+		startDate = startDate.AddDay(1);
+	}
+	Data::Timestamp startTS = Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr());
+	Data::Timestamp endTS = Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr());
+	Double totalAmount = 0;
+	NN<TradeDetail> t;
+	OSInt si;
+	UOSInt i = 0;
+	UOSInt j = ass->trades.GetCount();
+	while (i < j)
+	{
+		t = ass->trades.GetItemNoCheck(i);
+		if (t->tranBeginDate > startTS)
+		{
+			break;
+		}
+		totalAmount += t->amount;
+		i++;
+	}
+	while (startDate < endDate)
+	{
+		startTS = Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr());
+		while (i < j)
+		{
+			t = ass->trades.GetItemNoCheck(i);
+			if (t->tranBeginDate > startTS)
+			{
+				break;
+			}
+			totalAmount += t->amount;
+			i++;
+		}
+		dateList->Add(startTS);
+		si = ass->tsList.SortedIndexOf(startTS);
+		if (si >= 0)
+		{
+			valueList->Add(totalAmount * ass->valList.GetItem((UOSInt)si));
+		}
+		else if (si == -1)
+		{
+			valueList->Add(totalAmount);
+		}
+		else if ((UOSInt)~si >= ass->valList.GetCount())
+		{
+			valueList->Add(totalAmount * ass->valList.GetItem(ass->valList.GetCount() - 1));
+		}
+		else
+		{
+			valueList->Add(totalAmount * ass->valList.GetItem((UOSInt)~si - 1));
+		}
+		startDate = startDate.AddDay(1);
+		wd = startDate.GetWeekday();
+		if (wd == Data::DateTimeUtil::Weekday::Saturday)
+		{
+			startDate = startDate.AddDay(2);
+		}
+		else if (wd == Data::DateTimeUtil::Weekday::Sunday)
+		{
+			startDate = startDate.AddDay(1);
+		}
+	}
 }
 
 Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt32 curr1, Double value1, UInt32 curr2, Double value2, Double refRate)
@@ -801,7 +970,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 			{
 
 				t = c->trades.GetItemNoCheck(i);
-				if (!t->tranDate.IsNull() && t->tranDate <= ts)
+				if (!t->tranEndDate.IsNull() && t->tranEndDate <= ts)
 				{
 					sum += t->amount;
 				}
@@ -825,7 +994,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 			{
 
 				t = c->trades.GetItemNoCheck(i);
-				if (!t->tranDate.IsNull() && t->tranDate <= ts)
+				if (!t->tranEndDate.IsNull() && t->tranEndDate <= ts)
 				{
 					sum += t->amount;
 				}
@@ -841,7 +1010,8 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 	NEW_CLASSNN(ent, TradeEntry());
 	ent->type = TradeType::ForeignExchange;
 	ent->fromIndex = curr1;
-	ent->fromDetail.tranDate = ts;
+	ent->fromDetail.tranBeginDate = ts;
+	ent->fromDetail.tranEndDate = ts;
 	ent->fromDetail.priceDate = ts;
 	ent->fromDetail.amount = value1;
 	if (curr1 == this->localCurrency)
@@ -871,7 +1041,8 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 		}
 	}
 	ent->toIndex = curr2;
-	ent->toDetail.tranDate = ts;
+	ent->toDetail.tranBeginDate = ts;
+	ent->toDetail.tranEndDate = ts;
 	ent->toDetail.priceDate = ts;
 	ent->toDetail.amount = value2;
 	if (curr2 == this->localCurrency)
@@ -932,7 +1103,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionDeposit(Data::Timestamp star
 		while (i < j)
 		{
 			t = c->trades.GetItemNoCheck(i);
-			if (!t->tranDate.IsNull() && t->tranDate <= startTime)
+			if (!t->tranEndDate.IsNull() && t->tranEndDate <= startTime)
 			{
 				totalVal += c->trades.GetItemNoCheck(i)->amount;
 			}
@@ -947,12 +1118,14 @@ Bool Data::Invest::InvestmentManager::AddTransactionDeposit(Data::Timestamp star
 	NEW_CLASSNN(ent, TradeEntry());
 	ent->type = TradeType::FixedDeposit;
 	ent->fromIndex = curr;
-	ent->fromDetail.tranDate = startTime;
+	ent->fromDetail.tranBeginDate = startTime;
+	ent->fromDetail.tranEndDate = startTime;
 	ent->fromDetail.priceDate = startTime;
 	ent->fromDetail.amount = -startValue;
 	ent->fromDetail.cost = 1.0;
 	ent->toIndex = curr;
-	ent->toDetail.tranDate = endTime;
+	ent->toDetail.tranBeginDate = endTime;
+	ent->toDetail.tranEndDate = endTime;
 	ent->toDetail.priceDate = startTime;
 	ent->toDetail.amount = endValue;
 	ent->toDetail.cost = 1.0;
@@ -1012,7 +1185,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startT
 		while (i < j)
 		{
 			t = ass->trades.GetItemNoCheck(i);
-			if (t->tranDate.NotNull() && t->tranDate <= startTime)
+			if (t->tranEndDate.NotNull() && t->tranEndDate <= startTime)
 			{
 				totalAmount += t->amount;
 			}
@@ -1034,7 +1207,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startT
 			while (i < j)
 			{
 				t = c->trades.GetItemNoCheck(i);
-				if (t->tranDate.NotNull() && t->tranDate <= startTime)
+				if (t->tranEndDate.NotNull() && t->tranEndDate <= startTime)
 				{
 					totalValue += t->amount;
 				}
@@ -1050,12 +1223,14 @@ Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startT
 	NEW_CLASSNN(ent, TradeEntry());
 	ent->type = TradeType::CashToAsset;
 	ent->fromIndex = ass->currency;
-	ent->fromDetail.tranDate = startTime;
+	ent->fromDetail.tranBeginDate = startTime;
+	ent->fromDetail.tranEndDate = startTime;
 	ent->fromDetail.priceDate = startTime;
 	ent->fromDetail.amount = currencyValue;
 	ent->fromDetail.cost = 1.0;
 	ent->toIndex = ass->index;
-	ent->toDetail.tranDate = endTime;
+	ent->toDetail.tranBeginDate = startTime;
+	ent->toDetail.tranEndDate = endTime;
 	ent->toDetail.priceDate = priceTime;
 	ent->toDetail.amount = assetAmount;
 	ent->toDetail.cost = -currencyValue / assetAmount;
@@ -1090,12 +1265,14 @@ Bool Data::Invest::InvestmentManager::AddTransactionAInterest(Data::Timestamp st
 	NEW_CLASSNN(ent, TradeEntry());
 	ent->type = TradeType::AssetInterest;
 	ent->fromIndex = ass->index;
-	ent->fromDetail.tranDate = startTime;
+	ent->fromDetail.tranBeginDate = startTime;
+	ent->fromDetail.tranEndDate = startTime;
 	ent->fromDetail.priceDate = startTime;
 	ent->fromDetail.amount = 0;
 	ent->fromDetail.cost = -currencyValue / AssetGetAmount(ass, startTime);
 	ent->toIndex = ass->currency;
-	ent->toDetail.tranDate = endTime;
+	ent->toDetail.tranBeginDate = startTime;
+	ent->toDetail.tranEndDate = endTime;
 	ent->toDetail.priceDate = startTime;
 	ent->toDetail.amount = currencyValue;
 	ent->toDetail.cost = 1.0;
@@ -1127,12 +1304,14 @@ Bool Data::Invest::InvestmentManager::AddTransactionCInterest(Data::Timestamp ts
 	NEW_CLASSNN(ent, TradeEntry());
 	ent->type = TradeType::AccountInterest;
 	ent->fromIndex = curr;
-	ent->fromDetail.tranDate = ts;
+	ent->fromDetail.tranBeginDate = ts;
+	ent->fromDetail.tranEndDate = ts;
 	ent->fromDetail.priceDate = ts;
 	ent->fromDetail.amount = 0;
 	ent->fromDetail.cost = 0;
 	ent->toIndex = curr;
-	ent->toDetail.tranDate = ts;
+	ent->toDetail.tranBeginDate = ts;
+	ent->toDetail.tranEndDate = ts;
 	ent->toDetail.priceDate = ts;
 	ent->toDetail.amount = currencyValue;
 	ent->toDetail.cost = 1.0;
@@ -1141,6 +1320,15 @@ Bool Data::Invest::InvestmentManager::AddTransactionCInterest(Data::Timestamp ts
 	this->AddTradeEntry(ent);
 	this->SaveTransactions();
 	return true;
+}
+
+Data::Timestamp Data::Invest::InvestmentManager::GetFirstTradeTime() const
+{
+	if (this->tradeList.GetCount() > 0)
+	{
+		return this->tradeList.GetItemNoCheck(0)->fromDetail.tranBeginDate;
+	}
+	return Data::Timestamp::Now();
 }
 
 Text::CStringNN Data::Invest::InvestmentManager::TradeTypeGetName(TradeType type)

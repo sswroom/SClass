@@ -90,6 +90,11 @@ namespace Data
 			this->dateVal = DateTimeUtil::Date2TotalDays(d.year, d.month, (Int32)day);
 		}
 
+		Data::Date AddDay(OSInt day) const
+		{
+			return Data::Date(this->dateVal + day);
+		}
+
 		Bool IsYearLeap() const
 		{
 			DateTimeUtil::DateValue d;

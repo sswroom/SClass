@@ -71,6 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnDirClicked(AnyType userObj)
 		i++;
 	}
 	me->DisplayTransactions(mgr);
+	me->UpdateMonthly(mgr);
 }
 
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnCurrencyImportClicked(AnyType userObj)
@@ -380,6 +381,16 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionCInterestClicked(
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnMonthlySelChg(AnyType userObj)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr))
+	{
+		me->DisplayMonthly(mgr, (Int32)me->cboMonthlyYear->GetSelectedItem().GetOSInt(), (UInt8)me->cboMonthlyMonth->GetSelectedItem().GetUOSInt());
+	}
+}
+
 void SSWR::AVIRead::AVIRInvestmentForm::UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr)
 {
 	NN<Data::Invest::Currency> curr;
@@ -398,6 +409,46 @@ void SSWR::AVIRead::AVIRInvestmentForm::UpdateCurrencyList(NN<Data::Invest::Inve
 		this->lbCurrency->SetSelectedIndex(0);
 		OnCurrencySelChg(this);
 	}
+}
+
+void SSWR::AVIRead::AVIRInvestmentForm::UpdateMonthly(NN<Data::Invest::InvestmentManager> mgr)
+{
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	Data::Timestamp ts = mgr->GetFirstTradeTime();
+	Data::Timestamp now = Data::Timestamp::Now();
+	Int32 startYear = ts.GetTimeValue().year;
+	Data::DateTimeUtil::TimeValue tv = now.GetTimeValue();
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	Int32 endYear = tv.year;
+	this->cboMonthlyYear->ClearItems();
+	while (startYear <= endYear)
+	{
+		sptr = Text::StrInt32(sbuff, startYear);
+		k = this->cboMonthlyYear->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)startYear);
+		if (startYear == endYear)
+		{
+			this->cboMonthlyYear->SetSelectedIndex(k);
+		}
+		startYear++;
+	}
+
+	this->cboMonthlyMonth->ClearItems();
+	i = 1;
+	j = 12;
+	while (i <= j)
+	{
+		sptr = Text::StrUOSInt(sbuff, i);
+		k = this->cboMonthlyMonth->AddItem(CSTRP(sbuff, sptr), (void*)i);
+		if (i == tv.month)
+		{
+			this->cboMonthlyMonth->SetSelectedIndex(k);
+		}
+		i++;
+	}
+	this->DisplayMonthly(mgr, tv.year, tv.month);
 }
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currency> curr)
@@ -572,11 +623,11 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 	{
 		if (mgr->GetTransactionEntry(i).SetTo(ent))
 		{
-			sptr = ent->fromDetail.tranDate.ToStringNoZone(sbuff);
+			sptr = ent->fromDetail.tranBeginDate.ToStringNoZone(sbuff);
 			k = this->lvTransaction->AddItem(CSTRP(sbuff, sptr), ent);
-			if (!ent->toDetail.tranDate.IsNull())
+			if (!ent->toDetail.tranEndDate.IsNull())
 			{
-				sptr = ent->toDetail.tranDate.ToStringNoZone(sbuff);
+				sptr = ent->toDetail.tranEndDate.ToStringNoZone(sbuff);
 				this->lvTransaction->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			}
 			this->lvTransaction->SetSubItem(k, 2, Data::Invest::InvestmentManager::TradeTypeGetName(ent->type));
@@ -636,6 +687,173 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 	}
 }
 
+void SSWR::AVIRead::AVIRInvestmentForm::DisplayMonthly(NN<Data::Invest::InvestmentManager> mgr, Int32 year, UInt8 month)
+{
+	NN<Data::Invest::Currency> curr;
+	NN<Data::Invest::Asset> ass;
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt currencyCnt = mgr->GetCurrencyCount();
+	UOSInt assetCnt = mgr->GetAssetCount();
+	this->lvMonthly->ClearAll();
+	this->lvMonthly->ChangeColumnCnt(currencyCnt + assetCnt + 2);
+	this->lvMonthly->AddColumn(CSTR("Date"), 100);
+	this->lvMonthly->AddColumn(CSTR("Gain"), 100);
+	i = 0;
+	while (i < currencyCnt)
+	{
+		if (mgr->GetCurrencyInfo(i).SetTo(curr))
+		{
+			this->lvMonthly->AddColumn(CURRENCYSTR(curr->c), 50);
+		}
+		i++;
+	}
+	i = 0;
+	while (i < assetCnt)
+	{
+		if (mgr->GetAsset(i).SetTo(ass))
+		{
+			this->lvMonthly->AddColumn(ass->shortName, 100);
+		}
+		i++;
+	}
+	Data::Date startDate = Data::Date(year, month, 1);
+	Data::Date endDate;
+	Data::Date now = Data::Date::Today();
+	if (startDate >= now)
+	{
+		return;
+	}
+	endDate = startDate;
+	endDate.SetMonth(startDate.GetDateValue().month + 1);
+	if (endDate > now)
+	{
+		endDate = now;
+	}
+	NN<Data::Invest::Currency> localCurr;
+	Double rate;
+	Data::ArrayListTS dateList;
+	Data::ArrayList<Double> totalList;
+	Data::ArrayList<Double> valList;
+	if (mgr->GetCurrencyInfo(0).SetTo(curr) && mgr->FindCurrency(mgr->GetLocalCurrency()).SetTo(localCurr))
+	{
+		mgr->CurrencyCalcValues(curr, startDate, endDate, dateList, valList);
+		i = 0;
+		j = dateList.GetCount();
+		while (i < j)
+		{
+			sptr = dateList.GetItem(i).ToString(sbuff, "yyyy-MM-dd");
+			this->lvMonthly->AddItem(CSTRP(sbuff, sptr), 0);
+			totalList.Add(0);
+			i++;
+		}
+		k = 0;
+		while (k < currencyCnt)
+		{
+			if (mgr->GetCurrencyInfo(k).SetTo(curr))
+			{
+				dateList.Clear();
+				valList.Clear();
+				mgr->CurrencyCalcValues(curr, startDate, endDate, dateList, valList);
+				i = 0;
+				j = valList.GetCount();
+				while (i < j)
+				{
+					sptr = Text::StrDouble(sbuff, valList.GetItem(i));
+					this->lvMonthly->SetSubItem(i, 2 + k, CSTRP(sbuff, sptr));
+					if (localCurr->c == curr->c)
+					{
+						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i));
+					}
+					else if (curr->c == mgr->GetRefCurrency())
+					{
+						rate = mgr->CurrencyGetRate(localCurr, dateList.GetItem(i));
+						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i) * rate);
+					}
+					else
+					{
+						rate = mgr->CurrencyGetRate(localCurr, dateList.GetItem(i)) / mgr->CurrencyGetRate(curr, dateList.GetItem(i));
+						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i) * rate);
+					}
+					i++;
+				}
+			}
+			k++;
+		}
+		k = 0;
+		while (k < assetCnt)
+		{
+			if (mgr->GetAsset(k).SetTo(ass) && mgr->FindCurrency(ass->currency).SetTo(curr))
+			{
+				dateList.Clear();
+				valList.Clear();
+				mgr->AssetCalcValues(ass, startDate, endDate, dateList, valList);
+				i = 0;
+				j = valList.GetCount();
+				while (i < j)
+				{
+					sptr = Text::StrDouble(sbuff, valList.GetItem(i));
+					this->lvMonthly->SetSubItem(i, 2 + currencyCnt + k, CSTRP(sbuff, sptr));
+					if (localCurr->c == curr->c)
+					{
+						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i));
+					}
+					else if (curr->c == mgr->GetRefCurrency())
+					{
+						rate = mgr->CurrencyGetRate(localCurr, dateList.GetItem(i));
+						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i) * rate);
+					}
+					else
+					{
+						rate = mgr->CurrencyGetRate(localCurr, dateList.GetItem(i)) / mgr->CurrencyGetRate(curr, dateList.GetItem(i));
+						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i) * rate);
+					}
+					i++;
+				}
+			}
+			k++;
+		}
+		i = 0;
+		j = totalList.GetCount();
+		while (i < j)
+		{
+			sptr = Text::StrDouble(sbuff, totalList.GetItem(i));
+			this->lvMonthly->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			i++;
+		}
+		NN<Data::ChartPlotter> chart;
+		NEW_CLASSNN(chart, Data::ChartPlotter(0));
+		chart->AddLineChart(CSTR(""), Data::ChartPlotter::NewData(totalList), Data::ChartPlotter::NewData(dateList), 0xffff0000);
+		this->monthlyChart.Delete();
+		this->monthlyChart = chart;
+		this->DisplayMonthlyImg();
+	}
+}
+
+void SSWR::AVIRead::AVIRInvestmentForm::DisplayMonthlyImg()
+{
+	Math::Size2D<UOSInt> sz = this->pbMonthly->GetSizeP();
+	NN<Data::ChartPlotter> chart;
+	NN<Media::DrawImage> dimg;
+	NN<Media::StaticImage> simg;
+	if (this->monthlyChart.SetTo(chart) && this->deng->CreateImage32(sz, Media::AT_IGNORE_ALPHA).SetTo(dimg))
+	{
+		dimg->SetHDPI(this->pbMonthly->GetHDPI());
+		dimg->SetVDPI(this->pbMonthly->GetHDPI());
+		chart->Plot(dimg, 0, 0, (Double)sz.GetWidth(), (Double)sz.GetHeight());
+		if (dimg->ToStaticImage().SetTo(simg))
+		{
+			this->monthlyImg.Delete();
+			this->monthlyImg = simg;
+			this->pbMonthly->SetImage(simg);
+		}
+		this->deng->DeleteImage(dimg);
+	}
+}
+
 SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -645,6 +863,8 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->mgr = 0;
 	this->currencyImg = 0;
 	this->assetsImg = 0;
+	this->monthlyChart = 0;
+	this->monthlyImg = 0;
 	this->deng = core->GetDrawEngine();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
@@ -660,6 +880,29 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnDir->HandleButtonClick(OnDirClicked, this);
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	this->tpMonthly = this->tcMain->AddTabPage(CSTR("Monthly"));
+	this->pnlMonthly = ui->NewPanel(this->tpMonthly);
+	this->pnlMonthly->SetRect(0, 0, 100, 31, false);
+	this->pnlMonthly->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblMonthly = ui->NewLabel(this->pnlMonthly, CSTR("Month"));
+	this->lblMonthly->SetRect(4, 4, 100, 23, false);
+	this->cboMonthlyYear = ui->NewComboBox(this->pnlMonthly, false);
+	this->cboMonthlyYear->SetRect(104, 4, 100, 23, false);
+	this->cboMonthlyYear->HandleSelectionChange(OnMonthlySelChg, this);
+	this->cboMonthlyMonth = ui->NewComboBox(this->pnlMonthly, false);
+	this->cboMonthlyMonth->SetRect(204, 4, 50, 23, false);
+	this->cboMonthlyMonth->HandleSelectionChange(OnMonthlySelChg, this);
+	this->lvMonthly = ui->NewListView(this->tpMonthly, UI::ListViewStyle::Table, 2);
+	this->lvMonthly->SetRect(0, 0, 100, 300, false);
+	this->lvMonthly->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvMonthly->SetShowGrid(true);
+	this->lvMonthly->SetFullRowSelect(true);
+	this->lvMonthly->AddColumn(CSTR("Date"), 100);
+	this->lvMonthly->AddColumn(CSTR("Gain"), 100);
+	this->vspMonthly = ui->NewVSplitter(this->tpMonthly, 3, false);
+	this->pbMonthly = ui->NewPictureBox(this->tpMonthly, this->deng, false, false);
+	this->pbMonthly->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpTransaction = this->tcMain->AddTabPage(CSTR("Transaction"));
 	this->pnlTransaction = ui->NewPanel(this->tpTransaction);
@@ -868,6 +1111,8 @@ SSWR::AVIRead::AVIRInvestmentForm::~AVIRInvestmentForm()
 	this->mgr.Delete();
 	this->currencyImg.Delete();
 	this->assetsImg.Delete();
+	this->monthlyImg.Delete();
+	this->monthlyChart.Delete();
 }
 
 void SSWR::AVIRead::AVIRInvestmentForm::OnMonitorChanged()
