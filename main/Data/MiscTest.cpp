@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Crypto/Encrypt/JasyptEncryptor.h"
+#include "Data/TableData.h"
 #include "DB/MSSQLConn.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/ConsoleLogHandler.h"
@@ -44,6 +45,7 @@
 #include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
 #include "Text/StringTool.h"
+#include "Text/TextWriteUtil.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XMLReader.h"
@@ -1160,9 +1162,22 @@ Int32 StrDoubleTest()
 	return 0;
 }
 
+Int32 FGDBTest2()
+{
+	IO::ConsoleWriter console;
+	IO::DirectoryPackage pkg(CSTR(""));
+	NN<Map::ESRI::FileGDBDir> fgdb;
+	if (Map::ESRI::FileGDBDir::OpenDir(pkg).SetTo(fgdb))
+	{
+		Data::TableData tableData(fgdb, true, nullptr, CSTR("MapGrid100"));
+		Text::TextWriteUtil::WriteTableDataPart(console, tableData, 5, 5);
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 32;
+	UOSInt testType = 33;
 	switch (testType)
 	{
 	case 0:
@@ -1231,6 +1246,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return NTPTest();
 	case 32:
 		return StrDoubleTest();
+	case 33:
+		return FGDBTest2();
 	default:
 		return 0;
 	}
