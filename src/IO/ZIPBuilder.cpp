@@ -172,6 +172,11 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 	else
 	{
 		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent.Ptr(), fileSize, outBuff, false, compLevel);
+		if (compSize == 0)
+		{
+			compLevel = Data::Compress::Inflate::CompressionLevel::NoCompression;
+			compSize = fileSize;
+		}
 	}
 	UInt32 crcVal = this->crc.CalcDirect(fileContent.Ptr(), fileSize);
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);

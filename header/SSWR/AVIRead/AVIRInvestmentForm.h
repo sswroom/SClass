@@ -106,6 +106,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtAssetsHistDiv;
 			NN<UI::GUIButton> btnAssetsHistUpdate;
 			NN<UI::GUIListView> lvAssetsHist;
+			NN<UI::GUITabPage> tpAssetsTrade;
+			NN<UI::GUIListView> lvAssetsTrade;
 
 			NN<UI::GUITabPage> tpSettings;
 			NN<UI::GUILabel> lblLocalCurrency;
@@ -131,6 +133,7 @@ namespace SSWR
 			static void __stdcall OnTransactionAssetClicked(AnyType userObj);
 			static void __stdcall OnTransactionAInterestClicked(AnyType userObj);
 			static void __stdcall OnTransactionCInterestClicked(AnyType userObj);
+			static void __stdcall OnTransactionDblClk(AnyType userObj, UOSInt index);
 			static void __stdcall OnMonthlySelChg(AnyType userObj);
 		
 			void UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr);

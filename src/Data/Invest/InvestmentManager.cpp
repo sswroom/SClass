@@ -1285,6 +1285,35 @@ Bool Data::Invest::InvestmentManager::AddTransactionAInterest(Data::Timestamp st
 	return true;
 }
 
+Bool Data::Invest::InvestmentManager::UpdateTransactionAInterest(NN<TradeEntry> t, Data::Timestamp endTime, Double currencyValue)
+{
+	if (t->type != TradeType::AssetInterest)
+	{
+		return false;
+	}
+	if (endTime.NotNull())
+	{
+		if (t->fromDetail.tranBeginDate > endTime)
+		{
+			return false;
+		}
+	}
+	NN<Asset> ass;
+	if (!this->assetList.GetItem(t->fromIndex).SetTo(ass))
+	{
+		return false;
+	}
+	if (currencyValue <= 0)
+	{
+		return false;
+	}
+	t->fromDetail.cost = -currencyValue / AssetGetAmount(ass, t->fromDetail.tranBeginDate);
+	t->toDetail.tranEndDate = endTime;
+	t->toDetail.amount = currencyValue;
+	this->SaveTransactions();
+	return true;
+}
+
 Bool Data::Invest::InvestmentManager::AddTransactionCInterest(Data::Timestamp ts, UInt32 curr, Double currencyValue)
 {
 	NN<Currency> c;

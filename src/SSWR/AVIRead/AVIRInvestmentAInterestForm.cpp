@@ -7,55 +7,94 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentAInterestForm::OnOKClicked(AnyType u
 {
 	NN<AVIRInvestmentAInterestForm> me = userObj.GetNN<AVIRInvestmentAInterestForm>();
 	NN<Data::Invest::Asset> ass;
-	if (!me->cboAsset->GetSelectedItem().GetOpt<Data::Invest::Asset>().SetTo(ass))
-	{
-		me->ui->ShowMsgOK(CSTR("Please select an asset"), TITLE, me);
-		return;
-	}
 	Double currencyValue;
-	Text::StringBuilderUTF8 sb;
-	me->txtCurrencyValue->GetText(sb);
-	if (!sb.ToDouble(currencyValue))
-	{
-		me->ui->ShowMsgOK(CSTR("Please input valid value"), TITLE, me);
-		return;
-	}
-
 	Data::Date startDate;
 	Data::Date endDate;
-	sb.ClearStr();
-	me->txtStartDate->GetText(sb);
-	startDate = Data::Date(sb.ToCString());
-	if (startDate.IsNull())
+	NN<Data::Invest::TradeEntry> ent;
+	if (me->ent.SetTo(ent))
 	{
-		me->ui->ShowMsgOK(CSTR("Please enter valid start date"), TITLE, me);
-		return;
-	}
-	sb.ClearStr();
-	me->txtEndDate->GetText(sb);
-	endDate = Data::Date(sb.ToCString());
-	if (endDate.IsNull() && sb.leng > 0)
-	{
-		me->ui->ShowMsgOK(CSTR("Please enter valid end date"), TITLE, me);
-		return;
-	}
-	if (!endDate.IsNull())
-	{
-		if (startDate > endDate)
+		Text::StringBuilderUTF8 sb;
+		me->txtCurrencyValue->GetText(sb);
+		if (!sb.ToDouble(currencyValue))
 		{
-			me->ui->ShowMsgOK(CSTR("End Date cannot before start date"), TITLE, me);
+			me->ui->ShowMsgOK(CSTR("Please input valid value"), TITLE, me);
 			return;
 		}
-	}
-	if (me->mgr->AddTransactionAInterest(Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr()),
-		Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr()),
-		ass->index, currencyValue))
-	{
-		me->SetDialogResult(UI::GUIForm::DR_OK);
+		startDate = ent->fromDetail.tranBeginDate.ToDate();
+		sb.ClearStr();
+		me->txtEndDate->GetText(sb);
+		endDate = Data::Date(sb.ToCString());
+		if (endDate.IsNull() && sb.leng > 0)
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid end date"), TITLE, me);
+			return;
+		}
+		if (!endDate.IsNull())
+		{
+			if (startDate > endDate)
+			{
+				me->ui->ShowMsgOK(CSTR("End Date cannot before start date"), TITLE, me);
+				return;
+			}
+		}
+		if (me->mgr->UpdateTransactionAInterest(ent, Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr()), currencyValue))
+		{
+			me->SetDialogResult(UI::GUIForm::DR_OK);
+		}
+		else
+		{
+			me->ui->ShowMsgOK(CSTR("Error in updating transaction"), TITLE, me);
+		}
 	}
 	else
 	{
-		me->ui->ShowMsgOK(CSTR("Error in adding transaction"), TITLE, me);
+		if (!me->cboAsset->GetSelectedItem().GetOpt<Data::Invest::Asset>().SetTo(ass))
+		{
+			me->ui->ShowMsgOK(CSTR("Please select an asset"), TITLE, me);
+			return;
+		}
+		Text::StringBuilderUTF8 sb;
+		me->txtCurrencyValue->GetText(sb);
+		if (!sb.ToDouble(currencyValue))
+		{
+			me->ui->ShowMsgOK(CSTR("Please input valid value"), TITLE, me);
+			return;
+		}
+
+		sb.ClearStr();
+		me->txtStartDate->GetText(sb);
+		startDate = Data::Date(sb.ToCString());
+		if (startDate.IsNull())
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid start date"), TITLE, me);
+			return;
+		}
+		sb.ClearStr();
+		me->txtEndDate->GetText(sb);
+		endDate = Data::Date(sb.ToCString());
+		if (endDate.IsNull() && sb.leng > 0)
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid end date"), TITLE, me);
+			return;
+		}
+		if (!endDate.IsNull())
+		{
+			if (startDate > endDate)
+			{
+				me->ui->ShowMsgOK(CSTR("End Date cannot before start date"), TITLE, me);
+				return;
+			}
+		}
+		if (me->mgr->AddTransactionAInterest(Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr()),
+			Data::Timestamp::FromDate(endDate, Data::DateTimeUtil::GetLocalTzQhr()),
+			ass->index, currencyValue))
+		{
+			me->SetDialogResult(UI::GUIForm::DR_OK);
+		}
+		else
+		{
+			me->ui->ShowMsgOK(CSTR("Error in adding transaction"), TITLE, me);
+		}
 	}
 }
 
@@ -141,6 +180,7 @@ SSWR::AVIRead::AVIRInvestmentAInterestForm::AVIRInvestmentAInterestForm(Optional
 
 	this->core = core;
 	this->mgr = mgr;
+	this->ent = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblStartDate = ui->NewLabel(*this, CSTR("Start Date"));
@@ -207,4 +247,43 @@ SSWR::AVIRead::AVIRInvestmentAInterestForm::~AVIRInvestmentAInterestForm()
 void SSWR::AVIRead::AVIRInvestmentAInterestForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}
+
+void SSWR::AVIRead::AVIRInvestmentAInterestForm::SetEntry(NN<Data::Invest::TradeEntry> ent)
+{
+	if (ent->type == Data::Invest::TradeType::AssetInterest)
+	{
+		UTF8Char sbuff[64];
+		UnsafeArray<UTF8Char> sptr;
+		this->txtStartDate->SetReadOnly(true);
+		sptr = ent->fromDetail.tranBeginDate.ToString(sbuff, "yyyy-MM-dd");
+		this->txtStartDate->SetText(CSTRP(sbuff, sptr));
+		if (ent->toDetail.tranEndDate.IsNull())
+		{
+			this->txtEndDate->SetText(CSTR(""));
+		}
+		else
+		{
+			sptr = ent->toDetail.tranEndDate.ToString(sbuff, "yyyy-MM-dd");
+			this->txtEndDate->SetText(CSTRP(sbuff, sptr));
+		}
+		this->cboAsset->SetEnabled(false);
+		NN<Data::Invest::Asset> ass;
+		UOSInt i = 0;
+		UOSInt j = this->cboAsset->GetCount();
+		while (i < j)
+		{
+			ass = this->cboAsset->GetItem(i).GetNN<Data::Invest::Asset>();
+			if (ass->index == ent->fromIndex)
+			{
+				this->cboAsset->SetSelectedIndex(i);
+				OnAssetSelChg(this);
+				break;
+			}
+			i++;
+		}
+		sptr = Text::StrDouble(sbuff, ent->toDetail.amount);
+		this->txtCurrencyValue->SetText(CSTRP(sbuff, sptr));
+		this->ent = ent;
+	}
 }

@@ -381,6 +381,23 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionCInterestClicked(
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDblClk(AnyType userObj, UOSInt index)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	NN<Data::Invest::TradeEntry> ent;
+	NN<Data::Invest::InvestmentManager> mgr;
+	if (me->mgr.SetTo(mgr) && me->lvTransaction->GetItem(index).GetOpt<Data::Invest::TradeEntry>().SetTo(ent))
+	{
+		AVIRInvestmentAInterestForm frm(0, me->ui, me->core, mgr);
+		frm.SetEntry(ent);
+		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+		{
+			me->DisplayTransactions(mgr);
+		}
+	}
+
+}
+
 void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnMonthlySelChg(AnyType userObj)
 {
 	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
@@ -532,6 +549,14 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Curr
 	}
 }
 
+struct AssetSummary
+{
+	Double amountLeft;
+	Double currCost;
+	Data::Timestamp endDate;
+	NN<Data::Invest::TradeDetail> trade;
+};
+
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass)
 {
 	UTF8Char sbuff[64];
@@ -539,6 +564,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	UOSInt l;
 	NN<Data::Invest::TradeDetail> t;
 	this->txtAssetsShortName->SetText(ass->shortName->ToCString());
 	this->txtAssetsFullName->SetText(ass->fullName->ToCString());
@@ -576,6 +602,214 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 		i++;
 	}
 	
+	UOSInt buyCnt = 0;
+	i = 0;
+	j = ass->trades.GetCount();
+	if (j > 0)
+	{
+		Data::Timestamp startTime;
+		Data::Timestamp endTime;
+		Data::Timestamp ts;
+		t = ass->trades.GetItemNoCheck(0);
+		startTime = t->tranBeginDate;
+		endTime = Data::Timestamp::Now();
+		while (i < j)
+		{
+			t = ass->trades.GetItemNoCheck(i);
+			if (t->amount > 0)
+			{
+				buyCnt++;
+			}
+			if (t->tranBeginDate < startTime)
+			{
+				startTime = t->tranBeginDate;
+			}
+			if (endTime < t->tranBeginDate)
+			{
+				endTime = t->tranBeginDate;
+			}
+			i++;
+		}
+		this->lvAssetsTrade->ChangeColumnCnt(buyCnt + 3);
+		this->lvAssetsTrade->ClearAll();
+		this->lvAssetsTrade->AddColumn(CSTR(""), 100);
+		this->lvAssetsTrade->AddColumn(CSTR(""), 100);
+		this->lvAssetsTrade->AddColumn(CSTR(""), 100);
+
+		UnsafeArray<AssetSummary> summ = MemAllocArr(AssetSummary, buyCnt);
+		Double totalAmount = 0;
+		Double totalCost = 0;
+		k = 0;
+		i = 0;
+		j = ass->trades.GetCount();
+		while (i < j)
+		{
+			t = ass->trades.GetItemNoCheck(i);
+			totalAmount += t->amount;
+			if (t->amount > 0)
+			{
+				sptr = t->tranBeginDate.ToString(sbuff, "yyyy-MM-dd");
+				this->lvAssetsTrade->AddColumn(CSTRP(sbuff, sptr), 100);
+				summ[k].trade = t;
+				summ[k].endDate = nullptr;
+				summ[k].amountLeft = t->amount;
+				summ[k].currCost = t->cost;
+				totalCost += t->amount * t->cost;
+				endTime = Data::Timestamp::Now();
+				k++;
+			}
+			else
+			{
+				Double a = -t->amount;
+				UOSInt i2 = 0;
+				while (i2 < k)
+				{
+					if (summ[i2].amountLeft > 0)
+					{
+						if (summ[i2].amountLeft <= a)
+						{
+							a -= summ[i2].amountLeft;
+							summ[i2].endDate = t->tranBeginDate;
+							totalCost -= summ[i2].amountLeft * t->cost;
+							summ[i2].amountLeft = 0;
+							if (a == 0)
+							{
+								if (i2 == k - 1)
+								{
+									endTime = t->tranBeginDate;
+								}
+								break;
+							}
+						}
+						else
+						{
+							summ[i2].amountLeft -= a;
+							totalCost -= a * t->cost;
+							break;
+						}
+					}
+					i2++;
+				}
+			}
+			i++;
+		}
+		this->lvAssetsTrade->AddItem(CSTR(""), 0);
+		this->lvAssetsTrade->SetSubItem(0, 2, CSTR("Buy Date"));
+		this->lvAssetsTrade->AddItem(CSTR(""), 0);
+		this->lvAssetsTrade->SetSubItem(1, 2, CSTR("Sell Date"));
+		this->lvAssetsTrade->AddItem(CSTR(""), 0);
+		this->lvAssetsTrade->SetSubItem(2, 2, CSTR("Buy Price"));
+		if (totalAmount > 0)
+		{
+			sptr = Text::StrDouble(sbuff, totalCost / totalAmount);
+			this->lvAssetsTrade->SetSubItem(2, 1, CSTRP(sbuff, sptr));
+		}
+		this->lvAssetsTrade->AddItem(CSTR(""), 0);
+		this->lvAssetsTrade->SetSubItem(3, 2, CSTR("Units"));
+		sptr = Text::StrDouble(sbuff, totalAmount);
+		this->lvAssetsTrade->SetSubItem(3, 1, CSTRP(sbuff, sptr));
+		this->lvAssetsTrade->AddItem(CSTR(""), 0);
+		this->lvAssetsTrade->SetSubItem(4, 2, CSTR("Home Price"));
+		this->lvAssetsTrade->AddItem(CSTR("Current Price"), 0);
+		this->lvAssetsTrade->SetSubItem(5, 2, CSTR("Profit Rate"));
+		i = 0;
+		while (i < buyCnt)
+		{
+			sptr = summ[i].trade->tranBeginDate.ToString(sbuff, "yyyy-MM-dd");
+			this->lvAssetsTrade->SetSubItem(0, 3 + i, CSTRP(sbuff, sptr));
+			if (summ[i].endDate.NotNull())
+			{
+				sptr = summ[i].endDate.ToString(sbuff, "yyyy-MM-dd");
+				this->lvAssetsTrade->SetSubItem(1, 3 + i, CSTRP(sbuff, sptr));
+			}
+			sptr = Text::StrDouble(sbuff, summ[i].trade->cost);
+			this->lvAssetsTrade->SetSubItem(2, 3 + i, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, summ[i].amountLeft);
+			this->lvAssetsTrade->SetSubItem(3, 3 + i, CSTRP(sbuff, sptr));
+			i++;
+		}
+		Bool hasInterest = false;
+		i = 0;
+		j = ass->divList.GetCount();
+		while (i < j)
+		{
+			if (ass->divList.GetItem(i) > 0)
+			{
+				hasInterest = true;
+			}
+			i++;
+		}
+		Double lastDiv = 0;
+		if (hasInterest)
+		{
+			this->lvAssetsTrade->AddItem(CSTR("Interest Date"), 0);
+			this->lvAssetsTrade->SetSubItem(6, 1, CSTR("Price"));
+			this->lvAssetsTrade->SetSubItem(6, 2, CSTR("Interest"));
+			i = 0;
+			j = ass->tsList.GetCount();
+			while (i < j)
+			{
+				if (ass->divList.GetItem(i) > 0)
+				{
+					ts = ass->tsList.GetItem(i);
+					if (ts >= startTime && ts < endTime)
+					{
+						lastDiv = ass->divList.GetItem(i);
+						sptr = ts.ToString(sbuff, "yyyy-MM-dd");
+						k = this->lvAssetsTrade->AddItem(CSTRP(sbuff, sptr), 0);
+						sptr = Text::StrDouble(sbuff, ass->valList.GetItem(i));
+						this->lvAssetsTrade->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+						sptr = Text::StrDouble(sbuff, ass->divList.GetItem(i));
+						this->lvAssetsTrade->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+						l = 0;
+						while (l < buyCnt)
+						{
+							if (summ[l].trade->tranBeginDate < ts && (summ[l].endDate.IsNull() || summ[l].endDate > ts))
+							{
+								summ[l].currCost -= ass->divList.GetItem(i);
+								sptr = Text::StrConcatC(Text::StrDoubleDP(sbuff, (ass->valList.GetItem(i) - summ[l].currCost) * 100.0 / summ[l].trade->cost * 360 / ts.Diff(summ[l].trade->tranBeginDate).GetTotalDays(), 4, 4), UTF8STRC("%"));
+								this->lvAssetsTrade->SetSubItem(k, 3 + l, CSTRP(sbuff, sptr));
+							}
+							l++;
+						}
+					}
+				}
+				i++;
+			}
+		}
+		else
+		{
+		}
+		Double currPrice = ass->valList.GetItem(ass->valList.GetCount() - 1);
+		ts = ass->tsList.GetItem(ass->tsList.GetCount() - 1);
+		if (lastDiv > 0)
+		{
+			sptr = Text::StrDouble(sbuff, totalAmount * lastDiv);
+			this->lvAssetsTrade->SetSubItem(3, 0, CSTRP(sbuff, sptr));
+		}
+		sptr = Text::StrDouble(sbuff, currPrice);
+		this->lvAssetsTrade->SetSubItem(5, 1, CSTRP(sbuff, sptr));
+		i = 0;
+		while (i < buyCnt)
+		{
+			sptr = Text::StrDouble(sbuff, summ[i].currCost);
+			this->lvAssetsTrade->SetSubItem(4, 3 + i, CSTRP(sbuff, sptr));
+			if (summ[i].amountLeft > 0)
+			{
+				sptr = Text::StrDoubleDP(sbuff, (currPrice - summ[i].currCost) * 100.0 / summ[i].trade->cost * 360 / ts.Diff(summ[i].trade->tranBeginDate).GetTotalDays(), 4, 4);
+				this->lvAssetsTrade->SetSubItem(5, 3 + i, CSTRP(sbuff, sptr));
+			}
+			i++;
+		}
+
+
+		MemFreeArr(summ);
+	}
+	else
+	{
+		this->lvAssetsTrade->ClearAll();
+	}
+
 	this->DisplayAssetImg(ass);
 }
 
@@ -937,6 +1171,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lvTransaction->AddColumn(CSTR("Amount 2"), 70);
 	this->lvTransaction->AddColumn(CSTR("Cost 2"), 70);
 	this->lvTransaction->AddColumn(CSTR("Ref Rate"), 70);
+	this->lvTransaction->HandleDblClk(OnTransactionDblClk, this);
 
 	this->tpCurrency = this->tcMain->AddTabPage(CSTR("Currency"));
 	this->lbCurrency = ui->NewListBox(this->tpCurrency, false);
@@ -1076,6 +1311,11 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lvAssetsHist->SetShowGrid(true);
 	this->lvAssetsHist->SetFullRowSelect(true);
 	this->lvAssetsHist->HandleSelChg(OnAssetsHistSelChg, this);
+	this->tpAssetsTrade = this->tcAssets->AddTabPage(CSTR("Trade"));
+	this->lvAssetsTrade = ui->NewListView(this->tpAssetsTrade, UI::ListViewStyle::Table, 1);
+	this->lvAssetsTrade->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvAssetsTrade->SetShowGrid(true);
+	this->lvAssetsTrade->SetFullRowSelect(true);
 
 	this->tpSettings = this->tcMain->AddTabPage(CSTR("Settings"));
 	this->lblLocalCurrency = ui->NewLabel(this->tpSettings, CSTR("Local Currency"));

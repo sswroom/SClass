@@ -120,7 +120,7 @@ namespace Data
 			Bool AddTransactionDeposit(Data::Timestamp startTime, Data::Timestamp endTime, UInt32 curr, Double startValue, Double endValue);
 			Bool AddTransactionAsset(Data::Timestamp startTime, Data::Timestamp endTime, Data::Timestamp priceTime, UOSInt assetIndex, Double assetAmount, Double currencyValue);
 			Bool AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UOSInt assetIndex, Double currencyValue);
-			Bool UpdateTransactionAssetTime(NN<TradeEntry> t, Data::Timestamp endTime, Data::Timestamp priceTime);
+			Bool UpdateTransactionAInterest(NN<TradeEntry> t, Data::Timestamp endTime, Double currencyValue);
 			Bool AddTransactionCInterest(Data::Timestamp ts, UInt32 curr, Double currencyValue);
 			Data::Timestamp GetFirstTradeTime() const;
 			
