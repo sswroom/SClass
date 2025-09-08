@@ -216,7 +216,7 @@ SSWR::AVIRead::AVIRInvestmentAInterestForm::AVIRInvestmentAInterestForm(Optional
 	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
 	this->btnCancel->SetRect(104, 148, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	this->btnOK = ui->NewButton(*this, CSTR("OK"));
+	this->btnOK = ui->NewButton(*this, CSTR("Add"));
 	this->btnOK->SetRect(184, 148, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	NN<Data::Invest::Asset> ass;
@@ -284,6 +284,7 @@ void SSWR::AVIRead::AVIRInvestmentAInterestForm::SetEntry(NN<Data::Invest::Trade
 		}
 		sptr = Text::StrDouble(sbuff, ent->toDetail.amount);
 		this->txtCurrencyValue->SetText(CSTRP(sbuff, sptr));
+		this->btnOK->SetText(CSTR("Update"));
 		this->ent = ent;
 	}
 }

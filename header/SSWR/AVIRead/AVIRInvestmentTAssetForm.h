@@ -16,6 +16,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Data::Invest::InvestmentManager> mgr;
+			Optional<Data::Invest::TradeEntry> ent;
 
 			NN<UI::GUILabel> lblStartDate;
 			NN<UI::GUITextBox> txtStartDate;
@@ -42,6 +43,7 @@ namespace SSWR
 			virtual ~AVIRInvestmentTAssetForm();
 
 			virtual void OnMonitorChanged();
+			void SetEntry(NN<Data::Invest::TradeEntry> ent);
 		};
 	}
 }

@@ -1243,6 +1243,102 @@ Bool Data::Invest::InvestmentManager::AddTransactionAsset(Data::Timestamp startT
 	return true;
 }
 
+Bool Data::Invest::InvestmentManager::UpdateTransactionAsset(NN<TradeEntry> ent, Data::Timestamp endTime, Data::Timestamp priceTime, Double assetAmount, Double currencyValue)
+{
+	if (ent->type != TradeType::CashToAsset)
+	{
+		return false;
+	}
+	if (endTime.NotNull())
+	{
+		if (ent->fromDetail.tranBeginDate > endTime || priceTime > endTime || priceTime < ent->fromDetail.tranBeginDate)
+		{
+			return false;
+		}
+	}
+	else if (priceTime.NotNull())
+	{
+		if (priceTime < ent->fromDetail.tranBeginDate)
+		{
+			return false;
+		}
+	}
+	NN<Asset> ass;
+	if (!this->assetList.GetItem(ent->toIndex).SetTo(ass))
+	{
+		return false;
+	}
+	UOSInt negCnt = 0;
+	if (assetAmount < 0)
+	{
+		negCnt++;
+	}
+	if (currencyValue < 0)
+	{
+		negCnt++;
+	}
+	if (negCnt != 1)
+	{
+		return false;
+	}
+
+	NN<TradeDetail> t;
+	NN<Currency> c;
+	UOSInt i;
+	UOSInt j;
+	if (assetAmount < 0)
+	{
+		Double totalAmount = 0;
+		i = 0;
+		j = ass->trades.GetCount();
+		while (i < j)
+		{
+			t = ass->trades.GetItemNoCheck(i);
+			if (t->tranEndDate.NotNull() && t->tranEndDate <= ent->fromDetail.tranBeginDate)
+			{
+				totalAmount += t->amount;
+			}
+			i++;
+		}
+		if (assetAmount + totalAmount < 0)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (ass->currency != this->localCurrency)
+		{
+			Double totalValue = 0;
+			c = this->LoadCurrency(ass->currency);
+			i = 0;
+			j = c->trades.GetCount();
+			while (i < j)
+			{
+				t = c->trades.GetItemNoCheck(i);
+				if (t->tranEndDate.NotNull() && t->tranEndDate <= ent->fromDetail.tranBeginDate)
+				{
+					totalValue += t->amount;
+				}
+				i++;
+			}
+			if (currencyValue + totalValue < 0)
+			{
+				return false;
+			}
+		}
+	}
+	ent->fromDetail.amount = currencyValue;
+	ent->fromDetail.cost = 1.0;
+	ent->toDetail.tranEndDate = endTime;
+	ent->toDetail.priceDate = priceTime;
+	ent->toDetail.amount = assetAmount;
+	ent->toDetail.cost = -currencyValue / assetAmount;
+	ent->refRate = -currencyValue / assetAmount;
+	this->SaveTransactions();
+	return true;
+}
+
 Bool Data::Invest::InvestmentManager::AddTransactionAInterest(Data::Timestamp startTime, Data::Timestamp endTime, UOSInt assetIndex, Double currencyValue)
 {
 	if (endTime.NotNull())

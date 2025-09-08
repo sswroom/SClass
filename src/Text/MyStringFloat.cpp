@@ -730,6 +730,14 @@ UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double va
 	Char *sect[3];
 	Int32 sectCnt;
 
+	if (Math::IsInfinity(val))
+	{
+		if (val < 0)
+		{
+			*oriStr++ = '-';
+		}
+		return Text::StrConcatC(oriStr, DoubleStyleC.infStr, DoubleStyleC.infLen);
+	}
 	sectCnt = 1;
 	sptr = sect[0] = sbuff;
 	while (true)

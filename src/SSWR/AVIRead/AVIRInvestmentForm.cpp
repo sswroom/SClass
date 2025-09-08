@@ -388,11 +388,23 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDblClk(AnyType us
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr) && me->lvTransaction->GetItem(index).GetOpt<Data::Invest::TradeEntry>().SetTo(ent))
 	{
-		AVIRInvestmentAInterestForm frm(0, me->ui, me->core, mgr);
-		frm.SetEntry(ent);
-		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+		if (ent->type == Data::Invest::TradeType::AssetInterest)
 		{
-			me->DisplayTransactions(mgr);
+			AVIRInvestmentAInterestForm frm(0, me->ui, me->core, mgr);
+			frm.SetEntry(ent);
+			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+			{
+				me->DisplayTransactions(mgr);
+			}
+		}
+		else if (ent->type == Data::Invest::TradeType::CashToAsset)
+		{
+			AVIRInvestmentTAssetForm frm(0, me->ui, me->core, mgr);
+			frm.SetEntry(ent);
+			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+			{
+				me->DisplayTransactions(mgr);
+			}
 		}
 	}
 
@@ -509,7 +521,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 	}
 	while (i < j)
 	{
-		sptr = curr->tsList.GetItem(i).ToString(sbuff, "yyyy-MM-dd HH:mm");
+		sptr = curr->tsList.GetItem(i).ToString(sbuff, "yyyy-MM-dd");
 		k = this->lvCurrencyHist->AddItem(CSTRP(sbuff, sptr), 0);
 		sptr = Text::StrDouble(sbuff, curr->valList.GetItem(i));
 		this->lvCurrencyHist->SetSubItem(k, 1, CSTRP(sbuff, sptr));
