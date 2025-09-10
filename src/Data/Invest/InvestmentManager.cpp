@@ -587,7 +587,7 @@ Bool Data::Invest::InvestmentManager::UpdateCurrency(NN<Currency> curr, Data::Ti
 	return true;
 }
 
-void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList)
+void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList, OptOut<Double> initValue)
 {
 	Data::DateTimeUtil::Weekday wd = startDate.GetWeekday();
 	if (wd == Data::DateTimeUtil::Weekday::Saturday)
@@ -631,6 +631,18 @@ void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data
 		totalValue += t->amount;
 		i++;
 	}
+	startTS = startTS.AddDay(-1);
+	depositValue = 0;
+	k = depositList.GetCount();
+	while (k-- > 0)
+	{
+		ent = depositList.GetItemNoCheck(k);
+		if (ent->fromDetail.tranBeginDate <= startTS && ent->toDetail.tranBeginDate > startTS)
+		{
+			depositValue += -ent->fromDetail.amount + (ent->fromDetail.amount + ent->toDetail.amount) * startTS.Diff(ent->fromDetail.tranBeginDate).GetTotalDays() / ent->toDetail.tranBeginDate.Diff(ent->fromDetail.tranBeginDate).GetTotalDays();
+		}
+	}
+	initValue.Set(totalValue + depositValue);
 	while (startDate < endDate)
 	{
 		startTS = Data::Timestamp::FromDate(startDate, Data::DateTimeUtil::GetLocalTzQhr());
@@ -869,7 +881,7 @@ Double Data::Invest::InvestmentManager::AssetGetAmount(NN<Asset> ass, Data::Time
 	return total;
 }
 
-void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList)
+void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList, OptOut<Double> initValue)
 {
 	Data::DateTimeUtil::Weekday wd = startDate.GetWeekday();
 	if (wd == Data::DateTimeUtil::Weekday::Saturday)
@@ -896,6 +908,23 @@ void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date 
 		}
 		totalAmount += t->amount;
 		i++;
+	}
+	si = ass->tsList.SortedIndexOf(startTS.AddDay(-1));
+	if (si >= 0)
+	{
+		initValue.Set(totalAmount * ass->valList.GetItem((UOSInt)si));
+	}
+	else if (si == -1)
+	{
+		initValue.Set(totalAmount);
+	}
+	else if ((UOSInt)~si >= ass->valList.GetCount())
+	{
+		initValue.Set(totalAmount * ass->valList.GetItem(ass->valList.GetCount() - 1));
+	}
+	else
+	{
+		initValue.Set(totalAmount * ass->valList.GetItem((UOSInt)~si - 1));
 	}
 	while (startDate < endDate)
 	{

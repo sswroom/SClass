@@ -8,9 +8,11 @@ class AVIRCesiumTileHandler : public Net::WebServer::WebServiceHandler
 {
 private:
 	NN<Data::ArrayListNN<Map::CesiumTile>> tileList;
+	Bool lightLevel;
 
 	static Bool __stdcall IndexFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 	{
+		NN<AVIRCesiumTileHandler> me = NN<AVIRCesiumTileHandler>::ConvertFrom(svcHdlr);
 /*
 <!DOCTYPE html>
 <html lang="en">
@@ -83,14 +85,16 @@ private:
 </html>
 
 */		
-		Text::CStringNN val = CSTR("<!DOCTYPE html>\n"
+		Text::CStringNN val;
+		if (me->lightLevel)
+		{
+			val = CSTR("<!DOCTYPE html>\n"
 "<html lang=\"en\">\n"
 "	<head>\n"
 "		<meta charset=\"UTF-8\" />\n"
 "		<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n"
 "		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n"
 "		<title>Cesium Tile</title>\n"
-"		<link rel=\"manifest\" href=\"manifest.json\" />\n"
 "		<meta name=\"theme-color\" content=\"#181c25\" />\n"
 "		<script src=\"https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Cesium.js\"></script>\n"
 "		<link href=\"https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css\" rel=\"stylesheet\">\n"
@@ -152,6 +156,68 @@ private:
 "		<div id=\"map\" style=\"width: 100%; height: 100vh\"></div>\n"
 "	</body>\n"
 "</html>\n");
+		}
+		else
+		{
+			val = CSTR("<!DOCTYPE html>\n"
+"<html lang=\"en\">\n"
+"	<head>\n"
+"		<meta charset=\"UTF-8\" />\n"
+"		<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n"
+"		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n"
+"		<title>Cesium Tile</title>\n"
+"		<meta name=\"theme-color\" content=\"#181c25\" />\n"
+"		<script src=\"https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Cesium.js\"></script>\n"
+"		<link href=\"https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css\" rel=\"stylesheet\">\n"
+"		<script type=\"module\">\n"
+"			let providerViewModels = [];\n"
+"\n"
+"			providerViewModels.push(new Cesium.ProviderViewModel({\n"
+"				name : 'OpenStreetMap',\n"
+"				iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/openStreetMap.png'),\n"
+"				tooltip : 'OpenStreetMap (OSM) is a collaborative project to create a free editable map of the world. \\nhttp://www.openstreetmap.org',\n"
+"				creationFunction : function() {\n"
+"					return new Cesium.OpenStreetMapImageryProvider({\n"
+"						url : '//tile.openstreetmap.org/'\n"
+"					});\n"
+"				}\n"
+"			}));\n"
+"\n"
+"			let viewer = new Cesium.Viewer('map', {\n"
+"				timeline:false,\n"
+"				animation:false,\n"
+"				vrButton:true,\n"
+"				sceneModePicker:false,\n"
+"				infoBox:true,\n"
+"				scene3DOnly:true,\n"
+"				selectedImageryProviderViewModel : providerViewModels[0],\n"
+"			});\n"
+"\n"
+"			viewer.scene.camera.setView({\n"
+"				destination: Cesium.Cartesian3.fromDegrees(114.2, 22.4, 10000)\n"
+"			});\n"
+"\n"
+"			fetch(\"tiles.json\").then(resp=>resp.json()).then(async (tiles)=>{\n"
+"				let t;\n"
+"				let found = false;\n"
+"				for (t in tiles)\n"
+"				{\n"
+"					let tileset = await Cesium.Cesium3DTileset.fromUrl(tiles[t]);\n"
+"					viewer.scene.primitives.add(tileset);\n"
+"					if (!found)\n"
+"					{\n"
+"						viewer.zoomTo(tileset);\n"
+"						found = true;\n"
+"					}\n"
+"				}\n"
+"			});\n"
+"		</script>\n"
+"	</head>\n"
+"	<body style=\"margin: 0px;\">\n"
+"		<div id=\"map\" style=\"width: 100%; height: 100vh\"></div>\n"
+"	</body>\n"
+"</html>\n");
+		}
 		resp->AddDefHeaders(req);
 		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), val);
 	}
@@ -181,6 +247,7 @@ public:
 	AVIRCesiumTileHandler(NN<Data::ArrayListNN<Map::CesiumTile>> tileList)
 	{
 		this->tileList = tileList;
+		this->lightLevel = true;
 		this->SetAllowBrowsing(true);
 		this->AddService(CSTR("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, IndexFunc);
 		this->AddService(CSTR("/tiles.json"), Net::WebUtil::RequestMethod::HTTP_GET, TilesFunc);
@@ -204,6 +271,11 @@ public:
 		name = name.Substring(i + 1);
 		this->AddPackage(name, tile->GetPackageFile()->Clone());
 	}
+
+	void SetLightLevel(Bool lightLevel)
+	{
+		this->lightLevel = lightLevel;
+	}
 };
 
 void __stdcall SSWR::AVIRead::AVIRCesiumTileForm::OnOpenClicked(AnyType userObj)
@@ -212,6 +284,12 @@ void __stdcall SSWR::AVIRead::AVIRCesiumTileForm::OnOpenClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtURL->GetText(sb);
 	Manage::Process::OpenPath(sb.ToCString());
+}
+
+void __stdcall SSWR::AVIRead::AVIRCesiumTileForm::OnLightLevelChkChg(AnyType userObj, Bool newValue)
+{
+	NN<SSWR::AVIRead::AVIRCesiumTileForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCesiumTileForm>();
+	NN<AVIRCesiumTileHandler>::ConvertFrom(me->hdlr)->SetLightLevel(newValue);
 }
 
 SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ArrayListNN<Map::CesiumTile>> tiles) : UI::GUIForm(parent, 1024, 768, ui)
@@ -223,7 +301,7 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);
-	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
+	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
@@ -238,6 +316,9 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 	this->btnOpen = ui->NewButton(this->pnlCtrl, CSTR("Open"));
 	this->btnOpen->SetRect(704, 28, 75, 23, false);
 	this->btnOpen->HandleButtonClick(OnOpenClicked, this);
+	this->chkLightLevel = ui->NewCheckBox(this->pnlCtrl, CSTR("Light Level"), true);
+	this->chkLightLevel->SetRect(104, 52, 100, 23, false);
+	this->chkLightLevel->HandleCheckedChange(OnLightLevelChkChg, this);
 	this->lbTiles = ui->NewListBox(*this, false);
 	this->lbTiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	UOSInt i = 0;

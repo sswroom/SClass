@@ -5,6 +5,7 @@
 #include "Net/WebServer/WebServiceHandler.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
@@ -24,6 +25,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblURL;
 			NN<UI::GUITextBox> txtURL;
 			NN<UI::GUIButton> btnOpen;
+			NN<UI::GUICheckBox> chkLightLevel;
 			NN<UI::GUIListBox> lbTiles;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -32,6 +34,7 @@ namespace SSWR
 			NN<Net::WebServer::WebServiceHandler> hdlr;
 
 			static void __stdcall OnOpenClicked(AnyType userObj);
+			static void __stdcall OnLightLevelChkChg(AnyType userObj, Bool newValue);
 		public:
 			AVIRCesiumTileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ArrayListNN<Map::CesiumTile>> tiles);
 			virtual ~AVIRCesiumTileForm();

@@ -73,6 +73,13 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCurrencyHistValue;
 			NN<UI::GUIButton> btnCurrencyHistUpdate;
 			NN<UI::GUIListView> lvCurrencyHist;
+			NN<UI::GUITabPage> tpCurrencyTrade;
+			NN<UI::GUIListView> lvCurrencyTrade;
+			NN<UI::GUITabPage> tpCurrencyTotal;
+			NN<UI::GUIPanel> pnlCurrencyTotal;
+			NN<UI::GUILabel> lblCurrencyTotalValue;
+			NN<UI::GUITextBox> txtCurrencyTotalValue;
+			NN<UI::GUIListView> lvCurrencyTotal;
 
 			NN<UI::GUITabPage> tpAssets;
 			NN<UI::GUITabControl> tcAssets;

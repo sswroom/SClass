@@ -14,6 +14,7 @@ void UI::GTK::GTKCheckBox::SignalToggled(GtkToggleButton *btn, gpointer data)
 UI::GTK::GTKCheckBox::GTKCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked) : UI::GUICheckBox(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText.v.Ptr());
+	this->checked = checked;
 	parent->AddChild(*this);
 	if (checked)
 	{
