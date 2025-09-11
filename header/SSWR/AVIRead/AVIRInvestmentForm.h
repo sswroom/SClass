@@ -24,7 +24,9 @@ namespace SSWR
 			Optional<Data::Invest::InvestmentManager> mgr;
 			NN<Media::DrawEngine> deng;
 			Optional<Data::ChartPlotter> monthlyChart;
+			Optional<Data::ChartPlotter> yearlyChart;
 			Optional<Media::StaticImage> monthlyImg;
+			Optional<Media::StaticImage> yearlyImg;
 			Optional<Media::StaticImage> currencyImg;
 			Optional<Media::StaticImage> assetsImg;
 
@@ -33,6 +35,14 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDir;
 			NN<UI::GUIButton> btnDir;
 			NN<UI::GUITabControl> tcMain;
+
+			NN<UI::GUITabPage> tpYearly;
+			NN<UI::GUIPanel> pnlYearly;
+			NN<UI::GUILabel> lblYearly;
+			NN<UI::GUIComboBox> cboYearlyYear;
+			NN<UI::GUIListView> lvYearly;
+			NN<UI::GUIVSplitter> vspYearly;
+			NN<UI::GUIPictureBox> pbYearly;
 
 			NN<UI::GUITabPage> tpMonthly;
 			NN<UI::GUIPanel> pnlMonthly;
@@ -142,16 +152,23 @@ namespace SSWR
 			static void __stdcall OnTransactionCInterestClicked(AnyType userObj);
 			static void __stdcall OnTransactionDblClk(AnyType userObj, UOSInt index);
 			static void __stdcall OnMonthlySelChg(AnyType userObj);
+			static void __stdcall OnMonthlySizeChg(AnyType userObj);
+			static void __stdcall OnYearlySelChg(AnyType userObj);
+			static void __stdcall OnYearlySizeChg(AnyType userObj);
 		
 			void UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr);
 			void UpdateMonthly(NN<Data::Invest::InvestmentManager> mgr);
+			void UpdateYearly(NN<Data::Invest::InvestmentManager> mgr);
 			void DisplayCurrency(NN<Data::Invest::Currency> curr);
 			void DisplayCurrencyImg(NN<Data::Invest::Currency> curr);
 			void DisplayAsset(NN<Data::Invest::Asset> ass);
 			void DisplayAssetImg(NN<Data::Invest::Asset> ass);
 			void DisplayTransactions(NN<Data::Invest::InvestmentManager> mgr);
 			void DisplayMonthly(NN<Data::Invest::InvestmentManager> mgr, Int32 year, UInt8 month);
+			void DisplayYearly(NN<Data::Invest::InvestmentManager> mgr, Int32 year);
 			void DisplayMonthlyImg();
+			void DisplayYearlyImg();
+			static Optional<Data::ChartPlotter> GenerateSummary(NN<Data::Invest::InvestmentManager> mgr, Data::Date startDate, Data::Date endDate, NN<UI::GUIListView> listView);
 		public:
 			AVIRInvestmentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRInvestmentForm();
