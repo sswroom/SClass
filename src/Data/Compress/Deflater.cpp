@@ -1308,7 +1308,7 @@ Bool Data::Compress::Deflater::CompressDirect(Data::ByteArray destBuff, OutParam
 		{
 			return false;
 		}
-		if (in_bytes == 0 && out_bytes == 0 && srcBuff.GetCount() == 0)
+		if (in_bytes == 0 && out_bytes == 0)
 		{
 			return false;
 		}
