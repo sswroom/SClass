@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ChartPlotter.h"
+#include "Data/Currency.h"
 #include "IO/Path.h"
 #include "IO/Registry.h"
 #include "SSWR/AVIRead/AVIRInvestmentAccountForm.h"
@@ -529,9 +530,10 @@ void SSWR::AVIRead::AVIRInvestmentForm::UpdateYearly(NN<Data::Invest::Investment
 
 void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currency> curr)
 {
+	UOSInt dp = Data::Currency::GetDecimal(curr->c);
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrDouble(sbuff, curr->current);
+	sptr = Text::StrDoubleGDP(sbuff, curr->current, 3, 0, dp);
 	this->txtCurrencyCurr->SetText(CSTRP(sbuff, sptr));
 	this->lvCurrencyTrade->ClearItems();
 	this->lvCurrencyTotal->ClearItems();
@@ -552,7 +554,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 		val += curr->trades.GetItemNoCheck(i)->amount;
 		i++;
 	}
-	sptr = Text::StrDouble(sbuff, val);
+	sptr = Text::StrDoubleGDP(sbuff, val, 3, 0, dp);
 	this->txtCurrencyTotal->SetText(CSTRP(sbuff, sptr));
 	k = this->lvCurrencyTotal->AddItem(CURRENCYSTR(curr->c), 0);
 	this->lvCurrencyTotal->SetSubItem(k, 1, CSTRP(sbuff, sptr));
@@ -560,13 +562,14 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (this->mgr.SetTo(mgr))
 	{
+		UOSInt refDP = Data::Currency::GetDecimal(mgr->GetRefCurrency());
 		if (curr->c == mgr->GetRefCurrency())
 		{
 			this->txtCurrencyValue->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			sptr = Text::StrDouble(sbuff, val / curr->current);
+			sptr = Text::StrDoubleGDP(sbuff, val / curr->current, 3, 0, refDP);
 			this->txtCurrencyValue->SetText(CSTRP(sbuff, sptr));
 
 			Double totalAmount = 0;
@@ -595,7 +598,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 						{
 							sptr = t->tranBeginDate.ToString(sbuff, "yyyy-MM-dd");
 							k = this->lvCurrencyTrade->AddItem(CSTRP(sbuff, sptr), 0);
-							sptr = Text::StrDouble(sbuff, t->amount);
+							sptr = Text::StrDoubleGDP(sbuff, t->amount, 3, 0, dp);
 							this->lvCurrencyTrade->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 							if (t->amount >= 0)
 							{
@@ -604,7 +607,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 								totalAmount += t->amount;
 								sptr = Text::StrDouble(sbuff, t->amount / a);
 								this->lvCurrencyTrade->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-								sptr = Text::StrDouble(sbuff, a);
+								sptr = Text::StrDoubleGDP(sbuff, a, 3, 0, refDP);
 								this->lvCurrencyTrade->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 							}
 							else
@@ -613,7 +616,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 								totalAmount += t->amount;
 								sptr = Text::StrDouble(sbuff, t->cost);
 								this->lvCurrencyTrade->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-								sptr = Text::StrDouble(sbuff, t->amount / t->cost);
+								sptr = Text::StrDoubleGDP(sbuff, t->amount / t->cost, 3, 0, refDP);
 								this->lvCurrencyTrade->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 							}
 						}
@@ -621,7 +624,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 						{
 							sptr = t->tranBeginDate.ToString(sbuff, "yyyy-MM-dd");
 							k = this->lvCurrencyTrade->AddItem(CSTRP(sbuff, sptr), 0);
-							sptr = Text::StrDouble(sbuff, t->amount);
+							sptr = Text::StrDoubleGDP(sbuff, t->amount, 3, 0, dp);
 							this->lvCurrencyTrade->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 							if (t->amount < 0)
 							{
@@ -630,7 +633,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 								totalAmount += t->amount;
 								sptr = Text::StrDouble(sbuff, t->amount / a);
 								this->lvCurrencyTrade->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-								sptr = Text::StrDouble(sbuff, a);
+								sptr = Text::StrDoubleGDP(sbuff, a, 3, 0, refDP);
 								this->lvCurrencyTrade->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 							}
 							else
@@ -639,7 +642,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 								totalAmount += t->amount;
 								sptr = Text::StrDouble(sbuff, t->cost);
 								this->lvCurrencyTrade->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-								sptr = Text::StrDouble(sbuff, t->amount / t->cost);
+								sptr = Text::StrDoubleGDP(sbuff, t->amount / t->cost, 3, 0, refDP);
 								this->lvCurrencyTrade->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 							}
 						}
@@ -650,21 +653,21 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 			if (curr->c == mgr->GetLocalCurrency())
 			{
 				k = this->lvCurrencyTrade->AddItem(CSTR("Total"), 0);
-				sptr = Text::StrDouble(sbuff, totalAmount);
+				sptr = Text::StrDoubleGDP(sbuff, totalAmount, 3, 0, dp);
 				this->lvCurrencyTrade->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				sptr = Text::StrDouble(sbuff, totalAmount / refAmount);
 				this->lvCurrencyTrade->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-				sptr = Text::StrDouble(sbuff, refAmount);
+				sptr = Text::StrDoubleGDP(sbuff, refAmount, 3, 0, refDP);
 				this->lvCurrencyTrade->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			}
 			else
 			{
 				k = this->lvCurrencyTrade->AddItem(CSTR("Total"), 0);
-				sptr = Text::StrDouble(sbuff, totalAmount);
+				sptr = Text::StrDoubleGDP(sbuff, totalAmount, 3, 0, dp);
 				this->lvCurrencyTrade->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				sptr = Text::StrDouble(sbuff, totalAmount / refAmount);
 				this->lvCurrencyTrade->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-				sptr = Text::StrDouble(sbuff, refAmount);
+				sptr = Text::StrDoubleGDP(sbuff, refAmount, 3, 0, refDP);
 				this->lvCurrencyTrade->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			}
 		}
@@ -685,7 +688,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 				k = this->lvCurrencyTotal->AddItem(ass->shortName, 0);
 				if (ass->valList.GetCount() > 0)
 				{
-					sptr = Text::StrDouble(sbuff, thisTotal * ass->valList.GetItem(ass->valList.GetCount() - 1));
+					sptr = Text::StrDoubleGDP(sbuff, thisTotal * ass->valList.GetItem(ass->valList.GetCount() - 1), 3, 0, dp);
 					this->lvCurrencyTotal->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 					totalVal += thisTotal * ass->valList.GetItem(ass->valList.GetCount() - 1);
 				}
@@ -693,7 +696,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 			i++;
 		}
 	}
-	sptr = Text::StrDouble(sbuff, totalVal);
+	sptr = Text::StrDoubleGDP(sbuff, totalVal, 3, 0, dp);
 	this->txtCurrencyTotalValue->SetText(CSTRP(sbuff, sptr));
 	this->lvCurrencyHist->ClearItems();
 	i = 0;
@@ -1057,6 +1060,8 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 	UOSInt j = mgr->GetTransactionCount();
 	NN<Data::Invest::TradeEntry> ent;
 	UOSInt k;
+	UInt32 fromC;
+	UInt32 toC;
 	while (i < j)
 	{
 		if (mgr->GetTransactionEntry(i).SetTo(ent))
@@ -1071,26 +1076,31 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 			this->lvTransaction->SetSubItem(k, 2, Data::Invest::InvestmentManager::TradeTypeGetName(ent->type));
 			if (ent->type == Data::Invest::TradeType::ForeignExchange)
 			{
-				UInt32 c = (UInt32)ent->fromIndex;
-				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
-				c = (UInt32)ent->toIndex;
-				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+				fromC = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(fromC));
+				toC = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(toC));
 			}
 			else if (ent->type == Data::Invest::TradeType::FixedDeposit)
 			{
-				UInt32 c = (UInt32)ent->fromIndex;
-				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
-				c = (UInt32)ent->toIndex;
-				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+				fromC = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(fromC));
+				toC = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(toC));
 			}
 			else if (ent->type == Data::Invest::TradeType::CashToAsset)
 			{
-				UInt32 c = (UInt32)ent->fromIndex;
-				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
+				fromC = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(fromC));
 				NN<Data::Invest::Asset> ass;
 				if (mgr->GetAsset(ent->toIndex).SetTo(ass))
 				{
 					this->lvTransaction->SetSubItem(k, 6, ass->shortName);
+					toC = ass->currency;
+				}
+				else
+				{
+					toC = fromC;
 				}
 			}
 			else if (ent->type == Data::Invest::TradeType::AssetInterest)
@@ -1099,16 +1109,26 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayTransactions(NN<Data::Invest::Inv
 				if (mgr->GetAsset(ent->fromIndex).SetTo(ass))
 				{
 					this->lvTransaction->SetSubItem(k, 3, ass->shortName);
+					fromC = ass->currency;
 				}
-				UInt32 c = (UInt32)ent->toIndex;
-				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+				else
+				{
+					fromC = (UInt32)ent->toIndex;
+				}
+				toC = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(toC));
 			}
 			else if (ent->type == Data::Invest::TradeType::AccountInterest)
 			{
-				UInt32 c = (UInt32)ent->fromIndex;
-				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(c));
-				c = (UInt32)ent->toIndex;
-				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(c));
+				fromC = (UInt32)ent->fromIndex;
+				this->lvTransaction->SetSubItem(k, 3, CURRENCYSTR(fromC));
+				toC = (UInt32)ent->toIndex;
+				this->lvTransaction->SetSubItem(k, 6, CURRENCYSTR(toC));
+			}
+			else
+			{
+				fromC = 0;
+				toC = 0;
 			}
 			sptr = Text::StrDouble(sbuff, ent->fromDetail.amount);
 			this->lvTransaction->SetSubItem(k, 4, CSTRP(sbuff, sptr));
@@ -1250,7 +1270,7 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 	{
 		if (mgr->GetCurrencyInfo(i).SetTo(curr))
 		{
-			listView->AddColumn(CURRENCYSTR(curr->c), 50);
+			listView->AddColumn(CURRENCYSTR(curr->c), 70);
 		}
 		i++;
 	}
@@ -1274,6 +1294,7 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 	Double initValue;
 	Double rate;
 	Double initTotal;
+	UOSInt dp;
 	Data::ArrayListTS dateList;
 	Data::ArrayList<Double> totalList;
 	Data::ArrayList<Double> valList;
@@ -1317,7 +1338,8 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 				j = valList.GetCount();
 				while (i < j)
 				{
-					sptr = Text::StrDouble(sbuff, valList.GetItem(i));
+					dp = Data::Currency::GetDecimal(curr->c);
+					sptr = Text::StrDoubleGDP(sbuff, valList.GetItem(i), 3, 0, dp);
 					listView->SetSubItem(i, 3 + k, CSTRP(sbuff, sptr));
 					if (localCurr->c == curr->c)
 					{
@@ -1366,7 +1388,8 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 				j = valList.GetCount();
 				while (i < j)
 				{
-					sptr = Text::StrDouble(sbuff, valList.GetItem(i));
+					dp = Data::Currency::GetDecimal(curr->c);
+					sptr = Text::StrDoubleGDP(sbuff, valList.GetItem(i), 3, 0, dp);
 					listView->SetSubItem(i, 3 + currencyCnt + k, CSTRP(sbuff, sptr));
 					if (localCurr->c == curr->c)
 					{
@@ -1387,13 +1410,14 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 			}
 			k++;
 		}
+		dp = Data::Currency::GetDecimal(localCurr->c);
 		i = 0;
 		j = totalList.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrDouble(sbuff, totalList.GetItem(i) - initTotal);
+			sptr = Text::StrDoubleGDP(sbuff, totalList.GetItem(i) - initTotal, 3, 0, dp);
 			listView->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, totalList.GetItem(i));
+			sptr = Text::StrDoubleGDP(sbuff, totalList.GetItem(i), 3, dp, dp);
 			listView->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			totalList.SetItem(i, totalList.GetItem(i) - initTotal);
 			i++;

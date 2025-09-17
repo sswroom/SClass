@@ -3,6 +3,7 @@
 #include "IO/Stream.h"
 #include "IO/StreamData.h"
 #include "Media/PDFParameter.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
@@ -11,16 +12,16 @@ namespace Media
 	private:
 		UInt32 id;
 		Bool streamData;
-		IO::StreamData *fd;
-		PDFParameter *parameter;
+		Optional<IO::StreamData> fd;
+		Optional<PDFParameter> parameter;
 	public:
 		PDFObject(UInt32 id);
 		~PDFObject();
 
 		void SetStream(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
 		void SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
-		void SetParameter(PDFParameter *parameter);
-		PDFParameter *GetParameter() const;
+		void SetParameter(Optional<PDFParameter> parameter);
+		Optional<PDFParameter> GetParameter() const;
 		UInt32 GetId() const;
 		Bool IsImage() const;
 		Optional<Text::String> GetType() const;
@@ -30,7 +31,8 @@ namespace Media
 		UOSInt GetBitPerComponent() const;
 		UOSInt GetWidth() const;
 		UOSInt GetHeight() const;
-		IO::StreamData *GetData() const;
+		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
+		Optional<IO::StreamData> GetData() const;
 		Bool SaveFile(Text::CStringNN fileName);
 		Bool SaveStream(NN<IO::Stream> stm);
 	};

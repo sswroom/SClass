@@ -273,7 +273,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 
 	}
 	sb->ClearStr();
-	Media::PDFParameter *param;
+	NN<Media::PDFParameter> param;
 	UInt64 dataOfst = 0;
 	NN<Media::PDFObject> obj = doc->AddObject(id);
 	while (NextLine(env, sb, true))
@@ -298,8 +298,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 			{
 				if (sb->EndsWith(UTF8STRC(">>stream")))
 				{
-					param = Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 10));
-					if (param == 0)
+					if (!Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 10)).SetTo(param))
 					{
 #if defined(VERBOSE)
 						printf("PDFParser: Error in parsing object stream parameter: %s\r\n", sb->ToString());
@@ -313,8 +312,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 				}
 				else if (sb->EndsWith(UTF8STRC(">>endobj")))
 				{
-					param = Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 8));
-					if (param == 0)
+					if (!Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 8)).SetTo(param))
 					{
 	#if defined(VERBOSE)
 						printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
@@ -340,8 +338,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 					}
  					else if (sb->EndsWith(UTF8STRC(">>")))
 					{
-						param = Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 4));
-						if (param == 0)
+						if (!Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 4)).SetTo(param))
 						{
 #if defined(VERBOSE)
 							printf("PDFParser: Error in parsing object parameter: %s\r\n", sb->ToString());
@@ -378,8 +375,8 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 
 Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFObject> obj, PDFXRef *xref)
 {
-	Media::PDFParameter *param = obj->GetParameter();
-	if (param == 0)
+	NN<Media::PDFParameter> param;
+	if (!obj->GetParameter().SetTo(param))
 	{
 #if defined(VERBOSE)
 		printf("PDFParser: Object parameter not found for stream data\r\n");
@@ -634,8 +631,9 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 			}
 			sb->RemoveChars(2);
 			sb->SetSubstr(2);
+			NN<Media::PDFParameter> trailer;
 			thisRef->trailer = Media::PDFParameter::Parse(sb->ToCString());
-			if (thisRef->trailer == 0)
+			if (!thisRef->trailer.SetTo(trailer))
 			{
 #if defined(VERBOSE)
 				printf("PDFParser: Error in parsing trailer: %s\r\n", sb->ToString());
@@ -705,7 +703,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 			printf("PDFParser: EOF found, ofst = %lld\r\n", env->lineBegin);
 #endif
 			NN<Text::String> prevOfst;
-			if (!thisRef->trailer->GetEntryValue(CSTR("Prev")).SetTo(prevOfst))
+			if (!trailer->GetEntryValue(CSTR("Prev")).SetTo(prevOfst))
 			{
 				return firstRef;
 			}
@@ -813,7 +811,7 @@ void Parser::FileParser::PDFParser::FreeXRef(PDFXRef *xref)
 {
 	if (xref->nextRef)
 		FreeXRef(xref->nextRef);
-	SDEL_CLASS(xref->trailer);
+	xref->trailer.Delete();
 	MemFree(xref->items);
 	MemFree(xref);
 }

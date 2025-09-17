@@ -1532,6 +1532,7 @@ Data/Class.h:
 Data/Comparable.h:
 Data/Comparator.h:
 Data/Condition.h:
+Data/Currency.h:
 Data/DataArray.h:
 Data/DataComparer.h:
 @DataComparer.o
@@ -2154,6 +2155,8 @@ IO/Device/TH10SB.h:
 @TH10SB.o
 IO/FileAnalyse/ASN1FileAnalyse.h:
 @ASN1FileAnalyse.o
+IO/FileAnalyse/CCacheV2FileAnalyse.h:
+@CCacheV2FileAnalyse.o
 IO/FileAnalyse/DWGFileAnalyse.h:
 @DWGFileAnalyse.o
 IO/FileAnalyse/EBMLFileAnalyse.h:
@@ -3685,6 +3688,8 @@ Parser/FileParser/BurikoPackFileParser.h:
 @BurikoPackFileParser.o
 Parser/FileParser/CABParser.h:
 @CABParser.o
+Parser/FileParser/CCacheV2Parser.h:
+@CCacheV2Parser.o
 Parser/FileParser/CDXAParser.h:
 @CDXAParser.o
 Parser/FileParser/CFBParser.h:

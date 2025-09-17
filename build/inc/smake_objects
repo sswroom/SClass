@@ -223,9 +223,12 @@ MDBFileConnL.o: ../../src/DB/MDBFileConn.cpp
 !-lodbcinst
 MDBFileConnNul.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDB.cpp
-$`$(PKG-CONFIG) --cflags libmongoc-1.0`
-!-lmongoc-1.0
-!-lbson-1.0
+$@($(PKG-CONFIG) --exists libmongoc-1.0) `$(PKG-CONFIG) --cflags libmongoc-1.0`
+$@($(PKG-CONFIG) --exists mongoc2) `$(PKG-CONFIG) --cflags mongoc2`
+!@($(PKG-CONFIG) --exists libmongoc-1.0) -lmongoc-1.0
+!@($(PKG-CONFIG) --exists libmongoc-1.0) -lbson-1.0
+!@($(PKG-CONFIG) --exists mongoc2) -lmongoc2
+!@($(PKG-CONFIG) --exists mongoc2) -lbson2
 MongoDBFreeBSD.o: ../../src/DB/MongoDB.cpp
 $-I /usr/local/include/libbson-1.0
 $-I /usr/local/include/libmongoc-1.0
@@ -658,6 +661,7 @@ SIM7000SocketFactory.o: ../../src/IO/Device/SIM7000SocketFactory.cpp
 TelitLE910.o: ../../src/IO/Device/TelitLE910.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 ASN1FileAnalyse.o: ../../src/IO/FileAnalyse/ASN1FileAnalyse.cpp
+CCacheV2FileAnalyse.o: ../../src/IO/FileAnalyse/CCacheV2FileAnalyse.cpp
 DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EDIDFileAnalyse.o: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
@@ -1634,6 +1638,7 @@ BSAParser.o: ../../src/Parser/FileParser/BSAParser.cpp
 BurikoArcParser.o: ../../src/Parser/FileParser/BurikoArcParser.cpp
 BurikoPackFileParser.o: ../../src/Parser/FileParser/BurikoPackFileParser.cpp
 CABParser.o: ../../src/Parser/FileParser/CABParser.cpp
+CCacheV2Parser.o: ../../src/Parser/FileParser/CCacheV2Parser.cpp
 CDXAParser.o: ../../src/Parser/FileParser/CDXAParser.cpp
 CFBParser.o: ../../src/Parser/FileParser/CFBParser.cpp
 CIPParser.o: ../../src/Parser/FileParser/CIPParser.cpp

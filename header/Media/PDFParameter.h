@@ -30,7 +30,7 @@ namespace Media
 		NN<ParamEntry> GetItemNoCheck(UOSInt index) const;
 		Optional<ParamEntry> GetItem(UOSInt index) const;
 
-		static PDFParameter *Parse(Text::CStringNN parameter);
+		static Optional<PDFParameter> Parse(Text::CStringNN parameter);
 	};
 }
 #endif

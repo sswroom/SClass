@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/FileAnalyse/CCacheV2FileAnalyse.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
 #include "IO/FileAnalyse/EDIDFileAnalyse.h"
@@ -111,9 +112,13 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::SPKFileAnalyse(fd));
 	}
-	else if (ReadUInt32(buff) == 3 && ReadUInt64(&buff[24]) == fd->GetDataSize())
+	else if (ReadUInt32(buff) == 3 && ReadUInt64(&buff[24]) == fd->GetDataSize() && ReadUInt32(&buff[40]) != 0x20014)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::FGDBFileAnalyse(fd));
+	}
+	else if (ReadUInt32(buff) == 3 && ReadUInt64(&buff[24]) == fd->GetDataSize() && ReadUInt32(&buff[40]) == 0x20014)
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::CCacheV2FileAnalyse(fd));
 	}
 	else if (ReadUInt32(buff) == 0x100 && (Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard Jet DB")) || Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard ACE DB"))))
 	{
@@ -207,4 +212,6 @@ void IO::FileAnalyse::FileAnalyser::AddFilters(NN<IO::FileSelector> selector)
 	selector->AddFilter(CSTR("*.tif"), CSTR("TIFF file"));
 	selector->AddFilter(CSTR("*.tf8"), CSTR("TIFF file"));
 	selector->AddFilter(CSTR("*.btf"), CSTR("TIFF file"));
+	selector->AddFilter(CSTR("*.gdbtable"), CSTR("FGDB Table file"));
+	selector->AddFilter(CSTR("*.bundle"), CSTR("Compact Cache V2 file"));
 }

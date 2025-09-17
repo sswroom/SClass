@@ -28,6 +28,7 @@ namespace Text
 	FORCEINLINE UnsafeArray<Char> StrDoubleDPCh(UnsafeArray<Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP) { return UnsafeArray<Char>::ConvertFrom(StrDoubleDP(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, minDP, maxDP)); }
 	UnsafeArray<UTF16Char> StrDoubleDPW(UnsafeArray<UTF16Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP);
 	UnsafeArray<UTF32Char> StrDoubleDPW(UnsafeArray<UTF32Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP);
+	UnsafeArray<UTF8Char> StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt groupCnt, UOSInt minDP, UOSInt maxDP);
 
 	UnsafeArray<UTF8Char> StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, UnsafeArray<const Char> format);
 	FORCEINLINE UnsafeArray<Char> StrDoubleFmtCh(UnsafeArray<Char> oriStr, Double val, UnsafeArray<const Char> format) { return UnsafeArray<Char>::ConvertFrom(StrDoubleFmt(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, format)); }

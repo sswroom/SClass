@@ -16,6 +16,7 @@
 #include "Parser/FileParser/BurikoArcParser.h"
 #include "Parser/FileParser/BurikoPackFileParser.h"
 #include "Parser/FileParser/CABParser.h"
+#include "Parser/FileParser/CCacheV2Parser.h"
 #include "Parser/FileParser/CDXAParser.h"
 #include "Parser/FileParser/CFBParser.h"
 #include "Parser/FileParser/CIPParser.h"
@@ -373,6 +374,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(parser, Parser::FileParser::MTKGPSParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::PDFParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::CCacheV2Parser());
 	this->AddFileParser(parser);
 
 	NN<IO::ObjectParser> oparser;

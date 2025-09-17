@@ -17,8 +17,8 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 	NN<Media::PDFObject> obj;
 	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj))
 	{
-		Media::PDFParameter *param = obj->GetParameter();
-		if (param)
+		NN<Media::PDFParameter> param;
+		if (obj->GetParameter().SetTo(param))
 		{
 			NN<Media::PDFParameter::ParamEntry> entry;
 			NN<Text::String> s;
@@ -33,6 +33,9 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 				i++;
 			}
 		}
+		Text::StringBuilderUTF8 sb;
+		obj->ToString(sb);
+		me->txtText->SetText(sb.ToCString());
 	}
 }
 
@@ -50,7 +53,10 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(AnyType userObj)
 
 SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::PDFDocument> doc) : UI::GUIForm(parent, 640, 480, ui)
 {
-	this->SetText(CSTR("PDF Objects"));
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("PDF Objects - "));
+	sb.Append(doc->GetSourceNameObj());
+	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -73,6 +79,11 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	this->lvParameter->SetShowGrid(true);
 	this->lvParameter->AddColumn(CSTR("Type"), 100);
 	this->lvParameter->AddColumn(CSTR("Value"), 400);
+
+	this->tpText = this->tcMain->AddTabPage(CSTR("Text"));
+	this->txtText = ui->NewTextBox(this->tpText, CSTR(""), true);
+	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtText->SetReadOnly(true);
 
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	NN<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("Objects"));

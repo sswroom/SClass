@@ -102,7 +102,7 @@ Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItem(UOSInt in
 	return this->entries.GetItem(index);
 }
 
-Media::PDFParameter *Media::PDFParameter::Parse(Text::CStringNN parameter)
+Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN parameter)
 {
 	parameter = parameter.LTrim();
 	UOSInt i = 1;

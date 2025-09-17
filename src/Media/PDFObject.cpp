@@ -13,31 +13,31 @@ Media::PDFObject::PDFObject(UInt32 id)
 
 Media::PDFObject::~PDFObject()
 {
-	SDEL_CLASS(this->fd);
-	SDEL_CLASS(this->parameter);
+	this->fd.Delete();
+	this->parameter.Delete();
 }
 
 void Media::PDFObject::SetStream(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len)
 {
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->streamData = true;
-	this->fd = fd->GetPartialData(ofst, len).Ptr();
+	this->fd = fd->GetPartialData(ofst, len);
 }
 
 void Media::PDFObject::SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len)
 {
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->streamData = false;
-	this->fd = fd->GetPartialData(ofst, len).Ptr();
+	this->fd = fd->GetPartialData(ofst, len);
 }
 
-void Media::PDFObject::SetParameter(PDFParameter *parameter)
+void Media::PDFObject::SetParameter(Optional<PDFParameter> parameter)
 {
-	SDEL_CLASS(this->parameter);
+	this->parameter.Delete();
 	this->parameter = parameter;
 }
 
-Media::PDFParameter *Media::PDFObject::GetParameter() const
+Optional<Media::PDFParameter> Media::PDFObject::GetParameter() const
 {
 	return this->parameter;
 }
@@ -49,99 +49,173 @@ UInt32 Media::PDFObject::GetId() const
 
 Bool Media::PDFObject::IsImage() const
 {
-	return this->parameter && this->parameter->ContainsEntry(CSTR("Image"));
+	NN<Media::PDFParameter> parameter;
+	return this->parameter.SetTo(parameter) && parameter->ContainsEntry(CSTR("Image"));
 }
 
 Optional<Text::String> Media::PDFObject::GetType() const
 {
-	if (this->parameter == 0)
+	NN<Media::PDFParameter> parameter;
+	if (!this->parameter.SetTo(parameter))
 		return 0;
-	UOSInt i = this->parameter->GetEntryIndex(CSTR("Type"));
+	UOSInt i = parameter->GetEntryIndex(CSTR("Type"));
 	if (i != INVALID_INDEX)
-		return this->parameter->GetEntryType(i + 1);
+		return parameter->GetEntryType(i + 1);
 	return 0;
 }
 
 Optional<Text::String> Media::PDFObject::GetSubtype() const
 {
-	if (this->parameter == 0)
+	NN<Media::PDFParameter> parameter;
+	if (!this->parameter.SetTo(parameter))
 		return 0;
-	UOSInt i = this->parameter->GetEntryIndex(CSTR("Subtype"));
+	UOSInt i = parameter->GetEntryIndex(CSTR("Subtype"));
 	if (i != INVALID_INDEX)
-		return this->parameter->GetEntryType(i + 1);
+		return parameter->GetEntryType(i + 1);
 	return 0;
 }
 
 Optional<Text::String> Media::PDFObject::GetFilter() const
 {
-	if (this->parameter == 0)
+	NN<Media::PDFParameter> parameter;
+	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
-	UOSInt i = this->parameter->GetEntryIndex(CSTR("Filter"));
+	UOSInt i = parameter->GetEntryIndex(CSTR("Filter"));
 	if (i != INVALID_INDEX)
 	{
-		NN<Media::PDFParameter::ParamEntry> entry = this->parameter->GetItemNoCheck(i);
+		NN<Media::PDFParameter::ParamEntry> entry = parameter->GetItemNoCheck(i);
 		if (entry->value.SetTo(s))
 			return s;
-		return this->parameter->GetEntryType(i + 1);
+		return parameter->GetEntryType(i + 1);
 	}
 	return 0;
 }
 
 Optional<Text::String> Media::PDFObject::GetColorSpace() const
 {
-	if (this->parameter == 0)
+	NN<Media::PDFParameter> parameter;
+	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
-	UOSInt i = this->parameter->GetEntryIndex(CSTR("ColorSpace"));
+	UOSInt i = parameter->GetEntryIndex(CSTR("ColorSpace"));
 	if (i != INVALID_INDEX)
 	{
-		NN<Media::PDFParameter::ParamEntry> entry = this->parameter->GetItemNoCheck(i);
+		NN<Media::PDFParameter::ParamEntry> entry = parameter->GetItemNoCheck(i);
 		if (entry->value.SetTo(s))
 			return s;
-		return this->parameter->GetEntryType(i + 1);
+		return parameter->GetEntryType(i + 1);
 	}
 	return 0;
 }
 
 UOSInt Media::PDFObject::GetBitPerComponent() const
 {
-	if (this->parameter == 0)
+	NN<Media::PDFParameter> parameter;
+	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
-	if (this->parameter->GetEntryValue(CSTR("BitPerComponent")).SetTo(s))
+	if (parameter->GetEntryValue(CSTR("BitPerComponent")).SetTo(s))
 		return s->ToUOSInt();
 	return 0;
 }
 
 UOSInt Media::PDFObject::GetWidth() const
 {
-	if (this->parameter == 0)
+	NN<Media::PDFParameter> parameter;
+	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
-	if (this->parameter->GetEntryValue(CSTR("Width")).SetTo(s))
+	if (parameter->GetEntryValue(CSTR("Width")).SetTo(s))
 		return s->ToUOSInt();
 	return 0;
 }
 
 UOSInt Media::PDFObject::GetHeight() const
 {
-	if (this->parameter == 0)
+	NN<Media::PDFParameter> parameter;
+	if (!this->parameter.SetTo(parameter))
 		return 0;
 	NN<Text::String> s;
-	if (this->parameter->GetEntryValue(CSTR("Height")).SetTo(s))
+	if (parameter->GetEntryValue(CSTR("Height")).SetTo(s))
 		return s->ToUOSInt();
 	return 0;
 }
 
-IO::StreamData *Media::PDFObject::GetData() const
+Bool Media::PDFObject::ToString(NN<Text::StringBuilderUTF8> sb) const
+{
+	sb->AppendU32(this->id);
+	sb->Append(CSTR(" 0 obj\r"));
+	NN<PDFParameter> param;
+	NN<Text::String> s;
+	if (this->parameter.SetTo(param))
+	{
+		sb->Append(CSTR("<<"));
+		NN<PDFParameter::ParamEntry> ent;
+		UOSInt i = 0;
+		UOSInt j = param->GetCount();
+		while (i < j)
+		{
+			ent = param->GetItemNoCheck(i);
+			sb->AppendUTF8Char('/');
+			sb->Append(ent->type);
+			if (ent->value.SetTo(s) && s->leng > 0)
+			{
+				if (!s->StartsWith('[') && !s->StartsWith('<'))
+				{
+					sb->AppendUTF8Char(' ');
+				}
+				sb->Append(s);
+			}
+			i++;
+		}
+		sb->Append(CSTR(">>"));
+	}
+	NN<IO::StreamData> fd;
+	if (!this->fd.SetTo(fd))
+	{
+		sb->AppendUTF8Char('\r');
+		sb->Append(CSTR("endobj\r"));
+		return true;
+	}
+	if (this->streamData)
+	{
+		sb->Append(CSTR("stream\r\n"));
+		sb->Append(CSTR("..."));
+		sb->Append(CSTR("\r\nendstream\r"));
+	}
+	else
+	{
+		sb->AppendUTF8Char('\r');
+		UInt64 len = fd->GetDataSize();
+		if (len > 1048576)
+		{
+			sb->Append(CSTR("...\r\n"));
+		}
+		else
+		{
+			sb->AllocLeng((UOSInt)len);
+			if (fd->GetRealData(0, len, Data::ByteArray(sb->GetEndPtr(), (UOSInt)len)) == len)
+			{
+				sb->SetEndPtr(sb->GetEndPtr() + (UOSInt)len);
+				return true;
+			}
+			sb->AppendUTF8Char('\r');
+		}
+	}
+	sb->Append(CSTR("endobj\r"));
+	return true;
+}
+
+Optional<IO::StreamData> Media::PDFObject::GetData() const
 {
 	return this->fd;
 }
 
 Bool Media::PDFObject::SaveFile(Text::CStringNN fileName)
 {
-	if (this->fd)
+	NN<IO::StreamData> fd;
+	if (this->fd.SetTo(fd))
 	{
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		return this->SaveStream(fs);
@@ -152,7 +226,7 @@ Bool Media::PDFObject::SaveFile(Text::CStringNN fileName)
 Bool Media::PDFObject::SaveStream(NN<IO::Stream> stm)
 {
 	NN<IO::StreamData> fd;
-	if (fd.Set(this->fd))
+	if (this->fd.SetTo(fd))
 	{
 		NN<Text::String> filter;
 		if (this->GetFilter().SetTo(filter) && filter->Equals(UTF8STRC("FlateDecode")))

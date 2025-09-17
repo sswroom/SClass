@@ -705,6 +705,205 @@ Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32
 	return buff;
 }
 
+UnsafeArray<UTF8Char> Text::StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt groupCnt, UOSInt minDP, UOSInt maxDP)
+{
+	Char fmtBuff[30];
+	Char *buff;
+	Char buff2[20];
+	Char *buffPtr;
+	Char c;
+	Int32 digit;
+	Int32 sign;
+	OSInt leng;
+
+	if (Math::IsInfinity(val))
+	{
+		if (val < 0)
+		{
+			*oriStr++ = '-';
+		}
+		return Text::StrConcatC(oriStr, DoubleStyleC.infStr, DoubleStyleC.infLen);
+	}
+	if (Math::IsNAN(val))
+	{
+		if (val < 0)
+		{
+			*oriStr++ = '-';
+		}
+		return StrConcatC(oriStr, DoubleStyleC.nanStr, DoubleStyleC.nanLen);
+	}
+
+	leng = MyString_ecvt(fmtBuff, val, 20, &digit, &sign) - fmtBuff;
+	buff = fmtBuff;
+	if (sign)
+	{
+		*oriStr++ = '-';
+	}
+	UOSInt maxLeng = maxDP + (UInt32)digit;
+	UOSInt minLeng = minDP + (UInt32)digit;
+
+	if (maxLeng < 0)
+	{
+	}
+	else if ((OSInt)minLeng < leng)
+	{
+		buffPtr = buff2;
+		*buffPtr++ = '0';
+		while (maxLeng-- > 0)
+		{
+			if ((c = *buffPtr++ = *buff++) == 0)
+			{
+				break;
+			}
+		}
+		*buffPtr = 0;
+		if (c != 0)
+		{
+			c = *buff;
+			buff = buffPtr;
+			if (c != 0)
+			{
+				if (c >= 0x35)
+				{
+					while (true)
+					{
+						c = ++*--buffPtr;
+						if (c != 0x3a)
+						{
+							break;
+						}
+						*buffPtr = 0x30;
+					}
+				}
+			}
+			buffPtr = buff;
+		}
+		while (buffPtr > buff2 + 1 && (c = *--buffPtr) == '0')
+		{
+			*buffPtr = 0;
+		}
+		if (buff2[0] != '0')
+		{
+			digit++;
+			buff = buff2;
+		}
+		else
+		{
+			buff = &buff2[1];
+		}
+	}
+	
+	if (digit <= 0)
+	{
+		*oriStr++ = '0';
+	}
+	else
+	{
+		if (groupCnt)
+		{
+			while (digit > 0)
+			{
+				c = *buff;
+				if (c == 0)
+				{
+					while (digit-- > 0)
+					{
+						*oriStr++ = '0';
+						if (digit != 0 && ((UInt32)digit % groupCnt) == 0)
+						{
+							*oriStr++ = ',';
+						}
+					}
+					break;
+				}
+				else
+				{
+					buff++;
+					*oriStr++ = (UTF8Char)c;
+					digit--;
+					if (digit != 0 && ((UInt32)digit % groupCnt) == 0)
+					{
+						*oriStr++ = ',';
+					}
+				}
+			}
+		}
+		else
+		{
+			while (digit > 0)
+			{
+				c = *buff;
+				if (c == 0)
+				{
+					while (digit-- > 0)
+					{
+						*oriStr++ = '0';
+					}
+					break;
+				}
+				else
+				{
+					buff++;
+					*oriStr++ = (UTF8Char)c;
+					digit--;
+				}
+			}
+		}
+	}
+
+	if (minDP == 0 && (maxDP == 0 || *buff == 0))
+	{
+	}
+	else
+	{
+		*oriStr++ = '.';
+
+		while (digit < 0)
+		{
+			if (minDP > 0)
+			{
+				minDP--;
+				maxDP--;
+			}
+			else if (maxDP > 0)
+				maxDP--;
+			else
+				break;
+			digit++;
+			*oriStr++ = '0';
+		}
+		while (maxDP > 0)
+		{
+			c = *buff;
+			if (c == 0)
+			{
+				while (maxDP-- > 0)
+				{
+					*oriStr++ = '0';
+					break;
+				}
+			}
+			else
+			{
+				buff++;
+				maxDP--;
+				*oriStr++ = (UTF8Char)c;
+			}
+		}
+		while (minDP > 0)
+		{
+			c = *buff;
+			if (c == 0)
+				break;
+			buff++;
+			minDP--;
+			*oriStr++ = (UTF8Char)c;
+		}
+	}
+	*oriStr = 0;
+	return oriStr;
+}
+
 UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, UnsafeArray<const Char> format)
 {
 	Char fmtBuff[30];

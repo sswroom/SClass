@@ -24,7 +24,7 @@ namespace Parser
 				UOSInt count;
 				PDFXRefItem *items;
 				PDFXRef *nextRef;
-				Media::PDFParameter *trailer;
+				Optional<Media::PDFParameter> trailer;
 			};
 		private:
 			struct PDFParseEnv;

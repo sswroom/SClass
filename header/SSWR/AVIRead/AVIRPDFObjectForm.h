@@ -8,6 +8,7 @@
 #include "UI/GUIListView.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
+#include "UI/GUITextBox.h"
 
 namespace SSWR
 {
@@ -25,6 +26,9 @@ namespace SSWR
 			
 			NN<UI::GUITabPage> tpParameter;
 			NN<UI::GUIListView> lvParameter;
+
+			NN<UI::GUITabPage> tpText;
+			NN<UI::GUITextBox> txtText;
 
 			NN<UI::GUIMainMenu> mnuMain;
 
