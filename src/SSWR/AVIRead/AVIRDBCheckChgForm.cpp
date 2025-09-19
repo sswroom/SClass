@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	if (me->dataFile.IsNull())
+	if (me->dataConn.IsNull())
 	{
 		me->ui->ShowMsgOK(CSTR("Please input Data file first"), CSTR("Check Table Changes"), me);
 		return;
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
-	if (me->dataFile.IsNull())
+	if (me->dataConn.IsNull())
 	{
 		me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
-	if (me->dataFile.IsNull())
+	if (me->dataConn.IsNull())
 	{
 		//me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
@@ -227,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 {
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	NN<DB::ReadingDB> dataFile;
-	if (!me->dataFile.SetTo(dataFile))
+	if (!me->dataConn.SetTo(dataFile))
 	{
 		//me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 	{
 		return;
 	}
-	SSWR::AVIRead::AVIRDBAssignColumnForm frm(0, me->ui, me->core, table, dataFile, nullptr, sbTable.ToCString(), me->dataFileNoHeader, me->dataFileTz, me->colInd, me->colStr);
+	SSWR::AVIRead::AVIRDBAssignColumnForm frm(0, me->ui, me->core, table, dataFile, nullptr, sbTable.ToCString(), me->dataFileNoHeader, me->connTz, me->colInd, me->colStr);
 	frm.ShowDialog(me);
 	table.Delete();
 }
@@ -288,18 +288,18 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		{
 			csv.Delete();
 			this->ui->ShowMsgOK(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
+			this->dataConn = 0;
 			return false;
 		}
 		csv->CloseReader(r);
 		if (this->chkCSVUTCTime->IsChecked())
 			csvTZ = 0;
 		this->txtDataFile->SetText(fileName);
-		this->dataFile.Delete();
-		this->dataFile = csv;
-		nndataFile = csv;
+		this->relDataFile.Delete();
+		this->relDataFile = csv;
 		this->dataFileNoHeader = noHeader;
-		this->dataFileTz = csvTZ;
 		this->cboNullCol->SetSelectedIndex(0);
+		return this->InitConn(csv, csvTZ);
 	}
 	else
 	{
@@ -319,20 +319,27 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		if (db.SetTo(nndataFile))
 		{
 			this->txtDataFile->SetText(fileName);
-			this->dataFile.Delete();
-			this->dataFile = nndataFile;
+			this->relDataFile.Delete();
+			this->relDataFile = nndataFile;
 			this->dataFileNoHeader = false;
-			this->dataFileTz = csvTZ;
 			this->cboNullCol->SetSelectedIndex(3);
+			return this->InitConn(nndataFile, csvTZ);
 		}
 		else
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("Check Table Changes"), this);
+			this->dataConn = 0;
 			return false;
 		}
 	}
+}
+
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitConn(NN<DB::ReadingDB> conn, Int8 connTz)
+{
+	this->connTz = connTz;
+	this->dataConn = conn;
 	Data::ArrayListStringNN tableNames;
-	nndataFile->QueryTableNames(nullptr, tableNames);
+	conn->QueryTableNames(nullptr, tableNames);
 	this->cboDataTable->ClearItems();
 	if (tableNames.GetCount() > 0)
 	{
@@ -373,8 +380,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> 
 		i++;
 	}
 
-	NN<DB::ReadingDB> dataFile;
-	if (!this->dataFile.SetTo(dataFile) || !dataFile->QueryTableData(srcSchema, srcTable, 0, 0, 1, nullptr, 0).SetTo(r))
+	NN<DB::ReadingDB> dataConn;
+	if (!this->dataConn.SetTo(dataConn) || !dataConn->QueryTableData(srcSchema, srcTable, 0, 0, 1, nullptr, 0).SetTo(r))
 	{
 		return false;
 	}
@@ -419,7 +426,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> 
 			k++;
 		}
 	}
-	dataFile->CloseReader(r);
+	dataConn->CloseReader(r);
 	return true;
 }
 
@@ -461,8 +468,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	Text::CStringNN nullStr = this->GetNullText();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	NN<DB::ReadingDB> dataFile;
-	if (!this->dataFile.SetTo(dataFile))
+	NN<DB::ReadingDB> dataConn;
+	if (!this->dataConn.SetTo(dataConn))
 	{
 		this->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), this);
 		return false;
@@ -501,7 +508,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	Int8 csvTZ = this->db->GetTzQhr();
 	DB::SQLType sqlType = this->GetDBSQLType();
 	Bool no3DGeometry = DB::DBUtil::IsNo3DGeometry(sqlType);
-	this->dataFileTz = csvTZ;
+	this->connTz = csvTZ;
 	NN<DB::TableDef> table;;
 	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
 	{
@@ -529,7 +536,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		table.Delete();
 		return false;
 	}
-	if (!dataFile->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, dataDBCond).SetTo(r))
+	if (!dataConn->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, dataDBCond).SetTo(r))
 	{
 		srcDBCond.Delete();
 		dataDBCond.Delete();
@@ -554,7 +561,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		if (dbCnt != srcCnt)
 		{
 			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
-			dataFile->CloseReader(r);
+			dataConn->CloseReader(r);
 			table.Delete();
 			srcDBCond.Delete();
 			dataDBCond.Delete();
@@ -566,7 +573,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		if (keyCol1 != INVALID_INDEX && keyDCol1 == INVALID_INDEX)
 		{
 			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
-			dataFile->CloseReader(r);
+			dataConn->CloseReader(r);
 			table.Delete();
 			srcDBCond.Delete();
 			dataDBCond.Delete();
@@ -709,7 +716,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			}
 		}
 	}
-	dataFile->CloseReader(r);
+	dataConn->CloseReader(r);
 
 	if (succ && keyCol1 != INVALID_INDEX)
 	{
@@ -796,7 +803,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Date:
 								{
 									Data::Date ts1 = r->GetTimestamp(i).ToDate();
-									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz).ToDate();
+									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz).ToDate();
 									if (ts1.GetTotalDays() != ts2.GetTotalDays())
 									{
 										diff = true;
@@ -807,7 +814,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
 									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz);
+									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz);
 									if (ts1.DiffSec(ts2) != 0)
 									{
 										diff = true;
@@ -990,8 +997,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool axisAware, NN<SQLSession> sess)
 {
 	Text::CStringNN nullStr = this->GetNullText();
-	NN<DB::ReadingDB> dataFile;
-	if (!this->dataFile.SetTo(dataFile))
+	NN<DB::ReadingDB> dataConn;
+	if (!this->dataConn.SetTo(dataConn))
 	{
 		this->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), this);
 		return false;
@@ -1030,7 +1037,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	NN<DB::TableDef> table;
 	NN<DB::ColDef> col;
 	UInt32 srid = 0;
-	if (dataFile->GetTableDef(nullptr, sbTable.ToCString()).SetTo(table))
+	if (dataConn->GetTableDef(nullptr, sbTable.ToCString()).SetTo(table))
 	{
 		UOSInt i = table->GetColCnt();
 		while (i-- > 0)
@@ -1119,7 +1126,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		table.Delete();
 		return false;
 	}
-	if (!dataFile->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (!dataConn->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		table.Delete();
 		srcDBCond.Delete();
@@ -1143,7 +1150,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		if (dbCnt != srcCnt)
 		{
 			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
-			dataFile->CloseReader(r);
+			dataConn->CloseReader(r);
 			table.Delete();
 			srcDBCond.Delete();
 			dataDBCond.Delete();
@@ -1155,7 +1162,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		if (keyCol1 != INVALID_INDEX && keyDCol1 == INVALID_INDEX)
 		{
 			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
-			dataFile->CloseReader(r);
+			dataConn->CloseReader(r);
 			table.Delete();
 			srcDBCond.Delete();
 			dataDBCond.Delete();
@@ -1331,7 +1338,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						}
 						else
 						{
-							AppendCol(sql, col, ops, this->dataFileTz, srid);
+							AppendCol(sql, col, ops, this->connTz, srid);
 						}
 						OPTSTR_DEL(ops);
 					}
@@ -1346,7 +1353,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			}
 		}
 	}
-	dataFile->CloseReader(r);
+	dataConn->CloseReader(r);
 
 	if (keyCol1 != INVALID_INDEX)
 	{
@@ -1426,7 +1433,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									case DB::DBUtil::CT_Date:
 										{
-											Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz).ToDate();
+											Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz).ToDate();
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1443,7 +1450,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_DateTime:
 									case DB::DBUtil::CT_DateTimeTZ:
 										{
-											Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz);
+											Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz);
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1612,7 +1619,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_Date:
 								{
 									Data::Date ts1 = r->GetTimestamp(i).ToDate();
-									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz).ToDate();
+									Data::Date ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz).ToDate();
 									if (ts1.GetTotalDays() != ts2.GetTotalDays())
 									{
 										if (diff)
@@ -1633,7 +1640,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_DateTimeTZ:
 								{
 									Data::Timestamp ts1 = r->GetTimestamp(i);
-									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->dataFileTz);
+									Data::Timestamp ts2 = Data::Timestamp::FromStr(rowData[i]->ToCString(), this->connTz);
 									if (ts1.DiffSec(ts2) != 0)
 									{
 										if (diff)
@@ -1906,7 +1913,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							{
 								if (colFound) sql.AppendCmdC(CSTR(", "));
 								colFound = true;
-								AppendCol(sql, col, rowData[i], this->dataFileTz, srid);
+								AppendCol(sql, col, rowData[i], this->connTz, srid);
 							}
 							i++;
 						}
@@ -2174,7 +2181,8 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->db = db;
 	this->schema = schema;
 	this->table = table;
-	this->dataFile = 0;
+	this->relDataFile = 0;
+	this->dataConn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	if (schema.v == 0)
@@ -2198,18 +2206,18 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->txtSrcFilter->SetRect(100, 48, 200, 23, false);
 	this->grpData = ui->NewGroupBox(*this, CSTR("Data Source"));
 	this->grpData->SetRect(0, 72, 800, 216, false);
-	this->chkNoHeader = ui->NewCheckBox(this->grpData, CSTR("CSV No Header"), false);
-	this->chkNoHeader->SetRect(100, 0, 150, 23, false);
-	this->chkCSVUTCTime = ui->NewCheckBox(this->grpData, CSTR("CSV UTC Time"), false);
-	this->chkCSVUTCTime->SetRect(250, 0, 150, 23, false);
 	this->lblDataFile = ui->NewLabel(this->grpData, CSTR("Data File"));
-	this->lblDataFile->SetRect(0, 24, 100, 23, false);
+	this->lblDataFile->SetRect(0, 0, 100, 23, false);
 	this->txtDataFile = ui->NewTextBox(this->grpData, CSTR(""));
-	this->txtDataFile->SetRect(100, 24, 600, 23, false);
+	this->txtDataFile->SetRect(100, 0, 600, 23, false);
 	this->txtDataFile->SetReadOnly(true);
 	this->btnDataFile = ui->NewButton(this->grpData, CSTR("Browse"));
-	this->btnDataFile->SetRect(700, 24, 75, 23, false);
+	this->btnDataFile->SetRect(700, 0, 75, 23, false);
 	this->btnDataFile->HandleButtonClick(OnDataFileClk, this);
+	this->chkNoHeader = ui->NewCheckBox(this->grpData, CSTR("CSV No Header"), false);
+	this->chkNoHeader->SetRect(100, 24, 150, 23, false);
+	this->chkCSVUTCTime = ui->NewCheckBox(this->grpData, CSTR("CSV UTC Time"), false);
+	this->chkCSVUTCTime->SetRect(250, 24, 150, 23, false);
 	this->lblDataTable = ui->NewLabel(this->grpData, CSTR("Table"));
 	this->lblDataTable->SetRect(0, 48, 100, 23, false);
 	this->cboDataTable = ui->NewComboBox(this->grpData, false);
@@ -2337,7 +2345,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRDBCheckChgForm::~AVIRDBCheckChgForm()
 {
-	this->dataFile.Delete();
+	this->relDataFile.Delete();
 	this->colStr.FreeAll();
 }
 

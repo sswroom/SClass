@@ -88,9 +88,11 @@ namespace SSWR
 			Text::CString schema;
 			Text::CStringNN table;
 
-			Optional<DB::ReadingDB> dataFile;
+			Optional<DB::ReadingDB> relDataFile;
 			Bool dataFileNoHeader;
-			Int8 dataFileTz;
+
+			Optional<DB::ReadingDB> dataConn;
+			Int8 connTz;
 
 			static void __stdcall OnDataFileClk(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
@@ -102,6 +104,7 @@ namespace SSWR
 			Optional<Text::String> GetNewText(UOSInt colIndex);
 			NN<Text::String> GetNewTextNN(UOSInt colIndex);
 			Bool LoadDataFile(Text::CStringNN fileName);
+			Bool InitConn(NN<DB::ReadingDB> conn, Int8 connTz);
 			Bool GetColIndex(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
 			Bool IsColIndexValid(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable);
 			Bool CheckDataFile();
