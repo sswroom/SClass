@@ -1323,7 +1323,7 @@ Bool Data::Invest::InvestmentManager::UpdateTransactionAsset(NN<TradeEntry> ent,
 		while (i < j)
 		{
 			t = ass->trades.GetItemNoCheck(i);
-			if (t->tranEndDate.NotNull() && t->tranEndDate <= ent->fromDetail.tranBeginDate)
+			if (t != ent->fromDetail && t->tranEndDate.NotNull() && t->tranEndDate <= ent->fromDetail.tranBeginDate)
 			{
 				totalAmount += t->amount;
 			}
@@ -1345,7 +1345,7 @@ Bool Data::Invest::InvestmentManager::UpdateTransactionAsset(NN<TradeEntry> ent,
 			while (i < j)
 			{
 				t = c->trades.GetItemNoCheck(i);
-				if (t->tranEndDate.NotNull() && t->tranEndDate <= ent->fromDetail.tranBeginDate)
+				if (t != ent->fromDetail && t->tranEndDate.NotNull() && t->tranEndDate <= ent->fromDetail.tranBeginDate)
 				{
 					totalValue += t->amount;
 				}
