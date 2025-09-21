@@ -764,6 +764,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 	UOSInt k;
 	UOSInt l;
 	NN<Data::Invest::TradeDetail> t;
+	Data::Timestamp ts;
 	this->txtAssetsShortName->SetText(ass->shortName->ToCString());
 	this->txtAssetsFullName->SetText(ass->fullName->ToCString());
 	this->txtAssetsCurrency->SetText(CURRENCYSTR(ass->currency));
@@ -791,7 +792,15 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 	}
 	while (i < j)
 	{
-		sptr = ass->tsList.GetItem(i).ToString(sbuff, "yyyy-MM-dd HH:mm");
+		ts = ass->tsList.GetItem(i);
+		if (ts.IsDate())
+		{
+			sptr = ts.ToString(sbuff, "yyyy-MM-dd");
+		}
+		else
+		{
+			sptr = ts.ToString(sbuff, "yyyy-MM-dd HH:mm");
+		}
 		k = this->lvAssetsHist->AddItem(CSTRP(sbuff, sptr), 0);
 		sptr = Text::StrDouble(sbuff, ass->valList.GetItem(i));
 		this->lvAssetsHist->SetSubItem(k, 1, CSTRP(sbuff, sptr));

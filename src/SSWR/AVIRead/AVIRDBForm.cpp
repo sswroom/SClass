@@ -901,7 +901,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			NN<Text::String> tableName;
 			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString());
+				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), *this);
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}
@@ -935,4 +935,36 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 void SSWR::AVIRead::AVIRDBForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}
+
+UOSInt SSWR::AVIRead::AVIRDBForm::GetDataSourceCount() const
+{
+	return 1;
+}
+
+void SSWR::AVIRead::AVIRDBForm::GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+{
+	if (index == 0)
+	{
+		if (this->db->IsFullConn())
+		{
+			NN<DB::DBConn>::ConvertFrom(this->db)->GetConnName(sb);
+		}
+		else
+		{
+			sb->Append(this->db->GetSourceNameObj());
+		}
+	}
+}
+
+Optional<DB::ReadingDB> SSWR::AVIRead::AVIRDBForm::OpenDataSource(UOSInt index)
+{
+	if (index == 0)
+	{
+		return this->db;
+	}
+	else
+	{
+		return 0;
+	}
 }

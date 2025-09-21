@@ -387,6 +387,11 @@ namespace Data
 			return this->inst.CompareTo(ts.inst);
 		}
 		
+		Bool IsDate() const
+		{
+			return (this->inst.nanosec == 0 && ((this->inst.sec + (OSInt)this->tzQhr * 900) % 86400) == 0);
+		}
+		
 		/*UnsafeArray<UTF8Char> ToLocalStr(UnsafeArray<UTF8Char> buff);
 		OSInt CompareTo(Data::DateTime *obj);
 		Int32 DateCompare(Data::DateTime *dt);

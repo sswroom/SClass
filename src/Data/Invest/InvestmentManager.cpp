@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/Invest/InvestmentManager.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/CSVFile.h"
 #include "DB/DBReader.h"
 #include "IO/FileStream.h"
@@ -10,6 +11,11 @@
 #define SETTINGFILE CSTR("Setting.txt")
 #define ASSETSFILE CSTR("Assets.csv")
 #define TRADEFILE CSTR("Trade.csv")
+
+OSInt Data::Invest::TradeDetailComparator::Compare(NN<TradeDetail> a, NN<TradeDetail> b) const
+{
+	return a->tranBeginDate.CompareTo(b->tranBeginDate);
+}
 
 NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 c)
 {
@@ -589,6 +595,9 @@ Bool Data::Invest::InvestmentManager::UpdateCurrency(NN<Currency> curr, Data::Ti
 
 void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList, OptOut<Double> initValue)
 {
+	TradeDetailComparator comparator;
+	Data::Sort::ArtificialQuickSort::Sort<NN<TradeDetail>>(curr->trades, comparator);
+
 	Data::DateTimeUtil::Weekday wd = startDate.GetWeekday();
 	if (wd == Data::DateTimeUtil::Weekday::Saturday)
 	{

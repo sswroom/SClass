@@ -35,7 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ReadingDB);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
+		me->inited = false;
 		me->LoadDataFile(dlg->GetFileName()->ToCString());
+		me->inited = true;
 	}
 	dlg.Delete();
 }
@@ -45,6 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data:
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
+	me->inited = false;
 	while (i < nFiles)
 	{
 		if (me->LoadDataFile(files[i]->ToCString()))
@@ -53,6 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data:
 		}
 		i++;
 	}
+	me->inited = true;
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataCheckClk(AnyType userObj)
@@ -248,6 +252,52 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 	table.Delete();
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataConnSelChg(AnyType userObj, Bool newState)
+{
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	if (me->inited)
+	{
+		if (newState)
+		{
+			me->relDataFile.Delete();
+			me->cboNullCol->SetSelectedIndex(3);
+			me->dataConn = me->dbMgr->OpenDataSource(me->cboDataConn->GetSelectedIndex());
+			NN<DB::ReadingDB> conn;
+			if (me->dataConn.SetTo(conn))
+			{
+				me->InitConn(conn, conn->GetTzQhr());
+			}
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			me->txtDataFile->GetText(sb);
+			me->inited = false;
+			me->LoadDataFile(sb.ToCString());
+			me->inited = true;
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataConnCboSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	if (me->inited)
+	{
+		me->relDataFile.Delete();
+		me->cboNullCol->SetSelectedIndex(3);
+		me->dataConn = me->dbMgr->OpenDataSource(me->cboDataConn->GetSelectedIndex());
+		NN<DB::ReadingDB> conn;
+		if (me->dataConn.SetTo(conn))
+		{
+			me->inited = false;
+			me->radDataConn->Select();
+			me->InitConn(conn, conn->GetTzQhr());
+			me->inited = true;
+		}
+	}
+}
+			
 Optional<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewText(UOSInt colIndex)
 {
 	NN<Text::String> s;
@@ -295,6 +345,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		if (this->chkCSVUTCTime->IsChecked())
 			csvTZ = 0;
 		this->txtDataFile->SetText(fileName);
+		this->radDataFile->Select();
 		this->relDataFile.Delete();
 		this->relDataFile = csv;
 		this->dataFileNoHeader = noHeader;
@@ -319,6 +370,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		if (db.SetTo(nndataFile))
 		{
 			this->txtDataFile->SetText(fileName);
+			this->radDataFile->Select();
 			this->relDataFile.Delete();
 			this->relDataFile = nndataFile;
 			this->dataFileNoHeader = false;
@@ -2173,16 +2225,18 @@ DB::SQLType SSWR::AVIRead::AVIRDBCheckChgForm::GetDBSQLType()
 	}
 }
 
-SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, NN<SSWR::AVIRead::AVIRDBManager> dbMgr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Check Table Changes"));
 	this->core = core;
+	this->dbMgr = dbMgr;
 	this->db = db;
 	this->schema = schema;
 	this->table = table;
 	this->relDataFile = 0;
 	this->dataConn = 0;
+	this->inited = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	if (schema.v == 0)
@@ -2205,82 +2259,88 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->txtSrcFilter = ui->NewTextBox(*this, CSTR(""));
 	this->txtSrcFilter->SetRect(100, 48, 200, 23, false);
 	this->grpData = ui->NewGroupBox(*this, CSTR("Data Source"));
-	this->grpData->SetRect(0, 72, 800, 216, false);
-	this->lblDataFile = ui->NewLabel(this->grpData, CSTR("Data File"));
-	this->lblDataFile->SetRect(0, 0, 100, 23, false);
+	this->grpData->SetRect(0, 72, 800, 240, false);
+	this->chkNoHeader = ui->NewCheckBox(this->grpData, CSTR("CSV No Header"), false);
+	this->chkNoHeader->SetRect(100, 0, 150, 23, false);
+	this->chkCSVUTCTime = ui->NewCheckBox(this->grpData, CSTR("CSV UTC Time"), false);
+	this->chkCSVUTCTime->SetRect(250, 0, 150, 23, false);
+	this->radDataFile = ui->NewRadioButton(this->grpData, CSTR("Data File"), true);
+	this->radDataFile->SetRect(0, 24, 100, 23, false);
 	this->txtDataFile = ui->NewTextBox(this->grpData, CSTR(""));
-	this->txtDataFile->SetRect(100, 0, 600, 23, false);
+	this->txtDataFile->SetRect(100, 24, 600, 23, false);
 	this->txtDataFile->SetReadOnly(true);
 	this->btnDataFile = ui->NewButton(this->grpData, CSTR("Browse"));
-	this->btnDataFile->SetRect(700, 0, 75, 23, false);
+	this->btnDataFile->SetRect(700, 24, 75, 23, false);
 	this->btnDataFile->HandleButtonClick(OnDataFileClk, this);
-	this->chkNoHeader = ui->NewCheckBox(this->grpData, CSTR("CSV No Header"), false);
-	this->chkNoHeader->SetRect(100, 24, 150, 23, false);
-	this->chkCSVUTCTime = ui->NewCheckBox(this->grpData, CSTR("CSV UTC Time"), false);
-	this->chkCSVUTCTime->SetRect(250, 24, 150, 23, false);
+	this->radDataConn = ui->NewRadioButton(this->grpData, CSTR("Connection"), false);
+	this->radDataConn->SetRect(0, 48, 100, 23, false);
+	this->radDataConn->HandleSelectedChange(OnDataConnSelChg, this);
+	this->cboDataConn = ui->NewComboBox(this->grpData, false);
+	this->cboDataConn->SetRect(100, 48, 600, 23, false);
+	this->cboDataConn->HandleSelectionChange(OnDataConnCboSelChg, this);
 	this->lblDataTable = ui->NewLabel(this->grpData, CSTR("Table"));
-	this->lblDataTable->SetRect(0, 48, 100, 23, false);
+	this->lblDataTable->SetRect(0, 72, 100, 23, false);
 	this->cboDataTable = ui->NewComboBox(this->grpData, false);
-	this->cboDataTable->SetRect(100, 48, 200, 23, false);
+	this->cboDataTable->SetRect(100, 72, 200, 23, false);
 	this->cboDataTable->HandleSelectionChange(OnDataTableChg, this);
 	this->lblKeyCol = ui->NewLabel(this->grpData, CSTR("Key Column"));
-	this->lblKeyCol->SetRect(0, 72, 100, 23, false);
+	this->lblKeyCol->SetRect(0, 96, 100, 23, false);
 	this->cboKeyCol1 = ui->NewComboBox(this->grpData, false);
-	this->cboKeyCol1->SetRect(100, 72, 200, 23, false);
+	this->cboKeyCol1->SetRect(100, 96, 200, 23, false);
 	this->cboKeyCol2 = ui->NewComboBox(this->grpData, false);
-	this->cboKeyCol2->SetRect(300, 72, 200, 23, false);
+	this->cboKeyCol2->SetRect(300, 96, 200, 23, false);
 	this->cboKeyCol2->AddItem(CSTR("No second key"), (void*)(INVALID_INDEX));
 	this->lblNullCol = ui->NewLabel(this->grpData, CSTR("Null Column"));
-	this->lblNullCol->SetRect(0, 96, 100, 23, false);
+	this->lblNullCol->SetRect(0, 120, 100, 23, false);
 	this->cboNullCol = ui->NewComboBox(this->grpData, false);
-	this->cboNullCol->SetRect(100, 96, 200, 23, false);
+	this->cboNullCol->SetRect(100, 120, 200, 23, false);
 	this->cboNullCol->AddItem(CSTR("Empty"), 0);
 	this->cboNullCol->AddItem(CSTR("\"NULL\""), 0);
 	this->cboNullCol->AddItem(CSTR("\"null\""), 0);
 	this->cboNullCol->AddItem(CSTR("No Null"), 0);
 	this->cboNullCol->SetSelectedIndex(0);
 	this->lblAssignCol = ui->NewLabel(this->grpData, CSTR("Assign Columns"));
-	this->lblAssignCol->SetRect(0, 120, 100, 23, false);
+	this->lblAssignCol->SetRect(0, 144, 100, 23, false);
 	this->btnAssignCol = ui->NewButton(this->grpData, CSTR("Assign"));
-	this->btnAssignCol->SetRect(100, 120, 75, 23, false);
+	this->btnAssignCol->SetRect(100, 144, 75, 23, false);
 	this->btnAssignCol->HandleButtonClick(OnAssignColClicked, this);
 	this->lblDataFilter = ui->NewLabel(this->grpData, CSTR("Data Filter"));
-	this->lblDataFilter->SetRect(0, 144, 100, 23, false);
+	this->lblDataFilter->SetRect(0, 168, 100, 23, false);
 	this->txtDataFilter = ui->NewTextBox(this->grpData, CSTR(""));
-	this->txtDataFilter->SetRect(100, 144, 200, 23, false);
+	this->txtDataFilter->SetRect(100, 168, 200, 23, false);
 	this->btnDataCheck = ui->NewButton(this->grpData, CSTR("Check"));
-	this->btnDataCheck->SetRect(100, 168, 75, 23, false);
+	this->btnDataCheck->SetRect(100, 192, 75, 23, false);
 	this->btnDataCheck->HandleButtonClick(OnDataCheckClk, this);
 	this->lblDataFileRow = ui->NewLabel(*this, CSTR("Data Rows"));
-	this->lblDataFileRow->SetRect(0, 288, 100, 23, false);
+	this->lblDataFileRow->SetRect(0, 312, 100, 23, false);
 	this->txtDataFileRow = ui->NewTextBox(*this, CSTR("0"));
-	this->txtDataFileRow->SetRect(100, 288, 200, 23, false);
+	this->txtDataFileRow->SetRect(100, 312, 200, 23, false);
 	this->txtDataFileRow->SetReadOnly(true);
 	this->lblNoChg = ui->NewLabel(*this, CSTR("No Changes"));
-	this->lblNoChg->SetRect(0, 312, 100, 23, false);
+	this->lblNoChg->SetRect(0, 336, 100, 23, false);
 	this->txtNoChg = ui->NewTextBox(*this, CSTR("0"));
-	this->txtNoChg->SetRect(100, 312, 200, 23, false);
+	this->txtNoChg->SetRect(100, 336, 200, 23, false);
 	this->txtNoChg->SetReadOnly(true);
 	this->lblUpdated = ui->NewLabel(*this, CSTR("Updated rows"));
-	this->lblUpdated->SetRect(0, 336, 100, 23, false);
+	this->lblUpdated->SetRect(0, 360, 100, 23, false);
 	this->txtUpdated = ui->NewTextBox(*this, CSTR("0"));
-	this->txtUpdated->SetRect(100, 336, 200, 23, false);
+	this->txtUpdated->SetRect(100, 360, 200, 23, false);
 	this->txtUpdated->SetReadOnly(true);
 	this->lblNewRow = ui->NewLabel(*this, CSTR("New rows"));
-	this->lblNewRow->SetRect(0, 360, 100, 23, false);
+	this->lblNewRow->SetRect(0, 384, 100, 23, false);
 	this->txtNewRow = ui->NewTextBox(*this, CSTR("0"));
-	this->txtNewRow->SetRect(100, 360, 200, 23, false);
+	this->txtNewRow->SetRect(100, 384, 200, 23, false);
 	this->txtNewRow->SetReadOnly(true);
 	this->lblDeletedRow = ui->NewLabel(*this, CSTR("Deleted rows"));
-	this->lblDeletedRow->SetRect(0, 384, 100, 23, false);
+	this->lblDeletedRow->SetRect(0, 408, 100, 23, false);
 	this->txtDeletedRow = ui->NewTextBox(*this, CSTR("0"));
-	this->txtDeletedRow->SetRect(100, 384, 200, 23, false);
+	this->txtDeletedRow->SetRect(100, 408, 200, 23, false);
 	this->txtDeletedRow->SetReadOnly(true);
 
 	this->lblDBType = ui->NewLabel(*this, CSTR("SQL Type"));
-	this->lblDBType->SetRect(0, 432, 100, 23, false);
+	this->lblDBType->SetRect(0, 456, 100, 23, false);
 	this->cboDBType = ui->NewComboBox(*this, false);
-	this->cboDBType->SetRect(100, 432, 200, 23, false);
+	this->cboDBType->SetRect(100, 456, 200, 23, false);
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
@@ -2292,36 +2352,38 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	else
 		this->cboDBType->SetSelectedIndex(0);
 	this->chkAxisAware = ui->NewCheckBox(*this, CSTR("Axis-Aware (MySQL >=8)"), false);
-	this->chkAxisAware->SetRect(300, 432, 150, 23, false);
+	this->chkAxisAware->SetRect(300, 456, 150, 23, false);
 	this->chkMultiRow = ui->NewCheckBox(*this, CSTR("Multi-Row Insert"), true);
-	this->chkMultiRow->SetRect(100, 456, 150, 23, false);
+	this->chkMultiRow->SetRect(100, 480, 150, 23, false);
 	this->btnSQL = ui->NewButton(*this, CSTR("Generate SQL"));
-	this->btnSQL->SetRect(100, 480, 75, 23, false);
+	this->btnSQL->SetRect(100, 504, 75, 23, false);
 	this->btnSQL->HandleButtonClick(OnSQLClicked, this);
 	this->btnExecute = ui->NewButton(*this, CSTR("Execute SQL"));
-	this->btnExecute->SetRect(180, 480, 75, 23, false);
+	this->btnExecute->SetRect(180, 504, 75, 23, false);
 	this->btnExecute->HandleButtonClick(OnExecuteClicked, this);
 	this->lblStatTime = ui->NewLabel(*this, CSTR("Time Used"));
-	this->lblStatTime->SetRect(0, 504, 100, 23, false);
+	this->lblStatTime->SetRect(0, 528, 100, 23, false);
 	this->txtStatTime = ui->NewTextBox(*this, CSTR(""));
-	this->txtStatTime->SetRect(100, 504, 150, 23 ,false);
+	this->txtStatTime->SetRect(100, 528, 150, 23 ,false);
 	this->txtStatTime->SetReadOnly(true);
 	this->lblStatus = ui->NewLabel(*this, CSTR("Status"));
-	this->lblStatus->SetRect(0, 528, 100, 23, false);
+	this->lblStatus->SetRect(0, 552, 100, 23, false);
 	this->txtStatus = ui->NewTextBox(*this, CSTR(""));
-	this->txtStatus->SetRect(100, 528, 300, 23 ,false);
+	this->txtStatus->SetRect(100, 552, 300, 23 ,false);
 	this->txtStatus->SetReadOnly(true);
 
 	this->HandleDropFiles(OnFiles, this);
 
 	this->cboKeyCol2->SetSelectedIndex(0);
+	UOSInt i;
+	UOSInt j;
 	NN<DB::TableDef> tableDef;
 	if (this->db->GetTableDef(this->schema, this->table).SetTo(tableDef))
 	{
 		Bool hasKey = false;
 		Data::ArrayIterator<NN<DB::ColDef>> it = tableDef->ColIterator();
 		NN<DB::ColDef> col;
-		UOSInt i = 0;
+		i = 0;
 		while (it.HasNext())
 		{
 			col = it.Next();
@@ -2329,8 +2391,15 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 			this->cboKeyCol2->AddItem(col->GetColName(), (void*)i);
 			if (col->IsPK())
 			{
-				hasKey = true;
-				this->cboKeyCol1->SetSelectedIndex(i);
+				if (hasKey)
+				{
+					this->cboKeyCol2->SetSelectedIndex(i + 1);
+				}
+				else
+				{
+					hasKey = true;
+					this->cboKeyCol1->SetSelectedIndex(i);
+				}
 			}
 			i++;
 		}
@@ -2341,6 +2410,21 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 		}
 		tableDef.Delete();
 	}
+	Text::StringBuilderUTF8 sb;
+	i = 0;
+	j = this->dbMgr->GetDataSourceCount();
+	while (i < j)
+	{
+		sb.ClearStr();
+		this->dbMgr->GetDataSourceName(i, sb);
+		this->cboDataConn->AddItem(sb.ToCString(), 0);
+		i++;
+	}
+	if (j > 0)
+	{
+		this->cboDataConn->SetSelectedIndex(0);
+	}
+	this->inited = true;
 }
 
 SSWR::AVIRead::AVIRDBCheckChgForm::~AVIRDBCheckChgForm()

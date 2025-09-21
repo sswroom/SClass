@@ -2,6 +2,7 @@
 #define _SM_DATA_INVEST_INVESTMENTMANAGER
 #include "Data/ArrayListDbl.h"
 #include "Data/ArrayListTS.h"
+#include "Data/Comparator.h"
 #include "Data/FastMapNN.h"
 #include "Data/Timestamp.h"
 #include "DB/ReadingDB.h"
@@ -67,6 +68,11 @@ namespace Data
 		{
 			MMDDYYYY,
 			DDMMYYYY
+		};
+
+		class TradeDetailComparator : public Data::Comparator<NN<TradeDetail>>
+		{
+			virtual OSInt Compare(NN<TradeDetail> a, NN<TradeDetail> b) const;
 		};
 
 		class InvestmentManager

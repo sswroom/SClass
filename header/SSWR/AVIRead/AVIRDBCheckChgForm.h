@@ -5,12 +5,14 @@
 #include "DB/SQLBuilder.h"
 #include "IO/Stream.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "SSWR/AVIRead/AVIRDBManager.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIRadioButton.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
@@ -42,8 +44,10 @@ namespace SSWR
 			NN<UI::GUIGroupBox> grpData;
 			NN<UI::GUICheckBox> chkNoHeader;
 			NN<UI::GUICheckBox> chkCSVUTCTime;
-			NN<UI::GUILabel> lblDataFile;
+			NN<UI::GUIRadioButton> radDataFile;
 			NN<UI::GUITextBox> txtDataFile;
+			NN<UI::GUIRadioButton> radDataConn;
+			NN<UI::GUIComboBox> cboDataConn;
 			NN<UI::GUIButton> btnDataFile;
 			NN<UI::GUILabel> lblDataTable;
 			NN<UI::GUIComboBox> cboDataTable;
@@ -87,6 +91,8 @@ namespace SSWR
 			NN<DB::ReadingDB> db;
 			Text::CString schema;
 			Text::CStringNN table;
+			NN<SSWR::AVIRead::AVIRDBManager> dbMgr;
+			Bool inited;
 
 			Optional<DB::ReadingDB> relDataFile;
 			Bool dataFileNoHeader;
@@ -101,6 +107,8 @@ namespace SSWR
 			static void __stdcall OnExecuteClicked(AnyType userObj);
 			static void __stdcall OnDataTableChg(AnyType userObj);
 			static void __stdcall OnAssignColClicked(AnyType userObj);
+			static void __stdcall OnDataConnSelChg(AnyType userObj, Bool newState);
+			static void __stdcall OnDataConnCboSelChg(AnyType userObj);
 			Optional<Text::String> GetNewText(UOSInt colIndex);
 			NN<Text::String> GetNewTextNN(UOSInt colIndex);
 			Bool LoadDataFile(Text::CStringNN fileName);
@@ -115,7 +123,7 @@ namespace SSWR
 			Text::CStringNN GetNullText();
 			DB::SQLType GetDBSQLType();
 		public:
-			AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table);
+			AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, NN<SSWR::AVIRead::AVIRDBManager> dbMgr);
 			virtual ~AVIRDBCheckChgForm();
 
 			virtual void OnMonitorChanged();

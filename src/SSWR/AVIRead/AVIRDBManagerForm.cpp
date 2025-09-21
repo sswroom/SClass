@@ -1976,7 +1976,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			NN<Text::String> tableName;
 			if (this->currDB.SetTo(db) && this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, db, OPTSTR_CSTR(schemaName), tableName->ToCString());
+				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, db, OPTSTR_CSTR(schemaName), tableName->ToCString(), *this);
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}
@@ -1998,6 +1998,31 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(NN<DB::DBConn> conn)
 	NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetTCPClientFactory(), this->core->GetParserList());
 	this->dbList.Add(ctrl);
 	Text::StringBuilderUTF8 sb;
-	conn->GetConnName(sb);
+	ctrl->GetConnName(sb);
 	this->lbConn->AddItem(sb.ToCString(), ctrl);
+}
+
+UOSInt SSWR::AVIRead::AVIRDBManagerForm::GetDataSourceCount() const
+{
+	return this->dbList.GetCount();
+}
+
+void SSWR::AVIRead::AVIRDBManagerForm::GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const
+{
+	NN<DB::DBManagerCtrl> ctrl;
+	if (this->dbList.GetItem(index).SetTo(ctrl))
+	{
+		ctrl->GetConnName(sb);
+	}
+}
+
+Optional<DB::ReadingDB> SSWR::AVIRead::AVIRDBManagerForm::OpenDataSource(UOSInt index)
+{
+	NN<DB::DBManagerCtrl> ctrl;
+	if (this->dbList.GetItem(index).SetTo(ctrl))
+	{
+		ctrl->Connect();
+		return ctrl->GetDB();
+	}
+	return 0;
 }

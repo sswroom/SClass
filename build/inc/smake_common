@@ -4025,6 +4025,7 @@ SSWR/AVIRead/AVIRDBForm.h:
 @AVIRDBForm.o
 SSWR/AVIRead/AVIRDBGenEnumForm.h:
 @AVIRDBGenEnumForm.o
+SSWR/AVIRead/AVIRDBManager.h:
 SSWR/AVIRead/AVIRDBManagerForm.h:
 @AVIRDBManagerForm.o
 SSWR/AVIRead/AVIRDHCPServerForm.h:

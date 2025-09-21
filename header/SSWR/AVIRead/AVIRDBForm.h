@@ -5,6 +5,7 @@
 #include "IO/Writer.h"
 #include "IO/LogTool.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "SSWR/AVIRead/AVIRDBManager.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUIListBox.h"
@@ -20,7 +21,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRDBForm : public UI::GUIForm
+		class AVIRDBForm : public UI::GUIForm, public AVIRDBManager
 		{
 		private:
 			NN<UI::GUITabControl> tcDB;
@@ -73,6 +74,10 @@ namespace SSWR
 			void UpdateTables();
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
+
+			virtual UOSInt GetDataSourceCount() const;
+			virtual void GetDataSourceName(UOSInt index, NN<Text::StringBuilderUTF8> sb) const;
+			virtual Optional<DB::ReadingDB> OpenDataSource(UOSInt index);
 		};
 	}
 }
