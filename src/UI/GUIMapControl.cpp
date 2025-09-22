@@ -162,7 +162,7 @@ Bool UI::GUIMapControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
 		newScale = this->view->GetMapScale() * 0.5;
 	}
 	NN<Map::MapEnv> mapEnv;
-	if (!mapEnv.Set(this->mapEnv))
+	if (!this->mapEnv.SetTo(mapEnv))
 		mapEnv = this->renderer->GetEnv();
 	if (newScale < mapEnv->GetMinScale())
 		newScale = mapEnv->GetMinScale();
@@ -209,7 +209,7 @@ void UI::GUIMapControl::OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
 		pt = this->view->ScnXYToMapXY(this->gZoomPos.ToDouble());
 		Double newScale = this->view->GetMapScale() * (Double)this->gZoomDist /(Double)dist;
 		NN<Map::MapEnv> mapEnv;
-		if (!mapEnv.Set(this->mapEnv))
+		if (!this->mapEnv.SetTo(mapEnv))
 			mapEnv = this->renderer->GetEnv();
 		if (newScale < mapEnv->GetMinScale())
 			newScale = mapEnv->GetMinScale();
@@ -563,7 +563,7 @@ UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent
 	this->mouseDownHdlr = 0;
 	this->mouseUpHdlr = 0;
 	this->drawHdlr = 0;
-	this->mapEnv = mapEnv.Ptr();
+	this->mapEnv = mapEnv;
 	this->imgTimeoutTick = 0;
 
 	this->markerPos = Math::Coord2DDbl(0, 0);
@@ -579,14 +579,15 @@ UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent
 
 	this->SetBGColor(bgColor);
 	this->renderer->SetUpdatedHandler(ImageUpdated, this);
-	this->mapEnv->AddUpdatedHandler(ImageUpdated, this);
+	mapEnv->AddUpdatedHandler(ImageUpdated, this);
 }
 
 UI::GUIMapControl::~GUIMapControl()
 {
-	if (this->mapEnv)
+	NN<Map::MapEnv> mapEnv;
+	if (this->mapEnv.SetTo(mapEnv))
 	{
-		this->mapEnv->RemoveUpdatedHandler(ImageUpdated, this);
+		mapEnv->RemoveUpdatedHandler(ImageUpdated, this);
 	}
 	NN<Media::DrawImage> img;
 	if (this->bgImg.SetTo(img))
@@ -769,7 +770,7 @@ void UI::GUIMapControl::SetMapScale(Double newScale)
 	if (this->view->GetMapScale() == newScale)
 		return;
 	NN<Map::MapEnv> mapEnv;
-	if (!mapEnv.Set(this->mapEnv))
+	if (!this->mapEnv.SetTo(mapEnv))
 		mapEnv = this->renderer->GetEnv();
 	if (newScale < mapEnv->GetMinScale())
 		newScale = mapEnv->GetMinScale();

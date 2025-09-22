@@ -23,7 +23,7 @@ namespace UI
 		Optional<Media::DrawImage> bgImg;
 		NN<Media::ColorManagerSess> colorSess;
 		NN<Map::MapView> view;
-		Map::MapEnv *mapEnv;
+		Optional<Map::MapEnv> mapEnv;
 		NN<Map::DrawMapRenderer> renderer;
 		Bool releaseRenderer;
 		Math::Size2D<UOSInt> currSize;
@@ -77,9 +77,7 @@ namespace UI
 		void DrawScnObjects(NN<Media::DrawImage> img, Math::Coord2DDbl ofst);
 		void ReleaseSelVecList();
 	public:
-		/*
-		view - will release
-		*/
+		// view - will release
 		GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, NN<Map::DrawMapRenderer> renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess);
 		GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Map::MapEnv> mapEnv, NN<Media::ColorManagerSess> colorSess);
 		virtual ~GUIMapControl();

@@ -67,9 +67,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 	case BLT_OSM_TILE:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
-		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 0, 18, clif, ssl));
-		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
-		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("https://tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 0, 18, clif, ssl));
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_CYCLE:

@@ -2441,12 +2441,27 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 
 Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, OutParam<UInt32> srid, OutParam<Double> minX, OutParam<Double> minY, OutParam<Double> maxX, OutParam<Double> maxY) const
 {
+	UInt32 fileSRID = 0;
 	NN<Media::EXIFData::EXIFItem> item;
 	NN<Media::EXIFData::EXIFItem> item2;
+	if (this->exifMap.Get(34735).SetTo(item2))
+	{
+		UInt16 *keyBuff = item2->dataBuff.GetOpt<UInt16>().OrNull();
+		UOSInt keyCnt = item2->cnt >> 2;
+		UOSInt i = 1;
+		while (i < keyCnt)
+		{
+			if (keyBuff[(i << 2)] == 3072)
+			{
+				fileSRID = keyBuff[(i << 2) + 3];
+			}
+			i++;
+		}
+	}
+
 	if (this->exifMap.Get(33922).SetTo(item) && this->exifMap.Get(33550).SetTo(item2))
 	{
-		srid.Set(0);
-	//	Math::CoordinateSystem *coord = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+		srid.Set(fileSRID);
 		Double *ptr = item->dataBuff.GetOpt<Double>().OrNull();
 		Double imgX = ptr[0];
 		Double imgY = ptr[1];
@@ -2459,34 +2474,16 @@ Bool Media::EXIFData::GetGeoBounds(Math::Size2D<UOSInt> imgSize, OutParam<UInt32
 		mppX = ptr[0];
 		mppY = ptr[1];
 
-	/*	*minX = coord->CalLonByDist(mapY, mapX, -imgX * mppX);
-		*maxY = coord->CalLatByDist(mapY, imgY * mppY);
-		*maxX = coord->CalLonByDist(mapY, mapX, (imgW - imgX) * mppX);
-		*minY = coord->CalLatByDist(mapY, (imgH - imgY) * mppY);*/
 		minX.Set(mapX - imgX * mppX);
 		maxY.Set(mapY + imgY * mppY);
 		maxX.Set(mapX + (UOSInt2Double(imgSize.x) - imgX) * mppX);
 		minY.Set(mapY - (UOSInt2Double(imgSize.y) - imgY) * mppY);
 
-	//	DEL_CLASS(coord);
 		return true;
 	}
 
-	if (this->exifMap.Get(34264).SetTo(item) && this->exifMap.Get(34735).SetTo(item2))
+	if (this->exifMap.Get(34264).SetTo(item))
 	{
-		UInt32 fileSRID = 0;
-		UInt16 *keyBuff = item2->dataBuff.GetOpt<UInt16>().OrNull();
-		UOSInt keyCnt = item2->cnt >> 2;
-		UOSInt i = 1;
-		while (i < keyCnt)
-		{
-			if (keyBuff[(i << 2)] == 3072)
-			{
-				fileSRID = keyBuff[(i << 2) + 3];
-			}
-			i++;
-		}
-
 		if (item->cnt == 16)
 		{
 			Math::Size2DDbl dimgSize = imgSize.ToDouble();

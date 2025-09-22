@@ -552,6 +552,11 @@ iadbldpalopodd2:
 	movzx rax,byte [rdi+4]
 	movhps xmm2,[rdx+rax*8+274432]
 	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+3]
+	movq xmm2,[rdx+rax*8+276480]
+	movzx rax,byte [rdi+7]
+	movhps xmm2,[rdx+rax*8+276480]
+	paddsw xmm0,xmm2
 
 	movzx rax,byte [rsi+2]
 	movq xmm1,[rdx+rax*8+262144]
@@ -566,6 +571,11 @@ iadbldpalopodd2:
 	movq xmm2,[rdx+rax*8+266240]
 	movzx rax,byte [rsi+4]
 	movhps xmm2,[rdx+rax*8+266240]
+	paddsw xmm1,xmm2
+	movzx rax,byte [rsi+3]
+	movq xmm2,[rdx+rax*8+268288]
+	movzx rax,byte [rsi+7]
+	movhps xmm2,[rdx+rax*8+268288]
 	paddsw xmm1,xmm2
 
 	punpcklbw xmm3, xmm3
@@ -625,6 +635,11 @@ iadbldpalopodd2b:
 	movzx rax,byte [rsi+0]
 	movhps xmm2,[rdx+rax*8+266240]
 	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+3]
+	movq xmm2,[rdx+rax*8+276480]
+	movzx rax,byte [rsi+3]
+	movhps xmm2,[rdx+rax*8+268288]
+	paddsw xmm0,xmm2
 
 	movhlps xmm1,xmm0
 	punpcklbw xmm3, xmm3
@@ -679,6 +694,11 @@ iabbldpalopone:
 	movq xmm2,[rdx+rax*8+274432]
 	movzx rax,byte [rsi+0]
 	movhps xmm2,[rdx+rax*8+266240]
+	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+3]
+	movq xmm2,[rdx+rax*8+276480]
+	movzx rax,byte [rsi+3]
+	movhps xmm2,[rdx+rax*8+268288]
 	paddsw xmm0,xmm2
 
 	movhlps xmm1,xmm0

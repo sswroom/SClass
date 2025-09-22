@@ -45,14 +45,35 @@ Optional<IO::ParsedObject> Parser::FileParser::CCacheV2Parser::ParseFileHdr(NN<I
 	{
 		return 0;
 	}
+	NN<IO::VirtualPackageFile> pkg;
+	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
+	if (!ParseAppend(fd, hdr, pkg, 0, 0))
+	{
+		pkg.Delete();
+		return 0;
+	}
+	return pkg;
+}
+
+Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data::ByteArrayR hdr, NN<IO::VirtualPackageFile> pkgFile, UOSInt rOfst, UOSInt cOfst)
+{
+	if (ReadUInt32(&hdr[0]) != 3)
+		return false;
+	if (ReadUInt64(&hdr[24]) != fd->GetDataSize())
+	{
+		return false;
+	}
+	if (ReadUInt32(&hdr[40]) != 0x20014)
+	{
+		return false;
+	}
 	UInt8 index[0x20000];
 	if (fd->GetRealData(64, 0x20000, BYTEARR(index)) != 0x20000)
 		return 0;
-	NN<IO::VirtualPackageFile> pkg;
-	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	Text::StringBuilderUTF8 sb;
 	Optional<IO::VirtualPackageFile> rowPkg;
 	NN<IO::VirtualPackageFile> nnrowPkg;
+	NN<IO::PackageFile> nnpkg;
 	Data::Timestamp now = Data::Timestamp::Now();
 	UInt64 idx;
 	UInt64 tileOfst;
@@ -73,13 +94,21 @@ Optional<IO::ParsedObject> Parser::FileParser::CCacheV2Parser::ParseFileHdr(NN<I
 			if (!rowPkg.SetTo(nnrowPkg))
 			{
 				sb.ClearStr();
-				sb.AppendUOSInt(i);
-				NEW_CLASSNN(nnrowPkg, IO::VirtualPackageFileFast(sb.ToCString()));
-				rowPkg = nnrowPkg;
-				pkg->AddPack(nnrowPkg, sb.ToCString(), now, now, now, 0);
+				sb.AppendUOSInt(i + rOfst);
+				if (!pkgFile->GetPackFile(sb.ToCString()).SetTo(nnpkg))
+				{
+					NEW_CLASSNN(nnrowPkg, IO::VirtualPackageFileFast(sb.ToCString()));
+					rowPkg = nnrowPkg;
+					pkgFile->AddPack(nnrowPkg, sb.ToCString(), now, now, now, 0);
+				}
+				else
+				{
+					nnrowPkg = NN<IO::VirtualPackageFile>::ConvertFrom(nnpkg);
+					rowPkg = nnrowPkg;
+				}
 			}
 			sb.ClearStr();
-			sb.AppendUOSInt(j);
+			sb.AppendUOSInt(j + cOfst);
 			sb.Append(CSTR(".png"));
 			nnrowPkg->AddData(fd, tileOfst, tileSize, IO::PackFileItem::HeaderType::No, sb.ToCString(), now, now, now, 0);
 			j++;
@@ -88,5 +117,5 @@ Optional<IO::ParsedObject> Parser::FileParser::CCacheV2Parser::ParseFileHdr(NN<I
 			break;
 		i++;
 	}
-	return pkg;
+	return true;
 }
