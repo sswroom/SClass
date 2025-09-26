@@ -34,7 +34,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CS
 		return 0;
 
 	NN<Media::StaticImage> simg;
-	if (!simg.Set(Media::ZXingWriter::GenQRCode(code, Math::Size2D<UOSInt>(256, 256))))
+	if (!Media::ZXingWriter::GenQRCode(code, Math::Size2D<UOSInt>(256, 256)).SetTo(simg))
 		return 0;
 	Optional<Media::DrawImage> dimg = eng->ConvImage(simg, 0);
 	simg.Delete();

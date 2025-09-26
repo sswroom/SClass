@@ -6,7 +6,7 @@
 #include <ZXing/MultiFormatWriter.h>
 #include <ZXing/ZXVersion.h>
 
-Media::StaticImage *Media::ZXingWriter::GenQRCode(Text::CString content, Math::Size2D<UOSInt> outputSize)
+Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN content, Math::Size2D<UOSInt> outputSize)
 {
 #if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 10200
 	ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::QRCode);
