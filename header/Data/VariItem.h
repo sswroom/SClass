@@ -61,7 +61,9 @@ namespace Data
 			struct { const UTF8Char *v; UOSInt leng; } cstr;
 			UInt8 buff[16];
 
+#ifdef HAS_DEF_CONSTR
 			ItemValue() = default;
+#endif
 			ItemValue(const ItemValue &v)
 			{
 				MemCopyNO(this->buff, v.buff, 16);

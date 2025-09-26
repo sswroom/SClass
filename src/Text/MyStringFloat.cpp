@@ -749,6 +749,7 @@ UnsafeArray<UTF8Char> Text::StrDoubleGDP(UnsafeArray<UTF8Char> oriStr, Double va
 	{
 		buffPtr = buff2;
 		*buffPtr++ = '0';
+		c = *buff;
 		while (maxLeng-- > 0)
 		{
 			if ((c = *buffPtr++ = *buff++) == 0)

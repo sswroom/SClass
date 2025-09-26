@@ -16,6 +16,7 @@ HAS_GCCASM64
 HAS_INT64
 HAS_DOUBLE
 HAS_INTRIN
+HAS_DEF_CONSTR
 IS_BYTEORDER_LE
 MEMORY_UNALIGNED
 
@@ -32,6 +33,10 @@ ASTRUCT
 #else
 #define FORCEINLINE __inline
 #endif
+#endif
+
+#if !defined(__GNUC__) || (__GNUC__ >= 5)
+#define HAS_DEF_CONSTR
 #endif
 
 #if defined(__WCHAR_MAX__) && (__WCHAR_MAX__ >= 0x10000)
