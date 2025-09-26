@@ -16,8 +16,8 @@ Media::StaticImage *Media::ZXingWriter::GenQRCode(Text::CString content, Math::S
 #if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 10400
 	std::string s((const char*)content.v.Ptr(), (size_t)content.leng);
 #else
-	const WChar *wptr = Text::StrToWCharNew(content.v);
-	std::wstring s(wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(content.v);
+	std::wstring s(wptr.Ptr());
 	Text::StrDelNew(wptr);
 #endif
 	ZXing::BitMatrix bitMatrix = writer.encode(s, (int)outputSize.x, (int) outputSize.y);

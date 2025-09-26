@@ -272,7 +272,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 				else
 					INFLATER_GET_BYTE(7, r->m_raw_header[counter]);
 			}
-			if ((counter = (r->m_raw_header[0] | (r->m_raw_header[1] << 8))) != (UInt32)(0xFFFF ^ (r->m_raw_header[2] | (r->m_raw_header[3] << 8))))
+			if ((counter = (UInt32)(r->m_raw_header[0] | (r->m_raw_header[1] << 8))) != (UInt32)(0xFFFF ^ (r->m_raw_header[2] | (r->m_raw_header[3] << 8))))
 			{
 				INFLATER_CR_RETURN_FOREVER(39, Data::Compress::InflateStatus::Failed);
 			}

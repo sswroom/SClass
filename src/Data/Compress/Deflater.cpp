@@ -660,13 +660,13 @@ Bool Data::Compress::Deflater::CompressLzCodes(NN<DeflateCompressor> d)
 	for (pLZ_codes = d->m_lz_code_buf; pLZ_codes < pLZ_code_buf_end; flags >>= 1)
 	{
 		if (flags == 1)
-			flags = *pLZ_codes++ | 0x100;
+			flags = (UInt32)(*pLZ_codes++ | 0x100);
 
 		if (flags & 1)
 		{
 			UInt32 s0, s1, n0, n1, sym, num_extra_bits;
 			UInt32 match_len = pLZ_codes[0];
-			UInt32 match_dist = (pLZ_codes[1] | (pLZ_codes[2] << 8));
+			UInt32 match_dist = (UInt32)(pLZ_codes[1] | (pLZ_codes[2] << 8));
 			pLZ_codes += 3;
 
 			DEFLATER_ASSERT(d->m_huff_code_sizes[0][s_tdefl_len_sym[match_len]]);
@@ -758,7 +758,7 @@ Bool Data::Compress::Deflater::CompressNormal(NN<DeflateCompressor> d)
 		if ((d->m_lookahead_size + d->m_dict_size) >= (DEFLATER_MIN_MATCH_LEN - 1))
 		{
 			UInt32 dst_pos = (d->m_lookahead_pos + d->m_lookahead_size) & DEFLATER_LZ_DICT_SIZE_MASK, ins_pos = d->m_lookahead_pos + d->m_lookahead_size - 2;
-			UInt32 hash = (d->m_dict[ins_pos & DEFLATER_LZ_DICT_SIZE_MASK] << DEFLATER_LZ_HASH_SHIFT) ^ d->m_dict[(ins_pos + 1) & DEFLATER_LZ_DICT_SIZE_MASK];
+			UInt32 hash = (UInt32)((d->m_dict[ins_pos & DEFLATER_LZ_DICT_SIZE_MASK] << DEFLATER_LZ_HASH_SHIFT) ^ d->m_dict[(ins_pos + 1) & DEFLATER_LZ_DICT_SIZE_MASK]);
 			UInt32 num_bytes_to_process = (UInt32)Math_Min(src_buf_left, DEFLATER_MAX_MATCH_LEN - d->m_lookahead_size);
 			const UInt8 *pSrc_end = pSrc ? pSrc + num_bytes_to_process : 0;
 			src_buf_left -= num_bytes_to_process;
@@ -947,7 +947,7 @@ Int32 Data::Compress::Deflater::FlushBlock(NN<DeflateCompressor> d, DeflateFlush
 		else if (i == 6)
 			flevel = 2;
 
-		header = cmf << 8 | (flevel << 6);
+		header = (UInt32)(cmf << 8 | (flevel << 6));
 		header += 31 - (header % 31);
 		flg = header & 0xFF;
 
