@@ -66,7 +66,7 @@ void UI::GTK::GTKLabel::SetTextColor(UInt32 textColor)
 	c.green = ((textColor >> 8) & 0xff) / 255.0;
 	c.blue = ((textColor >> 0) & 0xff) / 255.0;
 	c.alpha = ((textColor >> 24) & 0xff) / 255.0;
-	gtk_widget_override_color((GtkWidget*)this->hwnd, GTK_STATE_FLAG_NORMAL, &c);
+	gtk_widget_override_color((GtkWidget*)this->hwnd.OrNull(), GTK_STATE_FLAG_NORMAL, &c);
 #endif
 }
 

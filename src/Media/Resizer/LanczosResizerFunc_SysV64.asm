@@ -3306,7 +3306,7 @@ icp8_bgra8lop2:
 
 	align 16
 LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8:
-LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8:
+_LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8:
 	push rbp
 	push rbx
 	mov rbp,qword [rsp+24] ;lrbgraTable

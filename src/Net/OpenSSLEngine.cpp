@@ -29,6 +29,9 @@
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
 #define TLS_method() TLSv1_method()
 #endif
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define EVP_EC_gen(a) (0)
+#endif
 struct Net::OpenSSLEngine::ClassData
 {
 	SSL_CTX *ctx;

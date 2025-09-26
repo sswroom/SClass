@@ -63,6 +63,8 @@ namespace Data
 
 #ifdef HAS_DEF_CONSTR
 			ItemValue() = default;
+#else
+			ItemValue(){};
 #endif
 			ItemValue(const ItemValue &v)
 			{

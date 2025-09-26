@@ -46,7 +46,11 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 		return false;
 	}
 	jpeg_create_decompress(&cinfo);
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
 	jpeg_mem_src(&cinfo, ptr, dataBuff.GetSize());
+#else
+	jpeg_mem_src(&cinfo, (unsigned char*)ptr, dataBuff.GetSize());
+#endif
 	ret = jpeg_read_header(&cinfo, TRUE);
 #if defined(VERBOSE)
 	printf("image_width = %d, image_height = %d, output_components = %d, out_color_space = %d, ret = %d\r\n", cinfo.image_width, cinfo.image_height, cinfo.output_components, cinfo.jpeg_color_space, ret);
@@ -77,10 +81,17 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 						MemCopyNO(r, row, maxWidth);
 						r += bpl;
 					}
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
 					if (cinfo.output_scanline < cinfo.image_height)
 					{
 						jpeg_skip_scanlines(&cinfo, cinfo.image_height - cinfo.output_scanline);
 					}
+#else
+					while (cinfo.output_scanline < cinfo.image_height)
+					{
+						jpeg_read_scanlines(&cinfo, &row, 1);
+					}
+#endif
 					MemFree(row);
 					row = 0;
 				}
@@ -91,10 +102,20 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 						jpeg_read_scanlines(&cinfo, &r, 1);
 						r += bpl;
 					}
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
 					if (cinfo.output_scanline < cinfo.image_height)
 					{
 						jpeg_skip_scanlines(&cinfo, cinfo.image_height - cinfo.output_scanline);
 					}
+#else
+					row = MemAlloc(UInt8, cinfo.output_width);
+					while (cinfo.output_scanline < cinfo.image_height)
+					{
+						jpeg_read_scanlines(&cinfo, &row, 1);
+					}
+					MemFree(row);
+					row = 0;
+#endif
 				}
 				succ = true;
 			}
@@ -114,10 +135,17 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 							MemCopyNO(r, row, maxWidth * 3);
 							r += bpl;
 						}
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
 						if (cinfo.output_scanline < cinfo.image_height)
 						{
 							jpeg_skip_scanlines(&cinfo, cinfo.image_height - cinfo.output_scanline);
 						}
+#else
+						while (cinfo.output_scanline < cinfo.image_height)
+						{
+							jpeg_read_scanlines(&cinfo, &row, 1);
+						}
+#endif
 						MemFree(row);
 						row = 0;
 						succ = true;
@@ -129,10 +157,20 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 							jpeg_read_scanlines(&cinfo, &r, 1);
 							r += bpl;
 						}
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
 						if (cinfo.output_scanline < cinfo.image_height)
 						{
 							jpeg_skip_scanlines(&cinfo, cinfo.image_height - cinfo.output_scanline);
 						}
+#else
+						row = MemAlloc(UInt8, cinfo.output_width * 3);
+						while (cinfo.output_scanline < cinfo.image_height)
+						{
+							jpeg_read_scanlines(&cinfo, &row, 1);
+						}
+						MemFree(row);
+						row = 0;
+#endif
 						succ = true;
 					}
 				}
@@ -166,7 +204,11 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 		return 0;
 	}
 	jpeg_create_decompress(&cinfo);
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
 	jpeg_mem_src(&cinfo, ptr, dataBuff.GetSize());
+#else
+	jpeg_mem_src(&cinfo, (unsigned char*)ptr, dataBuff.GetSize());
+#endif
 	ret = jpeg_read_header(&cinfo, TRUE);
 #if defined(VERBOSE)
 	printf("image_width = %d, image_height = %d, output_components = %d, out_color_space = %d, ret = %d\r\n", cinfo.image_width, cinfo.image_height, cinfo.output_components, cinfo.out_color_space, ret);
