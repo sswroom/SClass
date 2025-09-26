@@ -103,7 +103,7 @@ void FFMPEGDecoder_avcodec_register_all()
 #define FFMPEGDecoder_avcodec_close avcodec_close
 #endif
 #define FFMPEGDecoder_av_packet_unref av_packet_unref
-#if VERSION_FROM(55, 0, 0) // not sure
+#if VERSION_FROM(56, 1, 1) // not sure
 static int FFMPEGDecoder_avcodec_decode_audio4(AVCodecContext *avctx, AVFrame *frame, int *got_frame_ptr, const AVPacket *avpkt)
 {
 	int ret = avcodec_receive_frame(avctx, frame);
@@ -299,7 +299,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		case AV_PICTURE_TYPE_I:
 		case AV_PICTURE_TYPE_SI:
 		case AV_PICTURE_TYPE_S:
-#if VERSION_FROM(55, 0, 0) //not sure
+#if VERSION_FROM(56, 1, 1) //not sure
 		case AV_PICTURE_TYPE_NONE:
 #endif
 		default:
@@ -638,7 +638,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 		return;
 	}
 
-#if VERSION_FROM(55, 0, 0) && !VERSION_FROM(60, 0, 0) //from not sure 
+#if VERSION_FROM(56, 1, 1) && !VERSION_FROM(60, 0, 0) //from not sure 
 	if ((data->codec->capabilities & AV_CODEC_CAP_TRUNCATED) != 0)
 	{
 		data->ctx->flags |= AV_CODEC_FLAG_TRUNCATED; // we do not send complete frames
@@ -710,7 +710,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 		sourceVideo->ReadFrameBegin();
 		while (true)
 		{
-#if VERSION_FROM(55, 0, 0) //not sure
+#if VERSION_FROM(56, 1, 1) //not sure
 			firstFrame = MemAlloc(UInt8, frameSize + AV_INPUT_BUFFER_PADDING_SIZE);
 #else
 			firstFrame = MemAlloc(UInt8, frameSize);
@@ -719,7 +719,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Medi
 
 			avpkt.data = firstFrame;
 			avpkt.size = (int)frameSize;
-#if VERSION_FROM(55, 0, 0) //not sure
+#if VERSION_FROM(56, 1, 1) //not sure
 			MemClear(firstFrame + frameSize, AV_INPUT_BUFFER_PADDING_SIZE);
 #endif
 
@@ -931,15 +931,19 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->byteSize = info->storeSize.CalcArea() * 2;
 		break;
 	case AV_PIX_FMT_YUV420P10LE:
+#if VERSION_FROM(56, 1, 1) //From not sure
 	case AV_PIX_FMT_YUV420P12LE:
+#endif
 		if (data->currFmt == AV_PIX_FMT_YUV420P10LE)
 		{
 			info->fourcc = FFMT_YUV420P10LE;
 		}
+#if VERSION_FROM(56, 1, 1) //From not sure
 		else if (data->currFmt == AV_PIX_FMT_YUV420P12LE)
 		{
 			info->fourcc = FFMT_YUV420P12LE;
 		}
+#endif
 		info->storeBPP = 24;
 		info->pf = Media::PixelFormatGetDef(info->fourcc, info->storeBPP);
 		info->byteSize = (info->storeSize.CalcArea() * 6) >> 1;
@@ -979,9 +983,11 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 	case AVCOL_SPC_SMPTE240M:
 		info->yuvType = Media::ColorProfile::YUVT_SMPTE240M;
 		break;
+#if VERSION_FROM(56, 1, 1) //From not sure
 	case AVCOL_SPC_YCGCO:
 		info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		break;
+#endif
 	case AVCOL_SPC_BT2020_NCL:
 	case AVCOL_SPC_BT2020_CL:
 		info->yuvType = Media::ColorProfile::YUVT_BT2020;
@@ -1011,7 +1017,9 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 	}
 	switch (data->colorTrc)
 	{
+#if VERSION_FROM(56, 1, 1) //From not sure
 	case AVCOL_TRC_RESERVED0:
+#endif
 	case AVCOL_TRC_UNSPECIFIED:
 	case AVCOL_TRC_RESERVED:
 	default:
@@ -1109,7 +1117,9 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 	}
 	switch (data->colorPrimaries)
 	{
+#if VERSION_FROM(56, 1, 1) //From not sure
 	case AVCOL_PRI_RESERVED0:
+#endif
 	case AVCOL_PRI_UNSPECIFIED:
 	case AVCOL_PRI_RESERVED:
 	case AVCOL_PRI_NB:
@@ -1331,8 +1341,10 @@ private:
 	{
 #if defined(FF_API_OLD_CHANNEL_LAYOUT) && FF_API_OLD_CHANNEL_LAYOUT
 		return this->frame->ch_layout.nb_channels;
-#else
+#elif UTIL_VERSION_FROM(54, 3, 1) // not sure
 		return this->frame->channels;
+#else
+		return this->frame->channel_layout;
 #endif
 	}
 
@@ -1376,7 +1388,7 @@ public:
 		if (this->ctx == 0)
 			return;
 
-#if !VERSION_FROM(60, 0, 0)
+#if VERSION_FROM(56, 1, 1) && !VERSION_FROM(60, 0, 0)
 		if (this->codec->capabilities & AV_CODEC_CAP_TRUNCATED)
 			this->ctx->flags |= AV_CODEC_FLAG_TRUNCATED; // we do not send complete frames
 #endif
@@ -1425,7 +1437,11 @@ public:
 #else
 		this->ctx->channels = fmt.nChannels;
 #endif
+#if UTIL_VERSION_FROM(54, 3, 1) //Not sure
 		this->ctx->flags2 = AV_CODEC_FLAG2_CHUNKS;
+#else
+		this->ctx->flags2 = 0;
+#endif
 		if (fmt.formatId != 1 && fmt.extraSize > 0)
 		{
 			this->ctx->extradata_size = (int)fmt.extraSize;
