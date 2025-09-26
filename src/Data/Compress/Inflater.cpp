@@ -382,7 +382,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 						while (rev_code < INFLATER_FAST_LOOKUP_SIZE)
 						{
 							pLookUp[rev_code] = k;
-							rev_code += (1 << code_size);
+							rev_code += (UInt32)(1 << code_size);
 						}
 						continue;
 					}

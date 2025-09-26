@@ -536,7 +536,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					frame->AddInt(ofst, (UOSInt)(nextOfst - ofst), CSTR("Lon Diff"), iv);
 					frame->AddFloat(ofst, (UOSInt)(nextOfst - ofst), CSTR("Longitude"), Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel) + (Double)iv * 0.000001);
 					ofst = nextOfst;
-					frame->AddUInt(ofst, 1, CSTR("Layer"), packBuff[ofst] >> 4);
+					frame->AddUInt(ofst, 1, CSTR("Layer"), (UOSInt)(packBuff[ofst] >> 4));
 					frame->AddUInt(ofst, 1, CSTR("Amount of tags for the POI"), packBuff[ofst] & 15);
 					cnt = packBuff[ofst] & 15;
 					ofst++;
@@ -594,7 +594,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					ofst = nextOfst;
 					UInt64 wayEndOfst = ofst + v;
 					frame->AddUInt(ofst, 2, CSTR("Sub tile bitmap"), ReadMUInt16(&packBuff[ofst]));
-					frame->AddUInt(ofst + 2, 1, CSTR("Layer"), packBuff[ofst + 2] >> 4);
+					frame->AddUInt(ofst + 2, 1, CSTR("Layer"), (UOSInt)(packBuff[ofst + 2] >> 4));
 					cnt = packBuff[ofst + 2] & 15;
 					frame->AddUInt(ofst + 2, 1, CSTR("Amount of tags for the way"), cnt);
 					ofst += 3;
@@ -754,7 +754,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					else if (ofst >= pack->packSize)
 					{
 						printf("End of pack: i2 = %d, z = %d\r\n", (UInt32)i2, z);
-						z = pack->maxZoomLevel + 1;
+						z = (UInt8)(pack->maxZoomLevel + 1);
 						break;
 					}
 					i2++;

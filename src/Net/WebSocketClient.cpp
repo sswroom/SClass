@@ -143,7 +143,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opc
 				ofst = this->recvParseOfst + 4;
 				if (this->recvSize - this->recvParseOfst >= 4)
 				{
-					usedSize = ReadMUInt16(&this->recvBuff[this->recvParseOfst + 2]) + 4;
+					usedSize = (UInt64)(ReadMUInt16(&this->recvBuff[this->recvParseOfst + 2]) + 4);
 				}
 				else
 				{

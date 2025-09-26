@@ -27,7 +27,7 @@ void __stdcall Net::MQTTStaticClient::KAThread(NN<Sync::Thread> thread)
 			if (me->errLog.SetTo(errLog)) errLog->WriteLine(CSTR("MQTT: Reconnecting to server"));
 			me->Connect();
 		}
-		thread->Wait((UOSInt)me->kaSeconds * 500);
+		thread->Wait((Int64)me->kaSeconds * 500);
 	}
 }
 

@@ -408,7 +408,7 @@ void Data::Compress::Deflater::CalculateMinimumRedundancy(SymFreq *A, Int32 n)
 		A[0].m_key = 1;
 		return;
 	}
-	A[0].m_key += A[1].m_key;
+	A[0].m_key = (UInt16)(A[0].m_key + A[1].m_key);
 	root = 0;
 	leaf = 2;
 	for (next = 1; next < n - 1; next++)
@@ -430,7 +430,7 @@ void Data::Compress::Deflater::CalculateMinimumRedundancy(SymFreq *A, Int32 n)
 	}
 	A[n - 2].m_key = 0;
 	for (next = n - 3; next >= 0; next--)
-		A[next].m_key = A[A[next].m_key].m_key + 1;
+		A[next].m_key = (UInt16)(A[A[next].m_key].m_key + 1);
 	avbl = 1;
 	used = dpth = 0;
 	root = n - 2;
