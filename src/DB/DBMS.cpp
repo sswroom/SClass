@@ -1907,7 +1907,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, UnsafeArr
 			j = 0;
 			while (j < 20)
 			{
-				hashBuff[j] ^= user->pwdSha1[j];
+				hashBuff[j] = (UInt8)(hashBuff[j] ^ user->pwdSha1[j]);
 				j++;
 			}
 

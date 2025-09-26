@@ -14,7 +14,7 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	UInt8 *buff2;
-	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/burial_site.gpkg");
+	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/OruxMapsImages.db");
 //	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/Hiking20240804.gpx");
 	IO::MemoryStream oriStm;
 	IO::MemoryStream srcStm;

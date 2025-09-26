@@ -142,7 +142,7 @@ void Net::WebServer::WebSocketServerStream::ProtocolData(const UInt8 *data, UOSI
 			ofst = parseOfst + 4;
 			if (this->recvSize - parseOfst >= 4)
 			{
-				usedSize = ReadMUInt16(&this->recvBuff[parseOfst + 2]) + 4;
+				usedSize = (UInt64)(ReadMUInt16(&this->recvBuff[parseOfst + 2]) + 4);
 			}
 			else
 			{
