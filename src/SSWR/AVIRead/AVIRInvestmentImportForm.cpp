@@ -12,6 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentImportForm::OnOKClicked(AnyType user
 		me->timeCol = me->cboTimeCol->GetSelectedIndex();
 		me->valueCol = me->cboValueCol->GetSelectedIndex();
 		me->fmt = (Data::Invest::DateFormat)me->cboDateFormat->GetSelectedItem().GetOSInt();
+		me->invert = me->chkInvert->IsChecked();
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
@@ -154,7 +155,7 @@ void SSWR::AVIRead::AVIRInvestmentImportForm::LoadFile(Text::CStringNN fileName)
 	}
 }
 
-SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Bool invert) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(TITLE);
@@ -163,11 +164,12 @@ SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::G
 	this->db = 0;
 	this->timeCol = 0;
 	this->valueCol = 0;
+	this->invert = invert;
 	this->fmt = Data::Invest::DateFormat::MMDDYYYY;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlMain = ui->NewPanel(*this);
-	this->pnlMain->SetRect(0, 0, 100, 103, false);
+	this->pnlMain->SetRect(0, 0, 100, 127, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvMain = ui->NewListView(*this, UI::ListViewStyle::Table, 1);
 	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -189,11 +191,13 @@ SSWR::AVIRead::AVIRInvestmentImportForm::AVIRInvestmentImportForm(Optional<UI::G
 	this->cboDateFormat->AddItem(CSTR("MMDDYYYY"), (void*)(OSInt)Data::Invest::DateFormat::MMDDYYYY);
 	this->cboDateFormat->AddItem(CSTR("DDMMYYYY"), (void*)(OSInt)Data::Invest::DateFormat::DDMMYYYY);
 	this->cboDateFormat->SetSelectedIndex(0);
+	this->chkInvert = ui->NewCheckBox(this->pnlMain, CSTR("Invert"), invert);
+	this->chkInvert->SetRect(104, 76, 100, 23, false);
 	this->btnCancel = ui->NewButton(this->pnlMain, CSTR("Cancel"));
-	this->btnCancel->SetRect(104, 76, 75, 23, false);
+	this->btnCancel->SetRect(104, 100, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->btnOK = ui->NewButton(this->pnlMain, CSTR("OK"));
-	this->btnOK->SetRect(184, 76, 75, 23, false);
+	this->btnOK->SetRect(184, 100, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->SetDefaultButton(this->btnOK);
 	this->SetDefaultButton(this->btnCancel);

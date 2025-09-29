@@ -53,8 +53,9 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sbSuffix;
+	UOSInt compareType = me->cboCompare->GetSelectedIndex();
 	me->txtSFile->GetText(sb1);
-	me->txtPrefix->GetText(sb2);
+	me->txtCompare->GetText(sb2);
 	me->txtOFile->GetText(sb3);
 	me->txtSuffix->GetText(sbSuffix);
 	if (IO::Path::GetPathType(sb1.ToCString()) != IO::Path::PathType::File)
@@ -71,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 	}
 	else
 	{
-		UOSInt typ = me->cboType->GetSelectedIndex();
+		UOSInt outTyp = me->cboOutType->GetSelectedIndex();
 		UOSInt i;
 		Bool hasData;
 		IO::FileStream fs1(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -97,20 +98,30 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 					reader.GetLastLineBreak(sbuff);
 				}
 
-				sb1.AppendC(sbSuffix.ToString(), sbSuffix.GetLength());
+				sb1.Append(sbSuffix.ToCString());
 				i = sb1.IndexOf('\t');
 				if (i != INVALID_INDEX)
 				{
-					if (typ == 0)
+					Bool match;
+					if (compareType == 0)
 					{
-						if (Text::StrStartsWith(sb1.ToString() + i + 1, sb2.ToString()))
+						match = sb1.Substring(i + 1).StartsWith(sb2.ToCString());
+					}
+					else if (compareType == 1)
+					{
+						match = sb1.IndexOf(sb2.ToCString()) != INVALID_INDEX;
+					}
+					else
+					{
+						match = sb1.EndsWith(sb2.ToCString());
+					}
+					if (match)
+					{
+						if (outTyp == 0)
 						{
 							writer.WriteLine(sb1.ToCString());
 						}
-					}
-					else if (typ == 1)
-					{
-						if (Text::StrStartsWith(sb1.ToString() + i + 1, sb2.ToString()))
+						else
 						{
 							writer.WriteLine(sb1.ToCString().Substring(i + 1 + sb2.GetLength()));
 						}
@@ -141,10 +152,14 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(Optional<UI::GUIClientCont
 	this->btnSFile = ui->NewButton(*this, CSTR("Browse"));
 	this->btnSFile->SetRect(660, 4, 75, 23, false);
 	this->btnSFile->HandleButtonClick(OnSFileClicked, this);
-	this->lblPrefix = ui->NewLabel(*this, CSTR("Prefix"));
-	this->lblPrefix->SetRect(4, 28, 100, 23, false);
-	this->txtPrefix = ui->NewTextBox(*this, CSTR(""));
-	this->txtPrefix->SetRect(104, 28, 560, 23, false);
+	this->cboCompare = ui->NewComboBox(*this, false);
+	this->cboCompare->SetRect(4, 28, 100, 23, false);
+	this->cboCompare->AddItem(CSTR("Starts With"), 0);
+	this->cboCompare->AddItem(CSTR("Contains"), 0);
+	this->cboCompare->AddItem(CSTR("Ends With"), 0);
+	this->cboCompare->SetSelectedIndex(0);
+	this->txtCompare = ui->NewTextBox(*this, CSTR(""));
+	this->txtCompare->SetRect(104, 28, 560, 23, false);
 	this->lblOFile = ui->NewLabel(*this, CSTR("Output"));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
 	this->txtOFile = ui->NewTextBox(*this, CSTR(""));
@@ -152,13 +167,13 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(Optional<UI::GUIClientCont
 	this->btnOFile = ui->NewButton(*this, CSTR("Browse"));
 	this->btnOFile->SetRect(660, 52, 75, 23, false);
 	this->btnOFile->HandleButtonClick(OnOFileClicked, this);
-	this->lblType = ui->NewLabel(*this, CSTR("Prefix"));
-	this->lblType->SetRect(4, 76, 100, 23, false);
-	this->cboType = ui->NewComboBox(*this, false);
-	this->cboType->SetRect(104, 76, 200, 23, false);
-	this->cboType->AddItem(CSTR("Preserve line"), 0);
-	this->cboType->AddItem(CSTR("No Date and prefix"), 0);
-	this->cboType->SetSelectedIndex(0);
+	this->lblOutType = ui->NewLabel(*this, CSTR("Out Type"));
+	this->lblOutType->SetRect(4, 76, 100, 23, false);
+	this->cboOutType = ui->NewComboBox(*this, false);
+	this->cboOutType->SetRect(104, 76, 200, 23, false);
+	this->cboOutType->AddItem(CSTR("Preserve line"), 0);
+	this->cboOutType->AddItem(CSTR("No Date and prefix"), 0);
+	this->cboOutType->SetSelectedIndex(0);
 	this->lblSuffix = ui->NewLabel(*this, CSTR("Suffix to add"));
 	this->lblSuffix->SetRect(4, 100, 100, 23, false);
 	this->txtSuffix = ui->NewTextBox(*this, CSTR(""));

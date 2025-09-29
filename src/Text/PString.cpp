@@ -74,6 +74,23 @@ void Text::PString::RemoveWS()
 	this->leng = (UOSInt)(dptr - this->v);
 }
 
+void Text::PString::RemoveChar(UTF8Char ch)
+{
+	UnsafeArray<UTF8Char> sptr = this->v;
+	UnsafeArray<UTF8Char> dptr = sptr;
+	UTF8Char c;
+	while ((c = *sptr) != 0)
+	{
+		if (c != ch)
+		{
+			*dptr++ = c;
+		}
+		sptr++;
+	}
+	*dptr = 0;
+	this->leng = (UOSInt)(dptr - this->v);
+}
+
 UOSInt Text::StrSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar)
 {
 	UOSInt i = 1;

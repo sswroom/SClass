@@ -27,6 +27,7 @@ NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 
 	NEW_CLASSNN(curr, Currency());
 	curr->c = c;
 	curr->current = 0;
+	curr->invert = false;
 	this->currMap.Put(c, curr);
 	
 	Text::StringBuilderUTF8 sb;
@@ -51,6 +52,10 @@ NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 
 			}
 		}
 		csv.CloseReader(r);
+		if (curr->valList.GetCount() > 0 && curr->valList.GetItem(0) <= 0.001)
+		{
+			curr->invert = true;
+		}
 	}
 	return curr;
 }
@@ -512,7 +517,7 @@ Bool Data::Invest::InvestmentManager::SaveTransactions() const
 	return true;
 }
 
-Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
+Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt, Bool invert) const
 {
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
@@ -522,6 +527,10 @@ Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::R
 	{
 		db->CloseReader(r);
 		return false;
+	}
+	if (curr->valList.GetCount() == 0)
+	{
+		curr->invert = invert;
 	}
 	Bool found = false;
 	NN<Text::String> tsStr;
@@ -534,10 +543,15 @@ Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::R
 		valStr = r->GetNewStrNN(valueCol);
 		tsStr->Trim();
 		valStr->Trim();
+		valStr->RemoveChar(',');
 		ts = ParseTime(tsStr, fmt);
 		value = valStr->ToDoubleOrNAN();
 		if (!ts.IsNull() && !Math::IsNAN(value))
 		{
+			if (invert)
+			{
+				value = 1 / value;
+			}
 			OSInt index = curr->tsList.SortedIndexOf(ts);
 			UOSInt i;
 			if (index >= 0)
@@ -571,6 +585,10 @@ Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::R
 
 Bool Data::Invest::InvestmentManager::UpdateCurrency(NN<Currency> curr, Data::Timestamp ts, Double value)
 {
+	if (curr->valList.GetCount() == 0)
+	{
+		curr->invert = (value <= 0.001);
+	}
 	OSInt i = curr->tsList.SortedIndexOf(ts);
 	if (i >= 0)
 	{

@@ -113,6 +113,7 @@ namespace Data
 			virtual DataType GetType() const;
 			virtual NN<ChartData> Clone() const;
 			UnsafeArray<Double> GetData() const;
+			NN<DoubleData> Invert();
 		};
 
 		class Axis

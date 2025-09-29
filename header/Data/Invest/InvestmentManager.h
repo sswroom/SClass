@@ -46,6 +46,7 @@ namespace Data
 		{
 			UInt32 c;
 			Double current;
+			Bool invert;
 			Data::ArrayListTS tsList;
 			Data::ArrayListDbl valList;
 			Data::ArrayListNN<TradeDetail> trades;
@@ -101,7 +102,7 @@ namespace Data
 			Bool SaveCurrency(NN<Currency> curr) const;
 			Bool SaveAsset(NN<Asset> ass) const;
 			Bool SaveTransactions() const;
-			Bool CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const;
+			Bool CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt, Bool invert) const;
 			UInt32 GetLocalCurrency() const { return this->localCurrency; }
 			UInt32 GetRefCurrency() const { return this->refCurrency; }
 			UOSInt GetCurrencyCount() const { return this->currMap.GetCount(); }

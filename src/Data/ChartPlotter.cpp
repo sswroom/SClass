@@ -192,6 +192,16 @@ UnsafeArray<Double> Data::ChartPlotter::DoubleData::GetData() const
 	return this->dblArr;
 }
 
+NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::DoubleData::Invert()
+{
+	UOSInt i = this->dataCnt;
+	while (i-- > 0)
+	{
+		this->dblArr[i] = 1 / this->dblArr[i];
+	}
+	return *this;
+}
+
 Data::ChartPlotter::TimeAxis::TimeAxis(NN<TimeData> data)
 {
 	UnsafeArray<Data::TimeInstant> dataArr = data->GetData();

@@ -18,13 +18,13 @@ namespace SSWR
 			NN<UI::GUILabel> lblSFile;
 			NN<UI::GUITextBox> txtSFile;
 			NN<UI::GUIButton> btnSFile;
-			NN<UI::GUILabel> lblPrefix;
-			NN<UI::GUITextBox> txtPrefix;
+			NN<UI::GUIComboBox> cboCompare;
+			NN<UI::GUITextBox> txtCompare;
 			NN<UI::GUILabel> lblOFile;
 			NN<UI::GUITextBox> txtOFile;
 			NN<UI::GUIButton> btnOFile;
-			NN<UI::GUILabel> lblType;
-			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUILabel> lblOutType;
+			NN<UI::GUIComboBox> cboOutType;
 			NN<UI::GUILabel> lblSuffix;
 			NN<UI::GUITextBox> txtSuffix;
 			NN<UI::GUIButton> btnExtract;
