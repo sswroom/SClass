@@ -764,11 +764,11 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 		k = this->lvCurrencyHist->AddItem(CSTRP(sbuff, sptr), 0);
 		if (curr->invert)
 		{
-			sptr = Text::StrDoubleGDP(sbuff, 1 / curr->valList.GetItem(i), 0, 0, dp);
+			sptr = Text::StrDouble(sbuff, 1 / curr->valList.GetItem(i));
 		}
 		else
 		{
-			sptr = Text::StrDoubleGDP(sbuff, curr->valList.GetItem(i), 0, 0, dp);
+			sptr = Text::StrDouble(sbuff, curr->valList.GetItem(i));
 		}
 		this->lvCurrencyHist->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		i++;

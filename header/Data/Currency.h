@@ -16,6 +16,8 @@ namespace Data
 			{
 			case MAKECURRENCY('J', 'P', 'Y'):
 				return 0;
+			case MAKECURRENCY('X', 'A', 'U'):
+				return 6;
 			default:
 				return 2;
 			}
