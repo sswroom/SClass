@@ -61,6 +61,7 @@ void Parser::FileParser::TIFFParser::PrepareSelector(NN<IO::FileSelector> select
 	{
 		selector->AddFilter(CSTR("*.tif"), CSTR("TIFF File"));
 		selector->AddFilter(CSTR("*.tiff"), CSTR("TIFF File"));
+		selector->AddFilter(CSTR("*.tif.ovr"), CSTR("TIFF File"));
 	}
 }
 

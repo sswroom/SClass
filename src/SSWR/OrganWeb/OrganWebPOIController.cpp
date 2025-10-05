@@ -1424,8 +1424,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcDatafilePOI(NN<Net::Web
 			Int64 endTime;
 			OSInt startIndex;
 			OSInt endIndex;
-			startTime = file->startTime.ToTicks();
-			endTime = file->endTime.ToTicks();
+			startTime = file->startTime.ToTicks() - 300000;
+			endTime = file->endTime.ToTicks() + 300000;
 
 			json.ObjectBeginArray(CSTR("poi"));
 			startIndex = user->userFileIndex.SortedIndexOf(startTime);
