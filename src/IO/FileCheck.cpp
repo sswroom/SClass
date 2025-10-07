@@ -265,7 +265,7 @@ IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) :
 IO::FileCheck::~FileCheck()
 {
 	this->fileNames.FreeAll();
-	MemFree(this->chkValues);
+	MemFreeArr(this->chkValues);
 }
 
 UOSInt IO::FileCheck::GetHashSize() const
@@ -288,29 +288,29 @@ Optional<Text::String> IO::FileCheck::GetEntryName(UOSInt index) const
 	return this->fileNames.GetItem(index);
 }
 
-Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal) const
+Bool IO::FileCheck::GetEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal) const
 {
 	if (index >= this->fileNames.GetCount())
 		return false;
-	MemCopyNO(hashVal, &this->chkValues[index * this->hashSize], this->hashSize);
+	MemCopyNO(hashVal.Ptr(), &this->chkValues[index * this->hashSize], this->hashSize);
 	return true;
 }
 
-void IO::FileCheck::AddEntry(Text::CStringNN fileName, UInt8 *hashVal)
+void IO::FileCheck::AddEntry(Text::CStringNN fileName, UnsafeArray<UInt8> hashVal)
 {
 	UOSInt index = this->fileNames.Add(Text::String::New(fileName));
 	if (index >= this->chkCapacity)
 	{
 		this->chkCapacity = this->chkCapacity << 1;
 		UInt8 *newVals = MemAlloc(UInt8, this->chkCapacity * this->hashSize);
-		MemCopyNO(newVals, this->chkValues, index * this->hashSize);
-		MemFree(this->chkValues);
+		MemCopyNO(newVals, this->chkValues.Ptr(), index * this->hashSize);
+		MemFreeArr(this->chkValues);
 		this->chkValues = newVals;
 	}
-	MemCopyNO(&this->chkValues[index * this->hashSize], hashVal, this->hashSize);
+	MemCopyNO(&this->chkValues[index * this->hashSize], hashVal.Ptr(), this->hashSize);
 }
 
-Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Writer> verboseWriter) const
+Bool IO::FileCheck::CheckEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal, Optional<IO::ProgressHandler> progress, Optional<IO::Writer> verboseWriter) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -318,6 +318,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 	UOSInt i;
 	NN<Crypto::Hash::HashAlgorithm> hash;
 	NN<IO::Writer> writer;
+	NN<IO::ProgressHandler> nnprogress;
 
 	NN<Text::String> fileName;
 	if (!this->fileNames.GetItem(index).SetTo(fileName))
@@ -345,7 +346,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 	}
 	if (fileName->v[0] == '/' || fileName->v[0] == '\\')
 	{
-		sptrEnd = fileName->ConcatTo(sptr + 1);
+		sptrEnd = fileName->Substring(1).ConcatTo(sptr);
 	}
 	else
 	{
@@ -385,9 +386,13 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 		IO::ActiveStreamReader::BottleNeckType bnt;
 		readSess.hash = hash;
 		readSess.readSize = 0;
-		readSess.progress = 0;
+		readSess.progress = progress;
 		fileSize = fs.GetLength();
 		readSess.fileSize = fileSize;
+		if (progress.SetTo(nnprogress))
+		{
+			nnprogress->ProgressStart(CSTRP(sbuff, sptrEnd), fileSize);
+		}
 		hash->Clear();
 		IO::ActiveStreamReader reader(CheckData, &readSess, 1048576);
 		reader.ReadStream(fs, bnt);

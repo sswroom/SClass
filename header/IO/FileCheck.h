@@ -15,7 +15,7 @@ namespace IO
 	{
 	private:
 		Data::ArrayListStringNN fileNames;
-		UInt8 *chkValues;
+		UnsafeArray<UInt8> chkValues;
 		UOSInt chkCapacity;
 		Crypto::Hash::HashType chkType;
 		UOSInt hashSize;
@@ -35,9 +35,9 @@ namespace IO
 		Crypto::Hash::HashType GetCheckType() const;
 		UOSInt GetCount() const;
 		Optional<Text::String> GetEntryName(UOSInt index) const;
-		Bool GetEntryHash(UOSInt index, UInt8 *hashVal) const;
-		void AddEntry(Text::CStringNN fileName, UInt8 *hashVal);
-		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Writer> verboseWriter) const;
+		Bool GetEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal) const;
+		void AddEntry(Text::CStringNN fileName, UnsafeArray<UInt8> hashVal);
+		Bool CheckEntryHash(UOSInt index, UnsafeArray<UInt8> hashVal, Optional<IO::ProgressHandler> progress, Optional<IO::Writer> verboseWriter) const;
 		Bool MergeFrom(NN<FileCheck> chk);
 
 		virtual IO::ParserType GetParserType() const;

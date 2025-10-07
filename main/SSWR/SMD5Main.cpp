@@ -62,7 +62,7 @@ private:
 				}
 				else
 				{
-					sb.AppendDouble((Double)(currCount - lastDispCount)  / (currTime - lastDispTime));
+					sb.AppendDoubleGDP((Double)(currCount - lastDispCount)  / (currTime - lastDispTime), 3, 2, 2);
 					lastDispCount = currCount;
 					lastDispTime = currTime;
 				}
@@ -139,7 +139,7 @@ public:
 	}
 };
 
-Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose)
+Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose, Optional<IO::ProgressHandler> progress)
 {
 	if (fileName.EndsWithICase(UTF8STRC(".MD5")))
 	{
@@ -165,7 +165,7 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose)
 		j = fileChk->GetCount();
 		while (i < j)
 		{
-			if (!fileChk->CheckEntryHash(i, hash, flagVerbose?console:0))
+			if (!fileChk->CheckEntryHash(i, hash, progress, flagVerbose?console:0))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("File validation failed: "));
@@ -255,7 +255,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 								sb.AppendC(UTF8STRC("Checking "));
 								sb.AppendP(&sbuff[i + 1], sptr);
 								console->WriteLine(sb.ToCString());
-								if (!IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false).SetTo(thisChk))
+								if (!IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, progress, false).SetTo(thisChk))
 								{
 									SDEL_CLASS(fileChk);
 									showHelp = true;
@@ -284,7 +284,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				}
 				else
 				{
-					if (!IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false).SetTo(thisChk))
+					if (!IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, progress, false).SetTo(thisChk))
 					{
 						SDEL_CLASS(fileChk);
 						showHelp = true;
@@ -316,8 +316,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			else
 			{
-				if (VerifyMD5(md5File.OrEmpty(), flagCont, flagVerbose))
+				if (VerifyMD5(md5File.OrEmpty(), flagCont, flagVerbose, progress))
 				{
+					console->WriteLine(Text::StringBuilderUTF8().Append(CSTR("File "))->AppendOpt(md5File)->Append(CSTR(" verify success"))->ToCString());
 					showHelp = false;
 				}
 			}

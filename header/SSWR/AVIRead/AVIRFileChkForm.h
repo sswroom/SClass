@@ -3,8 +3,11 @@
 #include "IO/FileCheck.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
+#include "UI/GUILabel.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIMainMenu.h"
+#include "UI/GUIPanel.h"
+#include "UI/GUITextBox.h"
 
 namespace SSWR
 {
@@ -14,6 +17,13 @@ namespace SSWR
 		{
 		private:
 			NN<UI::GUIMainMenu> mnu;
+			NN<UI::GUIPanel> pnlStatus;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblTotalFiles;
+			NN<UI::GUITextBox> txtTotalFiles;
+			NN<UI::GUILabel> lblValidFiles;
+			NN<UI::GUITextBox> txtValidFiles;
 			NN<UI::GUIListView> lvFileChk;
 
 			NN<SSWR::AVIRead::AVIRCore> core;

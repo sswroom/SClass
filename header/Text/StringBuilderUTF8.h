@@ -195,6 +195,13 @@ namespace Text
 			return *this;
 		}
 
+		NN<StringBuilderUTF8> AppendDoubleGDP(Double dVal, UOSInt groupCnt, UOSInt minDP, UOSInt maxDP)
+		{
+			this->AllocLeng(32);
+			this->leng = (UOSInt)(Text::StrDoubleGDP(this->v + this->leng, dVal, groupCnt, minDP, maxDP) - this->v);
+			return *this;
+		}
+
 		NN<StringBuilderUTF8> AppendDate(const Data::Date &d)
 		{
 			this->AllocLeng(10);

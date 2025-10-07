@@ -176,6 +176,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 				nnstatus->status = 3;
 			}
 			me->fileListChg = true;
+			status = 0;
 		}
 		else
 		{
