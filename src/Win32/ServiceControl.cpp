@@ -12,7 +12,7 @@ void __stdcall ServiceControl_WaitForExit(NN<Core::ProgControl> progCtrl)
 	}
 }
 
-UTF8Char **__stdcall ServiceControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall ServiceControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
 	cmdCnt.Set(1);

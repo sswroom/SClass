@@ -10,7 +10,7 @@ namespace Win32
 		Sync::Event *evt;
 		Bool exited;
 		Bool toRestart;
-		UTF8Char *argv;
+		UnsafeArray<UTF8Char> argv;
 	};
 
 	void ServiceControl_Create(NN<Core::ProgControl> progCtrl);

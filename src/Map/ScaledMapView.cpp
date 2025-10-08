@@ -188,7 +188,7 @@ Bool Map::ScaledMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> src
 		Doublex2 rotXMul = PDoublex2Set(this->hICos, this->hISin);
 		Doublex2 rotYMul = PDoublex2Set(-this->hISin, this->hICos);
 		Doublex2 scnCenter = (this->scnSize * 0.5).vals;
-		Doublex2 diff = minVal - scnCenter;
+		Doublex2 diff = PSUBPD(minVal, scnCenter);
 		PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ptOfst));
 		srcArr++;
 		destArr++;
@@ -197,7 +197,7 @@ Bool Map::ScaledMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> src
 		{
 			thisVal = PDoublex2Set((srcArr[0].x  - dleft), (dbottom - srcArr[0].y));
 			thisVal = PMULPD(thisVal, ptMul);
-			diff = thisVal - scnCenter;
+			diff = PSUBPD(thisVal, scnCenter);
 			PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ptOfst));
 			srcArr++;
 			destArr++;

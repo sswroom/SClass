@@ -42,7 +42,8 @@ Int32 UI::GUIForm::useCnt = 0;
 
 OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	NN<UI::GUIForm> me = NN<UI::GUIForm>::FromPtr((UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA));
+	Optional<UI::GUIForm> me = (UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
+	NN<UI::GUIForm> nnme;
 	UI::GUIControl *ctrl;
 	NN<UI::GUIButton> btn;
 	NN<UI::GUIForm> currDialog;
@@ -54,26 +55,33 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	case WM_COMMAND:
 		if (lParam == 0)
 		{
-			if (wParam == 1)
+			if (me.SetTo(nnme))
 			{
-				if (me->okBtn.SetTo(btn))
+				if (wParam == 1)
 				{
-					btn->EventButtonClick();
-					return 0;
+					if (nnme->okBtn.SetTo(btn))
+					{
+						btn->EventButtonClick();
+						return 0;
+					}
 				}
-			}
-			else if (wParam == 2)
-			{
-				if (me->cancelBtn.SetTo(btn))
+				else if (wParam == 2)
 				{
-					btn->EventButtonClick();
+					if (nnme->cancelBtn.SetTo(btn))
+					{
+						btn->EventButtonClick();
+						return 0;
+					}
+				}
+				else
+				{
+					nnme->EventMenuClicked(LOWORD(wParam));
 					return 0;
 				}
 			}
 			else
 			{
-				me->EventMenuClicked(LOWORD(wParam));
-				return 0;
+				printf("GUIForm: Me is null on WM_COMMAND\r\n");
 			}
 		}
 		else
@@ -94,81 +102,117 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		}
 		return 0;
 	case WM_SIZE:
-		GetWindowRect((HWND)me->hwnd.OrNull(), &rc);
-		me->lxPos = rc.left * me->ddpi / me->hdpi;
-		me->lyPos = rc.top * me->ddpi / me->hdpi;
-		me->lxPos2 = rc.right * me->ddpi / me->hdpi;
-		me->lyPos2 = rc.bottom * me->ddpi / me->hdpi;
-
-		me->OnSizeChanged(false);
-		me->UpdateChildrenSize(false);
-/*		{
-			Int32 w = LOWORD(lParam);
-			Int32 h = HIWORD(lParam);
-			HDC hdcBmp = CreateCompatibleDC(0);
-
-			HDC hdc = GetDC((HWND)hWnd);
-			HBITMAP hbmp = CreateCompatibleBitmap(hdc, w, h);
-
-			SelectObject(hdcBmp, hbmp);
-			SendMessage((HWND)hWnd, WM_PRINT, (WPARAM)hdcBmp, PRF_CHILDREN | PRF_CLIENT);
-			BitBlt(hdc, 0, 0, w, h, hdcBmp, 0, 0, SRCCOPY);
-			ReleaseDC((HWND)hWnd, hdc);
-			DeleteDC(hdcBmp);
-			DeleteObject(hbmp);
-		}*/
-
-		InvalidateRect((HWND)hWnd, 0, true);
-		return 0;//DefWindowProc((HWND)hWnd, msg, wParam, lParam);
-	case WM_CLOSE:
-		if (me->closingHdlr.func)
+		if (me.SetTo(nnme))
 		{
-			if (!me->closingHdlr.func(me->closingHdlr.userObj, CR_USER))
+			GetWindowRect((HWND)nnme->hwnd.OrNull(), &rc);
+			nnme->lxPos = rc.left * nnme->ddpi / nnme->hdpi;
+			nnme->lyPos = rc.top * nnme->ddpi / nnme->hdpi;
+			nnme->lxPos2 = rc.right * nnme->ddpi / nnme->hdpi;
+			nnme->lyPos2 = rc.bottom * nnme->ddpi / nnme->hdpi;
+
+			nnme->OnSizeChanged(false);
+			nnme->UpdateChildrenSize(false);
+			/*		{
+						Int32 w = LOWORD(lParam);
+						Int32 h = HIWORD(lParam);
+						HDC hdcBmp = CreateCompatibleDC(0);
+
+						HDC hdc = GetDC((HWND)hWnd);
+						HBITMAP hbmp = CreateCompatibleBitmap(hdc, w, h);
+
+						SelectObject(hdcBmp, hbmp);
+						SendMessage((HWND)hWnd, WM_PRINT, (WPARAM)hdcBmp, PRF_CHILDREN | PRF_CLIENT);
+						BitBlt(hdc, 0, 0, w, h, hdcBmp, 0, 0, SRCCOPY);
+						ReleaseDC((HWND)hWnd, hdc);
+						DeleteDC(hdcBmp);
+						DeleteObject(hbmp);
+					}*/
+
+			InvalidateRect((HWND)hWnd, 0, true);
+			return 0;//DefWindowProc((HWND)hWnd, msg, wParam, lParam);
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_SIZE\r\n");
+			return 0;
+		}
+	case WM_CLOSE:
+		if (me.SetTo(nnme))
+		{
+			if (nnme->closingHdlr.func)
 			{
-				if (me->currDialog.SetTo(currDialog))
+				if (!nnme->closingHdlr.func(nnme->closingHdlr.userObj, CR_USER))
+				{
+					if (nnme->currDialog.SetTo(currDialog))
+					{
+						currDialog->Close();
+					}
+					DestroyWindow((HWND)hWnd);
+				}
+				else
+				{
+				}
+				return 0;
+			}
+			else
+			{
+				if (nnme->currDialog.SetTo(currDialog))
 				{
 					currDialog->Close();
 				}
 				DestroyWindow((HWND)hWnd);
 			}
-			else
-			{
-			}
-			return 0;
 		}
 		else
 		{
-			if (me->currDialog.SetTo(currDialog))
-			{
-				currDialog->Close();
-			}
-			DestroyWindow((HWND)hWnd);
+			printf("GUIForm: Me is null on WM_CLOSE\r\n");
 		}
 		return 0;
 	case WM_DESTROY:
-		i = me->closeHandlers.GetCount();
-		while (i-- > 0)
+		if (me.SetTo(nnme))
 		{
-			Data::CallbackStorage<FormClosedEvent> cb = me->closeHandlers.GetItem(i);
-			cb.func(cb.userObj, me);
-		}
-		me->EventClosed();
-		if (!me->isDialog)
-		{
-			me->DestroyObject();
-			me.Delete();
+			i = nnme->closeHandlers.GetCount();
+			while (i-- > 0)
+			{
+				Data::CallbackStorage<FormClosedEvent> cb = nnme->closeHandlers.GetItem(i);
+				cb.func(cb.userObj, nnme);
+			}
+			nnme->EventClosed();
+			if (!nnme->isDialog)
+			{
+				nnme->DestroyObject();
+				nnme.Delete();
+			}
+			else
+			{
+				nnme->isDialog = false;
+			}
 		}
 		else
 		{
-			me->isDialog = false;
+			printf("GUIForm: Me is null on WM_DESTROY\r\n");
 		}
 		return 0;
 	case WM_TIMER:
-		me->EventTimer(wParam);
+		if (me.SetTo(nnme))
+		{
+			nnme->EventTimer(wParam);
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_TIMER\r\n");
+		}
 		return 0;
 #ifndef _WIN32_WCE
 	case WM_DROPFILES:
-		me->OnDropFiles((void*)wParam);
+		if (me.SetTo(nnme))
+		{
+			nnme->OnDropFiles((void*)wParam);
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_DROPFILES\r\n");
+		}
 		return 0;
 #endif
 	case WM_CTLCOLORSTATIC:
@@ -242,39 +286,74 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	case WM_IME_NOTIFY:
 		break;
 	case WM_KILLFOCUS:
-		me->OnFocusLost();
+		if (me.SetTo(nnme))
+		{
+			nnme->OnFocusLost();
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_KILLFOCUS\r\n");
+		}
 		break;
 	case WM_SETFOCUS:
-		((UI::Win::WinCore*)me->ui.Ptr())->SetFocusWnd((ControlHandle*)hWnd, me->hAcc);
-		me->OnFocus();
+		if (me.SetTo(nnme))
+		{
+			((UI::Win::WinCore*)nnme->ui.Ptr())->SetFocusWnd((ControlHandle*)hWnd, nnme->hAcc);
+			nnme->OnFocus();
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_SETFOCUS\r\n");
+		}
 		break;
 	case WM_HOTKEY:
 		if (wParam & 0xffff8000)
 		{
-			me->EventMenuClicked((UInt16)(wParam & 0x7fff));
+			if (me.SetTo(nnme))
+			{
+				nnme->EventMenuClicked((UInt16)(wParam & 0x7fff));
+			}
+			else
+			{
+				printf("GUIForm: Me is null on WM_HOTKEY\r\n");
+			}
 		}
 		break;
 //	case WM_NCPAINT:
 //		break;
 	case WM_ERASEBKGND:
-		if (me->fs)
+		if (me.SetTo(nnme))
 		{
-			return TRUE;
+			if (nnme->fs)
+			{
+				return TRUE;
+			}
+			else
+			{
+				return nnme->MyEraseBkg((void*)wParam);
+			}
 		}
 		else
 		{
-			return me->MyEraseBkg((void*)wParam);
+			printf("GUIForm: Me is null on WM_ERASEBKGND\r\n");
 		}
 		break;
 	case WM_WINDOWPOSCHANGED:
 		break;
 	case WM_MOVE:
-		GetWindowRect((HWND)me->hwnd.OrNull(), &rc);
-		me->lxPos = rc.left * me->ddpi / me->hdpi;
-		me->lyPos = rc.top * me->ddpi / me->hdpi;
-		me->lxPos2 = rc.right * me->ddpi / me->hdpi;
-		me->lyPos2 = rc.bottom * me->ddpi / me->hdpi;
-		me->OnPosChanged(false);
+		if (me.SetTo(nnme))
+		{
+			GetWindowRect((HWND)nnme->hwnd.OrNull(), &rc);
+			nnme->lxPos = rc.left * nnme->ddpi / nnme->hdpi;
+			nnme->lyPos = rc.top * nnme->ddpi / nnme->hdpi;
+			nnme->lxPos2 = rc.right * nnme->ddpi / nnme->hdpi;
+			nnme->lyPos2 = rc.bottom * nnme->ddpi / nnme->hdpi;
+			nnme->OnPosChanged(false);
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_MOVE\r\n");
+		}
 		break;
 /*	case WM_NOTIFYFORMAT:
 		break;
@@ -285,23 +364,44 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	case WM_GETICON:
 		break;
 	case WM_PAINT:
-		if (me->OnPaint())
-			return TRUE;
+		if (me.SetTo(nnme))
+		{
+			if (nnme->OnPaint())
+				return TRUE;
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_PAINT\r\n");
+		}
 		break;
 	case WM_KEYUP:
-		i = me->keyUpHandlers.GetCount();
-		while (i-- > 0)
+		if (me.SetTo(nnme))
 		{
-			Data::CallbackStorage<KeyEvent> cb = me->keyUpHandlers.GetItem(i);
-			cb.func(cb.userObj, wParam, (lParam & 0x1000000) != 0);
+			i = nnme->keyUpHandlers.GetCount();
+			while (i-- > 0)
+			{
+				Data::CallbackStorage<KeyEvent> cb = nnme->keyUpHandlers.GetItem(i);
+				cb.func(cb.userObj, wParam, (lParam & 0x1000000) != 0);
+			}
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_KEYUP\r\n");
 		}
 		break;
 	case WM_KEYDOWN:
-		i = me->keyDownHandlers.GetCount();
-		while (i-- > 0)
+		if (me.SetTo(nnme))
 		{
-			Data::CallbackStorage<KeyEvent> cb = me->keyDownHandlers.GetItem(i);
-			cb.func(cb.userObj, wParam, (lParam & 0x1000000) != 0);
+			i = nnme->keyDownHandlers.GetCount();
+			while (i-- > 0)
+			{
+				Data::CallbackStorage<KeyEvent> cb = nnme->keyDownHandlers.GetItem(i);
+				cb.func(cb.userObj, wParam, (lParam & 0x1000000) != 0);
+			}
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_KEYDOWN\r\n");
 		}
 		break;
 	case WM_SYSKEYDOWN:
@@ -320,7 +420,14 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		break;
 #if !defined(_WIN32_WCE)
 	case WM_DISPLAYCHANGE:
-		me->OnDisplaySizeChange(LOWORD(lParam), HIWORD(lParam));
+		if (me.SetTo(nnme))
+		{
+			nnme->OnDisplaySizeChange(LOWORD(lParam), HIWORD(lParam));
+		}
+		else
+		{
+			printf("GUIForm: Me is null on WM_DISPLAYCHANGE\r\n");
+		}
 		break;
 #endif
 	default:

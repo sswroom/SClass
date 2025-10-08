@@ -31,7 +31,7 @@ namespace Math
 			this->y = y;
 		}
 
-		Double2D(Doublex2 vals)
+		Double2D(const Doublex2 vals)
 		{
 			this->vals = vals;
 		}
@@ -135,7 +135,7 @@ namespace Math
 
 		Double SumSqr() const
 		{
-			Double2D sqr = this->vals * this->vals;
+			Double2D sqr = *this * this->vals;
 			return sqr.x + sqr.y;
 		}
 

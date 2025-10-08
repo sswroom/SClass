@@ -48,7 +48,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	}
 	NN<Media::VectorDocument> vdoc = NN<Media::VectorDocument>::ConvertFrom(pobj);
-	Media::VectorGraph *g;
+	NN<Media::VectorGraph> g;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
@@ -63,6 +63,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Int64 refPos;
 	Int64 currPos;
 	Data::DateTime dt;
+	NN<Text::String> s;
 	stm->Write(CSTR("%PDF-1.4\r").ToByteArray());
 	currPos = 9;
 	objPos.Add(0);
@@ -78,48 +79,49 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	j = vdoc->GetCount();
 	while (i < j)
 	{
-		g = vdoc->GetItem(i);
-		pageContentId = objPos.GetCount();
-		objPos.Add(0);
-		sb.ClearStr();
+		if (vdoc->GetItem(i).SetTo(g))
+		{
+			pageContentId = objPos.GetCount();
+			objPos.Add(0);
+			sb.ClearStr();
 
-		//////////////////
+			//////////////////
 
-		sb2.ClearStr();
-		sb2.AppendOSInt(pageContentId);
-		sb2.AppendC(UTF8STRC(" 0 obj\r"));
-		sb2.AppendC(UTF8STRC("<</Length "));
-		sb2.AppendOSInt(sb.GetLength());
-		sb2.AppendC(UTF8STRC(">>\r"));
-		sb2.AppendC(UTF8STRC("stream\r"));
-		sb2.AppendSB(sb);
-		sb2.AppendC(UTF8STRC("endstream\r"));
-		sb2.AppendC(UTF8STRC("endobj\r"));
+			sb2.ClearStr();
+			sb2.AppendOSInt(pageContentId);
+			sb2.AppendC(UTF8STRC(" 0 obj\r"));
+			sb2.AppendC(UTF8STRC("<</Length "));
+			sb2.AppendOSInt(sb.GetLength());
+			sb2.AppendC(UTF8STRC(">>\r"));
+			sb2.AppendC(UTF8STRC("stream\r"));
+			sb2.AppendSB(sb);
+			sb2.AppendC(UTF8STRC("endstream\r"));
+			sb2.AppendC(UTF8STRC("endobj\r"));
 
-		objPos.SetItem(pageContentId, currPos);
-		stm->Write(sb2.ToByteArray());
-		currPos += sb2.GetLength();
+			objPos.SetItem(pageContentId, currPos);
+			stm->Write(sb2.ToByteArray());
+			currPos += sb2.GetLength();
 
-		pageList.Add((Int32)objPos.GetCount());
-		sb.ClearStr();
-		sb.AppendOSInt(objPos.GetCount());
-		sb.AppendC(UTF8STRC(" 0 obj\r"));
-		sb.AppendC(UTF8STRC("<</Type/Page/MediaBox [0 0 "));
-		sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleWidthMM()) * 72.0));
-		sb.AppendC(UTF8STRC(" "));
-		sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleHeightMM()) * 72.0));
-		sb.AppendC(UTF8STRC("]\r"));
-		sb.AppendC(UTF8STRC("/Parent 2 0 R\r"));
-		sb.AppendC(UTF8STRC("/Contents "));
-		sb.AppendOSInt(pageContentId);
-		sb.AppendC(UTF8STRC(" 0 R\r"));
-		sb.AppendC(UTF8STRC(">>\r"));
-		sb.AppendC(UTF8STRC("endobj\r"));
+			pageList.Add((Int32)objPos.GetCount());
+			sb.ClearStr();
+			sb.AppendOSInt(objPos.GetCount());
+			sb.AppendC(UTF8STRC(" 0 obj\r"));
+			sb.AppendC(UTF8STRC("<</Type/Page/MediaBox [0 0 "));
+			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleWidthMM()) * 72.0));
+			sb.AppendC(UTF8STRC(" "));
+			sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleHeightMM()) * 72.0));
+			sb.AppendC(UTF8STRC("]\r"));
+			sb.AppendC(UTF8STRC("/Parent 2 0 R\r"));
+			sb.AppendC(UTF8STRC("/Contents "));
+			sb.AppendOSInt(pageContentId);
+			sb.AppendC(UTF8STRC(" 0 R\r"));
+			sb.AppendC(UTF8STRC(">>\r"));
+			sb.AppendC(UTF8STRC("endobj\r"));
 
-		objPos.Add(currPos);
-		stm->Write(sb.ToByteArray());
-		currPos += sb.GetLength();
-
+			objPos.Add(currPos);
+			stm->Write(sb.ToByteArray());
+			currPos += sb.GetLength();
+		}
 		i++;
 	}
 
@@ -149,10 +151,10 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sb.AppendOSInt(infoId);
 	sb.AppendC(UTF8STRC(" 0 obj\r"));
 	sb.AppendC(UTF8STRC("<<\r"));
-	if (vdoc->GetDocName())
+	if (vdoc->GetDocName().SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("/Title ("));
-		sb.Append(vdoc->GetDocName());
+		sb.Append(s);
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetAuthor().NotNull())

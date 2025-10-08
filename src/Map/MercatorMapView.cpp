@@ -185,7 +185,7 @@ Bool Map::MercatorMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> s
 		Doublex2 rotXMul = PDoublex2Set(this->hICos, this->hISin);
 		Doublex2 rotYMul = PDoublex2Set(-this->hISin, this->hICos);
 		Doublex2 scnCenter = (this->scnSize * 0.5).vals;
-		Doublex2 diff = imin - scnCenter;
+		Doublex2 diff = PSUBPD(imin, scnCenter);
 		PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ofst));
 		srcArr += 1;
 		destArr += 1;
@@ -194,7 +194,7 @@ Bool Map::MercatorMapView::MapXYToScnXYArr(UnsafeArray<const Math::Coord2DDbl> s
 		{
 			thisVal = PDoublex2Set(Lon2PixelX(srcArr[0].x), Lat2PixelY(srcArr[0].y));
 			thisVal = PADDPD(PMULPD(PSUBPD(thisVal, centPixel), rate), hScnSize);
-			diff = thisVal - scnCenter;
+			diff = PSUBPD(thisVal, scnCenter);
 			PStoreDoublex2((Double*)destArr.Ptr(), PADDPD(PADDPD(scnCenter, HADDPD(PMULPD(diff, rotXMul), PMULPD(diff, rotYMul))), ofst));
 			srcArr += 1;
 			destArr += 1;

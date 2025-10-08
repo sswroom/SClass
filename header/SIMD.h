@@ -211,7 +211,7 @@ typedef __m128d Doublex2;
 #if defined(__SSE3__)
 #define HADDPD(v1, v2) _mm_hadd_pd(v1, v2)
 #else
-#define HADDPD(v1, v2) PADDPD(MOVLHPS(v1, v2), MOVHLPS(v1, v2))
+#define HADDPD(v1, v2) _mm_add_pd(_mm_unpackhi_pd(v1, v2), _mm_unpacklo_pd(v1, v2))
 #endif
 #define PLoadDoublex2(ptr) _mm_loadu_pd(ptr)
 #define PStoreDoublex2(ptr, v) _mm_storeu_pd(ptr, v)

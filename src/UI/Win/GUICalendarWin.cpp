@@ -60,7 +60,7 @@ OSInt UI::GUICalendar::OnNotify(UInt32 code, void *lParam)
 void UI::GUICalendar::GetSelectedTime(NN<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
-	SendMessage((HWND)this->hwnd, MCM_GETCURSEL, 0, (LPARAM)&t);
+	SendMessage((HWND)this->hwnd.OrNull(), MCM_GETCURSEL, 0, (LPARAM)&t);
 	dt->SetValueSYSTEMTIME(&t);
 }
 
