@@ -2157,36 +2157,44 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 	{
 		Math::RectAreaDbl scnCoords;
 		vimg = imgList.GetItemNoCheck(i);
-		UInt32 imgTimeMS;
+		UInt32 imgTimeMS = 0;
 		NN<Media::StaticImage> simg;
-		if (vimg->GetImage(scnCoords.GetWidth(), scnCoords.GetHeight(), imgTimeMS).SetTo(simg))
+		if (vimg->IsScnCoord())
 		{
-			if (vimg->IsScnCoord())
+			scnCoords = vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI());
+			if (vimg->GetImage(scnCoords.GetWidth(), scnCoords.GetHeight(), imgTimeMS).SetTo(simg))
 			{
-				scnCoords = vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI());
 				DrawImageObject(denv, simg, scnCoords.min, scnCoords.max, vimg->GetSrcAlpha());
+			}
+		}
+		else
+		{
+			Math::RectAreaDbl mapCoords = vimg->GetBounds();
+			Double t = mapCoords.min.y;
+			mapCoords.min.y = mapCoords.max.y;
+			mapCoords.max.y = t;
+			Math::Quadrilateral quad;
+			if (geoConv)
+			{
+				quad.tl = denv->view->MapXYToScnXY(Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.min));
+				quad.tr = denv->view->MapXYToScnXY(Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), Math::Coord2DDbl(mapCoords.max.x, mapCoords.min.y)));
+				quad.br = denv->view->MapXYToScnXY(Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.max));
+				quad.bl = denv->view->MapXYToScnXY(Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), Math::Coord2DDbl(mapCoords.min.x, mapCoords.max.y)));
 			}
 			else
 			{
-				Math::RectAreaDbl mapCoords = vimg->GetBounds();
-				Double t = mapCoords.min.y;
-				mapCoords.min.y = mapCoords.max.y;
-				mapCoords.max.y = t;
-				if (geoConv)
-				{
-					mapCoords.min = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.min);
-					mapCoords.max = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.max);
-				}
-				Math::Quadrilateral quad;
 				quad.tl = denv->view->MapXYToScnXY(mapCoords.min);
 				quad.tr = denv->view->MapXYToScnXY(Math::Coord2DDbl(mapCoords.max.x, mapCoords.min.y));
 				quad.br = denv->view->MapXYToScnXY(mapCoords.max);
 				quad.bl = denv->view->MapXYToScnXY(Math::Coord2DDbl(mapCoords.min.x, mapCoords.max.y));
+			}
+			scnCoords.min = quad.tl;
+			scnCoords.max = quad.br;
+			scnCoords = scnCoords.Reorder();
+			if (vimg->GetImage(scnCoords.GetWidth(), scnCoords.GetHeight(), imgTimeMS).SetTo(simg))
+			{
 				if (quad.IsNonRotateRectangle())
 				{
-					scnCoords.min = quad.tl;
-					scnCoords.max = quad.br;
-					scnCoords = scnCoords.Reorder();
 					DrawImageObject(denv, simg, scnCoords.min, scnCoords.max, vimg->GetSrcAlpha());
 				}
 				else
@@ -2194,16 +2202,16 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 					DrawImageObjectQuad(denv, simg, quad, vimg->GetSrcAlpha());
 				}
 			}
-			if (imgTimeMS != 0)
+		}
+		if (imgTimeMS != 0)
+		{
+			if (denv->imgDurMS == 0)
 			{
-				if (denv->imgDurMS == 0)
-				{
-					denv->imgDurMS = imgTimeMS;
-				}
-				else if (denv->imgDurMS > imgTimeMS)
-				{
-					denv->imgDurMS = imgTimeMS;
-				}
+				denv->imgDurMS = imgTimeMS;
+			}
+			else if (denv->imgDurMS > imgTimeMS)
+			{
+				denv->imgDurMS = imgTimeMS;
 			}
 		}
 

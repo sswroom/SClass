@@ -8,8 +8,8 @@
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
 #include "Media/JPEGFile.h"
-#include "Media/NearestNeighbourRemapper.h"
 #include "Media/StaticImage.h"
+#include "Media/ImgRemapper/LinearImageRemapper.h"
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyStringW.h"
@@ -1114,7 +1114,7 @@ Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadri
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
-		Media::NearestNeighbourRemapper remapper;
+		Media::ImgRemapper::LinearImageRemapper remapper;
 		remapper.SetSourceImage(img);
 		remapper.Remap(dimgPtr, (UOSInt)dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);

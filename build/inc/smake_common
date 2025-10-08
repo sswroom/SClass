@@ -2787,8 +2787,6 @@ Media/MPGFile.h:
 @MPGFile.o
 Media/MSFontRenderer.h:
 @MSFontRenderer.o
-Media/NearestNeighbourRemapper.h:
-@NearestNeighbourRemapper.o
 Media/NullRenderer.h:
 @NullRenderer.o
 Media/NWASource.h:
@@ -3134,6 +3132,10 @@ Media/ImgFilter/BGImgFilter.h:
 Media/ImgFilter/BWImgFilter.h:
 @BWImgFilter.o
 @BWImgFilter_CPP.o
+Media/ImgRemapper/LinearImageRemapper.h:
+@LinearImageRemapper.o
+Media/ImgRemapper/NearestNeighbourRemapper.h:
+@NearestNeighbourRemapper.o
 Media/Jasper/JasperBand.h:
 @JasperBand.o
 Media/Jasper/JasperElement.h:

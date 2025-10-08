@@ -1077,7 +1077,6 @@ MSFontRenderer.o: ../../src/Media/MSFontRenderer.cpp
 PulseAudioRenderer.o: ../../src/Media/PulseAudioRenderer.cpp
 $`$(PKG-CONFIG) --cflags libpulse`
 !`$(PKG-CONFIG) --libs libpulse`
-NearestNeighbourRemapper.o: ../../src/Media/NearestNeighbourRemapper.cpp
 NoGUIDrawEngine.o: ../../src/Media/NoGUIDrawEngine.cpp
 NullRenderer.o: ../../src/Media/NullRenderer.cpp
 NWASource.o: ../../src/Media/NWASource.cpp
@@ -1293,6 +1292,8 @@ LinesImageGen.o: ../../src/Media/ImageGen/LinesImageGen.cpp
 RingsImageGen.o: ../../src/Media/ImageGen/RingsImageGen.cpp
 BGImgFilter.o: ../../src/Media/ImgFilter/BGImgFilter.cpp
 BWImgFilter.o: ../../src/Media/ImgFilter/BWImgFilter.cpp
+LinearImageRemapper.o: ../../src/Media/ImgRemapper/LinearImageRemapper.cpp
+NearestNeighbourRemapper.o: ../../src/Media/ImgRemapper/NearestNeighbourRemapper.cpp
 JasperBand.o: ../../src/Media/Jasper/JasperBand.cpp
 JasperReport.o: ../../src/Media/Jasper/JasperReport.cpp
 JasperReportElement.o: ../../src/Media/Jasper/JasperReportElement.cpp

@@ -13,13 +13,10 @@ namespace Media
 		UOSInt srcHeight;
 		Media::PixelFormat srcPF;
 		UnsafeArrayOpt<const UInt8> srcPal;
-		UOSInt destBpl;
-		UOSInt destWidth;
-		UOSInt destHeight;
-		Math::Quadrilateral destQuad;
+		typedef UInt32 (CALLBACKFUNC GetPixel32Func)(UnsafeArray<const UInt8> srcImgPtr, Math::Coord2DDbl srcCoord, NN<ImageRemapper> self);
 
-	private:
-		virtual void DoRemap(UnsafeArray<const UInt8> srcImgPtr, UnsafeArray<UInt8> destImgPtr) = 0;
+	protected:
+		virtual GetPixel32Func GetPixel32() = 0;
 	public:
 		ImageRemapper();
 		virtual ~ImageRemapper(){};

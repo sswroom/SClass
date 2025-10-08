@@ -10,9 +10,10 @@
 #include "Media/DrawEngine.h"
 #include "Media/GDIEngine.h"
 #include "Media/ImageCopyC.h"
+#include "Media/ImageTo8Bit.h"
 #include "Media/ImageUtil.h"
 #include "Media/StaticImage.h"
-#include "Media/ImageTo8Bit.h"
+#include "Media/ImgRemapper/LinearImageRemapper.h"
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
@@ -2264,17 +2265,28 @@ Bool Media::GDIImage::DrawImageRect(NN<DrawImage> img, OSInt tlx, OSInt tly, OSI
 
 Bool Media::GDIImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad)
 {
-	/////////////////////////////////
-	Math::Coord2DDbl points[5];
-	points[0] = quad.tl;
-	points[1] = quad.tr;
-	points[2] = quad.br;
-	points[3] = quad.bl;
-	points[4] = quad.tl;
-	NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, 0, 0);
-	this->DrawPolygon(points, 5, p, 0);
-	this->DelPen(p);
-	return false;
+	if (!this->IsOffScreen() || this->info.storeBPP != 32)
+	{
+		Math::Coord2DDbl points[5];
+		points[0] = quad.tl;
+		points[1] = quad.tr;
+		points[2] = quad.br;
+		points[3] = quad.bl;
+		points[4] = quad.tl;
+		NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, 0, 0);
+		this->DrawPolygon(points, 5, p, 0);
+		this->DelPen(p);
+		return false;
+	}
+	else
+	{
+		UInt8 *dimgPtr = (UInt8*)this->bmpBits;
+		OSInt dbpl = (OSInt)this->size.x << 2;
+		Media::ImgRemapper::LinearImageRemapper remapper;
+		remapper.SetSourceImage(img);
+		remapper.Remap(dimgPtr + dbpl * (OSInt)(this->size.y - 1), (UOSInt)-dbpl, this->info.dispSize.x, this->info.dispSize.y, quad);
+		return true;
+	}
 }
 
 NN<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
