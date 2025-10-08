@@ -158,6 +158,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				Parser::FileParser::SFVParser parser;
 				NN<IO::FileCheck> fileChk;
 				{
+					ProgressHandler progress;
 					IO::StmData::FileData fd({cmdLines[1], cmdLen}, false);
 					if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::FileCheck)).SetTo(fileChk))
 					{
@@ -172,7 +173,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						j = fileChk->GetCount();
 						while (i < j)
 						{
-							fileChk->CheckEntryHash(i, hash, 0);
+							fileChk->CheckEntryHash(i, hash, progress, 0);
 						}
 						showHelp = false;
 						fileChk.Delete();

@@ -114,7 +114,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 			while (i < j)
 			{
 				sb.ClearStr();
-				if (this->fileChk->CheckEntryHash(i, hash, writer))
+				if (this->fileChk->CheckEntryHash(i, hash, this, writer))
 				{
 					sptr = Text::StrHexBytes(sbuff, hash, hashSize, 0);
 					this->lvFileChk->SetSubItem(i, 2, CSTRP(sbuff, sptr));
@@ -163,4 +163,19 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 void SSWR::AVIRead::AVIRFileChkForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}
+
+void SSWR::AVIRead::AVIRFileChkForm::ProgressStart(Text::CStringNN name, UInt64 count)
+{
+
+}
+
+void SSWR::AVIRead::AVIRFileChkForm::ProgressUpdate(UInt64 currCount, UInt64 newCount)
+{
+
+}
+
+void SSWR::AVIRead::AVIRFileChkForm::ProgressEnd()
+{
+
 }
