@@ -909,7 +909,7 @@ Int32 TestPage81()
 Int32 TestPage112()
 {
 	IO::ConsoleWriter console;
-	UOSInt n = 8;
+	//UOSInt n = 8;
 	NN<Data::TableData> vertices;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter4/vertices.csv"), 65001, INVALID_INDEX, 0).SetTo(vertices))
 	{

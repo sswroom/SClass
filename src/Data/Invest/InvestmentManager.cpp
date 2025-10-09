@@ -1032,7 +1032,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 				}
 				i++;
 			}
-			if (sum + value1 < 0)
+			if (sum + value1 < -0.000000001)
 			{
 				return false;
 			}
@@ -1056,7 +1056,7 @@ Bool Data::Invest::InvestmentManager::AddTransactionFX(Data::Timestamp ts, UInt3
 				}
 				i++;
 			}
-			if (sum + value2 < 0)
+			if (sum + value2 < -0.000000001)
 			{
 				return false;
 			}
