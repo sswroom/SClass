@@ -8,7 +8,7 @@
 #include "Text/MyStringW.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-#if defined(__FreeBSD__) || defined(CPU_X86_32)
+#if defined(__FreeBSD__) || defined(CPU_X86_32) || (defined(__GNUC__) && __GNUC__ <= 6)
 #include <bson.h>
 #include <mongoc.h>
 #if defined(__FreeBSD__)

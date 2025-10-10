@@ -579,7 +579,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 	BIGNUM *bn = BN_new();
 	BN_set_word(bn, RSA_F4);
 	RSA *rsa = RSA_new();
-	if (RSA_generate_key_ex(rsa, keyLength, bn, 0) > 0)
+	if (RSA_generate_key_ex(rsa, (int)keyLength, bn, 0) > 0)
 	{
 		pkey = EVP_PKEY_new();
 		EVP_PKEY_assign(pkey, EVP_PKEY_RSA, rsa);
@@ -660,7 +660,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey(UOSInt keyLen
 	BIGNUM *bn = BN_new();
 	BN_set_word(bn, RSA_F4);
 	RSA *rsa = RSA_new();
-	if (RSA_generate_key_ex(rsa, keyLength, bn, 0) > 0)
+	if (RSA_generate_key_ex(rsa, (int)keyLength, bn, 0) > 0)
 	{
 		BIO *bio1;
 		BIO *bio2;
