@@ -547,9 +547,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 					INFLATER_CR_RETURN_FOREVER(37, Data::Compress::InflateStatus::Failed);
 				}
 
-				UnsafeArray<UInt8> pSrc = pOut_buf_start + ((dist_from_out_buf_start - dist) & out_buf_size_mask);
-
-				if (UnsafeArray<const UInt8>(Math_Max(pOut_buf_cur, pSrc) + counter) > pOut_buf_end)
+				if (UnsafeArray<const UInt8>(Math_Max(pOut_buf_cur, pOut_buf_start + ((dist_from_out_buf_start - dist) & out_buf_size_mask)) + counter) > pOut_buf_end)
 				{
 					while (counter--)
 					{
@@ -561,7 +559,8 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 					}
 					continue;
 				}
-				else if ((counter >= 9) && (counter <= dist))
+				UnsafeArray<UInt8> pSrc = pOut_buf_start + ((dist_from_out_buf_start - dist) & out_buf_size_mask);
+				if ((counter >= 9) && (counter <= dist))
 				{
 					INFLATER_MEMCPY(pOut_buf_cur.Ptr(), pSrc.Ptr(), counter);
 					pOut_buf_cur += counter;
