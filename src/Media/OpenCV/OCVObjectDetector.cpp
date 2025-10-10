@@ -6,8 +6,13 @@
 #include "Media/OpenCV/OCVUtil.h"
 #include "Text/MyString.h"
 
+#if defined(__GNUC__) && __GNUC__ <= 6
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
+#else
 #include <opencv2/imgproc.hpp>
 #include <opencv2/objdetect.hpp>
+#endif
 
 Media::OpenCV::OCVObjectDetector::OCVObjectDetector(const UTF8Char *path, const UTF8Char *dataFile)
 {

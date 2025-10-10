@@ -112,14 +112,17 @@ Media/ZXingWriter.h:
 Media/Decoder/FFMPEGDecoder.h:
 @FFMPEGDecoder.o
 Media/OpenCV/OCVFrame.h:
-@OCVFrame.o
+@?(NO_OPENCV == 0)OCVFrame.o
+@?(NO_OPENCV > 0)OCVFrameNull.o
 Media/OpenCV/OCVFrameFeeder.h:
 @OCVFrameFeeder.o
 Media/OpenCV/OCVInit.h:
 Media/OpenCV/OCVNumPlateFinder.h:
-@OCVNumPlateFinder.o
+@?(NO_OPENCV == 0)OCVNumPlateFinder.o
+@?(NO_OPENCV > 0)OCVNumPlateFinder_Null.o
 Media/OpenCV/OCVObjectDetector.h:
-@OCVObjectDetector.o
+@?(NO_OPENCV == 0)OCVObjectDetector.o
+@?(NO_OPENCV > 0)OCVObjectDetectorNull.o
 Media/OpenCV/OCVUtil.h:
 @OCVUtil.o
 
