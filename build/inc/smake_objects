@@ -2658,5 +2658,7 @@ $-I ../../ThirdParty/miniz/_build
 miniz_zip.o: ../../ThirdParty/miniz/miniz_zip.c
 $-I ../../ThirdParty/miniz/_build
 sqlite3.o: !../../ThirdParty/sqlite3/sqlite3.c
+$-w
 sqlite3L.o: !../../ThirdParty/sqlite3/sqlite3.c
+$-w
 !-ldl

@@ -196,7 +196,11 @@ public:
 					this->cols[i].buff = 0;
 					break;
 				default:
-					this->cols[i].buffSize = (UInt32)dbprcollen(this->dbproc, c);;
+#if defined(DBTDS_7_3)
+					this->cols[i].buffSize = (UInt32)dbprcollen(this->dbproc, c);
+#else
+					this->cols[i].buffSize = (UInt32)dbdatlen(this->dbproc, c);
+#endif
 					printf("TDS: Unsupported type %d, use print size %d (%d)\r\n", this->cols[i].type, this->cols[i].buffSize, this->cols[i].size);
 					this->cols[i].buff = MemAlloc(UInt8, this->cols[i].buffSize + 1);
 					if (dbbind(this->dbproc, c, NTBSTRINGBIND, (Int32)this->cols[i].buffSize + 1, this->cols[i].buff) == FAIL)

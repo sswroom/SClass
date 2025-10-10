@@ -268,14 +268,14 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 				k = img->info.dispSize.x >> 3;
 				while (k-- > 0)
 				{
-					mask  = (UInt8)((currPtr[3] != 0) << 7);
-					mask |= (UInt8)((currPtr[7] != 0) << 6);
-					mask |= (UInt8)((currPtr[11] != 0) << 5);
-					mask |= (UInt8)((currPtr[15] != 0) << 4);
-					mask |= (UInt8)((currPtr[19] != 0) << 3);
-					mask |= (UInt8)((currPtr[23] != 0) << 2);
-					mask |= (UInt8)((currPtr[27] != 0) << 1);
-					mask |= (UInt8)((currPtr[31] != 0) << 0);
+					mask =                (UInt8)((currPtr[3] != 0) << 7);
+					mask = (UInt8)(mask | (UInt8)((currPtr[7] != 0) << 6));
+					mask = (UInt8)(mask | (UInt8)((currPtr[11] != 0) << 5));
+					mask = (UInt8)(mask | (UInt8)((currPtr[15] != 0) << 4));
+					mask = (UInt8)(mask | (UInt8)((currPtr[19] != 0) << 3));
+					mask = (UInt8)(mask | (UInt8)((currPtr[23] != 0) << 2));
+					mask = (UInt8)(mask | (UInt8)((currPtr[27] != 0) << 1));
+					mask = (UInt8)(mask | (UInt8)((currPtr[31] != 0) << 0));
 					maskPtr[0] = (UInt8)~mask;
 					maskPtr++;
 					currPtr += 32;
@@ -287,7 +287,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 					shiftCnt = 7;
 					while (k-- > 0)
 					{
-						mask |= (UInt8)(((currPtr[3] != 0) ^ 1) << shiftCnt);
+						mask = (UInt8)(mask | (UInt8)(((currPtr[3] != 0) ^ 1) << shiftCnt));
 						shiftCnt--;
 						currPtr += 4;
 					}
@@ -385,14 +385,14 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 					imgPtr[23] = currPtr[30];
 
 					imgPtr += 24;
-					mask  = (UInt8)((currPtr[3] & 1) << 7);
-					mask |= (UInt8)((currPtr[7] & 1) << 6);
-					mask |= (UInt8)((currPtr[11] & 1) << 5);
-					mask |= (UInt8)((currPtr[15] & 1) << 4);
-					mask |= (UInt8)((currPtr[19] & 1) << 3);
-					mask |= (UInt8)((currPtr[23] & 1) << 2);
-					mask |= (UInt8)((currPtr[27] & 1) << 1);
-					mask |= (UInt8)((currPtr[31] & 1) << 0);
+					mask =                (UInt8)((currPtr[3] & 1) << 7);
+					mask = (UInt8)(mask | (UInt8)((currPtr[7] & 1) << 6));
+					mask = (UInt8)(mask | (UInt8)((currPtr[11] & 1) << 5));
+					mask = (UInt8)(mask | (UInt8)((currPtr[15] & 1) << 4));
+					mask = (UInt8)(mask | (UInt8)((currPtr[19] & 1) << 3));
+					mask = (UInt8)(mask | (UInt8)((currPtr[23] & 1) << 2));
+					mask = (UInt8)(mask | (UInt8)((currPtr[27] & 1) << 1));
+					mask = (UInt8)(mask | (UInt8)((currPtr[31] & 1) << 0));
 					maskPtr[0] = (UInt8)~mask;
 					maskPtr++;
 					currPtr += 32;
@@ -409,7 +409,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 						imgPtr[2] = currPtr[2];
 						imgPtr += 3;
 
-						mask |= (UInt8)(((currPtr[3] & 1) ^ 1) << shiftCnt);
+						mask = (UInt8)(mask | (UInt8)(((currPtr[3] & 1) ^ 1) << shiftCnt));
 						shiftCnt--;
 						currPtr += 4;
 					}
