@@ -1029,7 +1029,7 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					destData[0] = (b >> 7);
+					destData[0] = (UInt8)(b >> 7);
 					destData[1] = (b >> 6) & 1;
 					destData[2] = (b >> 5) & 1;
 					destData[3] = (b >> 4) & 1;
@@ -1043,8 +1043,8 @@ Bool Media::StaticImage::PalTo8bpp()
 				i = this->info.dispSize.x & 7;
 				while (i-- > 0)
 				{
-					destData[0] = (b >> 7);
-					b = b << 1;
+					destData[0] = (UInt8)(b >> 7);
+					b = (UInt8)(b << 1);
 					destData++;
 				}
 				srcData += sadd;
@@ -1058,7 +1058,7 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					destData[0] = (b >> 7);
+					destData[0] = (UInt8)(b >> 7);
 					destData[1] = (b >> 6) & 1;
 					destData[2] = (b >> 5) & 1;
 					destData[3] = (b >> 4) & 1;
@@ -1123,7 +1123,7 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					destData[0] = cMap[(b >> 7)];
-					b = b << 1;
+					b = (UInt8)(b << 1);
 					destData++;
 				}
 				srcData += sadd;
@@ -1187,7 +1187,7 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					destData[0] = (b >> 6);
+					destData[0] = (UInt8)(b >> 6);
 					destData[1] = (b >> 4) & 3;
 					destData[2] = (b >> 2) & 3;
 					destData[3] = b & 3;
@@ -1197,8 +1197,8 @@ Bool Media::StaticImage::PalTo8bpp()
 				i = this->info.dispSize.x & 3;
 				while (i-- > 0)
 				{
-					destData[0] = (b >> 6);
-					b = b << 2;
+					destData[0] = (UInt8)(b >> 6);
+					b = (UInt8)(b << 2);
 					destData++;
 				}
 				srcData += sadd;
@@ -1212,7 +1212,7 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					destData[0] = (b >> 6);
+					destData[0] = (UInt8)(b >> 6);
 					destData[1] = (b >> 4) & 3;
 					destData[2] = (b >> 2) & 3;
 					destData[3] = b & 3;
@@ -1257,23 +1257,23 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					c = (b >> 6);
-					destData[0] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = (UInt8)(b >> 6);
+					destData[0] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					c = (b >> 4) & 3;
-					destData[1] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData[1] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					c = (b >> 2) & 3;
-					destData[2] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData[2] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					c = b & 3;
-					destData[3] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData[3] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					destData += 4;
 				}
 				b = *srcData;
 				i = this->info.dispSize.x & 3;
 				while (i-- > 0)
 				{
-					c = (b >> 6);
-					destData[0] = (c << 6) | (c << 4) | (c << 2) | c;
-					b = b << 2;
+					c = (UInt8)(b >> 6);
+					destData[0] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
+					b = (UInt8)(b << 2);
 					destData++;
 				}
 				srcData += sadd;
@@ -1287,14 +1287,14 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					c = (b >> 6);
-					destData[0] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = (UInt8)(b >> 6);
+					destData[0] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					c = (b >> 4) & 3;
-					destData[1] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData[1] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					c = (b >> 2) & 3;
-					destData[2] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData[2] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					c = b & 3;
-					destData[3] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData[3] = (UInt8)((c << 6) | (c << 4) | (c << 2) | c);
 					destData += 4;
 				}
 				srcData += sadd;
@@ -1349,11 +1349,11 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					destData[0] = (b >> 4);
+					destData[0] = (UInt8)(b >> 4);
 					destData[1] = b & 15;
 					destData += 2;
 				}
-				destData[0] = (*srcData) >> 4;
+				destData[0] = (UInt8)((*srcData) >> 4);
 				destData++;
 				srcData += sadd;
 			}
@@ -1366,7 +1366,7 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					destData[0] = (b >> 4);
+					destData[0] = (UInt8)(b >> 4);
 					destData[1] = b & 15;
 					destData += 2;
 				}
@@ -1409,14 +1409,14 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					c = (b >> 4);
-					destData[0] = (c << 4) | c;
+					c = (UInt8)(b >> 4);
+					destData[0] = (UInt8)((c << 4) | c);
 					c = b & 15;
-					destData[1] = (c << 4) | c;
+					destData[1] = (UInt8)((c << 4) | c);
 					destData += 2;
 				}
-				c = ((*srcData) >> 4);
-				destData[0] = (c << 4) | c;
+				c = (UInt8)((*srcData) >> 4);
+				destData[0] = (UInt8)((c << 4) | c);
 				destData++;
 				srcData += sadd;
 			}
@@ -1429,10 +1429,10 @@ Bool Media::StaticImage::PalTo8bpp()
 				while (i-- > 0)
 				{
 					b = *srcData++;
-					c = (b >> 4);
-					destData[0] = (c << 4) | c;
+					c = (UInt8)(b >> 4);
+					destData[0] = (UInt8)((c << 4) | c);
 					c = b & 15;
-					destData[1] = (c << 4) | c;
+					destData[1] = (UInt8)((c << 4) | c);
 					destData += 2;
 				}
 				srcData += sadd;

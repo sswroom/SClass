@@ -439,7 +439,6 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 			}
 			for (;;)
 			{
-				UnsafeArray<UInt8> pSrc;
 				for (;;)
 				{
 					if (((pIn_buf_end - pIn_buf_cur) < 4) || ((pOut_buf_end - pOut_buf_cur) < 2))
@@ -548,7 +547,7 @@ Data::Compress::InflateStatus Data::Compress::Inflater::Decompress(NN<InflateDec
 					INFLATER_CR_RETURN_FOREVER(37, Data::Compress::InflateStatus::Failed);
 				}
 
-				pSrc = pOut_buf_start + ((dist_from_out_buf_start - dist) & out_buf_size_mask);
+				UnsafeArray<UInt8> pSrc = pOut_buf_start + ((dist_from_out_buf_start - dist) & out_buf_size_mask);
 
 				if (UnsafeArray<const UInt8>(Math_Max(pOut_buf_cur, pSrc) + counter) > pOut_buf_end)
 				{
