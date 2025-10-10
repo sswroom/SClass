@@ -385,11 +385,11 @@ void UI::GUIControl::SetBGColor(UInt32 bgColor)
 		color.green = (bgColor & 0xff00) / 65280.0;
 		color.blue = (bgColor & 0xff) / 255.0;
 		color.alpha = ((bgColor >> 24) & 0xff) / 255.0;
-		gtk_widget_override_background_color((GtkWidget*)this->hwnd, GTK_STATE_FLAG_NORMAL, &color);
+		gtk_widget_override_background_color((GtkWidget*)this->hwnd.OrNull(), GTK_STATE_FLAG_NORMAL, &color);
 	}
 	else
 	{
-		gtk_widget_override_background_color((GtkWidget*)this->hwnd, GTK_STATE_FLAG_NORMAL, 0);
+		gtk_widget_override_background_color((GtkWidget*)this->hwnd.OrNull(), GTK_STATE_FLAG_NORMAL, 0);
 	}
 #endif
 }
@@ -490,7 +490,7 @@ void UI::GUIControl::UpdateFont()
 		gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 		gtk_widget_reset_style(widget);
 #else		
-		gtk_widget_override_font((GtkWidget*)this->hwnd, (PangoFontDescription*)font);
+		gtk_widget_override_font((GtkWidget*)this->hwnd.OrNull(), (PangoFontDescription*)font);
 #endif
 	}
 }
@@ -610,7 +610,7 @@ void UI::GUIControl::SetCapture()
 	}
 	if (dev)
 	{
-		gdk_device_grab(dev, gtk_widget_get_window((GtkWidget*)this->hwnd), GDK_OWNERSHIP_WINDOW, TRUE, (GdkEventMask)(GDK_BUTTON_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK), 0, GDK_CURRENT_TIME);
+		gdk_device_grab(dev, gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull()), GDK_OWNERSHIP_WINDOW, TRUE, (GdkEventMask)(GDK_BUTTON_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK), 0, GDK_CURRENT_TIME);
 	}
 #endif
 }
@@ -767,8 +767,8 @@ Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 	}
 	return ret;
 #else
-	GdkScreen *scn = gtk_widget_get_screen((GtkWidget*)this->hwnd);
-	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd);
+	GdkScreen *scn = gtk_widget_get_screen((GtkWidget*)this->hwnd.OrNull());
+	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull());
 	if (scn == 0)
 		return 0;
 	if (wnd == 0)

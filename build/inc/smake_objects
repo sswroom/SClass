@@ -2651,12 +2651,16 @@ pin.o: !../../ThirdParty/KSSample/pin.cpp
 util.o: !../../ThirdParty/KSSample/util.cpp
 miniz.o: ../../ThirdParty/miniz/miniz.c
 $-I ../../ThirdParty/miniz/_build
+$-w
 miniz_tdef.o: ../../ThirdParty/miniz/miniz_tdef.c
 $-I ../../ThirdParty/miniz/_build
+$-w
 miniz_tinfl.o: ../../ThirdParty/miniz/miniz_tinfl.c
 $-I ../../ThirdParty/miniz/_build
+$-w
 miniz_zip.o: ../../ThirdParty/miniz/miniz_zip.c
 $-I ../../ThirdParty/miniz/_build
+$-w
 sqlite3.o: !../../ThirdParty/sqlite3/sqlite3.c
 $-w
 sqlite3L.o: !../../ThirdParty/sqlite3/sqlite3.c

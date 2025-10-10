@@ -12,9 +12,6 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 	GdkRectangle rect;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-//#define GDK_MAJOR_VERSION (3)
-//#define GDK_MINOR_VERSION (22)
-//#define GDK_MICRO_VERSION (11)		
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
 	GdkDisplay *display = gdk_display_get_default();
 	GdkMonitor *mon;
@@ -55,7 +52,7 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 	if (scn)
 	{
 		this->isPrimary = (monNum == gdk_screen_get_primary_monitor(scn));
-		gdk_screen_get_monitor_geometry(scn, monNum, &rect);
+		gdk_screen_get_monitor_geometry(scn, (gint)monNum, &rect);
 		this->left = rect.x;
 		this->top = rect.y;
 		this->right = rect.width + rect.x;
