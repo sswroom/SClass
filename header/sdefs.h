@@ -336,7 +336,16 @@ Int64 __inline BSWAP64(Int64 v)
 #define BSWAPU32(v) __builtin_bswap32(v)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
 #define BSWAPU64(v) __builtin_bswap64(v)
+#if __GNUC__ > 4
 #define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#else
+Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+{
+	v1 += v2;
+	*outPtr = v1;
+	return v1 < v2;
+}
+#endif
 
 __inline UOSInt MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
 {
@@ -382,7 +391,16 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAPU32(v) __builtin_bswap32(v)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
 #define BSWAPU64(v) __builtin_bswap64(v)
+#if __GNUC__ > 4
 #define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#else
+Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+{
+	v1 += v2;
+	*outPtr = v1;
+	return v1 < v2;
+}
+#endif
 
 UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
 {

@@ -6,6 +6,9 @@
 #include "Text/MyString.h"
 #include <webp/encode.h>
 #include <webp/mux.h>
+#if WEBP_ENCODER_ABI_VERSION <= 0x203
+#define WebPFree(v) free(v)
+#endif
 
 Exporter::WebPExporter::WebPExporter()
 {
