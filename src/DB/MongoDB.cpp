@@ -11,9 +11,12 @@
 #if defined(__FreeBSD__) || defined(CPU_X86_32) || (defined(__GNUC__) && __GNUC__ <= 6)
 #include <bson.h>
 #include <mongoc.h>
-#if defined(__FreeBSD__)
+#if !MONGOC_CHECK_VERSION(1, 9, 0)
 #define mongoc_database_get_collection_names_with_opts(a, b, c) mongoc_database_get_collection_names(a, c)
 #define mongoc_client_get_database_names_with_opts(a, b, c) mongoc_client_get_database_names(a, c)
+#endif
+#if !MONGOC_CHECK_VERSION(1, 5, 0)
+#define mongoc_collection_find_with_opts(a, b, c, d) mongoc_collection_find(a, MONGOC_QUERY_NONE, 0, 0, 0, b, 0, d)
 #endif
 #else
 #include <bson/bson.h>
