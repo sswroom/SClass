@@ -324,7 +324,7 @@ void UI::GUIControl::InitFont()
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	gtk_widget_reset_style(widget);
 #else
-	gtk_widget_override_font((GtkWidget*)this->GetDisplayHandle(), font);
+	gtk_widget_override_font((GtkWidget*)this->GetDisplayHandle().OrNull(), font);
 #endif
 }
 
