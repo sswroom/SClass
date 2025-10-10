@@ -18,6 +18,9 @@
 #if !MONGOC_CHECK_VERSION(1, 5, 0)
 #define mongoc_collection_find_with_opts(a, b, c, d) mongoc_collection_find(a, MONGOC_QUERY_NONE, 0, 0, 0, b, 0, d)
 #endif
+#if !BSON_CHECK_VERSION(1, 7, 0)
+#define bson_as_canonical_extended_json(a, b) bson_as_json(a, b)
+#endif
 #else
 #include <bson/bson.h>
 #include <mongoc/mongoc.h>
