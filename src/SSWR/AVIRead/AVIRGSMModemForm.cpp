@@ -48,13 +48,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 					me->initModemManu = s;
 					if (s->StartsWith(UTF8STRC("Huawei")) && me->channel.SetTo(channel))
 					{
-						IO::HuaweiGSMModemController *huawei;
+						NN<IO::HuaweiGSMModemController> huawei;
 						NN<IO::GSMModemController> oldModem;
-						NEW_CLASS(huawei, IO::HuaweiGSMModemController(channel, false));
+						NEW_CLASSNN(huawei, IO::HuaweiGSMModemController(channel, false));
 						me->huawei = huawei;
 						oldModem = modem;
 						me->modem = huawei;
 						oldModem.Delete();
+						modem = huawei;
 						huawei->HuaweiGetCardMode(me->huaweiSIMType);
 					}
 				}
