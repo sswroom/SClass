@@ -1,5 +1,5 @@
 #ifndef _SM_DATA_DATASET
-#define _SM_DATA_DATAEST
+#define _SM_DATA_DATASET
 #include "Data/ArrayList.h"
 #include "Data/FastMapNN.h"
 #include "Data/Comparator.h"

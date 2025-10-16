@@ -18,7 +18,7 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
-			static Optional<IO::ParsedObject> ParseAsMap(DB::DBConn *conn);
+			static Optional<IO::ParsedObject> ParseAsMap(NN<DB::DBConn> conn);
 		};
 	}
 }

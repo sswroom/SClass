@@ -46,8 +46,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO:
 		return 0;
 	if (fd->IsFullFile())
 	{
-		DB::SQLiteFile *pf;
-		NEW_CLASS(pf, DB::SQLiteFile(fd->GetFullFileName()));
+		NN<DB::SQLiteFile> pf;
+		NEW_CLASSNN(pf, DB::SQLiteFile(fd->GetFullFileName()));
 		pf->SetSourceName(fd->GetFullName());
 		if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 		{
@@ -90,8 +90,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO:
 
 		if (valid)
 		{
-			DB::SQLiteFile *pf;
-			NEW_CLASS(pf, DB::SQLiteFile(CSTRP(sbuff, sptr)));
+			NN<DB::SQLiteFile> pf;
+			NEW_CLASSNN(pf, DB::SQLiteFile(CSTRP(sbuff, sptr)));
 			pf->SetDeleteOnClose(true);
 			pf->SetSourceName(fd->GetFullName());
 			if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
@@ -108,7 +108,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO:
 	}
 }
 
-Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
+Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseAsMap(NN<DB::DBConn> conn)
 {
 	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(nullptr, tableNames);

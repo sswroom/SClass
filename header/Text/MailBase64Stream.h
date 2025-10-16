@@ -10,17 +10,17 @@ namespace Text
 	private:
 		UInt8 lineBuff[54];
 		UOSInt lineBuffSize;
-		IO::Stream *stm;
+		NN<IO::Stream> stm;
 		UOSInt lineCnt;
-		Crypto::Encrypt::Base64 *b64;
+		Crypto::Encrypt::Base64 b64;
 
 	public:
-		MailBase64Stream(IO::Stream *stm);
+		MailBase64Stream(NN<IO::Stream> stm);
 		virtual ~MailBase64Stream();
 
 		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
+		virtual UOSInt Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

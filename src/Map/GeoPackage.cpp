@@ -10,17 +10,17 @@
 
 Map::GeoPackage::~GeoPackage()
 {
-	DEL_CLASS(this->conn);
-	LIST_CALL_FUNC(&this->tableList, FreeContent);
+	this->conn.Delete();;
+	this->tableList.FreeAll(FreeContent);
 }
 
-void Map::GeoPackage::FreeContent(ContentInfo *cont)
+void Map::GeoPackage::FreeContent(NN<ContentInfo> cont)
 {
 	cont->tableName->Release();
-	MemFree(cont);
+	MemFreeNN(cont);
 }
 
-Map::GeoPackage::GeoPackage(DB::DBConn *conn)
+Map::GeoPackage::GeoPackage(NN<DB::DBConn> conn)
 {
 	this->conn = conn;
 	this->useCnt = 1;
@@ -35,7 +35,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 	}
 	colList.FreeAll();
 	Text::StringBuilderUTF8 sb;
-	ContentInfo *cont;
+	NN<ContentInfo> cont;
 	while (r->ReadNext())
 	{
 		sb.ClearStr();
@@ -45,7 +45,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 			this->allTables.Add(tableName);
 			if (sb.Equals(UTF8STRC("features")))
 			{
-				cont = MemAlloc(ContentInfo, 1);
+				cont = MemAllocNN(ContentInfo);
 				cont->tableName = tableName->Clone();
 				cont->bounds.min.x = r->GetDblOrNAN(2);
 				cont->bounds.min.y = r->GetDblOrNAN(3);
@@ -54,8 +54,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 				cont->srsId = r->GetInt32(6);
 				cont->hasZ = false;
 				cont->hasM = false;
-				cont = this->tableList.PutNN(cont->tableName, cont);
-				if (cont) FreeContent(cont);
+				if (this->tableList.PutNN(cont->tableName, cont).SetTo(cont)) FreeContent(cont);
 			}
 		}
 	}
@@ -69,8 +68,7 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 		{
 			sb.ClearStr();
 			r->GetStr(0, sb);
-			cont = this->tableList.GetC(sb.ToCString());
-			if (cont)
+			if (this->tableList.GetC(sb.ToCString()).SetTo(cont))
 			{
 				cont->hasZ = r->GetInt32(1) != 0;
 				cont->hasM = r->GetInt32(2) != 0;
@@ -107,7 +105,7 @@ UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return this->allTables.GetCount();
 }
 
-Optional<DB::DBReader> Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return this->conn->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
@@ -117,8 +115,8 @@ Optional<DB::TableDef> Map::GeoPackage::GetTableDef(Text::CString schemaName, Te
 	NN<DB::TableDef> tabDef;
 	if (this->conn->GetTableDef(schemaName, tableName).SetTo(tabDef))
 	{
-		ContentInfo *cont = this->tableList.GetC(tableName);
-		if (cont)
+		NN<ContentInfo> cont;
+		if (this->tableList.GetC(tableName).SetTo(cont))
 		{
 			Data::ArrayIterator<NN<DB::ColDef>> it = tabDef->ColIterator();
 			while (it.HasNext())
@@ -164,9 +162,9 @@ NN<Map::MapLayerCollection> Map::GeoPackage::CreateLayerCollection()
 	j = this->tableList.GetCount();
 	while (i < j)
 	{
-		if (contentInfo.Set(this->tableList.GetItem(i)))
+		if (this->tableList.GetItem(i).SetTo(contentInfo))
 		{
-			NEW_CLASSNN(layer, Map::GeoPackageLayer(this, contentInfo));
+			NEW_CLASSNN(layer, Map::GeoPackageLayer(*this, contentInfo));
 			Sync::Interlocked::IncrementU32(this->useCnt);
 			layerColl->Add(layer);
 		}

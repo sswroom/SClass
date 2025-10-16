@@ -13,10 +13,10 @@ namespace Map
 		class ESRIMDBLayer : public Map::MapDrawLayer
 		{
 		private:
-			DB::SharedDBConn *conn;
+			NN<DB::SharedDBConn> conn;
 			Data::FastMapNN<Int32, Math::Geometry::Vector2D> objects;
-			DB::DBConn *currDB;
-			DB::DBConn *lastDB;
+			Optional<DB::DBConn> currDB;
+			Optional<DB::DBConn> lastDB;
 			Map::DrawLayerType layerType;
 			Data::ArrayListStringNN colNames;
 			Math::Coord2DDbl min;
@@ -28,10 +28,10 @@ namespace Map
 		private:
 			Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
 
-			void Init(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN tableName);
+			void Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN tableName);
 		public:
-			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName);
-			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName);
+			ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName);
+			ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName);
 			virtual ~ESRIMDBLayer();
 
 			virtual DrawLayerType GetLayerType() const;
@@ -55,9 +55,9 @@ namespace Map
 			virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
 			virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-			virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+			virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 			virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
-			virtual void CloseReader(DB::DBReader *r);
+			virtual void CloseReader(NN<DB::DBReader> r);
 			virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
 			virtual UOSInt GetGeomCol() const;

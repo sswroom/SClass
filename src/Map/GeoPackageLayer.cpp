@@ -57,7 +57,7 @@ Bool Map::GeoPackageLayer::StringSessGoRow(NN<StringSession> sess, UOSInt index)
 	}
 }
 
-Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NN<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)layerContent->srsId))
+Map::GeoPackageLayer::GeoPackageLayer(NN<Map::GeoPackage> gpkg, NN<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)layerContent->srsId))
 {
 	this->gpkg = gpkg;
 	this->layerContent = layerContent;
@@ -318,7 +318,7 @@ UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NN<Data::
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return this->gpkg->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }

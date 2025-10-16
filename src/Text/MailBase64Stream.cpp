@@ -2,12 +2,11 @@
 #include "MyMemory.h"
 #include "Text/MailBase64Stream.h"
 
-Text::MailBase64Stream::MailBase64Stream(IO::Stream *stm) : IO::Stream(stm->GetSourceNameObj())
+Text::MailBase64Stream::MailBase64Stream(NN<IO::Stream> stm) : IO::Stream(stm->GetSourceNameObj())
 {
 	this->lineBuffSize = 0;
 	this->lineCnt = 0;
 	this->stm = stm;
-	NEW_CLASS(this->b64, Crypto::Encrypt::Base64());
 }
 
 Text::MailBase64Stream::~MailBase64Stream()
@@ -15,10 +14,9 @@ Text::MailBase64Stream::~MailBase64Stream()
 	UInt8 b64buff[74];
 	if (this->lineBuffSize > 0)
 	{
-		UOSInt i = b64->Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff);
+		UOSInt i = b64.Encrypt(this->lineBuff, this->lineBuffSize, (UInt8*)b64buff);
 		this->stm->Write(Data::ByteArrayR(b64buff, i));
 	}
-	DEL_CLASS(this->b64);
 }
 
 Bool Text::MailBase64Stream::IsDown() const
@@ -31,36 +29,34 @@ UOSInt Text::MailBase64Stream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Text::MailBase64Stream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Text::MailBase64Stream::Write(Data::ByteArrayR buff)
 {
-	UOSInt oriSize = size;
+	UOSInt oriSize = buff.GetSize();
 	UInt8 b64buff[74];
-	if (this->lineBuffSize + size >= 54)
+	if (this->lineBuffSize + buff.GetSize() >= 54)
 	{
-		MemCopyNO(&this->lineBuff[this->lineBuffSize], buff, 54 - this->lineBuffSize);
-		b64->Encrypt(this->lineBuff, 54, b64buff);
+		MemCopyNO(&this->lineBuff[this->lineBuffSize], buff.Arr().Ptr(), 54 - this->lineBuffSize);
+		this->b64.Encrypt(this->lineBuff, 54, b64buff);
 		b64buff[72] = 13;
 		b64buff[73] = 10;
 		this->stm->Write(Data::ByteArrayR(b64buff, 74));
 		buff += 54 - this->lineBuffSize;
-		size -= (54 - this->lineBuffSize);
 		this->lineBuffSize = 0;
 		this->lineCnt++;
 	}
-	while (size >= 54)
+	while (buff.GetSize() >= 54)
 	{
-		b64->Encrypt(buff, 54, b64buff);
+		this->b64.Encrypt(buff.Arr(), 54, b64buff);
 		b64buff[72] = 13;
 		b64buff[73] = 10;
 		this->stm->Write(Data::ByteArrayR(b64buff, 74));
-		size -= 54;
 		buff += 54;
 		this->lineCnt++;
 	}
-	if (size > 0)
+	if (buff.GetSize() > 0)
 	{
-		MemCopyNO(&this->lineBuff[this->lineBuffSize], buff, size);
-		this->lineBuffSize += size;
+		MemCopyNO(&this->lineBuff[this->lineBuffSize], buff.Arr().Ptr(), buff.GetSize());
+		this->lineBuffSize += buff.GetSize();
 	}
 	return oriSize;
 }

@@ -10,9 +10,10 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
-	this->currDB = this->conn->UseConn(mutUsage).Ptr();
+	NN<DB::DBConn> currDB;
 	NN<DB::DBReader> r;
-	if (this->currDB->QueryTableData(nullptr, this->tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
+	this->currDB = currDB = this->conn->UseConn(mutUsage);
+	if (currDB->QueryTableData(nullptr, this->tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		Data::FastMap<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
@@ -44,7 +45,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 			}
 			nameArr->Put(objId, names);
 		}
-		this->currDB->CloseReader(r);
+		currDB->CloseReader(r);
 		mutUsage.EndUse();
 		this->currDB = 0;
 		return nameArr;
@@ -57,7 +58,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	}
 }
 
-void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN tableName)
+void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN tableName)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -77,9 +78,10 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	UOSInt nameCol = 0;
 
 	Sync::MutexUsage mutUsage;
-	this->currDB = this->conn->UseConn(mutUsage).Ptr();
+	NN<DB::DBConn> currDB;
 	NN<DB::DBReader> r;
-	if (this->currDB->QueryTableData(nullptr, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
+	this->currDB = currDB = this->conn->UseConn(mutUsage);
+	if (currDB->QueryTableData(nullptr, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -179,19 +181,19 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 		{
 			MemFree(buff);
 		}
-		this->currDB->CloseReader(r);
+		currDB->CloseReader(r);
 	}
 	mutUsage.EndUse();
 	this->currDB = 0;
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	OPTSTR_DEL(this->layerName);
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	this->Init(conn, srid, tableName);
 }
@@ -370,15 +372,15 @@ UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NN<Dat
 	return 1;
 }
 
-Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
 	NN<DB::DBConn> currDB = this->conn->UseConn(mutUsage);
-	this->currDB = currDB.Ptr();
+	this->currDB = currDB;
 	this->lastDB = this->currDB;
 	NN<DB::DBReader> rdr;
-	if (this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
+	if (currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
 	{
 		NN<Map::ESRI::ESRIMDBReader> r;
 		NEW_CLASSNN(r, Map::ESRI::ESRIMDBReader(currDB, rdr, mutUsage));
@@ -392,25 +394,27 @@ Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString sch
 Optional<DB::TableDef> Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	Sync::MutexUsage mutUsage;
-	this->currDB = this->conn->UseConn(mutUsage).Ptr();
+	NN<DB::DBConn> currDB;
+	this->currDB = currDB = this->conn->UseConn(mutUsage);
 	this->lastDB = this->currDB;
-	Optional<DB::TableDef> tab = this->currDB->GetTableDef(schemaName, tableName);
+	Optional<DB::TableDef> tab = currDB->GetTableDef(schemaName, tableName);
 	this->currDB = 0;
 	return tab;
 }
 
-void Map::ESRI::ESRIMDBLayer::CloseReader(DB::DBReader *r)
+void Map::ESRI::ESRIMDBLayer::CloseReader(NN<DB::DBReader> r)
 {
-	Map::ESRI::ESRIMDBReader *rdr = (Map::ESRI::ESRIMDBReader*)r;
-	DEL_CLASS(rdr);
+	NN<Map::ESRI::ESRIMDBReader> rdr = NN<Map::ESRI::ESRIMDBReader>::ConvertFrom(r);
+	rdr.Delete();
 	this->currDB = 0;
 }
 
 void Map::ESRI::ESRIMDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	if (this->lastDB)
+	NN<DB::DBConn> lastDB;
+	if (this->lastDB.SetTo(lastDB))
 	{
-		this->lastDB->GetLastErrorMsg(str);
+		lastDB->GetLastErrorMsg(str);
 	}
 }
 

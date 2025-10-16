@@ -45,7 +45,7 @@ Media::M2VFile::M2VFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 	UInt32 frameRateDenorm;
 	Media::FrameInfo info;
 	Media::MPEGVideoParser::GetFrameInfo(this->readBuff.Arr().Ptr(), 1024, info, frameRateNorm, frameRateDenorm, this->bitRate, false);
-	NEW_CLASS(this->stm, Media::M2VStreamSource(*this));
+	NEW_CLASSNN(this->stm, Media::M2VStreamSource(*this));
 	this->stm->DetectStreamInfo(this->readBuff.Arr().Ptr(), buffSize);
 }
 
@@ -55,21 +55,20 @@ Media::M2VFile::~M2VFile()
 	{
 		this->StopVideo();
 	}
-	DEL_CLASS(this->stm);
+	this->stm.Delete();
 	this->stmData.Delete();
 }
 
-UOSInt Media::M2VFile::AddSource(Media::MediaSource *src, Int32 syncTime)
+UOSInt Media::M2VFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 {
 	return (UOSInt)-1;
 }
 
-Media::MediaSource *Media::M2VFile::GetStream(UOSInt index, Int32 *syncTime)
+Optional<Media::MediaSource> Media::M2VFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
 {
 	if (index != 0)
-		return 0;
-	if (syncTime)
-		*syncTime = 0;
+		return nullptr;
+	syncTime.Set(0);
 	return this->stm;
 }
 

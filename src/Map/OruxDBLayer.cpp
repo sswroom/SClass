@@ -30,7 +30,7 @@ Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerNam
 		{
 			if (db->IsFullConn())
 			{
-				this->db = (DB::DBConn*)db.Ptr();
+				this->db = NN<DB::DBConn>::ConvertFrom(db);
 			}
 			else
 			{
@@ -42,29 +42,29 @@ Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerNam
 
 Map::OruxDBLayer::~OruxDBLayer()
 {
-	Map::OruxDBLayer::LayerInfo *lyr;
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
 	UOSInt i;
 	i = this->layerMap.GetCount();
 	while (i-- > 0)
 	{
-		lyr = this->layerMap.GetItem(i);
-		MemFreeA(lyr);
+		lyr = this->layerMap.GetItemNoCheck(i);
+		MemFreeANN(lyr);
 	}
-	SDEL_CLASS(this->db);
+	this->db.Delete();
 }
 
 Bool Map::OruxDBLayer::IsError() const
 {
-	return this->db == 0;
+	return this->db.IsNull();
 }
 
 void Map::OruxDBLayer::AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, Double mapXMax, Double mapYMax, UInt32 maxX, UInt32 maxY, UInt32 tileSize)
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(layerId);
-	if (lyr == 0)
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (!this->layerMap.ContainsKey(layerId))
 	{
 		this->tileSize = tileSize;
-		lyr = MemAllocA(Map::OruxDBLayer::LayerInfo, 1);
+		lyr = MemAllocANN(Map::OruxDBLayer::LayerInfo);
 		lyr->layerId = layerId;
 		lyr->mapMin.x = mapXMin;
 		lyr->mapMin.y = mapYMin;
@@ -102,8 +102,8 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 NN<Map::MapView> Map::OruxDBLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
 	NN<Map::MapView> view;
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
-	if (lyr)
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
 	{
 		NEW_CLASSNN(view, Map::MercatorMapView(scnSize, (lyr->mapMax + lyr->mapMin) * 0.5, this->layerMap.GetCount(), this->tileSize));
 		return view;
@@ -122,8 +122,8 @@ Map::DrawLayerType Map::OruxDBLayer::GetLayerType() const
 
 UOSInt Map::OruxDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
-	if (lyr)
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
 	{
 		UInt32 i;
 		UInt32 j;
@@ -160,8 +160,8 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptO
 	Int32 i;
 	Int32 j;
 	Math::Coord2DDbl diff;
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
-	if (lyr)
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
 	{
 		rect = rect.Reorder();
 		diff = (lyr->mapMax - lyr->mapMin) / lyr->max.ToDouble();
@@ -206,8 +206,8 @@ UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptO
 
 Int64 Map::OruxDBLayer::GetObjectIdMax() const
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
-	if (lyr)
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
 	{
 		return (((Int64)lyr->max.x - 1) << 32) | (UInt32)(lyr->max.y - 1);
 	}
@@ -253,8 +253,8 @@ UInt32 Map::OruxDBLayer::GetCodePage() const
 
 Bool Map::OruxDBLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
-	if (lyr)
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
 	{
 		bounds.Set(Math::RectAreaDbl(lyr->mapMin, lyr->mapMax));
 		return lyr->mapMin.x != 0 || lyr->mapMin.y != 0 || lyr->mapMax.x != 0 || lyr->mapMax.y != 0;
@@ -277,10 +277,11 @@ void Map::OruxDBLayer::EndGetObject(NN<GetObjectSess> session)
 
 Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
-	if (this->db == 0)
+	NN<DB::DBConn> db;
+	if (!this->db.SetTo(db))
 		return 0;
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
-	if (lyr == 0)
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (!this->layerMap.Get(this->currLayer).SetTo(lyr))
 		return 0;
 	DB::SQLBuilder sql(DB::SQLType::SQLite, false, 0);
 	Int32 x;
@@ -294,7 +295,7 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
 	NN<DB::DBReader> r;
-	if (!this->db->ExecuteReader(sql.ToCString()).SetTo(r))
+	if (!db->ExecuteReader(sql.ToCString()).SetTo(r))
 		return 0;
 	Optional<Media::ImageList> imgList = 0;
 	if (r->ReadNext())
@@ -306,7 +307,7 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 		imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		MemFree(buff);
 	}
-	this->db->CloseReader(r);
+	db->CloseReader(r);
 	NN<Media::ImageList> nnimgList;
 	if (imgList.SetTo(nnimgList))
 	{
@@ -338,32 +339,59 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 
 UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	return this->db->QueryTableNames(schemaName, names);
+	NN<DB::DBConn> db;
+	if (this->db.SetTo(db))
+	{
+		return db->QueryTableNames(schemaName, names);
+	}
+	return 0;
 }
 
-Optional<DB::DBReader> Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::OruxDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
+	NN<DB::DBConn> db;
+	if (this->db.SetTo(db))
+	{
+		return db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
+	}
+	return 0;
 }
 
 Optional<DB::TableDef> Map::OruxDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	return this->db->GetTableDef(schemaName, tableName);
+	NN<DB::DBConn> db;
+	if (this->db.SetTo(db))
+	{
+		return db->GetTableDef(schemaName, tableName);
+	}
+	return 0;
 }
 
 void Map::OruxDBLayer::CloseReader(NN<DB::DBReader> r)
 {
-	return this->db->CloseReader(r);
+	NN<DB::DBConn> db;
+	if (this->db.SetTo(db))
+	{
+		db->CloseReader(r);
+	}
 }
 
 void Map::OruxDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	this->db->GetLastErrorMsg(str);
+	NN<DB::DBConn> db;
+	if (this->db.SetTo(db))
+	{
+		db->GetLastErrorMsg(str);
+	}
 }
 
 void Map::OruxDBLayer::Reconnect()
 {
-	this->db->Reconnect();
+	NN<DB::DBConn> db;
+	if (this->db.SetTo(db))
+	{
+		db->Reconnect();
+	}
 }
 
 UOSInt Map::OruxDBLayer::GetGeomCol() const
@@ -376,10 +404,11 @@ Map::MapDrawLayer::ObjectClass Map::OruxDBLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_ORUX_DB_LAYER;
 }
 
-Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *tileX, Int32 *tileY, Int64 *modTimeTicks)
+Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, NN<IO::Stream> stm, OptOut<Int32> tileX, OptOut<Int32> tileY, OptOut<Int64> modTimeTicks)
 {
-	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
-	if (lyr == 0)
+	NN<DB::DBConn> db;
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (!this->layerMap.Get(this->currLayer).SetTo(lyr) || !this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(DB::SQLType::SQLite, false, 0);
 	Int32 x;
@@ -393,7 +422,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
 	NN<DB::DBReader> r;
-	if (!this->db->ExecuteReader(sql.ToCString()).SetTo(r))
+	if (!db->ExecuteReader(sql.ToCString()).SetTo(r))
 		return false;
 	Bool succ = false;
 	if (r->ReadNext())
@@ -403,14 +432,11 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 		r->GetBinary(0, buff);
 		stm->Write(Data::ByteArrayR(buff, size));
 		MemFree(buff);
-		if (tileX)
-			*tileX = x;
-		if (tileY)
-			*tileY = y;
-		if (modTimeTicks)
-			*modTimeTicks = 0;
+		tileX.Set(x);
+		tileY.Set(y);
+		modTimeTicks.Set(0);
 		succ = true;
 	}
-	this->db->CloseReader(r);
+	db->CloseReader(r);
 	return succ;
 }

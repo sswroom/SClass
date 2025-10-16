@@ -141,7 +141,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		Map::MapLayerCollection *lyrColl;
 		Optional<Math::CoordinateSystem> csys = 0;
 		NN<Math::CoordinateSystem> nncsys;
-		DB::SharedDBConn *conn;
+		NN<DB::SharedDBConn> conn;
 		NN<Map::ESRI::ESRIMDBLayer> lyr;
 		NN<Math::ArcGISPRJParser> prjParser;
 		UInt32 srid = 0;
@@ -170,7 +170,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 				mdb->CloseReader(rdr);
 			}
 		}
-		NEW_CLASS(conn, DB::SharedDBConn(mdb));
+		NEW_CLASSNN(conn, DB::SharedDBConn(mdb));
 		NEW_CLASS(lyrColl, Map::MapLayerCollection(fd->GetFullName(), 0));
 
 		UOSInt i;

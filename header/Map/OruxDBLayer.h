@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_ORUXDBLAYER
 #define _SM_MAP_ORUXDBLAYER
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "DB/DBConn.h"
 #include "Map/MapDrawLayer.h"
 #include "Parser/ParserList.h"
@@ -21,10 +21,10 @@ namespace Map
 		} LayerInfo;
 	private:
 		NN<Parser::ParserList> parsers;
-		Data::FastMap<UInt32, LayerInfo*> layerMap;
+		Data::FastMapNN<UInt32, LayerInfo> layerMap;
 		UInt32 currLayer;
 		UInt32 tileSize;
-		DB::DBConn *db;
+		Optional<DB::DBConn> db;
 
 	public:
 		OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NN<Parser::ParserList> parsers);
@@ -56,7 +56,7 @@ namespace Map
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
@@ -65,7 +65,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 
-		Bool GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *tileX, Int32 *tileY, Int64 *modTimeTicks);
+		Bool GetObjectData(Int64 objectId, NN<IO::Stream> stm, OptOut<Int32> tileX, OptOut<Int32> tileY, OptOut<Int64> modTimeTicks);
 	};
 }
 #endif

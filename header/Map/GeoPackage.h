@@ -20,21 +20,21 @@ namespace Map
 			Bool hasM;
 		};
 	private:
-		DB::DBConn *conn;
-		Data::FastStringMap<ContentInfo*> tableList;
+		NN<DB::DBConn> conn;
+		Data::FastStringMapNN<ContentInfo> tableList;
 		Data::ArrayListStringNN allTables;
 		UInt32 useCnt;
 	private:
 		~GeoPackage();
-		static void FreeContent(ContentInfo *cont);
+		static void FreeContent(NN<ContentInfo> cont);
 	public:
-		GeoPackage(DB::DBConn *conn);
+		GeoPackage(NN<DB::DBConn> conn);
 		void Release();
 
 		NN<Text::String> GetSourceNameObj();
 
 		UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		void CloseReader(NN<DB::DBReader> r);
 		void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
