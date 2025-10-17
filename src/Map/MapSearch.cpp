@@ -11,7 +11,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manager)
+Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> manager)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -22,11 +22,12 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 	Int32 layerId;
 	Int32 layerType;
 	Double layerDist;
+	NN<Text::String> baseDir;
 
 
 	this->baseDir = 0;
 	this->concatType = 0;
-	this->layersArr = MemAlloc(NN<Data::ArrayListNN<Map::MapSearchLayerInfo>>, MAPSEARCH_LAYER_TYPES);
+	this->layersArr = MemAllocArr(NN<Data::ArrayListNN<Map::MapSearchLayerInfo>>, MAPSEARCH_LAYER_TYPES);
 	i = MAPSEARCH_LAYER_TYPES;
 	while (i-- > 0)
 	{
@@ -52,7 +53,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 			{
 				if (layerType == 0)
 				{
-					this->baseDir = Text::String::New(strs[1].v, strs[1].leng).Ptr();
+					this->baseDir = Text::String::New(strs[1].v, strs[1].leng);
 				}
 				else if (layerType == 3)
 				{
@@ -64,10 +65,10 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 		{
 			layerId = strs[1].ToInt32();
 			layerType = strs[0].ToInt32();
-			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
+			if (this->baseDir.SetTo(baseDir) && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				NN<Map::MapSearchLayerInfo> lyr;
-				tmp = this->baseDir->ConcatTo(sbuff2);
+				tmp = baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAllocNN(Map::MapSearchLayerInfo);
 				lyr->searchType = layerType;
@@ -84,10 +85,10 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 			layerId = strs[1].ToInt32();
 			layerType = strs[0].ToInt32();
 			layerDist = strs[3].ToDoubleOr(0);
-			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
+			if (this->baseDir.SetTo(baseDir) && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				NN<Map::MapSearchLayerInfo> lyr;
-				tmp = this->baseDir->ConcatTo(sbuff2);
+				tmp = baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAllocNN(Map::MapSearchLayerInfo);
 				lyr->searchType = layerType;
@@ -104,10 +105,10 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 			layerId = strs[1].ToInt32();
 			layerType = strs[0].ToInt32();
 			layerDist = strs[3].ToDoubleOr(0);
-			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
+			if (this->baseDir.SetTo(baseDir) && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				NN<Map::MapSearchLayerInfo> lyr;
-				tmp = this->baseDir->ConcatTo(sbuff2);
+				tmp = baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAllocNN(Map::MapSearchLayerInfo);
 				lyr->searchType = layerType;
@@ -133,11 +134,7 @@ Map::MapSearch::~MapSearch()
 {
 	UOSInt i;
 	UOSInt j;
-	if (this->baseDir)
-	{
-		this->baseDir->Release();
-		this->baseDir = 0;
-	}
+	OPTSTR_DEL(this->baseDir);
 	i = MAPSEARCH_LAYER_TYPES;
 	while (i-- > 0)
 	{
@@ -145,16 +142,13 @@ Map::MapSearch::~MapSearch()
 		while (j-- > 0)
 		{
 			NN<Map::MapSearchLayerInfo> lyr = this->layersArr[i]->GetItemNoCheck(j);
-			if (lyr->searchStr)
-			{
-				lyr->searchStr->Release();
-			}
+			OPTSTR_DEL(lyr->searchStr);
 			MemFreeNN(lyr);
 			this->layersArr[i]->RemoveAt(j);
 		}
 		this->layersArr[i].Delete();
 	}
-	MemFree(this->layersArr);
+	MemFreeArr(this->layersArr);
 }
 
 UnsafeArrayOpt<UTF8Char> Map::MapSearch::SearchName(UnsafeArray<UTF8Char> buff, Math::Coord2DDbl pos)
@@ -167,7 +161,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapSearch::SearchName(UnsafeArray<UTF8Char> buff, 
 	return ConcatNames(buff, outArrs, 0);
 }
 
-Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *outArrs, Math::Coord2DDbl *outPos, Int32 *resTypes, Math::Coord2DDbl pos)
+Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, UnsafeArray<Text::PString> outArrs, UnsafeArray<Math::Coord2DDbl> outPos, UnsafeArray<Int32> resTypes, Math::Coord2DDbl pos)
 {
 	Text::StringBuilderUTF8 sbTmp;
 	UnsafeArrayOpt<UTF8Char> sptr;
@@ -181,6 +175,7 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *out
 	Double thisDist;
 	Double minDist;
 	Math::Coord2DDbl posNear;
+	NN<Text::String> searchStr;
 
 	outptr = buff;
 	*outptr = 0;
@@ -202,9 +197,9 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *out
 				sbTmp.ClearStr();
 				if (lyr->mapLayer->GetPGLabel(sbTmp, pos, 0, lyr->strIndex))
 				{
-					if (lyr->searchStr)
+					if (lyr->searchStr.SetTo(searchStr))
 					{
-						sptr = sbTmp.ConcatTo(lyr->searchStr->ConcatTo(outptr));
+						sptr = sbTmp.ConcatTo(searchStr->ConcatTo(outptr));
 					}
 					else
 					{
@@ -230,9 +225,9 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *out
 						if (meterDist < lyr->searchDist)
 						{
 							minDist = thisDist;
-							if (lyr->searchStr)
+							if (lyr->searchStr.SetTo(searchStr))
 							{
-								sptr = sbTmp.ConcatTo(lyr->searchStr->ConcatTo(outptr));
+								sptr = sbTmp.ConcatTo(searchStr->ConcatTo(outptr));
 							}
 							else
 							{
@@ -246,9 +241,9 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *out
 					else if (thisDist < minDist)
 					{
 						minDist = thisDist;
-						if (lyr->searchStr)
+						if (lyr->searchStr.SetTo(searchStr))
 						{
-							sptr = sbTmp.ConcatTo(lyr->searchStr->ConcatTo(outptr));
+							sptr = sbTmp.ConcatTo(searchStr->ConcatTo(outptr));
 						}
 						else
 						{
@@ -279,7 +274,7 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *out
 	return l;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff, Text::PString *strArrs, Int32 concatType)
+UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff, UnsafeArray<Text::PString> strArrs, Int32 concatType)
 {
 	UnsafeArrayOpt<UTF8Char> outptr = 0;
 	UnsafeArray<UTF8Char> nnoutptr;
@@ -584,7 +579,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff,
 
 Bool Map::MapSearch::IsError()
 {
-	return this->baseDir == 0;
+	return this->baseDir.IsNull();
 }
 
 Int32 Map::MapSearch::GetConcatType()

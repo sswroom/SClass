@@ -12,22 +12,21 @@ Text::Builder::HTMLDocumentBuilder::HTMLDocumentBuilder(DocType docType, Text::C
 	}
 	sb.AppendC(UTF8STRC("<html>\r\n"));
 	sb.AppendC(UTF8STRC("<head>\r\n"));
-	NEW_CLASS(this->headerBuilder, HTMLHeaderBuilder(this->sb, title));
+	NEW_CLASSOPT(this->headerBuilder, HTMLHeaderBuilder(this->sb, title));
 	this->bodyBuilder = 0;
 }
 
 Text::Builder::HTMLDocumentBuilder::~HTMLDocumentBuilder()
 {
-	SDEL_CLASS(this->headerBuilder);
-	SDEL_CLASS(this->bodyBuilder);
+	this->headerBuilder.Delete();
+	this->bodyBuilder.Delete();
 }
 
-Text::Builder::HTMLBodyBuilder *Text::Builder::HTMLDocumentBuilder::StartBody(Text::CString onLoadScript)
+Optional<Text::Builder::HTMLBodyBuilder> Text::Builder::HTMLDocumentBuilder::StartBody(Text::CString onLoadScript)
 {
-	if (this->headerBuilder)
+	if (this->headerBuilder.NotNull())
 	{
-		DEL_CLASS(this->headerBuilder);
-		this->headerBuilder = 0;
+		this->headerBuilder.Delete();
 		this->sb.AppendC(UTF8STRC("</head>\r\n"));
 		this->sb.AppendC(UTF8STRC("<body"));
 		if (onLoadScript.leng > 0)
@@ -38,21 +37,20 @@ Text::Builder::HTMLBodyBuilder *Text::Builder::HTMLDocumentBuilder::StartBody(Te
 			s->Release();
 		}
 		this->sb.AppendUTF8Char('>');
-		NEW_CLASS(this->bodyBuilder, HTMLBodyBuilder(this->sb));
+		NEW_CLASSOPT(this->bodyBuilder, HTMLBodyBuilder(this->sb));
 	}
 	return this->bodyBuilder;
 }
 
 Text::CStringNN Text::Builder::HTMLDocumentBuilder::Build()
 {
-	if (this->headerBuilder)
+	if (this->headerBuilder.NotNull())
 	{
 		this->StartBody(nullptr);
 	}
-	if (this->bodyBuilder)
+	if (this->bodyBuilder.NotNull())
 	{
-		DEL_CLASS(this->bodyBuilder);
-		this->bodyBuilder = 0;
+		this->bodyBuilder.Delete();
 		this->sb.AppendC(UTF8STRC("</body>\r\n"));
 		this->sb.AppendC(UTF8STRC("</html>"));
 	}

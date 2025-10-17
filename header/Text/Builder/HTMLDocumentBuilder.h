@@ -20,14 +20,14 @@ namespace Text
 			};
 		private:
 			Text::StringBuilderUTF8 sb;
-			HTMLHeaderBuilder *headerBuilder;
-			HTMLBodyBuilder *bodyBuilder;
+			Optional<HTMLHeaderBuilder> headerBuilder;
+			Optional<HTMLBodyBuilder> bodyBuilder;
 
 		public:
 			HTMLDocumentBuilder(DocType docType, Text::CString title);
 			~HTMLDocumentBuilder();
 
-			HTMLBodyBuilder *StartBody(Text::CString onLoadScript);
+			Optional<HTMLBodyBuilder> StartBody(Text::CString onLoadScript);
 
 			Text::CStringNN Build();
 

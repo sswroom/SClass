@@ -15,8 +15,8 @@ namespace Map
 		{
 		private:
 			Optional<Text::String> gooKey;
-			Text::String *gooCliId;
-			UInt8 *gooPrivKey;
+			Optional<Text::String> gooCliId;
+			UnsafeArrayOpt<UInt8> gooPrivKey;
 			UOSInt gooPrivKeyLeng;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
@@ -27,7 +27,7 @@ namespace Map
 			UInt32 srchCnt;
 			
 		public:
-			GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, NN<IO::Writer> errWriter);
+			GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::String> gooKey, Optional<Text::String> gooCliId, Optional<Text::String> gooPrivKey, NN<IO::Writer> errWriter);
 			GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, NN<IO::Writer> errWriter);
 			virtual ~GoogleSearcher();
 

@@ -30,39 +30,45 @@ Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NN<Net::TCPClientFact
 
 Map::GoogleMap::GoogleWSSearcherJSON::~GoogleWSSearcherJSON()
 {
-	SDEL_STRING(this->gooCliId);
-	if (this->gooPrivKey)
+	OPTSTR_DEL(this->gooCliId);
+	UnsafeArray<UInt8> gooPrivKey;
+	if (this->gooPrivKey.SetTo(gooPrivKey))
 	{
-		MemFree(this->gooPrivKey);
+		MemFreeArr(gooPrivKey);
 		this->gooPrivKey = 0;
 	}
 	OPTSTR_DEL(this->gooAPIKey);
 }
 
-void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey)
+void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Optional<Text::String> gooCliId, Optional<Text::String> gooPrivKey)
 {
-	SDEL_STRING(this->gooCliId);
-	if (this->gooPrivKey)
+	OPTSTR_DEL(this->gooCliId);
+	UnsafeArray<UInt8> gooPrivKeyArr;
+	if (this->gooPrivKey.SetTo(gooPrivKeyArr))
 	{
-		MemFree(this->gooPrivKey);
+		MemFreeArr(gooPrivKeyArr);
 		this->gooPrivKey = 0;
 	}
 	this->gooPrivKeyLeng = 0;
-	if (gooCliId)
+	NN<Text::String> nngooCliId;
+	NN<Text::String> nngooPrivKey;
+	if (gooCliId.SetTo(nngooCliId) && gooPrivKey.SetTo(nngooPrivKey))
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		this->gooCliId = gooCliId->Clone().Ptr();
-		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->ToCString(), this->gooPrivKey);
+		this->gooCliId = nngooCliId->Clone();
+		UnsafeArray<UInt8> gooPrivKeyArr;
+		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, nngooPrivKey->leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey->ToCString(), gooPrivKeyArr);
 	}
 }
 
 void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::CString gooCliId, Text::CString gooPrivKey)
 {
-	SDEL_STRING(this->gooCliId);
-	if (this->gooPrivKey)
+	OPTSTR_DEL(this->gooCliId);
+	UnsafeArray<UInt8> gooPrivKeyArr;
+	if (this->gooPrivKey.SetTo(gooPrivKeyArr))
 	{
-		MemFree(this->gooPrivKey);
+		MemFreeArr(gooPrivKeyArr);
 		this->gooPrivKey = 0;
 	}
 	this->gooPrivKeyLeng = 0;
@@ -71,8 +77,8 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::CString gooCl
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		this->gooCliId = Text::String::New(nngooCliId).Ptr();
-		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), this->gooPrivKey);
+		this->gooPrivKey = gooPrivKeyArr = MemAlloc(UInt8, gooPrivKey.leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), gooPrivKeyArr);
 	}
 }
 
@@ -124,14 +130,16 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&language="));
 		sptr = Text::StrConcat(sptr, nnlang);
 	}
-	if (this->gooCliId)
+	NN<Text::String> gooCliId;
+	UnsafeArray<UInt8> gooPrivKey;
+	if (this->gooCliId.SetTo(gooCliId) && this->gooPrivKey.SetTo(gooPrivKey))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&client="));
-		sptr = this->gooCliId->ConcatTo(sptr);
+		sptr = gooCliId->ConcatTo(sptr);
 
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
-		Crypto::Hash::HMAC hmac(sha, this->gooPrivKey, this->gooPrivKeyLeng);
+		Crypto::Hash::HMAC hmac(sha, gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);

@@ -19,19 +19,22 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, NN<IO::Writer> errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::String> gooKey, Optional<Text::String> gooCliId, Optional<Text::String> gooPrivKey, NN<IO::Writer> errWriter)
 {
 	this->clif = clif;
 	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->lastIsError = 0;
 	this->srchCnt = 0;
-	if (gooCliId)
+	NN<Text::String> nngooCliId;
+	NN<Text::String> nngooPrivKey;
+	if (gooCliId.SetTo(nngooCliId) && gooPrivKey.SetTo(nngooPrivKey))
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-		this->gooCliId = gooCliId->Clone().Ptr();
-		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->ToCString(), this->gooPrivKey);
+		this->gooCliId = nngooCliId->Clone();
+		UnsafeArray<UInt8> gooPrivKeyArr;
+		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, nngooPrivKey->leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey->ToCString(), gooPrivKeyArr);
 		this->gooKey = 0;
 	}
 	else
@@ -39,7 +42,7 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, O
 		this->gooCliId = 0;
 		this->gooPrivKey = 0;
 		this->gooPrivKeyLeng = 0;
-		this->gooKey = SCOPY_STRING(gooKey);
+		this->gooKey = Text::String::CopyOrNull(gooKey);
 	}
 	this->lastSrchDate.SetCurrTimeUTC();
 }
@@ -52,12 +55,14 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, O
 	this->lastIsError = 0;
 	this->srchCnt = 0;
 	Text::CStringNN nngooCliId;
-	if (gooCliId.SetTo(nngooCliId) && nngooCliId.leng > 0)
+	Text::CStringNN nngooPrivKey;
+	if (gooCliId.SetTo(nngooCliId) && gooPrivKey.SetTo(nngooPrivKey) && nngooCliId.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 		this->gooCliId = Text::String::New(nngooCliId).Ptr();
-		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), this->gooPrivKey);
+		UnsafeArray<UInt8> gooPrivKeyArr;
+		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, gooPrivKey.leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), gooPrivKeyArr);
 		this->gooKey = 0;
 	}
 	else
@@ -71,10 +76,11 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, O
 
 Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 {
-	SDEL_STRING(this->gooCliId);
-	if (this->gooPrivKey)
+	UnsafeArray<UInt8> gooPrivKey;
+	OPTSTR_DEL(this->gooCliId);
+	if (this->gooPrivKey.SetTo(gooPrivKey))
 	{
-		MemFree(this->gooPrivKey);
+		MemFreeArr(gooPrivKey);
 		this->gooPrivKey = 0;
 	}
 	OPTSTR_DEL(this->gooKey);
@@ -112,14 +118,16 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrDouble(sptr, pos.GetLon());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&output=csv&oe=utf8&sensor=false"));
-	if (this->gooCliId)
+	NN<Text::String> gooCliId;
+	UnsafeArray<UInt8> gooPrivKey;
+	if (this->gooCliId.SetTo(gooCliId) && this->gooPrivKey.SetTo(gooPrivKey))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&client="));
-		sptr = this->gooCliId->ConcatTo(sptr);
+		sptr = gooCliId->ConcatTo(sptr);
 
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
-		Crypto::Hash::HMAC hmac(sha, this->gooPrivKey, this->gooPrivKeyLeng);
+		Crypto::Hash::HMAC hmac(sha, gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);

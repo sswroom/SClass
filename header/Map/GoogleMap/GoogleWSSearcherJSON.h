@@ -23,8 +23,8 @@ namespace Map
 			Optional<Text::EncodingFactory> encFact;
 			Int32 lastIsError;
 			UInt32 srchCnt;
-			Text::String *gooCliId;
-			UInt8 *gooPrivKey;
+			Optional<Text::String> gooCliId;
+			UnsafeArrayOpt<UInt8> gooPrivKey;
 			UOSInt gooPrivKeyLeng;
 			Optional<Text::String> gooAPIKey;
 
@@ -32,7 +32,7 @@ namespace Map
 			GoogleWSSearcherJSON(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::Writer> errWriter, Optional<Text::EncodingFactory> encFact);
 			virtual ~GoogleWSSearcherJSON();
 
-			void SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey);
+			void SetGoogleClientId(Optional<Text::String> gooCliId, Optional<Text::String> gooPrivKey);
 			void SetGoogleClientId(Text::CString gooCliId, Text::CString gooPrivKey);
 			void SetGoogleAPIKey(Optional<Text::String> gooAPIKey);
 			void SetGoogleAPIKey(Text::CString gooAPIKey);

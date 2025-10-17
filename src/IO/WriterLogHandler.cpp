@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/WriterLogHandler.h"
 
-IO::WriterLogHandler::WriterLogHandler(IO::Writer *writer, Bool toRelease)
+IO::WriterLogHandler::WriterLogHandler(NN<IO::Writer> writer, Bool toRelease)
 {
 	this->writer = writer;
 	this->toRelease = toRelease;
@@ -12,8 +12,7 @@ IO::WriterLogHandler::~WriterLogHandler()
 {
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->writer);
-		this->writer = 0;
+		this->writer.Delete();
 		this->toRelease = false;
 	}
 }

@@ -17,23 +17,26 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::String> gooKey, Optional<Text::String> gooCliId, Optional<Text::String> gooPrivKey)
 {
 	this->clif = clif;
 	this->ssl = ssl;
-	if (gooCliId && gooPrivKey)
+	NN<Text::String> nngooCliId;
+	NN<Text::String> nngooPrivKey;
+	if (gooCliId.SetTo(nngooCliId) && gooPrivKey.SetTo(nngooPrivKey))
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		this->gooCliId = gooCliId->Clone();
-		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->ToCString(), this->gooPrivKey);
+		this->gooCliId = nngooCliId->Clone();
+		UnsafeArray<UInt8> gooPrivKeyArr;
+		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, nngooPrivKey->leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey->ToCString(), gooPrivKeyArr);
 		this->gooKey = 0;
 	}
 	else
 	{
 		this->gooCliId = 0;
 		this->gooPrivKey = 0;
-		this->gooKey = SCOPY_STRING(gooKey);
+		this->gooKey = Text::String::CopyOrNull(gooKey);
 	}
 }
 
@@ -48,8 +51,9 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif,
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 
 		this->gooCliId = Text::String::New(nngooCliId);
-		this->gooPrivKey = MemAlloc(UInt8, nngooPrivKey.leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey, this->gooPrivKey);
+		UnsafeArray<UInt8> gooPrivKeyArr;
+		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, nngooPrivKey.leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey, gooPrivKeyArr);
 		this->gooKey = 0;
 	}
 	else
@@ -62,10 +66,11 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif,
 
 Map::GoogleMap::GoogleStaticMap::~GoogleStaticMap()
 {
+	UnsafeArray<UInt8> gooPrivKey;
 	OPTSTR_DEL(this->gooCliId);
-	if (this->gooPrivKey)
+	if (this->gooPrivKey.SetTo(gooPrivKey))
 	{
-		MemFree(this->gooPrivKey);
+		MemFreeArr(gooPrivKey);
 		this->gooPrivKey = 0;
 	}
 	OPTSTR_DEL(this->gooKey);
@@ -149,7 +154,7 @@ UInt32 Map::GoogleMap::GoogleStaticMap::Scale2Level(UInt32 scale)
 	}
 }
 
-UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UOSInt> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
+UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UnsafeArray<UInt8> buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UOSInt> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
 {
 	NN<Net::HTTPClient> cli;
 	UTF8Char url[512];
@@ -189,7 +194,8 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, marker_lon);
 	}
-	if (this->gooCliId.SetTo(s))
+	UnsafeArray<UInt8> gooPrivKey;
+	if (this->gooCliId.SetTo(s) && this->gooPrivKey.SetTo(gooPrivKey))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&client="));
@@ -197,7 +203,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 
 		UInt8 result[20];
 		Crypto::Hash::SHA1 sha;
-		Crypto::Hash::HMAC hmac(sha, this->gooPrivKey, this->gooPrivKeyLeng);
+		Crypto::Hash::HMAC hmac(sha, gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);

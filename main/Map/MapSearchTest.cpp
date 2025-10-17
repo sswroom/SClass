@@ -10,7 +10,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Map::MapSearchManager srchMgr;
-	Map::MapSearch mapSrch(mapSrchFile, &srchMgr);
+	Map::MapSearch mapSrch(mapSrchFile, srchMgr);
 	if (mapSrch.SearchName(sbuff, Math::Coord2DDbl(114.232824925755, 22.4716833405741)).SetTo(sptr))
 	{
 		printf("Result: %s\r\n", sbuff);

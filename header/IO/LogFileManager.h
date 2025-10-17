@@ -15,11 +15,11 @@ namespace IO
 		LogFileManager(NN<Text::String> logPath);
 		~LogFileManager();
 
-		void QueryLogMonths(Data::ArrayList<UInt32> *months);
-		void QueryLogByMonth(Data::ArrayList<UInt32> *dates, UInt32 month);
-		IO::Stream *OpenLogFile(UInt32 date);
+		void QueryLogMonths(NN<Data::ArrayList<UInt32>> months);
+		void QueryLogByMonth(NN<Data::ArrayList<UInt32>> dates, UInt32 month);
+		Optional<IO::Stream> OpenLogFile(UInt32 date);
 
-		static void WriteLogText(NN<IO::Stream> fs, Text::StyledTextWriter *writer);
+		static void WriteLogText(NN<IO::Stream> fs, NN<Text::StyledTextWriter> writer);
 	};
 }
 #endif

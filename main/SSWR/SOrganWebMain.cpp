@@ -30,7 +30,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Text::CStringNN osmCacheDir;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		IO::WriterLogHandler printLog(&console, false);
+		IO::WriterLogHandler printLog(console, false);
 		log.AddLogHandler(printLog, IO::LogHandler::LogLevel::ErrorDetail);
 
 		NN<IO::ConfigFile> cfg;

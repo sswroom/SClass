@@ -566,7 +566,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientContro
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	this->LoadFile();
-	NEW_CLASSNN(this->snb, IO::SNBDongle(stm, this));
+	NEW_CLASSNN(this->snb, IO::SNBDongle(stm, *this));
 	this->snb->HandleProtocolReceived(OnProtocolReceived, this);
 	this->AddTimer(1000, OnTimerTick, this);
 	this->snb->SendGetDongleInfo();
