@@ -36,9 +36,6 @@ Manage/ThreadContextX86_64.h:
 @ThreadContextUnk.o
 @DasmUnk.o
 
-Media/ImageCopyC.h:
-@ImageCopy_CPP.o
-
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_CPP.cpp
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_CPP.cpp
 CRC16R_CPP.o: ../../src/Crypto/Hash/CRC16R_CPP.cpp

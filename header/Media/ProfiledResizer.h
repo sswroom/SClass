@@ -45,13 +45,13 @@ namespace Media
 		Data::ArrayListNN<ResizeProfile> profiles;
 		UOSInt currProfile;
 
-		Media::Resizer::LanczosResizerLR_C32 *resizer;
-		Media::Batch::BatchLoader *loader;
-		Media::Batch::BatchToLRGB *conv;
-		Media::Batch::BatchLimiter *limiter;
-		Media::Batch::BatchResizer *bresizer;
-		Media::Batch::BatchWatermarker *watermarker;
-		Media::Batch::BatchSaver *saver;
+		NN<Media::Resizer::LanczosResizerLR_C32> resizer;
+		NN<Media::Batch::BatchLoader> loader;
+		NN<Media::Batch::BatchToLRGB> conv;
+		NN<Media::Batch::BatchLimiter> limiter;
+		NN<Media::Batch::BatchResizer> bresizer;
+		NN<Media::Batch::BatchWatermarker> watermarker;
+		Optional<Media::Batch::BatchSaver> saver;
 
 		static void __stdcall ReleaseProfile(NN<ResizeProfile> profile);
 	public:

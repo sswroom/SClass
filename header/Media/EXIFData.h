@@ -85,7 +85,7 @@ namespace Media
 
 	private:
 		void FreeItem(NN<EXIFItem> item);
-		void ToExifBuffImpl(UInt8 *buff, NN<const Data::ReadingListNN<EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
+		void ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::ReadingListNN<EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
 		void GetExifBuffSize(NN<const Data::ReadingListNN<EXIFItem>> exifList, OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 	public:
 		EXIFData(EXIFMaker exifMaker);
@@ -112,10 +112,10 @@ namespace Media
 		EXIFType GetExifType(UInt32 id) const;
 		UInt64 GetExifCount(UInt32 id) const;
 		Optional<EXIFItem> GetExifItem(UInt32 id) const;
-		UInt16 *GetExifUInt16(UInt32 id) const;
-		UInt32 *GetExifUInt32(UInt32 id) const;
-		Media::EXIFData *GetExifSubexif(UInt32 id) const;
-		UInt8 *GetExifOther(UInt32 id) const;
+		UnsafeArrayOpt<UInt16> GetExifUInt16(UInt32 id) const;
+		UnsafeArrayOpt<UInt32> GetExifUInt32(UInt32 id) const;
+		Optional<Media::EXIFData> GetExifSubexif(UInt32 id) const;
+		UnsafeArrayOpt<UInt8> GetExifOther(UInt32 id) const;
 
 		Bool GetPhotoDate(NN<Data::DateTime> dt) const;
 		Bool GetPhotoDate(OutParam<Data::Timestamp> dt) const;
@@ -136,11 +136,11 @@ namespace Media
 		void SetHeight(UInt32 height);
 
 		Bool ToString(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const;
-		Bool ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const;
 		Bool ToStringCanonLensType(NN<Text::StringBuilderUTF8> sb, UInt16 lensType) const;
-		void ToExifBuff(UInt8 *buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
+		void ToExifBuff(UnsafeArray<UInt8> buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
 		void GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 
 		Optional<EXIFData> ParseMakerNote(UnsafeArray<const UInt8> buff, UOSInt buffSize) const;
@@ -150,7 +150,7 @@ namespace Media
 		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId);
 		static Text::CString GetEXIFTypeName(EXIFType type);
 		static Text::CString GetFieldTypeName(UInt32 ftype);
-		static Optional<EXIFData> ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr);
+		static Optional<EXIFData> ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, UnsafeArrayOpt<const UInt8> basePtr);
 		static Optional<EXIFData> ParseIFD(NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
 		static Optional<EXIFData> ParseIFD64(NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
 		static Bool ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst);

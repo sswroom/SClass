@@ -1,5 +1,5 @@
-#ifndef _SM_DATA_SORT_ARTIFICIALQUICKSORTC
-#define _SM_DATA_SORT_ARTIFICIALQUICKSORTC
+#ifndef _SM_DATA_SORT_ARTIFICIALQUICKSORT_C
+#define _SM_DATA_SORT_ARTIFICIALQUICKSORT_C
 #include "Data/Comparable.h"
 
 //http://www.critticall.com/ArtificialSort.html

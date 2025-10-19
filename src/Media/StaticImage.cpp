@@ -5,6 +5,7 @@
 #include "Media/ImageResizer.h"
 #include "Media/ImageTo8Bit.h"
 #include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/StaticImage.h"
 
 #include <stdio.h>

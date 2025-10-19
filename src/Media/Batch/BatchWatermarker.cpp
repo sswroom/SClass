@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/Math.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/StaticImage.h"
 #include "Media/Batch/BatchWatermarker.h"
 
-Media::Batch::BatchWatermarker::BatchWatermarker(NN<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchWatermarker::BatchWatermarker(NN<Media::DrawEngine> deng, Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->deng = deng;
 	this->hdlr = hdlr;
@@ -27,20 +27,21 @@ void Media::Batch::BatchWatermarker::SetWatermark(Text::CString watermark)
 	}
 }
 
-void Media::Batch::BatchWatermarker::SetHandler(Media::Batch::BatchHandler *hdlr)
+void Media::Batch::BatchWatermarker::SetHandler(Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
 
 void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
-	if (this->hdlr == 0)
+	NN<Media::Batch::BatchHandler> hdlr;
+	if (!this->hdlr.SetTo(hdlr))
 		return;
 
 	NN<Text::String> watermark;
 	if (!this->watermark.SetTo(watermark) || watermark->leng == 0)
 	{
-		this->hdlr->ImageOutput(imgList, fileId, subId);
+		hdlr->ImageOutput(imgList, fileId, subId);
 		return;
 	}
 	UOSInt i;
@@ -116,6 +117,6 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 			i++;
 		}
 		this->deng->DeleteImage(tmpImg);
-		this->hdlr->ImageOutput(imgList, fileId, subId);
+		hdlr->ImageOutput(imgList, fileId, subId);
 	}
 }

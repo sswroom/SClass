@@ -1644,7 +1644,7 @@ Data/ML/MLModel.h:
 Data/Sort/ArtificialQuickSort.h:
 @ArtificialQuickSort.o
 Data/Sort/ArtificialQuickSortAList.h:
-Data/Sort/ArtificialQuickSortC.h:
+Data/Sort/ArtificialQuickSort_C.h:
 @ArtificialQuickSort_CPP.o
 Data/Sort/ArtificialQuickSortCmp.h:
 Data/Sort/ArtificialQuickSortFunc.h:
@@ -2726,6 +2726,8 @@ Media/ImageAlphaBlend.h:
 @ImageAlphaBlend.o
 Media/ImageCopy.h:
 @ImageCopy.o
+Media/ImageCopy_C.h:
+@ImageCopy_CPP.o
 Media/ImageFilter.h:
 Media/ImageGenerator.h:
 @ImageGenerator.o
@@ -2742,6 +2744,7 @@ Media/ImageTo8Bit.h:
 @ImageTo8Bit_CPP.o
 Media/ImageUtil.h:
 @ImageUtil.o
+Media/ImageUtil_C.h:
 @ImageUtil_CPP.o
 Media/JPEGFile.h:
 @JPEGFile.o
@@ -2753,7 +2756,7 @@ Media/LPCMSource.h:
 @LPCMSource.o
 Media/LRGBLimiter.h:
 @LRGBLimiter.o
-Media/LRGBLimiterC.h:
+Media/LRGBLimiter_C.h:
 @LRGBLimiter_CPP.o
 Media/LUT.h:
 @LUT.o

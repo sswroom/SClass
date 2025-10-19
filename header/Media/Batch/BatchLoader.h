@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_BATCH_BATCHLOADER
 #define _SM_MEDIA_BATCH_BATCHLOADER
 #include "AnyType.h"
-#include "Data/SyncCircularBuff.h"
+#include "Data/SyncCircularBuffNN.h"
 #include "Media/Batch/BatchHandler.h"
 #include "Parser/ParserList.h"
 #include "Sync/Event.h"
@@ -25,24 +25,24 @@ namespace Media
 				Bool running;
 				Bool toStop;
 				Bool processing;
-				Sync::Event *evt;
-				BatchLoader *me;
+				NN<Sync::Event> evt;
+				NN<BatchLoader> me;
 			} ThreadState;
 		private:
 			NN<Parser::ParserList> parsers;
-			Media::Batch::BatchHandler *hdlr;
+			NN<Media::Batch::BatchHandler> hdlr;
 			Sync::Event mainEvt;
 			Sync::Mutex ioMut;
 			Sync::Mutex reqMut;
-			Data::SyncCircularBuff<Text::String*> fileNames;
-			Data::SyncCircularBuff<DataInfo*> datas;
+			Data::SyncCircularBuffNN<Text::String> fileNames;
+			Data::SyncCircularBuffNN<DataInfo> datas;
 			UOSInt threadCnt;
-			ThreadState *threadStates;
+			UnsafeArray<ThreadState> threadStates;
 			UOSInt nextThread;
 
 			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:
-			BatchLoader(NN<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr);
+			BatchLoader(NN<Parser::ParserList> parsers, NN<Media::Batch::BatchHandler> hdlr);
 			~BatchLoader();
 			
 			void AddFileName(Text::CStringNN fileName);

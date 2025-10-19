@@ -5,7 +5,7 @@
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
 
-Media::Batch::BatchResizer::BatchResizer(Media::ImageResizer *resizer, Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchResizer::BatchResizer(NN<Media::ImageResizer> resizer, Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->resizer = resizer;
 	this->hdlr = hdlr;
@@ -18,8 +18,8 @@ Media::Batch::BatchResizer::~BatchResizer()
 
 void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NN<Text::String> targetId)
 {
-	TargetParam *param;
-	param = MemAlloc(TargetParam, 1);
+	NN<TargetParam> param;
+	param = MemAllocNN(TargetParam);
 	param->width = targetWidth;
 	param->height = targetHeight;
 	param->sizeType = 0;
@@ -29,8 +29,8 @@ void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 target
 
 void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NN<Text::String> targetId)
 {
-	TargetParam *param;
-	param = MemAlloc(TargetParam, 1);
+	NN<TargetParam> param;
+	param = MemAllocNN(TargetParam);
 	param->width = targetHDPI;
 	param->height = targetVDPI;
 	param->sizeType = 1;
@@ -40,17 +40,18 @@ void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVD
 
 void Media::Batch::BatchResizer::ClearTargetSizes()
 {
-	TargetParam *param;
+	NN<TargetParam> param;
 	UOSInt i = this->targetParam.GetCount();
 	while (i-- > 0)
 	{
-		param = this->targetParam.RemoveAt(i);
+		param = this->targetParam.GetItemNoCheck(i);
 		param->targetId->Release();
-		MemFree(param);
+		MemFreeNN(param);
 	}
+	this->targetParam.Clear();
 }
 
-void Media::Batch::BatchResizer::SetHandler(Media::Batch::BatchHandler *hdlr)
+void Media::Batch::BatchResizer::SetHandler(Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
@@ -60,18 +61,18 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	TargetParam *param;
+	NN<TargetParam> param;
 	NN<Media::StaticImage> newImg;
 	Optional<Media::StaticImage> rImg;
 	Bool succ;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-
+	NN<Media::Batch::BatchHandler> hdlr;
 
 	i = this->targetParam.GetCount();
 	while (i-- > 0)
 	{
-		param = this->targetParam.GetItem(i);
+		param = this->targetParam.GetItemNoCheck(i);
 
 		Sync::MutexUsage mutUsage(this->resizeMut);
 		if (param->sizeType == 0)
@@ -114,8 +115,8 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 		mutUsage.EndUse();
 		if (succ)
 		{
-			if (this->hdlr)
-				this->hdlr->ImageOutput(newImgList, fileId, param->targetId->ToCString());
+			if (this->hdlr.SetTo(hdlr))
+				hdlr->ImageOutput(newImgList, fileId, param->targetId->ToCString());
 		}
 	}
 }

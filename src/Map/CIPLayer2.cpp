@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSort_C.h"
 #include "DB/ColDef.h"
 #include "IO/BufferedInputStream.h"
 #include "IO/FileStream.h"

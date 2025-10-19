@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_GEOMETRY_MULTIGEOMETRY
 #define _SM_MATH_GEOMETRY_MULTIGEOMETRY
 #include "Data/ArrayListNN.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSort_C.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/CoordinateSystem.h"
 #include "Math/Geometry/LinearRing.h"

@@ -4,7 +4,7 @@
 #include "IO/MemoryStream.h"
 #include "Math/Math.h"
 #include "Media/ImageList.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Text/MyString.h"
 
 void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 buffOfst, NN<Media::EXIFData> exif)

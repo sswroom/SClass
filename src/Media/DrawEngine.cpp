@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Media/DrawEngine.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 
 Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Text::HAlignment hAlign)
 {

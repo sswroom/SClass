@@ -1135,7 +1135,7 @@ void Media::EXIFData::FreeItem(NN<Media::EXIFData::EXIFItem> item)
 	MemFreeNN(item);
 }
 
-void Media::EXIFData::ToExifBuffImpl(UInt8 *buff, NN<const Data::ReadingListNN<Media::EXIFData::EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const
+void Media::EXIFData::ToExifBuffImpl(UnsafeArray<UInt8> buff, NN<const Data::ReadingListNN<Media::EXIFData::EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const
 {
 	UInt32 objCnt;
 	UOSInt i;
@@ -1933,7 +1933,7 @@ Optional<Media::EXIFData::EXIFItem> Media::EXIFData::GetExifItem(UInt32 id) cons
 	return this->exifMap.Get(id);
 }
 
-UInt16 *Media::EXIFData::GetExifUInt16(UInt32 id) const
+UnsafeArrayOpt<UInt16> Media::EXIFData::GetExifUInt16(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
@@ -1942,7 +1942,7 @@ UInt16 *Media::EXIFData::GetExifUInt16(UInt32 id) const
 		return 0;
 	if (item->cnt > 2)
 	{
-		return item->dataBuff.GetOpt<UInt16>().OrNull();
+		return item->dataBuff.GetArray<UInt16>();
 	}
 	else
 	{
@@ -1950,7 +1950,7 @@ UInt16 *Media::EXIFData::GetExifUInt16(UInt32 id) const
 	}
 }
 
-UInt32 *Media::EXIFData::GetExifUInt32(UInt32 id) const
+UnsafeArrayOpt<UInt32> Media::EXIFData::GetExifUInt32(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
@@ -1959,7 +1959,7 @@ UInt32 *Media::EXIFData::GetExifUInt32(UInt32 id) const
 		return 0;
 	if (item->cnt > 1)
 	{
-		return item->dataBuff.GetOpt<UInt32>().OrNull();
+		return item->dataBuff.GetArray<UInt32>();
 	}
 	else
 	{
@@ -1967,24 +1967,24 @@ UInt32 *Media::EXIFData::GetExifUInt32(UInt32 id) const
 	}
 }
 
-Media::EXIFData *Media::EXIFData::GetExifSubexif(UInt32 id) const
+Optional<Media::EXIFData> Media::EXIFData::GetExifSubexif(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
 		return 0;
 	if (item->type != ET_SUBEXIF)
 		return 0;
-	return item->dataBuff.GetOpt<Media::EXIFData>().OrNull();
+	return item->dataBuff.GetOpt<Media::EXIFData>();
 }
 
-UInt8 *Media::EXIFData::GetExifOther(UInt32 id) const
+UnsafeArrayOpt<UInt8> Media::EXIFData::GetExifOther(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
 		return 0;
 	if (item->type != ET_OTHER)
 		return 0;
-	return item->dataBuff.GetOpt<UInt8>().OrNull();;
+	return item->dataBuff.GetArray<UInt8>();
 }
 
 Bool Media::EXIFData::GetPhotoDate(NN<Data::DateTime> dt) const
@@ -2244,8 +2244,8 @@ Double Media::EXIFData::GetPhotoFocalLength() const
 
 Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lon, OptOut<Double> altitude, OptOut<Int64> gpsTimeTick) const
 {
-	Media::EXIFData *subExif = this->GetExifSubexif(34853);
-	if (subExif)
+	NN<Media::EXIFData> subExif;
+	if (this->GetExifSubexif(34853).SetTo(subExif))
 	{
 		Bool succ = true;
 /*
@@ -3259,7 +3259,7 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -4189,7 +4189,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -4251,7 +4251,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, T
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const
+Bool Media::EXIFData::ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UnsafeArray<UInt16> valBuff, UOSInt valCnt) const
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -4543,7 +4543,7 @@ Bool Media::EXIFData::ToStringCanonLensType(NN<Text::StringBuilderUTF8> sb, UInt
 	return true;
 }
 
-void Media::EXIFData::ToExifBuff(UInt8 *buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const
+void Media::EXIFData::ToExifBuff(UnsafeArray<UInt8> buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const
 {
 	ToExifBuffImpl(buff, this->exifMap, startOfst, otherOfst);
 }
@@ -4869,7 +4869,7 @@ Text::CString Media::EXIFData::GetFieldTypeName(UInt32 ftype)
 	}
 }
 
-Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Data::ByteOrder> bo, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr)
+Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Data::ByteOrder> bo, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, UnsafeArrayOpt<const UInt8> optbasePtr)
 {
 	Media::EXIFData *exif;
 	const UInt8 *ifdEntries;
@@ -4887,7 +4887,8 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(UnsafeArray<const UInt8> buf
 	UInt32 j;
 	NEW_CLASS(exif, Media::EXIFData(exifMaker));
 
-	if (basePtr == 0)
+	UnsafeArray<const UInt8> basePtr;
+	if (!optbasePtr.SetTo(basePtr))
 	{
 		UInt32 readBase = 0x7fffffff;
 		ifdOfst = 0;

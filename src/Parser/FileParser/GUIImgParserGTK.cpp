@@ -13,7 +13,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Math/Geometry/VectorImage.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/JPEGFile.h"

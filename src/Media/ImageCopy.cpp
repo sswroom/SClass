@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/ImageCopy.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
@@ -10,7 +10,7 @@ extern "C" Int32 UseAVX;
 extern "C" Int32 CPUBrand;
 #endif
 
-void Media::ImageCopy::MT_Copy(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::ImageCopy::MT_Copy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt copySize, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -54,7 +54,7 @@ UInt32 Media::ImageCopy::WorkerThread(AnyType obj)
 	Sync::ThreadUtil::SetName(CSTR("ImageCopyWorker"));
 	{
 		Sync::Event evt;
-		stat->evt = &evt;
+		stat->evt = evt;
 		stat->status = 1;
 		stat->evtMain->Set();
 		while (true)
@@ -66,7 +66,7 @@ UInt32 Media::ImageCopy::WorkerThread(AnyType obj)
 			}
 			else if (stat->status == 3)
 			{
-				ImageCopy_ImgCopy(stat->inPt, stat->outPt, stat->copySize, stat->height, stat->sstep, stat->dstep);
+				ImageCopy_ImgCopy(stat->inPt.Ptr(), stat->outPt.Ptr(), stat->copySize, stat->height, stat->sstep, stat->dstep);
 				stat->status = 1;
 				stat->evtMain->Set();
 			}
@@ -102,12 +102,12 @@ Media::ImageCopy::ImageCopy()
 #else
 	nThread = 1;
 #endif
-	stats = MemAlloc(IMGCOPYSTAT, nThread);
+	stats = MemAllocArr(IMGCOPYSTAT, nThread);
 	i = nThread;
 	while (i-- > 0)
 	{
 		stats[i].status = 0;
-		stats[i].evtMain = &this->evtMain;
+		stats[i].evtMain = this->evtMain;
 		Sync::ThreadUtil::Create(WorkerThread, &stats[i]);
 	}
 	while (true)
@@ -156,17 +156,17 @@ Media::ImageCopy::~ImageCopy()
 		}
 		if (!found)
 		{
-			MemFree(stats);
+			MemFreeArr(stats);
 			break;
 		}
 	}
 }
 
-void Media::ImageCopy::Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::ImageCopy::Copy32(UnsafeArray<const UInt8> src, OSInt sbpl, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	if (dheight < 16 || this->nThread == 1)
 	{
-		ImageCopy_ImgCopy(src, dest, dwidth << 2, dheight, sbpl, dbpl);
+		ImageCopy_ImgCopy(src.Ptr(), dest.Ptr(), dwidth << 2, dheight, sbpl, dbpl);
 	}
 	else
 	{
@@ -174,11 +174,11 @@ void Media::ImageCopy::Copy32(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, U
 	}
 }
 
-void Media::ImageCopy::Copy16(UInt8 *src, OSInt sbpl, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::ImageCopy::Copy16(UnsafeArray<const UInt8> src, OSInt sbpl, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	if (dheight < 16 || this->nThread == 1)
 	{
-		ImageCopy_ImgCopy(src, dest, dwidth << 1, dheight, sbpl, dbpl);
+		ImageCopy_ImgCopy(src.Ptr(), dest.Ptr(), dwidth << 1, dheight, sbpl, dbpl);
 	}
 	else
 	{

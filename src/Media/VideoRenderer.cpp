@@ -7,7 +7,7 @@
 #include "Media/DeinterlaceLR.h"
 #include "Media/ImageCopy.h"
 #include "Media/ImageList.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/VideoRenderer.h"
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/DeintResizerLR_C32.h"

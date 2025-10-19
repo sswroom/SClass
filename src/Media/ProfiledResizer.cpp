@@ -26,12 +26,12 @@ Media::ProfiledResizer::ProfiledResizer(NN<Parser::ParserList> parsers, Media::C
 	this->saver = 0;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(watermarker, Media::Batch::BatchWatermarker(deng, 0));
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(14, 14, destProfile, colorSess, Media::AT_IGNORE_ALPHA, 0.0, Media::PF_B8G8R8A8));
-	NEW_CLASS(bresizer, Media::Batch::BatchResizer(resizer, watermarker));
-	NEW_CLASS(limiter, Media::Batch::BatchLimiter(bresizer));
-	NEW_CLASS(conv, Media::Batch::BatchToLRGB(srcProfile, destProfile, limiter));
-	NEW_CLASS(loader, Media::Batch::BatchLoader(parsers, conv));
+	NEW_CLASSNN(watermarker, Media::Batch::BatchWatermarker(deng, 0));
+	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(14, 14, destProfile, colorSess, Media::AT_IGNORE_ALPHA, 0.0, Media::PF_B8G8R8A8));
+	NEW_CLASSNN(bresizer, Media::Batch::BatchResizer(resizer, watermarker));
+	NEW_CLASSNN(limiter, Media::Batch::BatchLimiter(bresizer));
+	NEW_CLASSNN(conv, Media::Batch::BatchToLRGB(srcProfile, destProfile, limiter));
+	NEW_CLASSNN(loader, Media::Batch::BatchLoader(parsers, conv));
 }
 
 Media::ProfiledResizer::~ProfiledResizer()
@@ -42,13 +42,13 @@ Media::ProfiledResizer::~ProfiledResizer()
 	}
 
 	this->profiles.FreeAll(ReleaseProfile);
-	DEL_CLASS(this->loader);
-	DEL_CLASS(this->conv);
-	DEL_CLASS(this->limiter);
-	DEL_CLASS(this->bresizer);
-	DEL_CLASS(this->resizer);
-	DEL_CLASS(this->watermarker);
-	SDEL_CLASS(this->saver);
+	this->loader.Delete();
+	this->conv.Delete();
+	this->limiter.Delete();
+	this->bresizer.Delete();
+	this->resizer.Delete();
+	this->watermarker.Delete();
+	this->saver.Delete();
 }
 
 UOSInt Media::ProfiledResizer::GetProfileCount() const
@@ -89,30 +89,26 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 		bresizer->AddTargetDPI(profile->targetSizeX, profile->targetSizeY, profile->suffix);
 	}
 	this->watermarker->SetWatermark(OPTSTR_CSTR(profile->watermark));
-	if (this->saver)
-	{
-		DEL_CLASS(this->saver);
-	}
-	this->saver = 0;
+	this->saver.Delete();
 	if (profile->outType == OT_TIFF)
 	{
-		NEW_CLASS(this->saver, Media::Batch::BatchSaveTIFF(false));
+		NEW_CLASSOPT(this->saver, Media::Batch::BatchSaveTIFF(false));
 	}
 	else if (profile->outType == OT_JPEGQUALITY)
 	{
-		NEW_CLASS(this->saver, Media::Batch::BatchSaveJPEG(profile->outParam));
+		NEW_CLASSOPT(this->saver, Media::Batch::BatchSaveJPEG(profile->outParam));
 	}
 	else if (profile->outType == OT_JPEGSIZE)
 	{
-		NEW_CLASS(this->saver, Media::Batch::BatchSaveJPEGSize(profile->outParam));
+		NEW_CLASSOPT(this->saver, Media::Batch::BatchSaveJPEGSize(profile->outParam));
 	}
 	else if (profile->outType == OT_PNG)
 	{
-		NEW_CLASS(this->saver, Media::Batch::BatchSavePNG());
+		NEW_CLASSOPT(this->saver, Media::Batch::BatchSavePNG());
 	}
 	else if (profile->outType == OT_WEBPQUALITY)
 	{
-		NEW_CLASS(this->saver, Media::Batch::BatchSaveWebP(profile->outParam));
+		NEW_CLASSOPT(this->saver, Media::Batch::BatchSaveWebP(profile->outParam));
 	}
 	this->watermarker->SetHandler(this->saver);
 }

@@ -7,7 +7,7 @@
 #include "Map/MapEnv.h"
 #include "Map/ScaledMapView.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Text/MyString.h"
 
 UInt8 Map::MapEnv::GetRandomColor()

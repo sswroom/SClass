@@ -4,7 +4,7 @@
 #include "Math/LanczosFilter.h"
 #include "Math/Math.h"
 #include "Media/ImageResizer.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

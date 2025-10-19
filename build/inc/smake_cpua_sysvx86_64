@@ -24,9 +24,6 @@ Manage/ThreadContextX86_32.h:
 Manage/ThreadContextX86_64.h:
 @ThreadContextX86_64L.o
 
-Media/ImageCopyC.h:
-@ImageCopy_CPP.o
-
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_SysV64.asm
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_SysV64.asm
 CRC16R_CPP.o: ../../src/Crypto/Hash/CRC16R_CPP.cpp

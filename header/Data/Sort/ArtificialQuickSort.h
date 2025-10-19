@@ -5,7 +5,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
 #include "Data/Comparator.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSort_C.h"
 #include "Data/Sort/InsertionSort.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

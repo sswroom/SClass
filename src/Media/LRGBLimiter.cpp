@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/LRGBLimiter.h"
-#include "Media/LRGBLimiterC.h"
+#include "Media/LRGBLimiter_C.h"
 #include "Sync/ThreadUtil.h"
 
 void __stdcall Media::LRGBLimiter::TaskFunc(AnyType userObj)

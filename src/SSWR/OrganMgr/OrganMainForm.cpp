@@ -12,6 +12,7 @@
 #include "Map/OSM/OSMTileMap.h"
 #include "Math/Math.h"
 #include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Text/URLString.h"
 #include "SSWR/OrganMgr/OrganBookForm.h"
 #include "SSWR/OrganMgr/OrganDataFileForm.h"

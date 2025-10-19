@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Media/LRGBLimiterC.h"
+#include "Media/LRGBLimiter_C.h"
 #include "Media/StaticImage.h"
 #include "Media/Batch/BatchLimiter.h"
 
-Media::Batch::BatchLimiter::BatchLimiter(Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchLimiter::BatchLimiter(Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
@@ -14,13 +14,14 @@ Media::Batch::BatchLimiter::~BatchLimiter()
 }
 
 
-void Media::Batch::BatchLimiter::SetHandler(Media::Batch::BatchHandler *hdlr)
+void Media::Batch::BatchLimiter::SetHandler(Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
 
 void Media::Batch::BatchLimiter::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
+	NN<Media::Batch::BatchHandler> hdlr;
 	UOSInt j;
 	UOSInt k;
 	NN<Media::StaticImage> newImg;
@@ -35,6 +36,6 @@ void Media::Batch::BatchLimiter::ImageOutput(NN<Media::ImageList> imgList, Text:
 		j++;
 	}
 
-	if (this->hdlr)
-		this->hdlr->ImageOutput(imgList, fileId, subId);
+	if (this->hdlr.SetTo(hdlr))
+		hdlr->ImageOutput(imgList, fileId, subId);
 }

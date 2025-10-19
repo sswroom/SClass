@@ -4,7 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Media/FBMonitorSurfaceMgr.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"

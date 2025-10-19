@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Sync/Interlocked.h"
 #include "Media/GTKDrawEngine.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GTK/GTKPictureBoxSimple.h"
 

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/G711muLawRAWSource.h"
 
-Media::G711muLawRAWSource::G711muLawRAWSource(NN<IO::StreamData> fd, Int64 ofst, Int64 length, const WChar *name) : Media::LPCMSource(name)
+Media::G711muLawRAWSource::G711muLawRAWSource(NN<IO::StreamData> fd, Int64 ofst, Int64 length, Text::CStringNN name) : Media::LPCMSource(name)
 {
 	Media::AudioFormat fmt;
 	fmt.formatId = 7;
@@ -15,7 +15,7 @@ Media::G711muLawRAWSource::G711muLawRAWSource(NN<IO::StreamData> fd, Int64 ofst,
 	fmt.intType = Media::AudioFormat::IT_NORMAL;
 	fmt.extraSize = 0;
 	fmt.extra = 0;
-	this->SetData(fd, ofst, length, &fmt);
+	this->SetData(fd, ofst, length, fmt);
 }
 
 Media::G711muLawRAWSource::~G711muLawRAWSource()
