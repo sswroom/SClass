@@ -16,8 +16,8 @@ UOSInt PNGExporter_EstimateSize(const UInt8 *data, UOSInt dataSize, UInt8 *tmpBu
 
 UOSInt PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<Crypto::Hash::CRC32R> crc)
 {
-	UInt8 *palPtr = img->pal;
-	if (palPtr == 0)
+	UnsafeArray<UInt8> palPtr;
+	if (!img->pal.SetTo(palPtr))
 		return 0;
 	UOSInt colorCnt = (UOSInt)1 << img->info.storeBPP;
 	UInt8 *tmpBuff = MemAlloc(UInt8, colorCnt * 3 + 12);

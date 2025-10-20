@@ -50,7 +50,7 @@ namespace Media
 	};
 }
 
-void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, UInt8 *palette, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
+void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, UnsafeArray<UInt8> palette, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
 	Data::ArrayListCmp *arr[256];
 	UOSInt i;
@@ -126,7 +126,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 		UOSInt rVal;
 		UOSInt gVal;
 		UOSInt bVal;
-		UInt8 *cols;
+		UnsafeArray<UInt8> cols;
 		i = 256;
 		while (i-- > 0)
 		{
@@ -248,7 +248,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 		UnsafeArray<NN<Data::Comparable>> cmpArr = cArr->GetArr(arrSize);
 		Data::Sort::ArtificialQuickSort::SortCmpO(cmpArr, 0, (OSInt)arrSize - 1);
 
-		Int32 *cols = (Int32*)palette;
+		UnsafeArray<Int32> cols = UnsafeArray<Int32>::ConvertFrom(palette);
 		if (cArr->GetCount() > 256)
 		{
 			OSInt colorProc = (OSInt)cArr->GetCount() - 256;

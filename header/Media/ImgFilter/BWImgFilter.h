@@ -1,14 +1,7 @@
 #ifndef _SM_MEDIA_IMAGEFILTER_BWIMGFILTER
 #define _SM_MEDIA_IMAGEFILTER_BWIMGFILTER
 #include "Media/ImageFilter.h"
-
-extern "C"
-{
-	void BWImgFilter_ProcYUY2(UInt8 *imgData, UOSInt pxCnt);
-	void BWImgFilter_ProcUYVY(UInt8 *imgData, UOSInt pxCnt);
-	void BWImgFilter_ProcAYUV(UInt8 *imgData, UOSInt pxCnt);
-	void BWImgFilter_ProcY416(UInt8 *imgData, UOSInt pxCnt);
-}
+#include "Media/ImgFilter/BWImgFilter_C.h"
 
 namespace Media
 {

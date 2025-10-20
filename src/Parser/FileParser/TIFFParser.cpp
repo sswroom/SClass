@@ -478,6 +478,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				UOSInt bpl = img->GetDataBpl();
 				UOSInt copyWidth;
 				UOSInt copyHeight = tileHeight;
+				UnsafeArray<UInt8> imgPal;
 				Data::ByteBuffer jpgBuff(stripLengs[0] + jpegTables.GetSize());
 				Media::JPEGDecoder jpgDecoder;
 				x = 0;
@@ -542,7 +543,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				{
 					MemFree(stripLengs);
 				}
-				if (bpp <= 8)
+				if (bpp <= 8 && img->pal.SetTo(imgPal))
 				{
 					UOSInt j;
 					if (photometricInterpretation == 3)
@@ -554,10 +555,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						{
 							while (i < j)
 							{
-								img->pal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
-								img->pal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
-								img->pal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
-								img->pal[(i << 2) + 3] = 0xff;
+								imgPal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
+								imgPal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
+								imgPal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
+								imgPal[(i << 2) + 3] = 0xff;
 								i++;
 							}
 						}
@@ -565,10 +566,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						{
 							while (i < j)
 							{
-								img->pal[i << 2] = 0;
-								img->pal[(i << 2) + 1] = 0;
-								img->pal[(i << 2) + 2] = 0;
-								img->pal[(i << 2) + 3] = 0xff;
+								imgPal[i << 2] = 0;
+								imgPal[(i << 2) + 1] = 0;
+								imgPal[(i << 2) + 2] = 0;
+								imgPal[(i << 2) + 3] = 0xff;
 								i++;
 							}
 						}
@@ -581,10 +582,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						while (i-- > 0)
 						{
 							v = (UInt8)(i * 255 / j);
-							img->pal[i << 2] = v;
-							img->pal[(i << 2) + 1] = v;
-							img->pal[(i << 2) + 2] = v;
-							img->pal[(i << 2) + 3] = 0xff;
+							imgPal[i << 2] = v;
+							imgPal[(i << 2) + 1] = v;
+							imgPal[(i << 2) + 2] = v;
+							imgPal[(i << 2) + 3] = 0xff;
 						}
 	
 						imgData = img->GetDataArray();
@@ -603,10 +604,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						while (i-- > 0)
 						{
 							v = (UInt8)(i * 255 / j);
-							img->pal[i << 2] = v;
-							img->pal[(i << 2) + 1] = v;
-							img->pal[(i << 2) + 2] = v;
-							img->pal[(i << 2) + 3] = 0xff;
+							imgPal[i << 2] = v;
+							imgPal[(i << 2) + 1] = v;
+							imgPal[(i << 2) + 2] = v;
+							imgPal[(i << 2) + 3] = 0xff;
 						}
 					}
 				}
@@ -805,6 +806,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			Data::ByteArray imgData;
 			UnsafeArrayOpt<UInt8> planarBuff = 0;
 			UnsafeArray<UInt8> nnplanarBuff;
+			UnsafeArray<UInt8> imgPal;
 			if (sampleFormat == 3)
 			{
 				nnplanarBuff = MemAllocArr(UInt8, imgWidth * imgHeight * bpp >> 3);
@@ -1532,7 +1534,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 				}
 			}
-			else if (bpp <= 8)
+			else if (bpp <= 8 && img->pal.SetTo(imgPal))
 			{
 				UOSInt j;
 				if (photometricInterpretation == 3)
@@ -1544,10 +1546,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i < j)
 						{
-							img->pal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
-							img->pal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
-							img->pal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
-							img->pal[(i << 2) + 3] = 0xff;
+							imgPal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
+							imgPal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
+							imgPal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
+							imgPal[(i << 2) + 3] = 0xff;
 							i++;
 						}
 					}
@@ -1555,10 +1557,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i < j)
 						{
-							img->pal[i << 2] = 0;
-							img->pal[(i << 2) + 1] = 0;
-							img->pal[(i << 2) + 2] = 0;
-							img->pal[(i << 2) + 3] = 0xff;
+							imgPal[i << 2] = 0;
+							imgPal[(i << 2) + 1] = 0;
+							imgPal[(i << 2) + 2] = 0;
+							imgPal[(i << 2) + 3] = 0xff;
 							i++;
 						}
 					}
@@ -1571,10 +1573,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					while (i-- > 0)
 					{
 						v = (UInt8)(i * 255 / j);
-						img->pal[i << 2] = v;
-						img->pal[(i << 2) + 1] = v;
-						img->pal[(i << 2) + 2] = v;
-						img->pal[(i << 2) + 3] = 0xff;
+						imgPal[i << 2] = v;
+						imgPal[(i << 2) + 1] = v;
+						imgPal[(i << 2) + 2] = v;
+						imgPal[(i << 2) + 3] = 0xff;
 					}
 
 					imgData = img->GetDataArray();
@@ -1593,10 +1595,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					while (i-- > 0)
 					{
 						v = (UInt8)(i * 255 / j);
-						img->pal[i << 2] = v;
-						img->pal[(i << 2) + 1] = v;
-						img->pal[(i << 2) + 2] = v;
-						img->pal[(i << 2) + 3] = 0xff;
+						imgPal[i << 2] = v;
+						imgPal[(i << 2) + 1] = v;
+						imgPal[(i << 2) + 2] = v;
+						imgPal[(i << 2) + 3] = 0xff;
 					}
 				}
 			}

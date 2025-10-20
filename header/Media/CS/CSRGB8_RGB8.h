@@ -19,9 +19,9 @@ namespace Media
 			Bool invert;
 
 			Media::ColorHandler::RGBPARAM2 rgbParam;
-			UInt8 *srcPal;
-			UInt8 *destPal;
-			UInt8 *rgbTable;
+			UnsafeArrayOpt<UInt8> srcPal;
+			UnsafeArrayOpt<UInt8> destPal;
+			UnsafeArrayOpt<UInt8> rgbTable;
 			Bool rgbUpdated;
 		private:
 			void UpdateRGBTable();
@@ -31,7 +31,7 @@ namespace Media
 			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
-			virtual void SetPalette(UInt8 *pal);
+			virtual void SetPalette(UnsafeArray<UInt8> pal);
 
 			virtual void YUVParamChanged(NN<const YUVPARAM> yuv);
 			virtual void RGBParamChanged(NN<const RGBPARAM2> rgb);

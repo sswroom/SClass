@@ -17,14 +17,14 @@ namespace Media
 			UOSInt devNo;
 		};
 	private:
-		Media::AudioSource *audsrc;
-		Media::AudioSource *resampler;
+		Optional<Media::AudioSource> audsrc;
+		Optional<Media::AudioSource> resampler;
 		UInt32 resampleFreq;
 		Optional<Text::String> devName;
 		void *hand;
-		Media::RefClock *clk;
+		Optional<Media::RefClock> clk;
 		EndNotifier endHdlr;
-		void *endHdlrObj;
+		AnyType endHdlrObj;
 		Bool dataConv;
 		UInt16 dataBits;
 		UInt16 dataNChannel;
@@ -47,12 +47,12 @@ namespace Media
 		virtual ~PulseAudioRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::AudioSource *audsrc);
-		virtual void AudioInit(Media::RefClock *clk);
+		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
+		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();
-		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
+		virtual void SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj);
 		virtual void SetBufferTime(UInt32 ms);
 
 		virtual Int32 GetDeviceVolume();

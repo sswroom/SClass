@@ -324,6 +324,7 @@ Bool Net::SDPFile::BuildBuff()
 	IO::MemoryStream mstm;
 	Text::UTF8Writer writer(mstm);
 	NN<Text::String> nns;
+	NN<Net::SDPData> data;
 	sb.ClearStr();
 
 	sb.AppendC(UTF8STRC("v="));
@@ -429,8 +430,11 @@ Bool Net::SDPFile::BuildBuff()
 		l = media->GetSDPDataCount();
 		while (k < l)
 		{
-			sb.AppendC(UTF8STRC(" "));
-			sb.AppendU16(media->GetSDPData(k)->GetSDPDataPort());
+			if (media->GetSDPData(k).SetTo(data))
+			{
+				sb.AppendC(UTF8STRC(" "));
+				sb.AppendU16(data->GetSDPDataPort());
+			}
 
 			k++;
 		}
@@ -440,24 +444,26 @@ Bool Net::SDPFile::BuildBuff()
 		l = media->GetSDPDataCount();
 		while (k < l)
 		{
-			Net::SDPData *data = media->GetSDPData(k);
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("a=rtpmap:"));
-			sb.AppendU16(data->GetSDPDataPort());
-			sb.AppendC(UTF8STRC(" "));
-			sb.AllocLeng(512);
-			sb.SetEndPtr(data->GetSDPDataType(sb.GetEndPtr()));
-			sb.AppendC(UTF8STRC("/"));
-			sb.AppendU32(data->GetSDPDataFreq());
-			writer.WriteLine(sb.ToCString());
+			if (media->GetSDPData(k).SetTo(data))
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("a=rtpmap:"));
+				sb.AppendU16(data->GetSDPDataPort());
+				sb.AppendC(UTF8STRC(" "));
+				sb.AllocLeng(512);
+				sb.SetEndPtr(data->GetSDPDataType(sb.GetEndPtr()));
+				sb.AppendC(UTF8STRC("/"));
+				sb.AppendU32(data->GetSDPDataFreq());
+				writer.WriteLine(sb.ToCString());
 
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("a=fmtp:"));
-			sb.AppendU16(data->GetSDPDataPort());
-			sb.AppendC(UTF8STRC(" "));
-			sb.AllocLeng(512);
-			sb.SetEndPtr(data->GetSDPDataFormat(sb.GetEndPtr()));
-			writer.WriteLine(sb.ToCString());
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("a=fmtp:"));
+				sb.AppendU16(data->GetSDPDataPort());
+				sb.AppendC(UTF8STRC(" "));
+				sb.AllocLeng(512);
+				sb.SetEndPtr(data->GetSDPDataFormat(sb.GetEndPtr()));
+				writer.WriteLine(sb.ToCString());
+			}
 			k++;
 		}
 

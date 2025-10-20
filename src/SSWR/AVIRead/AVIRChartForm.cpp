@@ -7,7 +7,7 @@ typedef enum
 	MNU_LOG_SAVE = 101
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRChartForm::SizeChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChartForm>();
 	Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
@@ -36,8 +36,8 @@ SSWR::AVIRead::AVIRChartForm::AVIRChartForm(Optional<UI::GUIClientControl> paren
 	this->pbMain = ui->NewPictureBoxSimple(*this, core->GetDrawEngine(), false);
 	this->pbMain->SetNoBGColor(true);
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->pbMain->HandleSizeChanged(OnSizeChanged, this);
-	OnSizeChanged(this);
+	this->pbMain->HandleSizeChanged(SizeChanged, this);
+	SizeChanged(this);
 }
 
 SSWR::AVIRead::AVIRChartForm::~AVIRChartForm()

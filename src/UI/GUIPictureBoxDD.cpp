@@ -509,9 +509,10 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 		NN<Media::CS::CSConverter> csconv;
 		if (this->csconv.SetTo(csconv))
 		{
-			if (img->pal)
+			UnsafeArray<UInt8> pal;
+			if (img->pal.SetTo(pal))
 			{
-				csconv->SetPalette(img->pal);
+				csconv->SetPalette(pal);
 			}
 			this->imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 			if (img->GetImageType() == Media::RasterImage::ImageType::Static)

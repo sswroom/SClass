@@ -657,9 +657,10 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 						{
 							tmpPtr = Data::ByteArray((UInt8*)"", 0);
 						}
-						if (tmpPtr.GetSize() > 0)
+						UnsafeArray<UInt8> pal;
+						if (tmpPtr.GetSize() > 0 && simg->pal.SetTo(pal))
 						{
-							tmpPtr2 = Data::ByteArray(simg->pal, 256 * 4);
+							tmpPtr2 = Data::ByteArray(pal, 256 * 4);
 							i = 0;
 							while (i < readSize)
 							{
@@ -679,7 +680,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							}
 							if (globalTransparentIndex >= 0)
 							{
-								simg->pal[globalTransparentIndex * 4 + 3] = 0;
+								pal[globalTransparentIndex * 4 + 3] = 0;
 							}
 						}
 					}

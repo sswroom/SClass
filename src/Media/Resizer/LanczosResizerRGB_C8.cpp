@@ -5,7 +5,7 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/LanczosResizerFunc.h"
-#include "Media/Resizer/LanczosResizerFuncC.h"
+#include "Media/Resizer/LanczosResizerFunc_C.h"
 #include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

@@ -62,11 +62,11 @@ Media::CS::CSConverter::~CSConverter()
 	}
 }
 
-void Media::CS::CSConverter::SetPalette(UInt8 *pal)
+void Media::CS::CSConverter::SetPalette(UnsafeArray<UInt8> pal)
 {
 }
 
-UOSInt Media::CS::CSConverter::GetSupportedCS(Data::ArrayListUInt32 *csList)
+UOSInt Media::CS::CSConverter::GetSupportedCS(NN<Data::ArrayListUInt32> csList)
 {
 	/////////////////////////////////
 	// YUV8 4:4:4 AYUV
@@ -106,7 +106,7 @@ UOSInt Media::CS::CSConverter::GetSupportedCS(Data::ArrayListUInt32 *csList)
 Bool Media::CS::CSConverter::IsSupported(UInt32 fourcc)
 {
 	Data::ArrayListUInt32 csList;
-	GetSupportedCS(&csList);
+	GetSupportedCS(csList);
 	return csList.SortedIndexOf(fourcc) >= 0;
 }
 

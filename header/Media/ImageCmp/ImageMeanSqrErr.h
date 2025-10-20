@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_IMAGECMP_IMAGEMEANSQRERR
 #define _SM_MEDIA_IMAGECMP_IMAGEMEANSQRERR
-#include "Media/Image.h"
+#include "Media/StaticImage.h"
 
 namespace Media
 {
@@ -12,8 +12,8 @@ namespace Media
 			ImageMeanSqrErr();
 			~ImageMeanSqrErr();
 
-			Double CompareImage(Media::Image *oriImage, Media::Image *cmpImage);
+			Double CompareImage(NN<Media::RasterImage> oriImage, NN<Media::RasterImage> cmpImage);
 		};
-	};
-};
+	}
+}
 #endif

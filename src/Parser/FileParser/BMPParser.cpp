@@ -15,23 +15,28 @@
 
 void BMPParser_ReadPal(Media::StaticImage *img, NN<IO::StreamData> fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
 {
+	UnsafeArray<UInt8> pal;
+	if (!img->pal.SetTo(pal))
+	{
+		return;
+	}
 	UOSInt maxColor = (UOSInt)1 << img->info.storeBPP;
 	if (palType == 0)
 	{
 		if (colorUsed <= 0 || colorUsed >= maxColor)
 		{
-			fd->GetRealData(palStart, maxColor * 4, Data::ByteArray(img->pal, maxColor * 4));
+			fd->GetRealData(palStart, maxColor * 4, Data::ByteArray(pal, maxColor * 4));
 		}
 		else
 		{
-			fd->GetRealData(palStart, colorUsed * 4, Data::ByteArray(img->pal, colorUsed * 4));
-			MemClear(&img->pal[colorUsed * 4], (maxColor - colorUsed) * 4);
+			fd->GetRealData(palStart, colorUsed * 4, Data::ByteArray(pal, colorUsed * 4));
+			MemClear(&pal[colorUsed * 4], (maxColor - colorUsed) * 4);
 		}
 		UOSInt i;
 		i = maxColor;
 		while (i-- > 0)
 		{
-			img->pal[(i << 2) + 3] = 0xff;
+			pal[(i << 2) + 3] = 0xff;
 		}
 	}
 	else if (palType == 1)
@@ -45,10 +50,10 @@ void BMPParser_ReadPal(Media::StaticImage *img, NN<IO::StreamData> fd, UOSInt pa
 		while (i < maxColor)
 		{
 			
-			img->pal[(i << 2) + 0] = palBuff[j];
-			img->pal[(i << 2) + 1] = palBuff[j+1];
-			img->pal[(i << 2) + 2] = palBuff[j+2];
-			img->pal[(i << 2) + 3] = 0xff;
+			pal[(i << 2) + 0] = palBuff[j];
+			pal[(i << 2) + 1] = palBuff[j+1];
+			pal[(i << 2) + 2] = palBuff[j+2];
+			pal[(i << 2) + 3] = 0xff;
 			i++;
 			j += 3;
 		}
@@ -600,6 +605,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 			}
 			else
 			{
+				UnsafeArray<UInt8> pal;
 				switch (bpp)
 				{
 				case 1:
@@ -630,10 +636,13 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 					break;
 				case 4:
 					BMPParser_ReadPal(outImg, fd, endPos, palType, colorUsed);
-					i = 16;
-					while (i-- > 0)
+					if (outImg->pal.SetTo(pal))
 					{
-						outImg->pal[(i << 2) + 3] = 0xff;
+						i = 16;
+						while (i-- > 0)
+						{
+							pal[(i << 2) + 3] = 0xff;
+						}
 					}
 					lineW = (imgWidth >> 1) + (imgWidth & 1);
 					lineW2 = lineW;

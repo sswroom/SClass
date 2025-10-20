@@ -5,17 +5,15 @@
 
 Media::ImageCmp::ImagePSNR::ImagePSNR()
 {
-	NEW_CLASS(msr, Media::ImageCmp::ImageMeanSqrErr());
 }
 
 Media::ImageCmp::ImagePSNR::~ImagePSNR()
 {
-	DEL_CLASS(msr);
 }
 
-Double Media::ImageCmp::ImagePSNR::CompareImage(Media::Image *oriImage, Media::Image *cmpImage)
+Double Media::ImageCmp::ImagePSNR::CompareImage(NN<Media::RasterImage> oriImage, NN<Media::RasterImage> cmpImage)
 {
-	Double val = msr->CompareImage(oriImage, cmpImage);
+	Double val = this->msr.CompareImage(oriImage, cmpImage);
 	if (val < 0)
 	{
 		return -2;
@@ -25,14 +23,14 @@ Double Media::ImageCmp::ImagePSNR::CompareImage(Media::Image *oriImage, Media::I
 		return -1;
 	}
 	Int32 nBits = 8;
-	if (oriImage->info->fourcc == 0 || oriImage->info->fourcc == *(Int32*)"DIB")
+	if (oriImage->info.fourcc == 0 || oriImage->info.fourcc == *(Int32*)"DIB")
 	{
-		if (oriImage->info->bpp >= 48)
+		if (oriImage->info.storeBPP >= 48)
 		{
 			nBits = 16;
 		}
 	}
-	else if (oriImage->info->fourcc == *(Int32*)"LRGB")
+	else if (oriImage->info.fourcc == *(Int32*)"LRGB")
 	{
 		nBits = 14;
 	}

@@ -61,7 +61,7 @@ Bool UI::DObj::DynamicOverlayDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
+void UI::DObj::DynamicOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
 	NN<Media::DrawImage> bmp1;
@@ -128,7 +128,7 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 	}
 }
 
-Bool UI::DObj::DynamicOverlayDObj::IsObject(Int32 x, Int32 y)
+Bool UI::DObj::DynamicOverlayDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 {
 	return false;
 }

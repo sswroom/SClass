@@ -3132,9 +3132,11 @@ Media/ImageGen/RingsImageGen.h:
 @RingsImageGen.o
 Media/ImgFilter/BGImgFilter.h:
 @BGImgFilter.o
+Media/ImgFilter/BGImgFilter_C.h:
 @BGImgFilter_CPP.o
 Media/ImgFilter/BWImgFilter.h:
 @BWImgFilter.o
+Media/ImgFilter/BWImgFilter_C.h:
 @BWImgFilter_CPP.o
 Media/ImgRemapper/LinearImageRemapper.h:
 @LinearImageRemapper.o
@@ -3156,7 +3158,7 @@ Media/Resizer/LanczosResizer16_C8.h:
 @LanczosResizer16_C8_CPP.o
 Media/Resizer/LanczosResizerFunc.h:
 @LanczosResizerFunc.o
-Media/Resizer/LanczosResizerFuncC.h:
+Media/Resizer/LanczosResizerFunc_C.h:
 @LanczosResizerFunc_CPP.o
 Media/Resizer/LanczosResizerH8_8.h:
 @LanczosResizerH8_8.o

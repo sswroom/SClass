@@ -11,9 +11,10 @@ extern "C"
 
 void Media::CS::CSRGBF_LRGBC::UpdateRGBTable()
 {
-	if (this->rgbTable == 0)
+	UnsafeArray<UInt8> rgbTable;
+	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = MemAllocA(UInt8, 1572864);
+		this->rgbTable = rgbTable = MemAllocAArr(UInt8, 1572864);
 	}
 	OSInt i;
 	OSInt iV;
@@ -51,7 +52,7 @@ void Media::CS::CSRGBF_LRGBC::UpdateRGBTable()
 		Media::ColorProfile::GetConvMatrix(mat1, this->srcProfile.GetPrimaries(), this->destProfile.GetPrimaries());
 	}
 
-	Int64 *rgbGammaCorr = (Int64*)this->rgbTable;
+	UnsafeArray<Int64> rgbGammaCorr = UnsafeArray<Int64>::ConvertFrom(rgbTable);
 	i = 65536;
 	while (i--)
 	{
@@ -111,9 +112,10 @@ Media::CS::CSRGBF_LRGBC::CSRGBF_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 
 Media::CS::CSRGBF_LRGBC::~CSRGBF_LRGBC()
 {
-	if (this->rgbTable)
+	UnsafeArray<UInt8> rgbTable;
+	if (this->rgbTable.SetTo(rgbTable))
 	{
-		MemFreeA(this->rgbTable);
+		MemFreeAArr(rgbTable);
 		this->rgbTable = 0;
 	}
 }
@@ -130,7 +132,7 @@ void Media::CS::CSRGBF_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 		destPtr = destPtr + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGBF_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+	CSRGBF_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 }
 
 UOSInt Media::CS::CSRGBF_LRGBC::GetSrcFrameSize(UOSInt width, UOSInt height)
@@ -143,7 +145,7 @@ UOSInt Media::CS::CSRGBF_LRGBC::GetDestFrameSize(UOSInt width, UOSInt height)
 	return width * height * 8;
 }
 
-void Media::CS::CSRGBF_LRGBC::SetPalette(UInt8 *pal)
+void Media::CS::CSRGBF_LRGBC::SetPalette(UnsafeArray<UInt8> pal)
 {
 }
 

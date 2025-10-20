@@ -83,17 +83,21 @@ Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCo
 	UOSInt imgSize = fntH * ((fntW + 7) >> 3);
 	NN<Media::StaticImage> simg;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+	UnsafeArray<UInt8> pal;
 	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(fntW, fntH), 0, 1, Media::PF_PAL_W1, imgSize, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_PREMUL_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	simg->info.hdpi = ReadUInt16(&this->fontBuff[72]);
 	simg->info.vdpi = ReadUInt16(&this->fontBuff[70]);
-	simg->pal[0] = 0;
-	simg->pal[1] = 0;
-	simg->pal[2] = 0;
-	simg->pal[3] = 0xff;
-	simg->pal[4] = 0xff;
-	simg->pal[5] = 0xff;
-	simg->pal[6] = 0xff;
-	simg->pal[7] = 0;
+	if (simg->pal.SetTo(pal))
+	{
+		pal[0] = 0;
+		pal[1] = 0;
+		pal[2] = 0;
+		pal[3] = 0xff;
+		pal[4] = 0xff;
+		pal[5] = 0xff;
+		pal[6] = 0xff;
+		pal[7] = 0;
+	}
 	UInt8 *srcPtr;
 	UnsafeArray<UInt8> destPtr;
 	UInt8 *tmpPtr;

@@ -14,7 +14,7 @@ namespace Net
 		virtual Text::CStringNN GetSDPProtocol() = 0;
 		virtual Text::CString GetSDPControlURL(Text::CString reqUserAgent) = 0;
 		virtual UOSInt GetSDPDataCount() = 0;
-		virtual Net::SDPData *GetSDPData(UOSInt index) = 0;
+		virtual Optional<Net::SDPData> GetSDPData(UOSInt index) = 0;
 	};
 }
 #endif

@@ -108,7 +108,11 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 		if (thisImgWidth == imgWidth && thisImgHeight == imgHeight)
 		{
 			NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UOSInt>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			MemCopyNO(outImg->pal, &tmpBuff[12], 1024);
+			UnsafeArray<UInt8> pal;
+			if (outImg->pal.SetTo(pal))
+			{
+				MemCopyNO(pal.Ptr(), &tmpBuff[12], 1024);
+			}
 
 			Data::ByteBuffer ptrBuff(4 * (xCnt * yCnt + 1));
 			fd->GetRealData(ReadUInt32(&scaleTable[i * 4]) + 1036, 4 * (xCnt * yCnt + 1), ptrBuff);

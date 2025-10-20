@@ -25,7 +25,7 @@ namespace Media
 		Bool hasHotSpot;
 		OSInt hotSpotX;
 		OSInt hotSpotY;
-		UInt8 *pal;
+		UnsafeArrayOpt<UInt8> pal;
 		
 	public:
 		RasterImage(Math::Size2D<UOSInt> dispSize);

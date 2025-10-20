@@ -32,7 +32,7 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 		return 0;
 
 	Data::ArrayListUInt32 suppCSList;
-	Media::CS::CSConverter::GetSupportedCS(&suppCSList);
+	Media::CS::CSConverter::GetSupportedCS(suppCSList);
 	if (suppCSList.IndexOf(frameInfo.fourcc) != INVALID_INDEX)
 	{
 		return 0;

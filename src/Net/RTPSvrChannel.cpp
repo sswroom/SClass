@@ -163,10 +163,8 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 	}
 }
 
-Net::RTPSvrChannel::RTPSvrChannel(NN<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, NN<const Net::SocketUtil::AddressInfo> targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
+Net::RTPSvrChannel::RTPSvrChannel(NN<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, NN<const Net::SocketUtil::AddressInfo> targetAddr, UInt16 targetPort, NN<Net::RTPSessionController> sessCtrl)
 {
-	this->rtpUDP = 0;
-	this->rtcpUDP = 0;
 	this->threadCnt = 5;
 	this->ssrc = ssrc;
 	this->targetAddr = targetAddr.Ptr()[0];
@@ -178,25 +176,25 @@ Net::RTPSvrChannel::RTPSvrChannel(NN<Net::SocketFactory> sockf, UInt16 port, Int
 	{
 		port += 1;
 	}
-	NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
+	NEW_CLASSNN(this->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->rtpUDP->GetPort();
 		if (port & 1)
 		{
 			port += 1;
-			DEL_CLASS(this->rtpUDP);
-			NEW_CLASS(this->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
+			this->rtpUDP.Delete();
+			NEW_CLASSNN(this->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
 		}
 	}
-	NEW_CLASS(this->rtcpUDP, Net::UDPServer(sockf, 0, port + 1, nullptr, PacketCtrlHdlr, this, this->log, nullptr, 1, false));
+	NEW_CLASSNN(this->rtcpUDP, Net::UDPServer(sockf, 0, port + 1, nullptr, PacketCtrlHdlr, this, this->log, nullptr, 1, false));
 }
 
 Net::RTPSvrChannel::~RTPSvrChannel()
 {
 
-	DEL_CLASS(this->rtpUDP);
-	SDEL_CLASS(this->rtcpUDP);
+	this->rtpUDP.Delete();
+	this->rtcpUDP.Delete();
 }
 
 NN<const Net::SocketUtil::AddressInfo> Net::RTPSvrChannel::GetTargetAddr()
@@ -214,7 +212,7 @@ Int32 Net::RTPSvrChannel::GetSeqNum()
 	return seqNum;
 }
 
-Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UOSInt dataSize, Bool marker)
+Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UnsafeArray<const UInt8> buff, UOSInt dataSize, Bool marker)
 {
 	UOSInt sendSize = dataSize + 12;
 	UInt8 sendBuff[1500];
@@ -232,12 +230,12 @@ Bool Net::RTPSvrChannel::SendPacket(Int32 payloadType, Int32 ts, UInt8 *buff, UO
 	this->seqNum = (seqNum + 1) & 65535;
 	WriteMInt32(&sendBuff[4], ts);
 	WriteMInt32(&sendBuff[8], this->ssrc);
-	MemCopyNO(&sendBuff[12], buff, dataSize);
+	MemCopyNO(&sendBuff[12], &buff[0], dataSize);
 	this->rtpUDP->SendTo(this->targetAddr, this->targetPort, sendBuff, sendSize);
 	return true;
 }
 
-Bool Net::RTPSvrChannel::SendControl(UInt8 *buff, UOSInt dataSize)
+Bool Net::RTPSvrChannel::SendControl(UnsafeArray<const UInt8> buff, UOSInt dataSize)
 {
 	this->rtcpUDP->SendTo(this->targetAddr, this->targetPort + 1, buff, dataSize);
 	return true;

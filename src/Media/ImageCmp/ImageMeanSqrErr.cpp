@@ -10,65 +10,52 @@ Media::ImageCmp::ImageMeanSqrErr::~ImageMeanSqrErr()
 {
 }
 
-Double Media::ImageCmp::ImageMeanSqrErr::CompareImage(Media::Image *oriImage, Media::Image *cmpImage)
+Double Media::ImageCmp::ImageMeanSqrErr::CompareImage(NN<Media::RasterImage> oriImage, NN<Media::RasterImage> cmpImage)
 {
-	if (oriImage->info->fourcc != cmpImage->info->fourcc)
+	if (oriImage->info.fourcc != cmpImage->info.fourcc)
 		return -1;
-	if (oriImage->info->bpp != cmpImage->info->bpp)
+	if (oriImage->info.storeBPP != cmpImage->info.storeBPP)
 		return -1;
-	if (oriImage->info->width != cmpImage->info->width || oriImage->info->height != cmpImage->info->height)
+	if (oriImage->info.dispSize.GetWidth() != cmpImage->info.dispSize.GetWidth() || oriImage->info.dispSize.GetHeight() != cmpImage->info.dispSize.GetHeight())
 		return -1;
-	if (oriImage->info->fourcc == 0 || oriImage->info->fourcc == *(Int32*)"DIB")
+	if (oriImage->info.fourcc == 0 || oriImage->info.fourcc == *(Int32*)"DIB")
 	{
 		Int64 diffSum = 0;
-		if (oriImage->info->bpp == 32)
+		if (oriImage->info.storeBPP == 32)
 		{
-			Int32 w = oriImage->info->width;
-			Int32 bpl = w << 2;
+			UOSInt w = oriImage->info.dispSize.GetWidth();
+			UOSInt bpl = w << 2;
 			UInt8 *srcImg;
 			UInt8 *destImg;
-			Int32 i = oriImage->info->height;
+			UOSInt i = oriImage->info.dispSize.GetHeight();
 			srcImg = MemAlloc(UInt8, bpl);
 			destImg = MemAlloc(UInt8, bpl);
+			UInt8 *srcPtr;
+			UInt8 *destPtr;
+			UOSInt j;
+			OSInt db;
+			OSInt dg;
+			OSInt dr;
 			while (i-- > 0)
 			{
-				oriImage->GetImageData(srcImg, 0, i, w, 1, bpl);
-				cmpImage->GetImageData(destImg, 0, i, w, 1, bpl);
-				_asm
+				oriImage->GetRasterData(srcImg, 0, (OSInt)i, w, 1, bpl, false, Media::RotateType::None);
+				cmpImage->GetRasterData(destImg, 0, (OSInt)i, w, 1, bpl, false, Media::RotateType::None);
+				srcPtr = srcImg;
+				destPtr = destImg;
+				j = w;
+				while (j-- > 0)
 				{
-					mov esi,srcImg
-					mov edi,destImg
-					mov ecx,w
-cilop:
-					movzx eax,byte ptr [esi]
-					movzx edx,byte ptr [edi]
-					sub eax,edx
-					imul eax
-					mov ebx,eax
-
-					movzx eax,byte ptr [esi+1]
-					movzx edx,byte ptr [edi+1]
-					sub eax,edx
-					imul eax
-					add ebx,eax
-
-					movzx eax,byte ptr [esi+2]
-					movzx edx,byte ptr [edi+2]
-					sub eax,edx
-					imul eax
-					add ebx,eax
-
-					add dword ptr diffSum, ebx
-					adc dword ptr diffSum[4], 0
-					add esi,4
-					add edi,4
-					dec ecx
-					jnz cilop
+					db = srcPtr[0] - destPtr[0];
+					dg = srcPtr[1] - destPtr[1];
+					dr = srcPtr[2] - destPtr[2];
+					diffSum += dr * dr + dg * dg + db * db;
+					srcPtr += 4;
+					destPtr += 4;
 				}
 			}
 			MemFree(srcImg);
 			MemFree(destImg);
-			return diffSum / (Double)(w * oriImage->info->height * 3);
+			return diffSum / (Double)(w * oriImage->info.dispSize.GetHeight() * 3);
 		}
 		return -1;
 	}
