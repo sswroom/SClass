@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "Media/DDrawManager.h"
 #include "Media/DDrawSurface.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include <windows.h>
 #include <ddraw.h>
 

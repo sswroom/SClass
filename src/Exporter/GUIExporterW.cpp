@@ -110,6 +110,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 {
 	*relBuff = 0;
+	UnsafeArray<UInt8> nnpal;
 	NN<Media::ImageList> imgList;
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
@@ -175,7 +176,10 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		pal = (Gdiplus::ColorPalette*)MAlloc(1032);
 		pal->Flags = Gdiplus::PaletteFlagsHasAlpha;
 		pal->Count = 256;
-		MemCopyNO(pal->Entries, img->pal, 1024);
+		if (img->pal.SetTo(nnpal))
+		{
+			MemCopyNO(pal->Entries, nnpal.Ptr(), 1024);
+		}
 		gimg->SetPalette(pal);
 		MemFree(pal);
 
@@ -193,7 +197,10 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		pal = (Gdiplus::ColorPalette*)MAlloc(72);
 		pal->Flags = Gdiplus::PaletteFlagsHasAlpha;
 		pal->Count = 16;
-		MemCopyNO(pal->Entries, img->pal, 64);
+		if (img->pal.SetTo(nnpal))
+		{
+			MemCopyNO(pal->Entries, nnpal.Ptr(), 64);
+		}
 		gimg->SetPalette(pal);
 		MemFree(pal);
 
@@ -211,7 +218,10 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		pal = (Gdiplus::ColorPalette*)MAlloc(16);
 		pal->Flags = Gdiplus::PaletteFlagsHasAlpha;
 		pal->Count = 2;
-		MemCopyNO(pal->Entries, img->pal, 8);
+		if (img->pal.SetTo(nnpal))
+		{
+			MemCopyNO(pal->Entries, nnpal.Ptr(), 8);
+		}
 		gimg->SetPalette(pal);
 		MemFree(pal);
 

@@ -253,7 +253,7 @@ Net::OpenSSLEngine::OpenSSLEngine(NN<Net::TCPClientFactory> clif, Method method)
 		break;
 #endif
 	}
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->ctx = SSL_CTX_new(m);
 	this->clsData->cliCert = 0;
 	this->clsData->cliKey = 0;
@@ -274,7 +274,7 @@ Net::OpenSSLEngine::~OpenSSLEngine()
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
 	SDEL_CLASS(this->clsData->alpnSupports);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 	Net::OpenSSLCore::Deinit();
 }
 
@@ -460,8 +460,8 @@ Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CStringNN proto)
 	if (this->clsData->alpnSupports == 0)
 	{
 		NEW_CLASS(this->clsData->alpnSupports, Data::FastStringMap<Bool>());
-		SSL_CTX_set_alpn_select_cb(this->clsData->ctx, OpenSSLEngine_alpn_select_cb, this->clsData);
-		SSL_CTX_set_next_proto_select_cb(this->clsData->ctx, OpenSSLEngine_next_proto_select_cb, this->clsData);
+		SSL_CTX_set_alpn_select_cb(this->clsData->ctx, OpenSSLEngine_alpn_select_cb, this->clsData.Ptr());
+		SSL_CTX_set_next_proto_select_cb(this->clsData->ctx, OpenSSLEngine_next_proto_select_cb, this->clsData.Ptr());
 	}
 	this->clsData->alpnSupports->PutC(proto, true);
 	return true;

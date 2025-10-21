@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "Media/LPCMConverter.h"
 
-UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChannels, const UInt8 *srcBuff, UOSInt srcSize, UInt16 destNChannels, UInt8 *destBuff)
+UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChannels, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize, UInt16 destNChannels, UnsafeArray<UInt8> destBuff)
 {
 	if (srcNChannels < destNChannels)
 	{
@@ -14,19 +14,19 @@ UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChann
 	{
 		if (srcBuff != destBuff)
 		{
-			MemCopyNO(destBuff, srcBuff, srcSize);			
+			MemCopyNO(&destBuff[0], &srcBuff[0], srcSize);			
 		}
 		return srcSize;
 	}
 	UOSInt copySize = (UOSInt)(bitPerSample >> 3) * (UOSInt)destNChannels;
 	UOSInt blockSize = (UOSInt)(bitPerSample >> 3) * (UOSInt)srcNChannels;
-	const UInt8 *srcEnd = srcBuff + srcSize;
+	UnsafeArray<const UInt8> srcEnd = srcBuff + srcSize;
 	switch (blockSize)
 	{
 	case 4:
 		while (srcBuff < srcEnd)
 		{
-			WriteNInt32(destBuff, ReadNInt32(srcBuff));
+			WriteNInt32(&destBuff[0], ReadNInt32(&srcBuff[0]));
 			destBuff += copySize;
 			srcBuff += blockSize;
 		}
@@ -34,7 +34,7 @@ UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChann
 	case 8:
 		while (srcBuff < srcEnd)
 		{
-			WriteNInt64(destBuff, ReadNInt64(srcBuff));
+			WriteNInt64(&destBuff[0], ReadNInt64(&srcBuff[0]));
 			destBuff += copySize;
 			srcBuff += blockSize;
 		}
@@ -42,7 +42,7 @@ UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChann
 	default:
 		while (srcBuff < srcEnd)
 		{
-			MemCopyNO(destBuff, srcBuff, copySize);
+			MemCopyNO(&destBuff[0], &srcBuff[0], copySize);
 			destBuff += copySize;
 			srcBuff += blockSize;
 		}
@@ -51,7 +51,7 @@ UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChann
 	return srcSize / blockSize * copySize;
 }
 
-UOSInt Media::LPCMConverter::Convert(UInt32 srcFormat, UInt16 srcBitPerSample, const UInt8 *srcBuff, UOSInt srcSize, UInt32 destFormat, UInt16 destBitPerSample, UInt8 *destBuff)
+UOSInt Media::LPCMConverter::Convert(UInt32 srcFormat, UInt16 srcBitPerSample, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize, UInt32 destFormat, UInt16 destBitPerSample, UnsafeArray<UInt8> destBuff)
 {
     if (destFormat == 1 && destBitPerSample == 16)
     {
@@ -128,18 +128,18 @@ UOSInt Media::LPCMConverter::Convert(UInt32 srcFormat, UInt16 srcBitPerSample, c
             }
         }
 	}
-    MemCopyNO(destBuff, srcBuff, srcSize);
+    MemCopyNO(&destBuff[0], &srcBuff[0], srcSize);
     return srcSize;
 }
 
-UOSInt Media::LPCMConverter::ConvertF32_I16(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertF32_I16(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 4;
     while (i-- > 0)
     {
-        Int32 v = Double2Int32(ReadFloat(srcBuff) * 32767.0);
+        Int32 v = Double2Int32(ReadFloat(&srcBuff[0]) * 32767.0);
         Int16 v16 = SI32ToI16(v);
-        WriteInt16(destBuff, v16);
+        WriteInt16(&destBuff[0], v16);
 
         srcBuff += 4;
         destBuff += 2;
@@ -147,7 +147,7 @@ UOSInt Media::LPCMConverter::ConvertF32_I16(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize / 2;
 }
 
-UOSInt Media::LPCMConverter::ConvertI32_I16(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertI32_I16(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 4;
     while (i-- > 0)
@@ -161,7 +161,7 @@ UOSInt Media::LPCMConverter::ConvertI32_I16(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize / 2;
 }
 
-UOSInt Media::LPCMConverter::ConvertI24_I16(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertI24_I16(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 3;
     while (i-- > 0)
@@ -175,7 +175,7 @@ UOSInt Media::LPCMConverter::ConvertI24_I16(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize / 3 * 2;
 }
 
-UOSInt Media::LPCMConverter::ConvertU8_I16(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertU8_I16(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UInt8 v;
     UOSInt i = srcSize;
@@ -191,14 +191,14 @@ UOSInt Media::LPCMConverter::ConvertU8_I16(UInt8 *destBuff, const UInt8 *srcBuff
     return srcSize * 2;
 }
 
-UOSInt Media::LPCMConverter::ConvertF32_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertF32_I24(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 4;
     while (i-- > 0)
     {
-		Double v = ReadFloat(srcBuff) * 8388607.0;
+		Double v = ReadFloat(&srcBuff[0]) * 8388607.0;
 		Int32 v32 = Math::SDouble2Int24(v);
-        WriteInt32(destBuff, v32);
+        WriteInt32(&destBuff[0], v32);
 
         srcBuff += 4;
         destBuff += 4;
@@ -206,7 +206,7 @@ UOSInt Media::LPCMConverter::ConvertF32_I24(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize / 4 * 3;
 }
 
-UOSInt Media::LPCMConverter::ConvertI32_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertI32_I24(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 4;
     while (i-- > 0)
@@ -221,7 +221,7 @@ UOSInt Media::LPCMConverter::ConvertI32_I24(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize / 4 * 3;
 }
 
-UOSInt Media::LPCMConverter::ConvertI16_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertI16_I24(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 2;
     while (i-- > 0)
@@ -236,7 +236,7 @@ UOSInt Media::LPCMConverter::ConvertI16_I24(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize / 2 * 3;
 }
 
-UOSInt Media::LPCMConverter::ConvertU8_I24(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertU8_I24(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UInt8 v;
     UOSInt i = srcSize;
@@ -253,14 +253,14 @@ UOSInt Media::LPCMConverter::ConvertU8_I24(UInt8 *destBuff, const UInt8 *srcBuff
     return srcSize * 3;
 }
 
-UOSInt Media::LPCMConverter::ConvertF32_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertF32_I32(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 4;
 	while (i-- > 0)
     {
-		Double v = ReadFloat(srcBuff) * 2147483647.0;
+		Double v = ReadFloat(&srcBuff[0]) * 2147483647.0;
 		Int32 v32 = Math::SDouble2Int32(v);
-        WriteInt32(destBuff, v32);
+        WriteInt32(&destBuff[0], v32);
 
         srcBuff += 4;
         destBuff += 4;
@@ -268,7 +268,7 @@ UOSInt Media::LPCMConverter::ConvertF32_I32(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize;
 }
 
-UOSInt Media::LPCMConverter::ConvertI24_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertI24_I32(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 3;
     while (i-- > 0)
@@ -284,7 +284,7 @@ UOSInt Media::LPCMConverter::ConvertI24_I32(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize / 3 * 4;
 }
 
-UOSInt Media::LPCMConverter::ConvertI16_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertI16_I32(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 2;
     while (i-- > 0)
@@ -300,7 +300,7 @@ UOSInt Media::LPCMConverter::ConvertI16_I32(UInt8 *destBuff, const UInt8 *srcBuf
     return srcSize * 2;
 }
 
-UOSInt Media::LPCMConverter::ConvertU8_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
+UOSInt Media::LPCMConverter::ConvertU8_I32(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize)
 {
     UInt8 v;
     UOSInt i = srcSize;
