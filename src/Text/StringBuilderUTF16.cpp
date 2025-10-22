@@ -12,7 +12,7 @@ Text::StringBuilderUTF16::~StringBuilderUTF16()
 {
 }
 
-NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(Text::PString *s)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(NN<Text::PString> s)
 {
 	UOSInt slen = Text::StrUTF8_UTF16CntC(s->v, s->leng);
 	if (slen > 0)
@@ -87,7 +87,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendChar(UTF32Char c, UOS
 	return *this;
 }
 
-NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const UTF16Char **sarr, UOSInt nStr)
+NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(UnsafeArray<UnsafeArray<const UTF16Char>> sarr, UOSInt nStr)
 {
 	UnsafeArray<const UTF16Char> csptr;
 	UOSInt i;
@@ -106,7 +106,7 @@ NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const UTF16Char
 		if (slen > 0)
 		{
 			this->AllocLeng(slen);
-			this->buffEnd = Text::StrConcat(this->buffEnd.Ptr(), csptr);
+			this->buffEnd = Text::StrConcat(this->buffEnd, csptr);
 		}
 		Text::StrDelNew(csptr);
 		i++;
@@ -114,19 +114,19 @@ NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const UTF16Char
 	return *this;
 }
 
-NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToUpper(const UTF16Char *s)
+NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToUpper(UnsafeArray<const UTF16Char> s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
-	this->buffEnd = Text::StrToUpper(this->buffEnd.Ptr(), s);
+	this->buffEnd = Text::StrToUpper(this->buffEnd, s);
 	return *this;
 }
 
-NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToLower(const UTF16Char *s)
+NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToLower(UnsafeArray<const UTF16Char> s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
-	this->buffEnd = Text::StrToLower(this->buffEnd.Ptr(), s);
+	this->buffEnd = Text::StrToLower(this->buffEnd, s);
 	return *this;
 }
 

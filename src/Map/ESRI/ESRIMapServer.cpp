@@ -306,7 +306,7 @@ Bool Map::ESRI::ESRIMapServer::TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, Int32 tileX, Int32 tileY) const
+Bool Map::ESRI::ESRIMapServer::TileLoadToStream(NN<IO::Stream> stm, UOSInt level, Int32 tileX, Int32 tileY) const
 {
 	UInt8 dataBuff[2048];
 	UTF8Char url[1024];

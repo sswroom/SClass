@@ -53,7 +53,7 @@ namespace Map
 			Math::Coord2DDbl TileGetOrigin() const;
 			UnsafeArray<UTF8Char> TileGetURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const;
-			Bool TileLoadToStream(IO::Stream *stm, UOSInt level, Int32 tileX, Int32 tileY) const;
+			Bool TileLoadToStream(NN<IO::Stream> stm, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileLoadToFile(Text::CStringNN fileName, UOSInt level, Int32 tileX, Int32 tileY) const;
 
 			virtual NN<Text::String> GetName() const;

@@ -959,7 +959,7 @@ void Net::MQTTBroker::StreamClosed(NN<IO::Stream> stm, AnyType stmData)
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
+Net::MQTTBroker::MQTTBroker(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(*this)
 {
 	this->clif = clif;
 	this->log = log;

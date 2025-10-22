@@ -69,9 +69,10 @@ Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Opt
 
 Net::WebServer::WebConnection::~WebConnection()
 {
-	if (this->protoHdlr)
+	NN<ProtocolHandler> protoHdlr;
+	if (this->protoHdlr.SetTo(protoHdlr))
 	{
-		this->protoHdlr->ConnectionClosed();
+		protoHdlr->ConnectionClosed();
 		this->protoHdlr = 0;
 	}
 	if (this->sseHdlr)
@@ -103,9 +104,10 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 	UOSInt j;
 	UOSInt lineStart;
 	UOSInt strIndex;
-	if (this->protoHdlr)
+	NN<ProtocolHandler> protoHdlr;
+	if (this->protoHdlr.SetTo(protoHdlr))
 	{
-		this->protoHdlr->ProtocolData(buff.Arr().Ptr(), buff.GetSize());
+		protoHdlr->ProtocolData(buff.Arr().Ptr(), buff.GetSize());
 		return;
 	}
 	else if (this->proxyMode)
@@ -682,7 +684,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			t = clk.GetTimeDiff();
 			this->svr->LogAccess(currReq, *this, t);
 			SDEL_CLASS(this->cstm);
-			if (this->protoHdlr)
+			if (this->protoHdlr.NotNull())
 			{
 			}
 			else if (this->sseHdlr == 0)
@@ -848,7 +850,7 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 	return this->cli->Write(sb.ToByteArray()) == sb.GetLength();
 }
 
-Bool Net::WebServer::WebConnection::SwitchProtocol(ProtocolHandler *protoHdlr)
+Bool Net::WebServer::WebConnection::SwitchProtocol(Optional<ProtocolHandler> protoHdlr)
 {
 	if (!this->respHeaderSent)
 	{
@@ -884,7 +886,7 @@ UOSInt Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
 
 UOSInt Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 {
-	if (this->protoHdlr)
+	if (this->protoHdlr.NotNull())
 	{
 		if (this->logger)
 		{

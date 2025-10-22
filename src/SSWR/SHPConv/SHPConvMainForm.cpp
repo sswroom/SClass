@@ -353,6 +353,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 	Block *theBlk;
 //	Dim tmpWriter As IO.StreamWriter
 	UInt32 tRec;
+	NN<Text::String> str;
 
 	IO::FileStream fs(sourceFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -637,7 +638,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 									strRec->recId = currRec;
 									if (!dbfr.IsNull())
 									{
-										strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2).Ptr();
+										strRec->str = this->GetNewDBFName(&dbf, dbCols, tRec, dbCols2);
 									}
 									else
 									{
@@ -734,9 +735,9 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					strRec = theBlk->records->GetItem(k);
 					WriteInt32(&buff[0], strRec->recId);
 					u16buff.ClearStr();
-					if (strRec->str)
+					if (strRec->str.SetTo(str))
 					{
-						u16buff.Append(strRec->str);
+						u16buff.Append(str);
 					}
 					if (u16buff.GetLength() > 127)
 					{
@@ -765,7 +766,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				while (k < l)
 				{
 					strRec = theBlk->records->GetItem(k);
-					SDEL_STRING(strRec->str);
+					OPTSTR_DEL(strRec->str);
 					MemFree(strRec);
 					k++;
 				}
@@ -1057,9 +1058,9 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 					strRec = theBlk->records->GetItem(k);
 					WriteInt32(&buff[0], strRec->recId);
 					u16buff.ClearStr();
-					if (strRec->str)
+					if (strRec->str.SetTo(str))
 					{
-						u16buff.Append(strRec->str);
+						u16buff.Append(str);
 					}
 					if (u16buff.GetLength() > 127)
 					{
@@ -1088,7 +1089,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 				while (k < l)
 				{
 					strRec = theBlk->records->GetItem(k);
-					SDEL_STRING(strRec->str);
+					OPTSTR_DEL(strRec->str);
 					MemFree(strRec);
 					k++;
 				}

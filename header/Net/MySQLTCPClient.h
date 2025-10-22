@@ -46,7 +46,7 @@ namespace Net
 		NN<Text::String> password;
 		Optional<Text::String> database;
 		ClientMode mode;
-		Text::String *svrVer;
+		Optional<Text::String> svrVer;
 		Bool axisAware;
 		UInt32 connId;
 		UInt8 authPluginData[20];
@@ -102,9 +102,9 @@ namespace Net
 		Bool IsError();
 
 		Bool ServerInfoRecv();
-		Text::String *GetServerVer();
+		Optional<Text::String> GetServerVer();
 		UInt32 GetConnId();
-		UOSInt GetAuthPluginData(UInt8 *buff);
+		UOSInt GetAuthPluginData(UnsafeArray<UInt8> buff);
 		UInt32 GetServerCap() const;
 		UInt16 GetServerCS() const;
 

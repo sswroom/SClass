@@ -13,17 +13,17 @@ namespace Net
 		private:
 			Sync::Mutex sendMut;
 			NN<Net::WebServer::WebResponse> resp;
-			IO::StreamHandler *stmHdlr;
+			NN<IO::StreamHandler> stmHdlr;
 			AnyType stmData;
 
-			UInt8 *recvBuff;
+			UnsafeArray<UInt8> recvBuff;
 			UOSInt recvCapacity;
 			UOSInt recvSize;
 
 			Bool SendPacket(UInt8 opcode, Data::ByteArrayR buff);
 			void NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
-			WebSocketServerStream(IO::StreamHandler *stmHdlr, NN<Net::WebServer::WebResponse> resp);
+			WebSocketServerStream(NN<IO::StreamHandler> stmHdlr, NN<Net::WebServer::WebResponse> resp);
 			virtual ~WebSocketServerStream();
 
 			virtual Bool IsDown() const;
@@ -35,7 +35,7 @@ namespace Net
 			virtual Bool Recover();
 			virtual IO::StreamType GetStreamType() const;
 
-			virtual void ProtocolData(const UInt8 *data, UOSInt dataSize);
+			virtual void ProtocolData(UnsafeArray<const UInt8> data, UOSInt dataSize);
 			virtual void ConnectionClosed();
 		};
 	}

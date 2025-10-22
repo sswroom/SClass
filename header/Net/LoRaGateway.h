@@ -21,8 +21,7 @@ namespace Net
 		Data::Timestamp lastPullTime;
 		Data::Timestamp lastStatTime;
 		Bool threadToStop;
-		Bool threadRunning;
-		Sync::Event *threadEvt;
+		Optional<Sync::Event> threadEvt;
 		Sync::Event mainEvt;
 
 		Bool hasPos;

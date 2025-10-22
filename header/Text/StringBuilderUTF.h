@@ -37,9 +37,9 @@ namespace Text
 		virtual NN<StringBuilderUTF> AppendHex64(UInt64 iVal) = 0;
 		virtual NN<StringBuilderUTF> AppendHex64V(UInt64 iVal) = 0;
 		virtual NN<StringBuilderUTF> AppendHexOS(UOSInt iVal) = 0;
-		virtual NN<StringBuilderUTF> AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, Text::LineBreakType lineBreak) = 0;
+		virtual NN<StringBuilderUTF> AppendHexBuff(UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF32Char seperator, Text::LineBreakType lineBreak) = 0;
 
-		virtual NN<StringBuilderUTF> Append(Text::PString *s) = 0;
+		virtual NN<StringBuilderUTF> Append(NN<Text::PString> s) = 0;
 		virtual NN<StringBuilderUTF> Append(UnsafeArray<const UTF8Char> s) = 0;
 		virtual NN<StringBuilderUTF> AppendC(UnsafeArray<const UTF8Char> s, UOSInt charCnt) = 0;
 		virtual NN<StringBuilderUTF> AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen) = 0;
@@ -53,7 +53,7 @@ namespace Text
 		virtual void AllocLeng(UOSInt leng) { ::Text::StringBuilder<T>::AllocLeng(leng); }
 		virtual UOSInt GetCharCnt() { return this->GetLength(); }
 		virtual Bool EndsWith(UTF8Char c) { if (this->buff == this->buffEnd) return false; return this->buffEnd[-1] == (T)c; }
-		virtual Bool EndsWith(const T *s) { UOSInt l = Text::StrCharCnt(s); if (this->GetLength() < l) return false; return Text::StrEquals((const T*)&this->buffEnd[-(OSInt)l], s); }
+		virtual Bool EndsWith(UnsafeArray<const T> s) { UOSInt l = Text::StrCharCnt(s); if (this->GetLength() < l) return false; return Text::StrEquals((const T*)&this->buffEnd[-(OSInt)l], s); }
 		virtual void RemoveChars(UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(cnt); }
 		virtual void RemoveChars(UOSInt index, UOSInt cnt) {::Text::StringBuilder<T>::RemoveChars(index, cnt); }
 		virtual NN<StringBuilderUTF> AppendI16(Int16 iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendI16(iVal)); }
@@ -75,7 +75,7 @@ namespace Text
 		virtual NN<StringBuilderUTF> AppendHex64(UInt64 iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex64(iVal)); }
 		virtual NN<StringBuilderUTF> AppendHex64V(UInt64 iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex64V(iVal)); }
 		virtual NN<StringBuilderUTF> AppendHexOS(UOSInt iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHexOS(iVal)); }
-		virtual NN<StringBuilderUTF> AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, ::Text::LineBreakType lineBreak) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex(buff, buffSize, (T)seperator, lineBreak)); }
+		virtual NN<StringBuilderUTF> AppendHexBuff(UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF32Char seperator, ::Text::LineBreakType lineBreak) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex(buff, buffSize, (T)seperator, lineBreak)); }
 	};
 }
 #endif

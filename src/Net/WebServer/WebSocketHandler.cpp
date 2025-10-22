@@ -4,7 +4,7 @@
 #include "Net/WebServer/WebSocketServerStream.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Net::WebServer::WebSocketHandler::WebSocketHandler(IO::StreamHandler *stmHdlr)
+Net::WebServer::WebSocketHandler::WebSocketHandler(NN<IO::StreamHandler> stmHdlr)
 {
 	this->stmHdlr = stmHdlr;
 }

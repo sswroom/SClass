@@ -29,6 +29,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 	RequestEnv env;
 	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
 
+	NN<Data::ArrayListInt32> pickObjs;
 	Int32 id;
 	Int32 cateId;
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
@@ -70,18 +71,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 			Int32 itemId;
 			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
-				if (action->Equals(UTF8STRC("pickall")))
+				if (action->Equals(UTF8STRC("pickall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (group->groups.GetCount() > 0)
 					{
 						env.pickObjType = POT_GROUP;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->groups.GetCount();
 						while (i < j)
 						{
-							env.pickObjs->SortedInsert(group->groups.GetItemNoCheck(i)->id);
+							pickObjs->SortedInsert(group->groups.GetItemNoCheck(i)->id);
 							i++;
 						}
 					}
@@ -89,23 +90,23 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					{
 						env.pickObjType = POT_SPECIES;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->species.GetCount();
 						while (i < j)
 						{
-							env.pickObjs->SortedInsert(group->species.GetItemNoCheck(i)->speciesId);
+							pickObjs->SortedInsert(group->species.GetItemNoCheck(i)->speciesId);
 							i++;
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("picksel")))
+				else if (action->Equals(UTF8STRC("picksel")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (group->groups.GetCount() > 0)
 					{
 						env.pickObjType = POT_GROUP;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->groups.GetCount();
 						while (i < j)
@@ -116,7 +117,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							sb.AppendI32(itemId);
 							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 							{
-								env.pickObjs->SortedInsert(itemId);
+								pickObjs->SortedInsert(itemId);
 							}
 							i++;
 						}
@@ -125,7 +126,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					{
 						env.pickObjType = POT_SPECIES;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->species.GetCount();
 						while (i < j)
@@ -136,21 +137,21 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							sb.AppendI32(itemId);
 							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 							{
-								env.pickObjs->SortedInsert(itemId);
+								pickObjs->SortedInsert(itemId);
 							}
 							i++;
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("place")))
+				else if (action->Equals(UTF8STRC("place")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("group"));
 							sb.AppendI32(itemId);
@@ -158,13 +159,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							{
 								if (me->env->GroupMove(mutUsage, itemId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
@@ -173,10 +174,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species"));
 							sb.AppendI32(itemId);
@@ -184,36 +185,36 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							{
 								if (me->env->SpeciesMove(mutUsage, itemId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("placeall")))
+				else if (action->Equals(UTF8STRC("placeall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							if (me->env->GroupMove(mutUsage, itemId, id, cateId))
 							{
-								env.pickObjs->RemoveAt(i);
+								pickObjs->RemoveAt(i);
 								i--;
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
@@ -222,18 +223,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							if (me->env->SpeciesMove(mutUsage, itemId, id, cateId))
 							{
-								env.pickObjs->RemoveAt(i);
+								pickObjs->RemoveAt(i);
 								i--;
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
@@ -780,6 +781,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
+	NN<Data::ArrayListInt32> pickObjs;
 
 	Int32 id;
 	Int32 cateId;
@@ -837,24 +839,24 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			Int32 userfileId;
 			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
-				if (action->Equals(UTF8STRC("pickall")))
+				if (action->Equals(UTF8STRC("pickall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					env.pickObjType = POT_USERFILE;
 					webSess.SetPickObjType(env.pickObjType);
-					env.pickObjs->Clear();
+					pickObjs->Clear();
 					i = 0;
 					j = species->files.GetCount();
 					while (i < j)
 					{
-						env.pickObjs->SortedInsert(species->files.GetItemNoCheck(i)->id);
+						pickObjs->SortedInsert(species->files.GetItemNoCheck(i)->id);
 						i++;
 					}
 				}
-				else if (action->Equals(UTF8STRC("picksel")))
+				else if (action->Equals(UTF8STRC("picksel")) && env.pickObjs.SetTo(pickObjs))
 				{
 					env.pickObjType = POT_USERFILE;
 					webSess.SetPickObjType(env.pickObjType);
-					env.pickObjs->Clear();
+					pickObjs->Clear();
 					i = 0;
 					j = species->files.GetCount();
 					while (i < j)
@@ -865,20 +867,20 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						sb.AppendI32(userfileId);
 						if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 						{
-							env.pickObjs->SortedInsert(userfileId);
+							pickObjs->SortedInsert(userfileId);
 						}
 						i++;
 					}
 				}
-				else if (action->Equals(UTF8STRC("place")))
+				else if (action->Equals(UTF8STRC("place")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_USERFILE)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							userfileId = env.pickObjs->GetItem(i);
+							userfileId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("userfile"));
 							sb.AppendI32(userfileId);
@@ -886,51 +888,51 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 							{
 								if (me->env->UserfileMove(mutUsage, userfileId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("placeall")))
+				else if (action->Equals(UTF8STRC("placeall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_USERFILE)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							userfileId = env.pickObjs->GetItem(i);
+							userfileId = pickObjs->GetItem(i);
 							if (me->env->UserfileMove(mutUsage, userfileId, id, cateId))
 							{
-								env.pickObjs->RemoveAt(i);
+								pickObjs->RemoveAt(i);
 								i--;
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("placemerge")))
+				else if (action->Equals(UTF8STRC("placemerge")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_SPECIES)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							Int32 speciesId = env.pickObjs->GetItem(i);
+							Int32 speciesId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species"));
 							sb.AppendI32(speciesId);
@@ -938,13 +940,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 							{
 								if (me->env->SpeciesMerge(mutUsage, speciesId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);

@@ -380,7 +380,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 			UOSInt j;
 			UInt64 v;
 			OSInt diffMul = 1;
-			Map::ESRI::FileGDBFieldInfo *field;
+			NN<Map::ESRI::FileGDBFieldInfo> field;
 			if (tableInfo->nullableCnt > 0)
 			{
 				frame->AddHexBuff(4, (tableInfo->nullableCnt + 7) >> 3, CSTR("Null Status"), &tagData[4], false);
@@ -390,7 +390,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 			j = tableInfo->fields->GetCount();
 			while (i < j)
 			{
-				field = tableInfo->fields->GetItem(i);
+				field = tableInfo->fields->GetItemNoCheck(i);
 				Bool isNull = false;
 				if (field->flags & 1)
 				{

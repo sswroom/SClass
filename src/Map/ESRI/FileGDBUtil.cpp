@@ -17,10 +17,10 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 {
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
-	FileGDBFieldInfo *field;
+	NN<FileGDBFieldInfo> field;
 	NN<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo);
 	MemClear(table.Ptr(), sizeof(FileGDBTableInfo));
-	NEW_CLASS(table->fields, Data::ArrayList<FileGDBFieldInfo*>());
+	NEW_CLASSNN(table->fields, Data::ArrayListNN<FileGDBFieldInfo>());
 	UInt32 descSize = ReadUInt32(&fieldDesc[0]);
 	fieldDesc += 4;
 	table->geometryType = fieldDesc[4];
@@ -29,6 +29,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 	UOSInt fieldCnt = ReadUInt16(&fieldDesc[8]);
 	UOSInt ofst = 10;
 	Bool valid = true;
+	UnsafeArray<UInt8> valArr;
 	while (fieldCnt-- > 0)
 	{
 		if (fieldDesc[ofst] == 0 || (ofst + 1 + (UOSInt)fieldDesc[ofst] * 2) > descSize)
@@ -36,8 +37,8 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 			valid = false;
 			break;
 		}
-		field = MemAlloc(FileGDBFieldInfo, 1);
-		MemClear(field, sizeof(FileGDBFieldInfo));
+		field = MemAllocNN(FileGDBFieldInfo);
+		field.ZeroContent();
 		field->name = Text::String::NewW((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
 		ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
 		if (fieldDesc[ofst] == 0)
@@ -52,7 +53,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 		}
 		else
 		{
-			field->alias = Text::String::NewW((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]).Ptr();
+			field->alias = Text::String::NewW((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
 			ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
 		}
 		field->fieldType = fieldDesc[ofst];
@@ -90,8 +91,8 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 			sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 2], srsLen >> 1);
 			*sptr = 0;
 			field->srsSize = srsLen;
-			field->srsValue = MemAlloc(UInt8, srsLen);
-			MemCopyNO(field->srsValue, &fieldDesc[ofst + 2], srsLen);
+			field->srsValue = valArr = MemAllocArr(UInt8, srsLen);
+			MemCopyNO(valArr.Ptr(), &fieldDesc[ofst + 2], srsLen);
 			UOSInt csysLen = (UOSInt)(sptr - sbuff);
 			table->csys = prjParser->ParsePRJBuff(CSTR("FileGDB"), sbuff, csysLen, csysLen);
 			ofst += 2 + srsLen;
@@ -169,10 +170,10 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 				break;
 			}
 			field->defSize = fieldDesc[ofst];
-			field->defValue = MemAlloc(UInt8, field->defSize);
+			field->defValue = valArr = MemAlloc(UInt8, field->defSize);
 			if (field->defSize)
 			{
-				MemCopyNO(field->defValue, &fieldDesc[ofst + 1], field->defSize);
+				MemCopyNO(valArr.Ptr(), &fieldDesc[ofst + 1], field->defSize);
 			}
 			ofst += 1 + (UOSInt)field->defSize;
 		}
@@ -190,50 +191,53 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 	return table;
 }
 
-void Map::ESRI::FileGDBUtil::FreeFieldInfo(FileGDBFieldInfo *fieldInfo)
+void Map::ESRI::FileGDBUtil::FreeFieldInfo(NN<FileGDBFieldInfo> fieldInfo)
 {
+	UnsafeArray<UInt8> valArr;
 	fieldInfo->name->Release();
-	SDEL_STRING(fieldInfo->alias);
-	if (fieldInfo->defValue)
+	OPTSTR_DEL(fieldInfo->alias);
+	if (fieldInfo->defValue.SetTo(valArr))
 	{
-		MemFree(fieldInfo->defValue);
+		MemFreeArr(valArr);
 	}
-	if (fieldInfo->srsValue)
+	if (fieldInfo->srsValue.SetTo(valArr))
 	{
-		MemFree(fieldInfo->srsValue);
+		MemFreeArr(valArr);
 	}
-	MemFree(fieldInfo);
+	MemFreeNN(fieldInfo);
 }
 
 void Map::ESRI::FileGDBUtil::FreeTableInfo(NN<FileGDBTableInfo> tableInfo)
 {
-	LIST_FREE_FUNC(tableInfo->fields, FreeFieldInfo);
-	DEL_CLASS(tableInfo->fields);
+	tableInfo->fields->FreeAll(FreeFieldInfo);
+	tableInfo->fields.Delete();
 	tableInfo->csys.Delete();
 	MemFreeNN(tableInfo);
 }
 
-Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBFieldInfo *field)
+NN<Map::ESRI::FileGDBFieldInfo> Map::ESRI::FileGDBUtil::FieldInfoClone(NN<FileGDBFieldInfo> field)
 {
-	FileGDBFieldInfo *newField = MemAlloc(FileGDBFieldInfo, 1);
+	NN<FileGDBFieldInfo> newField = MemAllocNN(FileGDBFieldInfo);
 	newField->name = field->name->Clone();
-	newField->alias = SCOPY_STRING(field->alias);
+	newField->alias = Text::String::CopyOrNull(field->alias);
 	newField->fieldType = field->fieldType;
 	newField->fieldSize = field->fieldSize;
 	newField->flags = field->flags;
 	newField->defSize = field->defSize;
 	newField->defValue = 0;
-	if (field->defValue)
+	UnsafeArray<UInt8> valArr;
+	UnsafeArray<UInt8> newArr;
+	if (field->defValue.SetTo(valArr))
 	{
-		newField->defValue = MemAlloc(UInt8, field->defSize);
-		MemCopyNO(newField->defValue, field->defValue, field->defSize);
+		newField->defValue = newArr = MemAllocArr(UInt8, field->defSize);
+		MemCopyNO(newArr.Ptr(), valArr.Ptr(), field->defSize);
 	}
 	newField->srsSize = field->srsSize;
 	newField->srsValue = 0;
-	if (field->srsValue)
+	if (field->srsValue.SetTo(valArr))
 	{
-		newField->srsValue = MemAlloc(UInt8, field->srsSize);
-		MemCopyNO(newField->srsValue, field->srsValue, field->srsSize);
+		newField->srsValue = newArr = MemAllocArr(UInt8, field->srsSize);
+		MemCopyNO(newArr.Ptr(), valArr.Ptr(), field->srsSize);
 	}
 	return newField;
 }
@@ -247,18 +251,18 @@ NN<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NN<FileGD
 	{
 		newTable->csys = csys->Clone();
 	}
-	NEW_CLASS(newTable->fields, Data::ArrayList<FileGDBFieldInfo*>());
+	NEW_CLASSNN(newTable->fields, Data::ArrayListNN<FileGDBFieldInfo>());
 	UOSInt i = 0;
 	UOSInt j = tableInfo->fields->GetCount();
 	while (i < j)
 	{
-		newTable->fields->Add(FieldInfoClone(tableInfo->fields->GetItem(i)));
+		newTable->fields->Add(FieldInfoClone(tableInfo->fields->GetItemNoCheck(i)));
 		i++;
 	}
 	return newTable;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, OutParam<UInt64> val)
+UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<UInt64> val)
 {
 	UInt64 v = 0;
 	UOSInt i = 0;
@@ -278,7 +282,7 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, OutPa
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, OutParam<Int64> val)
+UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<Int64> val)
 {
 	Bool sign = (buff[ofst] & 0x40) != 0;
 	Int64 v = 0;

@@ -1,16 +1,13 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Math/BigFloat.h"
 #include <stdlib.h>
-#ifndef HAS_ASM32
-#include <windows.h>
-#endif
 
 void Math::BigFloat::RemZero()
 {
-	UInt8 *tarr;
-	UInt8 *varr;
+	UnsafeArray<UInt8> tarr;
+	UnsafeArray<UInt8> varr;
 	Int32 vsize = valSize;
 	Int32 vindex = 1;
 	while (vsize-- > 0)
@@ -79,10 +76,10 @@ void Math::BigFloat::PrepareTmpBuff(Int32 tmpSize)
 	{
 		tmpSize = this->valSize;
 	}
-	MemCopyNO(this->tmpArr, this->valArr, this->valSize);
+	MemCopyNO(this->tmpArr.Ptr(), this->valArr.Ptr(), this->valSize);
 	this->tmpIndex = this->valIndex;
 
-	UInt8 *tarr = this->tmpArr;
+	UnsafeArray<UInt8> tarr = this->tmpArr;
 	Int32 i = this->valSize;
 	while (i > tmpSize)
 	{
@@ -113,11 +110,11 @@ bfptblop:
 	}
 }
 
-void Math::BigFloat::PrepareTmpBuff(const BigFloat *val)
+void Math::BigFloat::PrepareTmpBuff(NN<const BigFloat> val)
 {
 	if (this->valSize >= val->valSize)
 	{
-		MemCopyNO(this->tmpArr, val->valArr, val->valSize);
+		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), val->valSize);
 		if (this->valSize > val->valSize)
 		{
 			MemClear(&this->tmpArr[val->valSize], this->valSize - val->valSize);
@@ -126,8 +123,8 @@ void Math::BigFloat::PrepareTmpBuff(const BigFloat *val)
 	}
 	else
 	{
-		((BigFloat*)val)->PrepareTmpBuff(this->valSize);
-		MemCopyNO(this->tmpArr, val->valArr, this->valSize);
+		NN<BigFloat>::ConvertFrom(val)->PrepareTmpBuff(this->valSize);
+		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), this->valSize);
 		this->tmpIndex = val->tmpIndex;
 	}
 }
@@ -136,9 +133,9 @@ void Math::BigFloat::PrepareSum()
 {
 	Int32 vsize = this->valSize;
 	Int32 tindex = this->tmpIndex;
-	UInt8 *tarr = this->tmpArr;
+	UnsafeArray<UInt8> tarr = this->tmpArr;
 	Int32 vindex = this->valIndex;
-	UInt8 *varr = this->valArr;
+	UnsafeArray<UInt8> varr = this->valArr;
 	while (tindex > vindex)
 	{
 		if (*(Int32*)&tarr[vsize - 4])
@@ -379,42 +376,18 @@ bfdsublop5:
 	return ret;
 }
 
-Math::BigFloat::BigFloat(const BigFloat *val)
+Math::BigFloat::BigFloat(NN<const BigFloat> val)
 {
 	this->valSize = val->valSize;
-	this->valArr = MemAlloc(UInt8, this->valSize);
-	this->tmpArr = MemAlloc(UInt8, this->valSize);
+	this->valArr = MemAllocArr(UInt8, this->valSize);
+	this->tmpArr = MemAllocArr(UInt8, this->valSize);
 	this->valIndex = val->valIndex;
 	this->tmpIndex = val->tmpIndex;
-	MemCopyNO(this->valArr, val->valArr, this->valSize);
-	MemCopyNO(this->tmpArr, val->tmpArr, this->valSize);
+	MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valSize);
+	MemCopyNO(this->tmpArr.Ptr(), val->tmpArr.Ptr(), this->valSize);
 }
 
-Math::BigFloat::BigFloat(Int32 valSize, const WChar *val)
-{
-	if (valSize < 16)
-		valSize = 16;
-	if (valSize & 3)
-	{
-		valSize += 4 - (valSize & 3);
-	}
-	this->valSize = valSize;
-	this->valArr = MemAlloc(UInt8, valSize);
-	this->tmpArr = MemAlloc(UInt8, valSize);
-	this->valIndex = 0;
-	this->tmpIndex = 0;
-	if (val)
-	{
-		*this = val;
-	}
-	else
-	{
-		MemClear(this->valArr, valSize);
-		MemClear(this->tmpArr, valSize);
-	}
-}
-
-Math::BigFloat::BigFloat(Int32 valSize, Double val)
+Math::BigFloat::BigFloat(UOSInt valSize, Text::CStringNN val)
 {
 	if (valSize < 16)
 		valSize = 16;
@@ -430,7 +403,23 @@ Math::BigFloat::BigFloat(Int32 valSize, Double val)
 	*this = val;
 }
 
-Math::BigFloat::BigFloat(Int32 valSize)
+Math::BigFloat::BigFloat(UOSInt valSize, Double val)
+{
+	if (valSize < 16)
+		valSize = 16;
+	if (valSize & 3)
+	{
+		valSize += 4 - (valSize & 3);
+	}
+	this->valSize = valSize;
+	this->valArr = MemAllocArr(UInt8, valSize);
+	this->tmpArr = MemAllocArr(UInt8, valSize);
+	this->valIndex = 0;
+	this->tmpIndex = 0;
+	*this = val;
+}
+
+Math::BigFloat::BigFloat(UOSInt valSize)
 {
 	if (valSize < 16)
 		valSize = 16;
@@ -443,19 +432,19 @@ Math::BigFloat::BigFloat(Int32 valSize)
 	this->tmpArr = MemAlloc(UInt8, valSize);
 	this->valIndex = 0;
 	this->tmpIndex = 0;
-	MemClear(this->valArr, valSize);
-	MemClear(this->tmpArr, valSize);
+	MemClear(this->valArr.Ptr(), valSize);
+	MemClear(this->tmpArr.Ptr(), valSize);
 }
 
 Math::BigFloat::~BigFloat()
 {
-	MemFree(this->valArr);
-	MemFree(this->tmpArr);
+	MemFreeArr(this->valArr);
+	MemFreeArr(this->tmpArr);
 }
 
 Int32 Math::BigFloat::operator =(Int32 val)
 {
-	UInt8 *varr = this->valArr;
+	UnsafeArray<UInt8> varr = this->valArr;
 	Int32 vsize = this->valSize;
 	this->valIndex = 0;
 	if (val < 0)
@@ -537,7 +526,7 @@ bfequlop5:
 	return val;
 }
 
-Math::BigFloat *Math::BigFloat::operator =(const WChar *val)
+NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 {
 	Int32 refIndex = 0;
 	Int32 refIndex2 = 0;
@@ -636,38 +625,33 @@ bfequlop6:
 	}
 	valIndex = refIndex + refIndex2;
 	RemZero();
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::operator =(const BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::operator =(NN<const BigFloat> val)
 {
 	if (val->valSize > this->valSize)
 	{
 		this->valSize = val->valSize;
-		MemFree(this->valArr);
-		this->valArr = MemAlloc(UInt8, this->valSize);
-		MemCopyNO(this->valArr, val->valArr, this->valSize);
+		MemFreeArr(this->valArr);
+		this->valArr = MemAllocArr(UInt8, this->valSize);
+		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valSize);
 		this->valIndex = val->valIndex;
 	}
 	else
 	{
 		this->valIndex = val->valIndex;
-		MemCopyNO(this->valArr, val->valArr, val->valSize);
+		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), val->valSize);
 		if (val->valSize < this->valSize)
 		{
 			MemClear(&this->valArr[val->valSize], this->valSize - val->valSize);
 		}
 	}
 	this->isNeg = val->isNeg;
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::operator =(const BigFloat &val)
-{
-	return *this = &val;
-}
-
-Math::BigFloat *Math::BigFloat::operator +=(const BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::operator +=(NN<const BigFloat> val)
 {
 	PrepareTmpBuff(val);
 	PrepareSum();
@@ -680,15 +664,10 @@ Math::BigFloat *Math::BigFloat::operator +=(const BigFloat *val)
 		if (DoSubtract())
 			this->isNeg = !this->isNeg;
 	}
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::operator +=(const BigFloat &val)
-{
-	return *this += &val;
-}
-
-Math::BigFloat *Math::BigFloat::operator -=(const BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::operator -=(NN<const BigFloat> val)
 {
 	PrepareTmpBuff(val);
 	PrepareSum();
@@ -701,12 +680,7 @@ Math::BigFloat *Math::BigFloat::operator -=(const BigFloat *val)
 		if (DoSubtract())
 			this->isNeg = !this->isNeg;
 	}
-	return this;
-}
-
-Math::BigFloat *Math::BigFloat::operator -=(const BigFloat &val)
-{
-	return *this -= &val;
+	return *this;
 }
 
 Math::BigFloat *Math::BigFloat::operator *=(const Math::BigFloat *val)
@@ -816,12 +790,7 @@ bfmullop8:
 	return this;
 }
 
-Math::BigFloat *Math::BigFloat::operator *=(const BigFloat &val)
-{
-	return *this *= &val;
-}
-
-Math::BigFloat *Math::BigFloat::operator *=(Int32 val)
+NN<Math::BigFloat> Math::BigFloat::operator *=(Int32 val)
 {
 	if (val == 0)
 	{
@@ -1293,15 +1262,10 @@ bfdivexit:
 	return this;
 }
 
-Math::BigFloat *Math::BigFloat::operator /=(const BigFloat &val)
-{
-	return *this /= &val;
-}
-
-Math::BigFloat *Math::BigFloat::operator /=(Int32 val)
+NN<Math::BigFloat> Math::BigFloat::operator /=(Int32 val)
 {
 	if (val == 0)
-		return this;
+		return *this;
 	if (val < 0)
 	{
 		val = -val;
@@ -1309,16 +1273,16 @@ Math::BigFloat *Math::BigFloat::operator /=(Int32 val)
 	}
 	if (val == 1)
 	{
-		return this;
+		return *this;
 	}
 
-	UInt8 *tarr = this->tmpArr;
-	UInt8 *varr = this->valArr;
+	UnsafeArray<UInt8> tarr = this->tmpArr;
+	UnsafeArray<UInt8> varr = this->valArr;
 	Int32 vsize = this->valSize;
 	Int32 tIndex = this->valIndex;
 	Int32 thisASize;
 
-	MemCopyNO(tarr, varr, vsize);
+	MemCopyNO(tarr.Ptr(), varr.Ptr(), vsize);
 	_asm
 	{
 		mov esi,tarr
@@ -1396,20 +1360,20 @@ bfdivlop6:
 	{
 bfdivexit:
 	}
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::operator /=(UInt32 val)
+NN<Math::BigFloat> Math::BigFloat::operator /=(UInt32 val)
 {
 	if (val == 0)
-		return this;
+		return *this;
 	if (val == 1)
 	{
 		return this;
 	}
 
-	UInt8 *tarr = this->tmpArr;
-	UInt8 *varr = this->valArr;
+	UnsafeArray<UInt8> tarr = this->tmpArr;
+	UnsafeArray<UInt8> varr = this->valArr;
 	Int32 vsize = this->valSize;
 	Int32 tIndex = this->valIndex;
 	Int32 thisASize;
@@ -1495,7 +1459,7 @@ bfdivexit:
 	return this;
 }
 
-Math::BigFloat *Math::BigFloat::ToNeg()
+NN<Math::BigFloat> Math::BigFloat::ToNeg()
 {
 	Int32 i = this->valSize;
 	this->isNeg = !this->isNeg;
@@ -1505,7 +1469,7 @@ Math::BigFloat *Math::BigFloat::ToNeg()
 			return this;
 	}
 	this->isNeg = 0;
-	return this;
+	return *this;
 }
 
 Bool Math::BigFloat::IsZero()
@@ -1520,7 +1484,7 @@ Bool Math::BigFloat::IsZero()
 	return true;
 }
 
-Bool Math::BigFloat::operator >(const BigFloat *val)
+Bool Math::BigFloat::operator >(NN<const BigFloat> val)
 {
 	if (this->isNeg != val->isNeg)
 	{
@@ -1530,7 +1494,7 @@ Bool Math::BigFloat::operator >(const BigFloat *val)
 			return true;
 	}
 	Math::BigFloat tmp(this->valSize);
-	tmp = this;
+	tmp = *this;
 	tmp -= val;
 	if (tmp.isNeg)
 		return false;
@@ -1540,7 +1504,7 @@ Bool Math::BigFloat::operator >(const BigFloat *val)
 		return true;
 }
 
-Bool Math::BigFloat::operator >=(const BigFloat *val)
+Bool Math::BigFloat::operator >=(NN<const BigFloat> val)
 {
 	if (this->isNeg != val->isNeg)
 	{
@@ -1550,7 +1514,7 @@ Bool Math::BigFloat::operator >=(const BigFloat *val)
 			return true;
 	}
 	Math::BigFloat tmp(this->valSize);
-	tmp = this;
+	tmp = *this;
 	tmp -= val;
 	if (tmp.isNeg)
 		return false;
@@ -1560,7 +1524,7 @@ Bool Math::BigFloat::operator >=(const BigFloat *val)
 		return true;
 }
 
-Bool Math::BigFloat::operator <(const BigFloat *val)
+Bool Math::BigFloat::operator <(NN<const BigFloat> val)
 {
 	if (this->isNeg != val->isNeg)
 	{
@@ -1570,7 +1534,7 @@ Bool Math::BigFloat::operator <(const BigFloat *val)
 			return false;
 	}
 	Math::BigFloat tmp(this->valSize);
-	tmp = this;
+	tmp = *this;
 	tmp -= val;
 	if (tmp.isNeg)
 		return true;
@@ -1580,7 +1544,7 @@ Bool Math::BigFloat::operator <(const BigFloat *val)
 		return false;
 }
 
-Bool Math::BigFloat::operator <=(const BigFloat *val)
+Bool Math::BigFloat::operator <=(NN<const BigFloat> val)
 {
 	if (this->isNeg != val->isNeg)
 	{
@@ -1590,7 +1554,7 @@ Bool Math::BigFloat::operator <=(const BigFloat *val)
 			return false;
 	}
 	Math::BigFloat tmp(this->valSize);
-	tmp = this;
+	tmp = *this;
 	tmp -= val;
 	if (tmp.isNeg)
 		return true;
@@ -1600,14 +1564,14 @@ Bool Math::BigFloat::operator <=(const BigFloat *val)
 		return false;
 }
 
-Bool Math::BigFloat::operator ==(const BigFloat *val)
+Bool Math::BigFloat::operator ==(NN<const BigFloat> val)
 {
 	if (this->isNeg != val->isNeg)
 	{
 		return false;
 	}
 	Math::BigFloat tmp(this->valSize);
-	tmp = this;
+	tmp = *this;
 	tmp -= val;
 	if (tmp.IsZero())
 		return true;
@@ -1615,25 +1579,25 @@ Bool Math::BigFloat::operator ==(const BigFloat *val)
 		return false;
 }
 
-Math::BigFloat *Math::BigFloat::Factorial(Int32 val)
+NN<Math::BigFloat> Math::BigFloat::Factorial(Int32 val)
 {
 	if (val < 1)
 	{
 		*this = 1;
-		return this;
+		return *this;
 	}
 	*this = 1;
 	Math::BigFloat tmp(this->valSize);
 	while (val > 1)
 	{
 		tmp = val;
-		*this *= &tmp;
+		*this *= tmp;
 		val--;
 	}
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::SetPI()
+NN<Math::BigFloat> Math::BigFloat::SetPI()
 {
 	Math::BigFloat tmpVal(this->valSize);
 	Int32 endInd = -(this->valSize * 5) >> 1;
@@ -1645,7 +1609,7 @@ Math::BigFloat *Math::BigFloat::SetPI()
 	{
 		tmpVal *= v;
 		tmpVal /= v2;
-		*this += &tmpVal;
+		*this += tmpVal;
 
 		if (tmpVal.valIndex - this->valIndex < endInd)
 			break;
@@ -1653,38 +1617,38 @@ Math::BigFloat *Math::BigFloat::SetPI()
 		v2 += 2;
 	}
 	tmpVal = 2;
-	*this *= &tmpVal;
-	return this;
+	*this *= tmpVal;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::SetE(Math::BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::SetE(NN<Math::BigFloat> val)
 {
 	Math::BigFloat tmpVal(this->valSize);
 	Math::BigFloat tmpVal2(val->valSize);
 	Int32 endInd = -(this->valSize * 5) >> 1;
 	Int32 i = 2;
 	tmpVal2 = val;
-	tmpVal = &tmpVal2;
+	tmpVal = tmpVal2;
 	*this = 1;
-	*this += &tmpVal;
+	*this += tmpVal;
 
 	while (true)
 	{
-		tmpVal *= &tmpVal2;
+		tmpVal *= tmpVal2;
 		tmpVal /= i;
 		if (i > 10 && tmpVal.valIndex - this->valIndex < endInd)
 			break;
-		*this += &tmpVal;
+		*this += tmpVal;
 		i++;
 	}
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::SetLn(BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 {
 	if (val->isNeg)
 	{
-		return 0;
+		return *this;
 
 /*		tmp.isNeg = true;
 		if (tmp >= val)
@@ -1720,90 +1684,90 @@ Math::BigFloat *Math::BigFloat::SetLn(BigFloat *val)
 		Int32 i = 1;
 		Int32 j;
 		tmp = 1;
-		e0.SetE(&tmp);
-		e2 = &tmp;
-		e2 /= &e0;
+		e0.SetE(tmp);
+		e2 = tmp;
+		e2 /= e0;
 
 		Int32 endInd = -(this->valSize * 5) >> 1;
-		if (*val > &e0)
+		if (val.Ptr()[0] > e0)
 		{
 			tmp3 = val;
 			tmp2 = 0;
-			while (tmp3 > &e0)
+			while (tmp3 > e0)
 			{
 				tmp = 1;
-				e1.SetE(&tmp);
-				e2 = &tmp;
-				e2 /= &e1;
+				e1.SetE(tmp);
+				e2 = tmp;
+				e2 /= e1;
 
-				e1 *= &e1;
+				e1 *= e1;
 				j = 1;
-				while (tmp3 > &e1)
+				while (tmp3 > e1)
 				{
-					e1 *= &e1;
-					e2 *= &e2;
+					e1 *= e1;
+					e2 *= e2;
 					tmp *= 2;
 					j++;
 				}
-				tmp3 *= &e2;
-				tmp2 += &tmp;
+				tmp3 *= e2;
+				tmp2 += tmp;
 			}
-			*this = &tmp2;
+			*this = tmp2;
 
 			tmp = 1;
-			tmp2 = &tmp3;
-			tmp2 -= &tmp;
-			tmp2 /= &tmp3;
-			tmp = &tmp2;
-			*this += &tmp;
+			tmp2 = tmp3;
+			tmp2 -= tmp;
+			tmp2 /= tmp3;
+			tmp = tmp2;
+			*this += tmp;
 			while (true)
 			{
-				tmp *= &tmp2;
-				tmp3 = &tmp;
+				tmp *= tmp2;
+				tmp3 = tmp;
 				tmp3 /= ++i;
-				*this += &tmp3;
+				*this += tmp3;
 				if (i > 10 && tmp3.valIndex - this->valIndex < endInd)
 					break;
 			}
 		}
-		else if (*val > &tmp)
+		else if (val.Ptr()[0] > tmp)
 		{
 			tmp.isNeg = false;
 			tmp2 = val;
-			tmp2 -= &tmp;
+			tmp2 -= tmp;
 			tmp2 /= val;
-			tmp = &tmp2;
-			*this = &tmp;
+			tmp = tmp2;
+			*this = tmp;
 			while (true)
 			{
-				tmp *= &tmp2;
-				tmp3 = &tmp;
+				tmp *= tmp2;
+				tmp3 = tmp;
 				tmp3 /= ++i;
-				*this += &tmp3;
+				*this += tmp3;
 				if (i > 10 && tmp3.valIndex - this->valIndex < endInd)
 					break;
 			}
 		}
-		else if (*val >= &e2)
+		else if (val.Ptr()[0] >= e2)
 		{
 			tmp2 = val;
 			tmp = 1;
-			tmp2 -= &tmp;
-			*this = &tmp2;
-			tmp = &tmp2;
+			tmp2 -= tmp;
+			*this = tmp2;
+			tmp = tmp2;
 			while (true)
 			{
 				i++;
-				tmp *= &tmp2;
-				tmp3 = &tmp;
+				tmp *= tmp2;
+				tmp3 = tmp;
 				tmp3 /= i;
 				if (i & 1)
 				{
-					*this += &tmp3;
+					*this += tmp3;
 				}
 				else
 				{
-					*this -= &tmp3;
+					*this -= tmp3;
 				}
 				if (i > 10 && tmp3.valIndex - this->valIndex < endInd)
 					break;
@@ -1811,65 +1775,65 @@ Math::BigFloat *Math::BigFloat::SetLn(BigFloat *val)
 		}
 		else
 		{
-			e0 = &e2;
+			e0 = e2;
 
 			tmp3 = val;
 			tmp2 = 0;
-			while (tmp3 < &e0)
+			while (tmp3 < e0)
 			{
 				tmp = 1;
-				e1.SetE(&tmp);
-				e2 = &tmp;
-				e2 /= &e1;
+				e1.SetE(tmp);
+				e2 = tmp;
+				e2 /= e1;
 
-				e2 *= &e2;
+				e2 *= e2;
 				j = 1;
-				while (tmp3 < &e2)
+				while (tmp3 < e2)
 				{
-					e1 *= &e1;
-					e2 *= &e2;
+					e1 *= e1;
+					e2 *= e2;
 					tmp *= 2;
 					j++;
 				}
-				tmp3 *= &e1;
-				tmp2 -= &tmp;
+				tmp3 *= e1;
+				tmp2 -= tmp;
 			}
-			*this = &tmp2;
+			*this = tmp2;
 
-			tmp2 = &tmp3;
+			tmp2 = tmp3;
 			tmp = 1;
-			tmp2 -= &tmp;
-			*this += &tmp2;
-			tmp = &tmp2;
+			tmp2 -= tmp;
+			*this += tmp2;
+			tmp = tmp2;
 			while (true)
 			{
 				i++;
-				tmp *= &tmp2;
-				tmp3 = &tmp;
+				tmp *= tmp2;
+				tmp3 = tmp;
 				tmp3 /= i;
 				if (i & 1)
 				{
-					*this += &tmp3;
+					*this += tmp3;
 				}
 				else
 				{
-					*this -= &tmp3;
+					*this -= tmp3;
 				}
 				if (i > 10 && tmp3.valIndex - this->valIndex < endInd)
 					break;
 			}
 		}
 	}
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::SetSin(const Math::BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::SetSin(NN<const Math::BigFloat> val)
 {
 	Math::BigFloat tmpVal(this->valSize);
 	UInt32 i = 1;
 	Int32 endInd = -(this->valSize * 5) >> 1;
 	tmpVal = val;
-	*this = &tmpVal;
+	*this = tmpVal;
 
 	while (true)
 	{
@@ -1880,23 +1844,18 @@ Math::BigFloat *Math::BigFloat::SetSin(const Math::BigFloat *val)
 		tmpVal.ToNeg();
 		if (i > 10 && tmpVal.valIndex - this->valIndex < endInd)
 			break;
-		*this += &tmpVal;
+		*this += tmpVal;
 	}
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::SetSin(const Math::BigFloat &val)
-{
-	return this->SetSin(&val);
-}
-
-Math::BigFloat *Math::BigFloat::SetCos(const Math::BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::SetCos(NN<const Math::BigFloat> val)
 {
 	Math::BigFloat tmpVal(this->valSize);
 	Int32 endInd = -(this->valSize * 5) >> 1;
 	UInt32 i = 0;
 	tmpVal = 1;
-	*this = &tmpVal;
+	*this = tmpVal;
 
 	while (true)
 	{
@@ -1907,49 +1866,39 @@ Math::BigFloat *Math::BigFloat::SetCos(const Math::BigFloat *val)
 		tmpVal.ToNeg();
 		if (i > 10 && tmpVal.valIndex - this->valIndex < endInd)
 			break;
-		*this += &tmpVal;
+		*this += tmpVal;
 	}
-	return this;
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::SetCos(const Math::BigFloat &val)
-{
-	return this->SetCos(&val);
-}
-
-Math::BigFloat *Math::BigFloat::SetTan(const Math::BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::SetTan(NN<const Math::BigFloat> val)
 {
 	Math::BigFloat tmpVal(this->valSize);
 	tmpVal.SetCos(val);
 	this->SetSin(val);
-	return *this /= &tmpVal;
+	return *this /= tmpVal;
 }
 
-Math::BigFloat *Math::BigFloat::SetTan(const Math::BigFloat &val)
-{
-	return this->SetTan(&val);
-}
-
-Int32 Math::BigFloat::GetSize()
+UOSInt Math::BigFloat::GetSize()
 {
 	return this->valSize;
 }
 
-WChar *Math::BigFloat::ToString(WChar *buff)
+UnsafeArray<UTF8Char> Math::BigFloat::ToString(UnsafeArray<UTF8Char> buff)
 {
-	WChar *strBuff;
-	WChar *wptr;
-	WChar *wptr2;
-	Int32 vsize = valSize;
+	UnsafeArray<UTF8Char> strBuff;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UOSInt vsize = valSize;
 	Int32 vindex = valIndex;
 	OSInt ssize;
-	UInt8 *tarr = tmpArr;
-	MemCopyNO(tmpArr, valArr, vsize = valSize);
+	UnsafeArray<UInt8> tarr = tmpArr;
+	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vsize = valSize);
 
-	strBuff = MemAlloc(WChar, ssize = vsize * 3);
-	wptr = &strBuff[ssize];
-	*--wptr = 0;
-	wptr2 = wptr;
+	strBuff = MemAlloc(UTF8Char, ssize = vsize * 3);
+	sptr = &strBuff[ssize];
+	*--sptr = 0;
+	sptr2 = sptr;
 	_asm
 	{
 		mov edi,tarr
@@ -1982,7 +1931,7 @@ bftslop5b:
 bftslop6:
 	}
 	
-	if (wptr == wptr2)
+	if (sptr == sptr2)
 	{
 		*buff++ = '0';
 		*buff = 0;
@@ -1993,15 +1942,15 @@ bftslop6:
 	{
 		*buff++ = '-';
 	}
-	ssize = wptr2 - wptr;
+	ssize = sptr2 - sptr;
 	if (vindex > 3 || (vindex < -ssize - 2))
 	{
-		*buff++ = *wptr++;
-		if (wptr != wptr2)
+		*buff++ = *sptr++;
+		if (sptr != sptr2)
 		{
 			*buff++ = '.';
-			vindex += (Int32)(wptr2 - wptr);
-			buff = Text::StrConcat(buff, wptr);
+			vindex += (Int32)(sptr2 - sptr);
+			buff = Text::StrConcat(buff, sptr);
 		}
 		if (vindex > 0)
 		{
@@ -2043,6 +1992,6 @@ bftslop6:
 		}
 		buff = Text::StrConcat(buff, wptr);
 	}
-	MemFree(strBuff);
+	MemFreeArr(strBuff);
 	return buff;
 }

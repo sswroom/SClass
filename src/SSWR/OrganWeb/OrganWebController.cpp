@@ -39,15 +39,15 @@ Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebController::ParseRe
 	NN<Net::WebServer::WebSession> sess;
 	if (this->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
-		Data::DateTime *t;
-		env->user = (WebUserInfo*)sess->GetValuePtr(CSTR("User"));
+		NN<Data::DateTime> t;
+		env->user = sess->GetValuePtr(CSTR("User")).GetOpt<WebUserInfo>();
 		env->pickObjType = (PickObjType)sess->GetValueInt32(CSTR("PickObjType"));
-		env->pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr(CSTR("PickObjs"));
-		t = (Data::DateTime*)sess->GetValuePtr(CSTR("LastUseTime"));
+		env->pickObjs = sess->GetValuePtr(CSTR("PickObjs")).GetOpt<Data::ArrayListInt32>();
+		t = sess->GetValuePtr(CSTR("LastUseTime")).GetNN<Data::DateTime>();
 		t->SetCurrTimeUTC();
 		if (keepSess)
 		{
-			return sess.Ptr();
+			return sess;
 		}
 		sess->EndUse();
 	}
@@ -683,7 +683,8 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 	Data::DateTime dt;
 	UTF8Char sbuff2[64];
 	UnsafeArray<UTF8Char> sptr2;
-	if (env->pickObjType == POT_USERFILE && env->pickObjs->GetCount() > 0 && env->user.SetTo(user))
+	NN<Data::ArrayListInt32> pickObjs;
+	if (env->pickObjType == POT_USERFILE && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0 && env->user.SetTo(user))
 	{
 		currColumn = 0;
 		sb.ClearStr();
@@ -697,10 +698,10 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		writer->WriteLine(CSTR("<table border=\"0\" width=\"100%\">"));
 
 		i = 0;
-		j = env->pickObjs->GetCount();
+		j = pickObjs->GetCount();
 		while (i < j)
 		{
-			if (this->env->UserfileGet(mutUsage, env->pickObjs->GetItem(i)).SetTo(userFile) && this->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(species))
+			if (this->env->UserfileGet(mutUsage, pickObjs->GetItem(i)).SetTo(userFile) && this->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(species))
 			{
 				if (currColumn == 0)
 				{
@@ -836,7 +837,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		writer->WriteLine(CSTR("</form>"));
 		writer->WriteLine(CSTR("<hr/>"));
 	}
-	else if (env->pickObjType == POT_SPECIES && env->pickObjs->GetCount() > 0)
+	else if (env->pickObjType == POT_SPECIES && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<form name=\"pickfiles\" action="));
@@ -849,10 +850,10 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		NN<SpeciesInfo> species;
 		Data::ArrayListNN<SpeciesInfo> spList;
 		i = 0;
-		j = env->pickObjs->GetCount();
+		j = pickObjs->GetCount();
 		while (i < j)
 		{
-			if (this->env->SpeciesGet(mutUsage, env->pickObjs->GetItem(i)).SetTo(species))
+			if (this->env->SpeciesGet(mutUsage, pickObjs->GetItem(i)).SetTo(species))
 			{
 				spList.Add(species);
 			}
@@ -868,7 +869,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		writer->WriteLine(CSTR("</form>"));
 		writer->WriteLine(CSTR("<hr/>"));
 	}
-	else if (env->pickObjType == POT_GROUP && env->pickObjs->GetCount() > 0)
+	else if (env->pickObjType == POT_GROUP && env->pickObjs.SetTo(pickObjs) && pickObjs->GetCount() > 0)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<form name=\"pickfiles\" action="));
@@ -881,10 +882,10 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		NN<GroupInfo> group;
 		Data::ArrayListNN<GroupInfo> groupList;
 		i = 0;
-		j = env->pickObjs->GetCount();
+		j = pickObjs->GetCount();
 		while (i < j)
 		{
-			if (this->env->GroupGet(mutUsage, env->pickObjs->GetItem(i)).SetTo(group))
+			if (this->env->GroupGet(mutUsage, pickObjs->GetItem(i)).SetTo(group))
 			{
 				groupList.Add(group);
 			}

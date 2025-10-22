@@ -70,7 +70,7 @@ namespace Net
 		static void PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Optional<Net::ASN1Names> names);
 
 		static OSInt OIDCompare(Data::ByteArrayR oid1, Data::ByteArrayR oid2);
-		static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
+		static Bool OIDStartsWith(UnsafeArray<const UInt8> oid1, UOSInt oid1Len, UnsafeArray<const UInt8> oid2, UOSInt oid2Len);
 		static Bool OIDEqualsText(Data::ByteArrayR oidPDU, Text::CStringNN oidText);
 		static void OIDToString(Data::ByteArrayR pdu, NN<Text::StringBuilderUTF8> sb);
 		static UOSInt OIDCalcPDUSize(Text::CStringNN oidText);

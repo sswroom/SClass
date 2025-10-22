@@ -8,11 +8,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::WebRequest *req, Int32 codePage)
+Net::WebServer::HTTPFormParser::HTTPFormParser(NN<Net::WebServer::WebRequest> req, Int32 codePage)
 {
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(this->strNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->strValues, Data::ArrayListStrUTF8());
 
 	if (!req->GetHeaderC(sb, CSTR("Content-Type")))
 	{
@@ -67,7 +65,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::WebRequest *req, 
 					tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 				}
 				sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, size2);
-				l = this->strNames->SortedInsert(Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)).Ptr());
+				l = this->strNames.SortedInsert(Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
 				if (k < i)
 				{
 					if (i - k - 1 > tmpBuffSize)
@@ -86,11 +84,11 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::WebRequest *req, 
 						tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 					}
 					sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, size2);
-					this->strValues->Insert(l, Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)).Ptr());
+					this->strValues.Insert(l, Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
 				}
 				else
 				{
-					this->strValues->Insert(l, Text::StrCopyNewC(UTF8STRC("")).Ptr());
+					this->strValues.Insert(l, Text::StrCopyNewC(UTF8STRC("")));
 				}
 
 				if (i == buffSize)
@@ -118,32 +116,30 @@ Net::WebServer::HTTPFormParser::~HTTPFormParser()
 {
 	UOSInt i;
 	UnsafeArray<const UTF8Char> s;
-	i = this->strNames->GetCount();
+	i = this->strNames.GetCount();
 	while (i-- > 0)
 	{
-		if (this->strNames->GetItem(i).SetTo(s)) Text::StrDelNew(s);
-		if (this->strValues->GetItem(i).SetTo(s)) Text::StrDelNew(s);
+		if (this->strNames.GetItem(i).SetTo(s)) Text::StrDelNew(s);
+		if (this->strValues.GetItem(i).SetTo(s)) Text::StrDelNew(s);
 	}
-	DEL_CLASS(this->strNames);
-	DEL_CLASS(this->strValues);
 }
 
 UOSInt Net::WebServer::HTTPFormParser::GetStrCount() const
 {
-	return this->strNames->GetCount();
+	return this->strNames.GetCount();
 }
 
 UnsafeArrayOpt<const UTF8Char> Net::WebServer::HTTPFormParser::GetStrName(UOSInt index)
 {
-	return this->strNames->GetItem(index);
+	return this->strNames.GetItem(index);
 }
 
-UnsafeArrayOpt<const UTF8Char> Net::WebServer::HTTPFormParser::GetStrValue(const UTF8Char *strName)
+UnsafeArrayOpt<const UTF8Char> Net::WebServer::HTTPFormParser::GetStrValue(UnsafeArray<const UTF8Char> strName)
 {
-	OSInt i = this->strNames->SortedIndexOf(strName);
+	OSInt i = this->strNames.SortedIndexOf(strName);
 	if (i >= 0)
 	{
-		return this->strValues->GetItem(i);
+		return this->strValues.GetItem(i);
 	}
 	return 0;
 }

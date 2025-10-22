@@ -58,20 +58,20 @@ void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, UnsafeArray
 	}
 }
 
-Net::WebServer::WebSocketServerStream::WebSocketServerStream(IO::StreamHandler *stmHdlr, NN<Net::WebServer::WebResponse> resp) : IO::Stream(CSTR("WebSocket"))
+Net::WebServer::WebSocketServerStream::WebSocketServerStream(NN<IO::StreamHandler> stmHdlr, NN<Net::WebServer::WebResponse> resp) : IO::Stream(CSTR("WebSocket"))
 {
 	this->stmHdlr = stmHdlr;
 	this->resp = resp;
 	this->stmData = this->stmHdlr->StreamCreated(*this);
 
 	this->recvCapacity = 4096;
-	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
+	this->recvBuff = MemAllocArr(UInt8, this->recvCapacity);
 	this->recvSize = 0;
 }
 
 Net::WebServer::WebSocketServerStream::~WebSocketServerStream()
 {
-	MemFree(this->recvBuff);
+	MemFreeArr(this->recvBuff);
 }
 
 Bool Net::WebServer::WebSocketServerStream::IsDown() const
@@ -111,7 +111,7 @@ IO::StreamType Net::WebServer::WebSocketServerStream::GetStreamType() const
 	return IO::StreamType::Unknown;
 }
 
-void Net::WebServer::WebSocketServerStream::ProtocolData(const UInt8 *data, UOSInt dataSize)
+void Net::WebServer::WebSocketServerStream::ProtocolData(UnsafeArray<const UInt8> data, UOSInt dataSize)
 {
 	if (this->recvSize + dataSize > this->recvCapacity)
 	{
@@ -119,15 +119,15 @@ void Net::WebServer::WebSocketServerStream::ProtocolData(const UInt8 *data, UOSI
 		{
 			this->recvCapacity <<= 1;
 		}
-		UInt8 *newBuff = MemAlloc(UInt8, this->recvCapacity);
+		UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, this->recvCapacity);
 		if (this->recvSize > 0)
 		{
-			MemCopyNO(newBuff, this->recvBuff, this->recvSize);
+			MemCopyNO(&newBuff[0], &this->recvBuff[0], this->recvSize);
 		}
-		MemFree(this->recvBuff);
+		MemFreeArr(this->recvBuff);
 		this->recvBuff = newBuff;
 	}
-	MemCopyNO(&this->recvBuff[this->recvSize], data, dataSize);
+	MemCopyNO(&this->recvBuff[this->recvSize], &data[0], dataSize);
 	this->recvSize += dataSize;
 
 	UInt8 pkSize;
@@ -219,7 +219,7 @@ void Net::WebServer::WebSocketServerStream::ProtocolData(const UInt8 *data, UOSI
 	}
 	else if (parseOfst > 0)
 	{
-		MemCopyO(this->recvBuff, &this->recvBuff[parseOfst], this->recvSize - parseOfst);
+		MemCopyO(&this->recvBuff[0], &this->recvBuff[parseOfst], this->recvSize - parseOfst);
 		this->recvSize -= parseOfst;
 	}
 }

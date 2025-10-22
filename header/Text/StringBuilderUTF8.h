@@ -627,8 +627,8 @@ namespace Text
 				while (buffSize-- > 0)
 				{
 					i++;
-					buffEnd[0] = (UTF8Char)MyString_STRhexarr[*buff >> 4];
-					buffEnd[1] = (UTF8Char)MyString_STRhexarr[*buff & 15];
+					buffEnd[0] = (UTF8Char)MyString_STRhexarr[buff[0] >> 4];
+					buffEnd[1] = (UTF8Char)MyString_STRhexarr[buff[0] & 15];
 					buff++;
 					if (buffSize > 0)
 					{

@@ -195,91 +195,95 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		}
 
 		writer.WriteLine(CSTR("<hr/>"));
+		NN<Data::ArrayListInt32> pickObjs;
 		NN<UserFileInfo> userFile;
 		UOSInt colCount = env.scnWidth / GetPreviewSize();
 		UOSInt colWidth = 100 / colCount;
 		UInt32 currColumn;
 		UOSInt i;
 		UOSInt j;
-		i = 0;
-		j = env.pickObjs->GetCount();
-		if (j > 0)
+		if (env.pickObjs.SetTo(pickObjs))
 		{
-			writer.WriteLine(CSTR("<table border=\"0\" width=\"100%\">"));
-			currColumn = 0;
-			while (i < j)
+			i = 0;
+			j = pickObjs->GetCount();
+			if (j > 0)
 			{
-				if (me->env->UserfileGet(mutUsage, env.pickObjs->GetItem(i)).SetTo(userFile))
+				writer.WriteLine(CSTR("<table border=\"0\" width=\"100%\">"));
+				currColumn = 0;
+				while (i < j)
 				{
-					if (currColumn == 0)
+					if (me->env->UserfileGet(mutUsage, pickObjs->GetItem(i)).SetTo(userFile))
 					{
-						writer.WriteLine(CSTR("<tr>"));
+						if (currColumn == 0)
+						{
+							writer.WriteLine(CSTR("<tr>"));
+						}
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("<td width=\""));
+						sb.AppendUOSInt(colWidth);
+						sb.AppendC(UTF8STRC("%\">"));
+						writer.WriteLine(sb.ToCString());
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("<center><a href=\"bookphoto.html?id="));
+						sb.AppendI32(book->id);
+						sb.AppendC(UTF8STRC("&amp;cateId="));
+						sb.AppendI32(cate->cateId);
+						sb.AppendC(UTF8STRC("&amp;fileId="));
+						sb.AppendI32(userFile->id);
+						sb.AppendC(UTF8STRC("\">"));
+						writer.WriteLine(sb.ToCString());
+
+						writer.Write(CSTR("<img src="));
+						NN<SpeciesInfo> sp;
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("photo.html?id="));
+						sb.AppendI32(userFile->speciesId);
+						sb.AppendC(UTF8STRC("&cateId="));
+						if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
+							sb.AppendI32(sp->cateId);
+						else
+							sb.AppendI32(cate->cateId);
+						sb.AppendC(UTF8STRC("&width="));
+						sb.AppendUOSInt(GetPreviewSize());
+						sb.AppendC(UTF8STRC("&height="));
+						sb.AppendUOSInt(GetPreviewSize());
+						sb.AppendC(UTF8STRC("&fileId="));
+						sb.AppendI32(userFile->id);
+						s = Text::XML::ToNewAttrText(sb.ToString());
+						writer.Write(s->ToCString());
+						s->Release();
+						writer.Write(CSTR(" border=\"0\""));
+						writer.WriteLine(CSTR("><br/>"));
+
+						writer.WriteLine(CSTR("</a>"));
+						writer.WriteLine(CSTR("</center></td>"));
+
+						currColumn++;
+						if (currColumn >= colCount)
+						{
+							writer.WriteLine(CSTR("</tr>"));
+							currColumn = 0;
+						}
 					}
+					i++;
+				}
+				if (currColumn != 0)
+				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<td width=\""));
 					sb.AppendUOSInt(colWidth);
-					sb.AppendC(UTF8STRC("%\">"));
-					writer.WriteLine(sb.ToCString());
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("<center><a href=\"bookphoto.html?id="));
-					sb.AppendI32(book->id);
-					sb.AppendC(UTF8STRC("&amp;cateId="));
-					sb.AppendI32(cate->cateId);
-					sb.AppendC(UTF8STRC("&amp;fileId="));
-					sb.AppendI32(userFile->id);
-					sb.AppendC(UTF8STRC("\">"));
-					writer.WriteLine(sb.ToCString());
-
-					writer.Write(CSTR("<img src="));
-					NN<SpeciesInfo> sp;
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("photo.html?id="));
-					sb.AppendI32(userFile->speciesId);
-					sb.AppendC(UTF8STRC("&cateId="));
-					if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
-						sb.AppendI32(sp->cateId);
-					else
-						sb.AppendI32(cate->cateId);
-					sb.AppendC(UTF8STRC("&width="));
-					sb.AppendUOSInt(GetPreviewSize());
-					sb.AppendC(UTF8STRC("&height="));
-					sb.AppendUOSInt(GetPreviewSize());
-					sb.AppendC(UTF8STRC("&fileId="));
-					sb.AppendI32(userFile->id);
-					s = Text::XML::ToNewAttrText(sb.ToString());
-					writer.Write(s->ToCString());
-					s->Release();
-					writer.Write(CSTR(" border=\"0\""));
-					writer.WriteLine(CSTR("><br/>"));
-
-					writer.WriteLine(CSTR("</a>"));
-					writer.WriteLine(CSTR("</center></td>"));
-
-					currColumn++;
-					if (currColumn >= colCount)
+					sb.AppendC(UTF8STRC("%\"></td>"));
+					while (currColumn < colCount)
 					{
-						writer.WriteLine(CSTR("</tr>"));
-						currColumn = 0;
+						writer.WriteLine(sb.ToCString());
+						currColumn++;
 					}
+					writer.WriteLine(CSTR("</tr>"));
 				}
-				i++;
+				writer.WriteLine(CSTR("</table>"));
 			}
-			if (currColumn != 0)
-			{
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<td width=\""));
-				sb.AppendUOSInt(colWidth);
-				sb.AppendC(UTF8STRC("%\"></td>"));
-				while (currColumn < colCount)
-				{
-					writer.WriteLine(sb.ToCString());
-					currColumn++;
-				}
-				writer.WriteLine(CSTR("</tr>"));
-			}
-			writer.WriteLine(CSTR("</table>"));
+			writer.WriteLine(CSTR("<hr/>"));
 		}
-		writer.WriteLine(CSTR("<hr/>"));
 
 		writer.Write(CSTR("<a href=\"booklist.html?id="));
 		sptr = Text::StrInt32(sbuff, cate->cateId);

@@ -136,7 +136,7 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 				}
 				Data::ArrayListNN<Media::StaticImage> prevList;
 				Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
-				NEW_CLASS(stat->simg, Media::SharedImage(imgList, prevList));
+				NEW_CLASSOPT(stat->simg, Media::SharedImage(imgList, prevList));
 				Sync::RWMutexUsage loadedMutUsage(this->loadedMut, true);
 				this->loadedList.Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
 				loadedMutUsage.EndUse();
@@ -196,7 +196,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 						}
 						Data::ArrayListNN<Media::StaticImage> prevList;
 						Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
-						NEW_CLASS(stat->simg, Media::SharedImage(imgList, prevList));
+						NEW_CLASSOPT(stat->simg, Media::SharedImage(imgList, prevList));
 						Sync::RWMutexUsage loadedMutUsage(me->loadedMut, true);
 						me->loadedList.Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
 						loadedMutUsage.EndUse();
@@ -287,10 +287,7 @@ Map::WebImageLayer::~WebImageLayer()
 		stat = this->loadedList.GetItemNoCheck(i);
 		OPTSTR_DEL(stat->name);
 		stat->url->Release();
-		if (stat->simg)
-		{
-			DEL_CLASS(stat->simg);
-		}
+		stat->simg.Delete();
 		stat.Delete();
 	}
 	this->loadedList.Clear();
@@ -562,7 +559,7 @@ Optional<Math::Geometry::Vector2D> Map::WebImageLayer::GetNewVectorById(NN<GetOb
 {
 	NN<ImageStat> stat;
 	NN<Media::SharedImage> shimg;
-	if (this->GetImageStat((Int32)id).SetTo(stat) && shimg.Set(stat->simg))
+	if (this->GetImageStat((Int32)id).SetTo(stat) && stat->simg.SetTo(shimg))
 	{
 		Math::Geometry::VectorImage *img;
 		NEW_CLASS(img, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, Math::Coord2DDbl(stat->x1, stat->y1), Math::Coord2DDbl(stat->x2, stat->y2), Math::Coord2DDbl(stat->sizeX, stat->sizeY), stat->isScreen, stat->url.Ptr(), stat->timeStart, stat->timeEnd));

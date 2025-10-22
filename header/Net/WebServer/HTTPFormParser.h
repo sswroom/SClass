@@ -10,15 +10,15 @@ namespace Net
 		class HTTPFormParser
 		{
 		private:
-			Data::ArrayListStrUTF8 *strNames;
-			Data::ArrayListStrUTF8 *strValues;
+			Data::ArrayListStrUTF8 strNames;
+			Data::ArrayListStrUTF8 strValues;
 		public:
-			HTTPFormParser(Net::WebServer::WebRequest *req, Int32 codePage);
+			HTTPFormParser(NN<Net::WebServer::WebRequest> req, Int32 codePage);
 			~HTTPFormParser();
 
 			UOSInt GetStrCount() const;
 			UnsafeArrayOpt<const UTF8Char> GetStrName(UOSInt index);
-			UnsafeArrayOpt<const UTF8Char> GetStrValue(const UTF8Char *strName);
+			UnsafeArrayOpt<const UTF8Char> GetStrValue(UnsafeArray<const UTF8Char> strName);
 		};
 	}
 }
