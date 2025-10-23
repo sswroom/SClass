@@ -24,7 +24,7 @@ void Math::BigFloat::RemZero()
 	while (maxCnt > 0)
 	{
 		MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), maxCnt * sizeof(UOSInt));
-		if (BigIntUtil::LSBDivUOS2(tmpArr, maxCnt, 10) != 0)
+		if (BigIntUtil::LSBDivUOS(tmpArr, maxCnt, 10) != 0)
 		{
 			break;
 		}
@@ -54,7 +54,7 @@ void Math::BigFloat::PrepareTmpBuff(UOSInt tmpCnt)
 	{
 		if (tarr[i - 1])
 		{
-			BigIntUtil::LSBDivUOS2(tarr, i, 10);
+			BigIntUtil::LSBDivUOS(tarr, i, 10);
 			this->tmpIndex++;
 		}
 		else
@@ -94,12 +94,12 @@ void Math::BigFloat::PrepareSum()
 	{
 		if (tarr[vCnt - 1])
 		{
-			BigIntUtil::LSBDivUOS2(varr, vCnt, 10);
+			BigIntUtil::LSBDivUOS(varr, vCnt, 10);
 			vindex++;
 		}
 		else
 		{
-			BigIntUtil::LSBMulUOS2(tarr, vCnt, 10);
+			BigIntUtil::LSBMulUOS(tarr, vCnt, 10);
 			tindex--;
 		}
 	}
@@ -108,12 +108,12 @@ void Math::BigFloat::PrepareSum()
 	{
 		if (varr[vCnt - 1])
 		{
-			BigIntUtil::LSBDivUOS2(tarr, vCnt, 10);
+			BigIntUtil::LSBDivUOS(tarr, vCnt, 10);
 			tindex++;
 		}
 		else
 		{
-			BigIntUtil::LSBMulUOS2(varr, vCnt, 10);
+			BigIntUtil::LSBMulUOS(varr, vCnt, 10);
 			vindex--;
 		}
 	}
@@ -123,7 +123,7 @@ void Math::BigFloat::PrepareSum()
 
 void Math::BigFloat::DoSum()
 {
-	BigIntUtil::LSBAdd2(this->valArr, this->tmpArr, this->valCnt, this->valCnt);
+	BigIntUtil::LSBAdd(this->valArr, this->tmpArr, this->valCnt, this->valCnt);
 }
 
 Bool Math::BigFloat::DoSubtract()
@@ -186,11 +186,11 @@ Bool Math::BigFloat::DoSubtract()
 	}
 	else if (mode == 0)
 	{
-		BigIntUtil::LSBSub2(varr, tarr, vCnt, tActCnt);
+		BigIntUtil::LSBSub(varr, tarr, vCnt, tActCnt);
 	}
 	else
 	{
-		BigIntUtil::LSBSub2(tarr, varr, vCnt, vActCnt);
+		BigIntUtil::LSBSub(tarr, varr, vCnt, vActCnt);
 		this->valArr = tarr;
 		this->tmpArr = varr;
 		ret = true;
@@ -396,8 +396,8 @@ NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 			}
 			else
 			{
-				BigIntUtil::LSBMulUOS2(varr, vCnt, 10);
-				BigIntUtil::LSBAddUOS2(varr, vCnt, (UOSInt)c - 0x30);
+				BigIntUtil::LSBMulUOS(varr, vCnt, 10);
+				BigIntUtil::LSBAddUOS(varr, vCnt, (UOSInt)c - 0x30);
 				if (isDot)
 					refIndex--;
 			}
@@ -482,7 +482,7 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(NN<const Math::BigFloat> val)
 	UnsafeArray<UOSInt> varr = val->valArr;
 	MemCopyNO(tarr.Ptr(), this->valArr.Ptr(), tCnt * sizeof(UOSInt));
 	MemClear(&tarr[tCnt], vCnt * sizeof(UOSInt));
-	BigIntUtil::LSBMul2(tarr, varr, tmpCnt, vCnt);
+	BigIntUtil::LSBMul(tarr, varr, tmpCnt, vCnt);
 	while (tmpCnt > 0)
 	{
 		if (tarr[tmpCnt - 1])
@@ -491,7 +491,7 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(NN<const Math::BigFloat> val)
 	}
 	while (tmpCnt >= tCnt)
 	{
-		BigIntUtil::LSBDivUOS2(tarr, tmpCnt, 10);
+		BigIntUtil::LSBDivUOS(tarr, tmpCnt, 10);
 		tIndex++;
 		if (tarr[tmpCnt - 1] == 0)
 			tmpCnt--;
@@ -528,10 +528,10 @@ NN<Math::BigFloat> Math::BigFloat::operator *=(OSInt val)
 	Int32 tIndex = this->valIndex;
 	while (tharr[thCnt - 1] != 0)
 	{
-		BigIntUtil::LSBDivUOS2(tharr, thCnt, 10);
+		BigIntUtil::LSBDivUOS(tharr, thCnt, 10);
 		tIndex++;
 	}
-	BigIntUtil::LSBMulUOS2(tharr, thCnt, (UOSInt)val);
+	BigIntUtil::LSBMulUOS(tharr, thCnt, (UOSInt)val);
 	this->valIndex = tIndex;
 	this->RemZero();
 	return *this;
@@ -1392,7 +1392,7 @@ UnsafeArray<UTF8Char> Math::BigFloat::ToString(UnsafeArray<UTF8Char> buff)
 
 	ssize = (OSInt)(vCnt * sizeof(UOSInt) * 3);
 	strBuff = MemAlloc(UTF8Char, (UOSInt)ssize);
-	sptr = BigIntUtil::LSBToString2(strBuff, this->valArr, this->tmpArr, this->valCnt);
+	sptr = BigIntUtil::LSBToString(strBuff, this->valArr, this->tmpArr, this->valCnt);
 	
 	if (strBuff[0] == '0' && strBuff[1] == 0)
 	{
@@ -1473,7 +1473,7 @@ void Math::BigFloat::ToString(NN<Text::StringBuilderUTF8> sb)
 
 	ssize = (OSInt)(vCnt * sizeof(UOSInt) * 3);
 	strBuff = MemAlloc(UTF8Char, (UOSInt)ssize);
-	sptr = BigIntUtil::LSBToString2(strBuff, this->valArr, this->tmpArr, this->valCnt);
+	sptr = BigIntUtil::LSBToString(strBuff, this->valArr, this->tmpArr, this->valCnt);
 	
 	if (strBuff[0] == '0' && strBuff[1] == 0)
 	{
