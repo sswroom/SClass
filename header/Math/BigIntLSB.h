@@ -10,7 +10,7 @@ namespace Math
 	private:
 		UnsafeArray<UOSInt> valArr;
 		UnsafeArray<UOSInt> tmpArr;
-		UOSInt valSize;
+		UOSInt valCnt;
 
 	public:
 		BigIntLSB(UOSInt valSize);
@@ -32,25 +32,34 @@ namespace Math
 		Bool EqualsToUI32(UInt32 val);
 		Bool EqualsToI32(Int32 val);
 		void AssignI32(Int32 val);
+		void AssignU32(UInt32 val);
+		void AssignI64(Int64 val);
+		void AssignU64(UInt64 val);
 		void AssignStr(UnsafeArray<const UTF8Char> val);
 		void AssignBI(NN<const BigIntLSB> val);
 		void Neg();
 		void AndBI(NN<const BigIntLSB> val);
 		void OrBI(NN<const BigIntLSB> val);
 		void XorBI(NN<const BigIntLSB> val);
-		Bool SetFactorial(UInt32 val); //return true if overflow
-		UInt32 MultiplyBy(UInt32 val); //return overflow value
-		UInt32 DivideBy(UInt32 val); //return remainder
+		Bool SetFactorial(UOSInt val); //return true if overflow
+		UOSInt MultiplyBy(UOSInt val); //return overflow value
+		UOSInt DivideBy(UOSInt val); //return remainder
 
 		Int32 operator =(Int32 val);
+		UInt32 operator =(UInt32 val);
+		Int64 operator =(Int64 val);
+		UInt64 operator =(UInt64 val);
 		NN<BigIntLSB> operator =(Text::CStringNN val);
 		NN<BigIntLSB> operator =(NN<const BigIntLSB> val);
 		NN<BigIntLSB> operator +=(NN<BigIntLSB> val);
 		NN<BigIntLSB> operator ^=(NN<const BigIntLSB> val);
 		NN<BigIntLSB> operator &=(NN<const BigIntLSB> val);
 		NN<BigIntLSB> operator |=(NN<const BigIntLSB> val);
-		NN<BigIntLSB> operator *=(UInt32 val);
-		NN<BigIntLSB> operator /=(UInt32 val);
+		NN<BigIntLSB> operator *=(UOSInt val);
+		NN<BigIntLSB> operator /=(UOSInt val);
+
+		Bool operator ==(NN<const BigIntLSB> val);
+		Bool operator !=(NN<const BigIntLSB> val);
 
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const;
 		UnsafeArray<UTF8Char> ToHex(UnsafeArray<UTF8Char> buff);

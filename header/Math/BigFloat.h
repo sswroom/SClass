@@ -1,21 +1,21 @@
 #ifndef _SM_MATH_BIGFLOAT
 #define _SM_MATH_BIGFLOAT
-#include "Text/CString.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Math
 {
 	class BigFloat
 	{
 	private:
-		UnsafeArray<UInt8> valArr;
-		UnsafeArray<UInt8> tmpArr;
+		UnsafeArray<UOSInt> valArr;
+		UnsafeArray<UOSInt> tmpArr;
 		Int32 valIndex;
 		Int32 tmpIndex;
-		UOSInt valSize;
-		Bool isNeg;
+		UOSInt valCnt;
+		Bool neg;
 
 		void RemZero();
-		void PrepareTmpBuff(Int32 tmpSize);
+		void PrepareTmpBuff(UOSInt tmpCnt);
 		void PrepareTmpBuff(NN<const BigFloat> val);
 		void PrepareSum();
 		void DoSum();
@@ -23,21 +23,20 @@ namespace Math
 	public:
 		BigFloat(NN<const BigFloat> val);
 		BigFloat(UOSInt valSize, Text::CStringNN val);
-		BigFloat(UOSInt valSize, Double val);
+		BigFloat(UOSInt valSize, OSInt val);
 		BigFloat(UOSInt valSize);
 		~BigFloat();
 
-		Int32 operator =(Int32 val);
-		Double operator =(Double val);
+		OSInt operator =(OSInt val);
+		//Double operator =(Double val);
 		NN<BigFloat> operator =(Text::CStringNN val);
 		NN<BigFloat> operator =(NN<const BigFloat> val);
 		NN<BigFloat> operator +=(NN<const BigFloat> val);
 		NN<BigFloat> operator -=(NN<const BigFloat> val);
 		NN<BigFloat> operator *=(NN<const BigFloat> val);
-		NN<BigFloat> operator *=(Int32 val);
-		NN<BigFloat> operator /=(NN<const BigFloat> val);
-		NN<BigFloat> operator /=(Int32 val);
-		NN<BigFloat> operator /=(UInt32 val);
+		NN<BigFloat> operator *=(OSInt val);
+		NN<BigFloat> operator /=(NN<const BigFloat> val); ////////////////////////////////////
+		NN<BigFloat> operator /=(UOSInt val); ////////////////////////////////////
 		NN<BigFloat> ToNeg();
 
 		Bool IsZero();
@@ -48,7 +47,7 @@ namespace Math
 		Bool operator ==(NN<const BigFloat> val);
 		Bool operator !=(NN<const BigFloat> val);
 
-		NN<BigFloat> Factorial(Int32 val);
+		NN<BigFloat> Factorial(UOSInt val);
 		NN<BigFloat> SetPI();
 		NN<BigFloat> SetE(NN<BigFloat> val);
 		NN<BigFloat> SetLn(NN<BigFloat> val);/////////////////////////////////////////////
@@ -61,6 +60,7 @@ namespace Math
 
 		UOSInt GetSize();
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff);
+		void ToString(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

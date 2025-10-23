@@ -2,230 +2,118 @@
 #include "MyMemory.h"
 #include "Text/MyString.h"
 #include "Math/BigFloat.h"
+#include "Math/BigIntUtil.h"
 #include <stdlib.h>
 
 void Math::BigFloat::RemZero()
 {
-	UnsafeArray<UInt8> tarr;
-	UnsafeArray<UInt8> varr;
-	Int32 vsize = valSize;
-	Int32 vindex = 1;
-	while (vsize-- > 0)
+	UnsafeArray<UOSInt> tarr;
+	UOSInt maxCnt = this->valCnt;
+	while (maxCnt-- > 0)
 	{
-		if (valArr[vsize])
+		if (this->valArr[maxCnt])
 		{
-			vindex = 0;
 			break;
 		}
 	}
-	if (vindex)
+	maxCnt++;
+	if (maxCnt == 0)
 	{
-		valIndex = 0;
+		this->valIndex = 0;
 	}
-	vsize = valSize;
-	while (vindex == 0)
+	while (maxCnt > 0)
 	{
-		MemCopyNO(tarr = tmpArr, varr = valArr, vsize);
-		vindex = 1;
-#ifdef HAS_ASM32
-		_asm
+		MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), maxCnt * sizeof(UOSInt));
+		if (BigIntUtil::LSBDivUOS2(tmpArr, maxCnt, 10) != 0)
 		{
-			mov edi,tarr
-			mov ecx,vsize
-			add edi,ecx
-			shr ecx,2
-			mov edx,0
-			mov ebx,10
-bfrzlop:
-			sub edi,4
-			mov eax,dword ptr[edi]
-			div ebx
-			mov dword ptr [edi],eax
-			dec ecx
-			jnz bfrzlop
-			mov vindex,edx
+			break;
 		}
-#else
-		UInt8 *tmpPtr;
-		LARGE_INTEGER li;
-		tmpPtr = tarr + vsize;
-		vsize >>= 2;
-		li.HighPart = 0;
-		while (vsize-- > 0)
+		tarr = this->tmpArr;
+		this->tmpArr = this->valArr;
+		this->valArr = tarr;
+		this->valIndex++;
+		if (this->valArr[maxCnt - 1] == 0)
 		{
-			tmpPtr -= 4;
-			li.LowPart = *(UInt32*)tmpPtr;
-			*(UInt32*)tmpPtr = (UInt32)(li.QuadPart / 10);
-			li.HighPart = (UInt32)(li.QuadPart % 10);
-		}
-		vindex = li.HighPart;
-#endif
-
-		if (vindex == 0)
-		{
-			this->valArr = tarr;
-			this->tmpArr = varr;
-			this->valIndex++;
+			maxCnt--;
 		}
 	}
 }
 
-void Math::BigFloat::PrepareTmpBuff(Int32 tmpSize)
+void Math::BigFloat::PrepareTmpBuff(UOSInt tmpCnt)
 {
-	if (tmpSize > this->valSize)
+	if (tmpCnt > this->valCnt)
 	{
-		tmpSize = this->valSize;
+		tmpCnt = this->valCnt;
 	}
-	MemCopyNO(this->tmpArr.Ptr(), this->valArr.Ptr(), this->valSize);
+	MemCopyNO(this->tmpArr.Ptr(), this->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
 	this->tmpIndex = this->valIndex;
 
-	UnsafeArray<UInt8> tarr = this->tmpArr;
-	Int32 i = this->valSize;
-	while (i > tmpSize)
+	UnsafeArray<UOSInt> tarr = this->tmpArr;
+	UOSInt i = this->valCnt;
+	while (i > tmpCnt)
 	{
-		if (*(Int32*)&tarr[i - 4])
+		if (tarr[i - 1])
 		{
-			_asm
-			{
-				mov edi,tarr
-				mov ecx,i
-				add edi,ecx
-				shr ecx,2
-				mov edx,0
-				mov ebx,10
-bfptblop:
-				sub edi,4
-				mov eax,dword ptr [edi]
-				div ebx
-				mov dword ptr [edi],eax
-				dec ecx
-				jnz bfptblop
-			}
+			BigIntUtil::LSBDivUOS2(tarr, i, 10);
 			this->tmpIndex++;
 		}
 		else
 		{
-			i -= 4;
+			i--;
 		}
 	}
 }
 
 void Math::BigFloat::PrepareTmpBuff(NN<const BigFloat> val)
 {
-	if (this->valSize >= val->valSize)
+	if (this->valCnt >= val->valCnt)
 	{
-		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), val->valSize);
-		if (this->valSize > val->valSize)
+		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UOSInt));
+		if (this->valCnt > val->valCnt)
 		{
-			MemClear(&this->tmpArr[val->valSize], this->valSize - val->valSize);
+			MemClear(&this->tmpArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UOSInt));
 		}
 		this->tmpIndex = val->valIndex;
 	}
 	else
 	{
-		NN<BigFloat>::ConvertFrom(val)->PrepareTmpBuff(this->valSize);
-		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), this->valSize);
+		NN<BigFloat>::ConvertFrom(val)->PrepareTmpBuff(this->valCnt);
+		MemCopyNO(this->tmpArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
 		this->tmpIndex = val->tmpIndex;
 	}
 }
 
 void Math::BigFloat::PrepareSum()
 {
-	Int32 vsize = this->valSize;
+	UOSInt vCnt = this->valCnt;
 	Int32 tindex = this->tmpIndex;
-	UnsafeArray<UInt8> tarr = this->tmpArr;
+	UnsafeArray<UOSInt> tarr = this->tmpArr;
 	Int32 vindex = this->valIndex;
-	UnsafeArray<UInt8> varr = this->valArr;
+	UnsafeArray<UOSInt> varr = this->valArr;
 	while (tindex > vindex)
 	{
-		if (*(Int32*)&tarr[vsize - 4])
+		if (tarr[vCnt - 1])
 		{
-			_asm
-			{
-				mov edi,varr
-				mov ecx,vsize
-				add edi,ecx
-				shr ecx,2
-				mov ebx,10
-				mov edx,0
-bfpslop:
-				sub edi,4
-				mov eax,dword ptr [edi]
-				div ebx
-				mov dword ptr [edi],eax
-				dec ecx
-				jnz bfpslop
-			}
+			BigIntUtil::LSBDivUOS2(varr, vCnt, 10);
 			vindex++;
 		}
 		else
 		{
-			_asm
-			{
-				mov edi,tarr
-				mov ecx,vsize
-				shr ecx,2
-				mov ebx,10
-				mov edx,0
-bfpslop2:
-				push edx
-				mov eax,dword ptr [edi]
-				mul ebx
-				pop esi
-				add eax,esi
-				adc edx,0
-				mov dword ptr [edi],eax
-				add edi,4
-				dec ecx
-				jnz bfpslop2
-			}
+			BigIntUtil::LSBMulUOS2(tarr, vCnt, 10);
 			tindex--;
 		}
 	}
 
 	while (tindex < vindex)
 	{
-		if (*(Int32*)&varr[vsize - 4])
+		if (varr[vCnt - 1])
 		{
-			_asm
-			{
-				mov edi,tarr
-				mov ecx,vsize
-				add edi,ecx
-				shr ecx,2
-				mov ebx,10
-				mov edx,0
-bfpslop3:
-				sub edi,4
-				mov eax,dword ptr [edi]
-				div ebx
-				mov dword ptr [edi],eax
-				dec ecx
-				jnz bfpslop3
-			}
+			BigIntUtil::LSBDivUOS2(tarr, vCnt, 10);
 			tindex++;
 		}
 		else
 		{
-			_asm
-			{
-				mov edi,varr
-				mov ecx,vsize
-				shr ecx,2
-				mov ebx,10
-				mov edx,0
-bfpslop4:
-				push edx
-				mov eax,dword ptr [edi]
-				mul ebx
-				pop esi
-				add eax,esi
-				adc edx,0
-				mov dword ptr [edi],eax
-				add edi,4
-				dec ecx
-				jnz bfpslop4
-			}
+			BigIntUtil::LSBMulUOS2(varr, vCnt, 10);
 			vindex--;
 		}
 	}
@@ -235,71 +123,47 @@ bfpslop4:
 
 void Math::BigFloat::DoSum()
 {
-	UInt8 *tarr = this->tmpArr;
-	UInt8 *varr = this->valArr;
-	Int32 vsize = this->valSize;
-	_asm
-	{
-		mov esi,tarr
-		mov edi,varr
-		mov ecx,vsize
-		shr ecx,2
-bfdsumlop:
-		mov eax,dword ptr [esi]
-		add dword ptr [edi],eax
-		jnb bfdsumlop2
-		push edi
-bfdsumlop1:
-		add edi,4
-		inc dword ptr [edi]
-		jb bfdsumlop1
-		pop edi
-bfdsumlop2:
-		add esi,4
-		add edi,4
-		dec ecx
-		jnz bfdsumlop
-	}
+	BigIntUtil::LSBAdd2(this->valArr, this->tmpArr, this->valCnt, this->valCnt);
 }
 
 Bool Math::BigFloat::DoSubtract()
 {
-	UInt8 *tarr = this->tmpArr;
-	UInt8 *varr = this->valArr;
-	Int32 vsize = this->valSize;
-	Int32 tActSize = this->valSize;
-	Int32 vActSize = this->valSize;
+	UnsafeArray<UOSInt> tarr = this->tmpArr;
+	UnsafeArray<UOSInt> varr = this->valArr;
+	UOSInt vCnt = this->valCnt;
+	UOSInt tActCnt = this->valCnt;
+	UOSInt vActCnt = this->valCnt;
 	Int32 mode;
-	UInt32 i;
-	UInt32 j;
+	UOSInt i;
+	UOSInt j;
 	Bool ret = false;
-	while (tActSize > 0)
+	while (tActCnt > 0)
 	{
-		if (*(Int32*)&tarr[tActSize - 4])
+		if (tarr[tActCnt - 1])
 			break;
-		tActSize -= 4;
+		tActCnt -= 1;
 	}
-	while (vActSize > 0)
+	while (vActCnt > 0)
 	{
-		if (*(Int32*)&varr[vActSize - 4])
+		if (varr[vActCnt - 1])
 			break;
-		vActSize -= 4;
+		vActCnt -= 1;
 	}
-	if (tActSize > vActSize)
+	if (tActCnt > vActCnt)
 	{
 		mode = 2;
 	}
-	else if (tActSize < vActSize)
+	else if (tActCnt < vActCnt)
 	{
 		mode = 0;
 	}
 	else
 	{
 		mode = 1;
-		while (tActSize > 0)
+		while (tActCnt > 0)
 		{
-			i = *(UInt32*)&tarr[tActSize - 4];
-			j = *(UInt32*)&varr[tActSize - 4];
+			i = tarr[tActCnt - 1];
+			j = varr[tActCnt - 1];
 			if (i > j)
 			{
 				mode = 2;
@@ -310,65 +174,23 @@ Bool Math::BigFloat::DoSubtract()
 				mode = 0;
 				break;
 			}
-			tActSize -= 4;
+			tActCnt -= 1;
 		}
 	}
 
 	if (mode == 1)
 	{
-		MemClear(this->valArr, vsize);
+		MemClear(&this->valArr[0], vCnt * sizeof(UOSInt));
 		this->valIndex = 0;
-		this->isNeg = false;
+		this->neg = false;
 	}
 	else if (mode == 0)
 	{
-		_asm
-		{
-			mov esi,tarr
-			mov edi,varr
-			mov ecx,vsize
-			shr ecx,2
-bfdsublop:
-			mov eax,dword ptr [esi]
-			sub dword ptr [edi],eax
-			jnb bfdsublop2
-			push edi
-bfdsublop3:
-			add edi,4
-			sub dword ptr [edi],1
-			jb bfdsublop3
-			pop edi
-bfdsublop2:
-			add edi,4
-			add esi,4
-			dec ecx
-			jnz bfdsublop
-		}
+		BigIntUtil::LSBSub2(varr, tarr, vCnt, tActCnt);
 	}
 	else
 	{
-		_asm
-		{
-			mov esi,varr
-			mov edi,tarr
-			mov ecx,vsize
-			shr ecx,2
-bfdsublop4:
-			mov eax,dword ptr [esi]
-			sub dword ptr [edi],eax
-			jnb bfdsublop5
-			push edi
-bfdsublop6:
-			add edi,4
-			sub dword ptr [edi],1
-			jb bfdsublop6
-			pop edi
-bfdsublop5:
-			add edi,4
-			add esi,4
-			dec ecx
-			jnz bfdsublop4
-		}
+		BigIntUtil::LSBSub2(tarr, varr, vCnt, vActCnt);
 		this->valArr = tarr;
 		this->tmpArr = varr;
 		ret = true;
@@ -378,42 +200,43 @@ bfdsublop5:
 
 Math::BigFloat::BigFloat(NN<const BigFloat> val)
 {
-	this->valSize = val->valSize;
-	this->valArr = MemAllocArr(UInt8, this->valSize);
-	this->tmpArr = MemAllocArr(UInt8, this->valSize);
+	this->valCnt = val->valCnt;
+	this->valArr = MemAllocArr(UOSInt, this->valCnt);
+	this->tmpArr = MemAllocArr(UOSInt, this->valCnt);
 	this->valIndex = val->valIndex;
 	this->tmpIndex = val->tmpIndex;
-	MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valSize);
-	MemCopyNO(this->tmpArr.Ptr(), val->tmpArr.Ptr(), this->valSize);
+	this->neg = val->neg;
+	MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
+	MemCopyNO(this->tmpArr.Ptr(), val->tmpArr.Ptr(), this->valCnt * sizeof(UOSInt));
 }
 
 Math::BigFloat::BigFloat(UOSInt valSize, Text::CStringNN val)
 {
 	if (valSize < 16)
 		valSize = 16;
-	if (valSize & 3)
+	if (valSize & (sizeof(UOSInt) - 1))
 	{
-		valSize += 4 - (valSize & 3);
+		valSize += sizeof(UOSInt) - (valSize & (sizeof(UOSInt) - 1));
 	}
-	this->valSize = valSize;
-	this->valArr = MemAlloc(UInt8, valSize);
-	this->tmpArr = MemAlloc(UInt8, valSize);
+	this->valCnt = valSize / sizeof(UOSInt);
+	this->valArr = MemAllocArr(UOSInt, valCnt);
+	this->tmpArr = MemAllocArr(UOSInt, valCnt);
 	this->valIndex = 0;
 	this->tmpIndex = 0;
 	*this = val;
 }
 
-Math::BigFloat::BigFloat(UOSInt valSize, Double val)
+Math::BigFloat::BigFloat(UOSInt valSize, OSInt val)
 {
 	if (valSize < 16)
 		valSize = 16;
-	if (valSize & 3)
+	if (valSize & (sizeof(UOSInt) - 1))
 	{
-		valSize += 4 - (valSize & 3);
+		valSize += sizeof(UOSInt) - (valSize & (sizeof(UOSInt) - 1));
 	}
-	this->valSize = valSize;
-	this->valArr = MemAllocArr(UInt8, valSize);
-	this->tmpArr = MemAllocArr(UInt8, valSize);
+	this->valCnt = valSize / sizeof(UOSInt);
+	this->valArr = MemAllocArr(UOSInt, this->valCnt);
+	this->tmpArr = MemAllocArr(UOSInt, this->valCnt);
 	this->valIndex = 0;
 	this->tmpIndex = 0;
 	*this = val;
@@ -423,15 +246,16 @@ Math::BigFloat::BigFloat(UOSInt valSize)
 {
 	if (valSize < 16)
 		valSize = 16;
-	if (valSize & 3)
+	if (valSize & (sizeof(UOSInt) - 1))
 	{
-		valSize += 4 - (valSize & 3);
+		valSize += sizeof(UOSInt) - (valSize & (sizeof(UOSInt) - 1));
 	}
-	this->valSize = valSize;
-	this->valArr = MemAlloc(UInt8, valSize);
-	this->tmpArr = MemAlloc(UInt8, valSize);
+	this->valCnt = valSize / sizeof(UOSInt);
+	this->valArr = MemAllocArr(UOSInt, this->valCnt);
+	this->tmpArr = MemAllocArr(UOSInt, this->valCnt);
 	this->valIndex = 0;
 	this->tmpIndex = 0;
+	this->neg = false;
 	MemClear(this->valArr.Ptr(), valSize);
 	MemClear(this->tmpArr.Ptr(), valSize);
 }
@@ -442,36 +266,26 @@ Math::BigFloat::~BigFloat()
 	MemFreeArr(this->tmpArr);
 }
 
-Int32 Math::BigFloat::operator =(Int32 val)
+OSInt Math::BigFloat::operator =(OSInt val)
 {
-	UnsafeArray<UInt8> varr = this->valArr;
-	Int32 vsize = this->valSize;
+	UnsafeArray<UOSInt> varr = this->valArr;
 	this->valIndex = 0;
 	if (val < 0)
 	{
-		*(Int32*)varr = -val;
-		this->isNeg = true;
+		varr[0] = (UOSInt)-val;
+		this->neg = true;
 	}
 	else 
 	{
-		*(Int32*)varr = val;
-		this->isNeg = false;
+		varr[0] = (UOSInt)val;
+		this->neg = false;
 	}
-	_asm
-	{
-		mov eax,0
-		mov ecx,vsize
-		mov edi,varr
-		add edi,4
-		shr ecx,2
-		dec ecx
-		rep stosd
-		mov eax,val
-	}
-	RemZero();
+	MemClear(&varr[1], (this->valCnt - 1) * sizeof(UOSInt));
+	this->RemZero();
+	return val;
 }
 
-Double Math::BigFloat::operator =(Double val)
+/*Double Math::BigFloat::operator =(Double val)
 {
 	Char *strBuff;
 	Int32 digit;
@@ -524,46 +338,47 @@ bfequlop5:
 	this->valIndex = -strLen + digit;
 	this->RemZero();
 	return val;
-}
+}*/
 
 NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 {
 	Int32 refIndex = 0;
 	Int32 refIndex2 = 0;
-	UInt8 *varr = valArr;
-	Int32 vsize = valSize;
+	UnsafeArray<UOSInt> varr = valArr;
+	UOSInt vCnt = valCnt;
 	Bool isDot = false;
 	Int32 isExt = 0;
-	WChar c;
-	if (*val == '-')
+	UTF8Char c;
+	UOSInt cInd = 0;
+	if (val.v[0] == '-')
 	{
-		this->isNeg = true;
-		val++;
+		this->neg = true;
+		val = val.Substring(1);
 	}
 	else
 	{
-		this->isNeg = false;
+		this->neg = false;
 	}
-	MemClear(varr, vsize);
+	MemClear(&varr[0], vCnt * sizeof(UOSInt));
 	
-	while (c = *val++)
+	while ((c = val.v[cInd++]) != 0)
 	{
 		if (c == '.')
 		{
 			if (isDot)
-				return 0;
+				return *this;
 			isDot = true;
 		}
 		else if (c == '+')
 		{
 			if (isExt)
-				return 0;
+				return *this;
 			isExt = 1;
 		}
 		else if (c == '-')
 		{
 			if (isExt)
-				return 0;
+				return *this;
 			isExt = 2;
 		}
 		else if (c >= 0x30 && c <= 0x39)
@@ -572,7 +387,7 @@ NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 			{
 				refIndex2 = refIndex2 * 10 + (c - 0x30);
 			}
-			else if (varr[valSize - 1])
+			else if (varr[valCnt - 1])
 			{
 				if (!isDot)
 				{
@@ -581,41 +396,15 @@ NN<Math::BigFloat> Math::BigFloat::operator =(Text::CStringNN val)
 			}
 			else
 			{
-				_asm
-				{
-					mov ecx,vsize
-					mov edi,varr
-					shr ecx,2
-					mov edx,0
-					mov ebx,10
-bfequlop:
-					mov eax,dword ptr [edi]
-					mov dword ptr [edi],edx
-					mul ebx
-					add dword ptr [edi],eax
-					adc edx,0
-					add edi,4
-					dec ecx
-					jnz bfequlop
-					movzx eax,c
-					mov edi,varr
-					sub eax,0x30
-					add dword ptr [edi],eax
-					jnb bfequlop6
-bfequlop5:
-					add edi,4
-					inc dword ptr [edi]
-					jb bfequlop5
-bfequlop6:
-
-				}
+				BigIntUtil::LSBMulUOS2(varr, vCnt, 10);
+				BigIntUtil::LSBAddUOS2(varr, vCnt, (UOSInt)c - 0x30);
 				if (isDot)
 					refIndex--;
 			}
 		}
 		else
 		{
-			return 0;
+			return *this;
 		}
 	}
 
@@ -630,24 +419,24 @@ bfequlop6:
 
 NN<Math::BigFloat> Math::BigFloat::operator =(NN<const BigFloat> val)
 {
-	if (val->valSize > this->valSize)
+	if (val->valCnt > this->valCnt)
 	{
-		this->valSize = val->valSize;
+		this->valCnt = val->valCnt;
 		MemFreeArr(this->valArr);
-		this->valArr = MemAllocArr(UInt8, this->valSize);
-		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valSize);
+		this->valArr = MemAllocArr(UOSInt, this->valCnt);
+		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
 		this->valIndex = val->valIndex;
 	}
 	else
 	{
 		this->valIndex = val->valIndex;
-		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), val->valSize);
-		if (val->valSize < this->valSize)
+		MemCopyNO(this->valArr.Ptr(), val->valArr.Ptr(), val->valCnt * sizeof(UOSInt));
+		if (val->valCnt < this->valCnt)
 		{
-			MemClear(&this->valArr[val->valSize], this->valSize - val->valSize);
+			MemClear(&this->valArr[val->valCnt], (this->valCnt - val->valCnt) * sizeof(UOSInt));
 		}
 	}
-	this->isNeg = val->isNeg;
+	this->neg = val->neg;
 	return *this;
 }
 
@@ -655,14 +444,14 @@ NN<Math::BigFloat> Math::BigFloat::operator +=(NN<const BigFloat> val)
 {
 	PrepareTmpBuff(val);
 	PrepareSum();
-	if (this->isNeg == val->isNeg)
+	if (this->neg == val->neg)
 	{
 		DoSum();
 	}
 	else
 	{
 		if (DoSubtract())
-			this->isNeg = !this->isNeg;
+			this->neg = !this->neg;
 	}
 	return *this;
 }
@@ -671,187 +460,86 @@ NN<Math::BigFloat> Math::BigFloat::operator -=(NN<const BigFloat> val)
 {
 	PrepareTmpBuff(val);
 	PrepareSum();
-	if (this->isNeg != val->isNeg)
+	if (this->neg != val->neg)
 	{
 		DoSum();
 	}
 	else
 	{
 		if (DoSubtract())
-			this->isNeg = !this->isNeg;
+			this->neg = !this->neg;
 	}
 	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::operator *=(const Math::BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::operator *=(NN<const Math::BigFloat> val)
 {
-	Int32 tsize;
-	UInt8 *tarr = MemAlloc(UInt8, tsize = this->valSize + val->valSize);
+	UOSInt tCnt = this->valCnt;
+	UOSInt vCnt = val->valCnt;
+	UOSInt tmpCnt = tCnt + vCnt;
+	UnsafeArray<UOSInt> tarr = MemAlloc(UOSInt, tmpCnt);
 	Int32 tIndex = this->valIndex + val->valIndex;
-	UInt8 *tharr = this->valArr;
-	UInt8 *vaarr = val->valArr;
-	Int32 thsize = this->valSize;
-	Int32 thsize2 = this->valSize;
-	Int32 vasize = val->valSize;
-	
-	MemClear(tarr, tsize);
-	_asm
+	UnsafeArray<UOSInt> varr = val->valArr;
+	MemCopyNO(tarr.Ptr(), this->valArr.Ptr(), tCnt * sizeof(UOSInt));
+	MemClear(&tarr[tCnt], vCnt * sizeof(UOSInt));
+	BigIntUtil::LSBMul2(tarr, varr, tmpCnt, vCnt);
+	while (tmpCnt > 0)
 	{
-		mov edi,tharr
-		mov ecx,thsize
-bfmullop:
-		cmp dword ptr [edi+ecx-4],0
-		jnz bfmullop2
-		sub ecx,4
-		jnz bfmullop
-bfmullop2:
-		mov thsize,ecx
-
-		mov edi,vaarr
-		mov ecx,vasize
-bfmullop3:
-		cmp dword ptr [edi+ecx-4],0
-		jnz bfmullop4
-		sub ecx,4
-		jnz bfmullop3
-bfmullop4:
-		mov vasize,ecx
-
-		mov esi,vaarr
-bfmullop4a:
-		mov edi,tarr
-		mov edx,tharr
-		sub thsize,4
-		jb bfmullop5
-		mov ecx,thsize
-		mov ebx,dword ptr [edx + ecx]
-		add edi,ecx
-		mov ecx,vasize
-bfmullop4b:
-		sub ecx,4
-		jb bfmullop4a
-		mov eax,dword ptr [esi + ecx]
-		mul ebx
-		add dword ptr [edi + ecx],eax
-		adc dword ptr [edi + ecx + 4],edx
-		jnb bfmullop4b
-		push ecx
-		add ecx,8
-bfmullop4c:
-		inc dword ptr [edi + ecx]
-		jnb bfmullop4d
-		add eax,4
-		jmp bfmullop4c
-bfmullop4d:
-		pop ecx
-		jmp bfmullop4b
-
-bfmullop5:
-		mov edi,tarr
-		mov ecx,tsize
-		mov ebx,10
-bfmullop6:
-		cmp dword ptr [edi + ecx - 4],0
-		jnz bfmullop7
-		sub ecx,4
-		jz bfmullop7
-		jmp bfmullop6
-bfmullop7:
-		cmp ecx,thsize2
-		jbe bfmullop8
-		mov edx,0
-		mov edi,tarr
-		push ecx
-bfmullop7b:
-		sub ecx,4
-		jb bfmullop7c
-		mov eax,dword ptr [edi + ecx]
-		div ebx
-		mov dword ptr [edi + ecx],eax
-		jmp bfmullop7b
-bfmullop7c:
-		pop ecx
-		inc tIndex
-		cmp dword ptr [edi + ecx - 4],0
-		jnz bfmullop7
-		sub ecx,4
-		jmp bfmullop7
-bfmullop8:
+		if (tarr[tmpCnt - 1])
+			break;
+		tmpCnt--;
 	}
-	MemCopyNO(this->valArr, tarr, this->valSize);
+	while (tmpCnt >= tCnt)
+	{
+		BigIntUtil::LSBDivUOS2(tarr, tmpCnt, 10);
+		tIndex++;
+		if (tarr[tmpCnt - 1] == 0)
+			tmpCnt--;
+	}
+	MemCopyNO(this->valArr.Ptr(), tarr.Ptr(), this->valCnt * sizeof(UOSInt));
 
-	MemFree(tarr);
+	MemFreeArr(tarr);
 	this->valIndex = tIndex;
-	if (val->isNeg)
+	if (val->neg)
 	{
-		this->isNeg = !this->isNeg;
+		this->neg = !this->neg;
 	}
-	RemZero();
-	return this;
+	this->RemZero();
+	return *this;
 }
 
-NN<Math::BigFloat> Math::BigFloat::operator *=(Int32 val)
+NN<Math::BigFloat> Math::BigFloat::operator *=(OSInt val)
 {
 	if (val == 0)
 	{
-		MemClear(this->valArr, this->valSize);
+		MemClear(this->valArr.Ptr(), this->valCnt * sizeof(UOSInt));
 		this->valIndex = 0;
-		this->isNeg = false;
-		return this;
+		this->neg = false;
+		return *this;
 	}
 
 	if (val < 0)
 	{
 		val = -val;
-		this->isNeg = !this->isNeg;
+		this->neg = !this->neg;
 	}
-	UInt8 *tharr = this->valArr;
-	Int32 thsize = this->valSize;
+	UnsafeArray<UOSInt> tharr = this->valArr;
+	UOSInt thCnt = this->valCnt;
 	Int32 tIndex = this->valIndex;
-
-	_asm
+	while (tharr[thCnt - 1] != 0)
 	{
-		mov edi,tharr
-		mov ecx,thsize
-		mov ebx,10
-		cmp dword ptr [edi+ecx-4],0
-		jz bfmullop2
-bfmullop:
-		mov edx,0
-bfmullop1:
-		mov eax,dword ptr [edi+ecx-4]
-		div ebx
-		mov dword ptr [edi+ecx-4],eax
-		sub ecx,4
-		jnz bfmullop1
-
-		inc tIndex
-		mov ecx,thsize
-		cmp dword ptr [edi+ecx-4],0
-		jnz bfmullop
-bfmullop2:
-		mov ecx,thsize
-		mov ebx,val
-		mov edx,0
-		mov esi,0
-bfmullop3:
-		mov eax,dword ptr [esi+edi]
-		mov dword ptr [esi+edi],edx
-		mul ebx
-		add dword ptr [esi+edi],eax
-		adc edx,0
-		add esi,4
-		cmp esi,ecx
-		jb bfmullop3
+		BigIntUtil::LSBDivUOS2(tharr, thCnt, 10);
+		tIndex++;
 	}
+	BigIntUtil::LSBMulUOS2(tharr, thCnt, (UOSInt)val);
 	this->valIndex = tIndex;
-	RemZero();
-	return this;
+	this->RemZero();
+	return *this;
 }
 
-Math::BigFloat *Math::BigFloat::operator /=(const Math::BigFloat *val)
+NN<Math::BigFloat> Math::BigFloat::operator /=(NN<const Math::BigFloat> val)
 {
-	Int32 tsize;
+/*	Int32 tsize;
 	UInt8 *tarr = MemAlloc(UInt8, tsize = this->valSize + val->valSize);
 	UInt8 *tarr2 = MemAlloc(UInt8, tsize);
 	Int32 tIndex = this->valIndex - val->valIndex;
@@ -1258,227 +946,35 @@ bfdivexit2:
 	_asm
 	{
 bfdivexit:
-	}
-	return this;
-}
-
-NN<Math::BigFloat> Math::BigFloat::operator /=(Int32 val)
-{
-	if (val == 0)
-		return *this;
-	if (val < 0)
-	{
-		val = -val;
-		this->isNeg = !this->isNeg;
-	}
-	if (val == 1)
-	{
-		return *this;
-	}
-
-	UnsafeArray<UInt8> tarr = this->tmpArr;
-	UnsafeArray<UInt8> varr = this->valArr;
-	Int32 vsize = this->valSize;
-	Int32 tIndex = this->valIndex;
-	Int32 thisASize;
-
-	MemCopyNO(tarr.Ptr(), varr.Ptr(), vsize);
-	_asm
-	{
-		mov esi,tarr
-		mov ecx,vsize
-		mov edx,-4
-		mov ebx,0
-bfdivlop:
-		cmp dword ptr [esi+ebx],0
-		jz bfdivlop2
-		mov edx,ebx
-bfdivlop2:
-		add ebx,4
-		cmp ebx,ecx
-		jb bfdivlop
-		add edx,4
-		jz bfdivexit
-		mov thisASize,edx
-
-		mov ebx,10
-		mov edi,vsize
-bfdivlop3:
-		mov ecx,thisASize
-		mov edx,0
-		mov esi,tarr
-		cmp ecx,edi
-		jnb bfdivlop4
-bfdivlop3a:
-		mov eax,dword ptr [esi]
-		mov dword ptr [esi],edx
-		mul ebx
-		add dword ptr [esi],eax
-		adc edx,0
-		add esi,4
-		sub ecx,4
-		jnz bfdivlop3a
-		dec tIndex
-		cmp edx,0
-		jz bfdivlop3
-		mov dword ptr [esi],edx
-		add thisASize,4
-		jmp bfdivlop3
-bfdivlop4:
-
-		mov edi,varr
-		mov ecx,vsize
-		mov eax,0
-		shr ecx,2
-		rep stosd
-
-		mov ebx,val
-		mov esi,tarr
-		mov edi,varr
-		mov ecx,thisASize
-		mov edx,0
-bfdivlop5:
-		sub ecx,4
-		mov eax,dword ptr [esi+ecx]
-		div ebx
-		mov dword ptr [edi+ecx],eax
-		cmp ecx,0
-		jnz bfdivlop5
-		shr ebx,1
-		adc ebx,0
-		cmp edx,ebx
-		jb bfdivlop6
-bfdivlop7:
-		add edi,4
-		inc dword ptr [edi-4]
-		jb bfdivlop7
-bfdivlop6:
-	}
-	this->valIndex = tIndex;
-	RemZero();
-	_asm
-	{
-bfdivexit:
-	}
+	}*/
 	return *this;
 }
 
-NN<Math::BigFloat> Math::BigFloat::operator /=(UInt32 val)
+NN<Math::BigFloat> Math::BigFloat::operator /=(UOSInt val)
 {
-	if (val == 0)
-		return *this;
-	if (val == 1)
-	{
-		return this;
-	}
-
-	UnsafeArray<UInt8> tarr = this->tmpArr;
-	UnsafeArray<UInt8> varr = this->valArr;
-	Int32 vsize = this->valSize;
-	Int32 tIndex = this->valIndex;
-	Int32 thisASize;
-
-	MemCopyNO(tarr, varr, vsize);
-	_asm
-	{
-		mov esi,tarr
-		mov ecx,vsize
-		mov edx,-4
-		mov ebx,0
-bfdivlop:
-		cmp dword ptr [esi+ebx],0
-		jz bfdivlop2
-		mov edx,ebx
-bfdivlop2:
-		add ebx,4
-		cmp ebx,ecx
-		jb bfdivlop
-		add edx,4
-		jz bfdivexit
-		mov thisASize,edx
-
-		mov ebx,10
-		mov edi,vsize
-bfdivlop3:
-		mov ecx,thisASize
-		mov edx,0
-		mov esi,tarr
-		cmp ecx,edi
-		jnb bfdivlop4
-bfdivlop3a:
-		mov eax,dword ptr [esi]
-		mov dword ptr [esi],edx
-		mul ebx
-		add dword ptr [esi],eax
-		adc edx,0
-		add esi,4
-		sub ecx,4
-		jnz bfdivlop3a
-		dec tIndex
-		cmp edx,0
-		jz bfdivlop3
-		mov dword ptr [esi],edx
-		add thisASize,4
-		jmp bfdivlop3
-bfdivlop4:
-
-		mov edi,varr
-		mov ecx,vsize
-		mov eax,0
-		shr ecx,2
-		rep stosd
-
-		mov ebx,val
-		mov esi,tarr
-		mov edi,varr
-		mov ecx,thisASize
-		mov edx,0
-bfdivlop5:
-		sub ecx,4
-		mov eax,dword ptr [esi+ecx]
-		div ebx
-		mov dword ptr [edi+ecx],eax
-		cmp ecx,0
-		jnz bfdivlop5
-		shr ebx,1
-		adc ebx,0
-		cmp edx,ebx
-		jb bfdivlop6
-bfdivlop7:
-		add edi,4
-		inc dword ptr [edi-4]
-		jb bfdivlop7
-bfdivlop6:
-	}
-	this->valIndex = tIndex;
-	RemZero();
-	_asm
-	{
-bfdivexit:
-	}
-	return this;
+	return *this;
 }
 
 NN<Math::BigFloat> Math::BigFloat::ToNeg()
 {
-	Int32 i = this->valSize;
-	this->isNeg = !this->isNeg;
+	UOSInt i = this->valCnt;
+	this->neg = !this->neg;
 	while (i-- > 0)
 	{
 		if (this->valArr[i] == 0)
-			return this;
+			return *this;
 	}
-	this->isNeg = 0;
+	this->neg = false;
 	return *this;
 }
 
 Bool Math::BigFloat::IsZero()
 {
-	Int32 i = this->valSize;
+	UOSInt i = this->valCnt;
 	while (i > 0)
 	{
-		i -= 4;
-		if (*(Int32*)&this->valArr[i])
+		i--;
+		if (this->valArr[i])
 			return false;
 	}
 	return true;
@@ -1486,17 +982,17 @@ Bool Math::BigFloat::IsZero()
 
 Bool Math::BigFloat::operator >(NN<const BigFloat> val)
 {
-	if (this->isNeg != val->isNeg)
+	if (this->neg != val->neg)
 	{
-		if (this->isNeg)
+		if (this->neg)
 			return false;
 		else
 			return true;
 	}
-	Math::BigFloat tmp(this->valSize);
+	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
 	tmp = *this;
 	tmp -= val;
-	if (tmp.isNeg)
+	if (tmp.neg)
 		return false;
 	else if (tmp.IsZero())
 		return false;
@@ -1506,17 +1002,17 @@ Bool Math::BigFloat::operator >(NN<const BigFloat> val)
 
 Bool Math::BigFloat::operator >=(NN<const BigFloat> val)
 {
-	if (this->isNeg != val->isNeg)
+	if (this->neg != val->neg)
 	{
-		if (this->isNeg)
+		if (this->neg)
 			return false;
 		else
 			return true;
 	}
-	Math::BigFloat tmp(this->valSize);
+	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
 	tmp = *this;
 	tmp -= val;
-	if (tmp.isNeg)
+	if (tmp.neg)
 		return false;
 	else if (tmp.IsZero())
 		return true;
@@ -1526,17 +1022,17 @@ Bool Math::BigFloat::operator >=(NN<const BigFloat> val)
 
 Bool Math::BigFloat::operator <(NN<const BigFloat> val)
 {
-	if (this->isNeg != val->isNeg)
+	if (this->neg != val->neg)
 	{
-		if (this->isNeg)
+		if (this->neg)
 			return true;
 		else
 			return false;
 	}
-	Math::BigFloat tmp(this->valSize);
+	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
 	tmp = *this;
 	tmp -= val;
-	if (tmp.isNeg)
+	if (tmp.neg)
 		return true;
 	else if (tmp.IsZero())
 		return false;
@@ -1546,17 +1042,17 @@ Bool Math::BigFloat::operator <(NN<const BigFloat> val)
 
 Bool Math::BigFloat::operator <=(NN<const BigFloat> val)
 {
-	if (this->isNeg != val->isNeg)
+	if (this->neg != val->neg)
 	{
-		if (this->isNeg)
+		if (this->neg)
 			return true;
 		else
 			return false;
 	}
-	Math::BigFloat tmp(this->valSize);
+	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
 	tmp = *this;
 	tmp -= val;
-	if (tmp.isNeg)
+	if (tmp.neg)
 		return true;
 	else if (tmp.IsZero())
 		return true;
@@ -1566,11 +1062,11 @@ Bool Math::BigFloat::operator <=(NN<const BigFloat> val)
 
 Bool Math::BigFloat::operator ==(NN<const BigFloat> val)
 {
-	if (this->isNeg != val->isNeg)
+	if (this->neg != val->neg)
 	{
 		return false;
 	}
-	Math::BigFloat tmp(this->valSize);
+	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
 	tmp = *this;
 	tmp -= val;
 	if (tmp.IsZero())
@@ -1579,18 +1075,18 @@ Bool Math::BigFloat::operator ==(NN<const BigFloat> val)
 		return false;
 }
 
-NN<Math::BigFloat> Math::BigFloat::Factorial(Int32 val)
+NN<Math::BigFloat> Math::BigFloat::Factorial(UOSInt val)
 {
 	if (val < 1)
 	{
-		*this = 1;
+		*this = (OSInt)1;
 		return *this;
 	}
-	*this = 1;
-	Math::BigFloat tmp(this->valSize);
+	*this = (OSInt)1;
+	Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
 	while (val > 1)
 	{
-		tmp = val;
+		tmp = (OSInt)val;
 		*this *= tmp;
 		val--;
 	}
@@ -1599,12 +1095,12 @@ NN<Math::BigFloat> Math::BigFloat::Factorial(Int32 val)
 
 NN<Math::BigFloat> Math::BigFloat::SetPI()
 {
-	Math::BigFloat tmpVal(this->valSize);
-	Int32 endInd = -(this->valSize * 5) >> 1;
-	Int32 v = 1;
-	Int32 v2 = 3;
-	*this = 1;
-	tmpVal = 1;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
+	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
+	OSInt v = 1;
+	UOSInt v2 = 3;
+	*this = (OSInt)1;
+	tmpVal = (OSInt)1;
 	while (v < 0x10000)
 	{
 		tmpVal *= v;
@@ -1616,20 +1112,20 @@ NN<Math::BigFloat> Math::BigFloat::SetPI()
 		v++;
 		v2 += 2;
 	}
-	tmpVal = 2;
+	tmpVal = (OSInt)2;
 	*this *= tmpVal;
 	return *this;
 }
 
 NN<Math::BigFloat> Math::BigFloat::SetE(NN<Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valSize);
-	Math::BigFloat tmpVal2(val->valSize);
-	Int32 endInd = -(this->valSize * 5) >> 1;
-	Int32 i = 2;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
+	Math::BigFloat tmpVal2(val->valCnt * sizeof(UOSInt));
+	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
+	UOSInt i = 2;
 	tmpVal2 = val;
 	tmpVal = tmpVal2;
-	*this = 1;
+	*this = (OSInt)1;
 	*this += tmpVal;
 
 	while (true)
@@ -1646,7 +1142,7 @@ NN<Math::BigFloat> Math::BigFloat::SetE(NN<Math::BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 {
-	if (val->isNeg)
+	if (val->neg)
 	{
 		return *this;
 
@@ -1675,27 +1171,27 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 	}
 	else
 	{
-		Math::BigFloat tmp(this->valSize);
-		Math::BigFloat tmp2(this->valSize);
-		Math::BigFloat tmp3(this->valSize);
-		Math::BigFloat e0(this->valSize);
-		Math::BigFloat e1(this->valSize);
-		Math::BigFloat e2(this->valSize);
-		Int32 i = 1;
+		Math::BigFloat tmp(this->valCnt * sizeof(UOSInt));
+		Math::BigFloat tmp2(this->valCnt * sizeof(UOSInt));
+		Math::BigFloat tmp3(this->valCnt * sizeof(UOSInt));
+		Math::BigFloat e0(this->valCnt * sizeof(UOSInt));
+		Math::BigFloat e1(this->valCnt * sizeof(UOSInt));
+		Math::BigFloat e2(this->valCnt * sizeof(UOSInt));
+		UOSInt i = 1;
 		Int32 j;
-		tmp = 1;
+		tmp = (OSInt)1;
 		e0.SetE(tmp);
 		e2 = tmp;
 		e2 /= e0;
 
-		Int32 endInd = -(this->valSize * 5) >> 1;
+		OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
 		if (val.Ptr()[0] > e0)
 		{
 			tmp3 = val;
-			tmp2 = 0;
+			tmp2 = (OSInt)0;
 			while (tmp3 > e0)
 			{
-				tmp = 1;
+				tmp = (OSInt)1;
 				e1.SetE(tmp);
 				e2 = tmp;
 				e2 /= e1;
@@ -1714,7 +1210,7 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 			}
 			*this = tmp2;
 
-			tmp = 1;
+			tmp = (OSInt)1;
 			tmp2 = tmp3;
 			tmp2 -= tmp;
 			tmp2 /= tmp3;
@@ -1732,7 +1228,7 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 		}
 		else if (val.Ptr()[0] > tmp)
 		{
-			tmp.isNeg = false;
+			tmp.neg = false;
 			tmp2 = val;
 			tmp2 -= tmp;
 			tmp2 /= val;
@@ -1751,7 +1247,7 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 		else if (val.Ptr()[0] >= e2)
 		{
 			tmp2 = val;
-			tmp = 1;
+			tmp = (OSInt)1;
 			tmp2 -= tmp;
 			*this = tmp2;
 			tmp = tmp2;
@@ -1778,10 +1274,10 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 			e0 = e2;
 
 			tmp3 = val;
-			tmp2 = 0;
+			tmp2 = (OSInt)0;
 			while (tmp3 < e0)
 			{
-				tmp = 1;
+				tmp = (OSInt)1;
 				e1.SetE(tmp);
 				e2 = tmp;
 				e2 /= e1;
@@ -1801,7 +1297,7 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 			*this = tmp2;
 
 			tmp2 = tmp3;
-			tmp = 1;
+			tmp = (OSInt)1;
 			tmp2 -= tmp;
 			*this += tmp2;
 			tmp = tmp2;
@@ -1829,9 +1325,9 @@ NN<Math::BigFloat> Math::BigFloat::SetLn(NN<BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::SetSin(NN<const Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valSize);
-	UInt32 i = 1;
-	Int32 endInd = -(this->valSize * 5) >> 1;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
+	UOSInt i = 1;
+	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
 	tmpVal = val;
 	*this = tmpVal;
 
@@ -1851,10 +1347,10 @@ NN<Math::BigFloat> Math::BigFloat::SetSin(NN<const Math::BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::SetCos(NN<const Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valSize);
-	Int32 endInd = -(this->valSize * 5) >> 1;
-	UInt32 i = 0;
-	tmpVal = 1;
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
+	OSInt endInd = -(OSInt)(this->valCnt * sizeof(UOSInt) * 5) >> 1;
+	UOSInt i = 0;
+	tmpVal = (OSInt)1;
 	*this = tmpVal;
 
 	while (true)
@@ -1873,7 +1369,7 @@ NN<Math::BigFloat> Math::BigFloat::SetCos(NN<const Math::BigFloat> val)
 
 NN<Math::BigFloat> Math::BigFloat::SetTan(NN<const Math::BigFloat> val)
 {
-	Math::BigFloat tmpVal(this->valSize);
+	Math::BigFloat tmpVal(this->valCnt * sizeof(UOSInt));
 	tmpVal.SetCos(val);
 	this->SetSin(val);
 	return *this /= tmpVal;
@@ -1881,7 +1377,7 @@ NN<Math::BigFloat> Math::BigFloat::SetTan(NN<const Math::BigFloat> val)
 
 UOSInt Math::BigFloat::GetSize()
 {
-	return this->valSize;
+	return this->valCnt * sizeof(UOSInt);
 }
 
 UnsafeArray<UTF8Char> Math::BigFloat::ToString(UnsafeArray<UTF8Char> buff)
@@ -1889,60 +1385,29 @@ UnsafeArray<UTF8Char> Math::BigFloat::ToString(UnsafeArray<UTF8Char> buff)
 	UnsafeArray<UTF8Char> strBuff;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	UOSInt vsize = valSize;
+	UOSInt vCnt = valCnt;
 	Int32 vindex = valIndex;
 	OSInt ssize;
-	UnsafeArray<UInt8> tarr = tmpArr;
-	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vsize = valSize);
+	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vCnt);
 
-	strBuff = MemAlloc(UTF8Char, ssize = vsize * 3);
-	sptr = &strBuff[ssize];
-	*--sptr = 0;
-	sptr2 = sptr;
-	_asm
-	{
-		mov edi,tarr
-		mov ecx,vsize
-		lea esi,[edi+ecx-4]
-bftslop4:
-		cmp dword ptr [esi],0
-		jnz bftslop5
-		cmp esi,tarr
-		jz bftslop6
-		sub esi,4
-		jmp bftslop4
-bftslop5:
-		mov edi,esi
-		mov edx,0
-		mov ebx,10
-		mov ecx,tarr
-bftslop5b:
-		mov eax,dword ptr [edi]
-		div ebx
-		mov dword ptr [edi],eax
-		sub edi,4
-		cmp edi,ecx
-		jnb bftslop5b
-		add edx,0x30
-		mov ebx,wptr
-		mov word ptr [ebx-2],dx
-		sub wptr,2
-		jmp bftslop4
-bftslop6:
-	}
+	ssize = (OSInt)(vCnt * sizeof(UOSInt) * 3);
+	strBuff = MemAlloc(UTF8Char, (UOSInt)ssize);
+	sptr = BigIntUtil::LSBToString2(strBuff, this->valArr, this->tmpArr, this->valCnt);
 	
-	if (sptr == sptr2)
+	if (strBuff[0] == '0' && strBuff[1] == 0)
 	{
 		*buff++ = '0';
 		*buff = 0;
-		MemFree(strBuff);
+		MemFreeArr(strBuff);
 		return buff;
 	}
-	if (this->isNeg)
+	if (this->neg)
 	{
 		*buff++ = '-';
 	}
-	ssize = sptr2 - sptr;
+	ssize = (sptr - strBuff);
+	sptr2 = sptr;
+	sptr = strBuff;
 	if (vindex > 3 || (vindex < -ssize - 2))
 	{
 		*buff++ = *sptr++;
@@ -1964,7 +1429,7 @@ bftslop6:
 	}
 	else if (vindex >= 0)
 	{
-		buff = Text::StrConcat(buff, wptr);
+		buff = Text::StrConcat(buff, strBuff);
 		while (vindex-- > 0)
 		{
 			*buff++ = '0';
@@ -1976,10 +1441,10 @@ bftslop6:
 		ssize = ssize + vindex;
 		while (ssize-- > 0)
 		{
-			*buff++ = *wptr++;
+			*buff++ = *sptr++;
 		}
 		*buff++ = '.';
-		buff = Text::StrConcat(buff, wptr);
+		buff = Text::StrConcat(buff, sptr);
 	}
 	else
 	{
@@ -1990,8 +1455,77 @@ bftslop6:
 		{
 			*buff++ = '0';
 		}
-		buff = Text::StrConcat(buff, wptr);
+		buff = Text::StrConcat(buff, sptr);
 	}
 	MemFreeArr(strBuff);
 	return buff;
+}
+
+void Math::BigFloat::ToString(NN<Text::StringBuilderUTF8> sb)
+{
+	UnsafeArray<UTF8Char> strBuff;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UOSInt vCnt = valCnt;
+	Int32 vindex = valIndex;
+	OSInt ssize;
+	MemCopyNO(tmpArr.Ptr(), valArr.Ptr(), vCnt);
+
+	ssize = (OSInt)(vCnt * sizeof(UOSInt) * 3);
+	strBuff = MemAlloc(UTF8Char, (UOSInt)ssize);
+	sptr = BigIntUtil::LSBToString2(strBuff, this->valArr, this->tmpArr, this->valCnt);
+	
+	if (strBuff[0] == '0' && strBuff[1] == 0)
+	{
+		sb->AppendUTF8Char('0');
+		MemFreeArr(strBuff);
+		return;
+	}
+	if (this->neg)
+	{
+		sb->AppendUTF8Char('-');
+	}
+	ssize = (sptr - strBuff);
+	sptr2 = sptr;
+	sptr = strBuff;
+	if (vindex > 3 || (vindex < -ssize - 2))
+	{
+		sb->AppendUTF8Char(*sptr++);
+		if (sptr != sptr2)
+		{
+			sb->AppendUTF8Char('.');
+			vindex += (Int32)(sptr2 - sptr);
+			sb->AppendP(sptr, sptr2);
+		}
+		if (vindex > 0)
+		{
+			sb->AppendUTF8Char('+');
+			sb->AppendI32(vindex);
+		}
+		else if (vindex < 0)
+		{
+			sb->AppendI32(vindex);
+		}
+	}
+	else if (vindex >= 0)
+	{
+		sb->AppendP(strBuff, sptr2);
+		sb->AppendChar('0', (UInt32)vindex);
+	}
+	else if (vindex > -ssize)
+	{
+		ssize = ssize + vindex;
+		sb->AppendC(sptr, (UOSInt)ssize);
+		sptr += ssize;
+		sb->AppendUTF8Char('.');
+		sb->AppendP(sptr, sptr2);
+	}
+	else
+	{
+		sb->Append(CSTR("0."));
+		ssize = -vindex - ssize;
+		sb->AppendChar('0', (UOSInt)ssize);
+		sb->AppendP(sptr, sptr2);
+	}
+	MemFreeArr(strBuff);
 }

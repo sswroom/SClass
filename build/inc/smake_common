@@ -61,6 +61,7 @@ test:
 @TestDateTime
 @TestFastStringMap
 @TestFloat16
+@TestBigInt
 @TestCoord
 @TestFloat
 @TestMyString
@@ -147,6 +148,7 @@ console:
 @MapSearchTest
 @OruxMapTest
 @SpeedLimitTest
+@BigFloatTest
 @BigIntTest
 @LanczosFilterTest
 @AudioDeviceTest
@@ -488,6 +490,9 @@ SpeedLimitTest:
 @ConsoleStartup.o
 
 #Math
+BigFloatTest:
+@BigFloatTest.o
+@ConsoleStartup.o
 BigIntTest:
 @BigIntTest.o
 @ConsoleStartup.o
@@ -878,6 +883,9 @@ TestFastStringMap:
 TestFloat16:
 @TestFloat16.o
 @ConsoleStartup.o
+TestBigInt:
+@TestBigInt.o
+@ConsoleStartup.o
 TestCoord:
 @TestCoord.o
 @ConsoleStartup.o
@@ -1099,6 +1107,7 @@ GISDistTest.o: ../../main/Map/GISDistTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
 SpeedLimitTest.o: ../../main/Map/SpeedLimitTest.cpp
+BigFloatTest.o: ../../main/Math/BigFloatTest.cpp
 BigIntTest.o: ../../main/Math/BigIntTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
 MCU_Console.o: ../../main/MCU/MCU_Console.cpp
@@ -1225,6 +1234,7 @@ TestAStruct.o: ../../main/Test/Data/TestAStruct.cpp
 TestDateTime.o: ../../main/Test/Data/TestDateTime.cpp
 TestFastStringMap.o: ../../main/Test/Data/TestFastStringMap.cpp
 TestFloat16.o: ../../main/Test/Data/TestFloat16.cpp
+TestBigInt.o: ../../main/Test/Math/TestBigInt.cpp
 TestCoord.o: ../../main/Test/Math/TestCoord.cpp
 TestFloat.o: ../../main/Test/Math/TestFloat.cpp
 TestMyString.o: ../../main/Test/Text/TestMyString.cpp
@@ -2489,8 +2499,12 @@ Math/ArcGISCSys.h:
 @ArcGISCSys.o
 Math/ArcGISPRJParser.h:
 @ArcGISPRJParser.o
+Math/BigFloat.h:
+@BigFloat.o
 Math/BigIntLSB.h:
 @BigIntLSB.o
+Math/BigIntUtil.h:
+@BigIntUtil.o
 Math/CassiniSoldnerCoordinateSystem.h:
 @CassiniSoldnerCoordinateSystem.o
 Math/CesiumEntityWriter.h:
