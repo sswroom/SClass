@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
 #include "Math/CoordinateSystem.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"

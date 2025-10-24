@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Map/HKTDVehRestrict.h"
 #include "Map/VectorLayer.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyStringFloat.h"

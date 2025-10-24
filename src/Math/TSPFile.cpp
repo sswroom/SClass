@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "DB/ColDef.h"
 #include "DB/TableDef.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/TSPFile.h"
 #include "Math/Geometry/PointZ.h"
 #include "Text/MyString.h"

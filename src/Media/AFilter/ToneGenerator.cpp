@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/AFilter/ToneGenerator.h"
 #include "Text/MyString.h"
 

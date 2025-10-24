@@ -3,7 +3,7 @@
 #include "IO/CortexControl.h"
 #include "IO/SerialPort.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
@@ -15,13 +15,14 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 	UInt8 buff[260];
 	UOSInt buffSize = 0;
 	UOSInt recvSize;
-	if (me->errWriter) me->errWriter->WriteLine(CSTR("Thread started"));
+	NN<IO::Writer> errWriter;
+	if (me->errWriter.SetTo(errWriter)) errWriter->WriteLine(CSTR("Thread started"));
 	me->recvRunning = true;
 	while (!me->recvToStop)
 	{
-		if (me->errWriter) me->errWriter->WriteLine(CSTR("Start Receive"));
+		if (me->errWriter.SetTo(errWriter)) errWriter->WriteLine(CSTR("Start Receive"));
 		recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 260 - buffSize));
-		if (me->errWriter) me->errWriter->WriteLine(CSTR("End Receive"));
+		if (me->errWriter.SetTo(errWriter)) errWriter->WriteLine(CSTR("End Receive"));
 		if (recvSize <= 0)
 		{
 			if (me->recvToStop)
@@ -31,12 +32,12 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 		}
 		else
 		{
-			if (me->errWriter)
+			if (me->errWriter.SetTo(errWriter))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Recv: "));
 				sb.AppendHexBuff(&buff[buffSize], recvSize, ' ', Text::LineBreakType::CRLF);
-				me->errWriter->WriteLine(sb.ToCString());
+				errWriter->WriteLine(sb.ToCString());
 			}
 			buffSize += recvSize;
 			recvSize = me->protoHdlr.ParseProtocol(me->stm, 0, 0, Data::ByteArrayR(buff, buffSize));
@@ -54,12 +55,12 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 			}
 		}
 	}
-	if (me->errWriter) me->errWriter->WriteLine(CSTR("Thread End"));
+	if (me->errWriter.SetTo(errWriter)) errWriter->WriteLine(CSTR("Thread End"));
 	me->recvRunning = false;
 	return 0;
 }
 
-IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter) : protoHdlr(*this)
+IO::CortexControl::CortexControl(UOSInt portNum, Optional<IO::Writer> errWriter) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvToStop = false;
@@ -206,24 +207,25 @@ void IO::CortexControl::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeAr
 {
 }
 
-Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
+Bool IO::CortexControl::GetFWVersion(OutParam<Int32> majorVer, OutParam<Int32> minorVer)
 {
 	UInt8 buff[16];
 	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 0, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 0;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -235,31 +237,32 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 	}
 	if (this->sendHasResult)
 	{
-		*majorVer = (this->sendResult & 0xf0) >> 4;
-		*minorVer = this->sendResult & 0xf;
+		majorVer.Set((this->sendResult & 0xf0) >> 4);
+		minorVer.Set(this->sendResult & 0xf);
 		succ = true;
 	}
 	return succ;
 }
 
-Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
+Bool IO::CortexControl::ReadDIO(OutParam<Int32> dioValues)
 {
 	UInt8 buff[16];
 	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 1, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 1;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -271,7 +274,7 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 	}
 	if (this->sendHasResult)
 	{
-		*dioValues = this->sendResult;
+		dioValues.Set(this->sendResult);
 		succ = true;
 	}
 	return succ;
@@ -285,6 +288,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	cmd[0] = (UInt8)(outVal & 0xff);
 	cmd[1] = (UInt8)(outMask & 0xff);
 	packetSize = this->protoHdlr.BuildPacket(buff, 2, 0, cmd, 2, 0);
@@ -292,12 +296,12 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 	this->sendType = 2;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -314,24 +318,25 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 	return succ;
 }
 
-Bool IO::CortexControl::ReadVin(Int32 *voltage)
+Bool IO::CortexControl::ReadVin(OutParam<Int32> voltage)
 {
 	UInt8 buff[16];
 	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 3, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 3;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -343,30 +348,31 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 	}
 	if (this->sendHasResult)
 	{
-		*voltage = this->sendResult;
+		voltage.Set(this->sendResult);
 		succ = true;
 	}
 	return succ;
 }
 
-Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
+Bool IO::CortexControl::ReadVBatt(OutParam<Int32> voltage)
 {
 	UInt8 buff[16];
 	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 6, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 6;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -378,30 +384,31 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 	}
 	if (this->sendHasResult)
 	{
-		*voltage = this->sendResult;
+		voltage.Set(this->sendResult);
 		succ = true;
 	}
 	return succ;
 }
 
-Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
+Bool IO::CortexControl::ReadOdometerCounter(OutParam<Int32> odoCount)
 {
 	UInt8 buff[16];
 	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 7, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 7;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -413,7 +420,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 	}
 	if (this->sendHasResult)
 	{
-		*odoCount = this->sendResult;
+		odoCount.Set(this->sendResult);
 		succ = true;
 	}
 	return succ;
@@ -426,17 +433,18 @@ Bool IO::CortexControl::ResetOdometerCounter()
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 8, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 8;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -453,24 +461,25 @@ Bool IO::CortexControl::ResetOdometerCounter()
 	return succ;
 }
 
-Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
+Bool IO::CortexControl::ReadEnvBrightness(OutParam<Int32> brightness)
 {
 	UInt8 buff[16];
 	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 10, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 10;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -482,30 +491,31 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 	}
 	if (this->sendHasResult)
 	{
-		*brightness = this->sendResult;
+		brightness.Set(this->sendResult);
 		succ = true;
 	}
 	return succ;
 }
 
-Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
+Bool IO::CortexControl::ReadTemperature(OutParam<Int32> temperature)
 {
 	UInt8 buff[16];
 	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 11, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 11;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -517,7 +527,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 	}
 	if (this->sendHasResult)
 	{
-		*temperature = this->sendResult;
+		temperature.Set(this->sendResult);
 		succ = true;
 	}
 	return succ;
@@ -530,17 +540,18 @@ Bool IO::CortexControl::PowerOff()
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 13, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 13;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -565,18 +576,19 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	cmd = turnOn?1:0;
 	packetSize = this->protoHdlr.BuildPacket(buff, 14, 0, &cmd, 1, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 14;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
@@ -600,17 +612,18 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
+	NN<IO::Writer> errWriter;
 	packetSize = this->protoHdlr.BuildPacket(buff, 15, 0, &timeout, 1, 0);
 	Sync::MutexUsage mutUsage(this->sendMut);
 	this->sendType = 15;
 	this->sendHasResult = false;
 	clk.Start();
-	if (this->errWriter)
+	if (this->errWriter.SetTo(errWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLine(sb.ToCString());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)

@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/Compress/Inflate.h"
 #include "Exporter/PNGExporter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"

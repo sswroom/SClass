@@ -10,7 +10,7 @@
 #include "Manage/Process.h"
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMTileMap.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageUtil.h"
 #include "Media/ImageUtil_C.h"
 #include "Text/URLString.h"

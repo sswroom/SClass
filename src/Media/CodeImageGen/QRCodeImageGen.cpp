@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ZXingWriter.h"
 #include "Media/CodeImageGen/QRCodeImageGen.h"
 #include "Text/MyString.h"

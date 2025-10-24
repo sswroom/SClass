@@ -131,70 +131,70 @@ Bool IO::ED588Sim::ToggleValue(UOSInt index)
 	return false;
 }
 
-Bool IO::ED588Sim::ReadCoil(UInt16 coilAddr, Bool *value)
+Bool IO::ED588Sim::ReadCoil(UInt16 coilAddr, OutParam<Bool> value)
 {
 	if (coilAddr < 8)
 	{
-		*value = this->relays[coilAddr];
+		value.Set(this->relays[coilAddr]);
 		return true;
 	}
 	else if (coilAddr >= 0x20 && coilAddr <= 0x27)
 	{
-		*value = this->diValues[coilAddr - 0x20];
+		value.Set(this->diValues[coilAddr - 0x20]);
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED588Sim::ReadDescreteInput(UInt16 inputAddr, Bool *value)
+Bool IO::ED588Sim::ReadDescreteInput(UInt16 inputAddr, OutParam<Bool> value)
 {
 	if (inputAddr < 8)
 	{
-		*value = this->diValues[inputAddr];
+		value.Set(this->diValues[inputAddr]);
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED588Sim::ReadHoldingRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::ED588Sim::ReadHoldingRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	if (regAddr < 8)
 	{
-		*value = this->diCounts[regAddr];
+		value.Set(this->diCounts[regAddr]);
 		return true;
 	}
 	else if (regAddr == 0x20)
 	{
-		*value = (UInt16)((this->relays[0] << 0) |
+		value.Set((UInt16)((this->relays[0] << 0) |
 			(this->relays[1] << 1) |
 			(this->relays[2] << 2) |
 			(this->relays[3] << 3) |
 			(this->relays[4] << 4) |
 			(this->relays[5] << 5) |
 			(this->relays[6] << 6) |
-			(this->relays[7] << 7));
+			(this->relays[7] << 7)));
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED588Sim::ReadInputRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::ED588Sim::ReadInputRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	if (regAddr < 8)
 	{
-		*value = this->diCounts[regAddr];
+		value.Set(this->diCounts[regAddr]);
 		return true;
 	}
 	else if (regAddr == 0x20)
 	{
-		*value = (UInt16)((this->diValues[0] << 0) |
+		value.Set((UInt16)((this->diValues[0] << 0) |
 			(this->diValues[1] << 1) |
 			(this->diValues[2] << 2) |
 			(this->diValues[3] << 3) |
 			(this->diValues[4] << 4) |
 			(this->diValues[5] << 5) |
 			(this->diValues[6] << 6) |
-			(this->diValues[7] << 7));
+			(this->diValues[7] << 7)));
 		return true;
 	}
 	return false;

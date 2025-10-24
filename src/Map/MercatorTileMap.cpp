@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/BufferedStreamData.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Map/MercatorTileMap.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Net/HTTPClient.h"

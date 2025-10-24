@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/StaticImage.h"
 #include "Media/ImageGen/ColorImageGen.h"
 #include "Media/ImageGen/Gamma64ImageGen.h"

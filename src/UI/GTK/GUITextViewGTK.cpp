@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/Library.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/GTKDrawEngine.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyStringW.h"

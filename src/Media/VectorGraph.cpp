@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Ellipse.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/VectorImage.h"

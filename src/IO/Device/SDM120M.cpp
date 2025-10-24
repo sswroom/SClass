@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Device/SDM120M.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Angle.h"
 #include "Math/Unit/ApparentPower.h"
 #include "Math/Unit/ElectricCurrent.h"

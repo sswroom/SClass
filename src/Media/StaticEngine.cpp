@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Exporter/GIFExporter.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageResizer.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"

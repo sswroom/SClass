@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Map/SHPUtil.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Point.h"

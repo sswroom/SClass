@@ -7,7 +7,7 @@
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"

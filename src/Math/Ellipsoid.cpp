@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Ellipsoid.h"
 
 Double Math::Ellipsoid::CalcPolarAxis(Double equator, Double flattening)

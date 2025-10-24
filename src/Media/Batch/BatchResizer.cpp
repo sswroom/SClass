@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Batch/BatchResizer.h"
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"

@@ -5,7 +5,7 @@
 #include "IO/Stream.h"
 #include "Map/MapView.h"
 #include "Map/SmartLabel.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DrawEngine.h"
 
 #ifndef _WIN32_WCE

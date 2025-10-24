@@ -5,7 +5,7 @@
 #include "IO/Path.h"
 #include "Map/ScaledMapView.h"
 #include "Map/TileMapGenerator.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"

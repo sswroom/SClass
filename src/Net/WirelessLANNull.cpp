@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/WirelessLAN.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"

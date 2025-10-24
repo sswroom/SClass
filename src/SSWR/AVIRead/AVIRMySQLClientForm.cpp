@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/ColDef.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"

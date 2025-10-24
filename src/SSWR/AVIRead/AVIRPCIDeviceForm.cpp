@@ -2,7 +2,7 @@
 #include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "IO/DeviceDB.h"
 #include "IO/FileStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRPCIDeviceForm.h"
 #include "Text/MyString.h"
 void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(AnyType userObj)

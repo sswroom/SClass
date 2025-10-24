@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "Manage/Process.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/DNSClient.h"
 #include "Net/DNSHandler.h"

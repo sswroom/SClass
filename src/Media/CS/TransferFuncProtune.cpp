@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncProtune.h"
 
 Media::CS::TransferFuncProtune::TransferFuncProtune() : Media::CS::TransferFunc(Media::CS::TRANT_PROTUNE, 2.2)

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/GPSNMEA.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"

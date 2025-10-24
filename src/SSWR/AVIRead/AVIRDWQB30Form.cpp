@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(AnyType userO
 		Data::ArrayList<IO::CodeScanner::DeviceCommand> cmdList;
 		UOSInt i;
 		UOSInt j;
-		scanner->GetCommandList(&cmdList);
+		scanner->GetCommandList(cmdList);
 		me->cboSetCmd->ClearItems();
 		i = 0;
 		j = cmdList.GetCount();
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 		{
 			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)me->cboSetCmd->GetItem(i).GetOSInt();
 			me->cmdCurr = dcmd;
-			me->cmdType = scanner->GetCommandParamType(dcmd, &me->cmdMin, &me->cmdMax);
+			me->cmdType = scanner->GetCommandParamType(dcmd, me->cmdMin, me->cmdMax);
 			if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
 			{
 				me->cboSetParam->SetEnabled(false);

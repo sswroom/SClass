@@ -7,7 +7,7 @@
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRImageControl.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"

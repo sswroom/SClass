@@ -3,7 +3,7 @@
 #include "Exporter/CURExporter.h"
 #include "Exporter/ICOExporter.h"
 #include "IO/MemoryStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"

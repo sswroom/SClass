@@ -2,7 +2,7 @@
 #include "Map/SHPUtil.h"
 #include "Map/ESRI/ESRIMDBLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 

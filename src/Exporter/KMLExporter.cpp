@@ -6,7 +6,7 @@
 #include "IO/StreamWriter.h"
 #include "Map/MapDrawLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/PointZ.h"

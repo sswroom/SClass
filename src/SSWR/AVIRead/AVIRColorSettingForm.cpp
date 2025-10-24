@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ICCProfile.h"
 #include "SSWR/AVIRead/AVIRColorCustomForm.h"
 #include "SSWR/AVIRead/AVIRColorSettingForm.h"

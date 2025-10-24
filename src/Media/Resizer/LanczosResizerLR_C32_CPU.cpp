@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizerLR_C32_CPU.h"
 #include "Sync/Event.h"
 #include "Sync/ThreadUtil.h"

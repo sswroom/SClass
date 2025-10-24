@@ -6,7 +6,7 @@
 #include "DB/SQLGenerator.h"
 #include "DB/SQLiteFile.h"
 #include "IO/FileStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRChartForm.h"
 #include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
 #include "SSWR/AVIRead/AVIRDBExportForm.h"

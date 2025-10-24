@@ -2537,7 +2537,7 @@ Math/GeometryTool.h:
 Math/LanczosFilter.h:
 @LanczosFilter.o
 Math/LithiumBattery.h:
-Math/Math.h:
+Math/Math_C.h:
 @Math.o
 @Math_CPP.o
 Math/Matrix3.h:

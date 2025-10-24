@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFunc.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"

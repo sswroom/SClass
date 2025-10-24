@@ -3,7 +3,7 @@
 #include "Exporter/PNGExporter.h"
 #include "IO/Path.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DeinterlaceLR.h"
 #include "Media/ImageCopy.h"
 #include "Media/ImageList.h"

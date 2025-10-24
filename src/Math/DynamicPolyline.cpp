@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MyMemory.h"
 #include "Math/DynamicPolyline.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include <memory.h>
 
 Math::DynamicPolyline::DynamicPolyline(Double x, Double y) : Math::Polyline(1, 10)

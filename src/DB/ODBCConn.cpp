@@ -5,7 +5,7 @@
 #include "DB/DBConn.h"
 #include "DB/DBTool.h"
 #include "DB/ODBCConn.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/MSGeography.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/Point.h"

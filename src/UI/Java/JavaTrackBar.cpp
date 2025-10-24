@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "UI/Java/JavaTrackBar.h"
 
 UI::Java::JavaTrackBar::JavaTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)

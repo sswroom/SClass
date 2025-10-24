@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/NTPServer.h"
 #include "Net/NTPClient.h"
 #include "Sync/MutexUsage.h"

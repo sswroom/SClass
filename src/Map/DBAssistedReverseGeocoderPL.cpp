@@ -3,7 +3,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
 #include "Map/DBAssistedReverseGeocoderPL.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Manage/HiResClock.h"
 #include "Sync/MutexUsage.h"
 #include <stdio.h>

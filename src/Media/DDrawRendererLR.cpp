@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/DebugWriter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/FrameInfo.h"
 #include "Media/DDrawRendererLR.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"

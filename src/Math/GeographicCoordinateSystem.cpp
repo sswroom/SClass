@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/FileStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"

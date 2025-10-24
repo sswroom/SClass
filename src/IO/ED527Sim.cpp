@@ -86,26 +86,26 @@ Bool IO::ED527Sim::ToggleValue(UOSInt index)
 }
 
 
-Bool IO::ED527Sim::ReadCoil(UInt16 coilAddr, Bool *value)
+Bool IO::ED527Sim::ReadCoil(UInt16 coilAddr, OutParam<Bool> value)
 {
 	if (coilAddr < 16)
 	{
-		*value = this->relays[coilAddr];
+		value.Set(this->relays[coilAddr]);
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED527Sim::ReadDescreteInput(UInt16 inputAddr, Bool *value)
+Bool IO::ED527Sim::ReadDescreteInput(UInt16 inputAddr, OutParam<Bool> value)
 {
 	return false;
 }
 
-Bool IO::ED527Sim::ReadHoldingRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::ED527Sim::ReadHoldingRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	if (regAddr == 0x20)
 	{
-		*value = (UInt16)((this->relays[0] << 0) |
+		value.Set((UInt16)((this->relays[0] << 0) |
 			(this->relays[1] << 1) |
 			(this->relays[2] << 2) |
 			(this->relays[3] << 3) |
@@ -120,13 +120,13 @@ Bool IO::ED527Sim::ReadHoldingRegister(UInt16 regAddr, UInt16 *value)
 			(this->relays[12] << 12) |
 			(this->relays[13] << 13) |
 			(this->relays[14] << 14) |
-			(this->relays[15] << 15));
+			(this->relays[15] << 15)));
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED527Sim::ReadInputRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::ED527Sim::ReadInputRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	return false;
 }

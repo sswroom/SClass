@@ -3,7 +3,7 @@
 #include "IO/Library.h"
 #include "Manage/HiResClock.h"
 #include "Map/MapDrawUtil.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Ellipse.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"

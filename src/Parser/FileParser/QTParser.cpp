@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/FastMap.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/AudioFrameSource.h"
 #include "Media/AACFrameSource.h"
 #include "Media/AudioFormat.h"

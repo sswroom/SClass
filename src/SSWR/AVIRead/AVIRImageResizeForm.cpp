@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Registry.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Media/Resizer/LanczosResizer16_C8.h"
 #include "SSWR/AVIRead/AVIRImageResizeForm.h"

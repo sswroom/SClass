@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 #include "Map/MercatorMapView.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 Map::MercatorMapView::MercatorMapView(Math::Size2DDbl scnSize, Math::Coord2DDbl center, UOSInt maxLevel, UOSInt tileSize) : Map::MapView(scnSize)
 {

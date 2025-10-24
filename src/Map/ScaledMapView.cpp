@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 #include "Map/ScaledMapView.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 extern "C"
 {

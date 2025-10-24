@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/SHPConv/ElevationFilter.h"
 
 SSWR::SHPConv::ElevationFilter::ElevationFilter(UOSInt colIndex, Int32 value)

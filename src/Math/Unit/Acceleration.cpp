@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Acceleration.h"
 
 Double Math::Unit::Acceleration::GetUnitRatio(AccelerationUnit unit)

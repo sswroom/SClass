@@ -3,7 +3,7 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/CSYUV16_RGB32C.h"
 #include "Media/CS/TransferFunc.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 void Media::CS::CSYUV16_RGB32C::SetupRGB13_LR()
 {

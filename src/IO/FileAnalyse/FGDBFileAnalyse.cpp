@@ -4,7 +4,7 @@
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XLSUtil.h"

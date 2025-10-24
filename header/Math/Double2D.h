@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_DOUBLE2D
 #define _SM_MATH_DOUBLE2D
 #include "SIMD.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 namespace Math
 {

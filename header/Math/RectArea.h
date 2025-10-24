@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_RECTAREA
 #define _SM_MATH_RECTAREA
 #include "Math/Coord2D.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Quadrilateral.h"
 #include "Math/RectAreaDbl.h"
 #include "Math/Size2D.h"

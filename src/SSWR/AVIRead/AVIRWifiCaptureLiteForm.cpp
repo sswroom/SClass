@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRWifiCaptureLiteForm.h"
 #include "Text/MyString.h"

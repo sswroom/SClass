@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"

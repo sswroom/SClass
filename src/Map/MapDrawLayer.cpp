@@ -6,7 +6,7 @@
 #include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "DB/ColDef.h"
 #include "DB/TableDef.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Point.h"
 #include "Map/CIPLayer2.h"
 #include "Map/MapDrawLayer.h"

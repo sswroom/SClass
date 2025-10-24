@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "DB/DBReader.h"
 #include "Map/DBAssistedReverseGeocoder.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 
 Map::DBAssistedReverseGeocoder::DBAssistedReverseGeocoder(NN<DB::DBTool> db, NN<IO::Writer> errWriter)

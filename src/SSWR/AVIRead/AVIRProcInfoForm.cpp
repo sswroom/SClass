@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Manage/Process.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRProcInfoForm.h"
 #include "SSWR/AVIRead/AVIRThreadInfoForm.h"
 #include "Sync/ThreadUtil.h"

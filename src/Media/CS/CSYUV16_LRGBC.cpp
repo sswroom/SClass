@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/CS/CSYUV16_LRGBC.h"
 #include "Media/CS/TransferFunc.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 void Media::CS::CSYUV16_LRGBC::SetupRGB13_LR()
 {

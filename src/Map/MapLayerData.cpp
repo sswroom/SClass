@@ -4,7 +4,7 @@
 #include "IO/MemFileBuffer.h"
 #include "IO/ViewFileBuffer.h"
 #include "Map/MapLayerData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/Event.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"

@@ -4,7 +4,7 @@
 #include "Data/ChartPlotter.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ColorProfile.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebSocketClient.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListInt64.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/HTTPClient.h"
 #include "Net/WebSite/WebSite7gogoControl.h"
 #include "Text/JSON.h"

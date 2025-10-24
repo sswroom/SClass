@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/NullRenderer.h"
 #include "Media/SilentSource.h"
 #include "Media/WaveInSource.h"

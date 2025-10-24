@@ -6,9 +6,9 @@
 #include "Math/CoordinateSystemConverter.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
-void Math::GeometryTool::RotateACW(Int32 *ptOut, Int32 *ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
+void Math::GeometryTool::RotateACW(UnsafeArray<Int32> ptOut, UnsafeArray<const Int32> ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
 {
 	Double sd = Math_Sin(angleRad);
 	Double cd = Math_Cos(angleRad);
@@ -24,7 +24,7 @@ void Math::GeometryTool::RotateACW(Int32 *ptOut, Int32 *ptIn, UOSInt nPoint, Dou
 	}
 }
 
-void Math::GeometryTool::RotateACW(Double *ptOut, Double *ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
+void Math::GeometryTool::RotateACW(UnsafeArray<Double> ptOut, UnsafeArray<const Double> ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
 {
 	Double sd = Math_Sin(angleRad);
 	Double cd = Math_Cos(angleRad);
@@ -40,9 +40,9 @@ void Math::GeometryTool::RotateACW(Double *ptOut, Double *ptIn, UOSInt nPoint, D
 	}
 }
 
-UOSInt Math::GeometryTool::BoundPolygonY(const Int32 *points, UOSInt nPoints, Int32 *pointOut, OSInt minY, OSInt maxY, OSInt ofstX, OSInt ofstY)
+UOSInt Math::GeometryTool::BoundPolygonY(UnsafeArray<const Int32> points, UOSInt nPoints, UnsafeArray<Int32> pointOut, OSInt minY, OSInt maxY, OSInt ofstX, OSInt ofstY)
 {
-	Int32 *pointsCurr = pointOut;
+	UnsafeArray<Int32> pointsCurr = pointOut;
 	OSInt lastX;
 	OSInt lastY;
 	OSInt thisX;
@@ -173,9 +173,9 @@ UOSInt Math::GeometryTool::BoundPolygonY(const Int32 *points, UOSInt nPoints, In
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonX(const Int32 *points, UOSInt nPoints, Int32 *pointOut, OSInt minX, OSInt maxX, OSInt ofstX, OSInt ofstY)
+UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Int32> points, UOSInt nPoints, UnsafeArray<Int32> pointOut, OSInt minX, OSInt maxX, OSInt ofstX, OSInt ofstY)
 {
-	Int32 *pointsCurr = pointOut;
+	UnsafeArray<Int32> pointsCurr = pointOut;
 	Int32 lastX;
 	Int32 lastY;
 	Int32 thisX;
@@ -544,7 +544,7 @@ UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Math::Coord2DDbl> poi
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-Bool Math::GeometryTool::InPolygon(Int32 *points, UOSInt nPoints, Int32 ptX, Int32 ptY)
+Bool Math::GeometryTool::InPolygon(UnsafeArray<const Int32> points, UOSInt nPoints, Int32 ptX, Int32 ptY)
 {
 	Int32 firstX;
 	Int32 firstY;
@@ -642,7 +642,7 @@ unsigned int yt)                   //   y (vertical) of target point
 }
 */
 
-void Math::GeometryTool::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt ptY, Int32 *nearPtX, Int32 *nearPtY)
+void Math::GeometryTool::PtNearPline(UnsafeArray<const Int32> points, UOSInt nPoints, OSInt ptX, OSInt ptY, OutParam<Int32> nearPtX, OutParam<Int32> nearPtY)
 {
 	UOSInt i = nPoints - 1;
 	Double calH;
@@ -715,8 +715,8 @@ void Math::GeometryTool::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, O
 		if (calBase < dist)
 		{
 			dist = calBase;
-			*nearPtX = (Int32)calX;
-			*nearPtY = (Int32)calY;
+			nearPtX.Set((Int32)calX);
+			nearPtY.Set((Int32)calY);
 		}
 	}
 
@@ -729,8 +729,8 @@ void Math::GeometryTool::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, O
 		if (calBase < dist)
 		{
 			dist = calBase;
-			*nearPtX = (Int32)calX;
-			*nearPtY = (Int32)calY;
+			nearPtX.Set((Int32)calX);
+			nearPtY.Set((Int32)calY);
 		}
 	}
 }
@@ -758,7 +758,7 @@ Double Math::GeometryTool::SphereDistDeg(Double lat1, Double lon1, Double lat2, 
 	return Math_ArcCos(tmpV) * radius;
 }
 
-void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Int32 *points, Int32 *outPtX, Int32 *outPtY)
+void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeArray<const UInt32> parts, UnsafeArray<const Int32> points, OutParam<Int32> outPtX, OutParam<Int32> outPtY)
 {
 	Int32 minX;
 	Int32 maxX;
@@ -775,8 +775,8 @@ void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 
 	UOSInt i = nPoints;
 	if (i <= 0)
 	{
-		*outPtX = 0;
-		*outPtY = 0;
+		outPtX.Set(0);
+		outPtY.Set(0);
 		return;
 	}
 	Data::ArrayListInt32 ptArr(4);
@@ -830,8 +830,8 @@ void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 
 	j = ptArr.GetCount();
 	if ((j & 1) == 1 || j == 0)
 	{
-		*outPtX = 0;
-		*outPtY = 0;
+		outPtX.Set(0);
+		outPtY.Set(0);
 		return;
 	}
 	k = 0;
@@ -850,19 +850,19 @@ void Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 
 		thisX = ptArr.GetItem(i + 1);
 		if ((thisX - lastX) > (OSInt)k)
 		{
-			*outPtX = (Int32)(lastX + (OSInt)k);
-			*outPtY = centY;
+			outPtX.Set((Int32)(lastX + (OSInt)k));
+			outPtY.Set(centY);
 			return;
 		}
 		k -= (UOSInt)(thisX - lastX);
 		i += 2;
 	}
-	*outPtX = 0;
-	*outPtY = 0;
+	outPtX.Set(0);
+	outPtY.Set(0);
 	return;
 }
 
-Math::Coord2DDbl Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Math::Coord2DDbl *points)
+Math::Coord2DDbl Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UnsafeArray<const UInt32> parts, UnsafeArray<const Math::Coord2DDbl> points)
 {
 	Double minX;
 	Double maxX;
@@ -954,7 +954,7 @@ Math::Coord2DDbl Math::GeometryTool::GetPolygonCenter(UOSInt nParts, UOSInt nPoi
 	return Math::Coord2DDbl(0, 0);
 }
 
-Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::Geometry::Vector2D *vec, Math::Unit::Distance::DistanceUnit unit)
+Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, NN<const Math::Geometry::Vector2D> vec, Math::Unit::Distance::DistanceUnit unit)
 {
 	Double maxDist = -1;
 	Math::Coord2DDbl maxPt = pt;
@@ -989,37 +989,40 @@ Math::Coord2DDbl Math::GeometryTool::MercatorToProject(Math::Coord2DDbl pt)
 	return Math::Coord2DDbl(pt.GetLon() * a, a * Math_Ln(Math_Tan(Math::PI * 0.25 + pt.GetLat() * 0.5)));
 }
 
-void Math::GeometryTool::CalcHVAngleRad(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle)
+void Math::GeometryTool::CalcHVAngleRad(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, OutParam<Double> hAngle, OutParam<Double> vAngle)
 {
 	Math::Coord2DDbl projCurr = MercatorToProject(ptCurr);
 	Math::Coord2DDbl projDiff = MercatorToProject(ptNext) - projCurr;
 	Double len = Math_Sqrt(projDiff.x * projDiff.x + projDiff.y * projDiff.y);
 	if (len == 0)
 	{
-		*hAngle = 0;
+		hAngle.Set(0);
 		if (heightNext > heightCurr)
-			*vAngle = Math::PI;
+			vAngle.Set(Math::PI);
 		else if (heightNext < heightCurr)
-			*vAngle = -Math::PI;
+			vAngle.Set(-Math::PI);
 		else
-			*vAngle = 0;
+			vAngle.Set(0);
 	}
 	else
 	{
-		*hAngle = Math_ArcTan2(projDiff.x, projDiff.y);
-		*vAngle = Math_ArcTan2(heightNext - heightCurr, len);
-		if (*hAngle < 0)
+		Double hAng;
+		hAngle.Set(hAng = Math_ArcTan2(projDiff.x, projDiff.y));
+		vAngle.Set(Math_ArcTan2(heightNext - heightCurr, len));
+		if (hAng < 0)
 		{
-			*hAngle += 2 * Math::PI;
+			hAngle.Set(hAng + 2 * Math::PI);
 		}
 	}
 }
 
-void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle)
+void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, OutParam<Double> hAngle, OutParam<Double> vAngle)
 {
-	CalcHVAngleRad(ptCurr * (Math::PI / 180.0), ptNext * (Math::PI / 180.0), heightCurr, heightNext, hAngle, vAngle);
-	*hAngle = *hAngle * 180 / Math::PI;
-	*vAngle = *vAngle * 180 / Math::PI;
+	Double hAngleRad;
+	Double vAngleRad;
+	CalcHVAngleRad(ptCurr * (Math::PI / 180.0), ptNext * (Math::PI / 180.0), heightCurr, heightNext, hAngleRad, vAngleRad);
+	hAngle.Set(hAngleRad * 180 / Math::PI);
+	vAngle.Set(vAngleRad * 180 / Math::PI);
 }
 
 Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UOSInt nPoints)

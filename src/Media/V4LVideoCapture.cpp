@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Path.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/V4LVideoCapture.h"
 #include "Text/MyString.h"
 #include <errno.h>

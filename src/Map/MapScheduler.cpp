@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Map/MapScheduler.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/CompoundCurve.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"

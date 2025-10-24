@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/ImageCmp/ImagePSNR.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 Media::ImageCmp::ImagePSNR::ImagePSNR()
 {

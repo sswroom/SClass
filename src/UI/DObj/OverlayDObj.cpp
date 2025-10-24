@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "UI/DObj/OverlayDObj.h"
 
 UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::DrawImage> bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncLog100.h"
 
 Media::CS::TransferFuncLog100::TransferFuncLog100() : Media::CS::TransferFunc(Media::CS::TRANT_LOG100, 2.2)

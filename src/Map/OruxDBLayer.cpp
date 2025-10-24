@@ -9,7 +9,7 @@
 #include "Map/OSM/OSMTileMap.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeographicCoordinateSystem.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 

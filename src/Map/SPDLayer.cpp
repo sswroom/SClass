@@ -9,7 +9,7 @@
 #include "Map/MapDrawLayer.h"
 #include "Map/SPDLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"

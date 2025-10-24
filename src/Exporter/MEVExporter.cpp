@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Exporter/MEVExporter.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 #include "Text/Encoding.h"
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageList.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/ColorDemo/ColorDemoForm.h"

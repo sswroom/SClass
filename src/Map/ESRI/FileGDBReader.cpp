@@ -4,7 +4,7 @@
 #include "DB/ColDef.h"
 #include "Map/ESRI/ESRICurve.h"
 #include "Map/ESRI/FileGDBReader.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/PointM.h"

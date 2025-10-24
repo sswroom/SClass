@@ -3,7 +3,7 @@
 #include "Data/DateTime.h"
 #include "Exporter/PLTExporter.h"
 #include "Map/GPSTrack.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/UTF8Writer.h"

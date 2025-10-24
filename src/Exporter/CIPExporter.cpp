@@ -4,7 +4,7 @@
 #include "Exporter/CIPExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"

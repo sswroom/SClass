@@ -4,7 +4,7 @@
 #include "Math/CassiniSoldnerCoordinateSystem.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeographicCoordinateSystem.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/MercatorProjectedCoordinateSystem.h"
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
 #include "Text/Encoding.h"

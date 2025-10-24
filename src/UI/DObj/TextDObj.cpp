@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DrawImageTool.h"
 #include "Text/StringBuilder.h"
 #include "UI/DObj/TextDObj.h"

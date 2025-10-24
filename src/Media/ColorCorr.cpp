@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/Registry.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ColorCorr.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"

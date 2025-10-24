@@ -7,7 +7,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/SHPConv/SHPConvCurrFilterForm.h"
 #include "SSWR/SHPConv/SHPConvDBFViewForm.h"
 #include "SSWR/SHPConv/SHPConvGroupForm.h"

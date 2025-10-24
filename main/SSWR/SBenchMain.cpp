@@ -25,7 +25,7 @@
 #include "Manage/CPUInfoDetail.h"
 #include "Manage/ExceptionRecorder.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
 #include "Media/DDCReader.h"
 #include "Media/EDID.h"

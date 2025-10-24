@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/CoordinateSystem.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Ellipse.h"
 
 Math::Geometry::Ellipse::Ellipse(UInt32 srid, Math::Coord2DDbl tl, Math::Size2DDbl size) : Math::Geometry::Vector2D(srid)

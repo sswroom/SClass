@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_VALUE2D
 #define _SM_MATH_VALUE2D
 #include "Math/Double2D.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 namespace Math
 {

@@ -106,15 +106,15 @@ UnsafeArray<UTF8Char> IO::Console::GetLine(UnsafeArray<UTF8Char> buff)
 	}
 }
 
-void IO::Console::PrintStrO(const UTF8Char *str1)
+void IO::Console::PrintStrO(UnsafeArray<const UTF8Char> str1)
 {
-	printf("%s", str1);
+	printf("%s", str1.Ptr());
 	fflush(stdout);
 }
 
-UOSInt IO::Console::WriteStdOut(UInt8 *buff, UOSInt size)
+UOSInt IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UOSInt size)
 {
-	return fwrite(buff, 1, size, stdout);
+	return fwrite(buff.Ptr(), 1, size, stdout);
 }
 
 void IO::Console::PreventCtrlC()

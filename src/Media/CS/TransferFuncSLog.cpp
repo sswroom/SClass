@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncSLog.h"
 
 //https://pro.sony.com/bbsccms/assets/files/mkt/cinema/solutions/slog_manual.pdf

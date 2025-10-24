@@ -3,7 +3,7 @@
 #include "Exporter/XLSXExporter.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
 #include "Text/MyStringFloat.h"
 #include "Text/SpreadSheet/Workbook.h"

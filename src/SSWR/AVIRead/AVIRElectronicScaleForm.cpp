@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/SerialPort.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"

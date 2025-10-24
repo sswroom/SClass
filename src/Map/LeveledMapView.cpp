@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Map/LeveledMapView.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 void Map::LeveledMapView::UpdateVals()
 {

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Map/OSM/OSMTileMap.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/OrganMgr/OrganTimeAdjForm.h"
 #include "UI/Clipboard.h"
 

@@ -5,7 +5,7 @@
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/GeometryTool.h"
 #include "Media/DrawEngine.h"
 #include "Media/GDIEngine.h"

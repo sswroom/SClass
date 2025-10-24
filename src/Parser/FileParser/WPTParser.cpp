@@ -4,7 +4,7 @@
 #include "IO/StreamDataStream.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/PointZ.h"
 #include "Parser/FileParser/WPTParser.h"
 #include "Text/MyString.h"

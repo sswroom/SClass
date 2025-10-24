@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Quadrilateral.h"
 #include "Media/ANPR.h"
 #include "Media/LinearRectRemapper.h"

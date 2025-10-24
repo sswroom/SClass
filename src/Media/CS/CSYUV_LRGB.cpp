@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/CS/CSYUV_LRGB.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 void Media::CS::CSYUV_LRGB::SetupRGB13_LR()
 {

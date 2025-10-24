@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/CS/CSRGB16_RGB8.h"
 #include "Media/CS/TransferFunc.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 extern "C"
 {

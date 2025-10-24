@@ -3,7 +3,7 @@
 #include "Data/Compress/LZWEncStream2.h"
 #include "Exporter/GIFExporter.h"
 #include "IO/MemoryStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageList.h"
 #include "Text/MyString.h"
 

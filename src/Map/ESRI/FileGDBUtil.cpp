@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Point.h"
 #include "Text/MyString.h"

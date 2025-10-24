@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Matrix3.h"
 
 Math::Matrix3::Matrix3(Vector3 row1, Vector3 row2, Vector3 row3)

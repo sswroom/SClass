@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_TRIANGLE
 #define _SM_MATH_TRIANGLE
 #include "Math/Coord2DDbl.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 namespace Math
 {

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/GTKDrawEngine.h"
 #include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"

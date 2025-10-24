@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "DB/DBTool.h"
 #include "DB/OLEDBConn.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"

@@ -18,7 +18,7 @@
 #include "Manage/CPUDB.h"
 #include "Manage/CPUInfoDetail.h"
 #include "Manage/ExceptionRecorder.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
 #include "Math/Unit/Pressure.h"
 #include "Media/DDCReader.h"

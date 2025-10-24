@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/CSRGB16_LRGBC.h"
 #include "Media/CS/TransferFunc.h"
 

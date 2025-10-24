@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Math/CoordinateSystemConverter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/PointZ.h"
 #include "SSWR/AVIRead/AVIRGISEditPointForm.h"
 #include "Sync/ThreadUtil.h"

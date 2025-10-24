@@ -6,7 +6,7 @@
 #include "Exporter/XLSXExporter.h"
 #include "IO/BuildTime.h"
 #include "IO/ZIPBuilder.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/RectArea.h"
 #include "Text/CharUtil.h"
 #include "Text/Locale.h"

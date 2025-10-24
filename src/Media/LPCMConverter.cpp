@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SIMD.h"
 #include "Data/ByteTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/LPCMConverter.h"
 
 UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChannels, UnsafeArray<const UInt8> srcBuff, UOSInt srcSize, UInt16 destNChannels, UnsafeArray<UInt8> destBuff)

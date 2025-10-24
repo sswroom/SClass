@@ -2,7 +2,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EDIDFileAnalyse.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 

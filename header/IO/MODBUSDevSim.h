@@ -16,10 +16,10 @@ namespace IO
 		virtual Bool GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual Bool ToggleValue(UOSInt index) = 0;
 
-		virtual Bool ReadCoil(UInt16 coilAddr, Bool *value) = 0;
-		virtual Bool ReadDescreteInput(UInt16 inputAddr, Bool *value) = 0;
-		virtual Bool ReadHoldingRegister(UInt16 regAddr, UInt16 *value) = 0;
-		virtual Bool ReadInputRegister(UInt16 regAddr, UInt16 *value) = 0;
+		virtual Bool ReadCoil(UInt16 coilAddr, OutParam<Bool> value) = 0;
+		virtual Bool ReadDescreteInput(UInt16 inputAddr, OutParam<Bool> value) = 0;
+		virtual Bool ReadHoldingRegister(UInt16 regAddr, OutParam<UInt16> value) = 0;
+		virtual Bool ReadInputRegister(UInt16 regAddr, OutParam<UInt16> value) = 0;
 		virtual Bool WriteCoil(UInt16 coilAddr, Bool isHigh) = 0;
 		virtual Bool WriteHoldingRegister(UInt16 regAddr, UInt16 val) = 0;
 	};

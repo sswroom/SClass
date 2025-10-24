@@ -3,7 +3,7 @@
 #include "Data/DateTime.h"
 #include "IO/StreamDataStream.h"
 #include "Map/GPSTrack.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Parser/FileParser/PLTParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"

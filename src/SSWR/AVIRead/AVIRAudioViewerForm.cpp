@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Math/ComplexNumber.h"
 #include "Math/FFT.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRAudioViewerForm.h"
 #define FFTSAMPLE 1024
 #define FFTAVG 1

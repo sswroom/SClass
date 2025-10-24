@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GTK/GTKHScrollBar.h"

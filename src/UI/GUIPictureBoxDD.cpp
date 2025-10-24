@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil_C.h"
 #include "Media/LRGBLimiter_C.h"

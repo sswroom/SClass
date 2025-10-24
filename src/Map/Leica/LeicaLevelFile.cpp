@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Exporter/ExcelXMLExporter.h"
 #include "Map/Leica/LeicaLevelFile.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DrawEngine.h"
 #include "Text/SpreadSheet/Workbook.h"
 

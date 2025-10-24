@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "MyMemory.h"
 #include "Math/DistanceMeasurement.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 Math::DistanceMeasurement::DistanceMeasurement(Double instX, Double instY, Double instZ, Double hAngleAdj, Math::ProjectedCoordinateSystem *csys)
 {

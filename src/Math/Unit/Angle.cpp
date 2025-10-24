@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Angle.h"
 
 Double Math::Unit::Angle::GetUnitRatio(AngleUnit unit)

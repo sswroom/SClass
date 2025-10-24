@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 #include "IO/FileAnalyse/CCacheV2FileAnalyse.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 

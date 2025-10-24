@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Registry.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRImageColorForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"

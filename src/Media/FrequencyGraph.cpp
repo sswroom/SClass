@@ -5,7 +5,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ChartPlotter.h"
 #include "Math/FFT.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/FrequencyGraph.h"
 #include "Media/CS/TransferFunc.h"
 #include "Text/MyString.h"

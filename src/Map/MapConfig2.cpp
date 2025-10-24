@@ -15,7 +15,7 @@
 #include "Map/MapView.h"
 #include "Map/MapConfig2.h"
 #include "Map/CIPLayer2.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/GeometryTool.h"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"

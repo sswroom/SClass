@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/VectorView.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 Math::VectorView::VectorView(Int32 scnWidth, Int32 scnHeight, Double left, Double top, Double right, Double bottom)
 {

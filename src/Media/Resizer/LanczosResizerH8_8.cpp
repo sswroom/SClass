@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Manage/HiResClock.h"
 #include "Math/LanczosFilter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageResizer.h"
 #include "Media/ImageCopy_C.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"

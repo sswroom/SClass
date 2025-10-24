@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/LanczosFilter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageResizer.h"
 #include "Media/Resizer/LanczosResizer8_8.h"
 #include "Sync/Event.h"
