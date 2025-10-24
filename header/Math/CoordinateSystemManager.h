@@ -165,13 +165,13 @@ namespace Math
 		static ProjectedCSysInfo pcsysList[];
 
 	public:
-		static const SpatialRefInfo *SRGetSpatialRef(UInt32 epsgId);
-		static const SpatialRefInfo *SRGetSpatialRefPrev(UInt32 epsgId);
-		static const SpatialRefInfo *SRGetSpatialRefNext(UInt32 epsgId);
-		static const SpheroidInfo *SRGetSpheroid(UInt32 epsgId);
-		static const DatumInfo *SRGetDatum(UInt32 epsgId);
-		static const GeogcsSRInfo *SRGetGeogcsInfo(UInt32 epsgId);
-		static const ProjcsSRInfo *SRGetProjcsInfo(UInt32 epsgId);
+		static Optional<const SpatialRefInfo> SRGetSpatialRef(UInt32 epsgId);
+		static Optional<const SpatialRefInfo> SRGetSpatialRefPrev(UInt32 epsgId);
+		static Optional<const SpatialRefInfo> SRGetSpatialRefNext(UInt32 epsgId);
+		static Optional<const SpheroidInfo> SRGetSpheroid(UInt32 epsgId);
+		static Optional<const DatumInfo> SRGetDatum(UInt32 epsgId);
+		static Optional<const GeogcsSRInfo> SRGetGeogcsInfo(UInt32 epsgId);
+		static Optional<const ProjcsSRInfo> SRGetProjcsInfo(UInt32 epsgId);
 		static Bool SRAxisReversed(UInt32 epsgId);
 		static Optional<Math::CoordinateSystem> SRCreateCSys(UInt32 epsgId);
 		static NN<Math::CoordinateSystem> SRCreateCSysOrDef(UInt32 epsgId);
@@ -187,14 +187,14 @@ namespace Math
 		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static NN<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);
 		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystem(Text::CStringNN sourceNmae, UnsafeArray<const UTF8Char> projName);
-		static UOSInt GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList);
+		static UOSInt GetProjCoordinateSystems(NN<Data::ArrayList<ProjCoordSysType>> csysList);
 		static UOSInt GetProjCoordinateSystemNames(NN<Data::ArrayListArr<const UTF8Char>> nameList);
-		static const ProjectedCSysInfo *GetProjCoordinateSystemInfo(UnsafeArray<const UTF8Char> projName);
+		static Optional<const ProjectedCSysInfo> GetProjCoordinateSystemInfo(UnsafeArray<const UTF8Char> projName);
 
 		static Optional<Math::GeographicCoordinateSystem> CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst);
 		static Optional<Math::GeographicCoordinateSystem> CreateGeogCoordinateSystem(Text::CStringNN sourceName, UnsafeArray<const UTF8Char> geoName);
-		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
-		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(UnsafeArray<const UTF8Char> geoName);
+		static UOSInt GetGeogCoordinateSystems(NN<Data::ArrayList<GeoCoordSysType>> csysList);
+		static Optional<const GeographicCSysInfo> GetGeogCoordinateSystemInfo(UnsafeArray<const UTF8Char> geoName);
 		static NN<Math::GeographicCoordinateSystem> CreateWGS84Csys();
 		static NN<Math::CoordinateSystem> CreateCsysByCoord(Math::Coord2DDbl coord);
 

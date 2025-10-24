@@ -100,6 +100,7 @@
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
 #include "SSWR/AVIRead/AVIRGCISClientForm.h"
 #include "SSWR/AVIRead/AVIRGenImageForm.h"
+#include "SSWR/AVIRead/AVIRGISServerForm.h"
 #include "SSWR/AVIRead/AVIRGLBViewerForm.h"
 #include "SSWR/AVIRead/AVIRGoogleTileMapForm.h"
 #include "SSWR/AVIRead/AVIRGPIOStatusForm.h"
@@ -550,7 +551,8 @@ typedef enum
 	MNU_EDGE_ANALYSE,
 	MNU_LB_UDP,
 	MNU_LB_TCP,
-	MNU_INVESTMENT
+	MNU_INVESTMENT,
+	MNU_GISSERVER
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -946,6 +948,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("OSM Cache Server"), MNU_OSM_CACHE_SERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SHPConv"), MNU_SHPCONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("GLB Viewer"), MNU_GLBVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("GIS Server"), MNU_GISSERVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("Radio Scan"), MNU_RADIO_SCAN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3206,6 +3209,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRInvestmentForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRInvestmentForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_GISSERVER:
+		{
+			NN<SSWR::AVIRead::AVIRGISServerForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISServerForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

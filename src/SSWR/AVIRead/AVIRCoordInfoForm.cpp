@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
+	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = 0;
 	if (sb.ToUInt32(srid))
 	{
 		srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
@@ -23,14 +23,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
+	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = 0;
+	NN<const Math::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
 	if (sb.ToUInt32(srid))
 	{
 		srinfo = Math::CoordinateSystemManager::SRGetSpatialRefPrev(srid);
-		if (srinfo)
+		if (srinfo.SetTo(nnsrinfo))
 		{
 			sb.ClearStr();
-			sb.AppendU32(srinfo->srid);
+			sb.AppendU32(nnsrinfo->srid);
 			me->txtSRID->SetText(sb.ToCString());
 		}
 	}
@@ -43,14 +44,15 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = 0;
+	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = 0;
+	NN<const Math::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
 	if (sb.ToUInt32(srid))
 	{
 		srinfo = Math::CoordinateSystemManager::SRGetSpatialRefNext(srid);
-		if (srinfo)
+		if (srinfo.SetTo(nnsrinfo))
 		{
 			sb.ClearStr();
-			sb.AppendU32(srinfo->srid);
+			sb.AppendU32(nnsrinfo->srid);
 			me->txtSRID->SetText(sb.ToCString());
 		}
 	}
@@ -83,11 +85,11 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(Optional<const Math::CoordinateS
 	}
 	else if (nnsrinfo->srType == Math::CoordinateSystemManager::SRT_DATUM)
 	{
-		const Math::CoordinateSystemManager::DatumInfo *datumInfo = Math::CoordinateSystemManager::SRGetDatum(nnsrinfo->srid);
-		if (datumInfo)
+		NN<const Math::CoordinateSystemManager::DatumInfo> datumInfo;
+		if (Math::CoordinateSystemManager::SRGetDatum(nnsrinfo->srid).SetTo(datumInfo))
 		{
-			const Math::CoordinateSystemManager::SpheroidInfo *spheroid = Math::CoordinateSystemManager::SRGetSpheroid(datumInfo->spheroid);
-			if (spheroid)
+			NN<const Math::CoordinateSystemManager::SpheroidInfo> spheroid;
+			if (Math::CoordinateSystemManager::SRGetSpheroid(datumInfo->spheroid).SetTo(spheroid))
 			{
 				Text::StringBuilderUTF8 sb;
 				Math::CoordinateSystem::DatumData1 datum;
@@ -104,8 +106,8 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(Optional<const Math::CoordinateS
 	}
 	else if (nnsrinfo->srType == Math::CoordinateSystemManager::SRT_SPHERO)
 	{
-		const Math::CoordinateSystemManager::SpheroidInfo *spheroid = Math::CoordinateSystemManager::SRGetSpheroid(nnsrinfo->srid);
-		if (spheroid)
+		NN<const Math::CoordinateSystemManager::SpheroidInfo> spheroid;
+		if (Math::CoordinateSystemManager::SRGetSpheroid(nnsrinfo->srid).SetTo(spheroid))
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::CoordinateSystem::SpheroidData data;

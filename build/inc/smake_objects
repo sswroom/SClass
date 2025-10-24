@@ -1898,6 +1898,7 @@ AVIRGISQueryForm.o: ../../src/SSWR/AVIRead/AVIRGISQueryForm.cpp
 AVIRGISRandomLocForm.o: ../../src/SSWR/AVIRead/AVIRGISRandomLocForm.cpp
 AVIRGISReplayForm.o: ../../src/SSWR/AVIRead/AVIRGISReplayForm.cpp
 AVIRGISSearchForm.o: ../../src/SSWR/AVIRead/AVIRGISSearchForm.cpp
+AVIRGISServerForm.o: ../../src/SSWR/AVIRead/AVIRGISServerForm.cpp
 AVIRGISShortestPathForm.o: ../../src/SSWR/AVIRead/AVIRGISShortestPathForm.cpp
 AVIRGISTileDownloadForm.o: ../../src/SSWR/AVIRead/AVIRGISTileDownloadForm.cpp
 AVIRGLBViewerForm.o: ../../src/SSWR/AVIRead/AVIRGLBViewerForm.cpp
