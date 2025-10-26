@@ -148,7 +148,7 @@ Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass
 	return Map::MapDrawLayer::OC_OTHER;
 }
 
-void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::String *camera, Int32 timeAdj)
+void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Optional<Text::String> camera, Int32 timeAdj)
 {
 	this->cameraMap.Put(camera, timeAdj);
 }

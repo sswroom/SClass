@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	UOSInt j = nameArr.GetCount();
 	while (i < j)
 	{
-		if (!s.Set(nameArr.GetItem(i)))
+		if (!nameArr.GetItem(i).SetTo(s))
 		{
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
 			this->cboName->AddItem(CSTRP(sbuff, sptr), 0);

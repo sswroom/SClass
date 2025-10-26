@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ArrayListICaseString.h"
+#include "Data/ArrayListICaseStringNN.h"
 #include "Data/ByteBuffer.h"
 #include "Data/StringMapNN.h"
 #include "Data/Sort/ArtificialQuickSort.h"
@@ -1138,7 +1138,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			writer.WriteLine(CSTR("</form><hr/>"));
 		}
 
-		Data::ArrayListICaseString fileNameList;
+		Data::ArrayListICaseStringNN fileNameList;
 		Data::ArrayListStringNN refURLList;
 		sptr = cate->srcDir->ConcatTo(sbuff);
 		if (IO::Path::PATH_SEPERATOR != '\\')
@@ -1157,7 +1157,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 					{
 						sptr2[-4] = 0;
-						fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+						fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 					}
 				}
 			}
@@ -1187,7 +1187,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						sptr[i] = 0;
 						sptr2 = &sptr[i];
 					}
-					fileNameList.Add(Text::String::New(sptr, (UOSInt)(sptr2 - sptr)).Ptr());
+					fileNameList.Add(Text::String::New(sptr, (UOSInt)(sptr2 - sptr)));
 				}
 				sb.ClearStr();
 			}
@@ -1421,7 +1421,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			j = fileNameList.GetCount();
 			while (i < j)
 			{
-				sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(i)->v);
+				sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(i)->v);
 				if (currColumn == 0)
 				{
 					writer.WriteLine(CSTR("<tr>"));
@@ -1471,7 +1471,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					currColumn = 0;
 				}
 
-				fileNameList.GetItem(i)->Release();
+				fileNameList.GetItemNoCheck(i)->Release();
 				i++;
 			}
 
@@ -2222,7 +2222,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				}
 				else
 				{
-					Data::ArrayListICaseString fileNameList;
+					Data::ArrayListICaseStringNN fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
@@ -2235,7 +2235,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -2249,7 +2249,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(0)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(0)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -2303,7 +2303,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							sb.AppendI32(species->cateId);
 						}
 					}
-					LIST_FREE_STRING(&fileNameList);
+					fileNameList.FreeAll();
 				}
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				sb.ClearStr();
@@ -2543,7 +2543,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				}
 				else
 				{
-					Data::ArrayListICaseString fileNameList;
+					Data::ArrayListICaseStringNN fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
@@ -2556,7 +2556,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -2570,7 +2570,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(0)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(0)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -2624,7 +2624,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							sb.AppendI32(species->cateId);
 						}
 					}
-					LIST_FREE_STRING(&fileNameList);
+					fileNameList.FreeAll();
 				}
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				sb.ClearStr();
@@ -2886,7 +2886,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 			}
 			else
 			{
-				Data::ArrayListICaseString fileNameList;
+				Data::ArrayListICaseStringNN fileNameList;
 
 				sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 				if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
@@ -2898,15 +2898,15 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 							{
 								sptr2[-4] = 0;
-								fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+								fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 							}
 						}
 					}
 					IO::Path::FindFileClose(sess);
-					i = (UOSInt)fileNameList.SortedIndexOfPtr(fileName, (UOSInt)(fileNameEnd - fileName));
+					i = (UOSInt)fileNameList.SortedIndexOfC(Text::CStringNN(fileName, (UOSInt)(fileNameEnd - fileName)));
 					if ((OSInt)i < 0)
 					{
-						LIST_FREE_STRING(&fileNameList);
+						fileNameList.FreeAll();
 						resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 						mutUsage.EndUse();
 						return true;
@@ -2941,7 +2941,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(i + 1)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(i + 1)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -3071,7 +3071,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					mutUsage.EndUse();
 					ResponseMstm(req, resp, mstm, CSTR("text/html"));
 
-					LIST_FREE_STRING(&fileNameList);
+					fileNameList.FreeAll();
 					return true;
 				}
 				else

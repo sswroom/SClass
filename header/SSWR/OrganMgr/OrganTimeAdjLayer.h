@@ -41,7 +41,7 @@ namespace SSWR
 
 			virtual ObjectClass GetObjectClass() const;
 
-			void SetTimeAdj(Text::String *camera, Int32 timeAdj);
+			void SetTimeAdj(Optional<Text::String> camera, Int32 timeAdj);
 			void SetTimeAdj(Text::CString camera, Int32 timeAdj);
 		};
 	}

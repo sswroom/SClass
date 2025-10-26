@@ -679,7 +679,7 @@ Net::DNSProxy::~DNSProxy()
 		while (i-- > 0)
 		{
 			target = this->targetMap->GetItemNoCheck(i);
-			LIST_FREE_STRING(&target->addrList);
+			target->addrList.FreeAll();
 			target.Delete();
 		}
 		DEL_CLASS(this->targetMut);
@@ -762,7 +762,7 @@ UOSInt Net::DNSProxy::GetTargetList(NN<Data::ArrayListNN<TargetInfo>> targetList
 
 UOSInt Net::DNSProxy::SearchIPv4(NN<Data::ArrayListNN<Text::String>> reqList, UInt32 ip, UInt32 mask)
 {
-	NN<Data::ArrayList<Text::String*>> keys;
+	NN<Data::ArrayList<Optional<Text::String>>> keys;
 	NN<Text::String> key;
 	NN<const Data::ArrayListNN<RequestResult>> results;
 	Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
@@ -801,7 +801,7 @@ UOSInt Net::DNSProxy::SearchIPv4(NN<Data::ArrayListNN<Text::String>> reqList, UI
 		}
 		Net::DNSClient::FreeAnswers(ansList);
 
-		if (valid && key.Set(keys->GetItem(i)))
+		if (valid && keys->GetItem(i).SetTo(key))
 		{
 			reqList->Add(key);
 			retCnt++;
@@ -937,20 +937,22 @@ Bool Net::DNSProxy::AddBlackList(Text::CStringNN blackList)
 
 	UOSInt i;
 	NN<RequestResult> req;
-	Text::String *reqName;
+	NN<Text::String> reqName;
 	NN<const Data::ArrayListNN<RequestResult>> reqList;
-	NN<Data::ArrayList<Text::String *>> reqNames;
+	NN<Data::ArrayList<Optional<Text::String>>> reqNames;
 	Sync::MutexUsage reqv4MutUsage(this->reqv4Mut);
 	reqList = this->reqv4Map.GetValues();
 	reqNames = this->reqv4Map.GetKeys();
 	i = reqList->GetCount();
 	while (i-- > 0)
 	{
-		reqName = reqNames->GetItem(i);
-		if (reqName->Equals(blackList.v, blackList.leng) || (reqName->EndsWithICase(blackList.v, blackList.leng) && reqName->v[reqName->leng - blackList.leng] == '.'))
+		if (reqNames->GetItem(i).SetTo(reqName))
 		{
-			req = reqList->GetItemNoCheck(i);
-			req->status = NS_BLOCKED;
+			if (reqName->Equals(blackList.v, blackList.leng) || (reqName->EndsWithICase(blackList.v, blackList.leng) && reqName->v[reqName->leng - blackList.leng] == '.'))
+			{
+				req = reqList->GetItemNoCheck(i);
+				req->status = NS_BLOCKED;
+			}
 		}
 	}
 	reqv4MutUsage.EndUse();

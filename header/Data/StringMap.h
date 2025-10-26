@@ -7,41 +7,41 @@
 
 namespace Data
 {
-	template <class T> class StringMap : public ArrayCmpMap<Text::String*, T>
+	template <class T> class StringMap : public ArrayCmpMap<Optional<Text::String>, T>
 	{
 	public:
 		StringMap();
-		StringMap(const StringMap<T> *map);
+		StringMap(NN<const StringMap<T>> map);
 		virtual ~StringMap();
 
-		virtual T Put(Text::String *key, T val);
+		virtual T Put(Optional<Text::String> key, T val);
 		T PutNN(NN<Text::String> key, T val);
 		T Put(Text::CStringNN key, T val);
-		virtual T Get(Text::String *key) const;
+		virtual T Get(Optional<Text::String> key) const;
 		T GetNN(NN<Text::String> key) const;
 		T Get(Text::CStringNN key) const;
-		virtual T Remove(Text::String *key);
+		virtual T Remove(Optional<Text::String> key);
 		T RemoveNN(NN<Text::String> key);
 		T Remove(Text::CStringNN key);
-		virtual Text::String *GetKey(UOSInt index) const;
+		virtual Optional<Text::String> GetKey(UOSInt index) const;
 		virtual void Clear();
 		virtual NN<StringMap<T>> Clone() const;
 	};
 
 
-	template <class T> StringMap<T>::StringMap() : ArrayCmpMap<Text::String*, T>()
+	template <class T> StringMap<T>::StringMap() : ArrayCmpMap<Optional<Text::String>, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListString());
 	}
 
-	template <class T> StringMap<T>::StringMap(const StringMap<T> *map) : ArrayCmpMap<Text::String*, T>()
+	template <class T> StringMap<T>::StringMap(NN<const StringMap<T>> map) : ArrayCmpMap<Optional<Text::String>, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListString());
 		UOSInt i = 0;
 		UOSInt j = map->keys->GetCount();
 		while (i < j)
 		{
-			this->keys->Add(map->keys->GetItem(i)->Clone().Ptr());
+			this->keys->Add(Text::String::CopyOrNull(map->keys->GetItem(i)));
 			this->vals.Add(map->vals.GetItem(i));
 			i++;
 		}
@@ -49,15 +49,17 @@ namespace Data
 
 	template <class T> StringMap<T>::~StringMap()
 	{
+		NN<Text::String> s;
 		UOSInt i = this->keys->GetCount();
 		while (i-- > 0)
 		{
-			this->keys->GetItem(i)->Release();
+			if (this->keys->GetItem(i).SetTo(s))
+				s->Release();
 		}
 		DEL_CLASS(this->keys);
 	}
 
-	template <class T> T StringMap<T>::Put(Text::String *key, T val)
+	template <class T> T StringMap<T>::Put(Optional<Text::String> key, T val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -69,7 +71,7 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, key->Clone().Ptr());
+			this->keys->Insert((UOSInt)~i, Text::String::CopyOrNull(key));
 			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
@@ -87,7 +89,7 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, key->Clone().Ptr());
+			this->keys->Insert((UOSInt)~i, key->Clone());
 			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
@@ -105,13 +107,13 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng).Ptr());
+			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng));
 			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
 
-	template <class T> T StringMap<T>::Get(Text::String *key) const
+	template <class T> T StringMap<T>::Get(Optional<Text::String> key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -153,13 +155,15 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Remove(Text::String *key)
+	template <class T> T StringMap<T>::Remove(Optional<Text::String> key)
 	{
+		NN<Text::String> s;
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			this->keys->RemoveAt((UOSInt)i)->Release();
+			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+				s->Release();
 			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
@@ -170,11 +174,13 @@ namespace Data
 
 	template <class T> T StringMap<T>::RemoveNN(NN<Text::String> key)
 	{
+		NN<Text::String> s;
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
 		if (i >= 0)
 		{
-			this->keys->RemoveAt((UOSInt)i)->Release();
+			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+				s->Release();
 			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
@@ -185,11 +191,13 @@ namespace Data
 
 	template <class T> T StringMap<T>::Remove(Text::CStringNN key)
 	{
+		NN<Text::String> s;
 		OSInt i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
-			this->keys->RemoveAt((UOSInt)i)->Release();
+			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))
+				s->Release();
 			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
@@ -198,18 +206,20 @@ namespace Data
 		}
 	}
 
-	template <class T> Text::String *StringMap<T>::GetKey(UOSInt index) const
+	template <class T> Optional<Text::String> StringMap<T>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
 	template <class T> void StringMap<T>::Clear()
 	{
+		NN<Text::String> s;
 		UOSInt i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{
-			this->keys->RemoveAt(i)->Release();
+			if (this->keys->RemoveAt(i).SetTo(s))
+				s->Release();
 		}
 		this->vals.Clear();
 	}
@@ -217,7 +227,7 @@ namespace Data
 	template <class T> NN<StringMap<T>> StringMap<T>::Clone() const
 	{
 		NN<StringMap<T>> ret;
-		NEW_CLASSNN(ret, StringMap<T>(this));
+		NEW_CLASSNN(ret, StringMap<T>(*this));
 		return ret;
 	}
 }

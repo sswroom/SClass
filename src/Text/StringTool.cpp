@@ -28,7 +28,7 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::Str
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	NN<Data::ArrayList<Text::String *>> keys = map->GetKeys();
+	NN<Data::ArrayList<Optional<Text::String>>> keys = map->GetKeys();
 	NN<const Data::ArrayList<Text::String *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();

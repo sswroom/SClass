@@ -27,14 +27,9 @@ Text::Cpp::CppParseStatus::CppParseStatus(Text::CStringNN rootFile)
 
 Text::Cpp::CppParseStatus::~CppParseStatus()
 {
-	UOSInt i;
 	this->fileName->Release();
 	this->statuses.FreeAll(FreeFileStatus);
-	i = this->fileNames.GetCount();
-	while (i-- > 0)
-	{
-		this->fileNames.GetItem(i)->Release();
-	}
+	this->fileNames.FreeAll();
 	this->defines.FreeAll(FreeDefineInfo);
 }
 
@@ -287,7 +282,7 @@ UOSInt Text::Cpp::CppParseStatus::GetFileCount()
 	return this->fileNames.GetCount();
 }
 
-Text::String *Text::Cpp::CppParseStatus::GetFileName(UOSInt index)
+Optional<Text::String> Text::Cpp::CppParseStatus::GetFileName(UOSInt index)
 {
 	return this->fileNames.GetItem(index);
 }

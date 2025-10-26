@@ -763,7 +763,7 @@ UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text
 
 void Map::MapDrawLayer::ReleaseSearchStr(NN<Data::ArrayListString> strArr)
 {
-	LIST_FREE_STRING(strArr);
+	strArr->FreeAll();
 }
 
 Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex)

@@ -1187,7 +1187,7 @@ void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev
 	while (i < j)
 	{
 		sb->AppendC(UTF8STRC("import "));
-		sb->Append(importMap.GetKey(i));
+		sb->AppendOpt(importMap.GetKey(i));
 		sb->AppendC(UTF8STRC(";\r\n"));
 		i++;
 	}

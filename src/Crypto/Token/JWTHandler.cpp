@@ -29,8 +29,8 @@ Crypto::Token::JWTHandler::~JWTHandler()
 
 Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, NN<Data::StringMap<const UTF8Char*>> payload, Optional<JWTParam> param)
 {
-	NN<Data::ArrayList<Text::String*>> keys = payload->GetKeys();
-	Text::String *key;
+	NN<Data::ArrayList<Optional<Text::String>>> keys = payload->GetKeys();
+	NN<Text::String> key;
 	UOSInt i;
 	UOSInt j;
 	NN<JWTParam> nnparam;
@@ -40,7 +40,7 @@ Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, NN<Data
 	j = keys->GetCount();
 	while (i < j)
 	{
-		key = keys->GetItem(i);
+		key = Text::String::OrEmpty(keys->GetItem(i));
 		json.ObjectAddStrUTF8(key->ToCString(), payload->Get(key));
 		i++;
 	}

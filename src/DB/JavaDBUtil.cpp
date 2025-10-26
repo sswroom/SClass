@@ -392,7 +392,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 	while (i < j)
 	{
 		sb->AppendC(UTF8STRC("import "));
-		sb->Append(importMap.GetKey(i));
+		sb->AppendOpt(importMap.GetKey(i));
 		sb->AppendC(UTF8STRC(";\r\n"));
 		i++;
 	}

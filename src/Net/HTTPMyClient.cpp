@@ -467,11 +467,7 @@ Net::HTTPMyClient::~HTTPMyClient()
 	}
 	OPTSTR_DEL(this->cliHost);
 	MemFreeArr(this->dataBuff);
-	UOSInt i = this->reqHeaders.GetCount();
-	while (i-- > 0)
-	{
-		this->reqHeaders.GetItem(i)->Release();
-	}
+	this->reqHeaders.FreeAll();
 	this->userAgent->Release();
 #if defined(LOGREPLY)
 	DEL_CLASS(this->clsData->fs);
@@ -795,8 +791,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			OPTSTR_DEL(this->headers.RemoveAt(i));
 		}
 		this->headers.Clear();
-		LIST_FREE_STRING(&this->reqHeaders);
-		this->reqHeaders.Clear();
+		this->reqHeaders.FreeAll();
 	}
 	else
 	{

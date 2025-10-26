@@ -136,7 +136,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 	j = seriesList.GetCount();
 	while (i < j)
 	{
-		this->cboSeries->AddItem(NN<Text::String>::FromPtr(seriesList.GetItem(i)), 0);
+		this->cboSeries->AddItem(Text::String::OrEmpty(seriesList.GetItem(i)), 0);
 		i++;
 	}
 	this->UpdateVolume();
