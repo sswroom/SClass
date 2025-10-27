@@ -74,7 +74,7 @@ namespace Data
 		UOSInt ret;
 		if (objCnt == this->capacity)
 		{
-			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity * 2);
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity << 1);
 			MemCopyAC(newArr.Ptr(), arr.Ptr(), this->objCnt * sizeof(T));
 			this->capacity = this->capacity << 1;
 			MemFreeAArr(arr);
@@ -180,7 +180,7 @@ namespace Data
 	{
 		if (objCnt == this->capacity)
 		{
-			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity * 2);
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity << 1);
 			if (Index > 0)
 			{
 				MemCopyAC(newArr.Ptr(), this->arr.Ptr(), Index * sizeof(T));

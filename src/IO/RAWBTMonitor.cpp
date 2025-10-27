@@ -83,7 +83,7 @@ UOSInt IO::RAWBTMonitor::GetMTU()
 	return MAX_PACKET_SIZE;
 }
 
-UOSInt IO::RAWBTMonitor::NextPacket(UInt8 *buff, Int64 *timeTicks)
+UOSInt IO::RAWBTMonitor::NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks)
 {
 	UInt8 ctrlBuff[128];
 	struct cmsghdr *cmsg;
@@ -94,7 +94,7 @@ UOSInt IO::RAWBTMonitor::NextPacket(UInt8 *buff, Int64 *timeTicks)
 	struct timeval ts;
 	Int64 packetTime = 0;
 
-	iv.iov_base = buff + 4;
+	iv.iov_base = &buff[4];
 	iv.iov_len = MAX_PACKET_SIZE - 4;
 
 	MemClear(&msg, sizeof(msg));
@@ -124,8 +124,8 @@ UOSInt IO::RAWBTMonitor::NextPacket(UInt8 *buff, Int64 *timeTicks)
 		}
 		cmsg = CMSG_NXTHDR(&msg, cmsg);
 	}
-	WriteMUInt32(buff, (in != 0));
-	if (timeTicks) *timeTicks = packetTime;
+	WriteMUInt32(&buff[0], (in != 0));
+	timeTicks.Set(packetTime);
 	return (UOSInt)ret + 4;
 }
 

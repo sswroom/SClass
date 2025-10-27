@@ -14,8 +14,8 @@ namespace IO
 		virtual ~I2C();
 
 		void Wait();
-		virtual Bool ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data);
-		virtual Bool WriteBuff(UInt8 regAddr, UInt8 len, UInt8 *data);
+		virtual Bool ReadBuff(UInt8 regAddr, UInt8 len, UnsafeArray<UInt8> data);
+		virtual Bool WriteBuff(UInt8 regAddr, UInt8 len, UnsafeArray<const UInt8> data);
 	};
 }
 

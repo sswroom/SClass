@@ -27,7 +27,7 @@ void __stdcall IO::RAWBTScanner::RecvThread(NN<Sync::Thread> thread)
 	buff = MemAlloc(UInt8, me->clsData->btMon->GetMTU());
 	while (!thread->IsStopping())
 	{
-		packetSize = me->clsData->btMon->NextPacket(buff, &timeTicks);
+		packetSize = me->clsData->btMon->NextPacket(buff, timeTicks);
 		if (packetSize > 0)
 		{
 			me->OnPacket(timeTicks, Data::ByteArrayR(buff, packetSize));
@@ -44,7 +44,7 @@ void IO::RAWBTScanner::FreeRec(NN<IO::BTScanLog::ScanRecord3> rec)
 
 IO::RAWBTScanner::RAWBTScanner(Bool noCtrl) : thread(RecvThread, this, CSTR("RAWBTScanner"))
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->noCtrl = noCtrl;
 	this->clsData->btMon = 0;
 	this->clsData->hdlr = 0;
@@ -67,7 +67,7 @@ IO::RAWBTScanner::~RAWBTScanner()
 	this->ScanOff();
 	this->Close();
 	SDEL_CLASS(this->clsData->btCtrl);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 	this->pubRecMap.FreeAll(FreeRec);
 	this->randRecMap.FreeAll(FreeRec);
 }

@@ -73,6 +73,11 @@ Bool __stdcall Net::WebServer::SAMLService::PostSSOFunc(NN<Net::WebServer::WebRe
 	sb.Append(CSTR("<font color=\"red\">EmailAddress:</font> "));
 	sb.AppendOpt(res->GetEmailAddress());
 	sb.Append(CSTR("<br/>"));
+	sb.Append(CSTR("<font color=\"red\">Group:</font> "));
+	s = res->GetGroup()->JoinString(CSTR(", "));
+	sb.Append(s);
+	s->Release();
+	sb.Append(CSTR("<br/>"));
 
 	if (res->GetDecResponse().SetTo(s))
 	{

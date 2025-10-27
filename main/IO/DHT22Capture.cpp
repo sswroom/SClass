@@ -59,7 +59,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Data::ArrayList<Int32> isHighs;
 		UOSInt i;
 		UOSInt j;
-		if (pinCapture.GetCaptureData(&times, &isHighs) > 0)
+		if (pinCapture.GetCaptureData(times, isHighs) > 0)
 		{
 			IO::FileStream fs(CSTR("Capture.csv"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer writer(fs);

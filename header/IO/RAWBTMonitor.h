@@ -16,7 +16,7 @@ namespace IO
 		virtual Bool IsError();
 		virtual void Close();
 		virtual UOSInt GetMTU();
-		virtual UOSInt NextPacket(UInt8 *buff, Int64 *timeTicks);
+		virtual UOSInt NextPacket(UnsafeArray<UInt8> buff, OptOut<Int64> timeTicks);
 
 		static UOSInt GetDevCount();
 	};

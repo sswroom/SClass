@@ -228,7 +228,7 @@ namespace Data
 	{
 		if (objCnt == this->capacity)
 		{
-			UnsafeArray<NN<T>> newArr = MemAllocArr(NN<T>, this->capacity * 2);
+			UnsafeArray<NN<T>> newArr = MemAllocArr(NN<T>, this->capacity << 1);
 			if (index > 0)
 			{
 				newArr.CopyFromNO(this->arr, index);

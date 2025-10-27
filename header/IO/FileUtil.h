@@ -17,13 +17,13 @@ namespace IO
 		};
 	public:
 		static Bool DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile);
-//		static Bool DeleteFile(const WChar *file, Bool deleteRdonlyFile);
+//		static Bool DeleteFile(UnsafeArray<const WChar> file, Bool deleteRdonlyFile);
 		static Bool RenameFile(UnsafeArray<const UTF8Char> srcFile, UnsafeArray<const UTF8Char> destFile);
-//		static Bool RenameFile(const WChar *srcFile, const WChar *destFile);
+//		static Bool RenameFile(UnsafeArray<const WChar> srcFile, UnsafeArray<const WChar> destFile);
 		static UnsafeArrayOpt<UTF8Char> GetMountPoint(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName);
-//		static WChar *GetMountPoint(WChar *buff, const WChar *fileName);
+//		static UnsafeArray<WChar> GetMountPoint(UnsafeArray<WChar> buff, UnsafeArray<const WChar> fileName);
 		static Bool IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2);
-//		static Bool IsSamePartition(const WChar *file1, const WChar *file2);
+//		static Bool IsSamePartition(UnsafeArray<const WChar> file1, UnsafeArray>const WChar> file2);
 		static Bool CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		static Bool CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		static Bool MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);

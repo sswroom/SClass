@@ -217,6 +217,8 @@ Text::CStringNN IO::StreamTypeGetName(StreamType st)
 		return CSTR("Inflater");
 	case StreamType::Deflater:
 		return CSTR("Deflater");
+	case StreamType::GSMMuxPort:
+		return CSTR("GSMMuxPort");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

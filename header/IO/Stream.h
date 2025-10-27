@@ -45,7 +45,8 @@ namespace IO
 		FileView,
 		SSHTCPChannel,
 		Inflater,
-		Deflater
+		Deflater,
+		GSMMuxPort
 	};
 	struct StreamReadReq;
 	struct StreamWriteReq;

@@ -23,12 +23,12 @@ namespace Data
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		const Data::ArrayList<V> *GetValues() const;
+		NN<const Data::ArrayList<V>> GetValues() const;
 		const Data::SortableArrayListNative<T> *GetKeys() const;
 		virtual UOSInt GetCount() const;
 		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
-		virtual V *ToArray(UOSInt *objCnt);
+		virtual UnsafeArray<V> ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
@@ -110,9 +110,9 @@ namespace Data
 		this->vals.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> const Data::ArrayList<V> *ArrayMap<T, V>::GetValues() const
+	template <class T, class V> NN<const Data::ArrayList<V>> ArrayMap<T, V>::GetValues() const
 	{
-		return &this->vals;
+		return this->vals;
 	}
 
 	template <class T, class V> const Data::SortableArrayListNative<T> *ArrayMap<T, V>::GetKeys() const
@@ -135,13 +135,13 @@ namespace Data
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> V *ArrayMap<T, V>::ToArray(UOSInt *objCnt)
+	template <class T, class V> UnsafeArray<V> ArrayMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
 		V *arr = this->vals.GetArray(&cnt);
 		V *outArr = MemAlloc(V, cnt);
 		MemCopyNO(outArr, arr, sizeof(V) * cnt);
-		*objCnt = cnt;
+		objCnt.Set(cnt);
 		return outArr;
 	}
 
