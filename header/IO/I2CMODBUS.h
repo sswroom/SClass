@@ -13,8 +13,8 @@ namespace IO
 		I2CMODBUS(NN<IO::I2CChannel> channel, UOSInt delayMS);
 		virtual ~I2CMODBUS();
 
-		virtual Bool ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data);
-		virtual Bool WriteBuff(UInt8 regAddr, UInt8 len, UInt8 *data);
+		virtual Bool ReadBuff(UInt8 regAddr, UInt8 len, UnsafeArray<UInt8> data);
+		virtual Bool WriteBuff(UInt8 regAddr, UInt8 len, UnsafeArray<const UInt8> data);
 	};
 }
 #endif

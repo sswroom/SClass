@@ -3,7 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/ODBCConn.h"
 #include "Map/DBAssistedRReverseGeocoder.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 
 OSInt Map::DBAssistedRReverseGeocoder::GetLangIndex(UInt32 lcid)

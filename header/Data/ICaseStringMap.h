@@ -9,7 +9,7 @@ namespace Data
 	{
 	public:
 		ICaseStringMap();
-		ICaseStringMap(const ICaseStringMap<T> *map);
+		ICaseStringMap(NN<const ICaseStringMap<T>> map);
 		virtual ~ICaseStringMap();
 
 		virtual NN<StringMap<T>> Clone() const;
@@ -22,7 +22,7 @@ namespace Data
 		NEW_CLASS(this->keys, Data::ArrayListICaseString());
 	}
 
-	template <class T> ICaseStringMap<T>::ICaseStringMap(const ICaseStringMap<T> *map) : StringMap<T>()
+	template <class T> ICaseStringMap<T>::ICaseStringMap(NN<const ICaseStringMap<T>> map) : StringMap<T>()
 	{
 		DEL_CLASS(this->keys);
 		NEW_CLASS(this->keys, Data::ArrayListICaseString());
@@ -30,7 +30,7 @@ namespace Data
 		UOSInt j = map->keys->GetCount();
 		while (i < j)
 		{
-			this->keys->Add(map->keys->GetItem(i)->Clone().Ptr());
+			this->keys->Add(Text::String::CopyOrNull(map->keys->GetItem(i)));
 			this->vals.Add(map->vals.GetItem(i));
 			i++;
 		}
@@ -43,7 +43,7 @@ namespace Data
 	template <class T> NN<StringMap<T>> ICaseStringMap<T>::Clone() const
 	{
 		NN<ICaseStringMap<T>> ret;
-		NEW_CLASSNN(ret, ICaseStringMap<T>(this));
+		NEW_CLASSNN(ret, ICaseStringMap<T>(*this));
 		return ret;
 	}
 }

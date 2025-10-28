@@ -36,25 +36,25 @@ Bool IO::PrintMODBUSDevSim::ToggleValue(UOSInt index)
 	return false;
 }
 
-Bool IO::PrintMODBUSDevSim::ReadCoil(UInt16 coilAddr, Bool *value)
+Bool IO::PrintMODBUSDevSim::ReadCoil(UInt16 coilAddr, OutParam<Bool> value)
 {
 	printf("MODBUS: Read Coil: addr = %d\r\n", coilAddr);
 	return false;
 }
 
-Bool IO::PrintMODBUSDevSim::ReadDescreteInput(UInt16 inputAddr, Bool *value)
+Bool IO::PrintMODBUSDevSim::ReadDescreteInput(UInt16 inputAddr, OutParam<Bool> value)
 {
 	printf("MODBUS: Read Descrete Input: addr = %d\r\n", inputAddr);
 	return false;
 }
 
-Bool IO::PrintMODBUSDevSim::ReadHoldingRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::PrintMODBUSDevSim::ReadHoldingRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	printf("MODBUS: Read Holding Register: addr = %d\r\n", regAddr);
 	return false;
 }
 
-Bool IO::PrintMODBUSDevSim::ReadInputRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::PrintMODBUSDevSim::ReadInputRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	printf("MODBUS: Read Input Register: addr = %d\r\n", regAddr);
 	return false;

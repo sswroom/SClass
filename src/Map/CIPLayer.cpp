@@ -12,7 +12,7 @@
 #include "Manage/HiResClock.h"
 #include "Map/CIPLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Point.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

@@ -449,7 +449,7 @@ Media::PulseAudioRenderer::PulseAudioRenderer(const UTF8Char *devName) : thread(
 
 Media::PulseAudioRenderer::~PulseAudioRenderer()
 {
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
 		BindAudio(0);
 	}
@@ -461,23 +461,24 @@ Bool Media::PulseAudioRenderer::IsError()
 	return false;
 }
 
-Bool Media::PulseAudioRenderer::BindAudio(Media::AudioSource *audsrc)
+Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	Media::AudioFormat fmt;
 	if (this->thread.IsRunning())
 	{
 		Stop();
 	}
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
 		this->audsrc = 0;
-		SDEL_CLASS(this->resampler);
+		this->resampler.Delete();
 		this->hand = 0;
 	}
-	if (audsrc == 0)
+	NN<Media::AudioSource> nnaudsrc;
+	if (!audsrc.SetTo(nnaudsrc))
 		return false;
 
-	audsrc->GetFormat(fmt);
+	nnaudsrc->GetFormat(fmt);
 	if (fmt.formatId != 1 && fmt.formatId != 3)
 	{
 		return false;
@@ -491,11 +492,11 @@ Bool Media::PulseAudioRenderer::BindAudio(Media::AudioSource *audsrc)
 	return true;
 }
 
-void Media::PulseAudioRenderer::AudioInit(Media::RefClock *clk)
+void Media::PulseAudioRenderer::AudioInit(Optional<Media::RefClock> clk)
 {
 	if (this->thread.IsRunning())
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->clk = clk;
 }
@@ -504,7 +505,7 @@ void Media::PulseAudioRenderer::Start()
 {
 	if (this->thread.IsRunning())
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->thread.Start();
 }
@@ -514,9 +515,10 @@ void Media::PulseAudioRenderer::Stop()
 	if (!this->thread.IsRunning())
 		return;
 	this->thread.BeginStop();
-	if (this->audsrc)
+	NN<Media::AudioSource> audsrc;
+	if (this->audsrc.SetTo(audsrc))
 	{
-		this->audsrc->Stop();
+		audsrc->Stop();
 	}
 	this->thread.WaitForEnd();
 }
@@ -526,7 +528,7 @@ Bool Media::PulseAudioRenderer::IsPlaying()
 	return this->thread.IsRunning();
 }
 
-void Media::PulseAudioRenderer::SetEndNotify(EndNotifier endHdlr, void *endHdlrObj)
+void Media::PulseAudioRenderer::SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj)
 {
 	this->endHdlr = endHdlr;
 	this->endHdlrObj = endHdlrObj;

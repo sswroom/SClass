@@ -22,7 +22,7 @@ namespace IO
 			AnyType scanHdlrObj;
 			Sync::Mutex reqMut;
 			Sync::Mutex recvMut;
-			UInt8 *recvBuff;
+			UnsafeArray<UInt8> recvBuff;
 			UOSInt recvSize;
 			Sync::Thread thread;
 			Sync::Event recvEvt;
@@ -46,9 +46,9 @@ namespace IO
 			virtual Bool ResetDefault();
 			virtual void HandleCodeScanned(ScanHandler hdlr, AnyType userObj);
 
-			virtual UOSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList);
+			virtual UOSInt GetCommandList(NN<Data::ArrayList<DeviceCommand>> cmdList);
 			virtual Text::CString GetCommandName(DeviceCommand dcmd);
-			virtual CommandType GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal);
+			virtual CommandType GetCommandParamType(DeviceCommand dcmd, OutParam<Int32> minVal, OutParam<Int32> maxVal);
 			virtual Text::CString GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal);
 			virtual Int32 GetCommand(DeviceCommand dcmd);
 			virtual Bool SetCommand(DeviceCommand dcmd, Int32 val);

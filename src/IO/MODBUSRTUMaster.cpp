@@ -2,7 +2,7 @@
 #include "Crypto/Hash/CRC16.h"
 #include "Data/ByteTool.h"
 #include "IO/MODBUSRTUMaster.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"

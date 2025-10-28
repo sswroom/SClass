@@ -66,7 +66,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 						j = 9;
 						while (i < nCoil)
 						{
-							if (!dev->ReadCoil((UInt16)(devAddr + i), &bVal))
+							if (!dev->ReadCoil((UInt16)(devAddr + i), bVal))
 							{
 								succ = false;
 								break;
@@ -115,7 +115,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 						j = 9;
 						while (i < nInputs)
 						{
-							if (!dev->ReadDescreteInput((UInt16)(devAddr + i), &bVal))
+							if (!dev->ReadDescreteInput((UInt16)(devAddr + i), bVal))
 							{
 								succ = false;
 								break;
@@ -163,7 +163,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 						i = 0;
 						while (i < nReg)
 						{
-							if (!dev->ReadHoldingRegister((UInt16)(devAddr + i), &iVal))
+							if (!dev->ReadHoldingRegister((UInt16)(devAddr + i), iVal))
 							{
 								succ = false;
 								break;
@@ -200,7 +200,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 						i = 0;
 						while (i < nReg)
 						{
-							if (!dev->ReadInputRegister((UInt16)(devAddr + i), &iVal))
+							if (!dev->ReadInputRegister((UInt16)(devAddr + i), iVal))
 							{
 								succ = false;
 								break;

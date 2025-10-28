@@ -1,6 +1,7 @@
 #include "Stdafx.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/MemorySurface.h"
 
 Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, Optional<const Media::ColorProfile> color, Double dpi)

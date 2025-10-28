@@ -9,7 +9,7 @@ namespace Net
 	public:
 		struct ClassData;
 	private:
-		struct ClassData *clsData;
+		NN<ClassData> clsData;
 		Bool skipCertCheck;
 
 		virtual Optional<Net::SSLClient> CreateServerConn(NN<Socket> s);

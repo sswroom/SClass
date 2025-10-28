@@ -29,7 +29,7 @@ namespace Data
 		virtual UOSInt AddRange(UnsafeArray<const NN<T>> arr, UOSInt cnt);
 		UOSInt AddAll(NN<const ReadingListNN<T>> list);
 		UOSInt AddAll(Data::ArrayIterator<NN<T>> it);
-		UOSInt AddAllOpt(NN<const ReadingList<T*>> list);
+		UOSInt AddAllOpt(NN<const ReadingList<Optional<T>>> list);
 		virtual Bool Remove(NN<T> val);
 		virtual Optional<T> RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, NN<T> val);
@@ -141,7 +141,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::AddAllOpt(NN<const ReadingList<T*>> list)
+	template <class T> UOSInt ArrayListNN<T>::AddAllOpt(NN<const ReadingList<Optional<T>>> list)
 	{
 		UOSInt ret = 0;
 		UOSInt i = 0;
@@ -149,7 +149,7 @@ namespace Data
 		NN<T> s;
 		while (i < j)
 		{
-			if (s.Set(list->GetItem(i)))
+			if (list->GetItem(i).SetTo(s))
 			{
 				this->Add(s);
 				ret++;
@@ -228,7 +228,7 @@ namespace Data
 	{
 		if (objCnt == this->capacity)
 		{
-			UnsafeArray<NN<T>> newArr = MemAllocArr(NN<T>, this->capacity * 2);
+			UnsafeArray<NN<T>> newArr = MemAllocArr(NN<T>, this->capacity << 1);
 			if (index > 0)
 			{
 				newArr.CopyFromNO(this->arr, index);

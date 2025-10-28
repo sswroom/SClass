@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncSMPTE428.h"
 
 Media::CS::TransferFuncSMPTE428::TransferFuncSMPTE428() : Media::CS::TransferFunc(Media::CS::TRANT_SMPTE428, 2.2)

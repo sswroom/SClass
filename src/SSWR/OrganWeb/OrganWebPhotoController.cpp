@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Media/ICCProfile.h"
 #include "Media/ImageList.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Net/MIME.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"

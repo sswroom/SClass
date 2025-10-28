@@ -56,12 +56,12 @@ Optional<DB::TableDef> DB::DBModel::GetTable(Text::CStringNN tableName)
 
 UOSInt DB::DBModel::GetTableNames(NN<Data::ArrayList<Text::CString>> tableNames)
 {
-	NN<Data::ArrayList<Text::String*>> keys = this->tableMap.GetKeys();
+	NN<Data::ArrayList<Optional<Text::String>>> keys = this->tableMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
 	{
-		tableNames->Add(keys->GetItem(i)->ToCString());
+		tableNames->Add(OPTSTR_CSTR(keys->GetItem(i)));
 		i++;
 	}
 	return j;

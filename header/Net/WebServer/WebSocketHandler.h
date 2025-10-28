@@ -10,9 +10,9 @@ namespace Net
 		class WebSocketHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			IO::StreamHandler *stmHdlr;
+			NN<IO::StreamHandler> stmHdlr;
 		public:
-			WebSocketHandler(IO::StreamHandler *stmHdlr);
+			WebSocketHandler(NN<IO::StreamHandler> stmHdlr);
 			virtual ~WebSocketHandler();
 
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);

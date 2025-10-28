@@ -549,7 +549,7 @@ Bool Media::H264Parser::ParseSVari(NN<IO::BitReaderMSB> reader, OutParam<Int32> 
 	return ret;
 }
 
-Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize)
+Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, OutParam<UnsafeArray<const UInt8>> sps, OutParam<UOSInt> spsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
@@ -567,8 +567,8 @@ Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize
 		t = frame[startOfst + 4] & 0x1f;
 		if (t == 7)
 		{
-			*sps = &frame[startOfst + 4];
-			*spsSize = endOfst - startOfst - 4;
+			sps.Set(&frame[startOfst + 4]);
+			spsSize.Set(endOfst - startOfst - 4);
 			return true;
 		}
 		endOfst = startOfst;
@@ -577,7 +577,7 @@ Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize
 }
 
 
-Bool Media::H264Parser::FindPPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, const UInt8 **pps, UOSInt *ppsSize)
+Bool Media::H264Parser::FindPPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, OutParam<UnsafeArray<const UInt8>> pps, OutParam<UOSInt> ppsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
@@ -593,8 +593,8 @@ Bool Media::H264Parser::FindPPS(UnsafeArray<const UInt8> frame, UOSInt frameSize
 		startOfst = nalList.GetItem(i);
 		if ((frame[startOfst + 4] & 0x1f) == 8)
 		{
-			*pps = &frame[startOfst + 4];
-			*ppsSize = endOfst - startOfst - 4;
+			pps.Set(&frame[startOfst + 4]);
+			ppsSize.Set(endOfst - startOfst - 4);
 			return true;
 		}
 		endOfst = startOfst;
@@ -627,7 +627,7 @@ Bool Media::H264Parser::FindNALs(UnsafeArray<const UInt8> frame, UOSInt frameSiz
 	return true;
 }
 
-UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> sbuff, const UInt8 *frame, UOSInt frameSize)
+UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> frame, UOSInt frameSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return 0;

@@ -125,7 +125,7 @@ void IO::JavaClass::DetailAccessFlags(UInt16 accessFlags, NN<Text::StringBuilder
 	}
 }
 
-void IO::JavaClass::AppendCond(NN<Text::StringBuilderUTF8> sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv)
+void IO::JavaClass::AppendCond(NN<Text::StringBuilderUTF8> sb, NN<DecompileEnv> env, UOSInt index, CondType ct, Bool inv)
 {
 	NN<Text::String> s;
 	if (!env->stackTypes->GetItem(index).SetTo(s))
@@ -203,17 +203,18 @@ void IO::JavaClass::AppendCond(NN<Text::StringBuilderUTF8> sb, DecompileEnv *env
 	sb->AppendOpt(env->stacks->GetItem(index + 1));
 }
 
-UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, const MethodInfo *method)
+UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, Optional<const MethodInfo> method)
 {
-	if (method == 0)
+	NN<const MethodInfo> nnmethod;
+	if (!method.SetTo(nnmethod))
 	{
 		return paramIndex;
 	}
 	UInt32 i = 0;
-	UOSInt j = method->lvList.GetCount();
+	UOSInt j = nnmethod->lvList.GetCount();
 	while (i < j)
 	{
-		NN<LocalVariableInfo> lv = method->lvList.GetItemNoCheck(i);
+		NN<LocalVariableInfo> lv = nnmethod->lvList.GetItemNoCheck(i);
 		if (lv->startPC == 0 && lv->index == paramIndex)
 		{
 			return i;
@@ -228,10 +229,10 @@ void IO::JavaClass::AppendIndent(NN<Text::StringBuilderUTF8> sb, UOSInt lev) con
 	sb->AppendChar('\t', lev);
 }
 
-void IO::JavaClass::AppendLineNum(NN<Text::StringBuilderUTF8> sb, DecompileEnv *env, const UInt8 *codePtr) const
+void IO::JavaClass::AppendLineNum(NN<Text::StringBuilderUTF8> sb, NN<DecompileEnv> env, UnsafeArray<const UInt8> codePtr) const
 {
 	UInt16 codePC = (UInt16)(codePtr - env->codeStart);
-	if (env->method == 0 || env->method->lineNumList.GetCount() == 0)
+	if (env->method->lineNumList.GetCount() == 0)
 	{
 		return;
 	}
@@ -257,7 +258,7 @@ void IO::JavaClass::AppendLineNum(NN<Text::StringBuilderUTF8> sb, DecompileEnv *
 	}
 }
 
-const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailAttribute(UnsafeArray<const UInt8> attr, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -293,7 +294,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, NN<Te
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
 	{
-		const UInt8 *ptr;
+		UnsafeArray<const UInt8> ptr;
 		UInt32 codeLen = ReadMUInt32(&attr[10]);
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("Attr Max Stack = "));
@@ -562,7 +563,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, NN<Te
 	{
 		UInt16 num_annotations = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
-		const UInt8 *ptr = &attr[8];
+		UnsafeArray<const UInt8> ptr = &attr[8];
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("Attr RuntimeVisibleAnnotations num_annotations = "));
 		sb->AppendU16(num_annotations);
@@ -583,7 +584,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, NN<Te
 	{
 		UInt16 number_of_entries = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
-		const UInt8 *ptr = &attr[8];
+		UnsafeArray<const UInt8> ptr = &attr[8];
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("Attr StackMapTable number_of_entries = "));
 		sb->AppendU16(number_of_entries);
@@ -950,7 +951,7 @@ void IO::JavaClass::DetailNameAndType(UInt16 index, UInt16 classIndex, NN<Text::
 	this->DetailNameType(nameIndex, typeIndex, classIndex, U8STR(" "), sb, 0, 0, 0, 0);
 }
 
-void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, UnsafeArrayOpt<const UTF8Char> prefix, NN<Text::StringBuilderUTF8> sb, UnsafeArrayOpt<UTF8Char> typeBuff, MethodInfo *method, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, UnsafeArrayOpt<const UTF8Char> prefix, NN<Text::StringBuilderUTF8> sb, UnsafeArrayOpt<UTF8Char> typeBuff, Optional<MethodInfo> method, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	if (nameIndex == 0 || nameIndex >= this->constPoolCnt || typeIndex == 0 || typeIndex >= this->constPoolCnt)
 	{
@@ -974,13 +975,14 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	UOSInt i;
 	UOSInt j;
 	Text::String *paramName;
-	if (method)
+	NN<MethodInfo> nnmethod;
+	if (method.SetTo(nnmethod))
 	{
 		i = 0;
-		j = method->lvList.GetCount();
+		j = nnmethod->lvList.GetCount();
 		while (i < j)
 		{
-			if (this->GetConstName(sbuff, method->lvList.GetItemNoCheck(i)->nameIndex).SetTo(sptr))
+			if (this->GetConstName(sbuff, nnmethod->lvList.GetItemNoCheck(i)->nameIndex).SetTo(sptr))
 			{
 				typeNames.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
 			}
@@ -992,7 +994,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 		}
 	}
 
-	if (method && (method->accessFlags & 8) != 0)
+	if (method.SetTo(nnmethod) && (nnmethod->accessFlags & 8) != 0)
 	{
 		paramIndex = 0;
 	}
@@ -1081,7 +1083,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	sb->AppendC(sbParam.ToString(), sbParam.GetLength());
 }
 
-void IO::JavaClass::DetailType(UInt16 typeIndex, NN<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::JavaClass::DetailType(UInt16 typeIndex, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	if (typeIndex == 0 || typeIndex >= this->constPoolCnt)
 	{
@@ -1096,7 +1098,7 @@ void IO::JavaClass::DetailType(UInt16 typeIndex, NN<Text::StringBuilderUTF8> sb,
 	AppendCodeType2String(sb, ptr, importList, packageName);
 }
 
-void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+void IO::JavaClass::DetailCode(UnsafeArray<const UInt8> codePtr, UOSInt codeLen, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	UInt16 val;
 	UOSInt codeOfst = 0;
@@ -3405,7 +3407,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 	}
 }
 
-const UInt8 *IO::JavaClass::DetailAnnotation(const UInt8 *annoPtr, const UInt8 *annoEnd, NN<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailAnnotation(UnsafeArray<const UInt8> annoPtr, UnsafeArray<const UInt8> annoEnd, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	sb->AppendUTF8Char('@');
 	if (annoEnd - annoPtr < 4)
@@ -3462,7 +3464,7 @@ element_value {
     } value;
 }
 */
-const UInt8 *IO::JavaClass::DetailElementValue(const UInt8 *annoPtr, const UInt8 *annoEnd, NN<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailElementValue(UnsafeArray<const UInt8> annoPtr, UnsafeArray<const UInt8> annoEnd, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -3514,7 +3516,7 @@ const UInt8 *IO::JavaClass::DetailElementValue(const UInt8 *annoPtr, const UInt8
 	}
 }
 
-const UInt8 *IO::JavaClass::DetailStackMapFrame(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailStackMapFrame(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (currPtr >= ptrEnd)
 	{
@@ -3632,7 +3634,7 @@ const UInt8 *IO::JavaClass::DetailStackMapFrame(const UInt8 *currPtr, const UInt
 	}
 }
 
-const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+UnsafeArray<const UInt8> IO::JavaClass::DetailVerificationTypeInfo(UnsafeArray<const UInt8> currPtr, UnsafeArray<const UInt8> ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (currPtr >= ptrEnd)
 	{
@@ -3768,9 +3770,9 @@ Bool IO::JavaClass::ClassNameString(UInt16 index, NN<Text::StringBuilderUTF8> sb
 	return true;
 }
 
-UnsafeArray<UTF8Char> IO::JavaClass::GetLVName(UnsafeArray<UTF8Char> sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst) const
+UnsafeArray<UTF8Char> IO::JavaClass::GetLVName(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UOSInt codeOfst) const
 {
-	if (method)
+	if (true) //method)
 	{
 		UOSInt i = 0;
 		UOSInt j = method->lvList.GetCount();
@@ -3792,9 +3794,9 @@ UnsafeArray<UTF8Char> IO::JavaClass::GetLVName(UnsafeArray<UTF8Char> sbuff, UInt
 	return Text::StrUInt16(sbuff, index);
 }
 
-UnsafeArray<UTF8Char> IO::JavaClass::GetLVType(UnsafeArray<UTF8Char> sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+UnsafeArray<UTF8Char> IO::JavaClass::GetLVType(UnsafeArray<UTF8Char> sbuff, UInt16 index, NN<const MethodInfo> method, UOSInt codeOfst, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
-	if (method)
+	if (true) //method)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -3829,9 +3831,9 @@ UnsafeArray<UTF8Char> IO::JavaClass::GetLVType(UnsafeArray<UTF8Char> sbuff, UInt
 	return Text::StrConcatC(sbuff, UTF8STRC("java.lang.Object"));
 }
 
-Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, const UInt8 *methodBuff) const
+Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, UnsafeArray<const UInt8> methodBuff) const
 {
-	method->accessFlags = ReadMUInt16(methodBuff);
+	method->accessFlags = ReadMUInt16(&methodBuff[0]);
 	method->nameIndex = ReadMUInt16(&methodBuff[2]);
 	method->descriptorIndex = ReadMUInt16(&methodBuff[4]);
 	method->code = 0;
@@ -3854,13 +3856,14 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, const UInt8 *methodBuff) 
 		{
 			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
 			{
+				UnsafeArray<UInt8> code;
 				UInt32 codeLen = ReadMUInt32(&ptr[10]);
 				const UInt8 *ptr2;
 				method->maxStacks = ReadMUInt16(&ptr[6]);
 				method->maxLocals = ReadMUInt16(&ptr[8]);
-				method->code = MemAlloc(UInt8, codeLen);
+				method->code = code = MemAllocArr(UInt8, codeLen);
 				method->codeLen = codeLen;
-				MemCopyNO(method->code, &ptr[14], codeLen);
+				MemCopyNO(&code[0], &ptr[14], codeLen);
 				ptr2 = &ptr[14 + codeLen];
 				UInt16 exceptLen = ReadMUInt16(&ptr2[0]);
 				ptr2 += 2;
@@ -3975,9 +3978,10 @@ Bool IO::JavaClass::MethodParse(NN<MethodInfo> method, const UInt8 *methodBuff) 
 
 void IO::JavaClass::MethodFree(NN<MethodInfo> method) const
 {
-	if (method->code)
+	UnsafeArray<UInt8> code;
+	if (method->code.SetTo(code))
 	{
-		MemFree(method->code);
+		MemFreeArr(code);
 		method->code = 0;
 	}
 	method->exHdlrList.MemFreeAll();
@@ -3986,7 +3990,7 @@ void IO::JavaClass::MethodFree(NN<MethodInfo> method) const
 	method->lineNumList.MemFreeAll();
 }
 
-void IO::JavaClass::AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> className, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::JavaClass::AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> className, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	UOSInt classNameLen = Text::StrCharCnt(className);
 	UOSInt i = Text::StrLastIndexOfCharC(className, classNameLen, '.');
@@ -4006,7 +4010,8 @@ void IO::JavaClass::AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, UnsafeAr
 		sb->AppendC(className + i + 1, classNameLen - i - 1);
 		return;
 	}
-	if (importList == 0)
+	NN<Data::ArrayListStringNN> nnimportList;
+	if (!importList.SetTo(nnimportList))
 	{
 		sb->AppendC(className, classNameLen);
 		return;
@@ -4015,27 +4020,27 @@ void IO::JavaClass::AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, UnsafeAr
 	{
 		Text::StringBuilderUTF8 sbCls;
 		sbCls.AppendC(className, classNameLen - 2);
-		if (importList->SortedIndexOfPtr(sbCls.ToString(), sbCls.GetLength()) >= 0)
+		if (nnimportList->SortedIndexOfC(sbCls.ToCString()) >= 0)
 		{
 			sb->AppendC(className + i + 1, classNameLen - i - 1);
 			return;
 		}
-		importList->SortedInsert(Text::String::New(sbCls.ToString(), sbCls.GetLength()).Ptr());
+		nnimportList->SortedInsert(Text::String::New(sbCls.ToString(), sbCls.GetLength()));
 		sb->AppendC(className + i + 1, classNameLen - i - 1);
 	}
 	else
 	{
-		if (importList->SortedIndexOfPtr(className, classNameLen) >= 0)
+		if (nnimportList->SortedIndexOfC(Text::CStringNN(className, classNameLen)) >= 0)
 		{
 			sb->AppendC(className + i + 1, classNameLen - i - 1);
 			return;
 		}
-		importList->SortedInsert(Text::String::New(className, classNameLen).Ptr());
+		nnimportList->SortedInsert(Text::String::New(className, classNameLen));
 		sb->AppendC(className + i + 1, classNameLen - i - 1);
 	}
 }
 
-void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UOSInt lev, UnsafeArray<const UTF8Char> className, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName)
+void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UOSInt lev, UnsafeArray<const UTF8Char> className, NN<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName)
 {
 	this->AppendIndent(sb, lev);
 	if (this->accessFlags & 1) //ACC_PUBLIC
@@ -4227,7 +4232,7 @@ void IO::JavaClass::AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UOSIn
 	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
-void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -4353,7 +4358,7 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index
 		this->GetConstName(sbuff, signatureIndex);
 		AppendCodeType2String(sb, sbuff, importList, packageName);
 	}
-	else if (importList == 0 && packageName == 0)
+	else if (importList.IsNull() && packageName.IsNull() == 0)
 	{
 		sb->AppendC(sbTypeName.ToString(), sbTypeName.GetLength());
 	}
@@ -4367,7 +4372,7 @@ void IO::JavaClass::AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index
 	sb->AppendC(sbValue.ToString(), sbValue.GetLength());
 }
 
-void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt index, UOSInt lev, Bool disasm, Bool decompile, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName) const
+void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt index, UOSInt lev, Bool disasm, Bool decompile, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName) const
 {
 	Text::StringBuilderUTF8 sbTmp;
 	UTF8Char sbuff[256];
@@ -4393,7 +4398,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt inde
 			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RuntimeVisibleAnnotations")))
 			{
 				UInt16 num_annotations = ReadMUInt16(&ptr[6]);
-				const UInt8 *annptr = &ptr[8];
+				UnsafeArray<const UInt8> annptr = &ptr[8];
 				j = 0;
 
 				while (j < num_annotations)
@@ -4515,7 +4520,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt inde
 			{
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
 				{
-					this->AppendCodeMethodCodes(sb, lev + 1, importList, packageName, ptr, typeBuff, &method);
+					this->AppendCodeMethodCodes(sb, lev + 1, importList, packageName, ptr, typeBuff, method);
 				}
 			}
 			ptr += len + 6;
@@ -4528,7 +4533,7 @@ void IO::JavaClass::AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt inde
 	MethodFree(method);
 }
 
-void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt lev, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName, const UInt8 *codeAttr, UnsafeArray<const UTF8Char> typeBuff, const MethodInfo *method) const
+void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt lev, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName, UnsafeArray<const UInt8> codeAttr, UnsafeArray<const UTF8Char> typeBuff, NN<const MethodInfo> method) const
 {
 	IO::JavaClass::DecompileEnv env;
 	UInt16 maxLocal = ReadMUInt16(&codeAttr[8]);
@@ -4538,17 +4543,17 @@ void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt
 	UTF8Char sbuff[256];
 	UOSInt i;
 	Text::StringBuilderUTF8 sbTmp;
-	env.localTypes = MemAlloc(Text::String *, maxLocal);
+	env.localTypes = MemAllocArr(Optional<Text::String>, maxLocal);
 	env.method = method;
-	env.stacks = &stackVal;
-	env.stackTypes = &stackTypes;
+	env.stacks = stackVal;
+	env.stackTypes = stackTypes;
 	env.importList = importList;
 	env.packageName = packageName;
 	env.returnType = 0;
 	sbTmp.ClearStr();
 	if (this->MethodGetReturnType(method->descriptorIndex, sbTmp))
 	{
-		env.returnType = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+		env.returnType = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 	}
 
 	if (maxLocal > 0)
@@ -4562,7 +4567,7 @@ void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt
 		}
 	}
 
-	if (method && (method->accessFlags & 8) != 0)
+	if ((method->accessFlags & 8) != 0)
 	{
 		i = 0;
 	}
@@ -4591,9 +4596,9 @@ void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt
 		i++;
 	}
 
-	const UInt8 *codePtr = &codeAttr[14];
+	UnsafeArray<const UInt8> codePtr = &codeAttr[14];
 	env.codeStart = codePtr;
-	this->DecompileCode(codePtr, codePtr + codeLen, &env, lev, sb);
+	this->DecompileCode(codePtr, codePtr + codeLen, env, lev, sb);
 	if (stackVal.GetCount() != stackTypes.GetCount())
 	{
 		i = stackVal.GetCount();
@@ -4631,20 +4636,22 @@ void IO::JavaClass::AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt
 		}
 	}
 
+	NN<Text::String> s;
 	i = maxLocal;
 	while (i-- > 0)
 	{
-		if (env.localTypes[i])
+		if (env.localTypes[i].SetTo(s))
 		{
-			env.localTypes[i]->Release();
+			s->Release();
 		}
 	}
-	MemFree(env.localTypes);
-	SDEL_STRING(env.returnType);
+	MemFreeArr(env.localTypes);
+	OPTSTR_DEL(env.returnType);
 }
 
-UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> typeStr, Data::ArrayListString *importList, UnsafeArrayOpt<const UTF8Char> packageName)
+UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> typeStr, Optional<Data::ArrayListStringNN> importList, UnsafeArrayOpt<const UTF8Char> packageName)
 {
+	NN<Data::ArrayListStringNN> nnimportList;
 	OSInt arrLev = 0;
 	UInt8 c;
 	c = *typeStr++;
@@ -4679,7 +4686,7 @@ UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::String
 		sb->AppendC(UTF8STRC("long"));
 		break;
 	case 'L':
-		if (importList || packageName.NotNull())
+		if (importList.NotNull() || packageName.NotNull())
 		{
 			Text::StringBuilderUTF8 sbTmp;
 			UOSInt subcls = INVALID_INDEX;
@@ -4773,11 +4780,11 @@ UnsafeArray<const UTF8Char> IO::JavaClass::AppendCodeType2String(NN<Text::String
 				{
 
 				}
-				else if (importList)
+				else if (importList.SetTo(nnimportList))
 				{
-					if (importList->SortedIndexOfPtr(sptr, sptrLen) < 0)
+					if (nnimportList->SortedIndexOfC(Text::CStringNN(sptr, sptrLen)) < 0)
 					{
-						importList->SortedInsert(Text::String::New(sptr, sptrLen).Ptr());
+						nnimportList->SortedInsert(Text::String::New(sptr, sptrLen));
 					}
 				}
 				else
@@ -5424,7 +5431,7 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 		sb->AppendC(UTF8STRC(" attributes count = "));
 		sb->AppendU16(attributes_count);
 		sb->AppendC(UTF8STRC("\r\n"));
-		const UInt8 *attr = &this->fields[i][8];
+		UnsafeArray<const UInt8> attr = &this->fields[i][8];
 		j = 0;
 		while (j < attributes_count)
 		{
@@ -5463,7 +5470,7 @@ Bool IO::JavaClass::FileStructDetail(NN<Text::StringBuilderUTF8> sb) const
 		sb->AppendC(UTF8STRC(" attributes count = "));
 		sb->AppendU16(attributes_count);
 		sb->AppendC(UTF8STRC("\r\n"));
-		const UInt8 *attr = &this->methods[i][8];
+		UnsafeArray<const UInt8> attr = &this->methods[i][8];
 		j = 0;
 		while (j < attributes_count)
 		{
@@ -5577,7 +5584,7 @@ void IO::JavaClass::DecompileFile(NN<Text::StringBuilderUTF8> sb)
 		return;
 	}
 	UnsafeArrayOpt<const UTF8Char> packageName = 0;
-	Data::ArrayListString importList;
+	Data::ArrayListStringNN importList;
 	UOSInt i = sbTmp.LastIndexOf('.');
 	UOSInt j;
 	if (i != INVALID_INDEX)
@@ -5590,7 +5597,7 @@ void IO::JavaClass::DecompileFile(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendC(UTF8STRC("\r\n"));
 
 	Text::StringBuilderUTF8 sbClass;
-	this->AppendCodeClassContent(sbClass, 0, sbTmp.ToString() + i + 1, &importList, packageName);
+	this->AppendCodeClassContent(sbClass, 0, sbTmp.ToString() + i + 1, importList, packageName);
 
 	if (importList.GetCount() > 0)
 	{
@@ -5599,7 +5606,7 @@ void IO::JavaClass::DecompileFile(NN<Text::StringBuilderUTF8> sb)
 		while (i < j)
 		{
 			sb->AppendC(UTF8STRC("import "));
-			sb->Append(importList.GetItem(i));
+			sb->Append(importList.GetItemNoCheck(i));
 			sb->AppendC(UTF8STRC(";\r\n"));
 			i++;
 		}
@@ -5607,11 +5614,11 @@ void IO::JavaClass::DecompileFile(NN<Text::StringBuilderUTF8> sb)
 	}
 	sb->AppendC(sbClass.ToString(), sbClass.GetLength());
 
-	LIST_FREE_STRING(&importList);
+	importList.FreeAll();
 	SDEL_TEXT(packageName);
 }
 
-IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const UInt8 *codeEnd, IO::JavaClass::DecompileEnv *env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+IO::JavaClass::EndType IO::JavaClass::DecompileCode(UnsafeArray<const UInt8> codePtr, UnsafeArray<const UInt8> codeEnd, NN<IO::JavaClass::DecompileEnv> env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::StringBuilderUTF8 sbTmp;
 	Text::StringBuilderUTF8 sbTmp2;
@@ -5744,35 +5751,35 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 		case 0x15: //iload
 			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
+			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x16: //lload
 			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
+			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x17: //fload
 			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
+			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x18: //dload
 			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
+			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x19: //aload
 			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::String::NewP(sbuff, sptr));
-			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
+			env->stackTypes->Add(Text::String::OrEmpty(env->localTypes[codePtr[1]])->Clone());
 			codePtr += 2;
 			break;
 		case 0x1A: //iload_0
-			if (env->method && (env->method->accessFlags & 8) != 0)
+			if ((env->method->accessFlags & 8) != 0)
 			{
 				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
@@ -5807,7 +5814,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x1E: //lload_0
-			if (env->method && (env->method->accessFlags & 8) != 0)
+			if ((env->method->accessFlags & 8) != 0)
 			{
 				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
@@ -5842,7 +5849,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x22: //fload_0
-			if (env->method && (env->method->accessFlags & 8) != 0)
+			if ((env->method->accessFlags & 8) != 0)
 			{
 				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
@@ -5877,7 +5884,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x26: //dload_0
-			if (env->method && (env->method->accessFlags & 8) != 0)
+			if ((env->method->accessFlags & 8) != 0)
 			{
 				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
@@ -5912,7 +5919,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x2A: //aload_0
-			if (env->method && (env->method->accessFlags & 8) != 0)
+			if ((env->method->accessFlags & 8) != 0)
 			{
 				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::String::NewP(sbuff, sptr));
@@ -7636,7 +7643,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("return "));
 				NN<Text::String> s = Text::String::OrEmpty(env->stacks->GetItem(env->stacks->GetCount() - 1));
-				if (env->returnType && env->returnType->Equals(UTF8STRC("boolean")))
+				NN<Text::String> returnType;
+				if (env->returnType.SetTo(returnType) && returnType->Equals(UTF8STRC("boolean")))
 				{
 					if (s->Equals(UTF8STRC("0")))
 					{
@@ -7994,7 +8002,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			typeBuff[0] = 0;
-			if (!this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, sbTmp).SetTo(sptr))
+			if (!this->DecompileMethod(val, sbuff, classIndex, typeBuff, env, sbTmp).SetTo(sptr))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
@@ -8037,7 +8045,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			typeBuff[0] = 0;
-			if (!this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, sbTmp).SetTo(sptr))
+			if (!this->DecompileMethod(val, sbuff, classIndex, typeBuff, env, sbTmp).SetTo(sptr))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
@@ -8123,7 +8131,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			typeBuff[0] = 0;
-			if (!this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, sbTmp).SetTo(sptr))
+			if (!this->DecompileMethod(val, sbuff, classIndex, typeBuff, env, sbTmp).SetTo(sptr))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
@@ -8155,7 +8163,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			typeBuff[0] = 0;
-			if (!this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, sbTmp).SetTo(sptr))
+			if (!this->DecompileMethod(val, sbuff, classIndex, typeBuff, env, sbTmp).SetTo(sptr))
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
@@ -8454,7 +8462,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 	return EndType::CodeEnd;
 }
 
-void IO::JavaClass::DecompileLDC(UInt16 index, IO::JavaClass::DecompileEnv *env) const
+void IO::JavaClass::DecompileLDC(UInt16 index, NN<IO::JavaClass::DecompileEnv> env) const
 {
 	if (index == 0 || index >= this->constPoolCnt)
 	{
@@ -8518,7 +8526,7 @@ void IO::JavaClass::DecompileLDC(UInt16 index, IO::JavaClass::DecompileEnv *env)
 	}
 }
 
-void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *env, UOSInt lev, NN<Text::StringBuilderUTF8> sb, UOSInt codeOfst) const
+void IO::JavaClass::DecompileStore(UInt16 index, NN<IO::JavaClass::DecompileEnv> env, UOSInt lev, NN<Text::StringBuilderUTF8> sb, UOSInt codeOfst) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -8528,18 +8536,19 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 		sb->AppendC(UTF8STRC("// Store stack is empty\r\n"));
 		return;
 	}
-	if (env->localTypes[index] == 0)
+	NN<Text::String> st;
+	if (!env->localTypes[index].SetTo(st))
 	{
 		sptr = this->GetLVType(sbuff, index, env->method, codeOfst, env->importList, env->packageName);
-		env->localTypes[index] = Text::String::NewP(sbuff, sptr).Ptr();
-		this->AppendCodeClassName(sb, env->localTypes[index]->v, env->importList, env->packageName);
+		env->localTypes[index] = st = Text::String::NewP(sbuff, sptr);
+		this->AppendCodeClassName(sb, st->v, env->importList, env->packageName);
 		sb->AppendUTF8Char(' ');
 	}
 	sptr = this->GetLVName(sbuff, index, env->method, codeOfst);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" = "));
 	NN<Text::String> s = Text::String::OrEmpty(env->stacks->GetItem(env->stacks->GetCount() - 1));
-	if (env->localTypes[index]->Equals(UTF8STRC("boolean")))
+	if (st->Equals(UTF8STRC("boolean")))
 	{
 		if (s->Equals(UTF8STRC("0")))
 		{
@@ -8565,13 +8574,13 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 	OPTSTR_DEL(env->stacks->Pop());
 }
 
-IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, IO::JavaClass::DecompileEnv *env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
+IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(UnsafeArray<const UInt8> codePtr, UnsafeArray<const UInt8> codeEnd, CondType ct, NN<IO::JavaClass::DecompileEnv> env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (codePtr > codeEnd)
 	{
 		Text::StringBuilderUTF8 sbTmp;
 		UOSInt initStackCnt = env->stacks->GetCount();
-		if (env->method && initStackCnt > env->method->maxStacks)
+		if (initStackCnt > env->method->maxStacks)
 		{
 			sb->AppendC(UTF8STRC("//Stack overflow\r\n"));
 			return EndType::Error;
@@ -8774,7 +8783,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	return EndType::Error;
 }
 
-UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, UnsafeArray<UTF8Char> nameBuff, UInt16 *classIndex, UnsafeArray<UTF8Char> retType, IO::JavaClass::DecompileEnv *env, NN<Text::StringBuilderUTF8> sb) const
+UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, UnsafeArray<UTF8Char> nameBuff, OutParam<UInt16> classIndex, UnsafeArray<UTF8Char> retType, NN<IO::JavaClass::DecompileEnv> env, NN<Text::StringBuilderUTF8> sb) const
 {
 	if (methodIndex == 0 || methodIndex >= this->constPoolCnt)
 	{
@@ -8805,7 +8814,7 @@ UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, Unsa
 		return 0;
 	}
 
-	*classIndex = ReadMUInt16(&constPtr[1]);
+	classIndex.Set(ReadMUInt16(&constPtr[1]));
 	UInt16 nameTypeIndex = ReadMUInt16(&constPtr[3]);
 	constPtr = this->constPool[nameTypeIndex];
 	if (constPtr == 0 || constPtr[0] != 12)
@@ -8948,9 +8957,9 @@ UnsafeArrayOpt<UTF8Char> IO::JavaClass::DecompileMethod(UInt16 methodIndex, Unsa
 	return this->GetConstName(nameBuff, ReadMUInt16(&constPtr[1]));
 }
 
-IO::JavaClass *IO::JavaClass::ParseFile(Text::CStringNN fileName)
+Optional<IO::JavaClass> IO::JavaClass::ParseFile(Text::CStringNN fileName)
 {
-	IO::JavaClass *cls = 0;
+	Optional<IO::JavaClass> cls = 0;
 	UInt64 fileLen;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	fileLen = fs.GetLength();
@@ -8965,7 +8974,7 @@ IO::JavaClass *IO::JavaClass::ParseFile(Text::CStringNN fileName)
 	return cls;
 }
 
-IO::JavaClass *IO::JavaClass::ParseBuff(NN<Text::String> sourceName, Data::ByteArrayR buff)
+Optional<IO::JavaClass> IO::JavaClass::ParseBuff(NN<Text::String> sourceName, Data::ByteArrayR buff)
 {
 	if (buff.GetSize() < 26)
 	{
@@ -8980,7 +8989,7 @@ IO::JavaClass *IO::JavaClass::ParseBuff(NN<Text::String> sourceName, Data::ByteA
 	return cls;
 }
 
-IO::JavaClass *IO::JavaClass::ParseBuff(Text::CStringNN sourceName, Data::ByteArrayR buff)
+Optional<IO::JavaClass> IO::JavaClass::ParseBuff(Text::CStringNN sourceName, Data::ByteArrayR buff)
 {
 	if (buff.GetSize() < 26)
 	{

@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
-#include "Media/ImageCopyC.h"
-#include "Media/ImageUtil.h"
-#include "Media/LRGBLimiterC.h"
+#include "Math/Math_C.h"
+#include "Media/ImageCopy_C.h"
+#include "Media/ImageUtil_C.h"
+#include "Media/LRGBLimiter_C.h"
 #include "Media/CS/TransferFunc.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Sync/Interlocked.h"
@@ -509,9 +509,10 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 		NN<Media::CS::CSConverter> csconv;
 		if (this->csconv.SetTo(csconv))
 		{
-			if (img->pal)
+			UnsafeArray<UInt8> pal;
+			if (img->pal.SetTo(pal))
 			{
-				csconv->SetPalette(img->pal);
+				csconv->SetPalette(pal);
 			}
 			this->imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 			if (img->GetImageType() == Media::RasterImage::ImageType::Static)

@@ -15,7 +15,7 @@ namespace Net
 		private:
 			Optional<IO::BTCapturer> btCapture;
 			Optional<Net::WiFiCapturer> wifiCapture;
-			IO::RadioSignalLogger *radioLogger;
+			Optional<IO::RadioSignalLogger> radioLogger;
 
 			static Bool __stdcall IndexFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc);
 			static Bool __stdcall BTCurrentFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc);
@@ -30,7 +30,7 @@ namespace Net
 			static OSInt __stdcall WiFiLogRSSICompare(NN<Net::WiFiLogFile::LogFileEntry> obj1, NN<Net::WiFiLogFile::LogFileEntry> obj2);
 			static OSInt __stdcall BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord3> obj1, NN<IO::BTScanLog::ScanRecord3> obj2);
 		public:
-			CapturerWebHandler(Optional<Net::WiFiCapturer> wifiCapture, Optional<IO::BTCapturer> btCapture, IO::RadioSignalLogger *radioLogger);
+			CapturerWebHandler(Optional<Net::WiFiCapturer> wifiCapture, Optional<IO::BTCapturer> btCapture, Optional<IO::RadioSignalLogger> radioLogger);
 			virtual ~CapturerWebHandler();
 		};
 	}

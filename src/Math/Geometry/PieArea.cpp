@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/CoordinateSystem.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/PieArea.h"
 
 Math::Geometry::PieArea::PieArea(UInt32 srid, Math::Coord2DDbl center, Double r, Double arcAngle1, Double arcAngle2) : Math::Geometry::Vector2D(srid)

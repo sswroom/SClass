@@ -35,6 +35,7 @@ Net::SAMLSSOResponse::~SAMLSSOResponse()
 	OPTSTR_DEL(this->givenname);
 	OPTSTR_DEL(this->surname);
 	OPTSTR_DEL(this->emailAddress);
+	this->group.FreeAll();
 }
 
 Text::CStringNN Net::SAMLSSOResponse::ResponseErrorGetName(Net::SAMLSSOResponse::ResponseError val)

@@ -3,22 +3,24 @@
 #include "IO/IOPinCapture.h"
 #include "Text/MyString.h"
 
-void IO::IOPinCapture::FreeCaptureData(CaptureBuff *buff)
+void IO::IOPinCapture::FreeCaptureData(NN<CaptureBuff> buff)
 {
-	if (buff->prevBuff)
-		FreeCaptureData(buff->prevBuff);
-	MemFree(buff->times);
-	MemFree(buff->isHigh);
-	MemFree(buff);
+	NN<CaptureBuff> prevBuff;
+	if (buff->prevBuff.SetTo(prevBuff))
+		FreeCaptureData(prevBuff);
+	MemFreeArr(buff->times);
+	MemFreeArr(buff->isHigh);
+	MemFreeNN(buff);
 }
 
-UOSInt IO::IOPinCapture::AddCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh, CaptureBuff *buff)
+UOSInt IO::IOPinCapture::AddCaptureData(NN<Data::ArrayList<Double>> times, NN<Data::ArrayList<Int32>> isHigh, NN<CaptureBuff> buff)
 {
 	UOSInt ret = 0;
-	UOSInt i;	
-	if (buff->prevBuff)
+	UOSInt i;
+	NN<CaptureBuff> prevBuff;
+	if (buff->prevBuff.SetTo(prevBuff))
 	{
-		ret += AddCaptureData(times, isHigh, buff->prevBuff);
+		ret += AddCaptureData(times, isHigh, prevBuff);
 	}
 	i = 0;
 	while (i < buff->thisDataCnt)
@@ -34,12 +36,12 @@ UOSInt IO::IOPinCapture::AddCaptureData(Data::ArrayList<Double> *times, Data::Ar
 IO::IOPinCapture::IOPinCapture(NN<IO::IOPin> pin)
 {
 	this->pin = pin;
-	this->capBuff = MemAlloc(CaptureBuff, 1);
+	this->capBuff = MemAllocNN(CaptureBuff);
 	this->capBuff->prevBuff = 0;
 	this->capBuff->thisBuffSize = 64;
 	this->capBuff->thisDataCnt = 0;
-	this->capBuff->times = MemAlloc(Double, 64);
-	this->capBuff->isHigh = MemAlloc(Int32, 64);
+	this->capBuff->times = MemAllocArr(Double, 64);
+	this->capBuff->isHigh = MemAllocArr(Int32, 64);
 	this->lastVal = this->pin->IsPinHigh();
 	this->lastTime = this->clk.GetTimeDiff();
 	this->startTime = 0;
@@ -67,12 +69,12 @@ Bool IO::IOPinCapture::IsPinHigh()
 		{
 			if (this->capBuff->thisBuffSize == this->capBuff->thisDataCnt)
 			{
-				CaptureBuff *newBuff = MemAlloc(CaptureBuff, 1);
+				NN<CaptureBuff> newBuff = MemAllocNN(CaptureBuff);
 				newBuff->prevBuff = this->capBuff;
 				newBuff->thisBuffSize = this->capBuff->thisBuffSize << 1;
 				newBuff->thisDataCnt = 0;
-				newBuff->times = MemAlloc(Double, newBuff->thisBuffSize);
-				newBuff->isHigh = MemAlloc(Int32, newBuff->thisBuffSize);
+				newBuff->times = MemAllocArr(Double, newBuff->thisBuffSize);
+				newBuff->isHigh = MemAllocArr(Int32, newBuff->thisBuffSize);
 				this->capBuff = newBuff;
 			}
 			this->capBuff->times[this->capBuff->thisDataCnt] = tVal;
@@ -85,12 +87,12 @@ Bool IO::IOPinCapture::IsPinHigh()
 		{
 			if (this->capBuff->thisBuffSize == this->capBuff->thisDataCnt)
 			{
-				CaptureBuff *newBuff = MemAlloc(CaptureBuff, 1);
+				NN<CaptureBuff> newBuff = MemAllocNN(CaptureBuff);
 				newBuff->prevBuff = this->capBuff;
 				newBuff->thisBuffSize = this->capBuff->thisBuffSize << 1;
 				newBuff->thisDataCnt = 0;
-				newBuff->times = MemAlloc(Double, newBuff->thisBuffSize);
-				newBuff->isHigh = MemAlloc(Int32, newBuff->thisBuffSize);
+				newBuff->times = MemAllocArr(Double, newBuff->thisBuffSize);
+				newBuff->isHigh = MemAllocArr(Int32, newBuff->thisBuffSize);
 				this->capBuff = newBuff;
 			}
 			this->capBuff->times[this->capBuff->thisDataCnt] = tVal;
@@ -132,12 +134,12 @@ void IO::IOPinCapture::SetPinState(Bool isHigh)
 		{
 			if (this->capBuff->thisBuffSize == this->capBuff->thisDataCnt)
 			{
-				CaptureBuff *newBuff = MemAlloc(CaptureBuff, 1);
+				NN<CaptureBuff> newBuff = MemAllocNN(CaptureBuff);
 				newBuff->prevBuff = this->capBuff;
 				newBuff->thisBuffSize = this->capBuff->thisBuffSize << 1;
 				newBuff->thisDataCnt = 0;
-				newBuff->times = MemAlloc(Double, newBuff->thisBuffSize);
-				newBuff->isHigh = MemAlloc(Int32, newBuff->thisBuffSize);
+				newBuff->times = MemAllocArr(Double, newBuff->thisBuffSize);
+				newBuff->isHigh = MemAllocArr(Int32, newBuff->thisBuffSize);
 				this->capBuff = newBuff;
 			}
 			this->capBuff->times[this->capBuff->thisDataCnt] = tVal;
@@ -150,12 +152,12 @@ void IO::IOPinCapture::SetPinState(Bool isHigh)
 		{
 			if (this->capBuff->thisBuffSize == this->capBuff->thisDataCnt)
 			{
-				CaptureBuff *newBuff = MemAlloc(CaptureBuff, 1);
+				NN<CaptureBuff> newBuff = MemAllocNN(CaptureBuff);
 				newBuff->prevBuff = this->capBuff;
 				newBuff->thisBuffSize = this->capBuff->thisBuffSize << 1;
 				newBuff->thisDataCnt = 0;
-				newBuff->times = MemAlloc(Double, newBuff->thisBuffSize);
-				newBuff->isHigh = MemAlloc(Int32, newBuff->thisBuffSize);
+				newBuff->times = MemAllocArr(Double, newBuff->thisBuffSize);
+				newBuff->isHigh = MemAllocArr(Int32, newBuff->thisBuffSize);
 				this->capBuff = newBuff;
 			}
 			this->capBuff->times[this->capBuff->thisDataCnt] = tVal;
@@ -177,7 +179,7 @@ UnsafeArray<UTF8Char> IO::IOPinCapture::GetName(UnsafeArray<UTF8Char> buff)
 	return this->pin->GetName(Text::StrConcatC(buff, UTF8STRC("IOPinCapture - ")));
 }
 
-UOSInt IO::IOPinCapture::GetCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh)
+UOSInt IO::IOPinCapture::GetCaptureData(NN<Data::ArrayList<Double>> times, NN<Data::ArrayList<Int32>> isHigh)
 {
 	return this->AddCaptureData(times, isHigh, this->capBuff);
 }

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "UI/GTK/GTKTrackBar.h"
 
 gboolean UI::GTK::GTKTrackBar::SignalValueChanged(void *window, void *userObj)

@@ -8,7 +8,7 @@ namespace Media
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		SOXRFilter(NN<Media::AudioSource> sourceAudio, UInt32 targetFreq);
 		virtual ~SOXRFilter();

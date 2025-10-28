@@ -4,7 +4,7 @@
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRCOVID19Form.h"

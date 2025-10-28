@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Map/MultiReverseGeocoder.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 
 Map::MultiReverseGeocoder::MultiReverseGeocoder(IO::Writer *errWriter)

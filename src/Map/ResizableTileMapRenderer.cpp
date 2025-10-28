@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayListInt64.h"
 #include "Map/ResizableTileMapRenderer.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"

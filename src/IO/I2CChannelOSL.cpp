@@ -45,12 +45,12 @@ Bool IO::I2CChannelOS::IsError()
 	return this->hand == 0;
 }
 
-UOSInt IO::I2CChannelOS::I2CRead(UInt8 *buff, UOSInt buffSize)
+UOSInt IO::I2CChannelOS::I2CRead(UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	OSInt ret;
 	while (true)
 	{
-		ret = read((int)(OSInt)this->hand, buff, buffSize);
+		ret = read((int)(OSInt)this->hand, buff.Ptr(), buffSize);
 		if (ret >= 0 || errno != EINTR)
 			break;
 	}
@@ -60,12 +60,12 @@ UOSInt IO::I2CChannelOS::I2CRead(UInt8 *buff, UOSInt buffSize)
 		return (UOSInt)ret;
 }
 
-UOSInt IO::I2CChannelOS::I2CWrite(const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::I2CChannelOS::I2CWrite(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	OSInt ret;
 	while (true)
 	{
-		ret = write((int)(OSInt)this->hand, buff, buffSize);
+		ret = write((int)(OSInt)this->hand, buff.Ptr(), buffSize);
 		if (ret >= 0 || errno != EINTR)
 			break;
 	}

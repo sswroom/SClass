@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "Media/FBSurface.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/fb.h>

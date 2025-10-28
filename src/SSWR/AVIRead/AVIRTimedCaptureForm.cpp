@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 		UOSInt currSize;
 		UOSInt fmtCnt;
 		UOSInt i;
-		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
+		Media::CS::CSConverter::GetSupportedCS(supportedCS);
 
 		UTF8Char sbuff[128];
 		UnsafeArray<UTF8Char> sptr;

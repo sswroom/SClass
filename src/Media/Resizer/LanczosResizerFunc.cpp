@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Math/LanczosFilter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizerFunc.h"
 
 void Media::Resizer::LanczosResizerFunc::SetupInterpolationParameterV(UOSInt nTap, Double sourceLength, OSInt sourceMaxPos, UOSInt result_length, NN<Parameter> out, OSInt indexSep, Double offsetCorr)

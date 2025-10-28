@@ -106,7 +106,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 	UOSInt buffSize;
 	UOSInt readSize;
 	NN<IO::Stream> stm;
-	if (!stm.Set(me->stm))
+	if (!me->stm.SetTo(stm))
 	{
 		return 0;
 	}
@@ -116,7 +116,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 	buff = MemAlloc(UInt8, maxBuffSize);
 	while (true)
 	{
-		readSize = me->stm->Read(Data::ByteArray(&buff[buffSize], maxBuffSize - buffSize));
+		readSize = stm->Read(Data::ByteArray(&buff[buffSize], maxBuffSize - buffSize));
 		if (readSize <= 0)
 			break;
 #ifdef DEBUG_PRINT
@@ -148,7 +148,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 	return 0;
 }
 
-void Net::MQTTConn::OnPublishMessage(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize)
+void Net::MQTTConn::OnPublishMessage(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize)
 {
 	UOSInt i = this->hdlrList.GetCount();
 	while (i-- > 0)
@@ -184,14 +184,15 @@ Optional<Net::MQTTConn::PacketInfo> Net::MQTTConn::GetNextPacket(UInt8 packetTyp
 	}
 }
 
-Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
+Bool Net::MQTTConn::SendPacket(UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
-	if (this->stm == 0)
+	NN<IO::Stream> stm;
+	if (!this->stm.SetTo(stm))
 	{
 		return false;
 	}
 	Sync::MutexUsage mutUsage(this->cliMut);
-	UOSInt sendSize = this->stm->Write(Data::ByteArrayR(packet, packetSize));
+	UOSInt sendSize = stm->Write(Data::ByteArrayR(packet, packetSize));
 	this->totalUpload += sendSize;
 	return sendSize == packetSize;
 }
@@ -264,18 +265,18 @@ Net::MQTTConn::MQTTConn(NN<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType dis
 Net::MQTTConn::~MQTTConn()
 {
 	NN<IO::Stream> stm;
-	if (stm.Set(this->stm))
+	if (this->stm.SetTo(stm))
 	{
 		if (this->recvRunning)
 		{
-			this->stm->Close();
+			stm->Close();
 		}
 		while (this->recvRunning)
 		{
 			Sync::SimpleThread::Sleep(1);
 		}
 		this->protoHdlr.DeleteStreamData(stm, this->cliData);
-		DEL_CLASS(this->stm);
+		stm.Delete();
 		this->stm = 0;
 	}
 	UOSInt i;
@@ -293,7 +294,7 @@ void Net::MQTTConn::HandlePublishMessage(PublishMessageHdlr hdlr, AnyType userOb
 
 Bool Net::MQTTConn::IsError()
 {
-	return this->stm == 0 || !this->recvRunning;
+	return this->stm.IsNull() || !this->recvRunning;
 }
 
 Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CStringNN clientId, Text::CString userName, Text::CString password)

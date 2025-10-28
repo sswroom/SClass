@@ -8,8 +8,10 @@ namespace Media
 {
 	class MMALStillCapture : public Media::PhotoCapturer
 	{
+	public:
+		struct ClassData;
 	private:
-		void *classData;
+		NN<ClassData> classData;
 
 	public:
 		MMALStillCapture();
@@ -17,7 +19,7 @@ namespace Media
 
 		virtual Bool DeviceBegin();
 		virtual void DeviceEnd();
-		virtual Bool CapturePhoto(Media::PhotoCapturer::PhotoFormat *fmt, IO::Stream *stm);
+		virtual Bool CapturePhoto(OutParam<Media::PhotoCapturer::PhotoFormat> fmt, NN<IO::Stream> stm);
 	};
 }
 #endif

@@ -10,11 +10,11 @@ namespace IO
 	class WriterLogHandler : public LogHandler
 	{
 	private:
-		IO::Writer *writer;
+		NN<IO::Writer> writer;
 		Bool toRelease;
 
 	public:
-		WriterLogHandler(IO::Writer *writer, Bool toRelease);
+		WriterLogHandler(NN<IO::Writer> writer, Bool toRelease);
 		virtual ~WriterLogHandler();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

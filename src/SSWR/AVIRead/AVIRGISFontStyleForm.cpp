@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRGISFontEditForm.h"
 #include "SSWR/AVIRead/AVIRGISFontStyleForm.h"
 #include "UtilUI/ColorDialog.h"

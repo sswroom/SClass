@@ -16,9 +16,10 @@ Media::ImgFilter::BGImgFilter::BGImgFilter()
 
 Media::ImgFilter::BGImgFilter::~BGImgFilter()
 {
-	if (this->bgData)
+	UnsafeArray<UInt8> bgData;
+	if (this->bgData.SetTo(bgData))
 	{
-		MemFreeA(this->bgData);
+		MemFreeAArr(bgData);
 		this->bgData = 0;
 	}
 }
@@ -26,12 +27,13 @@ Media::ImgFilter::BGImgFilter::~BGImgFilter()
 void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UInt32 imgFormat, UOSInt nBits, Media::PixelFormat pf, UOSInt imgWidth, UOSInt imgHeight, Media::FrameType frameType, Media::YCOffset ycOfst)
 {
 	UOSInt imgSize;
+	UnsafeArray<UInt8> bgData;
 	if (this->toCreateBG)
 	{
 		this->toCreateBG = false;
-		if (this->bgData)
+		if (this->bgData.SetTo(bgData))
 		{
-			MemFreeA(this->bgData);
+			MemFreeAArr(bgData);
 			this->bgData = 0;
 		}
 		imgSize = 0;
@@ -86,8 +88,8 @@ void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UIn
 		}
 		if (imgSize != 0)
 		{
-			this->bgData = MemAllocA(UInt8, imgSize);
-			MemCopyANC(this->bgData, imgData.Ptr(), imgSize);
+			this->bgData = bgData = MemAllocAArr(UInt8, imgSize);
+			MemCopyANC(bgData.Ptr(), imgData.Ptr(), imgSize);
 			this->bgFormat = imgFormat;
 			this->bgWidth = imgWidth;
 			this->bgHeight = imgHeight;
@@ -96,7 +98,7 @@ void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UIn
 	if (!this->isEnable)
 		return;
 
-	if (this->bgData == 0 || this->bgFormat != imgFormat || this->bgWidth != imgWidth || this->bgHeight != imgHeight)
+	if (!this->bgData.SetTo(bgData) || this->bgFormat != imgFormat || this->bgWidth != imgWidth || this->bgHeight != imgHeight)
 	{
 		return;
 	}
@@ -111,7 +113,7 @@ void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UIn
 		}
 		else
 		{
-			BGImgFilter_DiffYUV8(imgData.Ptr(), this->bgData, imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
+			BGImgFilter_DiffYUV8(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
 		}
 	}
 	else if (imgFormat == *(UInt32*)"YV12")
@@ -121,7 +123,7 @@ void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UIn
 		}
 		else
 		{
-			BGImgFilter_DiffYUV8(imgData.Ptr(), this->bgData, imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
+			BGImgFilter_DiffYUV8(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
 		}
 	}
 	else if (imgFormat == *(UInt32*)"I420")
@@ -131,7 +133,7 @@ void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UIn
 		}
 		else
 		{
-			BGImgFilter_DiffYUV8(imgData.Ptr(), this->bgData, imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
+			BGImgFilter_DiffYUV8(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight + (imgWidth >> 1) * (imgHeight >> 1) * 2);
 		}
 	}
 	else if (imgFormat == *(UInt32*)"YVU9")
@@ -141,40 +143,40 @@ void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UIn
 		}
 		else
 		{
-			BGImgFilter_DiffYUV8(imgData.Ptr(), this->bgData, imgWidth * imgHeight + (imgWidth >> 2) * (imgHeight >> 2) * 2);
+			BGImgFilter_DiffYUV8(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight + (imgWidth >> 2) * (imgHeight >> 2) * 2);
 		}
 	}
 	else if (imgFormat == *(UInt32*)"YUY2")
 	{
 		if (this->isAbsolute)
 		{
-			BGImgFilter_DiffA8_YUY2(imgData.Ptr(), this->bgData, imgWidth * imgHeight);
+			BGImgFilter_DiffA8_YUY2(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight);
 		}
 		else
 		{
-			BGImgFilter_DiffYUV8(imgData.Ptr(), this->bgData, imgWidth * imgHeight * 2);
+			BGImgFilter_DiffYUV8(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight * 2);
 		}
 	}
 	else if (imgFormat == *(UInt32*)"UYVY" || imgFormat == *(UInt32*)"Y422" || imgFormat == *(UInt32*)"UYNV" || imgFormat == *(UInt32*)"HDYC")
 	{
 		if (this->isAbsolute)
 		{
-			//BGImgFilter_DiffA8_UYVY(imgData, this->bgData, imgWidth * imgHeight);
+			//BGImgFilter_DiffA8_UYVY(imgData, bgData.Ptr(), imgWidth * imgHeight);
 		}
 		else
 		{
-			BGImgFilter_DiffYUV8(imgData.Ptr(), this->bgData, imgWidth * imgHeight * 2);
+			BGImgFilter_DiffYUV8(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight * 2);
 		}
 	}
 	else if (imgFormat == *(UInt32*)"AYUV")
 	{
 		if (this->isAbsolute)
 		{
-			//BGImgFilter_DiffA8_AYUV(imgData, this->bgData, imgWidth * imgHeight);
+			//BGImgFilter_DiffA8_AYUV(imgData, bgData.Ptr(), imgWidth * imgHeight);
 		}
 		else
 		{
-			BGImgFilter_DiffYUV8(imgData.Ptr(), this->bgData, imgWidth * imgHeight * 4);
+			BGImgFilter_DiffYUV8(imgData.Ptr(), bgData.Ptr(), imgWidth * imgHeight * 4);
 		}
 	}
 	else if (imgFormat == *(UInt32*)"P010")

@@ -25,8 +25,8 @@ namespace Media
 				UOSInt isLast;
 				OSInt dbpl;
 				UOSInt csLineSize;
-				UInt8 *csLineBuff;
-				UInt8 *csLineBuff2;
+				UnsafeArray<UInt8> csLineBuff;
+				UnsafeArray<UInt8> csLineBuff2;
 			} THREADSTAT;
 
 			UOSInt currId;

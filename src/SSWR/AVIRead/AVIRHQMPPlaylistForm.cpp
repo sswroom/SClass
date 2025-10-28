@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRHQMPPlaylistForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"

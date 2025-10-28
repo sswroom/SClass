@@ -246,9 +246,10 @@ void Net::ASN1PDUBuilder::AppendOctetString(UnsafeArray<const UInt8> buff, UOSIn
 	this->AppendOther(4, buff, len);
 }
 
-void Net::ASN1PDUBuilder::AppendOctetString(Text::String *s)
+void Net::ASN1PDUBuilder::AppendOctetString(Optional<Text::String> s)
 {
-	if (s == 0)
+	NN<Text::String> nns;
+	if (!s.SetTo(nns))
 	{
 		this->AllocateSize(2);
 		this->buff[this->currOffset] = 4;
@@ -256,7 +257,7 @@ void Net::ASN1PDUBuilder::AppendOctetString(Text::String *s)
 		this->currOffset += 2;
 		return;
 	}
-	this->AppendOther(4, s->v, s->leng);
+	this->AppendOther(4, nns->v, nns->leng);
 }
 
 void Net::ASN1PDUBuilder::AppendOctetString(NN<Text::String> s)

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Manage/CPUInst.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/RGBColorFilter.h"
 #include "Media/CS/TransferFunc.h"
 #include "Sync/ThreadUtil.h"

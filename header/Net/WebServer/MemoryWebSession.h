@@ -28,12 +28,12 @@ namespace Net
 			virtual Int64 GetSessId() const;
 			virtual NN<Text::String> GetOrigin() const;
 
-			virtual void SetValuePtr(Text::CStringNN name, void *val);
+			virtual void SetValuePtr(Text::CStringNN name, AnyType val);
 			virtual void SetValueDbl(Text::CStringNN name, Double val);
 			virtual void SetValueInt64(Text::CStringNN name, Int64 val);
 			virtual void SetValueInt32(Text::CStringNN name, Int32 val);
 
-			virtual void *GetValuePtr(Text::CStringNN name);
+			virtual AnyType GetValuePtr(Text::CStringNN name);
 			virtual Double GetValueDbl(Text::CStringNN name);
 			virtual Int64 GetValueInt64(Text::CStringNN name);
 			virtual Int32 GetValueInt32(Text::CStringNN name);

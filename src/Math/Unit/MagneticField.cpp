@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/MagneticField.h"
 
 Double Math::Unit::MagneticField::GetUnitRatio(MagneticFieldUnit unit)

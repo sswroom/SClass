@@ -8,7 +8,7 @@ namespace IO
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		DebugWriter();
 		virtual ~DebugWriter();

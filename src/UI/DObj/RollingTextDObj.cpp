@@ -1,7 +1,7 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DrawImageTool.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Text/StringBuilder.h"
 #include "UI/DObj/RollingTextDObj.h"
 

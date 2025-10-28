@@ -30,20 +30,20 @@ namespace Net
 
 		struct SSDPRoot
 		{
-			Text::String *udn;
-			Text::String *friendlyName;
-			Text::String *manufacturer;
-			Text::String *manufacturerURL;
-			Text::String *modelName;
-			Text::String *modelNumber;
-			Text::String *modelURL;
-			Text::String *serialNumber;
-			Text::String *presentationURL;
-			Text::String *deviceType;
-			Text::String *deviceURL;
+			Optional<Text::String> udn;
+			Optional<Text::String> friendlyName;
+			Optional<Text::String> manufacturer;
+			Optional<Text::String> manufacturerURL;
+			Optional<Text::String> modelName;
+			Optional<Text::String> modelNumber;
+			Optional<Text::String> modelURL;
+			Optional<Text::String> serialNumber;
+			Optional<Text::String> presentationURL;
+			Optional<Text::String> deviceType;
+			Optional<Text::String> deviceURL;
 		};
 	private:
-		Net::UDPServer *udp;
+		NN<Net::UDPServer> udp;
 		Optional<Text::String> userAgent;
 		Sync::Mutex mut;
 		Data::FastMapNN<UInt32, SSDPDevice> devMap;

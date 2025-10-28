@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/AudioUtil.h"
 #include "Media/AFilter/AudioAmplifier.h"
 

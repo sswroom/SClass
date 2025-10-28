@@ -54,18 +54,25 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 	UOSInt lineW;
 	UOSInt lineW2;
 	UOSInt currOfst;
+	UnsafeArray<UInt8> pal;
 	Int32 i;
 	if (inv)
 	{
 		switch (bpp)
 		{
 		case 4:
- 			MemCopyNO(outImg->pal, &dataBuff[imgPos], palSize);
-			imgPos += palSize;
-			i = 16;
-			while (i-- > 0)
+			if (outImg->pal.SetTo(pal))
 			{
-				outImg->pal[(i << 2) + 3] = 0xff;
+	 			MemCopyNO(pal.Ptr(), &dataBuff[imgPos], palSize);
+			}
+			imgPos += palSize;
+			if (outImg->pal.SetTo(pal))
+			{
+				i = 16;
+				while (i-- > 0)
+				{
+					pal[(i << 2) + 3] = 0xff;
+				}
 			}
 			lineW = (UOSInt)((imgWidth >> 1) + (imgWidth & 1));
 			lineW2 = lineW;
@@ -90,12 +97,18 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			}
 			break;
 		case 8:
- 			MemCopyNO(outImg->pal, &dataBuff[imgPos], palSize);
-			imgPos += palSize;
-			i = 256;
-			while (i-- > 0)
+			if (outImg->pal.SetTo(pal))
 			{
-				outImg->pal[(i << 2) + 3] = 0xff;
+	 			MemCopyNO(pal.Ptr(), &dataBuff[imgPos], palSize);
+			}
+			imgPos += palSize;
+			if (outImg->pal.SetTo(pal))
+			{
+				i = 256;
+				while (i-- > 0)
+				{
+					pal[(i << 2) + 3] = 0xff;
+				}
 			}
 			lineW = (UOSInt)imgWidth;
 			if (lineW & 3)

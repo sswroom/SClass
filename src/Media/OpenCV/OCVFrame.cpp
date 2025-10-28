@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/FrameInfo.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/OpenCV/OCVFrame.h"

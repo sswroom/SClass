@@ -24,7 +24,7 @@ namespace SSWR
 			typedef struct
 			{
 				Int32 recId;
-				Text::String *str;
+				Optional<Text::String> str;
 			} StrRecord;
 
 			typedef struct

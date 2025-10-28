@@ -1045,7 +1045,7 @@ void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(NN<Sync::RWMutexUsage> mutUsage
 	}
 }
 
-void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<Data::DataMapNN<Text::String*, SpeciesInfo>> spMap, Optional<WebUserInfo> user)
+void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<Data::DataMapNN<Optional<Text::String>, SpeciesInfo>> spMap, Optional<WebUserInfo> user)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	UOSInt i;
@@ -1057,7 +1057,7 @@ void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsag
 	while (i < j)
 	{
 		sp = group->species.GetItemNoCheck(i);
-		spMap->Put(sp->sciName.Ptr(), sp);
+		spMap->Put(sp->sciName, sp);
 		i++;
 	}
 	i = group->groups.GetCount();

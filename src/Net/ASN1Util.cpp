@@ -1271,7 +1271,7 @@ OSInt Net::ASN1Util::OIDCompare(Data::ByteArrayR oid1, Data::ByteArrayR oid2)
 	}
 }
 
-Bool Net::ASN1Util::OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len)
+Bool Net::ASN1Util::OIDStartsWith(UnsafeArray<const UInt8> oid1, UOSInt oid1Len, UnsafeArray<const UInt8> oid2, UOSInt oid2Len)
 {
 	if (oid1Len < oid2Len)
 		return false;

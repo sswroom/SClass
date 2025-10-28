@@ -3,7 +3,7 @@
 #ifndef SDEFS_INCLUDED
 #include "Stdafx.h"
 #endif
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 namespace Text
 {

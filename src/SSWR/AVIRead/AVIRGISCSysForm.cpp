@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	UOSInt j;
 	Data::ArrayList<Math::CoordinateSystemManager::GeoCoordSysType> gcsysList;
 	Data::ArrayListArr<const UTF8Char> pcsysList;
-	Math::CoordinateSystemManager::GetGeogCoordinateSystems(&gcsysList);
+	Math::CoordinateSystemManager::GetGeogCoordinateSystems(gcsysList);
 	Math::CoordinateSystemManager::GetProjCoordinateSystemNames(pcsysList);
 
 	Text::StringBuilderUTF8 sb;

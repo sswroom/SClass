@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncParam1.h"
 
 Media::CS::TransferFuncParam1::TransferFuncParam1(Double *params) : Media::CS::TransferFunc(Media::CS::TRANT_PARAM1, 2.2)

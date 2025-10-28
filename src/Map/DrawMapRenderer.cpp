@@ -3,7 +3,7 @@
 #include "Data/Sort/ArtificialQuickSortFunc.h"
 #include "Map/DrawMapRenderer.h"
 #include "Math/CoordinateSystemConverter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/GeometryTool.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/Resizer/LanczosResizerRGB_C8.h"

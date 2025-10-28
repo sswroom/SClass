@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Math/FFT.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 Bool Math::FFT::Forward(UnsafeArray<Double> complexData, UOSInt sampleCount)
 {

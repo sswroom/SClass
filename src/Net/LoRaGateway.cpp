@@ -21,8 +21,7 @@ UInt32 __stdcall Net::LoRaGateway::PullThread(AnyType userObj)
 	Data::Timestamp currTime;
 	{
 		Sync::Event evt;
-		me->threadEvt = &evt;
-		me->threadRunning = true;
+		me->threadEvt = evt;
 		me->mainEvt.Set();
 		while (!me->threadToStop)
 		{
@@ -39,8 +38,8 @@ UInt32 __stdcall Net::LoRaGateway::PullThread(AnyType userObj)
 			}
 			evt.Wait(1000);
 		}
+		me->threadEvt = 0;
 	}
-	me->threadRunning = false;
 	me->mainEvt.Set();
 	return 0;
 }
@@ -80,7 +79,6 @@ Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::Socket
 	this->pullInterval = 5;
 	this->lastPullTime = Data::Timestamp(0);
 	this->lastStatTime = Data::Timestamp(0);
-	this->threadRunning = false;
 	this->threadToStop = false;
 	this->threadEvt = 0;
 	this->hasPos = false;
@@ -88,7 +86,7 @@ Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::Socket
 	this->lon = 0;
 	this->altitude = 0;
 	Sync::ThreadUtil::Create(PullThread, this);
-	while (!this->threadRunning)
+	while (this->threadEvt.NotNull())
 	{
 		this->mainEvt.Wait(1000);
 	}
@@ -96,11 +94,12 @@ Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::Socket
 
 Net::LoRaGateway::~LoRaGateway()
 {
-	if (this->threadRunning)
+	NN<Sync::Event> threadEvt;
+	if (this->threadEvt.SetTo(threadEvt))
 	{
 		this->threadToStop = true;
-		this->threadEvt->Set();
-		while (this->threadRunning)
+		threadEvt->Set();
+		while (this->threadEvt.NotNull())
 		{
 			this->mainEvt.Wait(1000);
 		}

@@ -82,7 +82,7 @@ namespace Data
 		UOSInt ret;
 		if (objCnt == this->capacity)
 		{
-			UnsafeArray<UnsafeArray<T>> newArr = MemAllocArr(UnsafeArray<T>, this->capacity * 2);
+			UnsafeArray<UnsafeArray<T>> newArr = MemAllocArr(UnsafeArray<T>, this->capacity << 1);
 			ret = 0;
 			while (ret < this->objCnt)
 			{
@@ -214,7 +214,7 @@ namespace Data
 		UOSInt i;
 		if (objCnt == this->capacity)
 		{
-			UnsafeArray<UnsafeArray<T>> newArr = MemAllocArr(UnsafeArray<T>, this->capacity * 2);
+			UnsafeArray<UnsafeArray<T>> newArr = MemAllocArr(UnsafeArray<T>, this->capacity << 1);
 			if (index > 0)
 			{
 				i = 0;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/FFTCalc16.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 Media::FFTCalc16::FFTCalc16(UInt32 nPoints, UInt32 sampleRate)
 {

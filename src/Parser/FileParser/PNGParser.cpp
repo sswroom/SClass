@@ -1886,6 +1886,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsAW32(UnsafeArray<UInt8> srcData, UnsafeA
 void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UnsafeArray<UInt8> dataBuff, NN<Media::FrameInfo> info, NN<Media::ImageList> imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UnsafeArrayOpt<UInt8> palette, Bool palHasAlpha)
 {
 	NN<Media::StaticImage> simg;
+	UnsafeArray<UInt8> spal;
 	UnsafeArray<UInt8> nnpal;
 	switch (colorType)
 	{
@@ -1956,8 +1957,11 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_PAL_W1;
 				info->byteSize = storeWidth * info->storeSize.y >> 3;
 				NEW_CLASSNN(simg, Media::StaticImage(info));
-				WriteUInt32(&simg->pal[0], 0xff000000);
-				WriteUInt32(&simg->pal[4], 0xffffffff);
+				if (simg->pal.SetTo(spal))
+				{
+					WriteUInt32(&spal[0], 0xff000000);
+					WriteUInt32(&spal[4], 0xffffffff);
+				}
 
 				byteCnt = info->byteSize;
 				dataBuff = tmpData;
@@ -1976,10 +1980,13 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_PAL_W2;
 				info->byteSize = storeWidth * info->storeSize.y >> 2;
 				NEW_CLASSNN(simg, Media::StaticImage(info));
-				WriteUInt32(&simg->pal[0], 0xff000000);
-				WriteUInt32(&simg->pal[4], 0xff555555);
-				WriteUInt32(&simg->pal[8], 0xffaaaaaa);
-				WriteUInt32(&simg->pal[12], 0xffffffff);
+				if (simg->pal.SetTo(spal))
+				{
+					WriteUInt32(&spal[0], 0xff000000);
+					WriteUInt32(&spal[4], 0xff555555);
+					WriteUInt32(&spal[8], 0xffaaaaaa);
+					WriteUInt32(&spal[12], 0xffffffff);
+				}
 
 				byteCnt = info->byteSize;
 				dataBuff = tmpData;
@@ -1998,22 +2005,25 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_PAL_W4;
 				info->byteSize = storeWidth * info->storeSize.y >> 1;
 				NEW_CLASSNN(simg, Media::StaticImage(info));
-				WriteUInt32(&simg->pal[0], 0xff000000);
-				WriteUInt32(&simg->pal[4], 0xff111111);
-				WriteUInt32(&simg->pal[8], 0xff222222);
-				WriteUInt32(&simg->pal[12], 0xff333333);
-				WriteUInt32(&simg->pal[16], 0xff444444);
-				WriteUInt32(&simg->pal[20], 0xff555555);
-				WriteUInt32(&simg->pal[24], 0xff666666);
-				WriteUInt32(&simg->pal[28], 0xff777777);
-				WriteUInt32(&simg->pal[32], 0xff888888);
-				WriteUInt32(&simg->pal[36], 0xff999999);
-				WriteUInt32(&simg->pal[40], 0xffaaaaaa);
-				WriteUInt32(&simg->pal[44], 0xffbbbbbb);
-				WriteUInt32(&simg->pal[48], 0xffcccccc);
-				WriteUInt32(&simg->pal[52], 0xffdddddd);
-				WriteUInt32(&simg->pal[56], 0xffeeeeee);
-				WriteUInt32(&simg->pal[60], 0xffffffff);
+				if (simg->pal.SetTo(spal))
+				{
+					WriteUInt32(&spal[0], 0xff000000);
+					WriteUInt32(&spal[4], 0xff111111);
+					WriteUInt32(&spal[8], 0xff222222);
+					WriteUInt32(&spal[12], 0xff333333);
+					WriteUInt32(&spal[16], 0xff444444);
+					WriteUInt32(&spal[20], 0xff555555);
+					WriteUInt32(&spal[24], 0xff666666);
+					WriteUInt32(&spal[28], 0xff777777);
+					WriteUInt32(&spal[32], 0xff888888);
+					WriteUInt32(&spal[36], 0xff999999);
+					WriteUInt32(&spal[40], 0xffaaaaaa);
+					WriteUInt32(&spal[44], 0xffbbbbbb);
+					WriteUInt32(&spal[48], 0xffcccccc);
+					WriteUInt32(&spal[52], 0xffdddddd);
+					WriteUInt32(&spal[56], 0xffeeeeee);
+					WriteUInt32(&spal[60], 0xffffffff);
+				}
 
 				byteCnt = info->byteSize;
 				dataBuff = tmpData;
@@ -2039,11 +2049,14 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->pf = Media::PF_PAL_W8;
 			info->byteSize = info->storeSize.CalcArea();
 			NEW_CLASSNN(simg, Media::StaticImage(info));
-			pxId = 0;
-			while (pxId < 256)
+			if (simg->pal.SetTo(spal))
 			{
-				WriteUInt32(&simg->pal[pxId << 2], (0xff000000 | (pxId << 16) | (pxId << 8) | pxId));
-				pxId++;
+				pxId = 0;
+				while (pxId < 256)
+				{
+					WriteUInt32(&spal[pxId << 2], (0xff000000 | (pxId << 16) | (pxId << 8) | pxId));
+					pxId++;
+				}
 			}
 			if (info->dispSize.x != imgW || info->dispSize.y != imgH)
 			{
@@ -2217,7 +2230,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->pf = Media::PF_PAL_1;
 					info->byteSize = storeWidth * info->storeSize.y >> 3;
 					NEW_CLASSNN(simg, Media::StaticImage(info));
-					MemCopyNO(simg->pal, nnpal.Ptr(), 8);
+					if (simg->pal.SetTo(spal))
+					{
+						MemCopyNO(spal.Ptr(), nnpal.Ptr(), 8);
+					}
 
 					lineStart = simg->data;
 
@@ -2252,7 +2268,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->pf = Media::PF_PAL_2;
 					info->byteSize = storeWidth * info->storeSize.y >> 2;
 					NEW_CLASSNN(simg, Media::StaticImage(info));
-					MemCopyNO(simg->pal, nnpal.Ptr(), 16);
+					if (simg->pal.SetTo(spal))
+					{
+						MemCopyNO(spal.Ptr(), nnpal.Ptr(), 16);
+					}
 
 					lineStart = simg->data;
 					MemClearAC(lineStart.Ptr(), info->byteSize);
@@ -2286,7 +2305,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->pf = Media::PF_PAL_4;
 					info->byteSize = storeWidth * info->storeSize.y >> 1;
 					NEW_CLASSNN(simg, Media::StaticImage(info));
-					MemCopyNO(simg->pal, nnpal.Ptr(), 64);
+					if (simg->pal.SetTo(spal))
+					{
+						MemCopyNO(spal.Ptr(), nnpal.Ptr(), 64);
+					}
 
 					lineStart = simg->data;
 					MemClearAC(lineStart.Ptr(), info->byteSize);
@@ -2323,7 +2345,10 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_PAL_8;
 				info->byteSize = info->storeSize.CalcArea();
 				NEW_CLASSNN(simg, Media::StaticImage(info));
-				MemCopyNO(simg->pal, nnpal.Ptr(), 1024);
+				if (simg->pal.SetTo(spal))
+				{
+					MemCopyNO(spal.Ptr(), nnpal.Ptr(), 1024);
+				}
 
 				if (interlaceMeth == 1)
 				{

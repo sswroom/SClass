@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Registry.h"
 #include "IO/SystemInfo.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
 #include "Media/DDCReader.h"
 #include "Media/EDID.h"

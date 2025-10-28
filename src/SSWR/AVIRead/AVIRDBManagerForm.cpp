@@ -14,7 +14,7 @@
 #include "IO/StmData/FileData.h"
 #include "Map/BaseMapLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "SSWR/AVIRead/AVIRDBCheckChgForm.h"

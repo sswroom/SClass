@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/CoordinateSystem.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/StaticImage.h"
 

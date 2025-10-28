@@ -865,7 +865,9 @@ OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp
 
 ArcGISCSys.o: ../../src/Math/ArcGISCSys.cpp
 ArcGISPRJParser.o: ../../src/Math/ArcGISPRJParser.cpp
+BigFloat.o: ../../src/Math/BigFloat.cpp
 BigIntLSB.o: ../../src/Math/BigIntLSB.cpp
+BigIntUtil.o: ../../src/Math/BigIntUtil.cpp
 CassiniSoldnerCoordinateSystem.o: ../../src/Math/CassiniSoldnerCoordinateSystem.cpp
 CesiumEntityWriter.o: ../../src/Math/CesiumEntityWriter.cpp
 ComplexNumber.o: ../../src/Math/ComplexNumber.cpp
@@ -1299,11 +1301,13 @@ JasperReport.o: ../../src/Media/Jasper/JasperReport.cpp
 JasperReportElement.o: ../../src/Media/Jasper/JasperReportElement.cpp
 JasperXML.o: ../../src/Media/Jasper/JasperXML.cpp
 OCVFrame.o: ../../src/Media/OpenCV/OCVFrame.cpp
+$-Wno-sign-conversion -Wno-conversion
 $@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --cflags opencv`
 $@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --cflags opencv4`
 !@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --libs opencv`
 !@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --libs opencv4`
 OCVFrameMac.o: ../../src/Media/OpenCV/OCVFrame.cpp
+$-Wno-sign-conversion -Wno-conversion
 $-I /opt/local/include/opencv4
 !-L /opt/local/lib/opencv4
 !-lopencv_core
@@ -1312,21 +1316,25 @@ $-I /opt/local/include/opencv4
 OCVFrameNull.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 OCVNumPlateFinder.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
+$-Wno-sign-conversion -Wno-conversion
 $@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --cflags opencv`
 $@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --cflags opencv4`
 !@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --libs opencv`
 !@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --libs opencv4`
 OCVNumPlateFinder_Null.o: ../../src/Media/OpenCV/OCVNumPlateFinder_Null.cpp
 OCVNumPlateFinderMac.o: ../../src/Media/OpenCV/OCVNumPlateFinder.cpp
+$-Wno-sign-conversion -Wno-conversion
 $-I /opt/local/include/opencv4
 !-L /opt/local/lib/opencv4
 !-lopencv_core
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
+$-Wno-sign-conversion -Wno-conversion
 $@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --cflags opencv`
 $@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --cflags opencv4`
 !@($(PKG-CONFIG) --exists opencv) `$(PKG-CONFIG) --libs opencv`
 !@($(PKG-CONFIG) --exists opencv4) `$(PKG-CONFIG) --libs opencv4`
 OCVObjectDetectorMac.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
+$-Wno-sign-conversion -Wno-conversion
 $-I /opt/local/include/opencv4
 !-L /opt/local/lib/opencv4
 !-lopencv_core
@@ -1890,6 +1898,7 @@ AVIRGISQueryForm.o: ../../src/SSWR/AVIRead/AVIRGISQueryForm.cpp
 AVIRGISRandomLocForm.o: ../../src/SSWR/AVIRead/AVIRGISRandomLocForm.cpp
 AVIRGISReplayForm.o: ../../src/SSWR/AVIRead/AVIRGISReplayForm.cpp
 AVIRGISSearchForm.o: ../../src/SSWR/AVIRead/AVIRGISSearchForm.cpp
+AVIRGISServerForm.o: ../../src/SSWR/AVIRead/AVIRGISServerForm.cpp
 AVIRGISShortestPathForm.o: ../../src/SSWR/AVIRead/AVIRGISShortestPathForm.cpp
 AVIRGISTileDownloadForm.o: ../../src/SSWR/AVIRead/AVIRGISTileDownloadForm.cpp
 AVIRGLBViewerForm.o: ../../src/SSWR/AVIRead/AVIRGLBViewerForm.cpp

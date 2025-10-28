@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 #include "Data/ByteTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 extern "C" void ImageUtil_SwapRGB(UInt8 *imgPtr, OSInt pixelCnt, OSInt bpp)
 {

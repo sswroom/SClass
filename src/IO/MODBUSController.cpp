@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/MODBUSController.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 

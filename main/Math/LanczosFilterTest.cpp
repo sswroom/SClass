@@ -3,7 +3,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Manage/HiResClock.h"
 #include "Math/LanczosFilter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include <float.h>

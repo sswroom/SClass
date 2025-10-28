@@ -18,7 +18,7 @@ namespace Media
 
 		virtual Bool DeviceBegin() = 0;
 		virtual void DeviceEnd() = 0;
-		virtual Bool CapturePhoto(PhotoFormat *fmt, IO::Stream *stm) = 0;
+		virtual Bool CapturePhoto(OutParam<PhotoFormat> fmt, NN<IO::Stream> stm) = 0;
 	};
 }
 #endif

@@ -2,31 +2,31 @@
 #include "MyMemory.h"
 #include "Math/ProjectedCoordinateSystemBF.h"
 
-Math::ProjectedCoordinateSystemBF::ProjectedCoordinateSystemBF(const WChar *name, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Double latAdj, Double lonAdj, Math::GeographicCoordinateSystemBF *gcs) : Math::CoordinateSystemBF(name)
+Math::ProjectedCoordinateSystemBF::ProjectedCoordinateSystemBF(Text::CStringNN name, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Double latAdj, Double lonAdj, NN<Math::GeographicCoordinateSystemBF> gcs) : Math::CoordinateSystemBF(name)
 {
-	NEW_CLASS(this->falseEasting, Math::BigFloat(256, falseEasting));
-	NEW_CLASS(this->falseNorthing, Math::BigFloat(256, falseNorthing));
-	NEW_CLASS(this->centralMeridian, Math::BigFloat(256, centralMeridian));
-	NEW_CLASS(this->latitudeOfOrigin, Math::BigFloat(256, latitudeOfOrigin));
-	NEW_CLASS(this->scaleFactor, Math::BigFloat(256, scaleFactor));
-	NEW_CLASS(this->latAdj, Math::BigFloat(256, latAdj));
-	NEW_CLASS(this->lonAdj, Math::BigFloat(256, lonAdj));
+	NEW_CLASSNN(this->falseEasting, Math::BigFloat(256, falseEasting));
+	NEW_CLASSNN(this->falseNorthing, Math::BigFloat(256, falseNorthing));
+	NEW_CLASSNN(this->centralMeridian, Math::BigFloat(256, centralMeridian));
+	NEW_CLASSNN(this->latitudeOfOrigin, Math::BigFloat(256, latitudeOfOrigin));
+	NEW_CLASSNN(this->scaleFactor, Math::BigFloat(256, scaleFactor));
+	NEW_CLASSNN(this->latAdj, Math::BigFloat(256, latAdj));
+	NEW_CLASSNN(this->lonAdj, Math::BigFloat(256, lonAdj));
 	this->gcs = gcs;
 }
 
 Math::ProjectedCoordinateSystemBF::~ProjectedCoordinateSystemBF()
 {
-	SDEL_CLASS(this->gcs);
-	DEL_CLASS(this->lonAdj);
-	DEL_CLASS(this->latAdj);
-	DEL_CLASS(this->scaleFactor);
-	DEL_CLASS(this->latitudeOfOrigin);
-	DEL_CLASS(this->centralMeridian);
-	DEL_CLASS(this->falseNorthing);
-	DEL_CLASS(this->falseEasting);
+	this->gcs.Delete();
+	this->lonAdj.Delete();
+	this->latAdj.Delete();
+	this->scaleFactor.Delete();
+	this->latitudeOfOrigin.Delete();
+	this->centralMeridian.Delete();
+	this->falseNorthing.Delete();
+	this->falseEasting.Delete();
 }
 
-void Math::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(Math::BigFloat *x1, Math::BigFloat *y1, Math::BigFloat *x2, Math::BigFloat *y2, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit) const
+void Math::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(NN<const Math::BigFloat> x1, NN<const Math::BigFloat> y1, NN<const Math::BigFloat> x2, NN<const Math::BigFloat> y2, NN<Math::BigFloat> dist, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::BigFloat xDiff(x2);
 	Math::BigFloat yDiff(y2);
@@ -41,7 +41,7 @@ void Math::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(Math::BigFloat *x1,
 		yDiff = Math::Unit::Distance::GetUnitRatio(unit);
 		xDiff *= yDiff;
 	}
-	*dist = xDiff;
+	dist.Ptr()[0] = xDiff;
 }
 /*
 Double Math::ProjectedCoordinateSystem::CalPLDistance(Math::Polyline *pl, Math::Distance::DistanceUnit unit)
@@ -235,19 +235,19 @@ Double Math::ProjectedCoordinateSystem::CalcM(Double rLat)
 
 Bool Math::ProjectedCoordinateSystemBF::SameProjection(NN<Math::ProjectedCoordinateSystemBF> csys) const
 {
-	if (*(this->falseEasting) != csys->falseEasting)
+	if (this->falseEasting.Ptr()[0] != csys->falseEasting)
 		return false;
-	if (*(this->falseNorthing) != csys->falseNorthing)
+	if (this->falseNorthing.Ptr()[0] != csys->falseNorthing)
 		return false;
-	if (*(this->centralMeridian) != csys->centralMeridian)
+	if (this->centralMeridian.Ptr()[0] != csys->centralMeridian)
 		return false;
-	if (*(this->latitudeOfOrigin) != csys->latitudeOfOrigin)
+	if (this->latitudeOfOrigin.Ptr()[0] != csys->latitudeOfOrigin)
 		return false;
-	if (*(this->scaleFactor) != csys->scaleFactor)
+	if (this->scaleFactor.Ptr()[0] != csys->scaleFactor)
 		return false;
-	if (*(this->latAdj) != csys->latAdj)
+	if (this->latAdj.Ptr()[0] != csys->latAdj)
 		return false;
-	if (*(this->lonAdj) != csys->lonAdj)
+	if (this->lonAdj.Ptr()[0] != csys->lonAdj)
 		return false;
 	return this->gcs->Equals(csys->gcs);
 }

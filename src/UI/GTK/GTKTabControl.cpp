@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 #include "UI/GUITabPage.h"
 #include "UI/GTK/GTKTabControl.h"

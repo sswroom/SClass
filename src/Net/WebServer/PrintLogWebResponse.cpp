@@ -78,7 +78,7 @@ Bool Net::WebServer::PrintLogWebResponse::SSESend(const UTF8Char *eventName, con
 	return this->resp->SSESend(eventName, data);
 }
 
-Bool Net::WebServer::PrintLogWebResponse::SwitchProtocol(ProtocolHandler *protoHdlr)
+Bool Net::WebServer::PrintLogWebResponse::SwitchProtocol(Optional<ProtocolHandler> protoHdlr)
 {
 	return this->resp->SwitchProtocol(protoHdlr);
 }

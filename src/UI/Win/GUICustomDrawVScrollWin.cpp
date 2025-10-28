@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/GDIEngine.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"

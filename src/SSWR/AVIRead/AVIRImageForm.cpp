@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ICCProfile.h"
 #include "Media/CS/TransferFunc.h"
 #include "SSWR/AVIRead/AVIRFileRenameForm.h"
@@ -47,6 +47,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 		Double dR;
 		Double dG;
 		Double dB;
+		UnsafeArray<UInt8> pal;
 		UInt8 pixel[16];
 		Text::StringBuilderUTF8 sb;
 		Math::Coord2DDbl imgPos = me->pbImage->Scn2ImagePos(scnPos);
@@ -99,19 +100,28 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 			}
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
-			p = &currImg->pal[i * 4];
-			sb.AppendC(UTF8STRC(" (A"));
-			sb.AppendU32(p[3]);
-			sb.AppendC(UTF8STRC("R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC(")"));
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[i * 4];
+				sb.AppendC(UTF8STRC(" (A"));
+				sb.AppendU32(p[3]);
+				sb.AppendC(UTF8STRC("R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC(")"));
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_PAL_2 || currImg->info.pf == Media::PF_PAL_W2)
 		{
@@ -134,19 +144,28 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 			}
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
-			p = &currImg->pal[i * 4];
-			sb.AppendC(UTF8STRC(" (A"));
-			sb.AppendU32(p[3]);
-			sb.AppendC(UTF8STRC("R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC(")"));
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[i * 4];
+				sb.AppendC(UTF8STRC(" (A"));
+				sb.AppendU32(p[3]);
+				sb.AppendC(UTF8STRC("R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC(")"));
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_PAL_4 || currImg->info.pf == Media::PF_PAL_W4)
 		{
@@ -163,38 +182,56 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 			}
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
-			p = &currImg->pal[i * 4];
-			sb.AppendC(UTF8STRC(" (A"));
-			sb.AppendU32(p[3]);
-			sb.AppendC(UTF8STRC("R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC(")"));
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[i * 4];
+				sb.AppendC(UTF8STRC(" (A"));
+				sb.AppendU32(p[3]);
+				sb.AppendC(UTF8STRC("R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC(")"));
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_PAL_8 || currImg->info.pf == Media::PF_PAL_W8)
 		{
 			UInt8 *p;
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(pixel[0]);
-			p = &currImg->pal[pixel[0] * 4];
-			sb.AppendC(UTF8STRC(" (A"));
-			sb.AppendU32(p[3]);
-			sb.AppendC(UTF8STRC("R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC(")"));
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[pixel[0] * 4];
+				sb.AppendC(UTF8STRC(" (A"));
+				sb.AppendU32(p[3]);
+				sb.AppendC(UTF8STRC("R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC(")"));
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_PAL_1_A1)
 		{
@@ -238,18 +275,27 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 			}
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
-			p = &currImg->pal[i * 4];
-			sb.AppendC(UTF8STRC(" (R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC("), A"));
-			sb.AppendU32(a);
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[i * 4];
+				sb.AppendC(UTF8STRC(" (R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC("), A"));
+				sb.AppendU32(a);
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_PAL_2_A1)
 		{
@@ -300,18 +346,27 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 			}
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
-			p = &currImg->pal[i * 4];
-			sb.AppendC(UTF8STRC(" (R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC("), A"));
-			sb.AppendU32(a);
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[i * 4];
+				sb.AppendC(UTF8STRC(" (R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC("), A"));
+				sb.AppendU32(a);
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_PAL_4_A1)
 		{
@@ -356,18 +411,27 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 			}
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
-			p = &currImg->pal[i * 4];
-			sb.AppendC(UTF8STRC(" (R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC("), A"));
-			sb.AppendU32(a);
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[i * 4];
+				sb.AppendC(UTF8STRC(" (R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC("), A"));
+				sb.AppendU32(a);
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_PAL_8_A1)
 		{
@@ -375,18 +439,27 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 			UInt8 a = 0;
 			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(pixel[0]);
-			p = &currImg->pal[pixel[0] * 4];
-			sb.AppendC(UTF8STRC(" (R"));
-			sb.AppendU32(p[2]);
-			sb.AppendC(UTF8STRC("G"));
-			sb.AppendU32(p[1]);
-			sb.AppendC(UTF8STRC("B"));
-			sb.AppendU32(p[0]);
-			sb.AppendC(UTF8STRC("), A"));
-			sb.AppendU32(a);
-			dR = p[2] / 255.0;
-			dG = p[1] / 255.0;
-			dB = p[0] / 255.0;
+			if (currImg->pal.SetTo(pal))
+			{
+				p = &pal[pixel[0] * 4];
+				sb.AppendC(UTF8STRC(" (R"));
+				sb.AppendU32(p[2]);
+				sb.AppendC(UTF8STRC("G"));
+				sb.AppendU32(p[1]);
+				sb.AppendC(UTF8STRC("B"));
+				sb.AppendU32(p[0]);
+				sb.AppendC(UTF8STRC("), A"));
+				sb.AppendU32(a);
+				dR = p[2] / 255.0;
+				dG = p[1] / 255.0;
+				dB = p[0] / 255.0;
+			}
+			else
+			{
+				dR = 0;
+				dG = 0;
+				dB = 0;
+			}
 		}
 		else if (currImg->info.pf == Media::PF_LE_R5G5B5)
 		{

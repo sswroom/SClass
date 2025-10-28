@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSort_C.h"
 #include "Math/Geometry/LinearRing.h"
 
 Math::Geometry::LinearRing::LinearRing(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint, hasZ, hasM)

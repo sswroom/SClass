@@ -9,7 +9,7 @@
 #include "IO/Path.h"
 #include "IO/Registry.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"

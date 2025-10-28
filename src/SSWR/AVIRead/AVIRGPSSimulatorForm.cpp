@@ -3,7 +3,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRGPSSimulatorForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"

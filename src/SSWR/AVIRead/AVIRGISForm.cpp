@@ -16,7 +16,7 @@
 #include "Map/VectorLayer.h"
 #include "Map/ESRI/ESRITileMap.h"
 #include "Map/OSM/OSMTileMap.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/UTMGridConvertDbl.h"
 #include "Math/Geometry/VectorImage.h"

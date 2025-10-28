@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "UI/GUIClientControl.h"
 #include <windows.h>
 

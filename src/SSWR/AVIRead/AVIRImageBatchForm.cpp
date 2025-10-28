@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRImageBatchForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"

@@ -7,16 +7,17 @@
 #include <windows.h>
 #undef CreateNamedPipe
 
-void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType)
+void IO::FileStream::InitStream(UnsafeArrayOpt<const WChar> fileName, FileMode mode, FileShare share, BufferType buffType)
 {
 	handle = (void*)-1;
-	if (fileName == 0)
+	UnsafeArray<const WChar> nnfileName;
+	if (!fileName.SetTo(nnfileName))
 	{
 		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;
 		return;
 	}
-	else if (*fileName == 0)
+	else if (nnfileName[0] == 0)
 	{
 		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;
@@ -70,17 +71,17 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 
 	if (mode == IO::FileMode::Create)
 	{
-		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(fileName.Ptr(), GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::CreateWrite)
 	{
-		handle = CreateFileW(fileName, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(fileName.Ptr(), GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::Append)
 	{
-		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(fileName.Ptr(), GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
 		{
 			this->currPos = 0;
@@ -94,17 +95,17 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	}
 	else if (mode == IO::FileMode::ReadOnly)
 	{
-		handle = CreateFileW(fileName, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(fileName.Ptr(), GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::ReadWriteExisting)
 	{
-		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(fileName.Ptr(), GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::Device)
 	{
-		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+		handle = CreateFileW(fileName.Ptr(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
 		currPos = 0;
 	}
 }
@@ -449,27 +450,28 @@ Int32 IO::FileStream::GetErrCode()
 	return (Int32)GetLastError();
 }
 
-void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
+void IO::FileStream::GetFileTimes(Optional<Data::DateTime> creationTime, Optional<Data::DateTime> lastAccessTime, Optional<Data::DateTime> lastWriteTime)
 {
 	FILETIME createTime;
 	FILETIME lastAccTime;
 	FILETIME lastWrTime;
 	SYSTEMTIME sysTime;
 	GetFileTime(this->handle, &createTime, &lastAccTime, &lastWrTime);
-	if (creationTime)
+	NN<Data::DateTime> t;
+	if (creationTime.SetTo(t))
 	{
 		FileTimeToSystemTime(&createTime, &sysTime);
-		creationTime->SetValueSYSTEMTIME(&sysTime);
+		t->SetValueSYSTEMTIME(&sysTime);
 	}
-	if (lastAccessTime)
+	if (lastAccessTime.SetTo(t))
 	{
 		FileTimeToSystemTime(&lastAccTime, &sysTime);
-		lastAccessTime->SetValueSYSTEMTIME(&sysTime);
+		t->SetValueSYSTEMTIME(&sysTime);
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.SetTo(t))
 	{
 		FileTimeToSystemTime(&lastWrTime, &sysTime);
-		lastWriteTime->SetValueSYSTEMTIME(&sysTime);
+		t->SetValueSYSTEMTIME(&sysTime);
 	}
 }
 
@@ -511,7 +513,7 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	return Data::Timestamp::FromFILETIME(&lastWrTime, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
+void IO::FileStream::SetFileTimes(Optional<Data::DateTime> creationTime, Optional<Data::DateTime> lastAccessTime, Optional<Data::DateTime> lastWriteTime)
 {
 	FILETIME createTime;
 	FILETIME lastAccTime;
@@ -520,23 +522,24 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	FILETIME *laTime = 0;
 	FILETIME *lwTime = 0;
 	SYSTEMTIME sysTime;
+	NN<Data::DateTime> t;
 
-	if (creationTime)
+	if (creationTime.SetTo(t))
 	{
-		creationTime->ToUTCTime();
-		creationTime->ToSYSTEMTIME(&sysTime);
+		t->ToUTCTime();
+		t->ToSYSTEMTIME(&sysTime);
 		SystemTimeToFileTime(&sysTime, cTime = &createTime);
 	}
-	if (lastAccessTime)
+	if (lastAccessTime.SetTo(t))
 	{
-		lastAccessTime->ToUTCTime();
-		lastAccessTime->ToSYSTEMTIME(&sysTime);
+		t->ToUTCTime();
+		t->ToSYSTEMTIME(&sysTime);
 		SystemTimeToFileTime(&sysTime, laTime = &lastAccTime);
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.SetTo(t))
 	{
-		lastWriteTime->ToUTCTime();
-		lastWriteTime->ToSYSTEMTIME(&sysTime);
+		t->ToUTCTime();
+		t->ToSYSTEMTIME(&sysTime);
 		SystemTimeToFileTime(&sysTime, lwTime = &lastWrTime);
 	}
 	SetFileTime(this->handle, cTime, laTime, lwTime);
@@ -566,7 +569,7 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	SetFileTime(this->handle, cTime, laTime, lwTime);
 }
 
-Optional<IO::FileStream> IO::FileStream::CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize)
+Optional<IO::FileStream> IO::FileStream::CreateNamedPipe(UnsafeArray<const UTF8Char> pipeName, UInt32 buffSize)
 {
 #ifdef _WIN32_WCE
 	return 0;
@@ -588,21 +591,22 @@ Optional<IO::FileStream> IO::FileStream::CreateNamedPipe(const UTF8Char *pipeNam
 #endif
 }
 
-Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName)
+Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(UnsafeArrayOpt<const UTF8Char> server, UnsafeArray<const UTF8Char> pipeName)
 {
 #ifdef _WIN32_WCE
 	return 0;
 #else
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> nnserver;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("\\\\"));
-	if (server == 0)
+	if (!server.SetTo(nnserver))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("."));
 	}
 	else
 	{
-		sptr = Text::StrConcat(sptr, server);
+		sptr = Text::StrConcat(sptr, nnserver);
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\pipe\\"));
 	sptr = Text::StrConcat(sptr, pipeName);
@@ -617,7 +621,7 @@ Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(const UTF8Char *server, c
 #endif
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UOSInt maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())

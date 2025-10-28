@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncSMPTE240.h"
 
 #define cs240MK1 0.0228

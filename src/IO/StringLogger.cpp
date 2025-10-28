@@ -11,7 +11,7 @@ IO::StringLogger::StringLogger()
 
 IO::StringLogger::~StringLogger()
 {
-	LIST_FREE_STRING(&this->strList);
+	this->strList.FreeAll();
 }
 
 Bool IO::StringLogger::IsModified()
@@ -33,10 +33,10 @@ void IO::StringLogger::ReadLogs(IO::Reader *reader)
 void IO::StringLogger::LogStr(UnsafeArray<const UTF8Char> s, UOSInt len)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->strList.SortedIndexOfPtr(s, len);
+	OSInt i = this->strList.SortedIndexOfC(Text::CStringNN(s, len));
 	if (i < 0)
 	{
-		this->strList.Insert((UOSInt)~i, Text::String::New(s, len).Ptr());
+		this->strList.Insert((UOSInt)~i, Text::String::New(s, len));
 		this->modified = true;
 	}
 }
@@ -44,13 +44,13 @@ void IO::StringLogger::LogStr(UnsafeArray<const UTF8Char> s, UOSInt len)
 void IO::StringLogger::WriteLogs(IO::Writer *writer)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Text::String *s;
+	NN<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = this->strList.GetCount();	
 	this->modified = false;
 	while (i < j)
 	{
-		s = this->strList.GetItem(i);
+		s = this->strList.GetItemNoCheck(i);
 		writer->WriteLine(s->ToCString());
 		i++;
 	}

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncNTSC.h"
 
 #define csGammaC1 (1 / 0.45)

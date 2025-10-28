@@ -4,7 +4,6 @@
 
 IO::DebugWriter::DebugWriter()
 {
-	this->clsData = 0;
 }
 
 IO::DebugWriter::~DebugWriter()
@@ -15,12 +14,12 @@ void IO::DebugWriter::Flush()
 {
 }
 
-Bool IO::DebugWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::DebugWriter::Write(Text::CStringNN str)
 {
 	return true;
 }
 
-Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::DebugWriter::WriteLine(Text::CStringNN str)
 {
 	return true;
 }

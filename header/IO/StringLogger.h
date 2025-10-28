@@ -1,6 +1,6 @@
 #ifndef _SM_IO_STRINGLOGGER
 #define _SM_IO_STRINGLOGGER
-#include "Data/ArrayListString.h"
+#include "Data/ArrayListStringNN.h"
 #include "IO/Reader.h"
 #include "IO/Writer.h"
 #include "Sync/Mutex.h"
@@ -12,7 +12,7 @@ namespace IO
 	private:
 		Bool modified;
 		Sync::Mutex mut;
-		Data::ArrayListString strList;
+		Data::ArrayListStringNN strList;
 
 	public:
 		StringLogger();

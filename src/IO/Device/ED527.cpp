@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Device/ED527.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Count.h"
 
 IO::Device::ED527::ED527(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)

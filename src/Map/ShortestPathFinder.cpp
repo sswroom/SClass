@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Map/ShortestPathFinder.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 
 Int64 Map::ShortestPathFinder::CoordToId(Double x, Double y)

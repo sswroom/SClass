@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Exporter/ANIExporter.h"
 #include "IO/MemoryStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"

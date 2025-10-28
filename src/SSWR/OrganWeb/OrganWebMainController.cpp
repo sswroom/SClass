@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ArrayListICaseString.h"
+#include "Data/ArrayListICaseStringNN.h"
 #include "Data/ByteBuffer.h"
 #include "Data/StringMapNN.h"
 #include "Data/Sort/ArtificialQuickSort.h"
@@ -29,6 +29,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 	RequestEnv env;
 	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
 
+	NN<Data::ArrayListInt32> pickObjs;
 	Int32 id;
 	Int32 cateId;
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
@@ -70,18 +71,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 			Int32 itemId;
 			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
-				if (action->Equals(UTF8STRC("pickall")))
+				if (action->Equals(UTF8STRC("pickall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (group->groups.GetCount() > 0)
 					{
 						env.pickObjType = POT_GROUP;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->groups.GetCount();
 						while (i < j)
 						{
-							env.pickObjs->SortedInsert(group->groups.GetItemNoCheck(i)->id);
+							pickObjs->SortedInsert(group->groups.GetItemNoCheck(i)->id);
 							i++;
 						}
 					}
@@ -89,23 +90,23 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					{
 						env.pickObjType = POT_SPECIES;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->species.GetCount();
 						while (i < j)
 						{
-							env.pickObjs->SortedInsert(group->species.GetItemNoCheck(i)->speciesId);
+							pickObjs->SortedInsert(group->species.GetItemNoCheck(i)->speciesId);
 							i++;
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("picksel")))
+				else if (action->Equals(UTF8STRC("picksel")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (group->groups.GetCount() > 0)
 					{
 						env.pickObjType = POT_GROUP;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->groups.GetCount();
 						while (i < j)
@@ -116,7 +117,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							sb.AppendI32(itemId);
 							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 							{
-								env.pickObjs->SortedInsert(itemId);
+								pickObjs->SortedInsert(itemId);
 							}
 							i++;
 						}
@@ -125,7 +126,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					{
 						env.pickObjType = POT_SPECIES;
 						webSess.SetPickObjType(env.pickObjType);
-						env.pickObjs->Clear();
+						pickObjs->Clear();
 						i = 0;
 						j = group->species.GetCount();
 						while (i < j)
@@ -136,21 +137,21 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							sb.AppendI32(itemId);
 							if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 							{
-								env.pickObjs->SortedInsert(itemId);
+								pickObjs->SortedInsert(itemId);
 							}
 							i++;
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("place")))
+				else if (action->Equals(UTF8STRC("place")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("group"));
 							sb.AppendI32(itemId);
@@ -158,13 +159,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							{
 								if (me->env->GroupMove(mutUsage, itemId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
@@ -173,10 +174,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species"));
 							sb.AppendI32(itemId);
@@ -184,36 +185,36 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 							{
 								if (me->env->SpeciesMove(mutUsage, itemId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("placeall")))
+				else if (action->Equals(UTF8STRC("placeall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_GROUP && group->species.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							if (me->env->GroupMove(mutUsage, itemId, id, cateId))
 							{
-								env.pickObjs->RemoveAt(i);
+								pickObjs->RemoveAt(i);
 								i--;
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
@@ -222,18 +223,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							itemId = env.pickObjs->GetItem(i);
+							itemId = pickObjs->GetItem(i);
 							if (me->env->SpeciesMove(mutUsage, itemId, id, cateId))
 							{
-								env.pickObjs->RemoveAt(i);
+								pickObjs->RemoveAt(i);
 								i--;
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
@@ -780,6 +781,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
+	NN<Data::ArrayListInt32> pickObjs;
 
 	Int32 id;
 	Int32 cateId;
@@ -837,24 +839,24 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			Int32 userfileId;
 			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
-				if (action->Equals(UTF8STRC("pickall")))
+				if (action->Equals(UTF8STRC("pickall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					env.pickObjType = POT_USERFILE;
 					webSess.SetPickObjType(env.pickObjType);
-					env.pickObjs->Clear();
+					pickObjs->Clear();
 					i = 0;
 					j = species->files.GetCount();
 					while (i < j)
 					{
-						env.pickObjs->SortedInsert(species->files.GetItemNoCheck(i)->id);
+						pickObjs->SortedInsert(species->files.GetItemNoCheck(i)->id);
 						i++;
 					}
 				}
-				else if (action->Equals(UTF8STRC("picksel")))
+				else if (action->Equals(UTF8STRC("picksel")) && env.pickObjs.SetTo(pickObjs))
 				{
 					env.pickObjType = POT_USERFILE;
 					webSess.SetPickObjType(env.pickObjType);
-					env.pickObjs->Clear();
+					pickObjs->Clear();
 					i = 0;
 					j = species->files.GetCount();
 					while (i < j)
@@ -865,20 +867,20 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						sb.AppendI32(userfileId);
 						if (req->GetHTTPFormStr(sb.ToCString()).SetTo(s) && s->v[0] == '1')
 						{
-							env.pickObjs->SortedInsert(userfileId);
+							pickObjs->SortedInsert(userfileId);
 						}
 						i++;
 					}
 				}
-				else if (action->Equals(UTF8STRC("place")))
+				else if (action->Equals(UTF8STRC("place")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_USERFILE)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							userfileId = env.pickObjs->GetItem(i);
+							userfileId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("userfile"));
 							sb.AppendI32(userfileId);
@@ -886,51 +888,51 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 							{
 								if (me->env->UserfileMove(mutUsage, userfileId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("placeall")))
+				else if (action->Equals(UTF8STRC("placeall")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_USERFILE)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							userfileId = env.pickObjs->GetItem(i);
+							userfileId = pickObjs->GetItem(i);
 							if (me->env->UserfileMove(mutUsage, userfileId, id, cateId))
 							{
-								env.pickObjs->RemoveAt(i);
+								pickObjs->RemoveAt(i);
 								i--;
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
-				else if (action->Equals(UTF8STRC("placemerge")))
+				else if (action->Equals(UTF8STRC("placemerge")) && env.pickObjs.SetTo(pickObjs))
 				{
 					if (env.pickObjType == POT_SPECIES)
 					{
 						i = 0;
-						j = env.pickObjs->GetCount();
+						j = pickObjs->GetCount();
 						while (i < j)
 						{
-							Int32 speciesId = env.pickObjs->GetItem(i);
+							Int32 speciesId = pickObjs->GetItem(i);
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species"));
 							sb.AppendI32(speciesId);
@@ -938,13 +940,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 							{
 								if (me->env->SpeciesMerge(mutUsage, speciesId, id, cateId))
 								{
-									env.pickObjs->RemoveAt(i);
+									pickObjs->RemoveAt(i);
 									i--;
 								}
 							}
 							i++;
 						}
-						if (env.pickObjs->GetCount() == 0)
+						if (pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
 							webSess.SetPickObjType(env.pickObjType);
@@ -1136,7 +1138,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			writer.WriteLine(CSTR("</form><hr/>"));
 		}
 
-		Data::ArrayListICaseString fileNameList;
+		Data::ArrayListICaseStringNN fileNameList;
 		Data::ArrayListStringNN refURLList;
 		sptr = cate->srcDir->ConcatTo(sbuff);
 		if (IO::Path::PATH_SEPERATOR != '\\')
@@ -1155,7 +1157,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 					{
 						sptr2[-4] = 0;
-						fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+						fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 					}
 				}
 			}
@@ -1185,7 +1187,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						sptr[i] = 0;
 						sptr2 = &sptr[i];
 					}
-					fileNameList.Add(Text::String::New(sptr, (UOSInt)(sptr2 - sptr)).Ptr());
+					fileNameList.Add(Text::String::New(sptr, (UOSInt)(sptr2 - sptr)));
 				}
 				sb.ClearStr();
 			}
@@ -1419,7 +1421,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			j = fileNameList.GetCount();
 			while (i < j)
 			{
-				sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(i)->v);
+				sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(i)->v);
 				if (currColumn == 0)
 				{
 					writer.WriteLine(CSTR("<tr>"));
@@ -1469,7 +1471,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					currColumn = 0;
 				}
 
-				fileNameList.GetItem(i)->Release();
+				fileNameList.GetItemNoCheck(i)->Release();
 				i++;
 			}
 
@@ -2220,7 +2222,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				}
 				else
 				{
-					Data::ArrayListICaseString fileNameList;
+					Data::ArrayListICaseStringNN fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
@@ -2233,7 +2235,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -2247,7 +2249,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(0)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(0)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -2301,7 +2303,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							sb.AppendI32(species->cateId);
 						}
 					}
-					LIST_FREE_STRING(&fileNameList);
+					fileNameList.FreeAll();
 				}
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				sb.ClearStr();
@@ -2541,7 +2543,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				}
 				else
 				{
-					Data::ArrayListICaseString fileNameList;
+					Data::ArrayListICaseStringNN fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
@@ -2554,7 +2556,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
 									sptr2[-4] = 0;
-									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+									fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -2568,7 +2570,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(0)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(0)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -2622,7 +2624,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							sb.AppendI32(species->cateId);
 						}
 					}
-					LIST_FREE_STRING(&fileNameList);
+					fileNameList.FreeAll();
 				}
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				sb.ClearStr();
@@ -2884,7 +2886,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 			}
 			else
 			{
-				Data::ArrayListICaseString fileNameList;
+				Data::ArrayListICaseStringNN fileNameList;
 
 				sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 				if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
@@ -2896,15 +2898,15 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 							if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 							{
 								sptr2[-4] = 0;
-								fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)).Ptr());
+								fileNameList.SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 							}
 						}
 					}
 					IO::Path::FindFileClose(sess);
-					i = (UOSInt)fileNameList.SortedIndexOfPtr(fileName, (UOSInt)(fileNameEnd - fileName));
+					i = (UOSInt)fileNameList.SortedIndexOfC(Text::CStringNN(fileName, (UOSInt)(fileNameEnd - fileName)));
 					if ((OSInt)i < 0)
 					{
-						LIST_FREE_STRING(&fileNameList);
+						fileNameList.FreeAll();
 						resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 						mutUsage.EndUse();
 						return true;
@@ -2939,7 +2941,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItem(i + 1)->v);
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList.GetItemNoCheck(i + 1)->v);
 						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
@@ -3069,7 +3071,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					mutUsage.EndUse();
 					ResponseMstm(req, resp, mstm, CSTR("text/html"));
 
-					LIST_FREE_STRING(&fileNameList);
+					fileNameList.FreeAll();
 					return true;
 				}
 				else

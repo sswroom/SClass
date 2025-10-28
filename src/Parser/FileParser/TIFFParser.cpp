@@ -16,11 +16,11 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/FrameInfo.h"
 #include "Media/ICCProfile.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/ImageResizer.h"
@@ -95,6 +95,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 	NN<Media::StaticImage> img;
 	Optional<Media::EXIFData> exif;
 	NN<Media::EXIFData> nnexif;
+	UnsafeArray<UInt16> u16Val;
+	UnsafeArray<UInt32> u32Val;
 	UInt16 fmt = bo->GetUInt16(hdr.Arr() + 2);
 	if (fmt == 42)
 	{
@@ -190,20 +192,19 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else
 			{
-				if (item->type == Media::EXIFData::ET_UINT16)
+				if (item->type == Media::EXIFData::ET_UINT16 && nnexif->GetExifUInt16(0x111).SetTo(u16Val))
 				{
-					UInt16 *val = nnexif->GetExifUInt16(0x111);
 					stripOfsts = MemAlloc(UInt32, item->cnt);
 					j = item->cnt;
 					while (j-- > 0)
 					{
-						stripOfsts[j] = val[j];
+						stripOfsts[j] = u16Val[j];
 					}
 				}
-				else if (item->type == Media::EXIFData::ET_UINT32)
+				else if (item->type == Media::EXIFData::ET_UINT32 && nnexif->GetExifUInt32(0x111).SetTo(u32Val))
 				{
 					stripOfsts = MemAlloc(UInt32, item->cnt);
-					MemCopyNO(stripOfsts, nnexif->GetExifUInt32(0x111), item->cnt * sizeof(UInt32));
+					MemCopyNO(stripOfsts, u32Val.Ptr(), item->cnt * sizeof(UInt32));
 				}
 				else
 				{
@@ -233,20 +234,19 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			else
 			{
 				nStrip = item->cnt;
-				if (item->type == Media::EXIFData::ET_UINT16)
+				if (item->type == Media::EXIFData::ET_UINT16 && nnexif->GetExifUInt16(0x117).SetTo(u16Val))
 				{
-					UInt16 *val = nnexif->GetExifUInt16(0x117);
 					stripLengs = MemAlloc(UInt32, item->cnt);
 					j = item->cnt;
 					while (j-- > 0)
 					{
-						stripLengs[j] = val[j];
+						stripLengs[j] = u16Val[j];
 					}
 				}
-				else if (item->type == Media::EXIFData::ET_UINT32)
+				else if (item->type == Media::EXIFData::ET_UINT32 && nnexif->GetExifUInt32(0x117).SetTo(u32Val))
 				{
 					stripLengs = MemAlloc(UInt32, item->cnt);
-					MemCopyNO(stripLengs, nnexif->GetExifUInt32(0x117), item->cnt * sizeof(UInt32));
+					MemCopyNO(stripLengs, u32Val.Ptr(), item->cnt * sizeof(UInt32));
 				}
 				else
 				{
@@ -274,20 +274,19 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else
 			{
-				if (item->type == Media::EXIFData::ET_UINT16)
+				if (item->type == Media::EXIFData::ET_UINT16 && nnexif->GetExifUInt16(0x144).SetTo(u16Val))
 				{
-					UInt16 *val = nnexif->GetExifUInt16(0x144);
 					stripOfsts = MemAlloc(UInt32, item->cnt);
 					j = item->cnt;
 					while (j-- > 0)
 					{
-						stripOfsts[j] = val[j];
+						stripOfsts[j] = u16Val[j];
 					}
 				}
-				else if (item->type == Media::EXIFData::ET_UINT32)
+				else if (item->type == Media::EXIFData::ET_UINT32 && nnexif->GetExifUInt32(0x144).SetTo(u32Val))
 				{
 					stripOfsts = MemAlloc(UInt32, item->cnt);
-					MemCopyNO(stripOfsts, nnexif->GetExifUInt32(0x144), item->cnt * sizeof(UInt32));
+					MemCopyNO(stripOfsts, u32Val.Ptr(), item->cnt * sizeof(UInt32));
 				}
 				else
 				{
@@ -366,20 +365,19 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			else
 			{
 				nStrip = item->cnt;
-				if (item->type == Media::EXIFData::ET_UINT16)
+				if (item->type == Media::EXIFData::ET_UINT16 && nnexif->GetExifUInt16(0x145).SetTo(u16Val))
 				{
-					UInt16 *val = nnexif->GetExifUInt16(0x145);
 					stripLengs = MemAlloc(UInt32, item->cnt);
 					j = item->cnt;
 					while (j-- > 0)
 					{
-						stripLengs[j] = val[j];
+						stripLengs[j] = u16Val[j];
 					}
 				}
-				else if (item->type == Media::EXIFData::ET_UINT32)
+				else if (item->type == Media::EXIFData::ET_UINT32 && nnexif->GetExifUInt32(0x145).SetTo(u32Val))
 				{
 					stripLengs = MemAlloc(UInt32, item->cnt);
-					MemCopyNO(stripLengs, nnexif->GetExifUInt32(0x145), item->cnt * sizeof(UInt32));
+					MemCopyNO(stripLengs, u32Val.Ptr(), item->cnt * sizeof(UInt32));
 				}
 				else
 				{
@@ -480,6 +478,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				UOSInt bpl = img->GetDataBpl();
 				UOSInt copyWidth;
 				UOSInt copyHeight = tileHeight;
+				UnsafeArray<UInt8> imgPal;
 				Data::ByteBuffer jpgBuff(stripLengs[0] + jpegTables.GetSize());
 				Media::JPEGDecoder jpgDecoder;
 				x = 0;
@@ -544,21 +543,35 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				{
 					MemFree(stripLengs);
 				}
-				if (bpp <= 8)
+				if (bpp <= 8 && img->pal.SetTo(imgPal))
 				{
 					UOSInt j;
 					if (photometricInterpretation == 3)
 					{
-						UInt16 *pal = nnexif->GetExifUInt16(0x140);
 						j = (UOSInt)1 << bpp;
 						i = 0;
-						while (i < j)
+						UnsafeArray<UInt16> pal;
+						if (nnexif->GetExifUInt16(0x140).SetTo(pal))
 						{
-							img->pal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
-							img->pal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
-							img->pal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
-							img->pal[(i << 2) + 3] = 0xff;
-							i++;
+							while (i < j)
+							{
+								imgPal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
+								imgPal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
+								imgPal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
+								imgPal[(i << 2) + 3] = 0xff;
+								i++;
+							}
+						}
+						else
+						{
+							while (i < j)
+							{
+								imgPal[i << 2] = 0;
+								imgPal[(i << 2) + 1] = 0;
+								imgPal[(i << 2) + 2] = 0;
+								imgPal[(i << 2) + 3] = 0xff;
+								i++;
+							}
 						}
 					}
 					else if (photometricInterpretation == 0) //whiteIsZero
@@ -569,10 +582,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						while (i-- > 0)
 						{
 							v = (UInt8)(i * 255 / j);
-							img->pal[i << 2] = v;
-							img->pal[(i << 2) + 1] = v;
-							img->pal[(i << 2) + 2] = v;
-							img->pal[(i << 2) + 3] = 0xff;
+							imgPal[i << 2] = v;
+							imgPal[(i << 2) + 1] = v;
+							imgPal[(i << 2) + 2] = v;
+							imgPal[(i << 2) + 3] = 0xff;
 						}
 	
 						imgData = img->GetDataArray();
@@ -591,10 +604,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						while (i-- > 0)
 						{
 							v = (UInt8)(i * 255 / j);
-							img->pal[i << 2] = v;
-							img->pal[(i << 2) + 1] = v;
-							img->pal[(i << 2) + 2] = v;
-							img->pal[(i << 2) + 3] = 0xff;
+							imgPal[i << 2] = v;
+							imgPal[(i << 2) + 1] = v;
+							imgPal[(i << 2) + 2] = v;
+							imgPal[(i << 2) + 3] = 0xff;
 						}
 					}
 				}
@@ -793,6 +806,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			Data::ByteArray imgData;
 			UnsafeArrayOpt<UInt8> planarBuff = 0;
 			UnsafeArray<UInt8> nnplanarBuff;
+			UnsafeArray<UInt8> imgPal;
 			if (sampleFormat == 3)
 			{
 				nnplanarBuff = MemAllocArr(UInt8, imgWidth * imgHeight * bpp >> 3);
@@ -1520,21 +1534,35 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 				}
 			}
-			else if (bpp <= 8)
+			else if (bpp <= 8 && img->pal.SetTo(imgPal))
 			{
 				UOSInt j;
 				if (photometricInterpretation == 3)
 				{
-					UInt16 *pal = nnexif->GetExifUInt16(0x140);
 					j = (UOSInt)1 << bpp;
 					i = 0;
-					while (i < j)
+					UnsafeArray<UInt16> pal;
+					if (nnexif->GetExifUInt16(0x140).SetTo(pal))
 					{
-						img->pal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
-						img->pal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
-						img->pal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
-						img->pal[(i << 2) + 3] = 0xff;
-						i++;
+						while (i < j)
+						{
+							imgPal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
+							imgPal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
+							imgPal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
+							imgPal[(i << 2) + 3] = 0xff;
+							i++;
+						}
+					}
+					else
+					{
+						while (i < j)
+						{
+							imgPal[i << 2] = 0;
+							imgPal[(i << 2) + 1] = 0;
+							imgPal[(i << 2) + 2] = 0;
+							imgPal[(i << 2) + 3] = 0xff;
+							i++;
+						}
 					}
 				}
 				else if (photometricInterpretation == 0) //whiteIsZero
@@ -1545,10 +1573,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					while (i-- > 0)
 					{
 						v = (UInt8)(i * 255 / j);
-						img->pal[i << 2] = v;
-						img->pal[(i << 2) + 1] = v;
-						img->pal[(i << 2) + 2] = v;
-						img->pal[(i << 2) + 3] = 0xff;
+						imgPal[i << 2] = v;
+						imgPal[(i << 2) + 1] = v;
+						imgPal[(i << 2) + 2] = v;
+						imgPal[(i << 2) + 3] = 0xff;
 					}
 
 					imgData = img->GetDataArray();
@@ -1567,10 +1595,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					while (i-- > 0)
 					{
 						v = (UInt8)(i * 255 / j);
-						img->pal[i << 2] = v;
-						img->pal[(i << 2) + 1] = v;
-						img->pal[(i << 2) + 2] = v;
-						img->pal[(i << 2) + 3] = 0xff;
+						imgPal[i << 2] = v;
+						imgPal[(i << 2) + 1] = v;
+						imgPal[(i << 2) + 2] = v;
+						imgPal[(i << 2) + 3] = 0xff;
 					}
 				}
 			}
@@ -2114,10 +2142,12 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt(NN<Media::EXIFData> exif, UInt32 
 		return 0;
 	if (item->cnt != 1)
 		return 0;
-	if (item->type == Media::EXIFData::ET_UINT16)
-		return *exif->GetExifUInt16(id);
-	if (item->type == Media::EXIFData::ET_UINT32)
-		return *exif->GetExifUInt32(id);
+	UnsafeArray<UInt16> u16Val;
+	if (item->type == Media::EXIFData::ET_UINT16 && exif->GetExifUInt16(id).SetTo(u16Val))
+		return u16Val[0];
+	UnsafeArray<UInt32> u32Val;
+	if (item->type == Media::EXIFData::ET_UINT32 && exif->GetExifUInt32(id).SetTo(u32Val))
+		return u32Val[0];
 	return 0;
 }
 
@@ -2126,10 +2156,12 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt0(NN<Media::EXIFData> exif, UInt32
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
-	if (item->type == Media::EXIFData::ET_UINT16)
-		return *exif->GetExifUInt16(id);
-	if (item->type == Media::EXIFData::ET_UINT32)
-		return *exif->GetExifUInt32(id);
+	UnsafeArray<UInt16> u16Val;
+	if (item->type == Media::EXIFData::ET_UINT16 && exif->GetExifUInt16(id).SetTo(u16Val))
+		return u16Val[0];
+	UnsafeArray<UInt32> u32Val;
+	if (item->type == Media::EXIFData::ET_UINT32 && exif->GetExifUInt32(id).SetTo(u32Val))
+		return u32Val[0];
 	return 0;
 }
 
@@ -2141,21 +2173,21 @@ UInt32 Parser::FileParser::TIFFParser::GetUIntSum(NN<Media::EXIFData> exif, UInt
 	UInt32 sum = 0;
 	UOSInt i = item->cnt;
 	nChannels.Set(i);
-	if (item->type == Media::EXIFData::ET_UINT16)
+	UnsafeArray<UInt16> u16Val;
+	UnsafeArray<UInt32> u32Val;
+	if (item->type == Media::EXIFData::ET_UINT16 && exif->GetExifUInt16(id).SetTo(u16Val))
 	{
-		UInt16 *val = exif->GetExifUInt16(id);
 		while (i-- > 0)
 		{
-			sum += val[i];
+			sum += u16Val[i];
 		}
 		return sum;
 	}
-	if (item->type == Media::EXIFData::ET_UINT32)
+	if (item->type == Media::EXIFData::ET_UINT32 && exif->GetExifUInt32(id).SetTo(u32Val))
 	{
-		UInt32 *val = exif->GetExifUInt32(id);
 		while (i-- > 0)
 		{
-			sum += val[i];
+			sum += u32Val[i];
 		}
 		return sum;
 	}

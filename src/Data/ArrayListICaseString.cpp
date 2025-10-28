@@ -11,23 +11,23 @@ Data::ArrayListICaseString::ArrayListICaseString(UOSInt capacity) : Data::ArrayL
 {
 }
 
-NN<Data::ArrayList<Text::String*>> Data::ArrayListICaseString::Clone() const
+NN<Data::ArrayList<Optional<Text::String>>> Data::ArrayListICaseString::Clone() const
 {
-	NN<Data::ArrayList<Text::String*>> newArr;
+	NN<Data::ArrayList<Optional<Text::String>>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseString(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseString::Compare(Text::String* obj1, Text::String* obj2) const
+OSInt Data::ArrayListICaseString::Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const
 {
 	if (obj1 == obj2)
 		return 0;
 	NN<Text::String> s1;
 	NN<Text::String> s2;
-	if (!s1.Set(obj1))
+	if (!obj1.SetTo(s1))
 		return -1;
-	if (!s2.Set(obj2))
+	if (!obj2.SetTo(s2))
 		return 1;
 	return s1->CompareToICase(s2);
 }
@@ -43,7 +43,7 @@ OSInt Data::ArrayListICaseString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> v
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = this->arr[k]->CompareToICase(val);
+		l = Text::String::OrEmpty(this->arr[k])->CompareToICase(val);
 		if (l > 0)
 		{
 			j = k - 1;

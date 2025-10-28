@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Map/ReverseGeocoderClient.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/TCPClient.h"
 #include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"

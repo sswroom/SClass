@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
 #include "Media/StaticImage.h"
@@ -48,6 +48,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 	UInt32 thisSize;
 	UInt16 bitCnt;
 	UInt8 *pal;
+	UnsafeArray<UInt8> imgPal;
 	UnsafeArray<UInt8> dbits;
 	OSInt dbpl;
 	UInt16 fileType;
@@ -119,7 +120,10 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 2, Media::PF_PAL_1_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
-				MemCopyNO(currImg->pal, pal, 8);
+				if (currImg->pal.SetTo(imgPal))
+				{
+					MemCopyNO(imgPal.Ptr(), pal, 8);
+				}
 
 				dbits += dbpl * (OSInt)imgHeight;
 				while (imgHeight-- > 0)
@@ -171,7 +175,10 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 5, Media::PF_PAL_4_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
-				MemCopyNO(currImg->pal, pal, 64);
+				if (currImg->pal.SetTo(imgPal))
+				{
+					MemCopyNO(imgPal.Ptr(), pal, 64);
+				}
 
 				dbits += dbpl * (OSInt)imgHeight;
 				while (imgHeight-- > 0)
@@ -222,7 +229,10 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 9, Media::PF_PAL_8_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
-				MemCopyNO(currImg->pal, pal, 1024);
+				if (currImg->pal.SetTo(imgPal))
+				{
+					MemCopyNO(imgPal.Ptr(), pal, 1024);
+				}
 
 				dbits += dbpl * (OSInt)imgHeight;
 				while (imgHeight-- > 0)

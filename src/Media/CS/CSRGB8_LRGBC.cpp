@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/CSRGB8_LRGBC.h"
 #include "Media/CS/TransferFunc.h"
 
@@ -21,9 +21,10 @@ extern "C"
 
 void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 {
-	if (this->rgbTable == 0)
+	UnsafeArray<UInt8> rgbTable;
+	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = MemAllocA(UInt8, 6144);
+		this->rgbTable = rgbTable = MemAllocAArr(UInt8, 6144);
 	}
 	OSInt i;
 	Double thisV;
@@ -60,7 +61,7 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 		Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimaries(), this->destProfile.GetPrimaries());
 	}
 
-	Int64 *rgbGammaCorr = (Int64*)this->rgbTable;
+	UnsafeArray<Int64> rgbGammaCorr = UnsafeArray<Int64>::ConvertFrom(rgbTable);
 	i = 256;
 	while (i--)
 	{
@@ -90,15 +91,15 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	gtFunc.Delete();
 	btFunc.Delete();
 
-	if (this->srcPal)
+	if (this->srcPal.NotNull())
 	{
 		if (this->srcPF == Media::PF_PAL_1_A1 || this->srcPF == Media::PF_PAL_2_A1 || this->srcPF == Media::PF_PAL_4_A1 || this->srcPF == Media::PF_PAL_8_A1)
 		{
-			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, ((UOSInt)1 << (this->srcNBits - 1)));
+			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UOSInt)1 << (this->srcNBits - 1)));
 		}
 		else
 		{
-			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, ((UOSInt)1 << this->srcNBits));
+			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal.Ptr(), this->destPal.Ptr(), rgbTable.Ptr(), ((UOSInt)1 << this->srcNBits));
 		}
 	}
 }
@@ -138,19 +139,22 @@ Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 
 Media::CS::CSRGB8_LRGBC::~CSRGB8_LRGBC()
 {
-	if (this->rgbTable)
+	UnsafeArray<UInt8> rgbTable;
+	UnsafeArray<UInt8> srcPal;
+	UnsafeArray<UInt8> destPal;
+	if (this->rgbTable.SetTo(rgbTable))
 	{
-		MemFreeA(this->rgbTable);
+		MemFreeAArr(rgbTable);
 		this->rgbTable = 0;
 	}
-	if (this->srcPal)
+	if (this->srcPal.SetTo(srcPal))
 	{
-		MemFree(this->srcPal);
+		MemFreeArr(srcPal);
 		this->srcPal = 0;
 	}
-	if (this->destPal)
+	if (this->destPal.SetTo(destPal))
 	{
-		MemFree(this->destPal);
+		MemFreeArr(destPal);
 		this->destPal = 0;
 	}
 }
@@ -169,47 +173,47 @@ void Media::CS::CSRGB8_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> sr
 	}
 	if (this->srcPF == Media::PF_W8A8)
 	{
-		CSRGB8_LRGBC_ConvertW8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertW8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R5G5B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G5R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertB5G5R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R5G6B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_R8G8B8)
 	{
-		CSRGB8_LRGBC_ConvertR8G8B8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertR8G8B8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_R8G8B8A8)
 	{
-		CSRGB8_LRGBC_ConvertR8G8B8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertR8G8B8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R5G6B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_1_A1)
 	{
-		CSRGB8_LRGBC_ConvertP1_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP1_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_2_A1)
 	{
-		CSRGB8_LRGBC_ConvertP2_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP2_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_4_A1)
 	{
-		CSRGB8_LRGBC_ConvertP4_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP4_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_PAL_8_A1)
 	{
-		CSRGB8_LRGBC_ConvertP8_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP8_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 	else
 	{
-		CSRGB8_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal.Ptr(), this->destPal.Ptr(), this->rgbTable.Ptr());
 	}
 }
 
@@ -223,19 +227,20 @@ UOSInt Media::CS::CSRGB8_LRGBC::GetDestFrameSize(UOSInt width, UOSInt height)
 	return width * height * 8;
 }
 
-void Media::CS::CSRGB8_LRGBC::SetPalette(UInt8 *pal)
+void Media::CS::CSRGB8_LRGBC::SetPalette(UnsafeArray<UInt8> pal)
 {
-	if (this->srcPal)
+	UnsafeArray<UInt8> srcPal;
+	if (this->srcPal.SetTo(srcPal))
 	{
 		if (this->srcPF == Media::PF_PAL_1_A1 || this->srcPF == Media::PF_PAL_2_A1 || this->srcPF == Media::PF_PAL_4_A1 || this->srcPF == Media::PF_PAL_8_A1)
 		{
 			UOSInt nColor = (UOSInt)(4 << (this->srcNBits - 1));
-			MemCopyNO(this->srcPal, pal, nColor);
+			MemCopyNO(srcPal.Ptr(), pal.Ptr(), nColor);
 		}
 		else
 		{
 			UOSInt nColor = (UOSInt)(4 << this->srcNBits);
-			MemCopyNO(this->srcPal, pal, nColor);
+			MemCopyNO(srcPal.Ptr(), pal.Ptr(), nColor);
 		}
 		this->rgbUpdated = true;
 	}

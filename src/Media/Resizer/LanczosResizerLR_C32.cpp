@@ -2,7 +2,7 @@
 #include <float.h>
 #include "MyMemory.h"
 #include "Math/LanczosFilter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #ifdef USE_OPENCL

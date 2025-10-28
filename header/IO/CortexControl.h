@@ -15,7 +15,7 @@ namespace IO
 		NN<IO::SerialPort> stm;
 		IO::ProtoHdlr::ProtoCortexHandler protoHdlr;
 
-		IO::Writer *errWriter;
+		Optional<IO::Writer> errWriter;
 		
 		Sync::Mutex sendMut;
 		Sync::Event sendEvt;
@@ -28,7 +28,7 @@ namespace IO
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 	public:
-		CortexControl(UOSInt portNum, IO::Writer *errWriter);
+		CortexControl(UOSInt portNum, Optional<IO::Writer> errWriter);
 		virtual ~CortexControl();
 
 		Bool IsError();
@@ -36,15 +36,15 @@ namespace IO
 		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
 		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		
-		Bool GetFWVersion(Int32 *majorVer, Int32 *minorVer);
-		Bool ReadDIO(Int32 *dioValues); //bit 0-9 = IN1-10, bit10-11 = OUT1-2
+		Bool GetFWVersion(OutParam<Int32> majorVer, OutParam<Int32> minorVer);
+		Bool ReadDIO(OutParam<Int32> dioValues); //bit 0-9 = IN1-10, bit10-11 = OUT1-2
 		Bool WriteDIO(Int32 outVal, Int32 outMask); // bit0-1 = OUT1-2
-		Bool ReadVin(Int32 *voltage);
-		Bool ReadVBatt(Int32 *voltage);
-		Bool ReadOdometerCounter(Int32 *odoCount);
+		Bool ReadVin(OutParam<Int32> voltage);
+		Bool ReadVBatt(OutParam<Int32> voltage);
+		Bool ReadOdometerCounter(OutParam<Int32> odoCount);
 		Bool ResetOdometerCounter();
-		Bool ReadEnvBrightness(Int32 *brightness); //in LUX
-		Bool ReadTemperature(Int32 *temperature); //degree Celsius
+		Bool ReadEnvBrightness(OutParam<Int32> brightness); //in LUX
+		Bool ReadTemperature(OutParam<Int32> temperature); //degree Celsius
 		Bool PowerOff();
 		Bool HDACodecPower(Bool turnOn);
 		Bool SetWatchdogTimeout(UInt8 timeout);

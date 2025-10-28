@@ -3,7 +3,7 @@
 #include "Data/FastStringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/PaperSize.h"
 #include "Text/MyStringFloat.h"
 #include "Text/ReportBuilder.h"

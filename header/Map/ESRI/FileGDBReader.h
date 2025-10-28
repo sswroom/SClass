@@ -20,9 +20,9 @@ namespace Map
 			UOSInt rowSize;
 			Data::ByteBuffer rowData;
 			Int32 objectId;
-			UInt8 *fieldNull;
-			UInt32 *fieldOfst;
-			Data::ArrayList<UOSInt> *columnIndices;
+			UnsafeArray<UInt8> fieldNull;
+			UnsafeArray<UInt32> fieldOfst;
+			Optional<Data::ArrayList<UOSInt>> columnIndices;
 			UOSInt dataOfst;
 			UOSInt maxCnt;
 			UInt32 maxRowSize;

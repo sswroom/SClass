@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/PowerInfo.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRWifiCaptureForm.h"
 #include "Sync/MutexUsage.h"

@@ -7,12 +7,12 @@
 
 Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
-	Data::DateTime *t;
-	Data::ArrayListInt32 *pickObjs;
-	t = (Data::DateTime *)sess->GetValuePtr(CSTR("LastUseTime"));
-	pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr(CSTR("PickObjs"));
-	DEL_CLASS(t);
-	DEL_CLASS(pickObjs);
+	NN<Data::DateTime> t;
+	NN<Data::ArrayListInt32> pickObjs;
+	t = sess->GetValuePtr(CSTR("LastUseTime")).GetNN<Data::DateTime>();
+	pickObjs = sess->GetValuePtr(CSTR("PickObjs")).GetNN<Data::ArrayListInt32>();
+	t.Delete();
+	pickObjs.Delete();
 	return false;
 }
 
@@ -20,7 +20,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer
 {
 	NN<Data::DateTime> t;
 	Data::DateTime currTime;
-	if (t.Set((Data::DateTime*)sess->GetValuePtr(CSTR("LastUseTime"))))
+	if (sess->GetValuePtr(CSTR("LastUseTime")).GetOpt<Data::DateTime>().SetTo(t))
 	{
 		currTime.SetCurrTimeUTC();
 		if (currTime.DiffMS(t) >= 1800000)

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Exporter/HEIFExporter.h"
 #include "Media/ImageList.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 

@@ -3,7 +3,7 @@
 #include "Data/Compress/LZWEncStream2.h"
 #include "Exporter/GIFExporter.h"
 #include "IO/MemoryStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageList.h"
 #include "Text/MyString.h"
 
@@ -36,25 +36,29 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NN<IO::Pa
 			return IO::FileExporter::SupportType::NormalStream;
 		OSInt i;
 		Bool found = false;
-		i = 0;
-		while (i < 1024)
+		UnsafeArray<UInt8> pal;
+		if (img->pal.SetTo(pal))
 		{
-			if (img->pal[i + 3] == 0xff)
+			i = 0;
+			while (i < 1024)
 			{
-			}
-			else if (img->pal[i + 3] == 0)
-			{
-				if (found)
+				if (pal[i + 3] == 0xff)
+				{
+				}
+				else if (pal[i + 3] == 0)
+				{
+					if (found)
+						return IO::FileExporter::SupportType::NotSupported;
+					found = true;
+				}
+				else
+				{
 					return IO::FileExporter::SupportType::NotSupported;
-				found = true;
+				}
+				i += 4;
 			}
-			else
-			{
-				return IO::FileExporter::SupportType::NotSupported;
-			}
-			i += 4;
+			return IO::FileExporter::SupportType::NormalStream;
 		}
-		return IO::FileExporter::SupportType::NormalStream;
 	}
 	return IO::FileExporter::SupportType::NotSupported;
 }
@@ -81,7 +85,8 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UInt8 buff[256];
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	NN<Media::RasterImage> img;
-	if (!imgList->GetImage(0, 0).SetTo(img))
+	UnsafeArray<UInt8> pal;
+	if (!imgList->GetImage(0, 0).SetTo(img) || !img->pal.SetTo(pal))
 		return false;
 	UOSInt transparentIndex = INVALID_INDEX;
 	UOSInt i;
@@ -96,10 +101,10 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			i = 0;
 			while (i < 1024)
 			{
-				if (img->pal[i + 3] == 0xff)
+				if (pal[i + 3] == 0xff)
 				{
 				}
-				else if (img->pal[i + 3] == 0)
+				else if (pal[i + 3] == 0)
 				{
 					transparentIndex = i >> 2;
 					break;
@@ -126,9 +131,9 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		j = 0;
 		while (j < 1024)
 		{
-			palBuff[i] = img->pal[j + 2];
-			palBuff[i + 1] = img->pal[j + 1];
-			palBuff[i + 2] = img->pal[j + 0];
+			palBuff[i] = pal[j + 2];
+			palBuff[i + 1] = pal[j + 1];
+			palBuff[i + 2] = pal[j + 0];
 			i += 3;
 			j += 4;
 		}

@@ -104,7 +104,7 @@ namespace SSWR
 			void SetUpgradeInsecureURL(Text::CStringNN upgradeInsecureURL);
 
 			void CalcGroupCount(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group);
-			void GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<Data::DataMapNN<Text::String*, SpeciesInfo>> spMap, Optional<WebUserInfo> user);
+			void GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<Data::DataMapNN<Optional<Text::String>, SpeciesInfo>> spMap, Optional<WebUserInfo> user);
 			void SearchInGroup(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, UnsafeArray<const UTF8Char> searchStr, UOSInt searchStrLen, NN<Data::ArrayListDbl> speciesIndice, NN<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NN<Data::ArrayListDbl> groupIndice, NN<Data::ArrayListNN<GroupInfo>> groupObjs, Optional<WebUserInfo> user);
 			Bool GroupIsAdmin(NN<GroupInfo> group);
 			UnsafeArray<UTF8Char> PasswordEnc(UnsafeArray<UTF8Char> buff, Text::CStringNN pwd);

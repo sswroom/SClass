@@ -32,7 +32,7 @@ namespace Net
 		void AppendBitString(UInt8 bitLeft, UnsafeArray<const UInt8> buff, UOSInt buffLen);
 		void AppendBitString(UInt8 bitLeft, Data::ByteArrayR buff);
 		void AppendOctetString(UnsafeArray<const UInt8> buff, UOSInt len);
-		void AppendOctetString(Text::String *s);
+		void AppendOctetString(Optional<Text::String> s);
 		void AppendOctetString(NN<Text::String> s);
 		void AppendOctetStringC(Text::CStringNN s);
 		void AppendNull();

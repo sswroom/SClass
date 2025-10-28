@@ -4,7 +4,7 @@
 #include "DB/ColDef.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/HTRecFile.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"

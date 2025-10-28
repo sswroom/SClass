@@ -69,7 +69,7 @@ void __stdcall IO::Device::DensoWaveQB30::RecvThread(NN<Sync::Thread> thread)
 							}
 							else
 							{
-								MemCopyO(me->recvBuff, &me->recvBuff[i + 1], me->recvSize - i - 1);
+								MemCopyO(&me->recvBuff[0], &me->recvBuff[i + 1], me->recvSize - i - 1);
 							}
 							break;
 						}
@@ -253,7 +253,7 @@ IO::Device::DensoWaveQB30::DensoWaveQB30(NN<IO::Stream> stm) : IO::CodeScanner(C
 //	NEW_CLASS(this->nextTime, Data::DateTime());
 //	this->nextTime->SetCurrTimeUTC();
 
-	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
+	this->recvBuff = MemAllocArr(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->currMode = IO::Device::DensoWaveQB30::MT_IDLE;
 	this->scanHdlr = 0;
@@ -268,7 +268,7 @@ IO::Device::DensoWaveQB30::~DensoWaveQB30()
 	this->stm->Close();
 	this->thread.WaitForEnd();
 //	DEL_CLASS(this->nextTime);
-	MemFree(this->recvBuff);
+	MemFreeArr(this->recvBuff);
 	this->stm.Delete();
 }
 
@@ -330,7 +330,7 @@ void IO::Device::DensoWaveQB30::HandleCodeScanned(ScanHandler hdlr, AnyType user
 	this->scanHdlrObj = userObj;
 }
 
-UOSInt IO::Device::DensoWaveQB30::GetCommandList(Data::ArrayList<DeviceCommand> *cmdList)
+UOSInt IO::Device::DensoWaveQB30::GetCommandList(NN<Data::ArrayList<DeviceCommand>> cmdList)
 {
 	UOSInt initCnt = cmdList->GetCount();
 	cmdList->Add(DC_GET_READ_MODE);
@@ -717,505 +717,505 @@ Text::CString IO::Device::DensoWaveQB30::GetCommandName(DeviceCommand dcmd)
 	}
 }
 
-IO::Device::DensoWaveQB30::CommandType IO::Device::DensoWaveQB30::GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal)
+IO::Device::DensoWaveQB30::CommandType IO::Device::DensoWaveQB30::GetCommandParamType(DeviceCommand dcmd, OutParam<Int32> minVal, OutParam<Int32> maxVal)
 {
 	switch (dcmd)
 	{
 	case DC_GET_READ_MODE:
-		*minVal = 0;
-		*maxVal = 6;
+		minVal.Set(0);
+		maxVal.Set(6);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_READ_MODE:
-		*minVal = 0;
-		*maxVal = 6;
+		minVal.Set(0);
+		maxVal.Set(6);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_BW_MODE:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BW_MODE:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_READ_REPEAT_TIME:
-		*minVal = 0;
-		*maxVal = 99;
+		minVal.Set(0);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_READ_REPEAT_TIME:
-		*minVal = 0;
-		*maxVal = 99;
+		minVal.Set(0);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_BRIGHTNESS:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BRIGHTNESS:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_SHT_SIGNAL:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_SHT_SIGNAL:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_SCAN_MODE:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_SCAN_MODE:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_SHUTTER_TIME:
-		*minVal = 1;
-		*maxVal = 99;
+		minVal.Set(1);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_SHUTTER_TIME:
-		*minVal = 1;
-		*maxVal = 99;
+		minVal.Set(1);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_GAIN:
-		*minVal = 0;
-		*maxVal = 15;
+		minVal.Set(0);
+		maxVal.Set(15);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_GAIN:
-		*minVal = 0;
-		*maxVal = 15;
+		minVal.Set(0);
+		maxVal.Set(15);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_LED_LEVEL:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_LED_LEVEL:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_LED_MODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_LED_MODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_OUTPUT_TIMING:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_OUTPUT_TIMING:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_UNREAD_DATA_SEND:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_UNREAD_DATA_SEND:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_INDIR_TIME:
-		*minVal = 10;
-		*maxVal = 999;
+		minVal.Set(10);
+		maxVal.Set(999);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_INDIR_TIME:
-		*minVal = 10;
-		*maxVal = 999;
+		minVal.Set(10);
+		maxVal.Set(999);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_TRIGGER_DELAY:
-		*minVal = 0;
-		*maxVal = 999;
+		minVal.Set(0);
+		maxVal.Set(999);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_TRIGGER_DELAY:
-		*minVal = 0;
-		*maxVal = 999;
+		minVal.Set(0);
+		maxVal.Set(999);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_SIGNAL_ON_DUR:
-		*minVal = 0;
-		*maxVal = 255;
+		minVal.Set(0);
+		maxVal.Set(255);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_SIGNAL_ON_DUR:
-		*minVal = 0;
-		*maxVal = 255;
+		minVal.Set(0);
+		maxVal.Set(255);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_SIGNAL_DELAY:
-		*minVal = 0;
-		*maxVal = 99;
+		minVal.Set(0);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_SIGNAL_DELAY:
-		*minVal = 0;
-		*maxVal = 99;
+		minVal.Set(0);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_LIGHT_LED:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_LIGHT_LED:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_MARKER_LIGHT:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_MARKER_LIGHT:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_DECODE_TIME_LIMIT:
-		*minVal = 0;
-		*maxVal = 999;
+		minVal.Set(0);
+		maxVal.Set(999);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_DECODE_TIME_LIMIT:
-		*minVal = 0;
-		*maxVal = 999;
+		minVal.Set(0);
+		maxVal.Set(999);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_OUTPUT1_TYPE:
-		*minVal = 0;
-		*maxVal = 5;
+		minVal.Set(0);
+		maxVal.Set(5);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_OUTPUT1_TYPE:
-		*minVal = 0;
-		*maxVal = 5;
+		minVal.Set(0);
+		maxVal.Set(5);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_OUTPUT2_TYPE:
-		*minVal = 0;
-		*maxVal = 6;
+		minVal.Set(0);
+		maxVal.Set(6);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_OUTPUT2_TYPE:
-		*minVal = 0;
-		*maxVal = 6;
+		minVal.Set(0);
+		maxVal.Set(6);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_AUTO_SENSE_MODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_AUTO_SENSE_MODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CONT_READ_MODE_B:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_CONT_READ_MODE_B:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_QRCODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_QRCODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_MICRO_QRCODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_MICRO_QRCODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_PDF417:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_PDF417:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_DATAMATRIX:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_DATAMATRIX:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_BARCODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BARCODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_INTERLEAVED_2OF5:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_INTERLEAVED_2OF5:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CODABAR:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_CODABAR:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CODABAR_START_STOP:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_CODEBAR_START_STOP:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CODE39:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_CODE39:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CODE128:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_CODE128:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_QRCODE_REVERSE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_QRCODE_REVERSE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_QRLINK_CODE:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_QRLINK_CODE:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_GS1_DATABAR:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_GS1_DATABAR:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_GS1_COMPOSITE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_GS1_COMPOSITE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_MICRO_PDF417:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_MICRO_PDF417:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_BARCODE_READ_MODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BARCODE_READ_MODE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_SQRC:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_SQRC:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_SQRC_KEY_UNMATCH:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_SQRC_KEY_UNMATCH:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_SQRC_KEY_MATCH:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_SQRC_KEY_MATCH:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_IQRCODE_SQUARE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_IQRCODE_SQUARE:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_IQRCODE_RECT:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_IQRCODE_RECT:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_AZTEC_FULL:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_AZTEC_FULL:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_AZTEC_COMPACT:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_AZTEC_COMPACT:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_MENU_READ:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_MENU_READ:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_COMM_SEQ:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_COMM_SEQ:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_BAUD_RATE:
-		*minVal = 0;
-		*maxVal = 5;
+		minVal.Set(0);
+		maxVal.Set(5);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BAUD_RATE:
-		*minVal = 0;
-		*maxVal = 5;
+		minVal.Set(0);
+		maxVal.Set(5);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CODE_MARK:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_CODE_MARK:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_LINE_NUM:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_LINE_NUM:
-		*minVal = 0;
-		*maxVal = 2;
+		minVal.Set(0);
+		maxVal.Set(2);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_BCC:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BCC:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CTS_SIGNAL:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_CTS_SIGNAL:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_CTS_TIME:
-		*minVal = 1;
-		*maxVal = 99;
+		minVal.Set(1);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_CTS_TIME:
-		*minVal = 1;
-		*maxVal = 99;
+		minVal.Set(1);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_ACK_NAK_TIME:
-		*minVal = 1;
-		*maxVal = 99;
+		minVal.Set(1);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND;
 	case DC_SET_ACK_NAK_TIME:
-		*minVal = 1;
-		*maxVal = 99;
+		minVal.Set(1);
+		maxVal.Set(99);
 		return IO::Device::DensoWaveQB30::CT_SET_COMMAND;
 	case DC_GET_RECV_HDR:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_RECV_HDR:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_RECV_TERMINATOR:
-		*minVal = 0;
-		*maxVal = 3;
+		minVal.Set(0);
+		maxVal.Set(3);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_GET_SEND_TERMINATOR:
-		*minVal = 0;
-		*maxVal = 5;
+		minVal.Set(0);
+		maxVal.Set(5);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_GET_BUZZER:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BUZZER:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_READ_ERR_BUZZER:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_READ_ERR_BUZZER:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_MAGIC_KEY:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_MAGIC_KEY:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_POWER_ON_BUZZER:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_POWER_ON_BUZZER:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	case DC_GET_BUZZER_OFF:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_GET_COMMAND_NAME;
 	case DC_SET_BUZZER_OFF:
-		*minVal = 0;
-		*maxVal = 1;
+		minVal.Set(0);
+		maxVal.Set(1);
 		return IO::Device::DensoWaveQB30::CT_SELECT_COMMAND;
 	default:
 		return IO::Device::DensoWaveQB30::CT_UNKNOWN;

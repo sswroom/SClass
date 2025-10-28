@@ -1,3 +1,4 @@
+
 ## optional.cfg
 # NO_MINIZ := 1
 # NO_HEIF := 1
@@ -60,6 +61,7 @@ test:
 @TestDateTime
 @TestFastStringMap
 @TestFloat16
+@TestBigInt
 @TestCoord
 @TestFloat
 @TestMyString
@@ -146,6 +148,7 @@ console:
 @MapSearchTest
 @OruxMapTest
 @SpeedLimitTest
+@BigFloatTest
 @BigIntTest
 @LanczosFilterTest
 @AudioDeviceTest
@@ -487,6 +490,9 @@ SpeedLimitTest:
 @ConsoleStartup.o
 
 #Math
+BigFloatTest:
+@BigFloatTest.o
+@ConsoleStartup.o
 BigIntTest:
 @BigIntTest.o
 @ConsoleStartup.o
@@ -877,6 +883,9 @@ TestFastStringMap:
 TestFloat16:
 @TestFloat16.o
 @ConsoleStartup.o
+TestBigInt:
+@TestBigInt.o
+@ConsoleStartup.o
 TestCoord:
 @TestCoord.o
 @ConsoleStartup.o
@@ -1098,6 +1107,7 @@ GISDistTest.o: ../../main/Map/GISDistTest.cpp
 MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
 SpeedLimitTest.o: ../../main/Map/SpeedLimitTest.cpp
+BigFloatTest.o: ../../main/Math/BigFloatTest.cpp
 BigIntTest.o: ../../main/Math/BigIntTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
 MCU_Console.o: ../../main/MCU/MCU_Console.cpp
@@ -1224,6 +1234,7 @@ TestAStruct.o: ../../main/Test/Data/TestAStruct.cpp
 TestDateTime.o: ../../main/Test/Data/TestDateTime.cpp
 TestFastStringMap.o: ../../main/Test/Data/TestFastStringMap.cpp
 TestFloat16.o: ../../main/Test/Data/TestFloat16.cpp
+TestBigInt.o: ../../main/Test/Math/TestBigInt.cpp
 TestCoord.o: ../../main/Test/Math/TestCoord.cpp
 TestFloat.o: ../../main/Test/Math/TestFloat.cpp
 TestMyString.o: ../../main/Test/Text/TestMyString.cpp
@@ -1644,7 +1655,7 @@ Data/ML/MLModel.h:
 Data/Sort/ArtificialQuickSort.h:
 @ArtificialQuickSort.o
 Data/Sort/ArtificialQuickSortAList.h:
-Data/Sort/ArtificialQuickSortC.h:
+Data/Sort/ArtificialQuickSort_C.h:
 @ArtificialQuickSort_CPP.o
 Data/Sort/ArtificialQuickSortCmp.h:
 Data/Sort/ArtificialQuickSortFunc.h:
@@ -2488,8 +2499,12 @@ Math/ArcGISCSys.h:
 @ArcGISCSys.o
 Math/ArcGISPRJParser.h:
 @ArcGISPRJParser.o
+Math/BigFloat.h:
+@BigFloat.o
 Math/BigIntLSB.h:
 @BigIntLSB.o
+Math/BigIntUtil.h:
+@BigIntUtil.o
 Math/CassiniSoldnerCoordinateSystem.h:
 @CassiniSoldnerCoordinateSystem.o
 Math/CesiumEntityWriter.h:
@@ -2522,7 +2537,7 @@ Math/GeometryTool.h:
 Math/LanczosFilter.h:
 @LanczosFilter.o
 Math/LithiumBattery.h:
-Math/Math.h:
+Math/Math_C.h:
 @Math.o
 @Math_CPP.o
 Math/Matrix3.h:
@@ -2726,6 +2741,8 @@ Media/ImageAlphaBlend.h:
 @ImageAlphaBlend.o
 Media/ImageCopy.h:
 @ImageCopy.o
+Media/ImageCopy_C.h:
+@ImageCopy_CPP.o
 Media/ImageFilter.h:
 Media/ImageGenerator.h:
 @ImageGenerator.o
@@ -2742,6 +2759,7 @@ Media/ImageTo8Bit.h:
 @ImageTo8Bit_CPP.o
 Media/ImageUtil.h:
 @ImageUtil.o
+Media/ImageUtil_C.h:
 @ImageUtil_CPP.o
 Media/JPEGFile.h:
 @JPEGFile.o
@@ -2753,7 +2771,7 @@ Media/LPCMSource.h:
 @LPCMSource.o
 Media/LRGBLimiter.h:
 @LRGBLimiter.o
-Media/LRGBLimiterC.h:
+Media/LRGBLimiter_C.h:
 @LRGBLimiter_CPP.o
 Media/LUT.h:
 @LUT.o
@@ -3129,9 +3147,11 @@ Media/ImageGen/RingsImageGen.h:
 @RingsImageGen.o
 Media/ImgFilter/BGImgFilter.h:
 @BGImgFilter.o
+Media/ImgFilter/BGImgFilter_C.h:
 @BGImgFilter_CPP.o
 Media/ImgFilter/BWImgFilter.h:
 @BWImgFilter.o
+Media/ImgFilter/BWImgFilter_C.h:
 @BWImgFilter_CPP.o
 Media/ImgRemapper/LinearImageRemapper.h:
 @LinearImageRemapper.o
@@ -3153,7 +3173,7 @@ Media/Resizer/LanczosResizer16_C8.h:
 @LanczosResizer16_C8_CPP.o
 Media/Resizer/LanczosResizerFunc.h:
 @LanczosResizerFunc.o
-Media/Resizer/LanczosResizerFuncC.h:
+Media/Resizer/LanczosResizerFunc_C.h:
 @LanczosResizerFunc_CPP.o
 Media/Resizer/LanczosResizerH8_8.h:
 @LanczosResizerH8_8.o
@@ -4143,6 +4163,8 @@ SSWR/AVIRead/AVIRGISReplayForm.h:
 @AVIRGISReplayForm.o
 SSWR/AVIRead/AVIRGISSearchForm.h:
 @AVIRGISSearchForm.o
+SSWR/AVIRead/AVIRGISServerForm.h:
+@AVIRGISServerForm.o
 SSWR/AVIRead/AVIRGISShortestPathForm.h:
 @AVIRGISShortestPathForm.o
 SSWR/AVIRead/AVIRGISTileDownloadForm.h:
@@ -4821,6 +4843,7 @@ Text/String.h:
 @String.o
 Text/StringBase.h:
 Text/StringBuilder.h:
+Text/StringBuilder_T.h:
 Text/StringBuilderC.h:
 @StringBuilderC.o
 Text/StringBuilderUTF.h:

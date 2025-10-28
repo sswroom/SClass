@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Map/ProjectionCoord.h"
 
 Map::ProjectionCoord::ProjectionCoord(Double originLat, Double originLon, Double radius, Double flattening, Double falseEasting, Double falseNorthing)

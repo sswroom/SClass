@@ -71,7 +71,7 @@ UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(AnyType userObj)
 							}
 							else
 							{
-								MemCopyO(me->recvBuff, &me->recvBuff[i + 1], me->recvSize - i - 1);
+								MemCopyO(&me->recvBuff[0], &me->recvBuff[i + 1], me->recvSize - i - 1);
 							}
 							break;
 						}
@@ -204,14 +204,14 @@ Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(UInt32 timeToWait, OutParam<Int
 	}
 }
 
-Int32 IO::Device::DensoWaveQK30U::ReadCommand(const Char *cmdStr, UOSInt cmdLen)
+Int32 IO::Device::DensoWaveQK30U::ReadCommand(UnsafeArray<const Char> cmdStr, UOSInt cmdLen)
 {
 	Int32 result;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	if (this->stm->Write(Data::ByteArrayR((const UInt8*)cmdStr, cmdLen)) == cmdLen)
+	if (this->stm->Write(Data::ByteArrayR(UnsafeArray<const UInt8>::ConvertFrom(cmdStr), cmdLen)) == cmdLen)
 	{
 		if (!this->WaitForReplyVal(1000, result))
 		{
@@ -226,14 +226,14 @@ Int32 IO::Device::DensoWaveQK30U::ReadCommand(const Char *cmdStr, UOSInt cmdLen)
 	return result;
 }
 
-Bool IO::Device::DensoWaveQK30U::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
+Bool IO::Device::DensoWaveQK30U::WriteCommand(UnsafeArray<const Char> cmdStr, UOSInt cmdLen)
 {
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	if (this->stm->Write(Data::ByteArrayR((UInt8*)cmdStr, cmdLen)) == cmdLen)
+	if (this->stm->Write(Data::ByteArrayR(UnsafeArray<const UInt8>::ConvertFrom(cmdStr), cmdLen)) == cmdLen)
 	{
 		if (this->WaitForReply(1000))
 		{
@@ -249,7 +249,7 @@ IO::Device::DensoWaveQK30U::DensoWaveQK30U(NN<IO::Stream> stm) : IO::CodeScanner
 	this->stm = stm;
 	this->scanDelay = 1000;
 
-	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
+	this->recvBuff = MemAllocArr(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->recvRunning = true;
 	this->recvToStop = false;
@@ -271,7 +271,7 @@ IO::Device::DensoWaveQK30U::~DensoWaveQK30U()
 		Sync::SimpleThread::Sleep(10);
 	}
 //	DEL_CLASS(this->nextTime);
-	MemFree(this->recvBuff);
+	MemFreeArr(this->recvBuff);
 	this->stm.Delete();
 }
 
@@ -333,7 +333,7 @@ void IO::Device::DensoWaveQK30U::HandleCodeScanned(ScanHandler hdlr, AnyType use
 	this->scanHdlrObj = userObj;
 }
 
-UOSInt IO::Device::DensoWaveQK30U::GetCommandList(Data::ArrayList<DeviceCommand> *cmdList)
+UOSInt IO::Device::DensoWaveQK30U::GetCommandList(NN<Data::ArrayList<DeviceCommand>> cmdList)
 {
 	UOSInt initCnt = cmdList->GetCount();
 /*	cmdList->Add(DC_GET_READ_MODE);
@@ -468,7 +468,7 @@ Text::CString IO::Device::DensoWaveQK30U::GetCommandName(DeviceCommand dcmd)
 	return CSTR("Unknown");
 }
 
-IO::Device::DensoWaveQK30U::CommandType IO::Device::DensoWaveQK30U::GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal)
+IO::Device::DensoWaveQK30U::CommandType IO::Device::DensoWaveQK30U::GetCommandParamType(DeviceCommand dcmd, OutParam<Int32> minVal, OutParam<Int32> maxVal)
 {
 	switch (dcmd)
 	{

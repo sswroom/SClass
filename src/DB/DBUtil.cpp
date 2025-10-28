@@ -5,7 +5,7 @@
 #include "DB/DBUtil.h"
 #include "IO/MemoryStream.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/WKBWriter.h"
 #include "Math/WKTWriter.h"
 #include "Math/Geometry/Point.h"

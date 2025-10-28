@@ -5,7 +5,7 @@
 #include "DB/DBConn.h"
 #include "DB/ODBCConn.h"
 #include "DB/DBTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Point.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"

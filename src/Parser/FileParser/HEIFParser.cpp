@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Media/ICCProfile.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
 #include "Media/StaticImage.h"

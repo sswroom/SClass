@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Exporter/WebPExporter.h"
 #include "Media/ImageList.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 #include <webp/encode.h>

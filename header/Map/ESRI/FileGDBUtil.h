@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_ESRI_FILEGDBUTIL
 #define _SM_MAP_ESRI_FILEGDBUTIL
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/ByteArray.h"
 #include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystem.h"
@@ -15,14 +15,14 @@ namespace Map
 		struct FileGDBFieldInfo
 		{
 			NN<Text::String> name;
-			Text::String *alias;
+			Optional<Text::String> alias;
 			UInt8 fieldType;
 			UInt32 fieldSize;
 			UInt8 flags;
 			UInt8 defSize;
-			UInt8 *defValue;
+			UnsafeArrayOpt<UInt8> defValue;
 			UOSInt srsSize;
-			UInt8 *srsValue;
+			UnsafeArrayOpt<UInt8> srsValue;
 		};
 
 		struct FileGDBTableInfo
@@ -31,7 +31,7 @@ namespace Map
 			UInt8 geometryType;
 			UInt8 tableFlags;
 			UInt8 geometryFlags;
-			Data::ArrayList<FileGDBFieldInfo*> *fields;
+			NN<Data::ArrayListNN<FileGDBFieldInfo>> fields;
 
 			Optional<Math::CoordinateSystem> csys;
 			Double xOrigin;
@@ -60,12 +60,12 @@ namespace Map
 		{
 		public:
 			static Optional<FileGDBTableInfo> ParseFieldDesc(Data::ByteArray fieldDesc, NN<Math::ArcGISPRJParser> prjParser);
-			static void FreeFieldInfo(FileGDBFieldInfo *fieldInfo);
+			static void FreeFieldInfo(NN<FileGDBFieldInfo> fieldInfo);
 			static void FreeTableInfo(NN<FileGDBTableInfo> tableInfo);
-			static FileGDBFieldInfo *FieldInfoClone(FileGDBFieldInfo *tableInfo);
+			static NN<FileGDBFieldInfo> FieldInfoClone(NN<FileGDBFieldInfo> tableInfo);
 			static NN<FileGDBTableInfo> TableInfoClone(NN<FileGDBTableInfo> tableInfo);
-			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, OutParam<UInt64> val);
-			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, OutParam<Int64> val);
+			static UOSInt ReadVarUInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<UInt64> val);
+			static UOSInt ReadVarInt(UnsafeArray<const UInt8> buff, UOSInt ofst, OutParam<Int64> val);
 			static UOSInt ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<UInt64> val);
 			static UOSInt ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<Int64> val);
 			static Optional<Math::Geometry::Vector2D> ParseSDERecord(Data::ByteArrayR buff);

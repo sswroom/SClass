@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Path.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/MMALStillCapture.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -17,7 +17,7 @@
 #include <mmal/util/mmal_util.h>
 #include <mmal/util/mmal_util_params.h>
 
-typedef struct
+struct Media::MMALStillCapture::ClassData
 {
 	MMAL_COMPONENT_T *camera;
 	MMAL_PORT_T *port;
@@ -29,12 +29,12 @@ typedef struct
 	Bool running;
 
 	Bool imageEnd;
-	IO::Stream *stm;
+	NN<IO::Stream> stm;
 	Sync::Event *readEvt;
 	Bool succ;
 	Bool start;
 	Bool nextStart;
-} MMALInfo;
+};
 
 void MMALStillCapture_ControlCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
@@ -44,7 +44,7 @@ void MMALStillCapture_ControlCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 void MMALStillCapture_BufferCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
 	MMAL_BUFFER_HEADER_T *new_buffer;
-	MMALInfo *info = (MMALInfo *) port->userdata;
+	Media::MMALStillCapture::ClassData *info = (Media::MMALStillCapture::ClassData *) port->userdata;
 
 	Int32 leng = 0;
 	mmal_buffer_header_mem_lock(buffer);
@@ -88,8 +88,7 @@ void MMALStillCapture_BufferCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 
 Media::MMALStillCapture::MMALStillCapture()
 {
-	MMALInfo *info = MemAlloc(MMALInfo, 1);
-	this->classData = info;
+	this->classData = MemAllocNN(ClassData);
 	NEW_CLASS(info->readEvt, Sync::Event(true));
 	info->camera = 0;
 	info->port = 0;
@@ -118,20 +117,20 @@ Media::MMALStillCapture::MMALStillCapture()
 
 Media::MMALStillCapture::~MMALStillCapture()
 {
-	MMALInfo *info =  (MMALInfo*)this->classData;
+	NN<ClassData> info =  this->classData;
 	this->DeviceEnd();
 	if (info->camera)
 	{
-                mmal_component_destroy(info->camera);
+		mmal_component_destroy(info->camera);
 		info->camera = 0;
 	}
 	DEL_CLASS(info->readEvt);
-	MemFree(info);
+	MemFreeNN(info);
 }
 
 Bool Media::MMALStillCapture::DeviceBegin()
 {
-	MMALInfo *info =  (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	if (info->camera == 0)
 	{
 		return false;
@@ -223,7 +222,7 @@ Bool Media::MMALStillCapture::DeviceBegin()
 		return false;
 	}
 	
-	info->encoderOutputPort->userdata = (struct MMAL_PORT_USERDATA_T *)info;
+	info->encoderOutputPort->userdata = (struct MMAL_PORT_USERDATA_T *)info.Ptr();
 
 	MMAL_STATUS_T status =  mmal_connection_create(&info->connection, info->port, info->encoderInputPort, MMAL_CONNECTION_FLAG_TUNNELLING | MMAL_CONNECTION_FLAG_ALLOCATION_ON_INPUT);
 	if (status == MMAL_SUCCESS)
@@ -248,7 +247,7 @@ Bool Media::MMALStillCapture::DeviceBegin()
 
 void Media::MMALStillCapture::DeviceEnd()
 {
-	MMALInfo *info =  (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	if (info->connection)
 	{
 		mmal_connection_disable(info->connection);
@@ -283,9 +282,9 @@ void Media::MMALStillCapture::DeviceEnd()
 	}
 }
 
-Bool Media::MMALStillCapture::CapturePhoto(Media::PhotoCapturer::PhotoFormat *fmt, IO::Stream *stm)
+Bool Media::MMALStillCapture::CapturePhoto(OutParam<Media::PhotoCapturer::PhotoFormat> fmt, NN<IO::Stream> stm)
 {
-	MMALInfo *info =  (MMALInfo*)this->classData;
+	NN<ClassData> info =  this->classData;
 	if (info->connection == 0)
 	{
 		return false;
@@ -349,7 +348,7 @@ Bool Media::MMALStillCapture::CapturePhoto(Media::PhotoCapturer::PhotoFormat *fm
 		mmal_port_disable(info->encoderOutputPort);
 		return false;
 	}
-	*fmt = PF_JPG;
+	fmt.Set(PF_JPG);
 	clk.Start();
 	while (!info->imageEnd && clk.GetTimeDiff() < 2.0)
 	{

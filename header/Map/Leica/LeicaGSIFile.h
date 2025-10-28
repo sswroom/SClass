@@ -20,10 +20,10 @@ namespace Map
 			virtual ~LeicaGSIFile();
 
 			virtual FileType GetFileType() = 0;
-			virtual Bool ExportExcel(IO::SeekableStream *stm, const WChar *fileName) = 0;
+			virtual Bool ExportExcel(NN<IO::SeekableStream> stm, Text::CStringNN fileName) = 0;
 
-			static LeicaGSIFile *Parse(IO::Stream *fs);
-			static void ParseHeader(WChar **sarr, OSInt colCount, LeicaGSIFile *file);
+			static Optional<LeicaGSIFile> Parse(NN<IO::Stream> fs);
+			static void ParseHeader(UnsafeArray<Text::PString> sarr, UOSInt colCount, NN<LeicaGSIFile> file);
 		};
 	}
 }

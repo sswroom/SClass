@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Text/MyString.h"
 #include "Text/StringUtil.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRExportParamForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)

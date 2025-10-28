@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Data/ChartPlotter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ColorProfile.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeForm.h"
 #include "Sync/MutexUsage.h"

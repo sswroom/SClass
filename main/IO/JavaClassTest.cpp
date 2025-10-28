@@ -8,14 +8,15 @@
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::JavaClass *cls = IO::JavaClass::ParseFile(CSTR("Test.class"));
+	Optional<IO::JavaClass> cls = IO::JavaClass::ParseFile(CSTR("Test.class"));
+	NN<IO::JavaClass> nncls;
 	console.WriteLine(CSTR("ParseFile Returned\r\n"));
-	if (cls)
+	if (cls.SetTo(nncls))
 	{
 		Text::StringBuilderUTF8 sb;
-		cls->FileStructDetail(sb);
+		nncls->FileStructDetail(sb);
 		console.WriteLine(sb.ToCString());
 	}
-	SDEL_CLASS(cls);
+	cls.Delete();
 	return 0;
 }

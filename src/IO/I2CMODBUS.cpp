@@ -13,7 +13,7 @@ IO::I2CMODBUS::~I2CMODBUS()
 {
 }
 
-Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
+Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UnsafeArray<UInt8> data)
 {
 	UInt8 buff[64];
 	buff[0] = 3;
@@ -33,7 +33,7 @@ Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
 	UInt16 dataCRC = ReadUInt16(&buff[2 + len]);
 	if (dataCRC == 0)
 	{
-		MemCopyNO(data, &buff[2], len);
+		MemCopyNO(&data[0], &buff[2], len);
 		return true;
 	}
 	UInt8 crcVal[2];
@@ -42,7 +42,7 @@ Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
 	this->crc.GetValue(crcVal);
 	if (((UInt16)~ReadMUInt16(crcVal)) == dataCRC)
 	{
-		MemCopyNO(data, &buff[2], len);
+		MemCopyNO(&data[0], &buff[2], len);
 		return true;
 	}
 	else
@@ -52,13 +52,13 @@ Bool IO::I2CMODBUS::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
 	}
 }
 
-Bool IO::I2CMODBUS::WriteBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
+Bool IO::I2CMODBUS::WriteBuff(UInt8 regAddr, UInt8 len, UnsafeArray<const UInt8> data)
 {
 	UInt8 buff[64];
 	buff[0] = 0x10;
 	buff[1] = regAddr;
 	buff[2] = len;
-	MemCopyNO(&buff[3], data, len);
+	MemCopyNO(&buff[3], &data[0], len);
 	UInt8 crcVal[2];
 	this->crc.Clear();
 	this->crc.Calc(buff, (UOSInt)len + 3);

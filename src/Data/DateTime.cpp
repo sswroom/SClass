@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 #if defined(_WIN32) || defined(_WIN32_WCE)
 #include <windows.h>

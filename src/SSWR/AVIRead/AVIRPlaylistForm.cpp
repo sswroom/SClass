@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRPlaylistForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"

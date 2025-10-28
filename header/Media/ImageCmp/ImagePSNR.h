@@ -9,14 +9,14 @@ namespace Media
 		class ImagePSNR
 		{
 		private:
-			Media::ImageCmp::ImageMeanSqrErr *msr;
+			Media::ImageCmp::ImageMeanSqrErr msr;
 
 		public:
 			ImagePSNR();
 			~ImagePSNR();
 
-			Double CompareImage(Media::Image *oriImage, Media::Image *cmpImage);
+			Double CompareImage(NN<Media::RasterImage> oriImage, NN<Media::RasterImage> cmpImage);
 		};
-	};
-};
+	}
+}
 #endif

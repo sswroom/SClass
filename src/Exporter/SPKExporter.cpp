@@ -147,7 +147,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				while (k-- > 0)
 				{
 					mstm.Clear();
-					if (orux->GetObjectData(objIds.GetItem(k), &mstm, &tileX, &tileY, &modTimeTicks))
+					if (orux->GetObjectData(objIds.GetItem(k), mstm, tileX, tileY, modTimeTicks))
 					{
 						sptr = Text::StrUInt32(sbuff, i);
 						*sptr++ = IO::Path::PATH_SEPERATOR;

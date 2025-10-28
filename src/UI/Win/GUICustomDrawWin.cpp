@@ -11,7 +11,7 @@
 
 #include "MyMemory.h"
 #include "IO/Library.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Ellipse.h"
 #include "Math/Geometry/PieArea.h"
 #include "Math/Geometry/Polyline.h"

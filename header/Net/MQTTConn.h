@@ -38,7 +38,7 @@ namespace Net
 		typedef void (CALLBACKFUNC DisconnectHdlr)(AnyType userObj);
 	private:
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
-		IO::Stream *stm;
+		Optional<IO::Stream> stm;
 		AnyType cliData;
 		Bool recvRunning;
 		Bool recvStarted;
@@ -57,9 +57,9 @@ namespace Net
 		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 
-		void OnPublishMessage(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize);
+		void OnPublishMessage(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize);
 		Optional<PacketInfo> GetNextPacket(UInt8 packetType, Data::Duration timeout);
-		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
+		Bool SendPacket(UnsafeArray<const UInt8> packet, UOSInt packetSize);
 
 		void InitStream(NN<IO::Stream> stm);
 	public:

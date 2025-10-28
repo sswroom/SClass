@@ -76,13 +76,14 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		sb.AppendUOSInt(j);
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
 	}
-	if (me->radioLogger)
+	NN<IO::RadioSignalLogger> radioLogger;
+	if (me->radioLogger.SetTo(radioLogger))
 	{
 		sb.AppendC(UTF8STRC("Log Wifi count = "));
-		sb.AppendU64(me->radioLogger->GetWiFiCount());
+		sb.AppendU64(radioLogger->GetWiFiCount());
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Log BT count = "));
-		sb.AppendU64(me->radioLogger->GetBTCount());
+		sb.AppendU64(radioLogger->GetBTCount());
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 
 	}
@@ -600,7 +601,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTSc
 	}
 }
 
-Net::WebServer::CapturerWebHandler::CapturerWebHandler(Optional<Net::WiFiCapturer> wifiCapture, Optional<IO::BTCapturer> btCapture, IO::RadioSignalLogger *radioLogger)
+Net::WebServer::CapturerWebHandler::CapturerWebHandler(Optional<Net::WiFiCapturer> wifiCapture, Optional<IO::BTCapturer> btCapture, Optional<IO::RadioSignalLogger> radioLogger)
 {
 	this->wifiCapture = wifiCapture;
 	this->btCapture = btCapture;

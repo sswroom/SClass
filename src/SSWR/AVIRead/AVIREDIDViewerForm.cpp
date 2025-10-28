@@ -2,7 +2,7 @@
 #include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/StmData/MemoryDataCopy.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DDCReader.h"
 #include "Media/EDID.h"
 #include "SSWR/AVIRead/AVIREDIDViewerForm.h"

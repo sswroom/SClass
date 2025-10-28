@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_RECTAREADBL
 #define _SM_MATH_RECTAREADBL
 #include "Math/Coord2DDbl.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Quadrilateral.h"
 #include "Math/Size2DDbl.h"
 

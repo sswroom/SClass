@@ -159,42 +159,45 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::Web
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	Text::Builder::HTMLDocumentBuilder builder(Text::Builder::HTMLDocumentBuilder::DocType::HTML5, CSTR("Devices"));
-	Text::Builder::HTMLBodyBuilder *body = builder.StartBody(nullptr);
-	body->BeginTable();
-	body->BeginTableRow();
-	body->AddTableHeader(CSTR("UserName"));
-	body->AddTableHeader(CSTR("DevModel"));
-	body->AddTableHeader(CSTR("Address"));
-	body->AddTableHeader(CSTR("Time"));
-	body->AddTableHeader(CSTR("DevType"));
-	body->EndElement();
+	NN<Text::Builder::HTMLBodyBuilder> body;
+	if (builder.StartBody(nullptr).SetTo(body))
 	{
-		UTF8Char sbuff[128];
-		UnsafeArray<UTF8Char> sptr;
-		Sync::MutexUsage mutUsage;
-		NN<const Data::ReadingListNN<Net::PushManager::DeviceInfo2>> devList = me->mgr->GetDevices(mutUsage);
-		NN<Net::PushManager::DeviceInfo2> dev;
-		UOSInt i = 0;
-		UOSInt j = devList->GetCount();
-		while (i < j)
+		body->BeginTable();
+		body->BeginTableRow();
+		body->AddTableHeader(CSTR("UserName"));
+		body->AddTableHeader(CSTR("DevModel"));
+		body->AddTableHeader(CSTR("Address"));
+		body->AddTableHeader(CSTR("Time"));
+		body->AddTableHeader(CSTR("DevType"));
+		body->EndElement();
 		{
-			dev = devList->GetItemNoCheck(i);
-			body->BeginTableRow();
-			body->AddTableData(dev->userName->ToCString());
-			body->AddTableData(OPTSTR_CSTR(dev->devModel).OrEmpty());
-			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->subscribeAddr).Or(sbuff);
-			body->AddTableData(CSTRP(sbuff, sptr));
-			sptr = dev->lastSubscribeTime.ToString(sbuff);
-			body->AddTableData(CSTRP(sbuff, sptr));
-			body->AddTableData(Net::PushManager::DeviceTypeGetName(dev->devType));
-			body->EndElement();
-			body->BeginTableRowPixelHeight(50);
-			body->AddTableData(dev->token->ToCString(), 5, 1, Text::HAlignment::Unknown, Text::VAlignment::Top);
-			body->EndElement();
-			i++;
+			UTF8Char sbuff[128];
+			UnsafeArray<UTF8Char> sptr;
+			Sync::MutexUsage mutUsage;
+			NN<const Data::ReadingListNN<Net::PushManager::DeviceInfo2>> devList = me->mgr->GetDevices(mutUsage);
+			NN<Net::PushManager::DeviceInfo2> dev;
+			UOSInt i = 0;
+			UOSInt j = devList->GetCount();
+			while (i < j)
+			{
+				dev = devList->GetItemNoCheck(i);
+				body->BeginTableRow();
+				body->AddTableData(dev->userName->ToCString());
+				body->AddTableData(OPTSTR_CSTR(dev->devModel).OrEmpty());
+				sptr = Net::SocketUtil::GetAddrName(sbuff, dev->subscribeAddr).Or(sbuff);
+				body->AddTableData(CSTRP(sbuff, sptr));
+				sptr = dev->lastSubscribeTime.ToString(sbuff);
+				body->AddTableData(CSTRP(sbuff, sptr));
+				body->AddTableData(Net::PushManager::DeviceTypeGetName(dev->devType));
+				body->EndElement();
+				body->BeginTableRowPixelHeight(50);
+				body->AddTableData(dev->token->ToCString(), 5, 1, Text::HAlignment::Unknown, Text::VAlignment::Top);
+				body->EndElement();
+				i++;
+			}
 		}
+		body->EndElement();
 	}
-	body->EndElement();
 	Text::CStringNN content = builder.Build();
 
 	resp->AddDefHeaders(req);

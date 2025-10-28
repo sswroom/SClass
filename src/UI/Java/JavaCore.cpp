@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 //#include "Media/JavaDrawEngine.h"
 #include "Media/DrawEngineFactory.h"
 #include "UI/GUICore.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "DB/ColDef.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"

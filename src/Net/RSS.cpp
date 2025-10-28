@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/RSS.h"
 #include "Net/URL.h"
 #include "Text/MyStringFloat.h"

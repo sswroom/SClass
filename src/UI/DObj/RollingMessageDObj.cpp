@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DrawImageTool.h"
 #include "Media/ImageUtil.h"
 #include "Sync/Interlocked.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
 
@@ -148,7 +148,7 @@ Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass
 	return Map::MapDrawLayer::OC_OTHER;
 }
 
-void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::String *camera, Int32 timeAdj)
+void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Optional<Text::String> camera, Int32 timeAdj)
 {
 	this->cameraMap.Put(camera, timeAdj);
 }

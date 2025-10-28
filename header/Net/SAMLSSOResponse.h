@@ -1,5 +1,6 @@
 #ifndef _SM_NET_SAMLSSORESPONSE
 #define _SM_NET_SAMLSSORESPONSE
+#include "Data/ArrayListStringNN.h"
 #include "Data/Timestamp.h"
 #include "Net/SAMLStatusCode.h"
 #include "Text/String.h"
@@ -40,6 +41,7 @@ namespace Net
 		Optional<Text::String> givenname;
 		Optional<Text::String> surname;
 		Optional<Text::String> emailAddress;
+		Data::ArrayListStringNN group;
 
 	public:
 		SAMLSSOResponse(ResponseError error, Text::CStringNN errorMessage);
@@ -77,6 +79,8 @@ namespace Net
 		void SetSurname(Text::CString surname) { OPTSTR_DEL(this->surname); this->surname = Text::String::NewOrNull(surname); }
 		Optional<Text::String> GetEmailAddress() const { return this->emailAddress; }
 		void SetEmailAddress(Text::CString emailAddress) { OPTSTR_DEL(this->emailAddress); this->emailAddress = Text::String::NewOrNull(emailAddress); }
+		NN<const Data::ArrayListStringNN> GetGroup() const { return this->group; }
+		void AddGroup(Text::CStringNN group) { this->group.Add(Text::String::New(group)); }
 
 		static Text::CStringNN ResponseErrorGetName(Net::SAMLSSOResponse::ResponseError val);
 	};

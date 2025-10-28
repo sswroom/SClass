@@ -17,7 +17,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Data::ChartPlotter> chart;
 
-			static void __stdcall OnSizeChanged(AnyType userObj);
+			static void __stdcall SizeChanged(AnyType userObj);
 		public:
 			AVIRChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ChartPlotter> chart);
 			virtual ~AVIRChartForm();

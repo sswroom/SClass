@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/TransferFuncLogSqrt10.h"
 
 Media::CS::TransferFuncLogSqrt10::TransferFuncLogSqrt10() : Media::CS::TransferFunc(Media::CS::TRANT_LOGSQRT10, 2.2)

@@ -20,8 +20,8 @@ namespace IO
 		static const NumberMap uuids[];
 	public:
 		static Text::CStringNN GetManufacturerName(UInt16 manuf);
-		static void GetAddrText(NN<Text::StringBuilderUTF8> sb, UInt8 *addr);
-		static UInt64 GetAddrMAC(UInt8 *addr);
+		static void GetAddrText(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> addr);
+		static UInt64 GetAddrMAC(UnsafeArray<const UInt8> addr);
 		static Text::CStringNN GetUUIDName(UInt16 uuid);
 		static void GetServiceName(NN<Text::StringBuilderUTF8> sb, NN<Data::UUID> serviceUUID);
 	};

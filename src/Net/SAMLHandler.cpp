@@ -1089,6 +1089,10 @@ NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebReque
 											{
 												saml->SetSurname(sbTmp.ToCString());
 											}
+											else if (s->Equals(CSTR("http://schemas.xmlsoap.org/claims/Group")))
+											{
+												saml->AddGroup(sbTmp.ToCString());
+											}
 										}
 									}
 									else

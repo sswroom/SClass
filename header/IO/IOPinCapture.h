@@ -11,22 +11,22 @@ namespace IO
 	private:
 		struct CaptureBuff
 		{
-			CaptureBuff *prevBuff;
+			Optional<CaptureBuff> prevBuff;
 			UOSInt thisBuffSize;
 			UOSInt thisDataCnt;
-			Double *times;
-			Int32 *isHigh;
+			UnsafeArray<Double> times;
+			UnsafeArray<Int32> isHigh;
 		};
 	private:
 		NN<IO::IOPin> pin;
 		Manage::HiResClock clk;
-		CaptureBuff *capBuff;
+		NN<CaptureBuff> capBuff;
 		Double lastTime;
 		Bool lastVal;
 		Double startTime;
 
-		void FreeCaptureData(CaptureBuff *buff);
-		UOSInt AddCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh, CaptureBuff *buff);
+		void FreeCaptureData(NN<CaptureBuff> buff);
+		UOSInt AddCaptureData(NN<Data::ArrayList<Double>> times, NN<Data::ArrayList<Int32>> isHigh, NN<CaptureBuff> buff);
 	public:
 		IOPinCapture(NN<IO::IOPin> pin);
 		virtual ~IOPinCapture();
@@ -38,7 +38,7 @@ namespace IO
 		virtual Bool SetPullType(PullType pt);
 		virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> buff);
 
-		UOSInt GetCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh);
+		UOSInt GetCaptureData(NN<Data::ArrayList<Double>> times, NN<Data::ArrayList<Int32>> isHigh);
 	};
 }
 #endif

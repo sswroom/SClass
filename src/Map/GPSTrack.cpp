@@ -6,7 +6,7 @@
 #include "DB/TableDef.h"
 #include "Map/GPSTrack.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/LineString.h"
 #include "Sync/MutexUsage.h"

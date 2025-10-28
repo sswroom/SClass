@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Exporter/BMPExporter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
 #include "Media/ImageList.h"
 #include "Text/MyString.h"
@@ -254,9 +254,10 @@ Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 
 	stm->Write(Data::ByteArrayR(buff, hdrSize + 14));
-	if (img->info.storeBPP <= 8)
+	UnsafeArray<UInt8> pal;
+	if (img->info.storeBPP <= 8 && img->pal.SetTo(pal))
 	{
-		stm->Write(Data::ByteArrayR(img->pal, palSize));
+		stm->Write(Data::ByteArrayR(pal, palSize));
 	}
 
 	UInt8 *imgData = MemAlloc(UInt8, lineSize * img->info.dispSize.y);

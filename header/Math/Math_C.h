@@ -1,5 +1,5 @@
-#ifndef _SM_MATH_MATH
-#define _SM_MATH_MATH
+#ifndef _SM_MATH_MATH_C
+#define _SM_MATH_MATH_C
 #if defined(_MSC_VER) && _MSC_VER == 1500
 #pragma warning (disable: 4985)
 #endif

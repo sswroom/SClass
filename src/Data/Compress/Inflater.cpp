@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Data/Compress/Inflater.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include <assert.h>
 
 #define INFLATER_BUFFSIZE 1048576

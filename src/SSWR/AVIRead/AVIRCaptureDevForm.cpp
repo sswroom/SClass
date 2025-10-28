@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 		UOSInt currSize;
 		UOSInt fmtCnt;
 		UOSInt i;
-		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
+		Media::CS::CSConverter::GetSupportedCS(supportedCS);
 
 		devInfo.AppendC(UTF8STRC("Name: "));
 		sptr = currCapture->GetSourceName(sbuff).Or(sbuff);

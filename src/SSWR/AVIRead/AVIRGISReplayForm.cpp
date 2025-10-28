@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/Polyline.h"
 #include "SSWR/AVIRead/AVIRGISReplayForm.h"
@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	UOSInt j = nameArr.GetCount();
 	while (i < j)
 	{
-		if (!s.Set(nameArr.GetItem(i)))
+		if (!nameArr.GetItem(i).SetTo(s))
 		{
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
 			this->cboName->AddItem(CSTRP(sbuff, sptr), 0);

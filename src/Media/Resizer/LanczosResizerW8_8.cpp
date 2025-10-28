@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/LanczosFilter.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/TransferFunc.h"
@@ -842,19 +842,21 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerW8_8::ProcessToNewPar
 	destInfo.pf = Media::PF_PAL_W8;
 	destInfo.storeBPP = 8;
 	NEW_CLASS(newImage, Media::StaticImage(destInfo));
-	UInt8 *pal = newImage->pal;
-	UOSInt i = 0;
-	UOSInt j = 256;
-	while (i < j)
+	UnsafeArray<UInt8> pal;
+	if (newImage->pal.SetTo(pal))
 	{
-		pal[0] = (UInt8)i;
-		pal[1] = (UInt8)i;
-		pal[2] = (UInt8)i;
-		pal[3] = (UInt8)0xff;
-		pal += 4;
-		i++;
+		UOSInt i = 0;
+		UOSInt j = 256;
+		while (i < j)
+		{
+			pal[0] = (UInt8)i;
+			pal[1] = (UInt8)i;
+			pal[2] = (UInt8)i;
+			pal[3] = (UInt8)0xff;
+			pal += 4;
+			i++;
+		}
 	}
-
 	Int32 tlx = (Int32)srcTL.x;
 	Int32 tly = (Int32)srcTL.y;
 	OSInt bpp = srcImage->info.storeBPP >> 3;

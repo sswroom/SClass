@@ -27,7 +27,7 @@ namespace Net
 			virtual void ShutdownSend();
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj);
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data);
-			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr);
+			virtual Bool SwitchProtocol(Optional<ProtocolHandler> protoHdlr);
 			virtual Text::CStringNN GetRespHeaders();
 
 			virtual Bool IsDown() const;

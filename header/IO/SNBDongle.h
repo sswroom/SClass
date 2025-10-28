@@ -113,7 +113,7 @@ namespace IO
 		IO::SNBProtocol *proto;
 		IO::SNBProtocol::ProtocolHandler protoHdlr;
 		AnyType protoObj;
-		SNBHandler *hdlr;
+		NN<SNBHandler> hdlr;
 		Data::FastMap<UInt64, DeviceInfo*> devMap;
 		Sync::RWMutex devMut;
 		UInt64 dongleId;
@@ -122,7 +122,7 @@ namespace IO
 		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd);
 		DeviceInfo *GetDevice(UInt64 devId);
 	public:
-		SNBDongle(NN<IO::Stream> stm, SNBHandler *hdlr);
+		SNBDongle(NN<IO::Stream> stm, NN<SNBHandler> hdlr);
 		~SNBDongle();
 
 		void SetDevHandleType(UInt64 devId, HandleType handType);

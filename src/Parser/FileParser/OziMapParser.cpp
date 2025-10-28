@@ -6,7 +6,7 @@
 #include "IO/StmData/FileData.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/PointMappingCoordinateSystem.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"

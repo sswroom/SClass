@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/StmData/MemoryDataRef.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
 #include "Media/JPEGDecoder.h"
 #include "Parser/FileParser/GUIImgParser.h"

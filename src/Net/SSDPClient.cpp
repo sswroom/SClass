@@ -126,13 +126,13 @@ void __stdcall Net::SSDPClient::SSDPDeviceFree(NN<SSDPDevice> dev)
 Net::SSDPClient::SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log)
 {
 	this->userAgent = Text::String::NewOrNull(userAgent);
-	NEW_CLASS(this->udp, Net::UDPServer(sockf, 0, 0, nullptr, OnPacketRecv, this, log, nullptr, 2, false));
+	NEW_CLASSNN(this->udp, Net::UDPServer(sockf, 0, 0, nullptr, OnPacketRecv, this, log, nullptr, 2, false));
 	this->udp->SetBroadcast(true);
 }
 
 Net::SSDPClient::~SSDPClient()
 {
-	DEL_CLASS(this->udp);
+	this->udp.Delete();
 	OPTSTR_DEL(this->userAgent);
 	this->devMap.FreeAll(SSDPDeviceFree);
 }
@@ -169,7 +169,7 @@ NN<const Data::ReadingListNN<Net::SSDPClient::SSDPDevice>> Net::SSDPClient::GetD
 	return this->devMap;
 }
 
-#define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(sb); v = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+#define SET_VALUE(v) OPTSTR_DEL(v); sb.ClearStr(); reader.ReadNodeText(sb); v = Text::String::New(sb.ToString(), sb.GetLength());
 NN<Net::SSDPClient::SSDPRoot> Net::SSDPClient::SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm)
 {
 	NN<SSDPRoot> root = MemAllocNN(SSDPRoot);
@@ -253,16 +253,16 @@ NN<Net::SSDPClient::SSDPRoot> Net::SSDPClient::SSDPRootParse(Optional<Text::Enco
 
 void __stdcall Net::SSDPClient::SSDPRootFree(NN<SSDPRoot> root)
 {
-	SDEL_STRING(root->udn);
-	SDEL_STRING(root->friendlyName);
-	SDEL_STRING(root->manufacturer);
-	SDEL_STRING(root->manufacturerURL);
-	SDEL_STRING(root->modelName);
-	SDEL_STRING(root->modelNumber);
-	SDEL_STRING(root->modelURL);
-	SDEL_STRING(root->serialNumber);
-	SDEL_STRING(root->presentationURL);
-	SDEL_STRING(root->deviceType);
-	SDEL_STRING(root->deviceURL);
+	OPTSTR_DEL(root->udn);
+	OPTSTR_DEL(root->friendlyName);
+	OPTSTR_DEL(root->manufacturer);
+	OPTSTR_DEL(root->manufacturerURL);
+	OPTSTR_DEL(root->modelName);
+	OPTSTR_DEL(root->modelNumber);
+	OPTSTR_DEL(root->modelURL);
+	OPTSTR_DEL(root->serialNumber);
+	OPTSTR_DEL(root->presentationURL);
+	OPTSTR_DEL(root->deviceType);
+	OPTSTR_DEL(root->deviceURL);
 	MemFreeNN(root);
 }

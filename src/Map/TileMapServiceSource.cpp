@@ -65,8 +65,8 @@ void Map::TileMapServiceSource::LoadXML()
 #if defined(VERBOSE)
 							printf("SRID = %d\r\n", this->csys->GetSRID());
 #endif
-							const Math::CoordinateSystemManager::SpatialRefInfo *srInfo = Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID());
-							if (srInfo)
+							NN<const Math::CoordinateSystemManager::SpatialRefInfo> srInfo;
+							if (Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID()).SetTo(srInfo))
 							{
 								NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 								this->csysOrigin = Math::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));

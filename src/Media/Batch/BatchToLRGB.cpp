@@ -4,7 +4,7 @@
 #include "Media/Batch/BatchToLRGB.h"
 #include "Sync/MutexUsage.h"
 
-Media::Batch::BatchToLRGB::BatchToLRGB(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::Batch::BatchHandler *hdlr) : srcProfile(srcProfile), destProfile(destProfile)
+Media::Batch::BatchToLRGB::BatchToLRGB(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::Batch::BatchHandler> hdlr) : srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->hdlr = hdlr;
 	this->csconv = 0;
@@ -17,7 +17,7 @@ Media::Batch::BatchToLRGB::~BatchToLRGB()
 	this->csconv.Delete();
 }
 
-void Media::Batch::BatchToLRGB::SetHandler(Media::Batch::BatchHandler *hdlr)
+void Media::Batch::BatchToLRGB::SetHandler(Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
@@ -58,6 +58,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(NN<Media::ImageList> imgList, Text::
 		i++;
 	}
 
-	if (this->hdlr)
-		this->hdlr->ImageOutput(imgList, fileId, subId);
+	NN<Media::Batch::BatchHandler> hdlr;
+	if (this->hdlr.SetTo(hdlr))
+		hdlr->ImageOutput(imgList, fileId, subId);
 }

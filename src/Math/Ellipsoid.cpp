@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Ellipsoid.h"
 
 Double Math::Ellipsoid::CalcPolarAxis(Double equator, Double flattening)
@@ -25,36 +25,36 @@ Math::Ellipsoid::~Ellipsoid()
 {
 }
 
-Bool Math::Ellipsoid::GetX(Double y, Double z, Double *x1, Double *x2)
+Bool Math::Ellipsoid::GetX(Double y, Double z, OutParam<Double> x1, OutParam<Double> x2)
 {
 	Double tmp = 1 - (y * y) / (radiusY * radiusY) - (z * z) / (radiusZ * radiusZ);
 	if (tmp < 0)
 		return false;
 	tmp = Math_Sqrt(tmp * radiusX * radiusX);
-	*x1 = tmp;
-	*x2 = -tmp;
+	x1.Set(tmp);
+	x2.Set(-tmp);
 	return true;
 }
 
-Bool Math::Ellipsoid::GetY(Double x, Double z, Double *y1, Double *y2)
+Bool Math::Ellipsoid::GetY(Double x, Double z, OutParam<Double> y1, OutParam<Double> y2)
 {
 	Double tmp = 1 - (x * x) / (radiusX * radiusX) - (z * z) / (radiusZ * radiusZ);
 	if (tmp < 0)
 		return false;
 	tmp = Math_Sqrt(tmp * radiusY * radiusY);
-	*y1 = tmp;
-	*y2 = -tmp;
+	y1.Set(tmp);
+	y2.Set(-tmp);
 	return true;
 }
 
-Bool Math::Ellipsoid::GetZ(Double x, Double y, Double *z1, Double *z2)
+Bool Math::Ellipsoid::GetZ(Double x, Double y, OutParam<Double> z1, OutParam<Double> z2)
 {
 	Double tmp = 1 - (x * x) / (radiusX * radiusX) - (y * y) / (radiusY * radiusY);
 	if (tmp < 0)
 		return false;
 	tmp = Math_Sqrt(tmp * radiusZ * radiusZ);
-	*z1 = tmp;
-	*z2 = -tmp;
+	z1.Set(tmp);
+	z2.Set(-tmp);
 	return true;
 }
 

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 extern "C" const Double Math_PI = 3.14159265358979324;
 extern "C" const Double Math_E = 2.71828182845904523;

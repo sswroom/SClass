@@ -22,9 +22,13 @@ Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN conte
 #endif
 	ZXing::BitMatrix bitMatrix = writer.encode(s, (int)outputSize.x, (int) outputSize.y);
 	Media::StaticImage *simg;
+	UnsafeArray<UInt8> pal;
 	NEW_CLASS(simg, Media::StaticImage(outputSize, 0, 1, Media::PixelFormat::PF_PAL_W1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
-	WriteUInt32(&simg->pal[0], 0xFF000000);
-	WriteUInt32(&simg->pal[4], 0xFFFFFFFF);
+	if (simg->pal.SetTo(pal))
+	{
+		WriteUInt32(&pal[0], 0xFF000000);
+		WriteUInt32(&pal[4], 0xFFFFFFFF);
+	}
 	UnsafeArray<UInt8> imgPtr = simg->data;
 	UInt8 b;
 	UOSInt i;

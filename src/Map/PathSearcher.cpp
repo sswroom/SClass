@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Map/PathSearcher.h"
 #include "Math/GeometryTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 Map::PathSearcher::PointNode::PointNode(Double x, Double y, Int32 ix, Int32 iy)
 {

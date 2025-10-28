@@ -5,7 +5,7 @@
 #include "IO/Path.h"
 #include "Map/ScaledMapView.h"
 #include "Map/TileMapGenerator.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
@@ -13,7 +13,7 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale)
+void Map::TileMapGenerator::InitMapView(NN<Map::MapView> view, Int32 x, Int32 y, UInt32 scale)
 {
 	view->UpdateSize(Math::Size2DDbl(UOSInt2Double(this->imgSize * this->osSize), UOSInt2Double(this->imgSize * this->osSize)));
 	view->SetDPI((UOSInt2Double(this->osSize) * 96.0), 96.0);
@@ -23,7 +23,7 @@ void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UI
 UnsafeArray<UTF8Char> Map::TileMapGenerator::GenFileName(UnsafeArray<UTF8Char> sbuff, Int32 x, Int32 y, UInt32 scale, Text::CStringNN ext)
 {
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrConcat(sbuff, this->tileDir);
+	sptr = this->tileDir->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -42,7 +42,7 @@ UnsafeArray<UTF8Char> Map::TileMapGenerator::GenFileName(UnsafeArray<UTF8Char> s
 	return sptr;
 }
 
-void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst)
+void Map::TileMapGenerator::AppendDBFile(NN<IO::Writer> writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst)
 {
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -103,7 +103,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, NN<Ma
 	mutUsage.EndUse();
 
 	Map::ScaledMapView view(Math::Size2DDbl(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale, false);
-	InitMapView(&view, x, y, scale);
+	InitMapView(view, x, y, scale);
 
 	params.tileX = x;
 	params.tileY = y;
@@ -128,30 +128,30 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, NN<Ma
 	}
 }
 
-Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, NN<Media::DrawEngine> geng, const UTF8Char *tileDir, UOSInt osSize)
+Map::TileMapGenerator::TileMapGenerator(NN<Map::MapConfig2TGen> mcfg, NN<Media::DrawEngine> geng, Text::CStringNN tileDir, UOSInt osSize)
 {
 	this->imgSize = 512;
 	this->geng = geng;
 	this->mcfg = mcfg;
 	this->osSize = osSize;
 
-	this->tileDir = Text::StrCopyNew(tileDir).Ptr();
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_ALPHA_ALL_FF));
+	this->tileDir = Text::String::New(tileDir);
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_ALPHA_ALL_FF));
 }
 
 Map::TileMapGenerator::~TileMapGenerator()
 {
-	Text::StrDelNew(this->tileDir);
-	DEL_CLASS(this->resizer);
+	this->tileDir->Release();
+	this->resizer.Delete();
 }
 
-Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, UInt32 scale, UInt32 imgSize)
+Math::Coord2D<Int32> Map::TileMapGenerator::GetTileID(Double lat, Double lon, UInt32 scale, UInt32 imgSize)
 {
 	Int32 x;
 	Int32 y;
 	x = (::Int32)(lon * 2000 * 283464 / (Double)scale) / (Int32)imgSize;
 	y = (::Int32)(lat * 2000 * 283464 / (Double)scale) / (Int32)imgSize;
-	return (((Int64)x) << 32) | (0xffffffffLL & (Int64)y);
+	return Math::Coord2D<Int32>(x, y);
 }
 
 Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::MapScheduler> mapSch)
@@ -176,11 +176,11 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::Map
 		Text::UTF8Writer writer(mstm);
 		writer.WriteSignature();
 
-		AppendDBFile(&writer, x, y, scale, 0, 0);
-		AppendDBFile(&writer, x + 1, y, scale, (Int32)this->imgSize, 0);
-		AppendDBFile(&writer, x - 1, y, scale, (Int32)-this->imgSize, 0);
-		AppendDBFile(&writer, x, y + 1, scale, 0, (Int32)-this->imgSize);
-		AppendDBFile(&writer, x, y - 1, scale, 0, (Int32)this->imgSize);
+		AppendDBFile(writer, x, y, scale, 0, 0);
+		AppendDBFile(writer, x + 1, y, scale, (Int32)this->imgSize, 0);
+		AppendDBFile(writer, x - 1, y, scale, (Int32)-this->imgSize, 0);
+		AppendDBFile(writer, x, y + 1, scale, 0, (Int32)-this->imgSize);
+		AppendDBFile(writer, x, y - 1, scale, 0, (Int32)this->imgSize);
 	}
 	mstm.SeekFromBeginning(0);
 	
@@ -194,7 +194,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::Map
 	params.dbStream = &mstm;
 
 	Map::ScaledMapView view(Math::Size2DDbl(this->imgSize, this->imgSize), Math::Coord2DDbl(0, 0), scale, false);
-	InitMapView(&view, x, y, scale);
+	InitMapView(view, x, y, scale);
 
 	if (this->geng->CreateImage32(Math::Size2D<UOSInt>(this->imgSize, this->imgSize), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 	{
@@ -240,15 +240,15 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, NN<Map::Map
 
 Bool Map::TileMapGenerator::GenerateTileArea(Double lat1, Double lon1, Double lat2, Double lon2, UInt32 scale, NN<Map::MapScheduler> mapSch)
 {
-	Int64 id = GetTileID(lat1, lon1, scale, this->imgSize);
+	Math::Coord2D<Int32> id = GetTileID(lat1, lon1, scale, this->imgSize);
 	Int32 i;
 	Int32 j;
 	Int32 tmp;
-	Int32 x1 = (Int32)(id >> 32);
-	Int32 y1 = (Int32)(id & 0xffffffff);
+	Int32 x1 = id.x;
+	Int32 y1 = id.y;
 	id = GetTileID(lat2, lon2, scale, this->imgSize);
-	Int32 x2 = (Int32)(id >> 32);
-	Int32 y2 = (Int32)(id & 0xffffffff);
+	Int32 x2 = id.x;
+	Int32 y2 = id.y;
 	if (x1 > x2)
 	{
 		tmp = x1;

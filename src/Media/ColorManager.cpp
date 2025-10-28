@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "IO/FileStream.h"
 #include "IO/Registry.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ColorManager.h"
 #include "Media/DDCReader.h"
 #include "Media/EDID.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/CSYUV444P10LEP_RGB32C.h"
 #include "Sync/ThreadUtil.h"

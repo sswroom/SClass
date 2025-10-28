@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Exporter/CURExporter.h"
 #include "IO/MemoryStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
@@ -470,7 +470,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			imgPtr += 40;
 			retSize += 40;
 
-			MemCopyNO(imgPtr, img->pal, 8);
+			MemCopyNO(imgPtr, img->pal.Ptr(), 8);
 			imgPtr += 8;
 			retSize += 8;
 
@@ -546,7 +546,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			imgPtr += 40;
 			retSize += 40;
 
-			MemCopyNO(imgPtr, img->pal, 64);
+			MemCopyNO(imgPtr, img->pal.Ptr(), 64);
 			imgPtr += 64;
 			retSize += 64;
 
@@ -622,7 +622,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			imgPtr += 40;
 			retSize += 40;
 
-			MemCopyNO(imgPtr, img->pal, 1024);
+			MemCopyNO(imgPtr, img->pal.Ptr(), 1024);
 			imgPtr += 1024;
 			retSize += 1024;
 

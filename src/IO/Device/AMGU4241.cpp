@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/Device/AMGU4241.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Count.h"
 #include "Math/Unit/Temperature.h"
 

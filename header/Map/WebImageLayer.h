@@ -22,7 +22,7 @@ namespace Map
 		public:
 			Int32 id;
 			NN<Text::String> url;
-			Media::SharedImage *simg;
+			Optional<Media::SharedImage> simg;
 			Optional<IO::StreamData> data;
 			Optional<Text::String> name;
 			Int64 timeStart;

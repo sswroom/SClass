@@ -12,14 +12,14 @@ struct IO::DebugWriter::ClassData
 
 IO::DebugWriter::DebugWriter()
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->buffSize = 0;
 	this->clsData->buff[0] = 0;
 }
 
 IO::DebugWriter::~DebugWriter()
 {
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 void IO::DebugWriter::Flush()

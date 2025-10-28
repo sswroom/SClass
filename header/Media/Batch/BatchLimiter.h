@@ -9,13 +9,13 @@ namespace Media
 		class BatchLimiter : public BatchHandler
 		{
 		private:
-			Media::Batch::BatchHandler *hdlr;
+			Optional<Media::Batch::BatchHandler> hdlr;
 
 		public:
-			BatchLimiter(Media::Batch::BatchHandler *hdlr);
+			BatchLimiter(Optional<Media::Batch::BatchHandler> hdlr);
 			virtual ~BatchLimiter();
 			
-			void SetHandler(Media::Batch::BatchHandler *hdlr);
+			void SetHandler(Optional<Media::Batch::BatchHandler> hdlr);
 		private:
 			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};

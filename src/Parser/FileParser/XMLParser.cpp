@@ -9,7 +9,7 @@
 #include "Map/KMLXML.h"
 #include "Map/OruxDBLayer.h"
 #include "Map/OSM/OSMParser.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/StaticImage.h"
 #include "Media/Jasper/JasperXML.h"
 #include "Text/MyString.h"

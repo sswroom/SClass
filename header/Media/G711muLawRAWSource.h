@@ -7,7 +7,7 @@ namespace Media
 	class G711muLawRAWSource : public LPCMSource
 	{
 	public:
-		G711muLawRAWSource(NN<IO::StreamData> fd, Int64 ofst, Int64 length, const WChar *name);
+		G711muLawRAWSource(NN<IO::StreamData> fd, Int64 ofst, Int64 length, Text::CStringNN name);
 		virtual ~G711muLawRAWSource();
 	};
 };

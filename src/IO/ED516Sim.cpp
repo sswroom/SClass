@@ -136,46 +136,46 @@ Bool IO::ED516Sim::ToggleValue(UOSInt index)
 	return false;
 }
 
-Bool IO::ED516Sim::ReadCoil(UInt16 coilAddr, Bool *value)
+Bool IO::ED516Sim::ReadCoil(UInt16 coilAddr, OutParam<Bool> value)
 {
 	if (coilAddr >= 0x20 && coilAddr <= 0x2F)
 	{
-		*value = this->diValues[coilAddr - 0x20];
+		value.Set(this->diValues[coilAddr - 0x20]);
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED516Sim::ReadDescreteInput(UInt16 inputAddr, Bool *value)
+Bool IO::ED516Sim::ReadDescreteInput(UInt16 inputAddr, OutParam<Bool> value)
 {
 	if (inputAddr < 16)
 	{
-		*value = this->diValues[inputAddr];
+		value.Set(this->diValues[inputAddr]);
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED516Sim::ReadHoldingRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::ED516Sim::ReadHoldingRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	if (regAddr < 8)
 	{
-		*value = this->diCounts[regAddr];
+		value.Set(this->diCounts[regAddr]);
 		return true;
 	}
 	return false;
 }
 
-Bool IO::ED516Sim::ReadInputRegister(UInt16 regAddr, UInt16 *value)
+Bool IO::ED516Sim::ReadInputRegister(UInt16 regAddr, OutParam<UInt16> value)
 {
 	if (regAddr < 16)
 	{
-		*value = this->diCounts[regAddr];
+		value.Set(this->diCounts[regAddr]);
 		return true;
 	}
 	else if (regAddr == 0x20)
 	{
-		*value = (UInt16)((this->diValues[0] << 0) |
+		value.Set((UInt16)((this->diValues[0] << 0) |
 			(this->diValues[1] << 1) |
 			(this->diValues[2] << 2) |
 			(this->diValues[3] << 3) |
@@ -190,7 +190,7 @@ Bool IO::ED516Sim::ReadInputRegister(UInt16 regAddr, UInt16 *value)
 			(this->diValues[12] << 12) |
 			(this->diValues[13] << 13) |
 			(this->diValues[14] << 14) |
-			(this->diValues[15] << 15));
+			(this->diValues[15] << 15)));
 		return true;
 	}
 	return false;

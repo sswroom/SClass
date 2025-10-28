@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/GPSNMEA.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/RWMutexUsage.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
@@ -14,7 +14,7 @@ void IO::GPSNMEA::ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, NN<SateRecord> sateRec)
 {
 	UnsafeArray<UTF8Char> sarr[32];
 	UOSInt scnt;
@@ -99,7 +99,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, 
 			{
 				record->nSateViewGPS = (UInt8)nSateView;
 			}
-			if (sateRec && nSateView == record->nSateViewGPS)
+			if (nSateView == record->nSateViewGPS)
 			{
 				UOSInt i = 4;
 				UOSInt j;
@@ -275,7 +275,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(AnyType userObj)
 				{
 					me->cmdHdlr(me->cmdHdlrObj, sbuff, (UOSInt)(sptr - sbuff));
 				}
-				ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), record, &sateRec);
+				ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), record, sateRec);
 				switch (ps)
 				{
 				case ParseStatus::NotNMEA:
@@ -385,7 +385,7 @@ void IO::GPSNMEA::HandleCommand(CommandHandler cmdHdlr, AnyType userObj)
 	this->cmdHdlr = cmdHdlr;
 }
 
-UOSInt IO::GPSNMEA::GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, UInt8 *buff)
+UOSInt IO::GPSNMEA::GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, UnsafeArray<UInt8> buff)
 {
 	UOSInt size;
 	UInt8 chk;
@@ -424,7 +424,7 @@ NN<Map::GPSTrack> IO::GPSNMEA::NMEA2Track(NN<IO::Stream> stm, Text::CStringNN so
 		{
 			break;
 		}
-		ps = ParseNMEALine(sb.v, sb.GetLength(), record, &sateRec);
+		ps = ParseNMEALine(sb.v, sb.GetLength(), record, sateRec);
 		if (ps == ParseStatus::NewRecord)
 		{
 			trk->AddRecord(record);

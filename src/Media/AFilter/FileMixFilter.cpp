@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/StmData/FileData.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/AudioFormat.h"
 #include "Media/MediaFile.h"
 #include "Media/AFilter/FileMixFilter.h"

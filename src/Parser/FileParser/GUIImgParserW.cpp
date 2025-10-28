@@ -7,9 +7,9 @@
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Geometry/VectorImage.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/JPEGFile.h"
@@ -205,7 +205,11 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 				Int32 size = bmp->GetPaletteSize();
 				pal = (Gdiplus::ColorPalette*)MemAlloc(UInt8, (UInt32)size);
 				bmp->GetPalette(pal, size);
-				MemCopyNO(img->pal, &pal->Entries, pal->Count * 4);
+				UnsafeArray<UInt8> nnpal;
+				if (img->pal.SetTo(nnpal))
+				{
+					MemCopyNO(nnpal.Ptr(), &pal->Entries, pal->Count * 4);
+				}
 				MemFree(pal);
 				NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 				imgList->AddImage(img, 0);

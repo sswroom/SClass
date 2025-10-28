@@ -1383,6 +1383,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	NN<Net::TCPClient> cli;
 	NN<MySQLTCPBinaryReader> cmdBinReader;
 	NN<MySQLTCPReader> cmdTCPReader;
+	NN<Text::String> svrVer;
 	{
 		me->recvStarted = true;
 		me->recvRunning = true;
@@ -1456,15 +1457,15 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								}
 								else
 								{
-									me->svrVer = Text::String::NewNotNullSlow(&buff[5]).Ptr();
+									me->svrVer = svrVer = Text::String::NewNotNullSlow(&buff[5]);
 									me->connId = ReadUInt32(&buff[packetSize - 9]);
 									MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 									me->authPluginDataSize = 8;
 									me->mode = ClientMode::Authen;
-									me->axisAware = Net::MySQLUtil::IsAxisAware(me->svrVer->ToCString());
+									me->axisAware = Net::MySQLUtil::IsAxisAware(svrVer->ToCString());
 									////////////////////////////////
 	#if defined(VERBOSE)
-									printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), me->svrVer->v);
+									printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), svrVer->v);
 									printf("MySQLTCP %d Conn Id = %d\r\n", cli->GetLocalPort(), me->connId);
 									sb.ClearStr();
 									sb.AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
@@ -1480,10 +1481,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 								ptrEnd = &buff[packetSize + 4];
 								sptr = Text::StrConcatS(sbuff, &buff[5], packetSize - 1);
 								ptrCurr = &buff[6] + (sptr - sbuff);
-								me->svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
-								me->axisAware = Net::MySQLUtil::IsAxisAware(me->svrVer->ToCString());
+								me->svrVer = svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+								me->axisAware = Net::MySQLUtil::IsAxisAware(svrVer->ToCString());
 	#if defined(VERBOSE)
-								printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), me->svrVer->v);
+								printf("MySQLTCP %d Server ver = %s\r\n", cli->GetLocalPort(), svrVer->v);
 								printf("MySQLTCP %d Axis-Aware = %d\r\n", cli->GetLocalPort(), me->axisAware?1:0);
 	#endif
 								if (ptrEnd - ptrCurr >= 15)
@@ -2136,7 +2137,7 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 	this->userName->Release();
 	this->password->Release();
 	OPTSTR_DEL(this->database);
-	SDEL_STRING(this->svrVer);
+	OPTSTR_DEL(this->svrVer);
 	OPTSTR_DEL(this->lastError);
 }
 
@@ -2396,7 +2397,7 @@ void Net::MySQLTCPClient::Reconnect()
 	this->recvRunning = false;
 	this->recvStarted = false;
 	this->mode = ClientMode::Handshake;
-	SDEL_STRING(this->svrVer);
+	OPTSTR_DEL(this->svrVer);
 	this->axisAware = false;
 	NN<Net::TCPClient> cli;
 	this->cli = cli = this->clif->Create(this->addr, this->port, 15000);
@@ -2551,7 +2552,7 @@ Bool Net::MySQLTCPClient::ServerInfoRecv()
 	return this->mode >= ClientMode::Authen;
 }
 
-Text::String *Net::MySQLTCPClient::GetServerVer()
+Optional<Text::String> Net::MySQLTCPClient::GetServerVer()
 {
 	return this->svrVer;
 }
@@ -2561,9 +2562,9 @@ UInt32 Net::MySQLTCPClient::GetConnId()
 	return this->connId;
 }
 
-UOSInt Net::MySQLTCPClient::GetAuthPluginData(UInt8 *buff)
+UOSInt Net::MySQLTCPClient::GetAuthPluginData(UnsafeArray<UInt8> buff)
 {
-	MemCopyNO(buff, this->authPluginData, this->authPluginDataSize);
+	MemCopyNO(&buff[0], this->authPluginData, this->authPluginDataSize);
 	return this->authPluginDataSize;
 }
 

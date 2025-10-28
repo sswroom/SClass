@@ -30,7 +30,7 @@ namespace Exporter
 
 	private:
 		static void GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group);
-		static UInt32 AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, Text::String *strVal, UInt32 fileOfst);
+		static UInt32 AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, Optional<Text::String> strVal, UInt32 fileOfst);
 		static UInt32 AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, UnsafeArray<const UTF8Char> strVal, UOSInt strLen, UInt32 fileOfst);
 		static void WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NN<IO::SeekableStream> stm, NN<Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord>> strArr, Data::ArrayListString *dirArr);
 	};

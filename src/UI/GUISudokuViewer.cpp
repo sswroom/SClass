@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "UI/GUISudokuViewer.h"

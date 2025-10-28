@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/CSRGB16_LRGBC.h"
 #include "Media/CS/TransferFunc.h"
 
@@ -18,9 +18,10 @@ extern "C"
 
 void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 {
-	if (this->rgbTable == 0)
+	UnsafeArray<UInt8> rgbTable;
+	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = MemAllocA(UInt8, 1572864);
+		this->rgbTable = rgbTable = MemAllocAArr(UInt8, 1572864);
 	}
 	OSInt i;
 	Double thisV;
@@ -57,7 +58,7 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 		Media::ColorProfile::GetConvMatrix(mat1, this->srcProfile.GetPrimaries(), this->destProfile.GetPrimaries());
 	}
 
-	Int64 *rgbGammaCorr = (Int64*)this->rgbTable;
+	UnsafeArray<Int64> rgbGammaCorr = UnsafeArray<Int64>::ConvertFrom(rgbTable);
 	i = 65536;
 	while (i--)
 	{
@@ -109,9 +110,10 @@ Media::CS::CSRGB16_LRGBC::CSRGB16_LRGBC(UOSInt srcNBits, Media::PixelFormat srcP
 
 Media::CS::CSRGB16_LRGBC::~CSRGB16_LRGBC()
 {
-	if (this->rgbTable)
+	UnsafeArray<UInt8> rgbTable;
+	if (this->rgbTable.SetTo(rgbTable))
 	{
-		MemFreeA(this->rgbTable);
+		MemFreeAArr(rgbTable);
 		this->rgbTable = 0;
 	}
 }
@@ -130,31 +132,31 @@ void Media::CS::CSRGB16_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> s
 	}
 	if (this->srcPF == Media::PF_LE_A2B10G10R10)
 	{
-		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R16G16B16A16)
 	{
-		CSRGB16_LRGBC_ConvertR16G16B16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertR16G16B16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_B16G16R16)
 	{
-		CSRGB16_LRGBC_ConvertB16G16R16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertB16G16R16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_R16G16B16)
 	{
-		CSRGB16_LRGBC_ConvertR16G16B16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertR16G16B16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_W16A16)
 	{
-		CSRGB16_LRGBC_ConvertW16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertW16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 	}
 	else if (this->srcPF == Media::PF_LE_W16)
 	{
-		CSRGB16_LRGBC_ConvertW16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertW16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 	}
 	else
 	{
-		CSRGB16_LRGBC_ConvertB16G16R16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertB16G16R16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable.Ptr());
 	}
 }
 
@@ -168,7 +170,7 @@ UOSInt Media::CS::CSRGB16_LRGBC::GetDestFrameSize(UOSInt width, UOSInt height)
 	return width * height * 8;
 }
 
-void Media::CS::CSRGB16_LRGBC::SetPalette(UInt8 *pal)
+void Media::CS::CSRGB16_LRGBC::SetPalette(UnsafeArray<UInt8> pal)
 {
 }
 

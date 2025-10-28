@@ -20,19 +20,19 @@ namespace Media
 				NN<Text::String> targetId;
 			} TargetParam;
 		private:
-			Media::ImageResizer *resizer;
-			Media::Batch::BatchHandler *hdlr;
-			Data::ArrayList<TargetParam*> targetParam;
+			NN<Media::ImageResizer> resizer;
+			Optional<Media::Batch::BatchHandler> hdlr;
+			Data::ArrayListNN<TargetParam> targetParam;
 			Sync::Mutex resizeMut;
 
 		public:
-			BatchResizer(Media::ImageResizer *resizer, Media::Batch::BatchHandler *hdlr);
+			BatchResizer(NN<Media::ImageResizer> resizer, Optional<Media::Batch::BatchHandler> hdlr);
 			virtual ~BatchResizer();
 			
 			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NN<Text::String> targetId);
 			void AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NN<Text::String> targetId);
 			void ClearTargetSizes();
-			void SetHandler(Media::Batch::BatchHandler *hdlr);
+			void SetHandler(Optional<Media::Batch::BatchHandler> hdlr);
 		private:
 			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};

@@ -8,35 +8,35 @@ namespace Math
 	class GeographicCoordinateSystemBF : public Math::CoordinateSystemBF
 	{
 	private:
-		Math::BigFloat *semiMajorAxis;
-		Math::BigFloat *inverseFlattening;
-		Math::BigFloat *semiMinorAxis;
-		Math::BigFloat *eccentricity;
-		Math::GeographicCoordinateSystem::GeoCoordSysType gcst;
+		NN<Math::BigFloat> semiMajorAxis;
+		NN<Math::BigFloat> inverseFlattening;
+		NN<Math::BigFloat> semiMinorAxis;
+		NN<Math::BigFloat> eccentricity;
+		Math::CoordinateSystemManager::GeoCoordSysType gcst;
 
 	public:
-		GeographicCoordinateSystemBF(const WChar *name, Math::BigFloat *semiMajorAxisMeter, Math::BigFloat *inverseFlattening, Math::GeographicCoordinateSystem::GeoCoordSysType gcst);
+		GeographicCoordinateSystemBF(Text::CStringNN name, NN<const Math::BigFloat> semiMajorAxisMeter, NN<const Math::BigFloat> inverseFlattening, Math::CoordinateSystemManager::GeoCoordSysType gcst);
 		virtual ~GeographicCoordinateSystemBF();
 
-		virtual void CalSurfaceDistanceXY(Math::BigFloat *x1, Math::BigFloat *y1, Math::BigFloat *x2, Math::BigFloat *y2, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual void CalPLDistance(Math::Polyline *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual void CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Math::CoordinateSystemBF *Clone() const;
+		virtual void CalSurfaceDistanceXY(NN<const Math::BigFloat> x1, NN<const Math::BigFloat> y1, NN<const Math::BigFloat> x2, NN<const Math::BigFloat> y2, NN<Math::BigFloat> dist, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual void CalPLDistance(NN<Math::Geometry::Polyline> pl, NN<Math::BigFloat> dist, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual void CalPLDistance3D(NN<Math::Geometry::Polyline> pl, NN<Math::BigFloat> dist, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual NN<Math::CoordinateSystemBF> Clone() const;
 		virtual Math::CoordinateSystem::CoordinateSystemType GetCoordSysType() const;
 
-		Math::BigFloat *GetSemiMajorAxis() const;
-		Math::BigFloat *GetSemiMinorAxis() const;
-		Math::BigFloat *GetInverseFlattening() const;
-		Math::BigFloat *GetEccentricity() const;
-		void CalLonByDist(Math::BigFloat *inLat, Math::BigFloat *inLon, Math::BigFloat *distM, Math::BigFloat *outLon) const;
-		void CalLatByDist(Math::BigFloat *inLat, Math::BigFloat *distM, Math::BigFloat *outLat) const;
-		void CalRadiusAtLat(Math::BigFloat *lat, Math::BigFloat *outRadius) const;
-		Bool Equals(Math::GeographicCoordinateSystemBF *gcs) const;
+		NN<const Math::BigFloat> GetSemiMajorAxis() const;
+		NN<const Math::BigFloat> GetSemiMinorAxis() const;
+		NN<const Math::BigFloat> GetInverseFlattening() const;
+		NN<const Math::BigFloat> GetEccentricity() const;
+		void CalLonByDist(NN<const Math::BigFloat> inLat, NN<const Math::BigFloat> inLon, NN<const Math::BigFloat> distM, NN<Math::BigFloat> outLon) const;
+		void CalLatByDist(NN<const Math::BigFloat> inLat, NN<const Math::BigFloat> distM, NN<Math::BigFloat> outLat) const;
+		void CalRadiusAtLat(NN<const Math::BigFloat> lat, NN<Math::BigFloat> outRadius) const;
+		Bool Equals(NN<const Math::GeographicCoordinateSystemBF> gcs) const;
 
-		void ToCartesianCoord(Math::BigFloat *lat, Math::BigFloat *lon, Math::BigFloat *h, Math::BigFloat *x, Math::BigFloat *y, Math::BigFloat *z) const;
-		void FromCartesianCoord(Math::BigFloat *x, Math::BigFloat *y, Math::BigFloat *z, Math::BigFloat *lat, Math::BigFloat *lon, Math::BigFloat *h) const;
+		void ToCartesianCoord(NN<const Math::BigFloat> lat, NN<const Math::BigFloat> lon, NN<const Math::BigFloat> h, NN<Math::BigFloat> x, NN<Math::BigFloat> y, NN<Math::BigFloat> z) const;
+		void FromCartesianCoord(NN<const Math::BigFloat> x, NN<const Math::BigFloat> y, NN<const Math::BigFloat> z, NN<Math::BigFloat> lat, NN<Math::BigFloat> lon, NN<Math::BigFloat> h) const;
 
-		static Optional<Math::GeographicCoordinateSystemBF> CreateCoordinateSystem(Math::GeographicCoordinateSystem::GeoCoordSysType gcst);
+		static Optional<Math::GeographicCoordinateSystemBF> CreateCoordinateSystem(Math::CoordinateSystemManager::GeoCoordSysType gcst);
 	};
 }
 #endif

@@ -24,7 +24,7 @@ void IO::I2C::Wait()
 	}
 }
 
-Bool IO::I2C::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
+Bool IO::I2C::ReadBuff(UInt8 regAddr, UInt8 len, UnsafeArray<UInt8> data)
 {
 	if (this->channel->I2CWrite(&regAddr, 1) != 1)
 	{
@@ -40,10 +40,10 @@ Bool IO::I2C::ReadBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
 	return true;
 }
 
-Bool IO::I2C::WriteBuff(UInt8 regAddr, UInt8 len, UInt8 *data)
+Bool IO::I2C::WriteBuff(UInt8 regAddr, UInt8 len, UnsafeArray<const UInt8> data)
 {
 	UInt8 buff[64];
 	buff[0] = regAddr;
-	MemCopyNO(&buff[1], data, len);
+	MemCopyNO(&buff[1], &data[0], len);
 	return this->channel->I2CWrite(buff, (UOSInt)len + 1) == (UOSInt)(len + 1);
 }

@@ -2,9 +2,9 @@
 #include "Data/ByteTool.h"
 #include "Exporter/TIFFExporter.h"
 #include "IO/MemoryStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageList.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Text/MyString.h"
 
 void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 buffOfst, NN<Media::EXIFData> exif)
@@ -339,20 +339,23 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
 			UInt8 *colorTable = MemAlloc(UInt8, 2 * 6);
-			UInt8 *srcPtr = img->pal;
 			UInt8 *destPtr = colorTable;
-			OSInt k;
-			k = 2;
-			while (k-- > 0)
+			UnsafeArray<UInt8> srcPtr;
+			if (img->pal.SetTo(srcPtr))
 			{
-				destPtr[0] = srcPtr[2];
-				destPtr[1] = srcPtr[2];
-				destPtr[4 + 0] = srcPtr[1];
-				destPtr[4 + 1] = srcPtr[1];
-				destPtr[8 + 0] = srcPtr[0];
-				destPtr[8 + 1] = srcPtr[0];
-				srcPtr += 4;
-				destPtr += 2;
+				OSInt k;
+				k = 2;
+				while (k-- > 0)
+				{
+					destPtr[0] = srcPtr[2];
+					destPtr[1] = srcPtr[2];
+					destPtr[4 + 0] = srcPtr[1];
+					destPtr[4 + 1] = srcPtr[1];
+					destPtr[8 + 0] = srcPtr[0];
+					destPtr[8 + 1] = srcPtr[0];
+					srcPtr += 4;
+					destPtr += 2;
+				}
 			}
 			newExif->AddUInt16(320, 2 * 3, (UInt16*)colorTable);
 			MemFree(colorTable);
@@ -369,20 +372,23 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
 			UInt8 *colorTable = MemAlloc(UInt8, 4 * 6);
-			UInt8 *srcPtr = img->pal;
 			UInt8 *destPtr = colorTable;
-			OSInt k;
-			k = 4;
-			while (k-- > 0)
+			UnsafeArray<UInt8> srcPtr;
+			if (img->pal.SetTo(srcPtr))
 			{
-				destPtr[0] = srcPtr[2];
-				destPtr[1] = srcPtr[2];
-				destPtr[8 + 0] = srcPtr[1];
-				destPtr[8 + 1] = srcPtr[1];
-				destPtr[16 + 0] = srcPtr[0];
-				destPtr[16 + 1] = srcPtr[0];
-				srcPtr += 4;
-				destPtr += 2;
+				OSInt k;
+				k = 4;
+				while (k-- > 0)
+				{
+					destPtr[0] = srcPtr[2];
+					destPtr[1] = srcPtr[2];
+					destPtr[8 + 0] = srcPtr[1];
+					destPtr[8 + 1] = srcPtr[1];
+					destPtr[16 + 0] = srcPtr[0];
+					destPtr[16 + 1] = srcPtr[0];
+					srcPtr += 4;
+					destPtr += 2;
+				}
 			}
 			newExif->AddUInt16(320, 4 * 3, (UInt16*)colorTable);
 			MemFree(colorTable);
@@ -399,20 +405,23 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
 			UInt8 *colorTable = MemAlloc(UInt8, 16 * 6);
-			UInt8 *srcPtr = img->pal;
 			UInt8 *destPtr = colorTable;
-			OSInt k;
-			k = 16;
-			while (k-- > 0)
+			UnsafeArray<UInt8> srcPtr;
+			if (img->pal.SetTo(srcPtr))
 			{
-				destPtr[0] = srcPtr[2];
-				destPtr[1] = srcPtr[2];
-				destPtr[32 + 0] = srcPtr[1];
-				destPtr[32 + 1] = srcPtr[1];
-				destPtr[64 + 0] = srcPtr[0];
-				destPtr[64 + 1] = srcPtr[0];
-				srcPtr += 4;
-				destPtr += 2;
+				OSInt k;
+				k = 16;
+				while (k-- > 0)
+				{
+					destPtr[0] = srcPtr[2];
+					destPtr[1] = srcPtr[2];
+					destPtr[32 + 0] = srcPtr[1];
+					destPtr[32 + 1] = srcPtr[1];
+					destPtr[64 + 0] = srcPtr[0];
+					destPtr[64 + 1] = srcPtr[0];
+					srcPtr += 4;
+					destPtr += 2;
+				}
 			}
 			newExif->AddUInt16(320, 16 * 3, (UInt16*)colorTable);
 			MemFree(colorTable);
@@ -429,20 +438,23 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			newExif->AddUInt16(262, 1, sibuff); //PhotometricInterpretation
 			newExif->Remove(284); //PlanarConfiguration
 			UInt8 *colorTable = MemAlloc(UInt8, 256 * 6);
-			UInt8 *srcPtr = img->pal;
 			UInt8 *destPtr = colorTable;
-			OSInt k;
-			k = 256;
-			while (k-- > 0)
+			UnsafeArray<UInt8> srcPtr;
+			if (img->pal.SetTo(srcPtr))
 			{
-				destPtr[0] = srcPtr[2];
-				destPtr[1] = srcPtr[2];
-				destPtr[512 + 0] = srcPtr[1];
-				destPtr[512 + 1] = srcPtr[1];
-				destPtr[1024 + 0] = srcPtr[0];
-				destPtr[1024 + 1] = srcPtr[0];
-				srcPtr += 4;
-				destPtr += 2;
+				OSInt k;
+				k = 256;
+				while (k-- > 0)
+				{
+					destPtr[0] = srcPtr[2];
+					destPtr[1] = srcPtr[2];
+					destPtr[512 + 0] = srcPtr[1];
+					destPtr[512 + 1] = srcPtr[1];
+					destPtr[1024 + 0] = srcPtr[0];
+					destPtr[1024 + 1] = srcPtr[0];
+					srcPtr += 4;
+					destPtr += 2;
+				}
 			}
 			newExif->AddUInt16(320, 256 * 3, (UInt16*)colorTable);
 			MemFree(colorTable);

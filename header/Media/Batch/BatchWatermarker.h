@@ -16,14 +16,14 @@ namespace Media
 			NN<Media::DrawEngine> deng;
 			Media::ABlend::AlphaBlend8_8 ablend;
 			Optional<Text::String> watermark;
-			Media::Batch::BatchHandler *hdlr;
+			Optional<Media::Batch::BatchHandler> hdlr;
 
 		public:
-			BatchWatermarker(NN<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr);
+			BatchWatermarker(NN<Media::DrawEngine> deng, Optional<Media::Batch::BatchHandler> hdlr);
 			virtual ~BatchWatermarker();
 			
 			void SetWatermark(Text::CString watermark);
-			void SetHandler(Media::Batch::BatchHandler *hdlr);
+			void SetHandler(Optional<Media::Batch::BatchHandler> hdlr);
 		private:
 			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};

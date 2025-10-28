@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 
 void Media::ImageUtil::ColorReplaceAlpha32(UnsafeArray<UInt8> pixelPtr, UOSInt w, UOSInt h, UInt32 col)
 {

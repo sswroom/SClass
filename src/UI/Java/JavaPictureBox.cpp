@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ImageUtil.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Sync/Interlocked.h"

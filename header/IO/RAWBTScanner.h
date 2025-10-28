@@ -10,7 +10,7 @@ namespace IO
 	private:
 		struct ClassData;
 		
-		struct ClassData *clsData;
+		NN<ClassData> clsData;
 		Sync::Thread thread;
 		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> pubRecMap;
 		Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> randRecMap;

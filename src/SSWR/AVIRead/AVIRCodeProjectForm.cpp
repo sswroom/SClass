@@ -107,7 +107,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF
 		sb->AppendC(UTF8STRC("Files:\r\n"));
 		while (i < j)
 		{
-			sb->Append(status->GetFileName(i));
+			sb->AppendOpt(status->GetFileName(i));
 			sb->AppendC(UTF8STRC("\r\n"));
 
 			i++;

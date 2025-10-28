@@ -46,9 +46,9 @@ NN<Text::String> Net::WebServer::MemoryWebSession::GetOrigin() const
 	return this->origin;
 }
 
-void Net::WebServer::MemoryWebSession::SetValuePtr(Text::CStringNN name, void *val)
+void Net::WebServer::MemoryWebSession::SetValuePtr(Text::CStringNN name, AnyType val)
 {
-	this->items.PutC(name, (Int64)val);
+	this->items.PutC(name, (Int64)val.GetOSInt());
 }
 
 void Net::WebServer::MemoryWebSession::SetValueDbl(Text::CStringNN name, Double val)
@@ -66,7 +66,7 @@ void Net::WebServer::MemoryWebSession::SetValueInt32(Text::CStringNN name, Int32
 	this->items.PutC(name, val);
 }
 
-void *Net::WebServer::MemoryWebSession::GetValuePtr(Text::CStringNN name)
+AnyType Net::WebServer::MemoryWebSession::GetValuePtr(Text::CStringNN name)
 {
 	return (void*)this->items.GetC(name);
 }

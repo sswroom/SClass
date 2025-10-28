@@ -428,7 +428,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(NN<SSWR::SDNSProx
 			{
 				sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 			}
-			sbOut.Append(target->addrList.GetItem(i));
+			sbOut.AppendOpt(target->addrList.GetItem(i));
 			i++;
 		}
 		mutUsage.EndUse();

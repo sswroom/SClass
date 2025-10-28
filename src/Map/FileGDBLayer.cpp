@@ -3,7 +3,7 @@
 #include "DB/TableDef.h"
 #include "Map/FileGDBLayer.h"
 #include "Math/CoordinateSystemManager.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/WKTWriter.h"
 
 Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> Map::FileGDBLayer::ReadNameArr()

@@ -172,9 +172,9 @@ namespace IO
 		virtual Bool ResetDefault() = 0;
 		virtual void HandleCodeScanned(ScanHandler hdlr, AnyType userObj) = 0;
 
-		virtual UOSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList) = 0;
+		virtual UOSInt GetCommandList(NN<Data::ArrayList<DeviceCommand>> cmdList) = 0;
 		virtual Text::CString GetCommandName(DeviceCommand dcmd) = 0;
-		virtual CommandType GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal) = 0;
+		virtual CommandType GetCommandParamType(DeviceCommand dcmd, OutParam<Int32> minVal, OutParam<Int32> maxVal) = 0;
 		virtual Text::CString GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal) = 0;
 		virtual Int32 GetCommand(DeviceCommand dcmd) = 0;
 		virtual Bool SetCommand(DeviceCommand dcmd, Int32 val) = 0;

@@ -237,7 +237,7 @@ namespace SSWR
 			UInt32 scnWidth;
 			Bool isMobile;
 			Optional<WebUserInfo> user;
-			Data::ArrayListInt32 *pickObjs;
+			Optional<Data::ArrayListInt32> pickObjs;
 			PickObjType pickObjType;
 		} RequestEnv;
 

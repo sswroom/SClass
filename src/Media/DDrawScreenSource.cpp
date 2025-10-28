@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DDrawScreenSource.h"
 #include "Sync/ThreadUtil.h"
 #include <windows.h>

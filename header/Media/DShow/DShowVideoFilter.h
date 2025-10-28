@@ -4,7 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Media/H264Parser.h"
 #include "Media/RealtimeVideoSource.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 #include "Media/DShow/DShowInit.h"
 #include <windows.h>

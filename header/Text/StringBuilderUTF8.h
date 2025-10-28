@@ -5,7 +5,7 @@
 #include "Data/ByteArray.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/LineBreakType.h"
 #include "Text/PString.h"
 #include "Text/String.h"
@@ -627,8 +627,8 @@ namespace Text
 				while (buffSize-- > 0)
 				{
 					i++;
-					buffEnd[0] = (UTF8Char)MyString_STRhexarr[*buff >> 4];
-					buffEnd[1] = (UTF8Char)MyString_STRhexarr[*buff & 15];
+					buffEnd[0] = (UTF8Char)MyString_STRhexarr[buff[0] >> 4];
+					buffEnd[1] = (UTF8Char)MyString_STRhexarr[buff[0] & 15];
 					buff++;
 					if (buffSize > 0)
 					{

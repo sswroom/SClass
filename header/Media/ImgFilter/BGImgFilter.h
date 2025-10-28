@@ -1,12 +1,7 @@
 #ifndef _SM_MEDIA_IMAGEFILTER_BGIMGFILTER
 #define _SM_MEDIA_IMAGEFILTER_BGIMGFILTER
 #include "Media/ImageFilter.h"
-
-extern "C"
-{
-	void BGImgFilter_DiffA8_YUY2(UInt8 *destImg, UInt8 *bgImg, UOSInt pxCnt);
-	void BGImgFilter_DiffYUV8(UInt8 *destImg, UInt8 *bgImg, UOSInt byteCnt);
-}
+#include "Media/ImgFilter/BGImgFilter_C.h"
 
 namespace Media
 {
@@ -20,7 +15,7 @@ namespace Media
 			Bool toCreateBG;
 
 			UInt32 bgFormat;
-			UInt8 *bgData;
+			UnsafeArrayOpt<UInt8> bgData;
 			UOSInt bgWidth;
 			UOSInt bgHeight;
 		public:

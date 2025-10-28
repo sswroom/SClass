@@ -1,3 +1,7 @@
+#ifndef _SM_IO_GSMMUX
+#define _SM_IO_GSMMUX
+#include "Data/ArrayListArr.h"
+
 namespace IO
 {
 	class GSMMuxPort;
@@ -24,52 +28,52 @@ namespace IO
 		{
 			Int32 portId;
 			Bool opened;
-			GSMMuxPort *obj;
-			Sync::Event *evt;
-			Data::ArrayList<UInt8*> *data;
+			Optional<GSMMuxPort> obj;
+			Optional<Sync::Event> evt;
+			NN<Data::ArrayListArr<UInt8>> data;
 		};
 
 	private:
-		IO::Stream *stm;
-		GSMPort *ports;
-		Sync::Event *readEvt;
-		Bool reading;
-		UInt8 *readBuff;
+		Optional<IO::Stream> stm;
+		UnsafeArray<GSMPort> ports;
+		NN<Sync::Event> readEvt;
+		UnsafeArray<UInt8> readBuff;
 		Int32 readBuffSize;
-		void *readReq;
+		Optional<IO::StreamReadReq> readReq;
 		Bool checking;
 		Bool closing;
 
 		GSMMux();
-		Int32 SendATCommand(UInt8 *buffer, Int32 buffSize, UInt8 *outBuffer, Int32 *outSize); //0 = OK, 1 = ERROR, 2 = Stream Error
-		UInt8 CalCheck(UInt8 *buff, Int32 buffSize);
+		Int32 SendATCommand(UnsafeArray<UInt8> buffer, Int32 buffSize, UnsafeArrayOpt<UInt8> outBuffer, OptOut<UOSInt> outSize); //0 = OK, 1 = ERROR, 2 = Stream Error
+		UInt8 CalCheck(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	public:
-		GSMMux(IO::Stream *stm, Int32 baudRate);
+		GSMMux(NN<IO::Stream> stm, Int32 baudRate);
 		~GSMMux();
-		GSMMuxPort *OpenVPort(); // NULL if no more ports available
-		void CloseVPort(GSMMuxPort *port);
+		Optional<GSMMuxPort> OpenVPort();
+		void CloseVPort(NN<GSMMuxPort> port);
 		Bool IsError(); // Check if the mux engime get error
-		Int32 SendFrame(Int32 channel, const UInt8 *buffer, Int32 size, GSMFrType frType); //0 = Succeed, 1 = Stream Error
+		Int32 SendFrame(Int32 channel, UnsafeArray<const UInt8> buffer, UOSInt size, GSMFrType frType); //0 = Succeed, 1 = Stream Error
 
 		Bool CheckEvents(Int32 timeout); // Call periodically, return true = error
 		void ParseCommData();
-		GSMMuxPort *HasAnyData(); //NULL = no data
+		Optional<GSMMuxPort> HasAnyData();
 	};
 
 	class GSMMuxPort : public IO::Stream
 	{
 	private:
-		GSMMux::GSMPort *port;
-		GSMMux *mux;
+		NN<GSMMux::GSMPort> port;
+		NN<GSMMux> mux;
 		Bool reading;
 	public:
-		GSMMuxPort(GSMMux *mux, GSMMux::GSMPort *portInfo);
+		GSMMuxPort(NN<GSMMux> mux, NN<GSMMux::GSMPort> portInfo);
 		virtual ~GSMMuxPort();
 
 		Int32 GetChannel();
 
-		virtual Int32 Read(UInt8 *buff, Int32 size);
-		virtual Int32 Write(const UInt8 *buff, Int32 size);
+		virtual Bool IsDown() const;
+		virtual UOSInt Read(const Data::ByteArray &buff);
+		virtual UOSInt Write(Data::ByteArrayR buff);
 
 		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
 		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
@@ -80,5 +84,8 @@ namespace IO
 		
 		virtual Int32 Flush();
 		virtual void Close();
+		virtual Bool Recover();
+		virtual StreamType GetStreamType() const;
 	};
 }
+#endif

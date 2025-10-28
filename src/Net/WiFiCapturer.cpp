@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/WiFiCapturer.h"
 #include "Sync/Interlocked.h"
 

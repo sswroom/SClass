@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/CS/CSI420_RGB32C.h"
 #include "Sync/ThreadUtil.h"
 

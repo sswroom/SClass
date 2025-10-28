@@ -5,7 +5,7 @@
 #include "IO/StreamWriter.h"
 #include "Manage/HiResClock.h"
 #include "Math/FFTCalc.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/AFilter/DTMFDecoder.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"

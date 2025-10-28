@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/Deinterlace8.h"
 #include "Sync/Event.h"
 #include "Sync/ThreadUtil.h"

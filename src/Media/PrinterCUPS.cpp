@@ -2,7 +2,7 @@
 #include "AnyType.h"
 #include "MyMemory.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Distance.h"
 #include "Media/GTKDrawEngine.h"
 #include "Media/PaperSize.h"

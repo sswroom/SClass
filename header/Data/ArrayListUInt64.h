@@ -12,8 +12,8 @@ namespace Data
 
 		virtual NN<ArrayList<UInt64>> Clone() const;
 
-		void AddRangeU32(const UInt32 *arr, UOSInt cnt);
-		void AddRangeU32(const Data::ArrayList<UInt32> *arr);
+		void AddRangeU32(UnsafeArray<const UInt32> arr, UOSInt cnt);
+		void AddRangeU32(NN<const Data::ArrayList<UInt32>> arr);
 	};
 }
 #endif

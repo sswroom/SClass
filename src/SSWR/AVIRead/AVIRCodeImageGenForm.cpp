@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "SSWR/AVIRead/AVIRCodeImageGenForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"

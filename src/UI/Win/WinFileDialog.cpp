@@ -52,7 +52,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 			{
 				sb.AppendC(UTF8STRC(";"));
 			}
-			sb.Append(Text::String::OrEmpty(this->patterns.GetItem(i++)).Ptr());
+			sb.Append(Text::String::OrEmpty(this->patterns.GetItem(i++)));
 		}
 		sb.AppendChar('\0', 1);
 	}
@@ -60,12 +60,12 @@ Bool UI::Win::WinFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 	i = 0;
 	while (i < filterCnt)
 	{
-		sb.Append(this->names.GetItem(i).OrNull());
+		sb.Append(this->names.GetItemNoCheck(i));
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(this->patterns.GetItem(i).OrNull());
+		sb.Append(this->patterns.GetItemNoCheck(i));
 		sb.AppendChar(')', 1);
 		sb.AppendChar('\0', 1);
-		sb.Append(this->patterns.GetItem(i++).OrNull());
+		sb.Append(this->patterns.GetItemNoCheck(i++));
 		sb.AppendChar('\0', 1);
 	}
 	if (!this->isSave)

@@ -229,18 +229,25 @@ void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
 		{
 			this->csys.Delete();
 			this->csys = csys;
-			const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
-			if (csys->IsProjected())
+			NN<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo;
+			if (Math::CoordinateSystemManager::SRGetSpatialRef(srid).SetTo(srinfo))
 			{
-				NN<Math::CoordinateSystem> wgs84Csys = Math::CoordinateSystemManager::CreateWGS84Csys();
-				Math::Coord2DDbl tl = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo));
-				Math::Coord2DDbl br = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
-				this->bounds = Math::RectAreaDbl(tl, br);
-				wgs84Csys.Delete();
+				if (csys->IsProjected())
+				{
+					NN<Math::CoordinateSystem> wgs84Csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+					Math::Coord2DDbl tl = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo));
+					Math::Coord2DDbl br = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
+					this->bounds = Math::RectAreaDbl(tl, br);
+					wgs84Csys.Delete();
+				}
+				else
+				{
+					this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo), Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
+				}
 			}
 			else
 			{
-				this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo), Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
+				this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90));
 			}
 			this->initBounds = this->bounds;
 		}
@@ -306,7 +313,7 @@ Bool Map::ESRI::ESRIMapServer::TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, Int32 tileX, Int32 tileY) const
+Bool Map::ESRI::ESRIMapServer::TileLoadToStream(NN<IO::Stream> stm, UOSInt level, Int32 tileX, Int32 tileY) const
 {
 	UInt8 dataBuff[2048];
 	UTF8Char url[1024];

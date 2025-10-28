@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Event.h"
 #include "Data/ArrayList.h"
-#include "IO/Stream.h"
 #include "IO/GSMMux.h"
+#include "IO/Stream.h"
+#include "Sync/Event.h"
+#include "Sync/SimpleThread.h"
 #include <stdlib.h>
-#include <windows.h>
 
 Int32 GSMSpeed[] = {0, 9600, 19200, 38400, 57600, 115200, 230400, 460800};
 #define MAX_GSMPORT 4
@@ -58,47 +58,53 @@ IO::GSMMux::GSMMux()
 {
 }
 
-Int32 IO::GSMMux::SendATCommand(UInt8 *buffer, Int32 buffSize, UInt8 *outBuffer, Int32 *outSize)
+Int32 IO::GSMMux::SendATCommand(UnsafeArray<UInt8> buffer, Int32 buffSize, UnsafeArrayOpt<UInt8> outBuffer, OptOut<UOSInt> outSize)
 {
-	if (this->stm == 0)
+	NN<IO::Stream> stm;
+	if (!this->stm.SetTo(stm))
 		return 2;
-	Sync::Event *evt;
-	NEW_CLASS(evt, Sync::Event(L"IO.GSMMux.SendATCommand.evt"));
+	NN<Sync::Event> evt;
+	NEW_CLASSNN(evt, Sync::Event());
 	UInt8 readBuff[1024];
 
-	void *readData = stm->BeginRead(readBuff, 1024, evt);
-	stm->Write(buffer, buffSize);
-	if (evt->Wait(1000))
+	NN<IO::StreamReadReq> readData;
+	if (stm->BeginRead(Data::ByteArray(readBuff, 1024), evt).SetTo(readData))
 	{
-		delete evt;
-		stm->CancelRead(readData);
-		return 1;
-	}
-	else
-	{
-		Int32 readSize = stm->EndRead(readData, true);
-		DEL_CLASS(evt);
-		if (outBuffer)
+		stm->Write(Data::ByteArrayR(buffer, buffSize));
+		if (evt->Wait(1000))
 		{
-			*outSize = 0;
-			*outSize += readSize;
-			Int32 i = readSize;
-			UInt8 *src;
-			UInt8 *dest;
-			dest = outBuffer;
-			src = readBuff;
-			while (i--)
-				*dest++ = *src++;
-			return 0;	
+			evt.Delete();
+			stm->CancelRead(readData);
+			return 1;
 		}
-		return 0;
+		else
+		{
+			Bool incomplete;
+			UOSInt readSize = stm->EndRead(readData, true, incomplete);
+			evt.Delete();
+			UnsafeArray<UInt8> nnoutBuffer;
+			if (outBuffer.SetTo(nnoutBuffer));
+			{
+				outSize.Set(readSize);
+				Int32 i = readSize;
+				UInt8 *src;
+				UnsafeArray<UInt8> dest;
+				dest = nnoutBuffer;
+				src = readBuff;
+				while (i--)
+					*dest++ = *src++;
+				return 0;	
+			}
+			return 0;
+		}
 	}
+	return 0;
 }
 
-UInt8 IO::GSMMux::CalCheck(UInt8 *buff, Int32 buffSize)
+UInt8 IO::GSMMux::CalCheck(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	UInt8 fcs = 0xff;
-	Int32 i = buffSize;
+	UOSInt i = buffSize;
 	while (i-- > 0)
 	{
 		fcs = GSM_crctable[fcs ^ *buff++];
@@ -106,14 +112,14 @@ UInt8 IO::GSMMux::CalCheck(UInt8 *buff, Int32 buffSize)
 	return (0xff - fcs);
 }
 
-IO::GSMMux::GSMMux(Stream *stm, Int32 baudRate)
+IO::GSMMux::GSMMux(NN<Stream> stm, Int32 baudRate)
 {
 	Int32 i;
-	NEW_CLASS(this->readEvt, Sync::Event(L"IO.GSMMux.readEvt"));
-	this->ports = MemAlloc(GSMPort, MAX_GSMPORT);
-	this->readBuff = MemAlloc(UInt8, 1024);
+	NEW_CLASSNN(this->readEvt, Sync::Event());
+	this->ports = MemAllocArr(GSMPort, MAX_GSMPORT);
+	this->readBuff = MemAllocArr(UInt8, 1024);
 	this->readBuffSize = 0;
-	this->reading = false;
+	this->readReq = 0;
 	this->checking = false;
 	this->closing = false;
 	i = MAX_GSMPORT;
@@ -123,7 +129,7 @@ IO::GSMMux::GSMMux(Stream *stm, Int32 baudRate)
 		this->ports[i].opened = false;
 		this->ports[i].obj = 0;
 		this->ports[i].evt = 0;
-		NEW_CLASS(this->ports[i].data, Data::ArrayList<UInt8*>());
+		NEW_CLASSNN(this->ports[i].data, Data::ArrayListArr<UInt8>());
 	}
 	this->ports[0].opened = true;
 
@@ -161,55 +167,44 @@ IO::GSMMux::GSMMux(Stream *stm, Int32 baudRate)
 
 	}
 
-	this->reading = true;
-	this->readReq = stm->BeginRead(readBuff, 1024, this->readEvt);
-	this->SendFrame(0, 0, 0, (GSMFrType)(SABM | PF));
+	this->readReq = stm->BeginRead(Data::ByteArray(readBuff, 1024), this->readEvt);
+	this->SendFrame(0, buff, 0, (GSMFrType)(SABM | PF));
 }
 
 IO::GSMMux::~GSMMux()
 {
+	NN<IO::Stream> stm;
+	NN<IO::StreamReadReq> readReq;
 	this->closing = true;
 
-	if (this->reading)
+	if (this->readReq.SetTo(readReq) && this->stm.SetTo(stm))
 	{
-		this->reading = false;
 		this->readEvt->Set();
-		this->stm->CancelRead(readReq);
+		stm->CancelRead(readReq);
 		this->readReq = 0;
 	}
 
-	while (this->reading || this->checking)
+	while (this->readReq.NotNull() || this->checking)
 	{
-		Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
-	if (this->ports)
+	Int32 i = MAX_GSMPORT;
+	UOSInt j;
+	while (i-- > 0)
 	{
-		Int32 i = MAX_GSMPORT;
-		Int32 j;
-		while (i-- > 0)
+		this->ports[i].obj.Delete();
+		j = this->ports[i].data->GetCount();
+		while (j-- > 0)
 		{
-			if (this->ports[i].obj)
-			{
-				delete this->ports[i].obj;
-			}
-			if (this->ports[i].data)
-			{
-				j = this->ports[i].data->GetCount();
-				while (j-- > 0)
-				{
-					MemFree(this->ports[i].data->GetItem(j));
-					this->ports[i].data->RemoveAt(j);
-				}
-				delete this->ports[i].data;
-			}
-			
+			MemFreeArr(this->ports[i].data->GetItemNoCheck(j));
 		}
-		MemFree(this->ports);
-		this->ports = 0;
+		this->ports[i].data.Delete();
+		
 	}
+	MemFreeArr(this->ports);
 	
-	if (this->stm)
+	if (this->stm.NotNull())
 	{
 		UInt8 buff[2];
 		buff[0] = C_CLD | CR;
@@ -217,27 +212,19 @@ IO::GSMMux::~GSMMux()
 		this->SendFrame(0, buff, 2, UIH);
 	}
 
-	if (this->readEvt)
-	{
-		delete this->readEvt;
-		this->readEvt = 0;
-	}
-
-	if (this->readBuff)
-	{
-		MemFree(this->readBuff);
-		this->readBuff = 0;
-	}
+	this->readEvt.Delete();
+	MemFreeArr(this->readBuff);
 }
 
-IO::GSMMuxPort *IO::GSMMux::OpenVPort()
+Optional<IO::GSMMuxPort> IO::GSMMux::OpenVPort()
 {
 	Int32 ch = 1;
 	while (ch <= MAX_GSMPORT)
 	{
-		if (this->ports[ch].opened == false && this->ports[ch].obj == 0)
+		if (this->ports[ch].opened == false && this->ports[ch].obj.IsNull())
 		{
-			GSMMuxPort *port = new GSMMuxPort(this, &this->ports[ch]);
+			NN<GSMMuxPort> port;
+			NEW_CLASSNN(port, GSMMuxPort(*this, this->ports[ch]));
 			return port;
 		}
 		ch++;
@@ -245,19 +232,20 @@ IO::GSMMuxPort *IO::GSMMux::OpenVPort()
 	return 0;
 }
 
-void IO::GSMMux::CloseVPort(GSMMuxPort *port)
+void IO::GSMMux::CloseVPort(NN<GSMMuxPort> port)
 {
-	delete port;
+	port.Delete();
 }
 
 Bool IO::GSMMux::IsError()
 {
-	return this->stm == 0;
+	return this->stm.IsNull();
 }
 
-Int32 IO::GSMMux::SendFrame(Int32 channel, const UInt8 *buffer, Int32 size, GSMFrType frType)
+Int32 IO::GSMMux::SendFrame(Int32 channel, UnsafeArray<const UInt8> buffer, UOSInt size, GSMFrType frType)
 {
-	if (this->stm == 0)
+	NN<IO::Stream> stm;
+	if (!this->stm.SetTo(stm))
 		return 1;
 	UInt8 prefix[5] = { F_FLAG, EA | CR, 0, 0, 0 };
 	UInt8 postfix[2] = {0xff, F_FLAG};
@@ -276,18 +264,19 @@ Int32 IO::GSMMux::SendFrame(Int32 channel, const UInt8 *buffer, Int32 size, GSMF
 		prefix[3] = 1 | (size << 1);
 	}
 	postfix[0] = CalCheck(prefix + 1, prefixLeng - 1);
-	stm->Write(prefix, prefixLeng);
+	stm->Write(Data::ByteArrayR(prefix, prefixLeng));
 	if (size > 0)
 	{
-		stm->Write(buffer, size);
+		stm->Write(Data::ByteArrayR(buffer, size));
 	}
-	stm->Write(postfix, 2);
+	stm->Write(Data::ByteArrayR(postfix, 2));
 	return 0;
 }
 
 Bool IO::GSMMux::CheckEvents(Int32 timeout)
 {
-	if (this->stm == 0)
+	NN<IO::Stream> stm;
+	if (!this->stm.SetTo(stm))
 		return true;
 	if (this->closing)
 		return true;
@@ -296,14 +285,16 @@ Bool IO::GSMMux::CheckEvents(Int32 timeout)
 
 	this->checking = true;
 
-	if (this->reading)
+	if (this->readReq.NotNull())
 	{
+		NN<IO::StreamReadReq> readReq;
 		Bool hasData = !this->readEvt->Wait(timeout);
-		if (hasData && this->reading)
+		if (hasData && this->readReq.SetTo(readReq))
 		{
-			Int32 dataSize = this->stm->EndRead(this->readReq, true);
+			Bool incomplete;
+			UOSInt dataSize = stm->EndRead(readReq, true, incomplete);
 			this->readBuffSize += dataSize;
-			this->reading = false;
+			this->readReq = 0;
 
 			ParseCommData();
 		}
@@ -315,10 +306,9 @@ Bool IO::GSMMux::CheckEvents(Int32 timeout)
 		return true;
 	}
 
-	if (!this->reading)
+	if (this->readReq.IsNull())
 	{
-		this->reading = true;
-		this->readReq = stm->BeginRead(&readBuff[readBuffSize], 1024 - readBuffSize, this->readEvt);
+		this->readReq = stm->BeginRead(Data::ByteArray(&readBuff[readBuffSize], 1024 - readBuffSize), this->readEvt);
 	}
 	this->checking = false;
 	return false;
@@ -336,7 +326,7 @@ void IO::GSMMux::ParseCommData()
 			{
 				if ((i + 6) > this->readBuffSize)
 				{
-					MemCopy(this->readBuff, &this->readBuff[i], this->readBuffSize - i);
+					MemCopyO(&this->readBuff[0], &this->readBuff[i], this->readBuffSize - i);
 					this->readBuffSize -= i;
 					return;
 				}
@@ -356,7 +346,7 @@ void IO::GSMMux::ParseCommData()
 
 				if (frOfst + frSize + 2 > this->readBuffSize)
 				{
-					MemCopy(this->readBuff, &this->readBuff[i], this->readBuffSize - i);
+					MemCopyO(&this->readBuff[0], &this->readBuff[i], this->readBuffSize - i);
 					this->readBuffSize -= i;
 					return;
 				}
@@ -367,12 +357,13 @@ void IO::GSMMux::ParseCommData()
 				if (typ == UI || typ == UIH)
 				{
 					///////////////////////////////////////////////////////////////////////////
+					NN<Sync::Event> evt;
 					UInt8 *data = MemAlloc(UInt8, frSize + 2);
-					MemCopy(&data[2], &this->readBuff[frOfst], frSize);
+					MemCopyNO(&data[2], &this->readBuff[frOfst], frSize);
 					*(Int16*)data = frSize;
 					this->ports[ch].data->Add(data);
-					if (this->ports[ch].evt)
-						this->ports[ch].evt->Set();
+					if (this->ports[ch].evt.SetTo(evt))
+						evt->Set();
 				}
 				else if (typ == UA)
 				{
@@ -404,13 +395,13 @@ void IO::GSMMux::ParseCommData()
 		}
 		else
 		{
-			MemCopy(this->readBuff, &this->readBuff[i], this->readBuffSize - i);
+			MemCopyO(&this->readBuff[0], &this->readBuff[i], this->readBuffSize - i);
 			this->readBuffSize -= i;
 		}
 	}
 }
 
-IO::GSMMuxPort *IO::GSMMux::HasAnyData()
+Optional<IO::GSMMuxPort> IO::GSMMux::HasAnyData()
 {
 	if (this->closing)
 		return 0;
@@ -419,21 +410,22 @@ IO::GSMMuxPort *IO::GSMMux::HasAnyData()
 	{
 		if (this->ports[i].data->GetCount() > 0)
 		{
-			if (this->ports[i].obj)
+			if (this->ports[i].obj.NotNull())
 				return this->ports[i].obj;
 		}
 	}
 	return 0;
 }
 
-IO::GSMMuxPort::GSMMuxPort(GSMMux *mux, GSMMux::GSMPort *portInfo)
+IO::GSMMuxPort::GSMMuxPort(NN<GSMMux> mux, NN<GSMMux::GSMPort> portInfo) : IO::Stream(CSTR("GSMMuxPort"))
 {
+	UInt8 buff[1];
 	this->port = portInfo;
 	this->mux = mux;
 	this->reading = false;
 	this->port->opened = true;
 	this->port->obj = this;
-	mux->SendFrame(this->port->portId, 0, 0, (GSMMux::GSMFrType)(GSMMux::SABM | GSMMux::PF));
+	mux->SendFrame(this->port->portId, buff, 0, (GSMMux::GSMFrType)(GSMMux::SABM | GSMMux::PF));
 }
 
 IO::GSMMuxPort::~GSMMuxPort()
@@ -442,7 +434,7 @@ IO::GSMMuxPort::~GSMMuxPort()
 	this->port->obj = 0;
 	while (this->reading)
 	{
-		Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 }
 
@@ -451,7 +443,12 @@ Int32 IO::GSMMuxPort::GetChannel()
 	return port->portId;
 }
 
-Int32 IO::GSMMuxPort::Read(UInt8 *buff, Int32 size)
+Bool IO::GSMMuxPort::IsDown() const
+{
+	return !this->port->opened;
+}
+
+UOSInt IO::GSMMuxPort::Read(const Data::ByteArray &buff)
 {
 	while (this->reading)
 	{
@@ -468,55 +465,55 @@ Int32 IO::GSMMuxPort::Read(UInt8 *buff, Int32 size)
 			return 0;
 		}
 	}
-	UInt8 *data = this->port->data->GetItem(0);
-	Int32 dataSize = *(Int16*)data;
-	if (dataSize > size)
+	UnsafeArray<UInt8> data = this->port->data->GetItemNoCheck(0);
+	UOSInt dataSize = *(Int16*)&data[0];
+	if (dataSize > buff.GetSize())
 	{
-		MemCopy(buff, &data[2], dataSize);
-		MemCopy(&data[2], &data[2 + size], *(Int16*)data = dataSize - size);
+		MemCopyNO(buff.Arr().Ptr(), &data[2], dataSize);
+		MemCopyO(&data[2], &data[2 + buff.GetSize()], *(Int16*)data.Ptr() = dataSize - buff.GetSize());
 		this->reading = false;
-		return size;
+		return buff.GetSize();
 	}
 	else
 	{
 		this->port->data->RemoveAt(0);
-		MemCopy(buff, &data[2], dataSize);
+		MemCopyNO(buff.Arr().Ptr(), &data[2], dataSize);
 		this->reading = false;
-		MemFree(data);
+		MemFreeArr(data);
 		return dataSize;
 	}
 }
 
-Int32 IO::GSMMuxPort::Write(const UInt8 *buff, Int32 size)
+UOSInt IO::GSMMuxPort::Write(Data::ByteArrayR buff)
 {
-	if (mux->SendFrame(this->port->portId, buff, size, GSMMux::UIH) == 0)
-		return size;
+	if (mux->SendFrame(this->port->portId, buff.Arr(), buff.GetSize(), GSMMux::UIH) == 0)
+		return buff.GetSize();
 	else
 		return 0;
 }
 
-void *IO::GSMMuxPort::BeginRead(UInt8 *buff, Int32 size, Sync::Event *evt)
+Optional<IO::StreamReadReq> IO::GSMMuxPort::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	while (this->port->evt)
+	while (this->port->evt.NotNull())
 	{
-		Sleep(10);
+		Sync::SimpleThread::Sleep(10);
 	}
 
 	this->port->evt = evt;
-	Int32 *reqData = MemAlloc(Int32, 3);
-	reqData[0] = (Int32)buff;
-	reqData[1] = size;
-	reqData[2] = (Int32)evt;
+	UnsafeArray<OSInt> reqData = MemAllocArr(OSInt, 3);
+	reqData[0] = (OSInt)buff.Ptr();
+	reqData[1] = (OSInt)buff.GetSize();
+	reqData[2] = (OSInt)evt.Ptr();
 	if (this->port->data->GetCount() > 0)
 	{
 		evt->Set();
 	}
-	return reqData;
+	return (IO::StreamReadReq*)reqData.Ptr();
 }
 
-Int32 IO::GSMMuxPort::EndRead(void *reqData, Bool toWait)
+UOSInt IO::GSMMuxPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	Int32 *rdata = (Int32*)reqData;
+	UnsafeArray<OSInt> rdata = (OSInt*)reqData.Ptr();
 	while (this->port->opened)
 	{
 		if (this->port->data->GetCount() > 0)
@@ -526,7 +523,7 @@ Int32 IO::GSMMuxPort::EndRead(void *reqData, Bool toWait)
 	}
 	if (!this->port->opened)
 	{
-		MemFree(rdata);
+		MemFreeArr(rdata);
 		return 0;
 	}
 	if (this->port->data->GetCount() == 0)
@@ -534,28 +531,28 @@ Int32 IO::GSMMuxPort::EndRead(void *reqData, Bool toWait)
 		return 0;
 	}
 
-	Int32 size = rdata[1];
+	UOSInt size = (UOSInt)rdata[1];
 	UInt8 *buff = (UInt8*)rdata[0];
-	UInt8 *data = (UInt8*)this->port->data->GetItem(0);
-	Int32 dataSize = *(Int16*)data;
-	MemFree(rdata);
+	UnsafeArray<UInt8> data = this->port->data->GetItemNoCheck(0);
+	Int32 dataSize = *(Int16*)&data[0];
+	MemFreeArr(rdata);
 	if (dataSize > size)
 	{
-		MemCopy(buff, &data[2], dataSize);
-		MemCopy(&data[2], &data[2 + size], *(Int16*)data = dataSize - size);
+		MemCopyNO(buff, &data[2], dataSize);
+		MemCopyO(&data[2], &data[2 + size], *(Int16*)data.Ptr() = dataSize - size);
 		return size;
 	}
 	else
 	{
 		this->port->data->RemoveAt(0);
-		MemCopy(buff, &data[2], dataSize);
+		MemCopyNO(buff, &data[2], dataSize);
 		return dataSize;
 	}
 }
 
-void IO::GSMMuxPort::CancelRead(void *reqData)
+void IO::GSMMuxPort::CancelRead(NN<IO::StreamReadReq> reqData)
 {
-	Int32 *data = (Int32*)reqData;
+	OSInt *data = (OSInt*)reqData.Ptr();
 	if (this->port->evt == (Sync::Event*)data[2])
 	{
 		this->port->evt = 0;
@@ -563,12 +560,12 @@ void IO::GSMMuxPort::CancelRead(void *reqData)
 	MemFree(data);
 }
 
-void *IO::GSMMuxPort::BeginWrite(const UInt8 *buff, Int32 size, Sync::Event *evt)
+Optional<IO::StreamWriteReq> IO::GSMMuxPort::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	if (mux->SendFrame(this->port->portId, buff, size, GSMMux::UIH) == 0)
+	if (mux->SendFrame(this->port->portId, buff.Arr(), buff.GetSize(), GSMMux::UIH) == 0)
 	{
 		evt->Set();
-		return (void*)size;
+		return (IO::StreamWriteReq*)buff.GetSize();
 	}
 	else
 	{
@@ -577,12 +574,12 @@ void *IO::GSMMuxPort::BeginWrite(const UInt8 *buff, Int32 size, Sync::Event *evt
 	}
 }
 
-Int32 IO::GSMMuxPort::EndWrite(void *reqData, Bool toWait)
+UOSInt IO::GSMMuxPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (Int32)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void IO::GSMMuxPort::CancelWrite(void *reqData)
+void IO::GSMMuxPort::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 }
 
@@ -593,9 +590,28 @@ Int32 IO::GSMMuxPort::Flush()
 
 void IO::GSMMuxPort::Close()
 {
+	UInt8 buff[1];
 	if (port->opened)
 	{
-		mux->SendFrame(port->portId, 0, 0, (GSMMux::GSMFrType)(GSMMux::DISC | GSMMux::PF));
+		mux->SendFrame(port->portId, buff, 0, (GSMMux::GSMFrType)(GSMMux::DISC | GSMMux::PF));
 		port->opened = false;
 	}
+}
+
+Bool IO::GSMMuxPort::Recover()
+{
+	UInt8 buff[1];
+	if (!port->opened)
+	{
+		this->port->opened = true;
+		this->port->obj = this;
+		this->mux->SendFrame(this->port->portId, buff, 0, (GSMMux::GSMFrType)(GSMMux::SABM | GSMMux::PF));
+		return true;
+	}
+	return false;
+}
+
+IO::StreamType IO::GSMMuxPort::GetStreamType() const
+{
+	return IO::StreamType::GSMMuxPort;
 }

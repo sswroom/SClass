@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/FrequencyGraph.h"
 #include "SSWR/AVIRead/AVIRAudioViewerForm.h"
 #include "SSWR/AVIRead/AVIRMediaForm.h"

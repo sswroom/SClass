@@ -3,7 +3,7 @@
 #include "Exporter/ExcelXMLExporter.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/StreamWriter.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DrawEngine.h"
 #include "Text/MyString.h"
 #include "Text/Encoding.h"

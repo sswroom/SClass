@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/ICCProfile.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"

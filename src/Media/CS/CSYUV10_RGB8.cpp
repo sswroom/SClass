@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/CS/CSYUV10_RGB8.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 
 void Media::CS::CSYUV10_RGB8::SetupRGB13_8()
 {

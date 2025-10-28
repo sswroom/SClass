@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/SSRC/SSRCDither.h"
 
 const UInt32 Media::SSRC::SSRCDither::freqs[] = {

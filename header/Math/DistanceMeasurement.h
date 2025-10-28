@@ -11,14 +11,14 @@ namespace Math
 		Double instY;
 		Double instZ;
 		Double hAngleAdj;
-		Math::ProjectedCoordinateSystem *csys;
+		Optional<Math::ProjectedCoordinateSystem> csys;
 
 	public:
-		DistanceMeasurement(Double instX, Double instY, Double instZ, Double hAngleAdj, Math::ProjectedCoordinateSystem *csys);
+		DistanceMeasurement(Double instX, Double instY, Double instZ, Double hAngleAdj, Optional<Math::ProjectedCoordinateSystem> csys);
 		~DistanceMeasurement();
 
-		void FromXYZ(Double x, Double y, Double z, Double *hAngle, Double *vAngle, Double *dist);
-		void ToXYZ(Double hAngle, Double vAngle, Double dist, Double *x, Double *y, Double *z);
+		void FromXYZ(Double x, Double y, Double z, OutParam<Double> hAngle, OutParam<Double> vAngle, OutParam<Double> dist);
+		void ToXYZ(Double hAngle, Double vAngle, Double dist, OutParam<Double> x, OutParam<Double> y, OutParam<Double> z);
 	};
 }
 #endif

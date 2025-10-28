@@ -13,7 +13,7 @@
 #include <utime.h>
 #include <sys/stat.h>
 
-void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType)
+void IO::FileStream::InitStream(UnsafeArrayOpt<const WChar> fileName, FileMode mode, FileShare share, BufferType buffType)
 {
 	int flags = 0;
 #if defined(O_BINARY)
@@ -253,7 +253,7 @@ Int32 IO::FileStream::GetErrCode()
 	}
 }
 
-void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
+void IO::FileStream::GetFileTimes(Optional<Data::DateTime> creationTime, Optional<Data::DateTime> lastAccessTime, Optional<Data::DateTime> lastWriteTime)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
@@ -280,31 +280,32 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 			return;
 	}
 #endif
+	NN<Data::DateTime> t;
 #if defined(__APPLE__)
-	if (creationTime)
+	if (creationTime.SetTo(t))
 	{
-		creationTime->SetValue(Data::TimeInstant(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec), 0);
+		t->SetValue(Data::TimeInstant(s.st_ctimespec.tv_sec, (UInt32)s.st_ctimespec.tv_nsec), 0);
 	}
-	if (lastAccessTime)
+	if (lastAccessTime.SetTo(t))
 	{
-		lastAccessTime->SetValue(Data::TimeInstant(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec), 0);
+		t->SetValue(Data::TimeInstant(s.st_atimespec.tv_sec, (UInt32)s.st_atimespec.tv_nsec), 0);
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.SetTo(t))
 	{
-		lastWriteTime->SetValue(Data::TimeInstant(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec), 0);
+		t->SetValue(Data::TimeInstant(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec), 0);
 	}
 #else
-	if (creationTime)
+	if (creationTime.SetTo(t))
 	{
-		creationTime->SetValue(Data::TimeInstant(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec), 0);
+		t->SetValue(Data::TimeInstant(s.st_ctim.tv_sec, (UInt32)s.st_ctim.tv_nsec), 0);
 	}
-	if (lastAccessTime)
+	if (lastAccessTime.SetTo(t))
 	{
-		lastAccessTime->SetValue(Data::TimeInstant(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec), 0);
+		t->SetValue(Data::TimeInstant(s.st_atim.tv_sec, (UInt32)s.st_atim.tv_nsec), 0);
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.SetTo(t))
 	{
-		lastWriteTime->SetValue(Data::TimeInstant(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec), 0);
+		t->SetValue(Data::TimeInstant(s.st_mtim.tv_sec, (UInt32)s.st_mtim.tv_nsec), 0);
 	}
 #endif
 }
@@ -434,10 +435,10 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 #endif
 }
 
-void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime)
+void IO::FileStream::SetFileTimes(Optional<Data::DateTime> creationTime, Optional<Data::DateTime> lastAccessTime, Optional<Data::DateTime> lastWriteTime)
 {
 	struct utimbuf t;
-	if (lastAccessTime == 0 || lastWriteTime == 0)
+	if (lastAccessTime.IsNull() || lastWriteTime.IsNull())
 	{
 #if defined(__USE_LARGEFILE64)
 		struct stat64 s;
@@ -456,13 +457,14 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 		t.modtime = s.st_mtim.tv_sec;
 #endif
 	}
-	if (lastAccessTime)
+	NN<Data::DateTime> dt;
+	if (lastAccessTime.SetTo(dt))
 	{
-		t.actime = (time_t)lastAccessTime->ToUnixTimestamp();
+		t.actime = (time_t)dt->ToUnixTimestamp();
 	}
-	if (lastWriteTime)
+	if (lastWriteTime.SetTo(dt))
 	{
-		t.modtime = (time_t)lastWriteTime->ToUnixTimestamp();
+		t.modtime = (time_t)dt->ToUnixTimestamp();
 	}
 	utime((const Char*)this->sourceName->v.Ptr(), &t);
 }
@@ -500,7 +502,7 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	utime((const Char*)this->sourceName->v.Ptr(), &t);
 }
 
-UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UnsafeArray<UInt8> buff, UOSInt maxBuffSize)
 {
 	IO::FileStream fs(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal);
 	if (fs.IsError())

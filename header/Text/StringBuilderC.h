@@ -10,14 +10,14 @@ namespace Text
 		StringBuilderC();
 		virtual ~StringBuilderC();
 
-		StringBuilderC *Append(const Char *s);
-		StringBuilderC *AppendC(const Char *s, UOSInt charCnt);
-		StringBuilderC *AppendChar(Char c, UOSInt repeatCnt);
-		StringBuilderC *AppendCSV(const Char **sarr, UOSInt nStr);
-		StringBuilderC *AppendToUpper(const Char *s);
-		StringBuilderC *AppendToLower(const Char *s);
-		StringBuilderC *AppendASCII(const Char *s);
-		StringBuilderC *AppendASCII(const Char *s, UOSInt charCnt);
+		NN<StringBuilderC> Append(UnsafeArray<const Char> s);
+		NN<StringBuilderC> AppendC(UnsafeArray<const Char> s, UOSInt charCnt);
+		NN<StringBuilderC> AppendChar(Char c, UOSInt repeatCnt);
+		NN<StringBuilderC> AppendCSV(UnsafeArray<UnsafeArray<const Char>> sarr, UOSInt nStr);
+		NN<StringBuilderC> AppendToUpper(UnsafeArray<const Char> s);
+		NN<StringBuilderC> AppendToLower(UnsafeArray<const Char> s);
+		NN<StringBuilderC> AppendASCII(UnsafeArray<const Char> s);
+		NN<StringBuilderC> AppendASCII(UnsafeArray<const Char> s, UOSInt charCnt);
 	};
 }
 #endif

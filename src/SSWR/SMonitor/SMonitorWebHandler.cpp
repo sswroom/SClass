@@ -3,7 +3,7 @@
 #include "Data/ChartPlotter.h"
 #include "Exporter/GUIPNGExporter.h"
 #include "IO/MemoryStream.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Math/Unit/Pressure.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"

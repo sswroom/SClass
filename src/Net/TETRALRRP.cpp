@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Net/TETRALRRP.h"
 
-Bool Net::TETRALRRP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *recvTime, Map::GPSTrack::GPSRecord *record, Int32 *requestId, Int32 *resultCode)
+Bool Net::TETRALRRP::ParseProtocol(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Data::DateTime> recvTime, NN<Map::GPSTrack::GPSRecord3> record, OutParam<Int32> requestId, OutParam<Int32> resultCode)
 {
 	if (buff[0] != 0x80)
 	{
@@ -71,20 +71,26 @@ Bool Net::TETRALRRP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *
 	if (buff[2] > buffSize - 3)
 		return false;
 	UInt8 *endPtr = &buff[3] + buff[2];
-	UInt8 *ptr = &buff[3];
+	UnsafeArray<UInt8> ptr = &buff[3];
 	Data::DateTime dt;
 	Int32 reqId = -1;
 	Int32 res = -1;
 
-	record->lat = 0;
-	record->lon = 0;
+	record->pos = Math::Coord2DDbl(0, 0);
 	record->altitude = 0;
-	record->utcTimeTS = (Int32)recvTime->ToUnixTimestamp();
+	record->recTime = recvTime->ToInstant();
 	record->valid = false;
 	record->speed = 0;
 	record->heading = 0;
 	record->nSateUsed = -1;
-	record->nSateView = -1;
+	record->nSateUsedGPS = -1;
+	record->nSateUsedSBAS = -1;
+	record->nSateUsedGLO = -1; //GLONASS
+	record->nSateViewGPS = -1;
+	record->nSateViewGLO = -1;
+	record->nSateViewGA = -1;
+	record->nSateViewQZSS = -1;
+	record->nSateViewBD = -1;
 
 	if (isRequest)
 	{
@@ -116,7 +122,7 @@ Bool Net::TETRALRRP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *
 				{
 					dt.ToUTCTime();
 					dt.SetValue((ptr[1] << 6) | (ptr[2] >> 2), ((ptr[2] & 3) << 2) | (ptr[3] >> 6), (ptr[3] >> 1) & 0x1f, ((ptr[3] & 1) << 4) | (ptr[4] >> 4), ((ptr[4] & 0xf) << 2) | (ptr[5] >> 6), ptr[5] & 0x3f, 0);
-					record->utcTimeTS = (Int32)dt.ToUnixTimestamp();
+					record->recTime = dt.ToInstant();
 					ptr += 6;
 				}
 				break;
@@ -132,14 +138,14 @@ Bool Net::TETRALRRP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *
 			case 0x90: //direction-hor
 			case 0x94: //heading-hor
 				ptr++;
-				record->heading = ReadUFloatVar(&ptr) * 2.0;
+				record->heading = ReadUFloatVar(ptr) * 2.0;
 				break;
 			case 0x66: //point-2d (lat + long)
 				if (endPtr - ptr >= 9)
 				{
 					ptr++;
-					record->lat = ReadLat(&ptr);
-					record->lon = ReadLong(&ptr);
+					record->pos.y = ReadLat(ptr);
+					record->pos.x = ReadLong(ptr);
 					record->valid = true;
 				}
 				else
@@ -149,101 +155,101 @@ Bool Net::TETRALRRP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *
 				break;
 			case 0x67: //point-3d (lat + long + altitude/sintvar)
 				ptr++;
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				record->altitude = ReadSIntVar(&ptr);
+				record->altitude = ReadSIntVar(ptr);
 				break;
 			case 0x68: //point-3d (lat + long + altitude/sintvar + altitude-acc/uintvar)
 				ptr++;
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				record->altitude = ReadSIntVar(&ptr);
-				ReadUIntVar(&ptr);
+				record->altitude = ReadSIntVar(ptr);
+				ReadUIntVar(ptr);
 				break;
 			case 0x69: //point-3d (lat + long + altitude/sfloatvar)
 				ptr++;
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				record->altitude = ReadSFloatVar(&ptr);
+				record->altitude = ReadSFloatVar(ptr);
 				break;
 			case 0x6A: //point-3d (lat + long + altitude/sfloatvar + altitude-acc/ufloatvar)
 				ptr++;
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				record->altitude = ReadSFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
+				record->altitude = ReadSFloatVar(ptr);
+				ReadUFloatVar(ptr);
 				break;
 
 			case 0x5A: //ellipse-2d (lat + long + angle + semi-major + semi-minor /UIntVar)
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				ReadUIntVar(&ptr);
-				ReadUIntVar(&ptr);
-				ReadUIntVar(&ptr);
+				ReadUIntVar(ptr);
+				ReadUIntVar(ptr);
+				ReadUIntVar(ptr);
 				break;
 			case 0x5B: //ellipse-2d (lat + long + angle + semi-major + semi-minor /UFloatVar)
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				ReadUFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
+				ReadUFloatVar(ptr);
+				ReadUFloatVar(ptr);
+				ReadUFloatVar(ptr);
 				break;
 			case 0x5C: //ellipse-3d (lat + long + angle + semi-major + semi-minor + altitude /UIntVar)
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				ReadUIntVar(&ptr);
-				ReadUIntVar(&ptr);
-				ReadUIntVar(&ptr);
-				record->altitude = ReadSIntVar(&ptr);
+				ReadUIntVar(ptr);
+				ReadUIntVar(ptr);
+				ReadUIntVar(ptr);
+				record->altitude = ReadSIntVar(ptr);
 				break;
 			case 0x5D: //ellipse-3d (lat + long + angle + semi-major + semi-minor + altitude + altitude-acc /UIntVar)
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				ReadUIntVar(&ptr);
-				ReadUIntVar(&ptr);
-				ReadUIntVar(&ptr);
-				record->altitude = ReadSIntVar(&ptr);
-				ReadUIntVar(&ptr);
+				ReadUIntVar(ptr);
+				ReadUIntVar(ptr);
+				ReadUIntVar(ptr);
+				record->altitude = ReadSIntVar(ptr);
+				ReadUIntVar(ptr);
 				break;
 			case 0x5E: //ellipse-3d (lat + long + angle + semi-major + semi-minor + altitude /UFloatVar)
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				ReadUFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
-				record->altitude = ReadSFloatVar(&ptr);
+				ReadUFloatVar(ptr);
+				ReadUFloatVar(ptr);
+				ReadUFloatVar(ptr);
+				record->altitude = ReadSFloatVar(ptr);
 				break;
 			case 0x5F: //ellipse-3d (lat + long + angle + semi-major + semi-minor + altitude + altitude-acc /UFloatVar)
-				record->lat = ReadLat(&ptr);
-				record->lon = ReadLong(&ptr);
+				record->pos.y = ReadLat(ptr);
+				record->pos.x = ReadLong(ptr);
 				record->valid = true;
-				ReadUFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
-				record->altitude = ReadSFloatVar(&ptr);
-				ReadUFloatVar(&ptr);
+				ReadUFloatVar(ptr);
+				ReadUFloatVar(ptr);
+				ReadUFloatVar(ptr);
+				record->altitude = ReadSFloatVar(ptr);
+				ReadUFloatVar(ptr);
 				break;
 			case 0x37: //result
 				ptr++;
-				res = ReadUIntVar(&ptr);
+				res = ReadUIntVar(ptr);
 				break;
 			//case 0x38: //result
 			case 0x6B: //speed-hor
 				ptr += 1;
-				record->speed = ReadUIntVar(&ptr) * 3.6 / 1.852;
+				record->speed = ReadUIntVar(ptr) * 3.6 / 1.852;
 				break;
 			case 0x6C: //speed-hor
 				ptr += 1;
-				record->speed = ReadUFloatVar(&ptr) * 3.6 / 1.852;
+				record->speed = ReadUFloatVar(ptr) * 3.6 / 1.852;
 				break;
 			default:
 				return false;
@@ -251,16 +257,17 @@ Bool Net::TETRALRRP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *
 		}
 	}
 	
-	*requestId = reqId;
-	*resultCode = res;
+	requestId.Set(reqId);
+	resultCode.Set(res);
 	return true;
 }
 
-Double Net::TETRALRRP::ReadLat(UInt8 **buff)
+Double Net::TETRALRRP::ReadLat(InOutParam<UnsafeArray<UInt8>> buff)
 {
 	Int32 i;
-	i = ReadMInt32(*buff);
-	*buff += 4;
+	UnsafeArray<UInt8> buffPtr = buff.Get();
+	i = ReadMInt32(&buffPtr[0]);
+	buff.Set(buffPtr + 4);
 	if (i & 0x80000000)
 	{
 		return (i & 0x7fffffff) * -0.000000041909515857696533203125;
@@ -271,11 +278,12 @@ Double Net::TETRALRRP::ReadLat(UInt8 **buff)
 	}
 }
 
-Double Net::TETRALRRP::ReadLong(UInt8 **buff)
+Double Net::TETRALRRP::ReadLong(InOutParam<UnsafeArray<UInt8>> buff)
 {
 	Int32 i;
-	i = ReadMInt32(*buff);
-	*buff += 4;
+	UnsafeArray<UInt8> buffPtr = buff.Get();
+	i = ReadMInt32(&buffPtr[0]);
+	buff.Set(buffPtr + 4);
 	Double v = i * 0.00000008381903171539306640625;
 	if (v < 0)
 	{
@@ -284,13 +292,14 @@ Double Net::TETRALRRP::ReadLong(UInt8 **buff)
 	return v;
 }
 
-Int32 Net::TETRALRRP::ReadSIntVar(UInt8 **buff)
+Int32 Net::TETRALRRP::ReadSIntVar(InOutParam<UnsafeArray<UInt8>> buff)
 {
 	UInt32 v = 0;
 	UInt8 b;
 	Bool sign;
-	b = **buff;
-	++*buff;
+	UnsafeArray<UInt8> buffPtr = buff.Get();
+	b = buffPtr[0];
+	buffPtr++;
 	sign = (b & 0x40) != 0;
 	b = b & ~0x40;
 	while (true)
@@ -298,50 +307,53 @@ Int32 Net::TETRALRRP::ReadSIntVar(UInt8 **buff)
 		v = (v << 7) | (b & 0x7f);
 		if ((b & 0x80) == 0)
 			break;
-		b = **buff;
-		++*buff;
+		b = buffPtr[0];
+		buffPtr++;
 	}
+	buff.Set(buffPtr);
 	return v;
 }
 
-UInt32 Net::TETRALRRP::ReadUIntVar(UInt8 **buff)
+UInt32 Net::TETRALRRP::ReadUIntVar(InOutParam<UnsafeArray<UInt8>> buff)
 {
 	UInt32 v = 0;
 	UInt8 b;
+	UnsafeArray<UInt8> buffPtr = buff.Get();
 	while (true)
 	{
-		b = **buff;
-		++*buff;
+		b = buffPtr[0];
+		buffPtr++;
 		v = (v << 7) | (b & 0x7f);
 		if ((b & 0x80) == 0)
 			break;
 	}
+	buff.Set(buffPtr);
 	return v;
 }
 
-Double Net::TETRALRRP::ReadSFloatVar(UInt8 **buff)
+Double Net::TETRALRRP::ReadSFloatVar(InOutParam<UnsafeArray<UInt8>> buff)
 {
 	Int32 v1;
-	UInt8 *ptr;
+	UnsafeArray<UInt8> ptr;
 	UInt32 v2;
 	v1 = ReadSIntVar(buff);
-	ptr = *buff;
+	ptr = buff.Get();
 	v2 = ReadUIntVar(buff);
-	return v1 + v2 / (1 << (7 * (*buff - ptr)));
+	return v1 + v2 / (1 << (7 * (buff.Get() - ptr)));
 }
 
-Double Net::TETRALRRP::ReadUFloatVar(UInt8 **buff)
+Double Net::TETRALRRP::ReadUFloatVar(InOutParam<UnsafeArray<UInt8>>buff)
 {
 	UInt32 v1;
-	UInt8 *ptr;
+	UnsafeArray<UInt8> ptr;
 	UInt32 v2;
 	v1 = ReadUIntVar(buff);
-	ptr = *buff;
+	ptr = buff.Get();
 	v2 = ReadUIntVar(buff);
-	return v1 + v2 / (1 << (7 * (*buff - ptr)));
+	return v1 + v2 / (1 << (7 * (buff.Get() - ptr)));
 }
 
-UInt8 *Net::TETRALRRP::WriteUIntVar(UInt8 *buff, UInt32 val)
+UnsafeArray<UInt8> Net::TETRALRRP::WriteUIntVar(UnsafeArray<UInt8> buff, UInt32 val)
 {
 	UInt8 b;
 	while (true)
@@ -362,24 +374,24 @@ UInt8 *Net::TETRALRRP::WriteUIntVar(UInt8 *buff, UInt32 val)
 	return buff;
 }
 
-UInt8 *Net::TETRALRRP::WriteLat(UInt8 *buff, Double lat)
+UnsafeArray<UInt8> Net::TETRALRRP::WriteLat(UnsafeArray<UInt8> buff, Double lat)
 {
-	Int32 i = Math::Double2Int(lat * 23860929.422222222222222222222222);
+	Int32 i = Double2Int32(lat * 23860929.422222222222222222222222);
 	if (i < 0)
 	{
 		i = (-i) | 0x80000000;
 	}
-	WriteMInt32(buff, i);
+	WriteMInt32(&buff[0], i);
 	return buff + 4;
 }
 
-UInt8 *Net::TETRALRRP::WriteLong(UInt8 *buff, Double lon)
+UnsafeArray<UInt8> Net::TETRALRRP::WriteLong(UnsafeArray<UInt8> buff, Double lon)
 {
-	WriteMInt32(buff, Math::Double2Int(lon * 11930464.711111111111111111111111));
+	WriteMInt32(&buff[0], Double2Int32(lon * 11930464.711111111111111111111111));
 	return buff + 4;
 }
 
-UInt8 *Net::TETRALRRP::WriteDateTime(UInt8 *buff, Data::DateTime *dt)
+UnsafeArray<UInt8> Net::TETRALRRP::WriteDateTime(UnsafeArray<UInt8> buff, NN<Data::DateTime> dt)
 {
 	Int32 v = dt->GetMinute();
 	Int32 v2 = dt->GetHour();
@@ -396,7 +408,7 @@ UInt8 *Net::TETRALRRP::WriteDateTime(UInt8 *buff, Data::DateTime *dt)
 	return buff + 5;
 }
 
-OSInt Net::TETRALRRP::GenLocReq(UInt8 *buff)
+UOSInt Net::TETRALRRP::GenLocReq(UnsafeArray<UInt8> buff)
 {
 	///////////////////////////
 	buff[0] = 0x05;
@@ -419,10 +431,10 @@ OSInt Net::TETRALRRP::GenLocReq(UInt8 *buff)
 	return 17;
 }
 
-OSInt Net::TETRALRRP::BuildPacket(UInt8 *buff, Map::GPSTrack::GPSRecord *record, Int32 requestId, Int32 resultCode)
+UOSInt Net::TETRALRRP::BuildPacket(UnsafeArray<UInt8> buff, NN<Map::GPSTrack::GPSRecord3> record, Int32 requestId, Int32 resultCode)
 {
-	OSInt retSize;
-	UInt8 *ptr;
+	UOSInt retSize;
+	UnsafeArray<UInt8> ptr;
 	Data::DateTime dt;
 	ptr = &buff[3];
 	retSize = 0;
@@ -447,14 +459,14 @@ OSInt Net::TETRALRRP::BuildPacket(UInt8 *buff, Map::GPSTrack::GPSRecord *record,
 
 	ptr[0] = 0x34;
 	dt.ToUTCTime();
-	dt.SetUnixTimestamp(record->utcTimeTS);
-	ptr = WriteDateTime(ptr + 1, &dt);
+	dt.SetInstant(record->recTime);
+	ptr = WriteDateTime(ptr + 1, dt);
 
 	if (record->valid)
 	{
 		ptr[0] = 0x66;
-		ptr = WriteLat(ptr + 1, record->lat);
-		ptr = WriteLong(ptr, record->lon);
+		ptr = WriteLat(ptr + 1, record->pos.GetLat());
+		ptr = WriteLong(ptr, record->pos.GetLon());
 
 		ptr[0] = 0x56;
 		ptr[1] = (UInt8)(record->heading * 0.5);

@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Exporter/MEVExporter.h"
 #include "IO/Path.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/MyString.h"
 #include "Text/Encoding.h"
 
@@ -60,7 +60,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArrayOpt<UTF8Char> optsptr;
-	Text::String *tmpStr;
+	Optional<Text::String> tmpStr;
 	NN<const Data::ArrayListNN<Exporter::MEVExporter::MEVStrRecord>> tmpArr;
 	Data::ArrayListICaseString dirArr;
 	Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord> strArr;
@@ -250,7 +250,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i++;
 	}
 
-	LIST_FREE_STRING(&dirArr);
+	dirArr.FreeAll();
 
 	tmpArr = strArr.GetValues();
 	i = tmpArr->GetCount();
@@ -302,15 +302,16 @@ void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListStrin
 	}
 }
 
-UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, Text::String *strVal, UInt32 fileOfst)
+UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, Optional<Text::String> strVal, UInt32 fileOfst)
 {
+	NN<Text::String> nnstrVal = Text::String::OrEmpty(strVal);
 	NN<MEVStrRecord> strRec;
 	if (!strArr->Get(strVal).SetTo(strRec))
 	{
 		NEW_CLASSNN(strRec, MEVStrRecord());
-		strRec->byteSize = (UInt32)strVal->leng;
+		strRec->byteSize = (UInt32)nnstrVal->leng;
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
-		MemCopyNO(strRec->strBytes, strVal, strRec->byteSize);
+		MemCopyNO(strRec->strBytes, nnstrVal->v.Ptr(), strRec->byteSize + 1);
 		strArr->Put(strVal, strRec);
 	}
 	strRec->ofstList.Add(fileOfst);

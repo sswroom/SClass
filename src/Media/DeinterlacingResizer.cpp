@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Media/DeinterlacingResizer.h"
 
 Media::DeinterlacingResizer::DeinterlacingResizer(Media::AlphaType srcAlphaType)

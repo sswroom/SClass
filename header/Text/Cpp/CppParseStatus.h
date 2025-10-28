@@ -86,7 +86,7 @@ namespace Text
 			Bool GetDefineInfo(UOSInt index, NN<DefineInfo> defInfo);
 
 			UOSInt GetFileCount();
-			Text::String *GetFileName(UOSInt index);
+			Optional<Text::String> GetFileName(UOSInt index);
 			NN<Text::String> GetCurrCodeFile() const;
 		};
 	}

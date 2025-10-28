@@ -9,17 +9,18 @@ namespace Net
 	class OSMGPXDownloader : public Net::RSSHandler
 	{
 	private:
-		Net::RSSReader *reader;
+		IO::LogTool log;
+		NN<Net::RSSReader> reader;
 		NN<Net::SocketFactory> sockf;
-		Text::String *storeDir;
-		IO::Writer *writer;
+		NN<Text::String> storeDir;
+		NN<IO::Writer> writer;
 
 	public:
-		OSMGPXDownloader(NN<Net::SocketFactory> sockf, Text::CString storeDir, IO::Writer *writer);
+		OSMGPXDownloader(NN<Net::SocketFactory> sockf, Text::CStringNN storeDir, NN<IO::Writer> writer);
 		virtual ~OSMGPXDownloader();
 
-		virtual void ItemAdded(Net::RSSItem *item);
-		virtual void ItemRemoved(Net::RSSItem *item);
+		virtual void ItemAdded(NN<Net::RSSItem> item);
+		virtual void ItemRemoved(NN<Net::RSSItem> item);
 	};
 }
 #endif

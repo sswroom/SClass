@@ -1240,7 +1240,7 @@ Text::CStringNN IO::BTUtil::GetManufacturerName(UInt16 manuf)
 	return CSTR("Unknown");
 }
 
-void IO::BTUtil::GetAddrText(NN<Text::StringBuilderUTF8> sb, UInt8 *addr)
+void IO::BTUtil::GetAddrText(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> addr)
 {
 	sb->AppendHex8(addr[5]);
 	sb->AppendC(UTF8STRC(":"));
@@ -1255,7 +1255,7 @@ void IO::BTUtil::GetAddrText(NN<Text::StringBuilderUTF8> sb, UInt8 *addr)
 	sb->AppendHex8(addr[0]);
 }
 
-UInt64 IO::BTUtil::GetAddrMAC(UInt8 *addr)
+UInt64 IO::BTUtil::GetAddrMAC(UnsafeArray<const UInt8> addr)
 {
 	UInt8 buff[8];
 	buff[0] = addr[0];

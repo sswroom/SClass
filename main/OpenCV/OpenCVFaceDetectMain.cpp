@@ -7,7 +7,7 @@
 #include "IO/IniFile.h"
 #include "IO/Path.h"
 #include "Media/ImageList.h"
-#include "Media/ImageUtil.h"
+#include "Media/ImageUtil_C.h"
 #include "Media/StaticImage.h"
 #include "Media/VideoCaptureMgr.h"
 #include "Media/CS/CSConverter.h"

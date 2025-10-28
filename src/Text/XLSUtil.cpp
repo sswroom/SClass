@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Math/Math.h"
+#include "Math/Math_C.h"
 #include "Text/XLSUtil.h"
 
 Double Text::XLSUtil::Date2Number(NN<Data::DateTime> dt)

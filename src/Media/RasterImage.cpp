@@ -139,57 +139,59 @@ Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSI
 
 Media::RasterImage::~RasterImage()
 {
-	if (this->pal)
+	UnsafeArray<UInt8> pal;
+	if (this->pal.SetTo(pal))
 	{
-		MemFree(pal);
+		MemFreeArr(pal);
 	}
 	this->exif.Delete();
 }
 
 void Media::RasterImage::InitGrayPal()
 {
-	if (this->pal)
+	UnsafeArray<UInt8> pal;
+	if (this->pal.SetTo(pal))
 	{
 		if (this->info.storeBPP == 1)
 		{
-			WriteUInt32(this->pal, 0xff000000);
-			WriteUInt32(&this->pal[4], 0xffffffff);
+			WriteUInt32(&pal[0], 0xff000000);
+			WriteUInt32(&pal[4], 0xffffffff);
 		}
 		else if (this->info.storeBPP == 2)
 		{
-			WriteUInt32(this->pal, 0xff000000);
-			WriteUInt32(&this->pal[4], 0xff555555);
-			WriteUInt32(&this->pal[8], 0xffaaaaaa);
-			WriteUInt32(&this->pal[12], 0xffffffff);
+			WriteUInt32(&pal[0], 0xff000000);
+			WriteUInt32(&pal[4], 0xff555555);
+			WriteUInt32(&pal[8], 0xffaaaaaa);
+			WriteUInt32(&pal[12], 0xffffffff);
 		}
 		else if (this->info.storeBPP == 4)
 		{
-			WriteUInt32(this->pal, 0xff000000);
-			WriteUInt32(&this->pal[4], 0xff111111);
-			WriteUInt32(&this->pal[8], 0xff222222);
-			WriteUInt32(&this->pal[12], 0xff333333);
-			WriteUInt32(&this->pal[16], 0xff444444);
-			WriteUInt32(&this->pal[20], 0xff555555);
-			WriteUInt32(&this->pal[24], 0xff666666);
-			WriteUInt32(&this->pal[28], 0xff777777);
-			WriteUInt32(&this->pal[32], 0xff888888);
-			WriteUInt32(&this->pal[36], 0xff999999);
-			WriteUInt32(&this->pal[40], 0xffaaaaaa);
-			WriteUInt32(&this->pal[44], 0xffbbbbbb);
-			WriteUInt32(&this->pal[48], 0xffcccccc);
-			WriteUInt32(&this->pal[52], 0xffdddddd);
-			WriteUInt32(&this->pal[56], 0xffeeeeee);
-			WriteUInt32(&this->pal[60], 0xffffffff);
+			WriteUInt32(&pal[0], 0xff000000);
+			WriteUInt32(&pal[4], 0xff111111);
+			WriteUInt32(&pal[8], 0xff222222);
+			WriteUInt32(&pal[12], 0xff333333);
+			WriteUInt32(&pal[16], 0xff444444);
+			WriteUInt32(&pal[20], 0xff555555);
+			WriteUInt32(&pal[24], 0xff666666);
+			WriteUInt32(&pal[28], 0xff777777);
+			WriteUInt32(&pal[32], 0xff888888);
+			WriteUInt32(&pal[36], 0xff999999);
+			WriteUInt32(&pal[40], 0xffaaaaaa);
+			WriteUInt32(&pal[44], 0xffbbbbbb);
+			WriteUInt32(&pal[48], 0xffcccccc);
+			WriteUInt32(&pal[52], 0xffdddddd);
+			WriteUInt32(&pal[56], 0xffeeeeee);
+			WriteUInt32(&pal[60], 0xffffffff);
 		}
 		else if (this->info.storeBPP == 8)
 		{
-			UInt8 *ptr = this->pal;
+			UnsafeArray<UInt8> ptr = pal;
 			UOSInt i = 0;
 			UOSInt j = 256;
 			while (i < j)
 			{
 				UInt32 c = (UInt32)(i | (i << 8) | (i << 16) | 0xff000000);
-				WriteUInt32(ptr, c);
+				WriteUInt32(&ptr[0], c);
 				ptr += 4;
 				i++;
 			}
@@ -266,7 +268,9 @@ NN<Media::StaticImage> Media::RasterImage::CreateStaticImage() const
 		outImg->exif = exif->Clone();
 	}
 	this->GetRasterData(outImg->data, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->GetDataBpl(), false, outImg->info.rotateType);
-	if (this->pal)
+	UnsafeArray<UInt8> pal;
+	UnsafeArray<UInt8> outPal;
+	if (this->pal.SetTo(pal) && outImg->pal.SetTo(outPal))
 	{
 		UOSInt size;
 		if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
@@ -277,7 +281,7 @@ NN<Media::StaticImage> Media::RasterImage::CreateStaticImage() const
 		{
 			size = ((UOSInt)4 << this->info.storeBPP);
 		}
-		MemCopyNO(outImg->pal, this->pal, size);
+		MemCopyNO(&outPal[0], &pal[0], size);
 	}
 	return outImg;
 }
@@ -297,7 +301,9 @@ NN<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<OSInt> 
 		outImg->exif = exif->Clone();
 	}
 	this->GetRasterData(outImg->data, area.min.x, area.min.y, frameInfo.dispSize.x, frameInfo.dispSize.y, outImg->GetDataBpl(), false, outImg->info.rotateType);
-	if (this->pal)
+	UnsafeArray<UInt8> pal;
+	UnsafeArray<UInt8> outPal;
+	if (this->pal.SetTo(pal) && outImg->pal.SetTo(outPal))
 	{
 		UOSInt size;
 		if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
@@ -308,7 +314,7 @@ NN<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<OSInt> 
 		{
 			size = ((UOSInt)4 << this->info.storeBPP);
 		}
-		MemCopyNO(outImg->pal, this->pal, size);
+		MemCopyNO(&outPal[0], &pal[0], size);
 	}
 	return outImg;
 }
