@@ -346,6 +346,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 	case IO::StreamType::SSHTCPChannel:
 	case IO::StreamType::Inflater:
 	case IO::StreamType::Deflater:
+	case IO::StreamType::GSMMuxPort:
 		break;
 	}
 }
