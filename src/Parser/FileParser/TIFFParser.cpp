@@ -950,7 +950,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 								}
 								else
 								{
-									printf("TIFFParser: Error in decompress using Inflater\r\n");
+									printf("TIFFParser: Error in decompress using Inflater: i = %d, ofst = %d, size = %d\r\n", (UInt32)i, stripOfsts[i], stripLengs[i]);
 								}
 							}
 							imgData = imgData.SubArray(destSize);

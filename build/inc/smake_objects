@@ -791,6 +791,7 @@ DrawMapServiceLayer.o: ../../src/Map/DrawMapServiceLayer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GeoPackage.o: ../../src/Map/GeoPackage.cpp
 GeoPackageLayer.o: ../../src/Map/GeoPackageLayer.cpp
+GISWebHandler.o: ../../src/Map/GISWebHandler.cpp
 GMLXML.o: ../../src/Map/GMLXML.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
 HKParkingVacancy.o: ../../src/Map/HKParkingVacancy.cpp

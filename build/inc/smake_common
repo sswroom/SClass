@@ -2343,6 +2343,8 @@ Map/GeoPackage.h:
 @GeoPackage.o
 Map/GeoPackageLayer.h:
 @GeoPackageLayer.o
+Map/GISWebHandler.h:
+@GISWebHandler.o
 Map/GMLXML.h:
 @GMLXML.o
 Map/GPSTrack.h:

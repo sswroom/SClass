@@ -176,6 +176,62 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 				}
 			}
 		}
+		else if (cinfo.jpeg_color_space == JCS_YCbCr)
+		{
+			if (cinfo.out_color_components == 3)
+			{
+				if (pf == Media::PF_B8G8R8 || pf == Media::PF_R8G8B8)
+				{
+					if (maxWidth < cinfo.output_width)
+					{
+						UInt8 *r = imgPtr.Ptr();
+						row = MemAlloc(UInt8, cinfo.output_width * 3);
+						while (cinfo.output_scanline < maxHeight) {
+							jpeg_read_scanlines(&cinfo, &row, 1);
+							MemCopyNO(r, row, maxWidth * 3);
+							r += bpl;
+						}
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
+						if (cinfo.output_scanline < cinfo.image_height)
+						{
+							jpeg_skip_scanlines(&cinfo, cinfo.image_height - cinfo.output_scanline);
+						}
+#else
+						while (cinfo.output_scanline < cinfo.image_height)
+						{
+							jpeg_read_scanlines(&cinfo, &row, 1);
+						}
+#endif
+						MemFree(row);
+						row = 0;
+						succ = true;
+					}
+					else
+					{
+						UInt8 *r = imgPtr.Ptr();
+						while (cinfo.output_scanline < maxHeight) {
+							jpeg_read_scanlines(&cinfo, &r, 1);
+							r += bpl;
+						}
+#ifdef LIBJPEG_TURBO_VERSION_NUMBER
+						if (cinfo.output_scanline < cinfo.image_height)
+						{
+							jpeg_skip_scanlines(&cinfo, cinfo.image_height - cinfo.output_scanline);
+						}
+#else
+						row = MemAlloc(UInt8, cinfo.output_width * 3);
+						while (cinfo.output_scanline < cinfo.image_height)
+						{
+							jpeg_read_scanlines(&cinfo, &row, 1);
+						}
+						MemFree(row);
+						row = 0;
+#endif
+						succ = true;
+					}
+				}
+			}
+		}
 		if (!succ)
 		{
 			printf("JPEGDecoder: Pixel format not supported: img pf = %s, jpg cs = %d, ch = %d\r\n", Media::PixelFormatGetName(pf).v.Ptr(), cinfo.jpeg_color_space, cinfo.out_color_components);
