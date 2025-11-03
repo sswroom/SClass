@@ -967,6 +967,7 @@ Bool Media::StaticImage::ToPal8()
 
 	UInt8 *buff;
 	UnsafeArray<UInt8> pal;
+	UnsafeArray<UInt8> oldPal;
 	switch (this->info.pf)
 	{
 	case Media::PF_LE_FB32G32R32A32:
@@ -983,7 +984,7 @@ Bool Media::StaticImage::ToPal8()
 		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
 		if (!this->pal.SetTo(pal))
 		{
-			this->pal = pal = MemAlloc(UInt8, 1024);
+			this->pal = pal = MemAllocArr(UInt8, 1024);
 		}
 		Media::ImageTo8Bit::From32bpp(this->data, buff, pal, this->info.dispSize.x, this->info.dispSize.y, (OSInt)this->GetDataBpl(), (OSInt)this->info.dispSize.x);
 		MemFreeAArr(this->data);
@@ -998,6 +999,20 @@ Bool Media::StaticImage::ToPal8()
 	case PF_PAL_W8:
 		this->info.pf = Media::PF_PAL_W8;
 		return true;
+	case PF_PAL_1:
+		if (!this->pal.SetTo(oldPal))
+		{
+			return false;
+		}
+		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
+		ImageUtil_ConvP1_P8(this->data.Ptr(), buff, this->info.dispSize.x, this->info.dispSize.y, (OSInt)this->GetDataBpl());
+		MemFreeAArr(this->data);
+		this->data = buff;
+		this->info.storeSize = this->info.dispSize;
+		this->info.byteSize = this->info.dispSize.CalcArea();
+		this->info.storeBPP = 8;
+		this->info.pf = Media::PF_PAL_8;
+		return true;
 	case PF_LE_A2B10G10R10:
 	case PF_LE_R5G5B5:
 	case PF_LE_R5G6B5:
@@ -1005,7 +1020,6 @@ Bool Media::StaticImage::ToPal8()
 	case PF_LE_FW32A32:
 	case PF_LE_W16:
 	case PF_LE_W16A16:
-	case PF_PAL_1:
 	case PF_PAL_1_A1:
 	case PF_PAL_2:
 	case PF_PAL_2_A1:
@@ -1199,7 +1213,7 @@ Bool Media::StaticImage::PalTo8bpp()
 	{
 		srcData = this->data;
 		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
-		pal = MemAlloc(UInt8, 1024);
+		pal = MemAllocArr(UInt8, 1024);
 		destData = buff;
 		WriteNInt32(&pal[0], ReadNInt32(&oriPal[0]));
 		WriteNInt32(&pal[4], ReadNInt32(&oriPal[4]));
@@ -1347,7 +1361,7 @@ Bool Media::StaticImage::PalTo8bpp()
 	{
 		srcData = this->data;
 		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
-		pal = MemAlloc(UInt8, 1024);
+		pal = MemAllocArr(UInt8, 1024);
 		destData = buff;
 		WriteNInt32(&pal[0], ReadNInt32(&oriPal[0]));
 		WriteNInt32(&pal[4], ReadNInt32(&oriPal[4]));
@@ -1419,7 +1433,7 @@ Bool Media::StaticImage::PalTo8bpp()
 	{
 		srcData = this->data;
 		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
-		pal = MemAlloc(UInt8, 1024);
+		pal = MemAllocArr(UInt8, 1024);
 		destData = buff;
 		i = 0;
 		while (i < 256)

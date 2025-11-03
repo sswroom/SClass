@@ -30,6 +30,11 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 		}
 		else
 		{
+			if (pf == Media::PF_PAL_1)
+			{
+				img->ToPal8();
+				pf = img->info.pf;
+			}
 			Media::Resizer::LanczosResizerRGB_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
 			if (resizer.IsSupported(img->info))
 			{

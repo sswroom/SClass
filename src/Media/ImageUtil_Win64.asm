@@ -71,6 +71,7 @@ global ImageUtil_ConvW8A8_B8G8R8A8
 global ImageUtil_ConvW16_B16G16R16A16
 global ImageUtil_ConvW16A16_B16G16R16A16
 global ImageUtil_ConvW8A8_B16G16R16A16
+global ImageUtil_ConvP1_P8
 global ImageUtil_Rotate32_CW90
 global ImageUtil_Rotate32_CW180
 global ImageUtil_Rotate32_CW270
@@ -4606,6 +4607,100 @@ cwa8_bgra16lop2:
 	dec r9
 	jnz cwa8_bgra16lop
 	mov rbx,r11
+	ret
+
+
+;void ImageUtil_ConvP1_P8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rcx srcPtr
+;rdx destPtr
+;r8 srcWidth
+;r9 srcHeight
+;40 sbpl
+	align 16
+ImageUtil_ConvP1_P8:
+	mov r11,r8
+	mov r10,[rsp+40]
+	shr r8,3
+	jz cp1_p8lop
+	sub r10,r8 ;sbpl
+	and r11,7
+	align 16
+cp1_p8lop2:
+	push r8
+	align 16
+cp1_p8lop3:
+	mov al,byte [rcx]
+	test al,0x80
+	setne byte [rdx]
+	test al,0x40
+	setne byte [rdx+1]
+	test al,0x20
+	setne byte [rdx+2]
+	test al,0x10
+	setne byte [rdx+3]
+	test al,0x8
+	setne byte [rdx+4]
+	test al,0x4
+	setne byte [rdx+5]
+	test al,0x2
+	setne byte [rdx+6]
+	test al,0x1
+	setne byte [rdx+7]
+	lea rcx,[rcx+1]
+	lea rdx,[rdx+8]
+	dec r8
+	jnz cp1_p8lop3
+	mov r8,r11
+	mov al,byte [rcx]
+	align 16
+cp1_p8lop3b:
+	test al,0x80
+	setne byte [rdx]
+	lea rdx,[rdx+1]
+	shl al,1
+	dec r8
+	jnz cp1_p8lop3b
+	pop r8
+	add rcx,r10
+	dec r9
+	jnz cp1_p8lop2
+	ret
+
+	align 16
+cp1_p8lop:
+	sub r10,r8 ;sbpl
+
+	align 16
+cp1_p8lop4:
+	push r8
+	align 16
+cp1_p8lop5:
+	mov al,byte [rcx]
+	test al,0x80
+	setne byte [rdx]
+	test al,0x40
+	setne byte [rdx+1]
+	test al,0x20
+	setne byte [rdx+2]
+	test al,0x10
+	setne byte [rdx+3]
+	test al,0x8
+	setne byte [rdx+4]
+	test al,0x4
+	setne byte [rdx+5]
+	test al,0x2
+	setne byte [rdx+6]
+	test al,0x1
+	setne byte [rdx+7]
+	lea rcx,[rcx+1]
+	lea rdx,[rdx+8]
+	dec r8
+	jnz cp1_p8lop5
+	pop r8
+	add rcx,r10
+	dec r9
+	jnz cp1_p8lop4
 	ret
 
 ;void ImageUtil_Rotate32_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);

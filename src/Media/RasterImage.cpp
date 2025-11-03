@@ -115,24 +115,24 @@ Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSI
 	{
 		if (pf == Media::PF_PAL_1_A1)
 		{
-			this->pal = MemAlloc(UInt8, 4 << 1);
+			this->pal = MemAllocArr(UInt8, 4 << 1);
 		}
 		else if (pf == Media::PF_PAL_2_A1)
 		{
-			this->pal = MemAlloc(UInt8, 4 << 2);
+			this->pal = MemAllocArr(UInt8, 4 << 2);
 		}
 		else if (pf == Media::PF_PAL_4_A1)
 		{
-			this->pal = MemAlloc(UInt8, 4 << 4);
+			this->pal = MemAllocArr(UInt8, 4 << 4);
 		}
 		else if (pf == Media::PF_PAL_8_A1)
 		{
-			this->pal = MemAlloc(UInt8, 4 << 8);
+			this->pal = MemAllocArr(UInt8, 4 << 8);
 		}
 		else if (bpp <= 8)
 		{
 			UOSInt palSize = ((UOSInt)4 << bpp);
-			this->pal = MemAlloc(UInt8, palSize);
+			this->pal = MemAllocArr(UInt8, palSize);
 		}
 	}
 }

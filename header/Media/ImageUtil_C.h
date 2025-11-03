@@ -74,6 +74,7 @@ extern "C"
 	void ImageUtil_ConvW16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvW16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
 	void ImageUtil_ConvW8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl, OSInt dbpl);
+	void ImageUtil_ConvP1_P8(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl);
 	void ImageUtil_Rotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
 	void ImageUtil_Rotate32_CW180(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);
 	void ImageUtil_Rotate32_CW270(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, UOSInt sbpl, UOSInt dbpl);

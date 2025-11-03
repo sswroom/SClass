@@ -3129,6 +3129,67 @@ extern "C" void ImageUtil_ConvW8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *dest
 	}
 }
 
+extern "C" void ImageUtil_ConvP1_P8(const UInt8 *srcPtr, UInt8 *destPtr, UOSInt w, UOSInt h, OSInt sbpl)
+{
+	UOSInt i;
+	UInt8 b;
+	if (w & 7)
+	{
+		UOSInt w2 = w & 7;
+		w = w >> 3;
+		sbpl = sbpl - (OSInt)w;
+		while (h-- > 0)
+		{
+			i = w;
+			while (i-- > 0)
+			{
+				b = *srcPtr++;
+				destPtr[0] = b >> 7;
+				destPtr[1] = (UInt8)((b >> 6) & 1);
+				destPtr[2] = (UInt8)((b >> 5) & 1);
+				destPtr[3] = (UInt8)((b >> 4) & 1);
+				destPtr[4] = (UInt8)((b >> 3) & 1);
+				destPtr[5] = (UInt8)((b >> 2) & 1);
+				destPtr[6] = (UInt8)((b >> 1) & 1);
+				destPtr[7] = (UInt8)(b & 1);
+				destPtr += 8;
+			}
+			b = *srcPtr;
+			i = w2;
+			while (i-- > 0)
+			{
+				destPtr[0] = (b >> 7);
+				b = (UInt8)(b << 1);
+				destPtr++;
+			}
+			srcPtr += sbpl;
+		}
+	}
+	else
+	{
+		w = w >> 3;
+		sbpl = sbpl - (OSInt)w;
+		while (h-- > 0)
+		{
+			i = w;
+			while (i-- > 0)
+			{
+				b = *srcPtr++;
+				destPtr[0] = b >> 7;
+				destPtr[1] = (UInt8)((b >> 6) & 1);
+				destPtr[2] = (UInt8)((b >> 5) & 1);
+				destPtr[3] = (UInt8)((b >> 4) & 1);
+				destPtr[4] = (UInt8)((b >> 3) & 1);
+				destPtr[5] = (UInt8)((b >> 2) & 1);
+				destPtr[6] = (UInt8)((b >> 1) & 1);
+				destPtr[7] = (UInt8)(b & 1);
+				destPtr += 8;
+			}
+			srcPtr += sbpl;
+		}
+	}
+}
+
 extern "C" void ImageUtil_Rotate32_CW90(const UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl)
 {
 	const UInt8 *sptr;
