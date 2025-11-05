@@ -1179,6 +1179,11 @@ Int64 Map::HKTrafficLayer::GetObjectIdMax() const
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
 }
 
+UOSInt Map::HKTrafficLayer::GetRecordCnt() const
+{
+	return this->roadMap.GetCount();
+}
+
 void Map::HKTrafficLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

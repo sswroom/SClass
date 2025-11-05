@@ -281,6 +281,11 @@ Int64 Map::DBMapLayer::GetObjectIdMax() const
 	return this->vecMap.GetKey(this->vecMap.GetCount() - 1);
 }
 
+UOSInt Map::DBMapLayer::GetRecordCnt() const
+{
+	return this->vecMap.GetCount();
+}
+
 void Map::DBMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<DB::TableDef> tabDef;

@@ -502,6 +502,22 @@ Int64 Map::SHPData::GetObjectIdMax() const
 	}
 }
 
+UOSInt Map::SHPData::GetRecordCnt() const
+{
+	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
+	{
+		return this->ptX->GetCount();
+	}
+	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	{
+		return this->recs->GetCount();
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void Map::SHPData::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

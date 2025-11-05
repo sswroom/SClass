@@ -264,6 +264,11 @@ Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax() const
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
+UOSInt Map::ESRI::ESRIMDBLayer::GetRecordCnt() const
+{
+	return this->objects.GetCount();
+}
+
 void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<NameArray> nnnameArr;

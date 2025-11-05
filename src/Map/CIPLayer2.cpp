@@ -483,6 +483,11 @@ Int64 Map::CIPLayer2::GetObjectIdMax() const
 	return this->maxId;
 }
 
+UOSInt Map::CIPLayer2::GetRecordCnt() const
+{
+	return (UOSInt)(this->maxId + 1);
+}
+
 void Map::CIPLayer2::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<Data::FastMap<Int32, UTF16Char*>> tmpMap;

@@ -140,11 +140,65 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnAssetSelChg(AnyType userObj)
 		me->txtAssetPath->SetText(layer->GetSourceNameObj()->ToCString());
 		sptr = Text::StrUInt32(sbuff, layer->GetCoordinateSystem()->GetSRID());
 		me->txtAssetSRID->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, layer->GetRecordCnt());
+		me->txtAssetCount->SetText(CSTRP(sbuff, sptr));
+		Math::RectAreaDbl bbox;
+		if (layer->GetBounds(bbox))
+		{
+			sptr = Text::StrDouble(sbuff, bbox.min.x);
+			me->txtAssetMinX->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, bbox.min.y);
+			me->txtAssetMinY->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, bbox.max.x);
+			me->txtAssetMaxX->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, bbox.max.y);
+			me->txtAssetMaxY->SetText(CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			me->txtAssetMinX->SetText(CSTR(""));
+			me->txtAssetMinY->SetText(CSTR(""));
+			me->txtAssetMaxX->SetText(CSTR(""));
+			me->txtAssetMaxY->SetText(CSTR(""));
+		}
 	}
 	else
 	{
 		me->txtAssetPath->SetText(CSTR(""));
 		me->txtAssetSRID->SetText(CSTR(""));
+		me->txtAssetCount->SetText(CSTR(""));
+		me->txtAssetMinX->SetText(CSTR(""));
+		me->txtAssetMinY->SetText(CSTR(""));
+		me->txtAssetMaxX->SetText(CSTR(""));
+		me->txtAssetMaxY->SetText(CSTR(""));
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFeatureLayerSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
+	NN<Map::MapDrawLayer> layer;
+	if (me->cboFeatureLayer->GetSelectedItem().GetOpt<Map::MapDrawLayer>().SetTo(layer))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(layer->GetName());
+		me->txtFeatureName->SetText(sb.ToCString());
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFeatureAddClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
+	UOSInt i = me->cboFeatureLayer->GetSelectedIndex();
+	if (i == INVALID_INDEX)
+	{
+		return;
+	}
+	Text::StringBuilderUTF8 sb;
+	me->txtFeatureName->GetText(sb);
+	if (me->hdlr.AddFeature(sb.ToCString(), i))
+	{
+		me->lbFeature->AddItem(sb.ToCString(), 0);
 	}
 }
 
@@ -155,13 +209,20 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFiles(AnyType userObj, Data::
 	NN<Map::MapDrawLayer> layer;
 	UOSInt i = 0;
 	UOSInt j = files.GetCount();
+	UOSInt k;
 	while (i < j)
 	{
 		IO::StmData::FileData fd(files.GetItem(i), false);
 		if (Optional<Map::MapDrawLayer>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::MapLayer)).SetTo(layer))
 		{
+			Text::CStringNN name = fd.GetShortName().Or(CSTR("Untitled"));
 			me->hdlr.AddAsset(layer);
-			me->lbAsset->AddItem(fd.GetShortName().Or(CSTR("Untitled")), layer);
+			me->lbAsset->AddItem(name, layer);
+			k = me->cboFeatureLayer->AddItem(name, layer);
+			if (k == 0)
+			{
+				me->cboFeatureLayer->SetSelectedIndex(0);
+			}
 		}
 		i++;
 	}
@@ -227,11 +288,56 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 	this->txtAssetPath = ui->NewTextBox(this->pnlAsset, CSTR(""));
 	this->txtAssetPath->SetRect(104, 4, 400, 23, false);
 	this->txtAssetPath->SetReadOnly(true);
+	this->lblAssetCount = ui->NewLabel(this->pnlAsset, CSTR("Count"));
+	this->lblAssetCount->SetRect(4, 28, 100, 23, false);
+	this->txtAssetCount = ui->NewTextBox(this->pnlAsset, CSTR(""));
+	this->txtAssetCount->SetRect(104, 28, 100, 23, false);
+	this->txtAssetCount->SetReadOnly(true);
 	this->lblAssetSRID = ui->NewLabel(this->pnlAsset, CSTR("SRID"));
-	this->lblAssetSRID->SetRect(4, 28, 100, 23, false);
+	this->lblAssetSRID->SetRect(4, 52, 100, 23, false);
 	this->txtAssetSRID = ui->NewTextBox(this->pnlAsset, CSTR(""));
-	this->txtAssetSRID->SetRect(104, 28, 100, 23, false);
+	this->txtAssetSRID->SetRect(104, 52, 100, 23, false);
 	this->txtAssetSRID->SetReadOnly(true);
+	this->lblAssetMinX = ui->NewLabel(this->pnlAsset, CSTR("MinX"));
+	this->lblAssetMinX->SetRect(4, 76, 100, 23, false);
+	this->txtAssetMinX = ui->NewTextBox(this->pnlAsset, CSTR(""));
+	this->txtAssetMinX->SetRect(104, 76, 100, 23, false);
+	this->txtAssetMinX->SetReadOnly(true);
+	this->lblAssetMinY = ui->NewLabel(this->pnlAsset, CSTR("MinY"));
+	this->lblAssetMinY->SetRect(4, 100, 100, 23, false);
+	this->txtAssetMinY = ui->NewTextBox(this->pnlAsset, CSTR(""));
+	this->txtAssetMinY->SetRect(104, 100, 100, 23, false);
+	this->txtAssetMinY->SetReadOnly(true);
+	this->lblAssetMaxX = ui->NewLabel(this->pnlAsset, CSTR("MaxX"));
+	this->lblAssetMaxX->SetRect(4, 124, 100, 23, false);
+	this->txtAssetMaxX = ui->NewTextBox(this->pnlAsset, CSTR(""));
+	this->txtAssetMaxX->SetRect(104, 124, 100, 23, false);
+	this->txtAssetMaxX->SetReadOnly(true);
+	this->lblAssetMaxY = ui->NewLabel(this->pnlAsset, CSTR("MaxY"));
+	this->lblAssetMaxY->SetRect(4, 148, 100, 23, false);
+	this->txtAssetMaxY = ui->NewTextBox(this->pnlAsset, CSTR(""));
+	this->txtAssetMaxY->SetRect(104, 148, 100, 23, false);
+	this->txtAssetMaxY->SetReadOnly(true);
+
+	this->tpFeature = this->tcMain->AddTabPage(CSTR("Feature"));
+	this->lbFeature = ui->NewListBox(this->tpFeature, false);
+	this->lbFeature->SetRect(0, 0, 150, 23, false);
+	this->lbFeature->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->hspFeature = ui->NewHSplitter(this->tpFeature, 3, false);
+	this->pnlFeature = ui->NewPanel(this->tpFeature);
+	this->pnlFeature->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lblFeatureLayer = ui->NewLabel(this->pnlFeature, CSTR("Layer"));
+	this->lblFeatureLayer->SetRect(4, 4, 100, 23, false);
+	this->cboFeatureLayer = ui->NewComboBox(this->pnlFeature, false);
+	this->cboFeatureLayer->SetRect(104, 4, 150, 23, false);
+	this->cboFeatureLayer->HandleSelectionChange(OnFeatureLayerSelChg, this);
+	this->lblFeatureName = ui->NewLabel(this->pnlFeature, CSTR("Name"));
+	this->lblFeatureName->SetRect(4, 28, 100, 23, false);
+	this->txtFeatureName = ui->NewTextBox(this->pnlFeature, CSTR(""));
+	this->txtFeatureName->SetRect(104, 28, 150, 23, false);
+	this->btnFeatureAdd = ui->NewButton(this->pnlFeature, CSTR("Add"));
+	this->btnFeatureAdd->SetRect(104, 52, 75, 23, false);
+	this->btnFeatureAdd->HandleButtonClick(OnFeatureAddClicked, this);
 
 	this->HandleDropFiles(OnFiles, this);
 }

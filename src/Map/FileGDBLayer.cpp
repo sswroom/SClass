@@ -239,6 +239,11 @@ Int64 Map::FileGDBLayer::GetObjectIdMax() const
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
+UOSInt Map::FileGDBLayer::GetRecordCnt() const
+{
+	return this->objects.GetCount();
+}
+
 void Map::FileGDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;

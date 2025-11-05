@@ -61,6 +61,11 @@ Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax() const
 	return (Int64)this->objList.GetCount() - 1;
 }
 
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetRecordCnt() const
+{
+	return this->objList.GetCount();
+}
+
 void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Optional<Map::NameArray> nameArr)
 {
 }

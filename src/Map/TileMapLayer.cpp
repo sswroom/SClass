@@ -388,6 +388,11 @@ Int64 Map::TileMapLayer::GetObjectIdMax() const
 	return 0;
 }
 
+UOSInt Map::TileMapLayer::GetRecordCnt() const
+{
+	return 0;
+}
+
 void Map::TileMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

@@ -479,6 +479,12 @@ Int64 Map::WebImageLayer::GetObjectIdMax() const
 	return maxId;
 }
 
+
+UOSInt Map::WebImageLayer::GetRecordCnt() const
+{
+	return this->loadedList.GetCount();
+}
+
 void Map::WebImageLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

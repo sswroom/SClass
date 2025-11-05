@@ -5,6 +5,7 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
@@ -46,12 +47,34 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlAsset;
 			NN<UI::GUILabel> lblAssetPath;
 			NN<UI::GUITextBox> txtAssetPath;
+			NN<UI::GUILabel> lblAssetCount;
+			NN<UI::GUITextBox> txtAssetCount;
 			NN<UI::GUILabel> lblAssetSRID;
 			NN<UI::GUITextBox> txtAssetSRID;
+			NN<UI::GUILabel> lblAssetMinX;
+			NN<UI::GUITextBox> txtAssetMinX;
+			NN<UI::GUILabel> lblAssetMinY;
+			NN<UI::GUITextBox> txtAssetMinY;
+			NN<UI::GUILabel> lblAssetMaxX;
+			NN<UI::GUITextBox> txtAssetMaxX;
+			NN<UI::GUILabel> lblAssetMaxY;
+			NN<UI::GUITextBox> txtAssetMaxY;
+
+			NN<UI::GUITabPage> tpFeature;
+			NN<UI::GUIListBox> lbFeature;
+			NN<UI::GUIHSplitter> hspFeature;
+			NN<UI::GUIPanel> pnlFeature;
+			NN<UI::GUILabel> lblFeatureLayer;
+			NN<UI::GUIComboBox> cboFeatureLayer;
+			NN<UI::GUILabel> lblFeatureName;
+			NN<UI::GUITextBox> txtFeatureName;
+			NN<UI::GUIButton> btnFeatureAdd;
 
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnAssetSelChg(AnyType userObj);
+			static void __stdcall OnFeatureLayerSelChg(AnyType userObj);
+			static void __stdcall OnFeatureAddClicked(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			void ClearCACerts();
 		public:

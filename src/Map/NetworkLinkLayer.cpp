@@ -487,6 +487,25 @@ Int64 Map::NetworkLinkLayer::GetObjectIdMax() const
 	}
 	return currId - 1;
 }
+
+UOSInt Map::NetworkLinkLayer::GetRecordCnt() const
+{
+	UOSInt i;
+	UOSInt cnt = 0;
+	Sync::RWMutexUsage mutUsage(this->linkMut, false);
+	i = this->links.GetCount();
+	while (i-- > 0)
+	{
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
+		NN<Map::MapDrawLayer> innerLayer;
+		if (link->innerLayer.SetTo(innerLayer))
+		{
+			cnt += innerLayer->GetRecordCnt();
+		}
+	}
+	return cnt;
+}
+
 void Map::NetworkLinkLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 /*	Map::MapDrawLayer *lyr = this->innerLayer;

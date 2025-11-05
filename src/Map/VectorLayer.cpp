@@ -554,6 +554,11 @@ Int64 Map::VectorLayer::GetObjectIdMax() const
 	return (Int64)this->vectorList.GetCount() - 1;
 }
 
+UOSInt Map::VectorLayer::GetRecordCnt() const
+{
+	return this->vectorList.GetCount();
+}
+
 void Map::VectorLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

@@ -201,6 +201,11 @@ Int64 Map::DrawMapServiceLayer::GetObjectIdMax() const
 	return 0;
 }
 
+UOSInt Map::DrawMapServiceLayer::GetRecordCnt() const
+{
+	return 0;
+}
+
 void Map::DrawMapServiceLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

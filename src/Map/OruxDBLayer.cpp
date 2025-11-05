@@ -213,6 +213,19 @@ Int64 Map::OruxDBLayer::GetObjectIdMax() const
 	}
 	else
 	{
+		return -1;
+	}
+}
+
+UOSInt Map::OruxDBLayer::GetRecordCnt() const
+{
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
+	{
+		return lyr->max.x * lyr->max.y;
+	}
+	else
+	{
 		return 0;
 	}
 }

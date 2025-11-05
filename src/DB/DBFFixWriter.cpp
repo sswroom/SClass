@@ -6,19 +6,18 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, Text::String **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage)
+DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, UnsafeArray<NN<Text::String>> colNames, UnsafeArray<const UOSInt> colSize, UnsafeArray<const UOSInt> dp, UnsafeArray<DB::DBUtil::ColType> colTypes, UInt32 codePage)
 {
 	UInt8 buff[128];
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NEW_CLASS(this->enc, Text::Encoding(codePage));
+	NEW_CLASSNN(this->enc, Text::Encoding(codePage));
 	this->stm = stm;
 	this->rowCnt = 0;
-	this->rec = 0;
 	this->colCnt = nCol;
 	this->refPos = stm->GetPosition();
-	this->columns = MemAlloc(DB::DBFFixWriter::DBFColumn, nCol);
+	this->columns = MemAllocArr(DB::DBFFixWriter::DBFColumn, nCol);
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
@@ -60,8 +59,8 @@ DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, Text::St
 	buff[29] = DB::DBFFile::GetLangDriver(codePage);
 	*(Int16*)&buff[30] = 0;
 	stm->Write(Data::ByteArrayR(buff, 32));
-	rec = MemAlloc(UInt8, k);
-	rec[0] = ' ';
+	this->rec = MemAlloc(UInt8, k);
+	this->rec[0] = ' ';
 	this->recSize = k;
 
 	i = 0;
@@ -128,24 +127,17 @@ DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, Text::St
 
 DB::DBFFixWriter::~DBFFixWriter()
 {
-	if (this->columns)
-	{
-		UInt8 buff = 26;
-		stm->Write(Data::ByteArrayR(&buff, 1));
+	UInt8 buff = 26;
+	stm->Write(Data::ByteArrayR(&buff, 1));
 
-		stm->SeekFromBeginning(refPos + 4);
-		stm->Write(Data::ByteArrayR((UInt8*)&this->rowCnt, 4));
-		MemFree(this->columns);
-		this->columns = 0;
-	}
-	if (this->rec)
-	{
-		MemFree(this->rec);
-	}
-	DEL_CLASS(this->enc);
+	stm->SeekFromBeginning(refPos + 4);
+	stm->Write(Data::ByteArrayR((UInt8*)&this->rowCnt, 4));
+	MemFreeArr(this->columns);
+	MemFreeArr(this->rec);
+	this->enc.Delete();
 }
 
-void DB::DBFFixWriter::AddRecord(const UTF8Char **rowValues)
+void DB::DBFFixWriter::AddRecord(UnsafeArray<UnsafeArray<const UTF8Char>> rowValues)
 {
 	UOSInt k;
 	UOSInt j;
