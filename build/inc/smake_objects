@@ -845,6 +845,7 @@ WebFeatureService.o: ../../src/Map/WebFeatureService.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 WebMapService.o: ../../src/Map/WebMapService.cpp
 WebMapTileServiceSource.o: ../../src/Map/WebMapTileServiceSource.cpp
+WFSHandler.o: ../../src/Map/WFSHandler.cpp
 ESRICurve.o: ../../src/Map/ESRI/ESRICurve.cpp
 ESRIFeatureServer.o: ../../src/Map/ESRI/ESRIFeatureServer.cpp
 ESRIMapServer.o: ../../src/Map/ESRI/ESRIMapServer.cpp

@@ -2345,6 +2345,7 @@ Map/GeoPackageLayer.h:
 @GeoPackageLayer.o
 Map/GISWebHandler.h:
 @GISWebHandler.o
+Map/GISWebService.h:
 Map/GMLXML.h:
 @GMLXML.o
 Map/GPSTrack.h:
@@ -2460,6 +2461,8 @@ Map/WebMapService.h:
 @WebMapService.o
 Map/WebMapTileServiceSource.h:
 @WebMapTileServiceSource.o
+Map/WFSHandler.h:
+@WFSHandler.o
 Map/ESRI/ESRICurve.h:
 @ESRICurve.o
 Map/ESRI/ESRIFeatureServer.h:

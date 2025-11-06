@@ -906,9 +906,9 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 		}
 		this->lvAssetsTrade->ChangeColumnCnt(buyCnt + 3);
 		this->lvAssetsTrade->ClearAll();
-		this->lvAssetsTrade->AddColumn(CSTR(""), 100);
-		this->lvAssetsTrade->AddColumn(CSTR(""), 100);
-		this->lvAssetsTrade->AddColumn(CSTR(""), 100);
+		this->lvAssetsTrade->AddColumn(CSTR(""), 80);
+		this->lvAssetsTrade->AddColumn(CSTR(""), 70);
+		this->lvAssetsTrade->AddColumn(CSTR(""), 70);
 
 		UnsafeArray<AssetSummary> summ = MemAllocArr(AssetSummary, buyCnt);
 		Double totalAmount = 0;
@@ -923,7 +923,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 			if (t->amount > 0)
 			{
 				sptr = t->tranBeginDate.ToString(sbuff, "yyyy-MM-dd");
-				this->lvAssetsTrade->AddColumn(CSTRP(sbuff, sptr), 100);
+				this->lvAssetsTrade->AddColumn(CSTRP(sbuff, sptr), 70);
 				summ[k].trade = t;
 				summ[k].endDate = nullptr;
 				summ[k].amountLeft = t->amount;
@@ -984,7 +984,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 		this->lvAssetsTrade->SetSubItem(2, 2, CSTR("Buy Price"));
 		if (totalAmount > 0)
 		{
-			sptr = Text::StrDouble(sbuff, totalCost / totalAmount);
+			sptr = Text::StrDoubleGDP(sbuff, totalCost / totalAmount, 0, 0, 4);
 			this->lvAssetsTrade->SetSubItem(2, 1, CSTRP(sbuff, sptr));
 		}
 		this->lvAssetsTrade->AddItem(CSTR("Curr Units"), 0);
@@ -1005,7 +1005,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 				sptr = summ[i].endDate.ToString(sbuff, "yyyy-MM-dd");
 				this->lvAssetsTrade->SetSubItem(1, 3 + i, CSTRP(sbuff, sptr));
 			}
-			sptr = Text::StrDouble(sbuff, summ[i].trade->cost);
+			sptr = Text::StrDoubleGDP(sbuff, summ[i].trade->cost, 0, 0, 4);
 			this->lvAssetsTrade->SetSubItem(2, 3 + i, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, summ[i].amountLeft);
 			this->lvAssetsTrade->SetSubItem(3, 3 + i, CSTRP(sbuff, sptr));
@@ -1075,7 +1075,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAsset(NN<Data::Invest::Asset> ass
 		i = 0;
 		while (i < buyCnt)
 		{
-			sptr = Text::StrDouble(sbuff, summ[i].currCost);
+			sptr = Text::StrDoubleGDP(sbuff, summ[i].currCost, 0, 0, 4);
 			this->lvAssetsTrade->SetSubItem(4, 3 + i, CSTRP(sbuff, sptr));
 			if (summ[i].amountLeft > 0)
 			{
