@@ -6,6 +6,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "Exporter/DBFExporter.h"
+#include "IO/MemoryStream.h"
 
 Exporter::DBFExporter::DBFExporter()
 {

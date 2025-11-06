@@ -344,6 +344,7 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRGISServerForm::~AVIRGISServerForm()
 {
+	this->listener.Delete();
 	this->ssl.Delete();
 	this->sslCert.Delete();
 	this->sslKey.Delete();

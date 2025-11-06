@@ -66,7 +66,7 @@ Bool Map::GISWebHandler::DoWFS(NN<Net::WebServer::WebRequest> req, NN<Net::WebSe
 	Math::RectAreaDbl bbox;
 	NN<Math::CoordinateSystem> csys;
 	version = Text::String::ToCStringOr(req->GetQueryValue(CSTR("version")), CSTR("null"));
-	if (!req->GetQueryValue(CSTR("reqeust")).SetTo(request))
+	if (!req->GetQueryValue(CSTR("request")).SetTo(request))
 	{
 		return this->ResponseException(req, resp, CSTR("MissingParameterValue"), CSTR("request"), CSTR("Could not determine wfs request from http request"));
 	}
