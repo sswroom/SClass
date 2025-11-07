@@ -89,6 +89,13 @@ void Map::GISWebHandler::AddRespHeaders(NN<Net::WebServer::WebRequest> req, NN<N
 {
 }
 
+void __stdcall Map::GISWebHandler::FreeGISWorkspace(NN<GISWebService::GISWorkspace> ws)
+{
+	ws->name->Release();
+	ws->uri->Release();
+	MemFreeNN(ws);
+}
+
 Map::GISWebHandler::GISWebHandler()
 {
 	this->AddService(CSTR("/ows"), Net::WebUtil::RequestMethod::HTTP_GET, OWSFunc);
@@ -102,6 +109,7 @@ Map::GISWebHandler::~GISWebHandler()
 {
 	this->assets.DeleteAll();
 	this->features.FreeAll(WFSHandler::FreeFeature);
+	this->ws.FreeAll(FreeGISWorkspace);
 }
 
 UOSInt Map::GISWebHandler::AddAsset(NN<Map::MapDrawLayer> layer)

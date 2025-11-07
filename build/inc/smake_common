@@ -2169,6 +2169,8 @@ IO/FileAnalyse/ASN1FileAnalyse.h:
 @ASN1FileAnalyse.o
 IO/FileAnalyse/CCacheV2FileAnalyse.h:
 @CCacheV2FileAnalyse.o
+IO/FileAnalyse/DBF3FileAnalyse.h:
+@DBF3FileAnalyse.o
 IO/FileAnalyse/DWGFileAnalyse.h:
 @DWGFileAnalyse.o
 IO/FileAnalyse/EBMLFileAnalyse.h:

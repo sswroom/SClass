@@ -14,6 +14,7 @@ namespace Map
 	private:
 		Data::ArrayListNN<Map::MapDrawLayer> assets;
 		Data::FastStringMapNN<WFSHandler::GISFeature> features;
+		Data::FastStringMapNN<GISWebService::GISWorkspace> ws;
 		WFSHandler wfs;
 
 		static Bool __stdcall OWSFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
@@ -23,7 +24,7 @@ namespace Map
 		static Bool __stdcall TMSFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		virtual Bool ResponseException(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN exceptionCode, Text::CStringNN locator, Text::CStringNN exceptionText);
 		virtual void AddRespHeaders(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
-
+		static void __stdcall FreeGISWorkspace(NN<GISWebService::GISWorkspace> ws);
 	public:
 		GISWebHandler();
 		virtual ~GISWebHandler();

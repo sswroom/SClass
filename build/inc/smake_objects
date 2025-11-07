@@ -662,6 +662,7 @@ TelitLE910.o: ../../src/IO/Device/TelitLE910.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 ASN1FileAnalyse.o: ../../src/IO/FileAnalyse/ASN1FileAnalyse.cpp
 CCacheV2FileAnalyse.o: ../../src/IO/FileAnalyse/CCacheV2FileAnalyse.cpp
+DBF3FileAnalyse.o: ../../src/IO/FileAnalyse/DBF3FileAnalyse.cpp
 DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EDIDFileAnalyse.o: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
