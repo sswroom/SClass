@@ -845,6 +845,9 @@ namespace Text
 		NN<StringBuilderUTF8> U32(UInt32 v) { return this->AppendU32(v); }
 		NN<StringBuilderUTF8> UOS(UOSInt v) { return this->AppendUOSInt(v); }
 		NN<StringBuilderUTF8> F64(Double v) { return this->AppendDouble(v); }
+		StringBuilderUTF8 &operator+(Text::CStringNN s) { this->Append(s); return *this; }
+		StringBuilderUTF8 &operator+(NN<Text::String> s) { this->Append(s); return *this; }
+		StringBuilderUTF8 &operator+(Char c) { this->AppendUTF8Char((UTF8Char)c); return *this; }
  	};
 
 	FORCEINLINE void SBAppendF32(NN<Text::StringBuilderUTF8> sb, Single v)

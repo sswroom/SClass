@@ -219,6 +219,11 @@ Int64 Map::GeoPackageLayer::GetObjectIdMax() const
 	return (Int64)(this->vecList.GetCount() - 1);
 }
 
+UOSInt Map::GeoPackageLayer::GetRecordCnt() const
+{
+	return this->vecList.GetCount();
+}
+
 void Map::GeoPackageLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<StringSession> sess;

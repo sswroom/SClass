@@ -105,6 +105,7 @@ namespace Map
 		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
 		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
 		virtual Int64 GetObjectIdMax() const = 0;
+		virtual UOSInt GetRecordCnt() const = 0;
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr) = 0;
 		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex) = 0;
 		virtual UOSInt GetColumnCnt() const = 0;

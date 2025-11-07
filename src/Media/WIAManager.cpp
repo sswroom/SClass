@@ -49,6 +49,7 @@ Media::WIAManager::WIAManager()
 				PropSpec[1].ulKind = PRSPEC_PROPID;
 				PropSpec[1].propid = WIA_DIP_DEV_NAME;
 
+#ifdef CINTERFACE
 				HRESULT hr = pWiaPropertyStorage->ReadMultiple( c_nPropertyCount, PropSpec, PropVar );
 				if (SUCCEEDED(hr))
 				{
@@ -60,7 +61,7 @@ Media::WIAManager::WIAManager()
 
 					FreePropVariantArray( c_nPropertyCount, PropVar );
 				}
-
+#endif
 
 				pWiaPropertyStorage->Release();
 			}

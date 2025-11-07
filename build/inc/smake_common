@@ -2169,6 +2169,8 @@ IO/FileAnalyse/ASN1FileAnalyse.h:
 @ASN1FileAnalyse.o
 IO/FileAnalyse/CCacheV2FileAnalyse.h:
 @CCacheV2FileAnalyse.o
+IO/FileAnalyse/DBF3FileAnalyse.h:
+@DBF3FileAnalyse.o
 IO/FileAnalyse/DWGFileAnalyse.h:
 @DWGFileAnalyse.o
 IO/FileAnalyse/EBMLFileAnalyse.h:
@@ -2343,6 +2345,9 @@ Map/GeoPackage.h:
 @GeoPackage.o
 Map/GeoPackageLayer.h:
 @GeoPackageLayer.o
+Map/GISWebHandler.h:
+@GISWebHandler.o
+Map/GISWebService.h:
 Map/GMLXML.h:
 @GMLXML.o
 Map/GPSTrack.h:
@@ -2458,6 +2463,8 @@ Map/WebMapService.h:
 @WebMapService.o
 Map/WebMapTileServiceSource.h:
 @WebMapTileServiceSource.o
+Map/WFSHandler.h:
+@WFSHandler.o
 Map/ESRI/ESRICurve.h:
 @ESRICurve.o
 Map/ESRI/ESRIFeatureServer.h:

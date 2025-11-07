@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/CCacheV2FileAnalyse.h"
+#include "IO/FileAnalyse/DBF3FileAnalyse.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
 #include "IO/FileAnalyse/EDIDFileAnalyse.h"
@@ -175,6 +176,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	else if (fileName->EndsWith(UTF8STRC(".map")) && buffSize >= 20 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("mapsforge binary OSM")))
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::MapsforgeFileAnalyse(fd));
+	}
+	else if (fileName->EndsWith(UTF8STRC(".dbf")) && buffSize >= 32 && buff[0] == 3 && (ReadUInt32(&buff[4]) * ReadUInt16(&buff[10]) + ReadUInt16(&buff[8]) + 1) == fd->GetDataSize())
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::DBF3FileAnalyse(fd));
 	}
 	else
 	{

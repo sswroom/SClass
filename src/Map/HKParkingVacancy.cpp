@@ -310,6 +310,11 @@ Int64 Map::HKParkingVacancy::GetObjectIdMax() const
 	return (Int64)this->parkingMap.GetCount() - 1;
 }
 
+UOSInt Map::HKParkingVacancy::GetRecordCnt() const
+{
+	return this->parkingMap.GetCount();
+}
+
 void Map::HKParkingVacancy::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

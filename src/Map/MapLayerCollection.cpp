@@ -272,6 +272,20 @@ Int64 Map::MapLayerCollection::GetObjectIdMax() const
 	return currId - 1;
 }
 
+UOSInt Map::MapLayerCollection::GetRecordCnt() const
+{
+	NN<Map::MapDrawLayer> lyr;
+	UOSInt cnt = 0;
+	Sync::RWMutexUsage mutUsage(this->mut, false);
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
+	while (it.HasNext())
+	{
+		lyr = it.Next();
+		cnt += lyr->GetRecordCnt();
+	}
+	return cnt;
+}
+
 void Map::MapLayerCollection::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

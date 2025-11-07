@@ -142,6 +142,8 @@ global _ImageUtil_ConvW16A16_B16G16R16A16
 global ImageUtil_ConvW16A16_B16G16R16A16
 global _ImageUtil_ConvW8A8_B16G16R16A16
 global ImageUtil_ConvW8A8_B16G16R16A16
+global _ImageUtil_ConvP1_P8
+global ImageUtil_ConvP1_P8
 global _ImageUtil_Rotate32_CW90
 global ImageUtil_Rotate32_CW90
 global _ImageUtil_Rotate32_CW180
@@ -5095,7 +5097,116 @@ cwa8_bgra16lop2:
 	pop ebx
 	pop esi
 	ret
-	
+
+;void ImageUtil_ConvP1_P8(UInt8 *srcPtr, UInt8 *destPtr, UOSInt srcWidth, UOSInt srcHeight, OSInt sbpl);
+;0 ebx
+;4 edi
+;8 esi
+;12 retAddr
+;16 srcPtr
+;20 destPtr
+;24 srcWidth
+;28 srcHeight
+;32 sbpl
+	align 16
+_ImageUtil_ConvP1_P8:
+ImageUtil_ConvP1_P8:
+	push esi
+	push edi
+	push ebx
+	mov esi,dword [esp+16] ;srcPtr
+	mov edi,dword [esp+20] ;destPtr
+	mov ecx,dword [esp+28] ;srcHeight
+	mov edx,dword [esp+24] ;srcWidth
+	mov ebx,edx
+	shr edx,3
+	jz cp1_p8lop
+	sub dword [esp+32],edx ;sbpl
+	and ebx,7
+	align 16
+cp1_p8lop2:
+	push edx
+	align 16
+cp1_p8lop3:
+	mov al,byte [esi]
+	test al,0x80
+	setne byte [edi]
+	test al,0x40
+	setne byte [edi+1]
+	test al,0x20
+	setne byte [edi+2]
+	test al,0x10
+	setne byte [edi+3]
+	test al,0x8
+	setne byte [edi+4]
+	test al,0x4
+	setne byte [edi+5]
+	test al,0x2
+	setne byte [edi+6]
+	test al,0x1
+	setne byte [edi+7]
+	lea esi,[esi+1]
+	lea edi,[edi+8]
+	dec edx
+	jnz cp1_p8lop3
+	mov edx,ebx
+	mov al,byte [esi]
+	align 16
+cp1_p8lop3b:
+	test al,0x80
+	setne byte [edi]
+	lea edi,[edi+1]
+	shl al,1
+	dec edx
+	jnz cp1_p8lop3b
+	pop edx
+	add esi,dword [esp+32]
+	dec edx
+	jnz cp1_p8lop2
+	pop ebx
+	pop edi
+	pop esi
+	ret
+
+	align 16
+cp1_p8lop:
+	sub dword [esp+32],edx ;sbpl
+
+	align 16
+cp1_p8lop4:
+	push edx
+	align 16
+cp1_p8lop5:
+	mov al,byte [esi]
+	test al,0x80
+	setne byte [edi]
+	test al,0x40
+	setne byte [edi+1]
+	test al,0x20
+	setne byte [edi+2]
+	test al,0x10
+	setne byte [edi+3]
+	test al,0x8
+	setne byte [edi+4]
+	test al,0x4
+	setne byte [edi+5]
+	test al,0x2
+	setne byte [edi+6]
+	test al,0x1
+	setne byte [edi+7]
+	lea esi,[esi+1]
+	lea edi,[edi+8]
+	dec edx
+	jnz cp1_p8lop5
+	pop edx
+	add esi,dword [esp+32]
+	dec edx
+	jnz cp1_p8lop4
+	pop ebx
+	pop edi
+	pop esi
+	ret
+
 ;void ImageUtil_Rotate32_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
 ;0 edi
 ;4 esi

@@ -382,6 +382,11 @@ Int64 Map::SPDLayer::GetObjectIdMax() const
 	return this->maxId;
 }
 
+UOSInt Map::SPDLayer::GetRecordCnt() const
+{
+	return (UOSInt)(this->maxId + 1);
+}
+
 void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<Data::ArrayList<UTF16Char *>> tmpArr;

@@ -467,9 +467,21 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 		{
 			if (!needRelease)
 			{
-				printf("AVIRPackageForm: Memory problem occurred\r\n");
+				if (pobj->GetParserType() == IO::ParserType::ASN1Data)
+				{
+					NN<Net::ASN1Data> data = NN<Net::ASN1Data>::ConvertFrom(pobj);
+					this->core->OpenObject(data->Clone());
+				}
+				else
+				{
+					printf("AVIRPackageForm: Memory problem occurred\r\n");
+					this->core->OpenObject(pobj);
+				}
 			}
-			this->core->OpenObject(pobj);
+			else
+			{
+				this->core->OpenObject(pobj);
+			}
 		}
 	}
 	else if (pot == IO::PackageFile::PackObjectType::StreamData)
@@ -713,6 +725,13 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFil
 		else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
 		{
 			this->lvFiles->SetSubItem(k, 1, CSTR("Object"));
+			Bool needRelease;
+			NN<IO::ParsedObject> pobj;
+			if (packFile->GetItemPObj(i, needRelease).SetTo(pobj))
+			{
+				this->lvFiles->SetSubItem(k, 2, IO::ParserTypeGetName(pobj->GetParserType()));
+				if (needRelease) pobj.Delete();
+			}
 		}
 		else
 		{

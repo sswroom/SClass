@@ -23,6 +23,7 @@ namespace SSWR
 			virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
 			virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 			virtual Int64 GetObjectIdMax() const;
+			virtual UOSInt GetRecordCnt() const;
 			virtual void ReleaseNameArr(Optional<Map::NameArray> nameArr);
 			virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<Map::NameArray> nameArr, Int64 id, UOSInt strIndex);
 			virtual UOSInt GetColumnCnt() const;

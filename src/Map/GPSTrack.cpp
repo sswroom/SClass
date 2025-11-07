@@ -160,6 +160,18 @@ Int64 Map::GPSTrack::GetObjectIdMax() const
 	}
 }
 
+UOSInt Map::GPSTrack::GetRecordCnt() const
+{
+	if (this->currTimes.GetCount() > 0)
+	{
+		return this->currTracks.GetCount() + 1;
+	}
+	else
+	{
+		return this->currTracks.GetCount();
+	}
+}
+
 void Map::GPSTrack::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }

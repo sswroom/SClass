@@ -59,7 +59,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NN<Data::ArrayListIn
 
 Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax() const
 {
-	return (Int64)userFileList->GetCount() - 1;
+	return (Int64)this->userFileList->GetCount() - 1;
+}
+
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetRecordCnt() const
+{
+	return this->userFileList->GetCount();
 }
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Optional<Map::NameArray> nameArr)

@@ -91,7 +91,7 @@ UnsafeArray<UTF8Char> IO::Console::GetLine(UnsafeArray<UTF8Char> buff)
 #endif
 }
 
-void IO::Console::PrintStrO(const UTF8Char *str1)
+void IO::Console::PrintStrO(UnsafeArray<const UTF8Char> str1)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str1);
 	wprintf(L"%ls", wptr.Ptr());
@@ -99,10 +99,10 @@ void IO::Console::PrintStrO(const UTF8Char *str1)
 	fflush(stdout);
 }
 
-UOSInt IO::Console::WriteStdOut(UInt8 *buff, UOSInt size)
+UOSInt IO::Console::WriteStdOut(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 #if defined(WIN32) && !defined(_WIN32_WCE) && !defined(__CYGWIN__)
-	Int32 ret = _write(1, buff, (UInt32)size);
+	Int32 ret = _write(1, buff.Ptr(), (UInt32)size);
 	if (ret < 0)
 	{
 		return 0;
