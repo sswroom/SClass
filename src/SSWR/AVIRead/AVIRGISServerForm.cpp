@@ -6,6 +6,8 @@
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/ThreadUtil.h"
 
+#define TITLE CSTR("GIS Server")
+
 void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
@@ -53,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 	me->txtWorkerCnt->GetText(sb);
 	if (!sb.ToUOSInt(workerCnt))
 	{
-		me->ui->ShowMsgOK(CSTR("Please enter valid worker count"), CSTR("GIS Server"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter valid worker count"), TITLE, me);
 		return;
 	}
 	Optional<Net::SSLEngine> ssl = 0;
@@ -64,14 +66,14 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 		NN<Crypto::Cert::X509File> sslKey;
 		if (!me->sslCert.SetTo(sslCert) || !me->sslKey.SetTo(sslKey))
 		{
-			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("GIS Server"), me);
+			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), TITLE, me);
 			return;
 		}
 		ssl = me->ssl;
 		NN<Net::SSLEngine> nnssl;
 		if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
-			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("GIS Server"), me);
+			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), TITLE, me);
 			return;
 		}
 	}
@@ -88,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 		{
 			valid = false;
 			listener.Delete();
-			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("GIS Server"), me);
+			me->ui->ShowMsgOK(CSTR("Error in listening to port"), TITLE, me);
 		}
 		else
 		{
@@ -96,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 			if (!listener->Start())
 			{
 				valid = false;
-				me->ui->ShowMsgOK(CSTR("Error in starting GIS Server"), CSTR("GIS Server"), me);
+				me->ui->ShowMsgOK(CSTR("Error in starting GIS Server"), TITLE, me);
 			}
 			else
 			{
@@ -112,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 	else
 	{
 		valid = false;
-		me->ui->ShowMsgOK(CSTR("Port number out of range"), CSTR("GIS Server"), me);
+		me->ui->ShowMsgOK(CSTR("Port number out of range"), TITLE, me);
 	}
 
 	if (valid)
@@ -174,6 +176,42 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnAssetSelChg(AnyType userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnWSSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
+	NN<Map::GISWebService::GISWorkspace> ws;
+	if (me->lbWS->GetSelectedItem().GetOpt<Map::GISWebService::GISWorkspace>().SetTo(ws))
+	{
+		me->txtWSName->SetText(ws->name->ToCString());
+		me->txtWSURI->SetText(ws->uri->ToCString());
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnWSAddClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
+	Text::StringBuilderUTF8 sbName;
+	Text::StringBuilderUTF8 sbURI;
+	me->txtWSName->GetText(sbName);
+	me->txtWSURI->GetText(sbURI);
+	if (sbName.GetLength() == 0)
+	{
+		me->ui->ShowMsgOK(CSTR("Please enter name"), TITLE, me);
+		return;
+	}
+	if (!sbURI.StartsWith(CSTR("http://")) && !sbURI.StartsWith(CSTR("https://")))
+	{
+		me->ui->ShowMsgOK(CSTR("Please enter valid URI"), TITLE, me);
+		return;
+	}
+	NN<Map::GISWebService::GISWorkspace> ws;
+	if (me->hdlr.AddWorkspace(sbName.ToCString(), sbURI.ToCString()).SetTo(ws))
+	{
+		me->lbWS->AddItem(ws->name, ws);
+		me->cboFeatureWS->AddItem(ws->name, ws);
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFeatureLayerSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
@@ -194,9 +232,14 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnFeatureAddClicked(AnyType use
 	{
 		return;
 	}
+	NN<Map::GISWebService::GISWorkspace> ws;
+	if (!me->cboFeatureWS->GetSelectedItem().GetOpt<Map::GISWebService::GISWorkspace>().SetTo(ws))
+	{
+		return;
+	}
 	Text::StringBuilderUTF8 sb;
 	me->txtFeatureName->GetText(sb);
-	if (me->hdlr.AddFeature(sb.ToCString(), i))
+	if (me->hdlr.AddFeature(sb.ToCString(), ws, i))
 	{
 		me->lbFeature->AddItem(sb.ToCString(), 0);
 	}
@@ -319,6 +362,26 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 	this->txtAssetMaxY->SetRect(104, 148, 100, 23, false);
 	this->txtAssetMaxY->SetReadOnly(true);
 
+	this->tpWS = this->tcMain->AddTabPage(CSTR("Workspace"));
+	this->lbWS = ui->NewListBox(this->tpWS, false);
+	this->lbWS->SetRect(0, 0, 150, 23, false);
+	this->lbWS->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbWS->HandleSelectionChange(OnWSSelChg, this);
+	this->hspWS = ui->NewHSplitter(this->tpWS, 3, false);
+	this->pnlWS = ui->NewPanel(this->tpWS);
+	this->pnlWS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lblWSName = ui->NewLabel(this->pnlWS, CSTR("Name"));
+	this->lblWSName->SetRect(4, 4, 100, 23, false);
+	this->txtWSName = ui->NewTextBox(this->pnlWS, CSTR(""));
+	this->txtWSName->SetRect(104, 4, 150, 23, false);
+	this->lblWSURI = ui->NewLabel(this->pnlWS, CSTR("URI"));
+	this->lblWSURI->SetRect(4, 28, 100, 23, false);
+	this->txtWSURI = ui->NewTextBox(this->pnlWS, CSTR(""));
+	this->txtWSURI->SetRect(104, 28, 450, 23, false);
+	this->btnWSAdd = ui->NewButton(this->pnlWS, CSTR("Add"));
+	this->btnWSAdd->SetRect(104, 52, 75, 23, false);
+	this->btnWSAdd->HandleButtonClick(OnWSAddClicked, this);
+
 	this->tpFeature = this->tcMain->AddTabPage(CSTR("Feature"));
 	this->lbFeature = ui->NewListBox(this->tpFeature, false);
 	this->lbFeature->SetRect(0, 0, 150, 23, false);
@@ -331,12 +394,16 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 	this->cboFeatureLayer = ui->NewComboBox(this->pnlFeature, false);
 	this->cboFeatureLayer->SetRect(104, 4, 150, 23, false);
 	this->cboFeatureLayer->HandleSelectionChange(OnFeatureLayerSelChg, this);
+	this->lblFeatureWS = ui->NewLabel(this->pnlFeature, CSTR("Workspace"));
+	this->lblFeatureWS->SetRect(4, 28, 100, 23, false);
+	this->cboFeatureWS = ui->NewComboBox(this->pnlFeature, false);
+	this->cboFeatureWS->SetRect(104, 28, 150, 23, false);
 	this->lblFeatureName = ui->NewLabel(this->pnlFeature, CSTR("Name"));
-	this->lblFeatureName->SetRect(4, 28, 100, 23, false);
+	this->lblFeatureName->SetRect(4, 52, 100, 23, false);
 	this->txtFeatureName = ui->NewTextBox(this->pnlFeature, CSTR(""));
-	this->txtFeatureName->SetRect(104, 28, 150, 23, false);
+	this->txtFeatureName->SetRect(104, 52, 150, 23, false);
 	this->btnFeatureAdd = ui->NewButton(this->pnlFeature, CSTR("Add"));
-	this->btnFeatureAdd->SetRect(104, 52, 75, 23, false);
+	this->btnFeatureAdd->SetRect(104, 76, 75, 23, false);
 	this->btnFeatureAdd->HandleButtonClick(OnFeatureAddClicked, this);
 
 	this->HandleDropFiles(OnFiles, this);

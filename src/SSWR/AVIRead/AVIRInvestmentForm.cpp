@@ -794,14 +794,34 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Curr
 		else
 		{
 			Data::ChartPlotter chart(0);
+			NN<Data::ChartPlotter::DoubleData> yData = Data::ChartPlotter::NewData(curr->valList);
+			NN<Data::ChartPlotter::TimeData> xData = Data::ChartPlotter::NewData(curr->tsList);
 			if (curr->invert)
 			{
-				chart.AddLineChart(CSTR(""), NN<Data::ChartPlotter::DoubleData>::ConvertFrom(Data::ChartPlotter::NewData(curr->valList))->Invert(), Data::ChartPlotter::NewData(curr->tsList), 0xffff0000);
+				yData->Invert();
 			}
-			else
+			UOSInt range = this->cboCurrencyRange->GetSelectedIndex();
+			if (range == 1)
 			{
-				chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(curr->valList), Data::ChartPlotter::NewData(curr->tsList), 0xffff0000);
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddYear(-1), yData);
 			}
+			else if (range == 2)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().ClearMonthAndDay(), yData);
+			}
+			else if (range == 3)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddMonth(-6), yData);
+			}
+			else if (range == 4)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddMonth(-3), yData);
+			}
+			else if (range == 5)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddMonth(-1), yData);
+			}
+			chart.AddLineChart(CSTR(""), yData, xData, 0xffff0000);
 			chart.Plot(dimg, 0, 0, (Double)sz.GetWidth(), (Double)sz.GetHeight());
 		}
 		if (dimg->ToStaticImage().SetTo(simg))
@@ -1114,7 +1134,30 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> 
 		else
 		{
 			Data::ChartPlotter chart(0);
-			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(ass->valList), Data::ChartPlotter::NewData(ass->tsList), 0xffff0000);
+			NN<Data::ChartPlotter::DoubleData> yData = Data::ChartPlotter::NewData(ass->valList);
+			NN<Data::ChartPlotter::TimeData> xData = Data::ChartPlotter::NewData(ass->tsList);
+			UOSInt range = this->cboAssetsRange->GetSelectedIndex();
+			if (range == 1)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddYear(-1), yData);
+			}
+			else if (range == 2)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().ClearMonthAndDay(), yData);
+			}
+			else if (range == 3)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddMonth(-6), yData);
+			}
+			else if (range == 4)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddMonth(-3), yData);
+			}
+			else if (range == 5)
+			{
+				xData->KeepAfter<Double>(Data::Timestamp::Now().AddMonth(-1), yData);
+			}
+			chart.AddLineChart(CSTR(""), yData, xData, 0xffff0000);
 			chart.Plot(dimg, 0, 0, (Double)sz.GetWidth(), (Double)sz.GetHeight());
 		}
 		if (dimg->ToStaticImage().SetTo(simg))
@@ -1640,7 +1683,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tcCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpCurrencySummary = this->tcCurrency->AddTabPage(CSTR("Summary"));
 	this->pnlCurrency = ui->NewPanel(this->tpCurrencySummary);
-	this->pnlCurrency->SetRect(0, 0, 100, 103, false);
+	this->pnlCurrency->SetRect(0, 0, 100, 127, false);
 	this->pnlCurrency->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCurrencyCurr = ui->NewLabel(this->pnlCurrency, CSTR("Current Rate"));
 	this->lblCurrencyCurr->SetRect(4, 4, 100, 23, false);
@@ -1660,6 +1703,18 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnCurrencyImport = ui->NewButton(this->pnlCurrency, CSTR("Import"));
 	this->btnCurrencyImport->SetRect(4, 76, 75, 23, false);
 	this->btnCurrencyImport->HandleButtonClick(OnCurrencyImportClicked, this);
+	this->lblCurrencyRange = ui->NewLabel(this->pnlCurrency, CSTR("Range"));
+	this->lblCurrencyRange->SetRect(4, 100, 100, 23, false);
+	this->cboCurrencyRange = ui->NewComboBox(this->pnlCurrency, false);
+	this->cboCurrencyRange->SetRect(104, 100, 150, 23, false);
+	this->cboCurrencyRange->AddItem(CSTR("Max"), 0);
+	this->cboCurrencyRange->AddItem(CSTR("1 Year"), 0);
+	this->cboCurrencyRange->AddItem(CSTR("YTD"), 0);
+	this->cboCurrencyRange->AddItem(CSTR("6 Months"), 0);
+	this->cboCurrencyRange->AddItem(CSTR("3 Months"), 0);
+	this->cboCurrencyRange->AddItem(CSTR("1 Months"), 0);
+	this->cboCurrencyRange->SetSelectedIndex(0);
+	this->cboCurrencyRange->HandleSelectionChange(OnCurrencySizeChg, this);
 	this->pbCurrency = ui->NewPictureBox(this->tpCurrencySummary, this->deng, false, false);
 	this->pbCurrency->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbCurrency->HandleSizeChanged(OnCurrencySizeChg, this);
@@ -1725,7 +1780,7 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->tcAssets->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpAssetsSummary = this->tcAssets->AddTabPage(CSTR("Summary"));
 	this->pnlAssetsDetail = ui->NewPanel(this->tpAssetsSummary);
-	this->pnlAssetsDetail->SetRect(0, 0, 100, 175, false);
+	this->pnlAssetsDetail->SetRect(0, 0, 100, 199, false);
 	this->pnlAssetsDetail->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblAssetsShortName = ui->NewLabel(this->pnlAssetsDetail, CSTR("Short Name"));
 	this->lblAssetsShortName->SetRect(4, 4, 100, 23, false);
@@ -1763,6 +1818,18 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->btnAssetsImportDiv = ui->NewButton(this->pnlAssetsDetail, CSTR("Import Div"));
 	this->btnAssetsImportDiv->SetRect(184, 148, 75, 23, false);
 	this->btnAssetsImportDiv->HandleButtonClick(OnAssetsImportDivClicked, this);
+	this->lblAssetsRange = ui->NewLabel(this->pnlAssetsDetail, CSTR("Range"));
+	this->lblAssetsRange->SetRect(4, 172, 100, 23, false);
+	this->cboAssetsRange = ui->NewComboBox(this->pnlAssetsDetail, false);
+	this->cboAssetsRange->SetRect(104, 172, 150, 23, false);
+	this->cboAssetsRange->AddItem(CSTR("Max"), 0);
+	this->cboAssetsRange->AddItem(CSTR("1 Year"), 0);
+	this->cboAssetsRange->AddItem(CSTR("YTD"), 0);
+	this->cboAssetsRange->AddItem(CSTR("6 Months"), 0);
+	this->cboAssetsRange->AddItem(CSTR("3 Months"), 0);
+	this->cboAssetsRange->AddItem(CSTR("1 Months"), 0);
+	this->cboAssetsRange->SetSelectedIndex(0);
+	this->cboAssetsRange->HandleSelectionChange(OnAssetsSizeChg, this);
 	this->pbAssets = ui->NewPictureBox(this->tpAssetsSummary, this->deng, false, false);
 	this->pbAssets->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbAssets->HandleSizeChanged(OnAssetsSizeChg, this);

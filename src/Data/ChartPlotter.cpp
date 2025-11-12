@@ -6,53 +6,48 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::Timestamp> timeArr, UOSInt dataCnt) : ChartData(dataCnt)
+Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::Timestamp> timeArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
 {
-	this->timeArr = MemAllocArr(Data::TimeInstant, dataCnt);
 	UOSInt i = 0;
 	while (i < dataCnt)
 	{
-		this->timeArr[i] = timeArr[i].inst;
+		this->dataArr[i] = timeArr[i].inst;
 		i++;
 	}
 }
 
-Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::TimeInstant> timeArr, UOSInt dataCnt) : ChartData(dataCnt)
+Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Data::TimeInstant> timeArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
 {
-	this->timeArr = MemAllocArr(Data::TimeInstant, dataCnt);
 	UOSInt i = 0;
 	while (i < dataCnt)
 	{
-		this->timeArr[i] = timeArr[i];
+		this->dataArr[i] = timeArr[i];
 		i++;
 	}
 }
 
-Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Int64> ticksArr, UOSInt dataCnt) : ChartData(dataCnt)
+Data::ChartPlotter::TimeData::TimeData(UnsafeArray<Int64> ticksArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
 {
-	this->timeArr = MemAllocArr(Data::TimeInstant, dataCnt);
 	UOSInt i = 0;
 	while (i < dataCnt)
 	{
-		this->timeArr[i] = Data::TimeInstant::FromTicks(ticksArr[i]);
+		this->dataArr[i] = Data::TimeInstant::FromTicks(ticksArr[i]);
 		i++;
 	}
 }
 
-Data::ChartPlotter::TimeData::TimeData(NN<ReadingList<Timestamp>> timeArr) : ChartData(timeArr->GetCount())
+Data::ChartPlotter::TimeData::TimeData(NN<ReadingList<Timestamp>> timeArr) : ArrayChartData(timeArr->GetCount())
 {
-	this->timeArr = MemAllocArr(Data::TimeInstant, this->dataCnt);
 	UOSInt i = 0;
 	while (i < this->dataCnt)
 	{
-		this->timeArr[i] = timeArr->GetItem(i).inst;
+		this->dataArr[i] = timeArr->GetItem(i).inst;
 		i++;
 	}
 }
 
 Data::ChartPlotter::TimeData::~TimeData()
 {
-	MemFreeArr(this->timeArr);
 }
 
 Data::ChartPlotter::DataType Data::ChartPlotter::TimeData::GetType() const
@@ -63,36 +58,28 @@ Data::ChartPlotter::DataType Data::ChartPlotter::TimeData::GetType() const
 NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::TimeData::Clone() const
 {
 	NN<TimeData> newData;
-	NEW_CLASSNN(newData, TimeData(this->timeArr, this->dataCnt));
+	NEW_CLASSNN(newData, TimeData(this->dataArr, this->dataCnt));
 	return newData;
 }
 
-UnsafeArray<Data::TimeInstant> Data::ChartPlotter::TimeData::GetData() const
+Data::ChartPlotter::Int32Data::Int32Data(UnsafeArray<Int32> intArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
 {
-	return this->timeArr;
+	MemCopyNO(this->dataArr.Ptr(), intArr.Ptr(), dataCnt * sizeof(Int32));
 }
 
-Data::ChartPlotter::Int32Data::Int32Data(UnsafeArray<Int32> intArr, UOSInt dataCnt) : ChartData(dataCnt)
+Data::ChartPlotter::Int32Data::Int32Data(NN<ReadingList<Int32>> intArr) : ArrayChartData(intArr->GetCount())
 {
-	this->intArr = MemAllocArr(Int32, dataCnt);
-	MemCopyNO(this->intArr.Ptr(), intArr.Ptr(), dataCnt * sizeof(Int32));
-}
-
-Data::ChartPlotter::Int32Data::Int32Data(NN<ReadingList<Int32>> intArr) : ChartData(intArr->GetCount())
-{
-	this->intArr = MemAllocArr(Int32, dataCnt);
 	UOSInt i = 0;
 	UOSInt j = dataCnt;
 	while (i < j)
 	{
-		this->intArr[i] = intArr->GetItem(i);
+		this->dataArr[i] = intArr->GetItem(i);
 		i++;
 	}
 }
 
 Data::ChartPlotter::Int32Data::~Int32Data()
 {
-	MemFreeArr(this->intArr);
 }
 
 Data::ChartPlotter::DataType Data::ChartPlotter::Int32Data::GetType() const
@@ -103,36 +90,28 @@ Data::ChartPlotter::DataType Data::ChartPlotter::Int32Data::GetType() const
 NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::Int32Data::Clone() const
 {
 	NN<Int32Data> newData;
-	NEW_CLASSNN(newData, Int32Data(this->intArr, this->dataCnt));
+	NEW_CLASSNN(newData, Int32Data(this->dataArr, this->dataCnt));
 	return newData;
 }
 
-UnsafeArray<Int32> Data::ChartPlotter::Int32Data::GetData() const
+Data::ChartPlotter::UInt32Data::UInt32Data(UnsafeArray<UInt32> intArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
 {
-	return this->intArr;
+	MemCopyNO(this->dataArr.Ptr(), intArr.Ptr(), dataCnt * sizeof(UInt32));
 }
 
-Data::ChartPlotter::UInt32Data::UInt32Data(UnsafeArray<UInt32> intArr, UOSInt dataCnt) : ChartData(dataCnt)
+Data::ChartPlotter::UInt32Data::UInt32Data(NN<ReadingList<UInt32>> intArr) : ArrayChartData(intArr->GetCount())
 {
-	this->intArr = MemAllocArr(UInt32, dataCnt);
-	MemCopyNO(this->intArr.Ptr(), intArr.Ptr(), dataCnt * sizeof(UInt32));
-}
-
-Data::ChartPlotter::UInt32Data::UInt32Data(NN<ReadingList<UInt32>> intArr) : ChartData(intArr->GetCount())
-{
-	this->intArr = MemAllocArr(UInt32, dataCnt);
 	UOSInt i = 0;
 	UOSInt j = dataCnt;
 	while (i < j)
 	{
-		this->intArr[i] = intArr->GetItem(i);
+		this->dataArr[i] = intArr->GetItem(i);
 		i++;
 	}
 }
 
 Data::ChartPlotter::UInt32Data::~UInt32Data()
 {
-	MemFreeArr(this->intArr);
 }
 
 Data::ChartPlotter::DataType Data::ChartPlotter::UInt32Data::GetType() const
@@ -143,36 +122,28 @@ Data::ChartPlotter::DataType Data::ChartPlotter::UInt32Data::GetType() const
 NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::UInt32Data::Clone() const
 {
 	NN<UInt32Data> newData;
-	NEW_CLASSNN(newData, UInt32Data(this->intArr, this->dataCnt));
+	NEW_CLASSNN(newData, UInt32Data(this->dataArr, this->dataCnt));
 	return newData;
 }
 
-UnsafeArray<UInt32> Data::ChartPlotter::UInt32Data::GetData() const
+Data::ChartPlotter::DoubleData::DoubleData(UnsafeArray<Double> dblArr, UOSInt dataCnt) : ArrayChartData(dataCnt)
 {
-	return this->intArr;
+	MemCopyNO(this->dataArr.Ptr(), dblArr.Ptr(), dataCnt * sizeof(Double));
 }
 
-Data::ChartPlotter::DoubleData::DoubleData(UnsafeArray<Double> dblArr, UOSInt dataCnt) : ChartData(dataCnt)
+Data::ChartPlotter::DoubleData::DoubleData(NN<ReadingList<Double>> dblArr) : ArrayChartData(dblArr->GetCount())
 {
-	this->dblArr = MemAllocArr(Double, dataCnt);
-	MemCopyNO(this->dblArr.Ptr(), dblArr.Ptr(), dataCnt * sizeof(Double));
-}
-
-Data::ChartPlotter::DoubleData::DoubleData(NN<ReadingList<Double>> dblArr) : ChartData(dblArr->GetCount())
-{
-	this->dblArr = MemAllocArr(Double, dataCnt);
 	UOSInt i = 0;
 	UOSInt j = this->dataCnt;
 	while (i < j)
 	{
-		this->dblArr[i] = dblArr->GetItem(i);
+		this->dataArr[i] = dblArr->GetItem(i);
 		i++;
 	}
 }
 
 Data::ChartPlotter::DoubleData::~DoubleData()
 {
-	MemFreeArr(this->dblArr);
 }
 
 Data::ChartPlotter::DataType Data::ChartPlotter::DoubleData::GetType() const
@@ -183,13 +154,8 @@ Data::ChartPlotter::DataType Data::ChartPlotter::DoubleData::GetType() const
 NN<Data::ChartPlotter::ChartData> Data::ChartPlotter::DoubleData::Clone() const
 {
 	NN<DoubleData> newData;
-	NEW_CLASSNN(newData, DoubleData(this->dblArr, this->dataCnt));
+	NEW_CLASSNN(newData, DoubleData(this->dataArr, this->dataCnt));
 	return newData;
-}
-
-UnsafeArray<Double> Data::ChartPlotter::DoubleData::GetData() const
-{
-	return this->dblArr;
 }
 
 NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::DoubleData::Invert()
@@ -197,7 +163,7 @@ NN<Data::ChartPlotter::DoubleData> Data::ChartPlotter::DoubleData::Invert()
 	UOSInt i = this->dataCnt;
 	while (i-- > 0)
 	{
-		this->dblArr[i] = 1 / this->dblArr[i];
+		this->dataArr[i] = 1 / this->dataArr[i];
 	}
 	return *this;
 }

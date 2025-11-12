@@ -117,7 +117,20 @@ UOSInt Map::GISWebHandler::AddAsset(NN<Map::MapDrawLayer> layer)
 	return this->assets.Add(layer);
 }
 
-Bool Map::GISWebHandler::AddFeature(Text::CStringNN featureName, UOSInt assetIndex)
+Optional<Map::GISWebService::GISWorkspace> Map::GISWebHandler::AddWorkspace(Text::CStringNN name, Text::CStringNN uri)
+{
+	if (this->ws.GetC(name).NotNull())
+		return 0;
+	if (!uri.StartsWith(CSTR("http://")) && !uri.StartsWith(CSTR("https://")))
+		return 0;
+	NN<GISWebService::GISWorkspace> ws = MemAllocNN(GISWebService::GISWorkspace);
+	ws->name = Text::String::New(name);
+	ws->uri = Text::String::New(uri);
+	this->ws.PutC(name, ws);
+	return ws;
+}
+
+Bool Map::GISWebHandler::AddFeature(Text::CStringNN featureName, NN<GISWebService::GISWorkspace> ws, UOSInt assetIndex)
 {
 	NN<Map::MapDrawLayer> layer;
 	if (!this->assets.GetItem(assetIndex).SetTo(layer))
@@ -130,6 +143,7 @@ Bool Map::GISWebHandler::AddFeature(Text::CStringNN featureName, UOSInt assetInd
 	}
 	NN<WFSHandler::GISFeature> feature = MemAllocNN(WFSHandler::GISFeature);
 	feature->name = Text::String::New(featureName);
+	feature->ws = ws;
 	feature->layer = layer;
 	this->features.PutC(featureName, feature);
 	return true;

@@ -30,7 +30,8 @@ namespace Map
 		virtual ~GISWebHandler();
 
 		UOSInt AddAsset(NN<Map::MapDrawLayer> layer);
-		Bool AddFeature(Text::CStringNN featureName, UOSInt assetIndex);
+		Optional<GISWebService::GISWorkspace> AddWorkspace(Text::CStringNN name, Text::CStringNN uri);
+		Bool AddFeature(Text::CStringNN featureName, NN<GISWebService::GISWorkspace> ws, UOSInt assetIndex);
 	};
 }
 #endif

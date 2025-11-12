@@ -55,12 +55,32 @@ namespace Data
 			virtual DataType GetType() const = 0;
 			virtual NN<ChartData> Clone() const = 0;
 			UOSInt GetCount() const { return this->dataCnt; }
+			void UpdateCount(UOSInt newCnt) { if (newCnt <= this->dataCnt) this->dataCnt = newCnt; }
 		};
 
-		class TimeData : public ChartData
+		template <typename T> class ArrayChartData : public ChartData
 		{
-		private:
-			UnsafeArray<Data::TimeInstant> timeArr;
+		protected:
+			UnsafeArray<T> dataArr;
+		public:
+			ArrayChartData(UOSInt dataCnt) : ChartData(dataCnt)
+			{
+				this->dataArr = MemAllocArr(T, dataCnt);
+			}
+
+			virtual ~ArrayChartData()
+			{
+				MemFreeArr(this->dataArr);
+			}
+
+			UnsafeArray<T> GetData() const
+			{
+				return this->dataArr;
+			}
+		};
+
+		class TimeData : public ArrayChartData<Data::TimeInstant>
+		{
 		public:
 			TimeData(UnsafeArray<Data::Timestamp> timeArr, UOSInt dataCnt);
 			TimeData(UnsafeArray<Data::TimeInstant> timeArr, UOSInt dataCnt);
@@ -70,13 +90,31 @@ namespace Data
 
 			virtual DataType GetType() const;
 			virtual NN<ChartData> Clone() const;
-			UnsafeArray<Data::TimeInstant> GetData() const;
+
+			template <typename V> void KeepAfter(Data::Timestamp ts, NN<ArrayChartData<V>> refData)
+			{
+				UnsafeArray<V> refArr = refData->GetData();
+				UnsafeArray<Data::TimeInstant> thisArr = this->dataArr;
+				UOSInt newCnt = 0;
+				UOSInt i = 0;
+				UOSInt j = this->dataCnt;
+				while (i < j)
+				{
+					if (thisArr[i] >= ts.inst)
+					{
+						thisArr[newCnt] = thisArr[i];
+						refArr[newCnt] = refArr[i];
+						newCnt++;
+					}
+					i++;
+				}
+				this->dataCnt = newCnt;
+				refData->UpdateCount(newCnt);
+			}
 		};
 
-		class Int32Data : public ChartData
+		class Int32Data : public ArrayChartData<Int32>
 		{
-		private:
-			UnsafeArray<Int32> intArr;
 		public:
 			Int32Data(UnsafeArray<Int32> intArr, UOSInt dataCnt);
 			Int32Data(NN<ReadingList<Int32>> intArr);
@@ -84,13 +122,10 @@ namespace Data
 
 			virtual DataType GetType() const;
 			virtual NN<ChartData> Clone() const;
-			UnsafeArray<Int32> GetData() const;
 		};
 
-		class UInt32Data : public ChartData
+		class UInt32Data : public ArrayChartData<UInt32>
 		{
-		private:
-			UnsafeArray<UInt32> intArr;
 		public:
 			UInt32Data(UnsafeArray<UInt32> intArr, UOSInt dataCnt);
 			UInt32Data(NN<ReadingList<UInt32>> intArr);
@@ -98,13 +133,10 @@ namespace Data
 
 			virtual DataType GetType() const;
 			virtual NN<ChartData> Clone() const;
-			UnsafeArray<UInt32> GetData() const;
 		};
 
-		class DoubleData : public ChartData
+		class DoubleData : public ArrayChartData<Double>
 		{
-		private:
-			UnsafeArray<Double> dblArr;
 		public:
 			DoubleData(UnsafeArray<Double> dblArr, UOSInt dataCnt);
 			DoubleData(NN<ReadingList<Double>> dblArr);
@@ -112,7 +144,6 @@ namespace Data
 
 			virtual DataType GetType() const;
 			virtual NN<ChartData> Clone() const;
-			UnsafeArray<Double> GetData() const;
 			NN<DoubleData> Invert();
 		};
 
