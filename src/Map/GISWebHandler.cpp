@@ -144,6 +144,6 @@ Bool Map::GISWebHandler::AddFeature(Text::CStringNN featureName, NN<GISWebServic
 	feature->name = Text::String::New(featureName);
 	feature->ws = ws;
 	feature->layer = layer;
-	this->features.PutC(featureName, feature);
+	this->features.PutC((Text::StringBuilderUTF8() + ws->name + ':' + featureName).ToCString(), feature);
 	return true;
 }

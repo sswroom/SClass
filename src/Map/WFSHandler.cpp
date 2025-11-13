@@ -4729,7 +4729,14 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 		ws = wsMap.GetItemNoCheck(0);
 		sb.ClearStr();
 		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-		sb.Append(CSTR("<xsd:schema xmlns:gml=\"http://www.opengis.net/gml\" xmlns:"));
+		if (version.StartsWith(CSTR("1.")))
+		{
+			sb.Append(CSTR("<xsd:schema xmlns:gml=\"http://www.opengis.net/gml\" xmlns:"));
+		}
+		else
+		{
+			sb.Append(CSTR("<xsd:schema xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:"));
+		}
 		sb.Append(ws->name);
 		sb.AppendUTF8Char('=');
 		s = Text::XML::ToNewAttrText(ws->uri->v);
@@ -4738,7 +4745,18 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 		sb.Append(s);
 		s->Release();
 		sb.Append(CSTR(">\r\n"));
-		sb.Append(CSTR("  <xsd:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\"/>\r\n"));
+		if (version.Equals(CSTR("1.0.0")))
+		{
+			sb.Append(CSTR("  <xsd:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\"/>\r\n"));
+		}
+		else if (version.StartsWith(CSTR("1.")))
+		{
+			sb.Append(CSTR("  <xsd:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/3.1.1/gml.xsd\"/>\r\n"));
+		}
+		else
+		{
+			sb.Append(CSTR("  <xsd:import namespace=\"http://www.opengis.net/gml/3.2\" schemaLocation=\"http://schemas.opengis.net/gml/3.2.1/gml.xsd\"/>\r\n"));
+		}
 		i = 0;
 		j = featureList.GetCount();
 		while (i < j)
@@ -4768,6 +4786,7 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 						if (colDef->GetColType() == DB::DBUtil::CT_Vector)
 						{
 							sb.Append(GeometryType2GMLType(colDef->GetGeometryType()));
+							hasGeom = true;
 						}
 						else
 						{
@@ -4795,6 +4814,24 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 			i++;
 		}
 		sb.Append(CSTR("</xsd:schema>\r\n"));
+		Text::CStringNN mime;
+		resp->AddDefHeaders(req);
+		svc->AddRespHeaders(req, resp);
+		if (version.Equals(CSTR("1.0.0")))
+		{
+			mime = CSTR("text/xml");
+		}
+		else if (version.StartsWith(CSTR("1.")))
+		{
+			mime = CSTR("text/xml; subtype=gml/3.1.1");
+		}
+		else
+		{
+			mime = CSTR("application/gml+xml; version=3.2");
+		}
+		resp->AddContentDisposition(false, U8STR("schema.xsd"), req->GetBrowser());
+		resp->AddContentType(mime);
+		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sb.ToCString());
 	}
 	return false;
 }
