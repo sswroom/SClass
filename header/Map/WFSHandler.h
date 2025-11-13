@@ -34,7 +34,8 @@ namespace Map
 		static Bool LockFeature(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);
 		static Bool GetFeatureWithLock(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);
 		static Bool Transaction(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);
-		static Bool ServiceExceptionReport(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN exceptionCode, Text::CStringNN exceptionMessage, NN<GISWebService> svc);
+		static Bool ServiceExceptionReport(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN exceptionCode, Text::CString locator, Text::CStringNN exceptionMessage, NN<GISWebService> svc);
+		static Bool ResponseGML(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<GISFeature> feature, NN<Data::ArrayListInt64> idList, Optional<Map::NameArray> nameArr, Optional<Text::String> bbox, NN<GISWebService> svc);
 	public:
 		WFSHandler();
 		~WFSHandler();
