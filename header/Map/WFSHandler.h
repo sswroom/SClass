@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_WFSHANDLER
 #define _SM_MAP_WFSHANDLER
+#include "DB/ColDef.h"
 #include "Map/GISWebService.h"
 #include "Map/MapDrawLayer.h"
 #include "Net/WebServer/WebServiceHandler.h"
@@ -33,12 +34,16 @@ namespace Map
 		static Bool LockFeature(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);
 		static Bool GetFeatureWithLock(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);
 		static Bool Transaction(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc);
+		static Bool ServiceExceptionReport(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN exceptionCode, Text::CStringNN exceptionMessage, NN<GISWebService> svc);
 	public:
 		WFSHandler();
 		~WFSHandler();
 
 		Bool DoWFS(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<Data::FastStringMapNN<WFSHandler::GISFeature>> features, NN<GISWebService> svc);
 		static void __stdcall FreeFeature(NN<GISFeature> feature);
+		static Text::CStringNN ColType2XSDType(DB::DBUtil::ColType colType);
+		static Text::CStringNN GeometryType2GMLType(DB::ColDef::GeometryType geomType);
+		static Text::CStringNN DrawLayerType2GMLType(Map::DrawLayerType layerType);
 	};
 }
 #endif

@@ -420,7 +420,7 @@ UOSInt Map::HKParkingVacancy::GetColumnCnt() const
 	return 18;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::HKParkingVacancy::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::HKParkingVacancy::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	switch (colIndex)
 	{
@@ -465,7 +465,7 @@ UnsafeArrayOpt<UTF8Char> Map::HKParkingVacancy::GetColumnName(UnsafeArray<UTF8Ch
 	}
 }
 
-DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	if (colIndex < 13)
 	{
@@ -490,7 +490,7 @@ DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, OptOut
 	}
 	return DB::DBUtil::CT_Unknown;
 }
-Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

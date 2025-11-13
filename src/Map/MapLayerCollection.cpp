@@ -314,17 +314,17 @@ UOSInt Map::MapLayerCollection::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::MapLayerCollection::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::MapLayerCollection::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	return 0;
 }
 
-DB::DBUtil::ColType Map::MapLayerCollection::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::MapLayerCollection::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }
@@ -443,7 +443,7 @@ Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass() const
 	return Map::MapDrawLayer::OC_MAP_LAYER_COLL;
 }
 
-NN<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem()
+NN<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem() const
 {
 	NN<MapDrawLayer> lyr;
 	if (this->layerList.GetItem(0).SetTo(lyr))

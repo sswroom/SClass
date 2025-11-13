@@ -588,7 +588,7 @@ UOSInt Map::VectorLayer::GetColumnCnt() const
 	return this->strCnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::VectorLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::VectorLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex >= this->strCnt)
 		return 0;
@@ -597,7 +597,7 @@ UnsafeArrayOpt<UTF8Char> Map::VectorLayer::GetColumnName(UnsafeArray<UTF8Char> b
 }
 
 
-DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	if (colIndex >= this->strCnt)
 		return DB::DBUtil::CT_Unknown;
@@ -623,7 +623,7 @@ DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, OptOut<UOSI
 	
 }
 
-Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex >= this->strCnt)
 		return false;

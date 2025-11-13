@@ -313,7 +313,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt() const
 	return this->colNames.GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRIMDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRIMDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	NN<Text::String> colName;
 	if (this->colNames.GetItem(colIndex).SetTo(colName))
@@ -323,12 +323,12 @@ UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRIMDBLayer::GetColumnName(UnsafeArray<UTF8
 	return 0;
 }
 
-DB::DBUtil::ColType Map::ESRI::ESRIMDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::ESRI::ESRIMDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }

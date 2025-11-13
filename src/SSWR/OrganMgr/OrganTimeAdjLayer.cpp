@@ -81,17 +81,17 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	return 0;
 }
 
-DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }

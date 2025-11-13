@@ -116,6 +116,30 @@ void Map::MapDrawLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 
 }
 
+Optional<DB::TableDef> Map::MapDrawLayer::CreateLayerTableDef() const
+{
+	DB::TableDef *tab;
+	NEW_CLASS(tab, DB::TableDef(0, this->GetName()->ToCString()));
+	NN<DB::ColDef> col;
+	if (this->GetGeomCol() == INVALID_INDEX)
+	{
+		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
+		MapLayerReader::GetShapeColDef(col, *this);
+		tab->AddCol(col);
+	}
+	UOSInt i = 0;
+	UOSInt j = this->GetColumnCnt();
+	while (i < j)
+	{
+		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
+		this->GetColumnDef(i, col);
+		tab->AddCol(col);
+		i++;
+	}
+	return tab;
+
+}
+
 void Map::MapDrawLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
@@ -204,7 +228,7 @@ IO::ParserType Map::MapDrawLayer::GetParserType() const
 	return IO::ParserType::MapLayer;
 }
 
-NN<Math::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem()
+NN<Math::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -1218,7 +1242,7 @@ Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	return this->layer->GetColumnDef(colIndex, colDef);
 }
 
-void Map::MapLayerReader::GetShapeColDef(NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer)
+void Map::MapLayerReader::GetShapeColDef(NN<DB::ColDef> colDef, NN<const Map::MapDrawLayer> layer)
 {
 	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	colDef->SetColType(DB::DBUtil::CT_Vector);

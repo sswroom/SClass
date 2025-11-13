@@ -545,17 +545,17 @@ UOSInt Map::NetworkLinkLayer::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::NetworkLinkLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::NetworkLinkLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	return 0;
 }
 
-DB::DBUtil::ColType Map::NetworkLinkLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::NetworkLinkLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }
@@ -704,7 +704,7 @@ Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_NETWORKLINK_LAYER;
 }
 
-NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem()
+NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem() const
 {
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);

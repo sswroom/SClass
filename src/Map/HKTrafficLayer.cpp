@@ -1199,19 +1199,19 @@ UOSInt Map::HKTrafficLayer::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	////////////////////////////
 	return 0;
 }
 
-DB::DBUtil::ColType Map::HKTrafficLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::HKTrafficLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	////////////////////////////
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::HKTrafficLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::HKTrafficLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	////////////////////////////
 	return false;

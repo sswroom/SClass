@@ -226,7 +226,7 @@ UOSInt Map::DrawMapServiceLayer::GetColumnCnt() const
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DrawMapServiceLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::DrawMapServiceLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	switch (colIndex)
 	{
@@ -236,7 +236,7 @@ UnsafeArrayOpt<UTF8Char> Map::DrawMapServiceLayer::GetColumnName(UnsafeArray<UTF
 	return 0;
 }
 
-DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	switch (colIndex)
 	{
@@ -247,7 +247,7 @@ DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, Opt
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

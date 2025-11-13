@@ -534,17 +534,17 @@ UOSInt Map::SHPData::GetColumnCnt() const
 	return this->dbf->GetColCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	return this->dbf->GetColumnName(colIndex, buff);
 }
 
-DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return this->dbf->GetColumnType(colIndex, colSize);
 }
 
-Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }

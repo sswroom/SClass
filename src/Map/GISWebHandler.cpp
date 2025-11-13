@@ -82,7 +82,6 @@ Bool Map::GISWebHandler::ResponseException(NN<Net::WebServer::WebRequest> req, N
 	resp->AddContentType(CSTR("application/xml"));
 	this->AddRespHeaders(req, resp);
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/xml"), sb.ToCString());
-
 }
 
 void Map::GISWebHandler::AddRespHeaders(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)

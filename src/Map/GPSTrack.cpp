@@ -252,7 +252,7 @@ UOSInt Map::GPSTrack::GetColumnCnt() const
 	return 3;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GPSTrack::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::GPSTrack::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex == 0)
 	{
@@ -272,7 +272,7 @@ UnsafeArrayOpt<UTF8Char> Map::GPSTrack::GetColumnName(UnsafeArray<UTF8Char> buff
 	}
 }
 
-DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -291,7 +291,7 @@ DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	switch(colIndex)
 	{
