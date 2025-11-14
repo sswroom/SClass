@@ -118,8 +118,8 @@ void Map::MapDrawLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 
 Optional<DB::TableDef> Map::MapDrawLayer::CreateLayerTableDef() const
 {
-	DB::TableDef *tab;
-	NEW_CLASS(tab, DB::TableDef(0, this->GetName()->ToCString()));
+	NN<DB::TableDef> tab;
+	NEW_CLASSNN(tab, DB::TableDef(0, this->GetName()->ToCString()));
 	NN<DB::ColDef> col;
 	if (this->GetGeomCol() == INVALID_INDEX)
 	{
@@ -127,17 +127,22 @@ Optional<DB::TableDef> Map::MapDrawLayer::CreateLayerTableDef() const
 		MapLayerReader::GetShapeColDef(col, *this);
 		tab->AddCol(col);
 	}
+	this->AddColDefs(tab);
+	return tab;
+}
+
+void Map::MapDrawLayer::AddColDefs(NN<DB::TableDef> tableDef) const
+{
+	NN<DB::ColDef> col;
 	UOSInt i = 0;
 	UOSInt j = this->GetColumnCnt();
 	while (i < j)
 	{
 		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
 		this->GetColumnDef(i, col);
-		tab->AddCol(col);
+		tableDef->AddCol(col);
 		i++;
 	}
-	return tab;
-
 }
 
 void Map::MapDrawLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
@@ -170,7 +175,7 @@ Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, 
 	NN<DB::ColDef> col;
 	if (this->GetGeomCol() == INVALID_INDEX)
 	{
-		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
+		NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 		MapLayerReader::GetShapeColDef(col, *this);
 		tab->AddCol(col);
 	}
@@ -178,7 +183,7 @@ Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, 
 	UOSInt j = this->GetColumnCnt();
 	while (i < j)
 	{
-		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
+		NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
 		this->GetColumnDef(i, col);
 		tab->AddCol(col);
 		i++;
@@ -263,7 +268,7 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 		Data::ArrayListInt64 idList;
 		Math::RectAreaDbl minMax;
 		this->GetBounds(minMax);
-				this->GetAllObjectIds(idList, 0);
+		this->GetAllObjectIds(idList, 0);
 		
 		Double tVal = minMax.GetArea() / UOSInt2Double(idList.GetCount());
 		if (minMax.max.x > 180)
@@ -1247,38 +1252,36 @@ void Map::MapLayerReader::GetShapeColDef(NN<DB::ColDef> colDef, NN<const Map::Ma
 	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	colDef->SetColType(DB::DBUtil::CT_Vector);
 	colDef->SetColName(CSTR("Shape"));
-	switch (layer->GetLayerType())
-	{
-	case Map::DRAW_LAYER_UNKNOWN:
-	case Map::DRAW_LAYER_MIXED:
-	default:
-		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
-		break;
-	case Map::DRAW_LAYER_POINT:
-		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
-		break;
-	case Map::DRAW_LAYER_POLYLINE:
-		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polyline);
-		break;
-	case Map::DRAW_LAYER_POLYGON:
-		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
-		break;
-	case Map::DRAW_LAYER_POINT3D:
-		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
-		break;
-	case Map::DRAW_LAYER_POLYLINE3D:
-		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZ);
-		break;
-	case Map::DRAW_LAYER_IMAGE:
-		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
-		break;
-	}
+	colDef->SetColSize(GetShapeColSize(layer->GetLayerType()));
 	colDef->SetColDP(csys->GetSRID());
 	colDef->SetAttr(CSTR(""));
 	colDef->SetDefVal(Text::CString(nullptr));
 	colDef->SetAutoIncNone();
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
+}
+
+UOSInt Map::MapLayerReader::GetShapeColSize(Map::DrawLayerType layerType)
+{
+	switch (layerType)
+	{
+	case Map::DRAW_LAYER_UNKNOWN:
+	case Map::DRAW_LAYER_MIXED:
+	default:
+		return (UOSInt)DB::ColDef::GeometryType::Any;
+	case Map::DRAW_LAYER_POINT:
+		return (UOSInt)DB::ColDef::GeometryType::Point;
+	case Map::DRAW_LAYER_POLYLINE:
+		return (UOSInt)DB::ColDef::GeometryType::Polyline;
+	case Map::DRAW_LAYER_POLYGON:
+		return (UOSInt)DB::ColDef::GeometryType::Polygon;
+	case Map::DRAW_LAYER_POINT3D:
+		return (UOSInt)DB::ColDef::GeometryType::PointZ;
+	case Map::DRAW_LAYER_POLYLINE3D:
+		return (UOSInt)DB::ColDef::GeometryType::PolylineZ;
+	case Map::DRAW_LAYER_IMAGE:
+		return (UOSInt)DB::ColDef::GeometryType::Any;
+	}
 }
 
 Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer)

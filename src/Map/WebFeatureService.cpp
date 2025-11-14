@@ -14,17 +14,17 @@ void Map::WebFeatureService::LoadXML(Version version)
 	switch (version)
 	{
 	case Version::V1_0_0:
-		sb.AppendC(UTF8STRC("?SERVICE=WFS&version=1.0.0&REQUEST=GetCapabilities"));
+		sb.AppendC(UTF8STRC("?service=WFS&version=1.0.0&request=GetCapabilities"));
 		break;
 	case Version::V1_1_0:
-		sb.AppendC(UTF8STRC("?SERVICE=WFS&version=1.1.0&REQUEST=GetCapabilities&tiled=true"));
+		sb.AppendC(UTF8STRC("?service=WFS&version=1.1.0&request=GetCapabilities"));
 		break;
 	case Version::V2_0_0:
-		sb.AppendC(UTF8STRC("?SERVICE=WFS&version=2.0.0&REQUEST=GetCapabilities"));
+		sb.AppendC(UTF8STRC("?service=WFS&version=2.0.0&request=GetCapabilities"));
 		break;
 	case Version::ANY:
 	default:
-		sb.AppendC(UTF8STRC("?SERVICE=WFS&REQUEST=GetCapabilities"));
+		sb.AppendC(UTF8STRC("?service=WFS&request=GetCapabilities"));
 		break;
 	}
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
@@ -159,6 +159,14 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 				SDEL_STRING(crs);
 				crs = Text::String::New(sb.ToCString()).Ptr();
 			}
+		}
+		else if (nodeName->Equals(UTF8STRC("Keywords")) || nodeName->EndsWith(UTF8STRC(":Keywords")))
+		{
+			reader->SkipElement();
+		}
+		else if (nodeName->Equals(UTF8STRC("Abstract")) || nodeName->EndsWith(UTF8STRC(":Abstract")))
+		{
+			reader->SkipElement();
 		}
 		else if (nodeName->Equals(UTF8STRC("DefaultSRS")))
 		{
@@ -340,7 +348,7 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 		else if (version->Equals(UTF8STRC("2.0.0")))
 		{
 			sb.Append(this->wfsURL);
-			sb.AppendC(UTF8STRC("?service=wfs&version=2.0.0&request=GetFeature&outputFormat=GML2&typeName="));
+			sb.AppendC(UTF8STRC("?service=wfs&version=2.0.0&request=GetFeature&outputFormat=GML2&typeNames="));
 			Text::TextBinEnc::FormEncoding::FormEncode(sb, currFeature->name->ToCString());
 			needSwapXY = true;
 		}

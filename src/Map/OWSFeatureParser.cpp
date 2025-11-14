@@ -92,7 +92,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 			if (json->GetValueString(CSTR("crs.properties.name")).SetTo(crsName))
 			{
 				NN<Math::CoordinateSystem> csys;
-				if (Math::CoordinateSystemManager::CreateFromName(crsName->ToCString()).SetTo(csys))
+				if (Math::CoordinateSystemManager::CreateFromName(crsName->ToCString(), nullptr).SetTo(csys))
 				{
 					srid = csys->GetSRID();
 					csys.Delete();

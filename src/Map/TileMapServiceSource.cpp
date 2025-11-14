@@ -58,7 +58,7 @@ void Map::TileMapServiceSource::LoadXML()
 					if (reader.ReadNodeText(sb))
 					{
 						NN<Math::CoordinateSystem> csys;
-						if (Math::CoordinateSystemManager::CreateFromName(sb.ToCString()).SetTo(csys))
+						if (Math::CoordinateSystemManager::CreateFromName(sb.ToCString(), nullptr).SetTo(csys))
 						{
 							this->csys.Delete();
 							this->csys = csys;

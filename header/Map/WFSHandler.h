@@ -43,7 +43,6 @@ namespace Map
 		Bool DoWFS(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<Data::FastStringMapNN<WFSHandler::GISFeature>> features, NN<GISWebService> svc);
 		static void __stdcall FreeFeature(NN<GISFeature> feature);
 		static Text::CStringNN ColType2XSDType(DB::DBUtil::ColType colType);
-		static Text::CStringNN GeometryType2GMLType(DB::ColDef::GeometryType geomType);
 		static Text::CStringNN DrawLayerType2GMLType(Map::DrawLayerType layerType);
 	};
 }

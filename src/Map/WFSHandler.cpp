@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "DB/TableDef.h"
+#include "Map/GMLXML.h"
 #include "Map/WFSHandler.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Net/WebServer/HTTPServerUtil.h"
@@ -16,6 +17,8 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 	UnsafeArray<UTF8Char> sptr;
 	sptr = req->BuildURLHost(sbuff);
 	sptr = req->GetRequestPath(sptr, 511 - (UOSInt)(sptr - sbuff));
+	Data::FastStringMapNN<GISWebService::GISWorkspace> wsMap;
+	NN<GISWebService::GISWorkspace> ws;
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
 	UOSInt j;
 	sptr = &sbuff[i];
@@ -24,7 +27,22 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-		sb.Append(CSTR("<WFS_Capabilities version=\"1.0.0\" xmlns=\"http://www.opengis.net/wfs\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"));
+		sb.Append(CSTR("<WFS_Capabilities version=\"1.0.0\" xmlns=\"http://www.opengis.net/wfs\""));
+		i = 0;
+		j = features->GetCount();
+		while (i < j)
+		{
+			feature = features->GetItemNoCheck(i);
+			ws = feature->ws;
+			if (wsMap.GetNN(ws->name).IsNull())
+			{
+				wsMap.PutNN(ws->name, ws);
+				sb.Append(CSTR(" xmlns:"))->Append(ws->name)->AppendUTF8Char('=')->Append(s = Text::XML::ToNewAttrText(ws->uri->v));
+				s->Release();
+			}
+			i++;
+		}
+		sb.Append(CSTR(" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs https://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd\">"));
 			sb.Append(CSTR("<Service>"));
 				sb.Append(CSTR("<Name>WFS</Name>"));
 				sb.Append(CSTR("<Title>SSWR Web Feature Service</Title>"));
@@ -472,12 +490,27 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
 		if (version.StartsWith(CSTR("1.")))
 		{
-		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"1.1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ows=\"http://www.opengis.net/ows\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" updateSequence=\"454\">"));
+		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"1.1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ows=\"http://www.opengis.net/ows\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\""));
 		}
 		else
 		{
-		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"2.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs/2.0\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\" updateSequence=\"454\">"));
+		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"2.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs/2.0\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://127.0.0.1:8080/geoserver/schemas/wfs/2.0/wfs.xsd\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\""));
 		}
+		i = 0;
+		j = features->GetCount();
+		while (i < j)
+		{
+			feature = features->GetItemNoCheck(i);
+			ws = feature->ws;
+			if (wsMap.GetNN(ws->name).IsNull())
+			{
+				wsMap.PutNN(ws->name, ws);
+				sb.Append(CSTR(" xmlns:"))->Append(ws->name)->AppendUTF8Char('=')->Append(s = Text::XML::ToNewAttrText(ws->uri->v));
+				s->Release();
+			}
+			i++;
+		}
+		sb.Append(CSTR(" updateSequence=\"454\">"));
 			sb.Append(CSTR("<ows:ServiceIdentification>"));
 				sb.Append(CSTR("<ows:Title>SSWR GISHandler Web Feature Service</ows:Title>"));
 				sb.Append(CSTR("<ows:Abstract>This is the simple implementation of WFS 1.0.0 and WFS 1.1.0, supports basic WFS operations.</ows:Abstract>"));
@@ -4785,7 +4818,7 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 						sb.Append(CSTR("\" type=\""));
 						if (colDef->GetColType() == DB::DBUtil::CT_Vector)
 						{
-							sb.Append(GeometryType2GMLType(colDef->GetGeometryType()));
+							sb.Append(Map::GMLXML::GeometryType2GMLType(colDef->GetGeometryType()));
 							hasGeom = true;
 						}
 						else
@@ -5018,11 +5051,7 @@ Bool Map::WFSHandler::ResponseGML(NN<Net::WebServer::WebRequest> req, NN<Net::We
 						sb.AppendUTF8Char('<')->Append(ws->name)->AppendUTF8Char(':')->Append(colDef->GetColName())->AppendUTF8Char('>');
 						if (colDef->GetColType() == DB::DBUtil::CT_Vector)
 						{
-							////////////////////////////////////////////////
-							//if (vec->GetVectorType() == Math::Geometry::Vector2D)
-							//<gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#2326">
-							//	<gml:coordinates decimal="." cs="," ts=" ">833997.3,816292.6</gml:coordinates>
-							//</gml:Point>
+							Map::GMLXML::AppendGeometry(sb, vec, Map::GMLXML::SRSType::URI);
 						}
 						else
 						{
@@ -5152,55 +5181,6 @@ Text::CStringNN Map::WFSHandler::ColType2XSDType(DB::DBUtil::ColType colType)
 		return CSTR("xsd:string");
 	case DB::DBUtil::CT_UUID:
 		return CSTR("xsd:string");
-	}
-}
-
-Text::CStringNN Map::WFSHandler::GeometryType2GMLType(DB::ColDef::GeometryType geomType)
-{
-	switch (geomType)
-	{
-	default:
-	case DB::ColDef::GeometryType::Unknown:
-	case DB::ColDef::GeometryType::Any:
-	case DB::ColDef::GeometryType::AnyZ:
-	case DB::ColDef::GeometryType::AnyZM:
-	case DB::ColDef::GeometryType::AnyM:
-		return CSTR("gml:GeometryPropertyType");
-	case DB::ColDef::GeometryType::Point:
-	case DB::ColDef::GeometryType::PointZ:
-	case DB::ColDef::GeometryType::PointZM:
-	case DB::ColDef::GeometryType::PointM:
-		return CSTR("gml:PointPropertyType");
-	case DB::ColDef::GeometryType::Multipoint:
-	case DB::ColDef::GeometryType::MultipointZ:
-	case DB::ColDef::GeometryType::MultipointZM:
-	case DB::ColDef::GeometryType::MultipointM:
-		return CSTR("gml:MultiPointPropertyType");
-	case DB::ColDef::GeometryType::Polyline:
-	case DB::ColDef::GeometryType::PolylineZ:
-	case DB::ColDef::GeometryType::PolylineZM:
-	case DB::ColDef::GeometryType::PolylineM:
-		return CSTR("gml:MultiLineStringPropertyType");
-	case DB::ColDef::GeometryType::Polygon:
-	case DB::ColDef::GeometryType::PolygonZ:
-	case DB::ColDef::GeometryType::PolygonZM:
-	case DB::ColDef::GeometryType::PolygonM:
-		return CSTR("gml:PolygonPropertyType");
-	case DB::ColDef::GeometryType::Rectangle:
-	case DB::ColDef::GeometryType::RectangleZ:
-	case DB::ColDef::GeometryType::RectangleZM:
-	case DB::ColDef::GeometryType::RectangleM:
-		return CSTR("gml:PolygonPropertyType");
-	case DB::ColDef::GeometryType::Path:
-	case DB::ColDef::GeometryType::PathZ:
-	case DB::ColDef::GeometryType::PathZM:
-	case DB::ColDef::GeometryType::PathM:
-		return CSTR("gml:LineStringPropertyType");
-	case DB::ColDef::GeometryType::MultiPolygon:
-	case DB::ColDef::GeometryType::MultiPolygonZ:
-	case DB::ColDef::GeometryType::MultiPolygonZM:
-	case DB::ColDef::GeometryType::MultiPolygonM:
-		return CSTR("gml:MultiPolygonPropertyType");
 	}
 }
 

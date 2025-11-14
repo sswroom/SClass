@@ -518,8 +518,9 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::SRCrea
 	return csys;
 }
 
-Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromName(Text::CStringNN name)
+Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromName(Text::CStringNN name, OptOut<Bool> axisInvertable)
 {
+	axisInvertable.Set(false);
 	if (name.StartsWith(UTF8STRC("EPSG:")))
 	{
 		UInt32 epsgId = Text::StrToUInt32(&name.v[5]);
@@ -528,6 +529,13 @@ Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromName(T
 	else if (name.StartsWith(UTF8STRC("urn:ogc:def:crs:EPSG::")))
 	{
 		UInt32 epsgId = Text::StrToUInt32(&name.v[22]);
+		if (axisInvertable.IsNotNull()) axisInvertable.SetNoCheck(SRAxisReversed(epsgId));
+		return SRCreateCSys(epsgId);
+	}
+	else if (name.StartsWith(UTF8STRC("urn:x-ogc:def:crs:EPSG:")))
+	{
+		UInt32 epsgId = Text::StrToUInt32(&name.v[23]);
+		if (axisInvertable.IsNotNull()) axisInvertable.SetNoCheck(SRAxisReversed(epsgId));
 		return SRCreateCSys(epsgId);
 	}
 	else if (name.StartsWith(UTF8STRC("http://www.opengis.net/gml/srs/epsg.xml#")))
@@ -548,8 +556,9 @@ Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromName(T
 
 NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Text::CStringNN name)
 {
+	Bool axisInvertable;
 	NN<Math::CoordinateSystem> csys;
-	if (CreateFromName(name).SetTo(csys))
+	if (CreateFromName(name, axisInvertable).SetTo(csys))
 		return csys;
 	else
 		return CreateWGS84Csys();

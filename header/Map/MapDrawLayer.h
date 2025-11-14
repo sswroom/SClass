@@ -116,6 +116,7 @@ namespace Map
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 		virtual Optional<DB::TableDef> CreateLayerTableDef() const;
+		void AddColDefs(NN<DB::TableDef> tableDef) const;
 
 		virtual NN<GetObjectSess> BeginGetObject() = 0;
 		virtual void EndGetObject(NN<GetObjectSess> session) = 0;
@@ -216,6 +217,7 @@ namespace Map
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
 		static void GetShapeColDef(NN<DB::ColDef> colDef, NN<const Map::MapDrawLayer> layer);
+		static UOSInt GetShapeColSize(Map::DrawLayerType layerType);
 		static Bool GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer);
 	};
 }

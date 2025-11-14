@@ -196,6 +196,97 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 	return lyr;
 }
 
+Text::CStringNN Map::GMLXML::GeometryType2GMLType(DB::ColDef::GeometryType geomType)
+{
+	switch (geomType)
+	{
+	default:
+	case DB::ColDef::GeometryType::Unknown:
+	case DB::ColDef::GeometryType::Any:
+	case DB::ColDef::GeometryType::AnyZ:
+	case DB::ColDef::GeometryType::AnyZM:
+	case DB::ColDef::GeometryType::AnyM:
+		return CSTR("gml:GeometryPropertyType");
+	case DB::ColDef::GeometryType::Point:
+	case DB::ColDef::GeometryType::PointZ:
+	case DB::ColDef::GeometryType::PointZM:
+	case DB::ColDef::GeometryType::PointM:
+		return CSTR("gml:PointPropertyType");
+	case DB::ColDef::GeometryType::Multipoint:
+	case DB::ColDef::GeometryType::MultipointZ:
+	case DB::ColDef::GeometryType::MultipointZM:
+	case DB::ColDef::GeometryType::MultipointM:
+		return CSTR("gml:MultiPointPropertyType");
+	case DB::ColDef::GeometryType::Polyline:
+	case DB::ColDef::GeometryType::PolylineZ:
+	case DB::ColDef::GeometryType::PolylineZM:
+	case DB::ColDef::GeometryType::PolylineM:
+		return CSTR("gml:MultiLineStringPropertyType");
+	case DB::ColDef::GeometryType::Polygon:
+	case DB::ColDef::GeometryType::PolygonZ:
+	case DB::ColDef::GeometryType::PolygonZM:
+	case DB::ColDef::GeometryType::PolygonM:
+		return CSTR("gml:PolygonPropertyType");
+	case DB::ColDef::GeometryType::Rectangle:
+	case DB::ColDef::GeometryType::RectangleZ:
+	case DB::ColDef::GeometryType::RectangleZM:
+	case DB::ColDef::GeometryType::RectangleM:
+		return CSTR("gml:PolygonPropertyType");
+	case DB::ColDef::GeometryType::Path:
+	case DB::ColDef::GeometryType::PathZ:
+	case DB::ColDef::GeometryType::PathZM:
+	case DB::ColDef::GeometryType::PathM:
+		return CSTR("gml:LineStringPropertyType");
+	case DB::ColDef::GeometryType::MultiPolygon:
+	case DB::ColDef::GeometryType::MultiPolygonZ:
+	case DB::ColDef::GeometryType::MultiPolygonZM:
+	case DB::ColDef::GeometryType::MultiPolygonM:
+		return CSTR("gml:MultiPolygonPropertyType");
+	}
+}
+
+void Map::GMLXML::AppendGeometry(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Vector2D> vec, SRSType srsType)
+{
+	Bool invert = false;
+	if (srsType == SRSType::OGC || srsType == SRSType::XOGC)
+	{
+		invert = Math::CoordinateSystemManager::SRAxisReversed(vec->GetSRID());
+	}
+	if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
+	{
+		sb->Append(CSTR("<gml:Point srsName=\""));
+		sb->Append(GetSRSPrefix(srsType));
+		sb->AppendU32(vec->GetSRID())->Append(CSTR("\">"));
+		Math::Coord2DDbl pt = vec->GetCenter();
+		sb->Append(CSTR("<gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"));
+		if (invert)
+		{
+			sb->AppendDouble(pt.y)->AppendUTF8Char(',')->AppendDouble(pt.x)->Append(CSTR("</gml:coordinates>"));
+		}
+		else
+		{
+			sb->AppendDouble(pt.x)->AppendUTF8Char(',')->AppendDouble(pt.y)->Append(CSTR("</gml:coordinates>"));
+		}
+		sb->Append(CSTR("</gml:Point>"));
+	}
+}
+
+Text::CStringNN Map::GMLXML::GetSRSPrefix(SRSType srsType)
+{
+	switch (srsType)
+	{
+	default:
+	case SRSType::EPSG:
+		return CSTR("EPSG:");
+	case SRSType::URI:
+		return CSTR("http://www.opengis.net/gml/srs/epsg.xml#");
+	case SRSType::OGC:
+		return CSTR("urn:ogc:def:crs:EPSG::");
+	case SRSType::XOGC:
+		return CSTR("urn:x-ogc:def:crs:EPSG:");
+	}
+}
+
 Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader, NN<ParseEnv> env)
 {
 	UnsafeArray<UTF8Char> sarr[4];
@@ -207,6 +298,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 	NN<Text::XMLAttrib> attr;
 	NN<Math::CoordinateSystem> csys;
 	NN<Text::String> aname;
+	Bool axisInvert = false;
 	UOSInt dimension = 0;
 	i = reader->GetAttribCount();
 	while (i-- > 0)
@@ -215,7 +307,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		aname = Text::String::OrEmpty(attr->name);
 		if (aname->Equals(UTF8STRC("srsName")) && env->csys.IsNull())
 		{
-			env->csys = Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(attr->value)->ToCString());
+			env->csys = Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(attr->value)->ToCString(), axisInvert);
 			if (env->csys.SetTo(csys))
 			{
 				env->srid = csys->GetSRID();
