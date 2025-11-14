@@ -366,7 +366,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 	if (set->id->leng > 0 && set->tiles.GetCount() > 0)
 	{
 		NN<Math::CoordinateSystem> csys;
-		if (Math::CoordinateSystemManager::CreateFromName(set->id->ToCString()).SetTo(csys))
+		if (Math::CoordinateSystemManager::CreateFromName(set->id->ToCString(), nullptr).SetTo(csys))
 		{
 			set->csys.Delete();
 			set->csys = csys;

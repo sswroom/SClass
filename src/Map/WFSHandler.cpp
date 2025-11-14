@@ -1,8 +1,11 @@
 #include "Stdafx.h"
+#include "DB/TableDef.h"
+#include "Map/GMLXML.h"
 #include "Map/WFSHandler.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/XML.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 
 Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
@@ -14,6 +17,8 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 	UnsafeArray<UTF8Char> sptr;
 	sptr = req->BuildURLHost(sbuff);
 	sptr = req->GetRequestPath(sptr, 511 - (UOSInt)(sptr - sbuff));
+	Data::FastStringMapNN<GISWebService::GISWorkspace> wsMap;
+	NN<GISWebService::GISWorkspace> ws;
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
 	UOSInt j;
 	sptr = &sbuff[i];
@@ -22,7 +27,22 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-		sb.Append(CSTR("<WFS_Capabilities version=\"1.0.0\" xmlns=\"http://www.opengis.net/wfs\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"));
+		sb.Append(CSTR("<WFS_Capabilities version=\"1.0.0\" xmlns=\"http://www.opengis.net/wfs\""));
+		i = 0;
+		j = features->GetCount();
+		while (i < j)
+		{
+			feature = features->GetItemNoCheck(i);
+			ws = feature->ws;
+			if (wsMap.GetNN(ws->name).IsNull())
+			{
+				wsMap.PutNN(ws->name, ws);
+				sb.Append(CSTR(" xmlns:"))->Append(ws->name)->AppendUTF8Char('=')->Append(s = Text::XML::ToNewAttrText(ws->uri->v));
+				s->Release();
+			}
+			i++;
+		}
+		sb.Append(CSTR(" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs https://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd\">"));
 			sb.Append(CSTR("<Service>"));
 				sb.Append(CSTR("<Name>WFS</Name>"));
 				sb.Append(CSTR("<Title>SSWR Web Feature Service</Title>"));
@@ -136,7 +156,7 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 		{
 			feature = features->GetItemNoCheck(i);
 				sb.Append(CSTR("<FeatureType>"));
-					sb.Append(CSTR("<Name>"))->Append(s = Text::XML::ToNewXMLText(feature->name->v))->Append(CSTR("</Name>"));
+					sb.Append(CSTR("<Name>"))->Append(feature->ws->name)->AppendUTF8Char(':')->Append(s = Text::XML::ToNewXMLText(feature->name->v))->Append(CSTR("</Name>"));
 					sb.Append(CSTR("<Title>"))->Append(s)->Append(CSTR("</Title>"));
 					sb.Append(CSTR("<Abstract/>"));
 					sb.Append(CSTR("<Keywords>features, "))->Append(s)->Append(CSTR("</Keywords>"));
@@ -470,12 +490,27 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
 		if (version.StartsWith(CSTR("1.")))
 		{
-		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"1.1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ows=\"http://www.opengis.net/ows\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" updateSequence=\"454\">"));
+		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"1.1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ows=\"http://www.opengis.net/ows\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\""));
 		}
 		else
 		{
-		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"2.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs/2.0\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\" updateSequence=\"454\">"));
+		sb.Append(CSTR("<wfs:WFS_Capabilities version=\"2.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wfs/2.0\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:fes=\"http://www.opengis.net/fes/2.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xsi:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://127.0.0.1:8080/geoserver/schemas/wfs/2.0/wfs.xsd\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\""));
 		}
+		i = 0;
+		j = features->GetCount();
+		while (i < j)
+		{
+			feature = features->GetItemNoCheck(i);
+			ws = feature->ws;
+			if (wsMap.GetNN(ws->name).IsNull())
+			{
+				wsMap.PutNN(ws->name, ws);
+				sb.Append(CSTR(" xmlns:"))->Append(ws->name)->AppendUTF8Char('=')->Append(s = Text::XML::ToNewAttrText(ws->uri->v));
+				s->Release();
+			}
+			i++;
+		}
+		sb.Append(CSTR(" updateSequence=\"454\">"));
 			sb.Append(CSTR("<ows:ServiceIdentification>"));
 				sb.Append(CSTR("<ows:Title>SSWR GISHandler Web Feature Service</ows:Title>"));
 				sb.Append(CSTR("<ows:Abstract>This is the simple implementation of WFS 1.0.0 and WFS 1.1.0, supports basic WFS operations.</ows:Abstract>"));
@@ -849,7 +884,7 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 			feature = features->GetItemNoCheck(i);
 			s = Text::XML::ToNewXMLText(feature->name->v);
 				sb.Append(CSTR("<FeatureType>"));
-					sb.Append(CSTR("<Name>"))->Append(s)->Append(CSTR("</Name>"));
+					sb.Append(CSTR("<Name>"))->Append(feature->ws->name)->AppendUTF8Char(':')->Append(s)->Append(CSTR("</Name>"));
 					sb.Append(CSTR("<Title>"))->Append(s)->Append(CSTR("</Title>"));
 					sb.Append(CSTR("<Abstract/>"));
 					sb.Append(CSTR("<ows:Keywords>"));
@@ -4586,6 +4621,7 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	Optional<Text::String> typeName;
+	NN<Text::String> nntypeName;
 	if (version.StartsWith(CSTR("1.")))
 	{
 		typeName = req->GetQueryValue(CSTR("typeName"));
@@ -4594,12 +4630,287 @@ Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN
 	{
 		typeName = req->GetQueryValue(CSTR("typeNames"));
 	}
+	Data::FastStringMapNN<GISWebService::GISWorkspace> wsMap;
+	NN<GISWebService::GISWorkspace> ws;
+	Data::ArrayListNN<GISFeature> featureList;
+	NN<GISFeature> feature;
+	NN<Text::String> s;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sb2;
+	if (typeName.SetTo(nntypeName))
+	{
+		Text::PString sarr[10];
+		sb.Append(nntypeName);
+		j = Text::StrSplitTrimP(sarr, 10, sb, ',');
+		i = 0;
+		while (i < j)
+		{
+			if (!features->GetC(sarr[i].ToCString()).SetTo(feature))
+			{
+				sb2.ClearStr();
+				sb2.Append(CSTR("Could not find type: "));
+				sb2.Append(sarr[i]);
+				return ServiceExceptionReport(req, resp, CSTR("InvalidParameterValue"), nullptr, sb2.ToCString(), svc);
+			}
+			wsMap.PutNN(feature->ws->name, feature->ws);
+			featureList.Add(feature);
+			i++;
+		}
+	}
+	else
+	{
+		i = 0;
+		j = features->GetCount();
+		while (i < j)
+		{
+			feature = features->GetItemNoCheck(i);
+			featureList.Add(feature);
+			wsMap.PutNN(feature->ws->name, feature->ws);
+			i++;
+		}
+	}
+	if (wsMap.GetCount() != 1)
+	{
+		UTF8Char sbuff[512];
+		UnsafeArray<UTF8Char> sptr;
+		sptr = req->BuildURLHost(sbuff);
+		sptr = req->GetRequestPath(sptr, 511 - (UOSInt)(sptr - sbuff));
+		Text::StringBuilderUTF8 sb3;
+
+		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+		sb.Append(CSTR("<xsd:schema"));
+		i = 0;
+		j = wsMap.GetCount();
+		while (i < j)
+		{
+			ws = wsMap.GetItemNoCheck(i);
+			sb.Append(CSTR(" xmlns:"));
+			sb.Append(ws->name);
+			sb.AppendUTF8Char('=');
+			s = Text::XML::ToNewAttrText(ws->uri->v);
+			sb.Append(s);
+			s->Release();
+			i++;
+		}
+		sb.Append(CSTR(" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\">\r\n"));
+		i = 0;
+		j = wsMap.GetCount();
+		while (i < j)
+		{
+			ws = wsMap.GetItemNoCheck(i);
+			sb2.ClearStr();
+			k = 0;
+			l = featureList.GetCount();
+			while (k < l)
+			{
+				feature = featureList.GetItemNoCheck(k);
+				if (feature->ws == ws)
+				{
+					if (sb2.leng > 0) sb2.AppendUTF8Char(',');
+					sb2.Append(ws->name);
+					sb2.AppendUTF8Char(':');
+					sb2.Append(feature->name);
+				}
+				k++;
+			}
+			sb3.ClearStr();
+			sb3.AppendP(sbuff, sptr);
+			sb3.Append(CSTR("?request=DescribeFeatureType&version="));
+			sb3.Append(version);
+			sb3.Append(CSTR("&service=WFS&typeName="));
+			Text::TextBinEnc::FormEncoding::FormEncode(sb3, sb2.ToCString());
+			sb.Append(CSTR("  <xsd:import namespace="));
+			s = Text::XML::ToNewAttrText(ws->uri->v);
+			sb.Append(s);
+			s->Release();
+			sb.Append(CSTR(" schemaLocation="));
+			s = Text::XML::ToNewAttrText(sb3.v);
+			sb.Append(s);
+			s->Release();
+			sb.Append(CSTR("/>\r\n"));
+			i++;
+		}
+		sb.Append(CSTR("</xsd:schema>"));
+		Text::CStringNN mime;
+		resp->AddDefHeaders(req);
+		svc->AddRespHeaders(req, resp);
+		if (version.Equals(CSTR("1.0.0")))
+		{
+			mime = CSTR("text/xml");
+		}
+		else if (version.StartsWith(CSTR("1.")))
+		{
+			mime = CSTR("text/xml; subtype=gml/3.1.1");
+		}
+		else
+		{
+			mime = CSTR("application/gml+xml; version=3.2");
+		}
+		resp->AddContentDisposition(false, U8STR("schema.xsd"), req->GetBrowser());
+		resp->AddContentType(mime);
+		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sb.ToCString());
+	}
+	else
+	{
+		NN<DB::TableDef> tableDef;
+		NN<DB::ColDef> colDef;
+		Bool hasGeom;
+		ws = wsMap.GetItemNoCheck(0);
+		sb.ClearStr();
+		sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+		if (version.StartsWith(CSTR("1.")))
+		{
+			sb.Append(CSTR("<xsd:schema xmlns:gml=\"http://www.opengis.net/gml\" xmlns:"));
+		}
+		else
+		{
+			sb.Append(CSTR("<xsd:schema xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" xmlns:"));
+		}
+		sb.Append(ws->name);
+		sb.AppendUTF8Char('=');
+		s = Text::XML::ToNewAttrText(ws->uri->v);
+		sb.Append(s);
+		sb.Append(CSTR(" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\" targetNamespace="));
+		sb.Append(s);
+		s->Release();
+		sb.Append(CSTR(">\r\n"));
+		if (version.Equals(CSTR("1.0.0")))
+		{
+			sb.Append(CSTR("  <xsd:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\"/>\r\n"));
+		}
+		else if (version.StartsWith(CSTR("1.")))
+		{
+			sb.Append(CSTR("  <xsd:import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/3.1.1/gml.xsd\"/>\r\n"));
+		}
+		else
+		{
+			sb.Append(CSTR("  <xsd:import namespace=\"http://www.opengis.net/gml/3.2\" schemaLocation=\"http://schemas.opengis.net/gml/3.2.1/gml.xsd\"/>\r\n"));
+		}
+		i = 0;
+		j = featureList.GetCount();
+		while (i < j)
+		{
+			feature = featureList.GetItemNoCheck(i);
+			if (feature->layer->CreateLayerTableDef().SetTo(tableDef))
+			{
+				sb2.ClearStr();
+				sb2.Append(feature->name);
+				sb2.Append(CSTR("Type"));
+				sb.Append(CSTR("  <xsd:complexType name="))->Append(s = Text::XML::ToNewAttrText(sb2.v))->Append(CSTR(">\r\n"));
+				s->Release();
+				sb.Append(CSTR("    <xsd:complexContent>\r\n"));
+				sb.Append(CSTR("      <xsd:extension base=\"gml:AbstractFeatureType\">\r\n"));
+				sb.Append(CSTR("        <xsd:sequence>\r\n"));
+				hasGeom = false;
+				k = 0;
+				l = tableDef->GetColCnt();
+				while (k < l)
+				{
+					if (tableDef->GetCol(k).SetTo(colDef))
+					{
+						sb.Append(CSTR("          <xsd:element maxOccurs=\"1\" minOccurs=\"0\" name="))->Append(s = Text::XML::ToNewAttrText(colDef->GetColName()->v))->Append(CSTR(" nillable=\""));
+						s->Release();
+						sb.Append(colDef->IsNotNull()?CSTR("false"):CSTR("true"));
+						sb.Append(CSTR("\" type=\""));
+						if (colDef->GetColType() == DB::DBUtil::CT_Vector)
+						{
+							sb.Append(Map::GMLXML::GeometryType2GMLType(colDef->GetGeometryType()));
+							hasGeom = true;
+						}
+						else
+						{
+							sb.Append(ColType2XSDType(colDef->GetColType()));
+						}
+						sb.Append(CSTR("\"/>\r\n"));
+					}
+					k++;
+				}
+				if (!hasGeom)
+				{
+					sb.Append(CSTR("          <xsd:element maxOccurs=\"1\" minOccurs=\"0\" name=\"geom\" nillable=\"true\" type=\""))->Append(DrawLayerType2GMLType(feature->layer->GetLayerType()))->Append(CSTR("\"/>\r\n"));
+				}
+				tableDef.Delete();
+				sb.Append(CSTR("        </xsd:sequence>\r\n"));
+				sb.Append(CSTR("      </xsd:extension>\r\n"));
+				sb.Append(CSTR("    </xsd:complexContent>\r\n"));
+				sb.Append(CSTR("  </xsd:complexType>\r\n"));
+				sb.Append(CSTR("  <xsd:element name="))->Append(s = Text::XML::ToNewAttrText(feature->name->v));
+				s->Release();
+				sb.Append(CSTR(" substitutionGroup=\"gml:_Feature\" type="));
+				sb2.ClearStr()->Append(ws->name)->AppendUTF8Char(':')->Append(feature->name)->Append(CSTR("Type"));
+				sb.Append(s = Text::XML::ToNewAttrText(sb2.v))->Append(CSTR("/>\r\n"));
+			}
+			i++;
+		}
+		sb.Append(CSTR("</xsd:schema>\r\n"));
+		Text::CStringNN mime;
+		resp->AddDefHeaders(req);
+		svc->AddRespHeaders(req, resp);
+		if (version.Equals(CSTR("1.0.0")))
+		{
+			mime = CSTR("text/xml");
+		}
+		else if (version.StartsWith(CSTR("1.")))
+		{
+			mime = CSTR("text/xml; subtype=gml/3.1.1");
+		}
+		else
+		{
+			mime = CSTR("application/gml+xml; version=3.2");
+		}
+		resp->AddContentDisposition(false, U8STR("schema.xsd"), req->GetBrowser());
+		resp->AddContentType(mime);
+		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sb.ToCString());
+	}
 	return false;
 }
 
 Bool Map::WFSHandler::GetFeature(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
-	return false;
+	Optional<Text::String> typeName;
+	Optional<Text::String> featureID;
+	Optional<Text::String> sortBy;
+	Optional<Text::String> bbox;
+	NN<Text::String> s;
+	NN<GISFeature> feature;
+	UOSInt count = 0;
+	if (version.StartsWith(CSTR("1.")))
+	{
+		typeName = req->GetQueryValue(CSTR("typeName"));
+		if (req->GetQueryValue(CSTR("maxFeatures")).SetTo(s))
+		{
+			s->ToUOSInt(count);
+		}
+	}
+	else
+	{
+		typeName = req->GetQueryValue(CSTR("typeNames"));
+		if (req->GetQueryValue(CSTR("count")).SetTo(s))
+		{
+			s->ToUOSInt(count);
+		}
+	}
+	featureID = req->GetQueryValue(CSTR("featureID"));
+	sortBy = req->GetQueryValue(CSTR("sortBy"));
+	bbox = req->GetQueryValue(CSTR("bbox"));
+	if (!typeName.SetTo(s))
+	{
+		return ServiceExceptionReport(req, resp, CSTR("MissingParameterValue"), nullptr, CSTR("The query should specify either typeName, featureId filter, or a stored query id"), svc);
+	}
+	if (!features->GetNN(s).SetTo(feature))
+	{
+		return ServiceExceptionReport(req, resp, CSTR("InvalidParameterValue"), CSTR("typeName"), (Text::StringBuilderUTF8() + CSTR(" Feature type ") + s + CSTR(" unknown")).ToCString(), svc);
+	}
+	Data::ArrayListInt64 idList;
+	Optional<Map::NameArray> nameArr;
+	feature->layer->GetAllObjectIds(idList, nameArr);
+	Bool succ = ResponseGML(req, resp, feature, idList, nameArr, bbox, svc);
+	feature->layer->ReleaseNameArr(nameArr);
+	return succ;
 }
 
 Bool Map::WFSHandler::GetGmlObject(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
@@ -4647,6 +4958,131 @@ Bool Map::WFSHandler::Transaction(NN<Net::WebServer::WebRequest> req, NN<Net::We
 	return false;
 }
 
+Bool Map::WFSHandler::ServiceExceptionReport(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN exceptionCode, Text::CString locator, Text::CStringNN exceptionMessage, NN<GISWebService> svc)
+{
+	NN<Text::String> s;
+	Text::CStringNN nnlocator;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+	sb.Append(CSTR("<ServiceExceptionReport\r\n"));
+	sb.Append(CSTR("   version=\"1.2.0\"\r\n"));
+	sb.Append(CSTR("   xmlns=\"http://www.opengis.net/ogc\"\r\n"));
+	sb.Append(CSTR("   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"));
+	sb.Append(CSTR("   xsi:schemaLocation=\"http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.0.0/OGC-exception.xsd\">\r\n"));
+	sb.Append(CSTR("   <ServiceException code="));
+	s = Text::XML::ToNewAttrText(exceptionCode.v);
+	sb.Append(s);
+	s->Release();
+	if (locator.SetTo(nnlocator))
+	{
+		sb.Append(CSTR(" locator="));
+		s = Text::XML::ToNewAttrText(nnlocator.v);
+		sb.Append(s);
+		s->Release();
+	}
+	sb.Append(CSTR(">\r\n"));
+	sb.Append(CSTR("      "));
+	s = Text::XML::ToNewXMLText(exceptionMessage.v);
+	sb.Append(s);
+	s->Release();
+	sb.Append(CSTR("\r\n"));
+	sb.Append(CSTR("</ServiceException>"));
+	sb.Append(CSTR("</ServiceExceptionReport>"));
+	resp->AddDefHeaders(req);
+	resp->AddContentType(CSTR("text/xml;charset=utf-8"));
+	svc->AddRespHeaders(req, resp);
+	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/xml"), sb.ToCString());
+}
+
+Bool Map::WFSHandler::ResponseGML(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<GISFeature> feature, NN<Data::ArrayListInt64> idList, Optional<Map::NameArray> nameArr, Optional<Text::String> bbox, NN<GISWebService> svc)
+{
+	NN<GISWebService::GISWorkspace> ws = feature->ws;
+	NN<Text::String> s;
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sb2;
+	Text::StringBuilderUTF8 sb3;
+	NN<Math::Geometry::Vector2D> vec;
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+	sb.Append(CSTR("<wfs:FeatureCollection xmlns=\"http://www.opengis.net/wfs\" xmlns:wfs=\"http://www.opengis.net/wfs\""));
+	sb.Append(CSTR(" xmlns:"))->Append(ws->name)->AppendUTF8Char('=')->Append(s = Text::XML::ToNewAttrText(feature->ws->uri->v));
+	s->Release();
+	sb.Append(CSTR(" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation="));
+	sb2.ClearStr();
+	sb2.Append(ws->uri)->AppendUTF8Char(' ');
+	sptr = req->BuildURLHost(sbuff);
+	sb2.AppendP(sbuff, sptr)->Append(CSTR("/wfs?service=WFS&version=1.0.0&request=DescribeFeatureType&typeName="));
+	sb3.ClearStr()->Append(ws->name)->AppendUTF8Char(':')->Append(feature->name);
+	Text::TextBinEnc::FormEncoding::FormEncode(sb2, sb3.ToCString());
+	sb2.Append(CSTR(" http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"));
+	sb.Append(s = Text::XML::ToNewAttrText(sb2.v))->AppendUTF8Char('>');
+	s->Release();
+	if (!bbox.SetTo(s))
+	{
+		sb.Append(CSTR("<gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>"));
+	}
+	else
+	{
+		/////////////////////////////////////////////
+	}
+	Int64 id;
+	NN<DB::TableDef> tableDef;
+	NN<DB::ColDef> colDef;
+	if (feature->layer->CreateLayerTableDef().SetTo(tableDef))
+	{
+		NN<Map::GetObjectSess> sess = feature->layer->BeginGetObject();
+		UOSInt k;
+		UOSInt l;
+		UOSInt i = 0;
+		UOSInt j = idList->GetCount();
+		while (i < j)
+		{
+			if (feature->layer->GetNewVectorById(sess, id = idList->GetItem(i)).SetTo(vec))
+			{
+				sb.Append(CSTR("<gml:featureMember>"));
+				sb.AppendUTF8Char('<')->Append(ws->name)->AppendUTF8Char(':')->Append(feature->name)->Append(CSTR(" fid=\""))->Append(feature->name)->AppendUTF8Char('.')->AppendI64(id)->Append(CSTR("\">"));
+				k = 0;
+				l = tableDef->GetColCnt();
+				while (k < l)
+				{
+					if (tableDef->GetCol(k).SetTo(colDef))
+					{
+						sb.AppendUTF8Char('<')->Append(ws->name)->AppendUTF8Char(':')->Append(colDef->GetColName())->AppendUTF8Char('>');
+						if (colDef->GetColType() == DB::DBUtil::CT_Vector)
+						{
+							Map::GMLXML::AppendGeometry(sb, vec, Map::GMLXML::SRSType::URI);
+						}
+						else
+						{
+							sb2.ClearStr();
+							feature->layer->GetString(sb2, nameArr, id, k);
+							sb.Append(s = Text::XML::ToNewXMLText(sb2.v));
+							s->Release();
+						}
+						sb.Append(CSTR("</"))->Append(ws->name)->AppendUTF8Char(':')->Append(colDef->GetColName())->AppendUTF8Char('>');
+						
+					}
+					k++;
+				}
+				sb.Append(CSTR("</"))->Append(ws->name)->AppendUTF8Char(':')->Append(feature->name)->AppendUTF8Char('>');
+				sb.Append(CSTR("</gml:featureMember>"));
+				vec.Delete();
+			}
+			i++;
+		}
+		feature->layer->EndGetObject(sess);
+		tableDef.Delete();
+	}
+	sb.Append(CSTR("</wfs:FeatureCollection>"));
+	resp->AddDefHeaders(req);
+	sb2.ClearStr()->Append(feature->name)->Append(CSTR(".xml"));
+	resp->AddContentDisposition(false, UnsafeArray<const UInt8>(sb2.v), req->GetBrowser());
+	resp->AddContentType(CSTR("text/xml; subtype=gml/2.1.2"));
+	svc->AddRespHeaders(req, resp);
+	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/xml"), sb.ToCString());
+}
+
 Map::WFSHandler::WFSHandler()
 {
 	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
@@ -4692,3 +5128,82 @@ void __stdcall Map::WFSHandler::FreeFeature(NN<GISFeature> feature)
 	MemFreeNN(feature);
 }
 
+Text::CStringNN Map::WFSHandler::ColType2XSDType(DB::DBUtil::ColType colType)
+{
+	switch (colType)
+	{
+	default:
+	case DB::DBUtil::CT_Unknown:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_UTF8Char:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_UTF16Char:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_UTF32Char:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_VarUTF8Char:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_VarUTF16Char:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_VarUTF32Char:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_Date:
+		return CSTR("xsd:dateTime");
+	case DB::DBUtil::CT_DateTime:
+		return CSTR("xsd:dateTime");
+	case DB::DBUtil::CT_DateTimeTZ:
+		return CSTR("xsd:dateTime");
+	case DB::DBUtil::CT_Double:
+		return CSTR("xsd:double");
+	case DB::DBUtil::CT_Float:
+		return CSTR("xsd:float");
+	case DB::DBUtil::CT_Decimal:
+		return CSTR("xsd:decimal");
+	case DB::DBUtil::CT_Bool:
+		return CSTR("xsd:boolean");
+	case DB::DBUtil::CT_Byte:
+		return CSTR("xsd:integer");
+	case DB::DBUtil::CT_Int16:
+		return CSTR("xsd:integer");
+	case DB::DBUtil::CT_Int32:
+		return CSTR("xsd:integer");
+	case DB::DBUtil::CT_Int64:
+		return CSTR("xsd:integer");
+	case DB::DBUtil::CT_UInt16:
+		return CSTR("xsd:integer");
+	case DB::DBUtil::CT_UInt32:
+		return CSTR("xsd:integer");
+	case DB::DBUtil::CT_UInt64:
+		return CSTR("xsd:integer");
+	case DB::DBUtil::CT_Binary:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_Vector:
+		return CSTR("xsd:string");
+	case DB::DBUtil::CT_UUID:
+		return CSTR("xsd:string");
+	}
+}
+
+Text::CStringNN Map::WFSHandler::DrawLayerType2GMLType(Map::DrawLayerType layerType)
+{
+	switch (layerType)
+	{
+	default:
+	case Map::DRAW_LAYER_UNKNOWN:
+		return CSTR("gml:GeometryPropertyType");
+	case Map::DRAW_LAYER_POINT:
+		return CSTR("gml:PointPropertyType");
+	case Map::DRAW_LAYER_POLYLINE:
+		return CSTR("gml:MultiLineStringPropertyType");
+	case Map::DRAW_LAYER_POLYGON:
+		return CSTR("gml:PolygonPropertyType");
+	case Map::DRAW_LAYER_POINT3D:
+		return CSTR("gml:PointPropertyType");
+	case Map::DRAW_LAYER_POLYLINE3D:
+		return CSTR("gml:MultiLineStringPropertyType");
+	case Map::DRAW_LAYER_IMAGE:
+		return CSTR("gml:GeometryPropertyType");
+	case Map::DRAW_LAYER_MIXED:
+		return CSTR("gml:GeometryPropertyType");
+	}
+}

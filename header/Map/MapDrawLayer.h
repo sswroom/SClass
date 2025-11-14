@@ -109,12 +109,14 @@ namespace Map
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr) = 0;
 		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex) = 0;
 		virtual UOSInt GetColumnCnt() const = 0;
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) = 0;
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
-		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const = 0;
+		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const = 0;
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const = 0;
 		virtual UInt32 GetCodePage() const = 0;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
+		virtual Optional<DB::TableDef> CreateLayerTableDef() const;
+		void AddColDefs(NN<DB::TableDef> tableDef) const;
 
 		virtual NN<GetObjectSess> BeginGetObject() = 0;
 		virtual void EndGetObject(NN<GetObjectSess> session) = 0;
@@ -136,7 +138,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass() const = 0;
 		NN<Text::String> GetName() const;
 		virtual IO::ParserType GetParserType() const;
-		virtual NN<Math::CoordinateSystem> GetCoordinateSystem();
+		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual void SetCoordinateSystem(NN<Math::CoordinateSystem> csys);
 
 		Int32 CalBlockSize();
@@ -214,7 +216,8 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
-		static void GetShapeColDef(NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer);
+		static void GetShapeColDef(NN<DB::ColDef> colDef, NN<const Map::MapDrawLayer> layer);
+		static UOSInt GetShapeColSize(Map::DrawLayerType layerType);
 		static Bool GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer);
 	};
 }

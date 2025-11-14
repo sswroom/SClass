@@ -60,12 +60,24 @@ namespace SSWR
 			NN<UI::GUILabel> lblAssetMaxY;
 			NN<UI::GUITextBox> txtAssetMaxY;
 
+			NN<UI::GUITabPage> tpWS;
+			NN<UI::GUIListBox> lbWS;
+			NN<UI::GUIHSplitter> hspWS;
+			NN<UI::GUIPanel> pnlWS;
+			NN<UI::GUILabel> lblWSName;
+			NN<UI::GUITextBox> txtWSName;
+			NN<UI::GUILabel> lblWSURI;
+			NN<UI::GUITextBox> txtWSURI;
+			NN<UI::GUIButton> btnWSAdd;
+
 			NN<UI::GUITabPage> tpFeature;
 			NN<UI::GUIListBox> lbFeature;
 			NN<UI::GUIHSplitter> hspFeature;
 			NN<UI::GUIPanel> pnlFeature;
 			NN<UI::GUILabel> lblFeatureLayer;
 			NN<UI::GUIComboBox> cboFeatureLayer;
+			NN<UI::GUILabel> lblFeatureWS;
+			NN<UI::GUIComboBox> cboFeatureWS;
 			NN<UI::GUILabel> lblFeatureName;
 			NN<UI::GUITextBox> txtFeatureName;
 			NN<UI::GUIButton> btnFeatureAdd;
@@ -73,6 +85,8 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnAssetSelChg(AnyType userObj);
+			static void __stdcall OnWSSelChg(AnyType userObj);
+			static void __stdcall OnWSAddClicked(AnyType userObj);
 			static void __stdcall OnFeatureLayerSelChg(AnyType userObj);
 			static void __stdcall OnFeatureAddClicked(AnyType userObj);
 			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);

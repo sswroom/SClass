@@ -428,7 +428,7 @@ UOSInt Map::TileMapLayer::GetColumnCnt() const
 	return 3;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::TileMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::TileMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	switch (colIndex)
 	{
@@ -442,7 +442,7 @@ UnsafeArrayOpt<UTF8Char> Map::TileMapLayer::GetColumnName(UnsafeArray<UTF8Char> 
 	return 0;
 }
 
-DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	switch (colIndex)
 	{
@@ -459,7 +459,7 @@ DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOS
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

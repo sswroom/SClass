@@ -526,7 +526,7 @@ UOSInt Map::CIPLayer2::GetColumnCnt() const
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex == 0)
 	{
@@ -539,7 +539,7 @@ UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buf
 }
 
 
-DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -553,7 +553,7 @@ DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt
 	}
 }
 
-Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex != 0)
 		return false;
