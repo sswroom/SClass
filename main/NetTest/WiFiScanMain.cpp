@@ -151,15 +151,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						sb.AppendChar(' ', maxSNLen - thisLen);
 					}
 					sb.AppendUTF8Char('\t');
-					buff[0] = 0;
-					buff[1] = 0;
-					buff[2] = macPtr[0];
-					buff[3] = macPtr[1];
-					buff[4] = macPtr[2];
-					buff[5] = macPtr[3];
-					buff[6] = macPtr[4];
-					buff[7] = macPtr[5];
-					NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfo(ReadMUInt64(buff));
+					buff[0] = macPtr[0];
+					buff[1] = macPtr[1];
+					buff[2] = macPtr[2];
+					buff[3] = macPtr[3];
+					buff[4] = macPtr[4];
+					buff[5] = macPtr[5];
+					buff[6] = 0;
+					buff[7] = 0;
+					NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMAC64Info(ReadMUInt64(buff));
 					sb.AppendC(macEntry->name, macEntry->nameLen);
 					console.WriteLine(sb.ToCString());
 					bss.Delete();

@@ -31,15 +31,15 @@ void Net::EthernetAnalyzer::NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UOSIn
 	*destPtr = 0;
 }
 
-NN<Net::EthernetAnalyzer::MACStatus> Net::EthernetAnalyzer::MACGet(UInt64 macAddr)
+NN<Net::EthernetAnalyzer::MACStatus> Net::EthernetAnalyzer::MAC64Get(UInt64 mac64Addr)
 {
 	NN<MACStatus> mac;
-	if (this->macMap.Get(macAddr).SetTo(mac))
+	if (this->macMap.Get(mac64Addr).SetTo(mac))
 		return mac;
 	mac = MemAllocNN(MACStatus);
 	mac.ZeroContent();
-	mac->macAddr = macAddr;
-	this->macMap.Put(macAddr, mac);
+	mac->mac64Addr = mac64Addr;
+	this->macMap.Put(mac64Addr, mac);
 	return mac;
 }
 
@@ -457,12 +457,12 @@ Bool Net::EthernetAnalyzer::PacketNull(UnsafeArray<const UInt8> packet, UOSInt p
 	switch (packetType)
 	{
 	case 2:
-		valid = this->PacketIPv4(&packet[4], packetSize - 4, 0, 0);
+		valid = this->PacketIPv4_2(&packet[4], packetSize - 4, 0, 0);
 		break;
 	case 24:
 	case 28:
 	case 30:
-		valid = this->PacketIPv6(&packet[14], packetSize - 14, 0, 0);
+		valid = this->PacketIPv6_2(&packet[14], packetSize - 14, 0, 0);
 		break;
 	}
 	
@@ -494,14 +494,14 @@ Bool Net::EthernetAnalyzer::PacketEthernet(UnsafeArray<const UInt8> packet, UOSI
 		return false;
 	}
 
-	tmpBuff[0] = 0;
-	tmpBuff[1] = 0;
-	MemCopyNO(&tmpBuff[2], &packet[0], 6);
+	tmpBuff[6] = 0;
+	tmpBuff[7] = 0;
+	MemCopyNO(&tmpBuff[0], &packet[0], 6);
 	destAddr = ReadMUInt64(tmpBuff);
-	MemCopyNO(&tmpBuff[2], &packet[6], 6);
+	MemCopyNO(&tmpBuff[0], &packet[6], 6);
 	srcAddr = ReadMUInt64(tmpBuff);
 	etherType = ReadMUInt16(&packet[12]);
-	valid = this->PacketEthernetData(&packet[14], packetSize - 14, etherType, srcAddr, destAddr);
+	valid = this->PacketEthernetData2(&packet[14], packetSize - 14, etherType, srcAddr, destAddr);
 	
 	if (!valid)
 	{
@@ -534,9 +534,9 @@ Bool Net::EthernetAnalyzer::PacketLinux(UnsafeArray<const UInt8> packet, UOSInt 
 	packetType = ReadMUInt16(&packet[0]);
 	if (ReadMUInt16(&packet[4]) == 6)
 	{
-		tmpBuff[0] = 0;
-		tmpBuff[1] = 0;
-		MemCopyNO(&tmpBuff[2], &packet[6], 6);
+		MemCopyNO(&tmpBuff[0], &packet[6], 6);
+		tmpBuff[6] = 0;
+		tmpBuff[7] = 0;
 		destAddr = ReadMUInt64(tmpBuff);
 		srcAddr = destAddr;
 		if (packetType == 4)
@@ -554,7 +554,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(UnsafeArray<const UInt8> packet, UOSInt 
 		destAddr = 0;
 	}
 	etherType = ReadMUInt16(&packet[14]);
-	valid = this->PacketEthernetData(&packet[16], packetSize - 16, etherType, srcAddr, destAddr);
+	valid = this->PacketEthernetData2(&packet[16], packetSize - 16, etherType, srcAddr, destAddr);
 	
 	if (!valid)
 	{
@@ -572,7 +572,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(UnsafeArray<const UInt8> packet, UOSInt 
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernetData(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketEthernetData2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC64, UInt64 destMAC64)
 {
 	NN<MACStatus> mac;
 	Bool valid = true;
@@ -585,11 +585,11 @@ Bool Net::EthernetAnalyzer::PacketEthernetData(UnsafeArray<const UInt8> packet, 
 	Sync::MutexUsage mutUsage(this->macMut);
 	UnsafeArray<UInt8> packetData;
 	UOSInt cnt;
-	mac = this->MACGet(srcMAC);
+	mac = this->MAC64Get(srcMAC64);
 	cnt = (UOSInt)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
 	mac->packetTime[cnt & 15] = dt.ToInstant();
 	mac->packetSize[cnt & 15] = packetSize;
-	mac->packetDestMAC[cnt & 15] = destMAC;
+	mac->packetDestMAC[cnt & 15] = destMAC64;
 	mac->packetEtherType[cnt & 15] = etherType;
 	if (mac->packetData[cnt & 15].SetTo(packetData))
 	{
@@ -611,10 +611,10 @@ AF 81 01 00 00 00 00 00 00 00 00 00 00 00 00 00
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			mac->othSrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			mac->othDestCnt++;
 			mutUsage.EndUse();
 		}
@@ -629,10 +629,10 @@ AF 81 01 00 00 00 00 00 00 00 00 00 00 00 00 00
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			mac->othSrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			mac->othDestCnt++;
 			mutUsage.EndUse();
 		}
@@ -647,10 +647,10 @@ AF 81 01 00 00 00 00 00 00 00 00 00 00 00 00 00
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			mac->othSrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			mac->othDestCnt++;
 			mutUsage.EndUse();
 		}
@@ -667,22 +667,22 @@ C6 6C 2E A2
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			mac->othSrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			mac->othDestCnt++;
 			mutUsage.EndUse();
 		}
 		break;
 	case 0x0800: //IPv4
-		valid = this->PacketIPv4(packet, packetSize, srcMAC, destMAC);
+		valid = this->PacketIPv4_2(packet, packetSize, srcMAC64, destMAC64);
 		break;
 	case 0x0806: //ARP
-		valid = this->PacketARP(packet, packetSize, srcMAC, destMAC);
+		valid = this->PacketARP_2(packet, packetSize, srcMAC64, destMAC64);
 		break;
 	case 0x86DD: //IPv6
-		valid = this->PacketIPv6(packet, packetSize, srcMAC, destMAC);
+		valid = this->PacketIPv6_2(packet, packetSize, srcMAC64, destMAC64);
 		break;
 	case 0x888E: //EAP over LAN
 /*
@@ -701,10 +701,10 @@ BF AC E2 BF 1B 3D 2D 10 94 98 96 30 25 D4 C1 DB
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			mac->othSrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			mac->othDestCnt++;
 			mutUsage.EndUse();
 		}
@@ -713,10 +713,10 @@ BF AC E2 BF 1B 3D 2D 10 94 98 96 30 25 D4 C1 DB
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			mac->othSrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			mac->othDestCnt++;
 			mutUsage.EndUse();
 		}
@@ -726,7 +726,7 @@ BF AC E2 BF 1B 3D 2D 10 94 98 96 30 25 D4 C1 DB
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64)
 {
 //	Net::SocketUtil::AddressInfo addr;
 //	UInt16 port;
@@ -747,7 +747,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			ipAddr = ReadNUInt32(&packet[12]);
 			i = 0;
 			while (i < 4)
@@ -765,7 +765,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 			}
 			mac->ipv4SrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			ipAddr = ReadNUInt32(&packet[16]);
 			i = 0;
 			while (i < 4)
@@ -1339,20 +1339,20 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 						NN<DHCPInfo> dhcp;
 						if (ipDataSize >= 248 && ReadMUInt32(&ipData[244]) == 0x63825363)
 						{
-							macBuff[0] = 0;
-							macBuff[1] = 0;
-							macBuff[2] = ipData[36];
-							macBuff[3] = ipData[37];
-							macBuff[4] = ipData[38];
-							macBuff[5] = ipData[39];
-							macBuff[6] = ipData[40];
-							macBuff[7] = ipData[41];
+							macBuff[0] = ipData[36];
+							macBuff[1] = ipData[37];
+							macBuff[2] = ipData[38];
+							macBuff[3] = ipData[39];
+							macBuff[4] = ipData[40];
+							macBuff[5] = ipData[41];
+							macBuff[6] = 0;
+							macBuff[7] = 0;
 							iMAC = ReadMUInt64(macBuff);
 							Sync::MutexUsage dhcpMutUsage(this->dhcpMut);
 							if (!this->dhcpMap.Get(iMAC).SetTo(dhcp))
 							{
 								NEW_CLASSNN(dhcp, DHCPInfo());
-								dhcp->iMAC = iMAC;
+								dhcp->iMAC64 = iMAC;
 								dhcp->updated = false;
 								dhcp->ipAddrTime = 0;
 								dhcp->ipAddr = 0;
@@ -1557,7 +1557,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 												if ((flags & 0x8000) == 0 && ipData[65 + i * 18 + 15] == 0)
 												{
 													Sync::MutexUsage mutUsage(this->macMut);
-													mac = this->MACGet(srcMAC);
+													mac = this->MAC64Get(srcMAC64);
 													if (mac->name.IsNull())
 													{
 														MemCopyNO(sbuff, &ipData[65 + i * 18], 15);
@@ -1632,7 +1632,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								if (this->atype & AT_DEVICE)
 								{
 									Sync::MutexUsage mutUsage(this->macMut);
-									mac = this->MACGet(srcMAC);
+									mac = this->MAC64Get(srcMAC64);
 									if (mac->name.IsNull())
 									{
 										MemCopyNO(sbuff, &ipData[23], 32);
@@ -1762,7 +1762,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 						if (this->atype & AT_DEVICE)
 						{
 							Sync::MutexUsage mutUsage(this->macMut);
-							mac = this->MACGet(srcMAC);
+							mac = this->MAC64Get(srcMAC64);
 							if (mac->name.IsNull())
 							{
 								sptr = Text::StrConcatC(sbuff, &ipData[21], ipData[20]);
@@ -1803,7 +1803,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv6(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketIPv6_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64)
 {
 	NN<MACStatus> mac;
 	Bool valid = true;
@@ -1812,7 +1812,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(UnsafeArray<const UInt8> packet, UOSInt p
 		if (this->atype & AT_DEVICE)
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
-			mac = this->MACGet(srcMAC);
+			mac = this->MAC64Get(srcMAC64);
 			if (mac->ipv6Addr.addrType == Net::AddrType::Unknown)
 			{
 				mac->ipv6Addr.addrType = Net::AddrType::IPv6;
@@ -1820,7 +1820,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(UnsafeArray<const UInt8> packet, UOSInt p
 			}
 			mac->ipv6SrcCnt++;
 
-			mac = this->MACGet(destMAC);
+			mac = this->MAC64Get(destMAC64);
 			if (mac->ipv6Addr.addrType == Net::AddrType::Unknown)
 			{
 				mac->ipv6Addr.addrType = Net::AddrType::IPv6;
@@ -1837,7 +1837,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(UnsafeArray<const UInt8> packet, UOSInt p
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketARP(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketARP_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64)
 {
 	Bool valid = true;
 	NN<MACStatus> mac;
@@ -1859,7 +1859,7 @@ Bool Net::EthernetAnalyzer::PacketARP(UnsafeArray<const UInt8> packet, UOSInt pa
 				UInt32 ipAddr = ReadNUInt32(&packet[14]);
 
 				Sync::MutexUsage mutUsage(this->macMut);
-				mac = this->MACGet(srcMAC);
+				mac = this->MAC64Get(srcMAC64);
 				mac->othSrcCnt++;
 				i = 0;
 				while (i < 4)
@@ -1896,7 +1896,7 @@ Bool Net::EthernetAnalyzer::PacketARP(UnsafeArray<const UInt8> packet, UOSInt pa
 					mac->ipv4ByARP = true;
 				}
 
-				mac = this->MACGet(destMAC);
+				mac = this->MAC64Get(destMAC64);
 				mac->othDestCnt++;
 				mutUsage.EndUse();
 			}

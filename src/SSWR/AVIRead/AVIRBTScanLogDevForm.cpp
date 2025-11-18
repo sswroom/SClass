@@ -71,8 +71,8 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClient
 	this->pnlDevInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblMAC = ui->NewLabel(this->pnlDevInfo, CSTR("MAC"));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
-	WriteMUInt64(mac, entry->macInt);
-	sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+	WriteMUInt64(mac, entry->mac64Int);
+	sptr = Text::StrHexBytes(sbuff, &mac[0], 6, ':');
 	this->txtMAC = ui->NewTextBox(this->pnlDevInfo, CSTRP(sbuff, sptr));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);

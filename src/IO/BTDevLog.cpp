@@ -38,18 +38,18 @@ IO::BTDevLog::~BTDevLog()
 	this->ClearList();
 }
 
-NN<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
+NN<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry64(UInt64 mac64Int, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
 {
 	UInt8 mac[8];
 	Optional<DevEntry> log;
 	NN<DevEntry> nnlog;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		log = this->randDevs.Get(macInt);
+		log = this->randDevs.Get(mac64Int);
 	}
 	else
 	{
-		log = this->pubDevs.Get(macInt);
+		log = this->pubDevs.Get(mac64Int);
 	}
 	if (log.SetTo(nnlog))
 	{
@@ -82,15 +82,15 @@ NN<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::
 		}
 		return nnlog;
 	}
-	WriteMUInt64(mac, macInt);
+	WriteMUInt64(mac, mac64Int);
 	nnlog = MemAllocNN(DevEntry);
-	nnlog->mac[0] = mac[2];
-	nnlog->mac[1] = mac[3];
-	nnlog->mac[2] = mac[4];
-	nnlog->mac[3] = mac[5];
-	nnlog->mac[4] = mac[6];
-	nnlog->mac[5] = mac[7];
-	nnlog->macInt = macInt;
+	nnlog->mac[0] = mac[0];
+	nnlog->mac[1] = mac[1];
+	nnlog->mac[2] = mac[2];
+	nnlog->mac[3] = mac[3];
+	nnlog->mac[4] = mac[4];
+	nnlog->mac[5] = mac[5];
+	nnlog->mac64Int = mac64Int;
 	nnlog->name = Text::String::CopyOrNull(name);
 	nnlog->radioType = radioType;
 	nnlog->addrType = addrType;
@@ -100,11 +100,11 @@ NN<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::
 	nnlog->advType = advType;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		this->randDevs.Put(macInt, nnlog);
+		this->randDevs.Put(mac64Int, nnlog);
 	}
 	else
 	{
-		this->pubDevs.Put(macInt, nnlog);
+		this->pubDevs.Put(mac64Int, nnlog);
 	}
 	return nnlog;
 }
@@ -116,7 +116,7 @@ void IO::BTDevLog::AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanReco
 	while (i-- > 0)
 	{
 		rec = devMap->GetItemNoCheck(i);
-		this->AddEntry(rec->macInt, rec->name, rec->txPower, rec->measurePower, rec->radioType, rec->addrType, rec->company, rec->advType);
+		this->AddEntry64(rec->mac64Int, rec->name, rec->txPower, rec->measurePower, rec->radioType, rec->addrType, rec->company, rec->advType);
 	}
 }
 
@@ -145,14 +145,14 @@ Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
 		colCnt = Text::StrSplitP(sarr, 9, sb, '\t');
 		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && sarr[0].leng == 17)
 		{
-			macBuff[0] = 0;
-			macBuff[1] = 0;
-			macBuff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
-			macBuff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
-			macBuff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
-			macBuff[5] = Text::StrHex2UInt8C(&sarr[0].v[9]);
-			macBuff[6] = Text::StrHex2UInt8C(&sarr[0].v[12]);
-			macBuff[7] = Text::StrHex2UInt8C(&sarr[0].v[15]);
+			macBuff[0] = Text::StrHex2UInt8C(&sarr[0].v[0]);
+			macBuff[1] = Text::StrHex2UInt8C(&sarr[0].v[3]);
+			macBuff[2] = Text::StrHex2UInt8C(&sarr[0].v[6]);
+			macBuff[3] = Text::StrHex2UInt8C(&sarr[0].v[9]);
+			macBuff[4] = Text::StrHex2UInt8C(&sarr[0].v[12]);
+			macBuff[5] = Text::StrHex2UInt8C(&sarr[0].v[15]);
+			macBuff[6] = 0;
+			macBuff[7] = 0;
 			macInt = ReadMUInt64(macBuff);
 			Text::CString name = sarr[1].ToCString();
 			if (name.leng == 0)
@@ -203,7 +203,7 @@ Bool IO::BTDevLog::LoadFile(Text::CStringNN fileName)
 				}
 			}
 			Optional<Text::String> nameStr = Text::String::NewOrNull(name);
-			this->AddEntry(macInt, nameStr, (Int8)Text::StrToInt32(sarr[2].v), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
+			this->AddEntry64(macInt, nameStr, (Int8)Text::StrToInt32(sarr[2].v), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
 			OPTSTR_DEL(nameStr);
 		}
 		sb.ClearStr();

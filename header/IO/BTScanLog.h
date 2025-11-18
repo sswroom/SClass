@@ -50,7 +50,7 @@ namespace IO
 		typedef struct
 		{
 			UInt8 mac[6];
-			UInt64 macInt;
+			UInt64 mac64Int;
 			Bool inRange;
 			RadioType radioType;
 			AddressType addrType;
@@ -66,7 +66,7 @@ namespace IO
 
 		struct LogEntry
 		{
-			UInt64 macInt;
+			UInt64 mac64Int;
 			Int64 timeTicks;
 			Int8 rssi;
 			Int8 txPower;
@@ -74,7 +74,7 @@ namespace IO
 		
 		struct DevEntry
 		{
-			UInt64 macInt;
+			UInt64 mac64Int;
 			RadioType radioType;
 			AddressType addrType;
 			UInt16 company;
@@ -95,7 +95,7 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		NN<LogEntry> AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
+		NN<LogEntry> AddEntry64(Int64 timeTicks, UInt64 mac64Int, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
 		NN<LogEntry> AddScanRec(NN<const ScanRecord3> rec);
 		void AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff);
 		void ClearList();

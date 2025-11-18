@@ -385,7 +385,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderU
 			sb->AppendC(UTF8STRC("<tr><td>"));
 			sb->AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
+			NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMAC64Info(entry->mac64Int);
 			sb->AppendC(macEntry->name, macEntry->nameLen);
 			sb->AppendC(UTF8STRC("</td><td>"));
 			sb->Append(entry->ssid);
@@ -474,7 +474,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 			}
 			else
 			{
-				NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
+				NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMAC64Info(entry->mac64Int);
 				sb->AppendC(macEntry->name, macEntry->nameLen);
 			}
 			sb->AppendC(UTF8STRC("</td><td>"));

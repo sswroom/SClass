@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(AnyType userData, U
 			plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
 		}
 	}
-	me->analyzer->PacketIPv4(rawData, packetSize, 0, 0);
+	me->analyzer->PacketIPv4_2(rawData, packetSize, 0, 0);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(AnyType userObj)
@@ -1055,10 +1055,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			while (i < j)
 			{
 				mac = macList->GetItemNoCheck(i);
-				WriteMUInt64(macBuff, mac->macAddr);
-				sptr = Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
+				WriteMUInt64(macBuff, mac->mac64Addr);
+				sptr = Text::StrHexBytes(sbuff, &macBuff[0], 6, ':');
 				me->lvDevice->AddItem(CSTRP(sbuff, sptr), mac);
-				entry = Net::MACInfo::GetMACInfo(mac->macAddr);
+				entry = Net::MACInfo::GetMAC64Info(mac->mac64Addr);
 				me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
 				if (mac->name.SetTo(s))
 				{
@@ -1139,10 +1139,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			while (i < j)
 			{
 				dhcp = dhcpList->GetItemNoCheck(i);
-				WriteMUInt64(mac, dhcp->iMAC);
-				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+				WriteMUInt64(mac, dhcp->iMAC64);
+				sptr = Text::StrHexBytes(sbuff, &mac[0], 6, ':');
 				me->lvDHCP->AddItem(CSTRP(sbuff, sptr), dhcp);
-				macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
+				macInfo = Net::MACInfo::GetMAC64Info(dhcp->iMAC64);
 				me->lvDHCP->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
 				if (dhcp.Ptr() == currSel.OrNull())
 				{

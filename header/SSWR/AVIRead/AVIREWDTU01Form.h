@@ -22,7 +22,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt8 mac[6];
-				UInt64 macInt;
+				UInt64 mac64Int;
 				Int32 rssi;
 				Optional<Text::String> name;
 				Optional<Text::String> remark;

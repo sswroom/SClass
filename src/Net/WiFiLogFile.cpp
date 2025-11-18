@@ -21,11 +21,11 @@ UOSInt Net::WiFiLogFile::DirectInsert(NN<LogFileEntry> newLog)
 	{
 		k = (i + j) >> 1;
 		log = this->logList.GetItemNoCheck((UOSInt)k);
-		if (newLog->macInt > log->macInt)
+		if (newLog->mac64Int > log->mac64Int)
 		{
 			i = k + 1;
 		}
-		else if (newLog->macInt < log->macInt)
+		else if (newLog->mac64Int < log->mac64Int)
 		{
 			j = k - 1;
 		}
@@ -66,8 +66,8 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 		NN<Text::String> s;
 		UnsafeArray<UInt8> wieBuff;
 		sb.ClearStr();
-		buff[0] = 0;
-		buff[1] = 0;
+		buff[6] = 0;
+		buff[7] = 0;
 		while (reader.ReadLine(sb, 4096))
 		{
 			i = Text::StrSplitP(sarr, 12, sb, '\t');
@@ -75,12 +75,12 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 			{
 				if (Text::StrSplitP(sarr2, 7, sarr[0], ':') == 6)
 				{
-					buff[2] = Text::StrHex2UInt8C(sarr2[0].v);
-					buff[3] = Text::StrHex2UInt8C(sarr2[1].v);
-					buff[4] = Text::StrHex2UInt8C(sarr2[2].v);
-					buff[5] = Text::StrHex2UInt8C(sarr2[3].v);
-					buff[6] = Text::StrHex2UInt8C(sarr2[4].v);
-					buff[7] = Text::StrHex2UInt8C(sarr2[5].v);
+					buff[0] = Text::StrHex2UInt8C(sarr2[0].v);
+					buff[1] = Text::StrHex2UInt8C(sarr2[1].v);
+					buff[2] = Text::StrHex2UInt8C(sarr2[2].v);
+					buff[3] = Text::StrHex2UInt8C(sarr2[3].v);
+					buff[4] = Text::StrHex2UInt8C(sarr2[4].v);
+					buff[5] = Text::StrHex2UInt8C(sarr2[5].v);
 					iMAC = ReadMUInt64(buff);
 					if (this->Get(iMAC).SetTo(log))
 					{
@@ -151,9 +151,9 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 											log->neighbour[k] = iMAC;
 											break;
 										}
-										else if ((log->neighbour[k] & 0xFFFFFFFFFFFFLL) == (iMAC & 0xFFFFFFFFFFFFLL))
+										else if ((log->neighbour[k] & 0xFFFFFFFFFFFF0000LL) == (iMAC & 0xFFFFFFFFFFFF0000LL))
 										{
-											if ((Int8)((log->neighbour[k] >> 48) & 0xff) < (Int8)((iMAC >> 48) & 0xff))
+											if ((Int8)(log->neighbour[k] & 0xff) < (Int8)(iMAC & 0xff))
 											{
 												log->neighbour[k] = iMAC;
 											}
@@ -189,13 +189,13 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 						MemClear(log->neighbour, sizeof(log->neighbour));
 						log->lastScanTime = 0;
 						log->lastRSSI = 0;
-						log->mac[0] = buff[2];
-						log->mac[1] = buff[3];
-						log->mac[2] = buff[4];
-						log->mac[3] = buff[5];
-						log->mac[4] = buff[6];
-						log->mac[5] = buff[7];
-						log->macInt = iMAC;
+						log->mac[0] = buff[0];
+						log->mac[1] = buff[1];
+						log->mac[2] = buff[2];
+						log->mac[3] = buff[3];
+						log->mac[4] = buff[4];
+						log->mac[5] = buff[5];
+						log->mac64Int = iMAC;
 						log->ssid = Text::String::New(sarr[1].v, sarr[1].leng);
 						log->phyType = Text::StrToInt32(sarr[2].v);
 						log->freq = Text::StrToDoubleOrNAN(sarr[3].v);
@@ -381,11 +381,11 @@ Optional<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::Get(UInt64 iMAC)
 	{
 		k = (i + j) >> 1;
 		log = this->logList.GetItemNoCheck((UOSInt)k);
-		if (iMAC > log->macInt)
+		if (iMAC > log->mac64Int)
 		{
 			i = k + 1;
 		}
-		else if (iMAC < log->macInt)
+		else if (iMAC < log->mac64Int)
 		{
 			j = k - 1;
 		}
@@ -409,11 +409,11 @@ OSInt Net::WiFiLogFile::GetIndex(UInt64 iMAC)
 	{
 		k = (i + j) >> 1;
 		log = this->logList.GetItemNoCheck((UOSInt)k);
-		if (iMAC > log->macInt)
+		if (iMAC > log->mac64Int)
 		{
 			i = k + 1;
 		}
-		else if (iMAC < log->macInt)
+		else if (iMAC < log->mac64Int)
 		{
 			j = k - 1;
 		}
@@ -447,9 +447,9 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 	UnsafeArray<UInt8> wieBuff;
 	NN<Net::WirelessLANIE> ie;
 	NN<Text::String> s;
-	MemCopyNO(&buff[2], bss->GetMAC().Ptr(), 6);
-	buff[0] = 0;
-	buff[1] = 0;
+	MemCopyNO(&buff[0], bss->GetMAC().Ptr(), 6);
+	buff[6] = 0;
+	buff[7] = 0;
 	imac = ReadMUInt64(buff);
 	NN<Net::WiFiLogFile::LogFileEntry> log;
 	const UInt8 tmpOUI[] = {0, 0, 0};
@@ -470,8 +470,8 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 		log = MemAllocNN(Net::WiFiLogFile::LogFileEntry);
 		log->lastScanTime = 0;
 		MemClear(log->neighbour, sizeof(log->neighbour));
-		MemCopyNO(log->mac, &buff[2], 6);
-		log->macInt = imac;
+		MemCopyNO(log->mac, &buff[0], 6);
+		log->mac64Int = imac;
 		log->ssid = bss->GetSSID()->Clone();
 		log->phyType = bss->GetPHYType();
 		log->freq = bss->GetFreq();

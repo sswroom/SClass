@@ -172,11 +172,11 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, Data::ByteArrayR packet)
 		Sync::MutexUsage mutUsage(this->recMut);
 		if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 		{
-			optdev = this->randRecMap.Get(rec.macInt);
+			optdev = this->randRecMap.Get(rec.mac64Int);
 		}
 		else
 		{
-			optdev = this->pubRecMap.Get(rec.macInt);
+			optdev = this->pubRecMap.Get(rec.mac64Int);
 		}
 		if (!optdev.SetTo(dev))
 		{
@@ -185,11 +185,11 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, Data::ByteArrayR packet)
 			dev->name = Text::String::CopyOrNull(rec.name);
 			if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 			{
-				this->randRecMap.Put(dev->macInt, dev);
+				this->randRecMap.Put(dev->mac64Int, dev);
 			}
 			else
 			{
-				this->pubRecMap.Put(dev->macInt, dev);
+				this->pubRecMap.Put(dev->mac64Int, dev);
 			}
 		}
 		dev->lastSeenTime = rec.lastSeenTime;

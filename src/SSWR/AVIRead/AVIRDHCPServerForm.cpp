@@ -162,10 +162,10 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 			while (i < j)
 			{
 				dhcp = dhcpList->GetItemNoCheck(i);
-				WriteMUInt64(mac, dhcp->hwAddr);
-				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+				WriteMUInt64(mac, dhcp->hwAddr64);
+				sptr = Text::StrHexBytes(sbuff, &mac[0], 6, ':');
 				me->lvDevices->AddItem(CSTRP(sbuff, sptr), dhcp);
-				macInfo = Net::MACInfo::GetMACInfo(dhcp->hwAddr);
+				macInfo = Net::MACInfo::GetMAC64Info(dhcp->hwAddr64);
 				me->lvDevices->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
 				if (dhcp.Ptr() == currSel.OrNull())
 				{

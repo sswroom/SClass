@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 		Text::StringBuilderUTF8 sb;
 		if (UI::Clipboard::GetString(me->GetHandle(), sb))
 		{
-			UOSInt i = me->macList->SetEntry(log->macInt, sb.ToCString());
+			UOSInt i = me->macList->SetEntry(log->mac64Int, sb.ToCString());
 			me->UpdateStatus();
 			me->EntryUpdated(me->macList->GetItemNoCheck(i));
 		}
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 	{
 		NN<const Net::MACInfo::MACEntry> entry;
 		Text::CString name;
-		if (me->macList->GetEntry(log->macInt).SetTo(entry))
+		if (me->macList->GetEntry(log->mac64Int).SetTo(entry))
 		{
 			name = {entry->name, entry->nameLen};
 		}
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			NN<Text::String> name = frm.GetNameNew();
-			UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
+			UOSInt i = me->macList->SetEntry(log->mac64Int, name->ToCString());
 			name->Release();
 			entry = me->macList->GetItemNoCheck(i);
 			me->UpdateStatus();
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	while (i < j)
 	{
 		log = logList->GetItemNoCheck(i);
-		entry = this->macList->GetEntry(log->macInt);
+		entry = this->macList->GetEntry(log->mac64Int);
 		valid = true;
 		if (unkOnly && (entry.SetTo(entry2) && entry2->nameLen != 0))
 		{
@@ -305,7 +305,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(NN<const Net::MACInfo::
 	while (i < j)
 	{
 		log = this->lvContent->GetItem(i).GetNN<const Net::WiFiLogFile::LogFileEntry>();
-		if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
+		if (log->mac64Int >= entry->rangeStart && log->mac64Int <= entry->rangeEnd)
 		{
 			this->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
 		}

@@ -23,10 +23,10 @@ IO::ParserType IO::BTScanLog::GetParserType() const
 	return IO::ParserType::BTScanLog;
 }
 
-NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
+NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry64(Int64 timeTicks, UInt64 mac64Int, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
 {
 	NN<LogEntry> log = MemAllocNN(LogEntry);
-	log->macInt = macInt;
+	log->mac64Int = mac64Int;
 	log->timeTicks = timeTicks;
 	log->rssi = rssi;
 	log->txPower = txPower;
@@ -35,16 +35,16 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macI
 	NN<DevEntry> dev;
 	if (addrType == AT_RANDOM)
 	{
-		optdev = this->randDevs.Get(macInt);
+		optdev = this->randDevs.Get(mac64Int);
 	}
 	else
 	{
-		optdev = this->pubDevs.Get(macInt);
+		optdev = this->pubDevs.Get(mac64Int);
 	}
 	if (!optdev.SetTo(dev))
 	{
 		dev = MemAllocNN(DevEntry);
-		dev->macInt = macInt;
+		dev->mac64Int = mac64Int;
 		dev->company = company;
 		dev->radioType = radioType;
 		dev->addrType = addrType;
@@ -54,11 +54,11 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macI
 		NEW_CLASSNN(dev->logs, Data::ArrayListNN<LogEntry>());
 		if (addrType == AT_RANDOM)
 		{
-			this->randDevs.Put(macInt, dev);
+			this->randDevs.Put(mac64Int, dev);
 		}
 		else
 		{
-			this->pubDevs.Put(macInt, dev);
+			this->pubDevs.Put(mac64Int, dev);
 		}
 	}
 	NN<Text::String> nnname;
@@ -80,7 +80,7 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macI
 
 NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddScanRec(NN<const IO::BTScanLog::ScanRecord3> rec)
 {
-	return this->AddEntry(rec->lastSeenTime, rec->macInt, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower, rec->advType);
+	return this->AddEntry64(rec->lastSeenTime, rec->mac64Int, rec->radioType, rec->addrType, rec->company, rec->name, rec->rssi, rec->txPower, rec->measurePower, rec->advType);
 }
 
 void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff)
@@ -217,14 +217,14 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 				return false;
 			}
 			addrType = buff[11];
-			mac[0] = 0;
-			mac[1] = 0;
-			mac[2] = buff[17];
-			mac[3] = buff[16];
-			mac[4] = buff[15];
-			mac[5] = buff[14];
-			mac[6] = buff[13];
-			mac[7] = buff[12];
+			mac[0] = buff[17];
+			mac[1] = buff[16];
+			mac[2] = buff[15];
+			mac[3] = buff[14];
+			mac[4] = buff[13];
+			mac[5] = buff[12];
+			mac[6] = 0;
+			mac[7] = 0;
 			rec->rssi = (Int8)buff[22];
 			rec->txPower = (Int8)buff[21];
 
@@ -239,14 +239,14 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 				return false;
 			}
 			addrType = buff[10];
-			mac[0] = 0;
-			mac[1] = 0;
-			mac[2] = buff[16];
-			mac[3] = buff[15];
-			mac[4] = buff[14];
-			mac[5] = buff[13];
-			mac[6] = buff[12];
-			mac[7] = buff[11];
+			mac[0] = buff[16];
+			mac[1] = buff[15];
+			mac[2] = buff[14];
+			mac[3] = buff[13];
+			mac[4] = buff[12];
+			mac[5] = buff[11];
+			mac[6] = 0;
+			mac[7] = 0;
 			rec->txPower = 0;
 
 			optEnd = (UOSInt)buff[17] + 18;
@@ -284,13 +284,13 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 			rec->addrType = AT_UNKNOWN;
 		}
 		rec->radioType = RT_LE;
-		rec->macInt = ReadMUInt64(mac);
-		rec->mac[0] = mac[2];
-		rec->mac[1] = mac[3];
-		rec->mac[2] = mac[4];
-		rec->mac[3] = mac[5];
-		rec->mac[4] = mac[6];
-		rec->mac[5] = mac[7];
+		rec->mac64Int = ReadMUInt64(mac);
+		rec->mac[0] = mac[0];
+		rec->mac[1] = mac[1];
+		rec->mac[2] = mac[2];
+		rec->mac[3] = mac[3];
+		rec->mac[4] = mac[4];
+		rec->mac[5] = mac[5];
 		return true;
 	}
 	else if (buff[4] == 4 && buff[5] == 0x2F) //HCI Event, Extended Inquiry Result
@@ -308,14 +308,14 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 		{
 			return false;
 		}
-		mac[0] = 0;
-		mac[1] = 0;
-		mac[2] = buff[13];
-		mac[3] = buff[12];
-		mac[4] = buff[11];
-		mac[5] = buff[10];
-		mac[6] = buff[9];
-		mac[7] = buff[8];
+		mac[0] = buff[13];
+		mac[1] = buff[12];
+		mac[2] = buff[11];
+		mac[3] = buff[10];
+		mac[4] = buff[9];
+		mac[5] = buff[8];
+		mac[6] = 0;
+		mac[7] = 0;
 		optEnd = buff.GetSize();
 		i = 22;
 
@@ -324,13 +324,13 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 		rec->addrType = AT_PUBLIC;
 		rec->txPower = 0;
 		rec->radioType = RT_HCI;
-		rec->macInt = ReadMUInt64(mac);
-		rec->mac[0] = mac[2];
-		rec->mac[1] = mac[3];
-		rec->mac[2] = mac[4];
-		rec->mac[3] = mac[5];
-		rec->mac[4] = mac[6];
-		rec->mac[5] = mac[7];
+		rec->mac64Int = ReadMUInt64(mac);
+		rec->mac[0] = mac[0];
+		rec->mac[1] = mac[1];
+		rec->mac[2] = mac[2];
+		rec->mac[3] = mac[3];
+		rec->mac[4] = mac[4];
+		rec->mac[5] = mac[5];
 		return true;
 	}
 	return false;
