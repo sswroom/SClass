@@ -806,7 +806,7 @@ UnsafeArray<const WChar> Text::XML::ToNewAttrTextW(UnsafeArrayOpt<const WChar> t
 	UnsafeArray<const WChar> nntext;
 	UnsafeArray<WChar> dptr;
 	UnsafeArray<WChar> buff;
-	if (text == 0)
+	if (!text.SetTo(nntext))
 	{
 		dptr = MemAlloc(WChar, 3);
 		buff = dptr;

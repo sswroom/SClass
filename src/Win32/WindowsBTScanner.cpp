@@ -62,7 +62,7 @@ void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth
 	txPower = 0;
 #endif
 
-	NN<IO::BTScanLog::ScanRecord3> rec = this->DeviceGet(args.BluetoothAddress(), addrType);
+	NN<IO::BTScanLog::ScanRecord3> rec = this->DeviceGet(args.BluetoothAddress() << 16, addrType);
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	rec->lastSeenTime = dt.ToTicks();
@@ -104,18 +104,18 @@ void Win32::WindowsBTScanner::StoppedHandler(winrt::Windows::Devices::Bluetooth:
 		TypedEventHandler<struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs>
 			<class Win32::WindowsBTScanner, void(__cdecl Win32::WindowsBTScanner::*)(struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const&, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const&)>
 				(class Win32::WindowsBTScanner*, void(__cdecl Win32::WindowsBTScanner::*)(struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const&, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const&))*/
-NN<IO::BTScanLog::ScanRecord3> Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType)
+NN<IO::BTScanLog::ScanRecord3> Win32::WindowsBTScanner::DeviceGet(UInt64 mac64, IO::BTScanLog::AddressType addrType)
 {
 	Sync::MutexUsage mutUsage(this->devMut);
 	NN<IO::BTScanLog::ScanRecord3> rec;
 	Optional<IO::BTScanLog::ScanRecord3> optrec;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		optrec = this->randDevMap.Get(mac);
+		optrec = this->randDevMap.Get(mac64);
 	}
 	else
 	{
-		optrec = this->pubDevMap.Get(mac);
+		optrec = this->pubDevMap.Get(mac64);
 	}
 	if (optrec.SetTo(rec))
 	{
@@ -124,24 +124,24 @@ NN<IO::BTScanLog::ScanRecord3> Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO
 	rec = MemAllocNN(IO::BTScanLog::ScanRecord3);
 	rec.ZeroContent();
 	UInt8 buff[8];
-	rec->macInt = mac;
-	WriteMUInt64(buff, mac);
-	rec->mac[0] = buff[2];
-	rec->mac[1] = buff[3];
-	rec->mac[2] = buff[4];
-	rec->mac[3] = buff[5];
-	rec->mac[4] = buff[6];
-	rec->mac[5] = buff[7];
+	rec->mac64Int = mac64;
+	WriteMUInt64(buff, mac64);
+	rec->mac[0] = buff[0];
+	rec->mac[1] = buff[1];
+	rec->mac[2] = buff[2];
+	rec->mac[3] = buff[3];
+	rec->mac[4] = buff[4];
+	rec->mac[5] = buff[5];
 	rec->radioType = IO::BTScanLog::RT_LE;
 	rec->company = 0;
 	rec->addrType = addrType;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		this->randDevMap.Put(mac, rec);
+		this->randDevMap.Put(mac64, rec);
 	}
 	else
 	{
-		this->pubDevMap.Put(mac, rec);
+		this->pubDevMap.Put(mac64, rec);
 	}
 	return rec;
 }
