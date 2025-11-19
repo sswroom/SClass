@@ -122,7 +122,7 @@ Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntryOUI(const UInt8
 
 UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CStringNN name)
 {
-	UInt64 mask = 0xffffff;
+	UInt64 mask = 0xffffffffffLL;
 	return SetEntry(macInt & ~mask, macInt | mask, name);
 }
 

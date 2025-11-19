@@ -24,6 +24,7 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUIButton> btnFile;
 			NN<UI::GUICheckBox> chkUnkOnly;
+			NN<UI::GUICheckBox> chkLocal;
 			NN<UI::GUITextBox> txtFilter;
 			NN<UI::GUIButton> btnFilter;
 			NN<UI::GUIButton> btnStore;

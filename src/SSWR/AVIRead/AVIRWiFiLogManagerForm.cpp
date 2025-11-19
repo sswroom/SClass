@@ -152,6 +152,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	NN<Net::WiFiLogFile::LogFileEntry> log;
 	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = this->wifiLogFile->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
+	Bool local = this->chkLocal->IsChecked();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
@@ -172,7 +173,12 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		log = logList->GetItemNoCheck(i);
 		entry = this->macList->GetEntry(log->mac64Int);
 		valid = true;
+		Net::MACInfo::AddressType addrType = Net::MACInfo::GetAddressType(log->mac);
 		if (unkOnly && (entry.SetTo(entry2) && entry2->nameLen != 0))
+		{
+			valid = false;
+		}
+		else if ((unkOnly || !local) && (addrType == Net::MACInfo::AddressType::LocalMulticast || addrType == Net::MACInfo::AddressType::LocalUnicast))
 		{
 			valid = false;
 		}
@@ -221,9 +227,16 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		{
 			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
-			if (entry.SetTo(entry2))
+			if (addrType == Net::MACInfo::AddressType::UniversalMulticast || addrType == Net::MACInfo::AddressType::UniversalUnicast)
 			{
-				this->lvContent->SetSubItem(l, 1, {entry2->name, entry2->nameLen});
+				if (entry.SetTo(entry2))
+				{
+					this->lvContent->SetSubItem(l, 1, {entry2->name, entry2->nameLen});
+				}
+				else
+				{
+					this->lvContent->SetSubItem(l, 1, CSTR("?"));
+				}
 			}
 			else
 			{
@@ -340,20 +353,23 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(Optional<UI::GUICl
 	this->chkUnkOnly = ui->NewCheckBox(this->pnlControl, CSTR("Unknown Only"), true);
 	this->chkUnkOnly->SetRect(84, 4, 100, 23, false);
 	this->chkUnkOnly->HandleCheckedChange(OnUnkOnlyChkChg, this);
+	this->chkLocal = ui->NewCheckBox(this->pnlControl, CSTR("Local"), false);
+	this->chkLocal->SetRect(184, 4, 100, 23, false);
+	this->chkLocal->HandleCheckedChange(OnUnkOnlyChkChg, this);
 	this->txtFilter = ui->NewTextBox(this->pnlControl, CSTR(""));
-	this->txtFilter->SetRect(184, 4, 150, 23, false);
+	this->txtFilter->SetRect(284, 4, 150, 23, false);
 	this->btnFilter = ui->NewButton(this->pnlControl, CSTR("Filter"));
-	this->btnFilter->SetRect(334, 4, 75, 23, false);
+	this->btnFilter->SetRect(434, 4, 75, 23, false);
 	this->btnFilter->HandleButtonClick(OnFilterClicked, this);
 	this->btnStore = ui->NewButton(this->pnlControl, CSTR("Store MACList"));
-	this->btnStore->SetRect(414, 4, 75, 23, false);
+	this->btnStore->SetRect(514, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	this->lblInfo = ui->NewLabel(this->pnlControl, CSTR(""));
-	this->lblInfo->SetRect(494, 4, 200, 23, false);
+	this->lblInfo->SetRect(594, 4, 200, 23, false);
 	this->lblDblClk = ui->NewLabel(this->pnlControl, CSTR("Dbl-Clk Action"));
-	this->lblDblClk->SetRect(694, 4, 100, 23, false);
+	this->lblDblClk->SetRect(794, 4, 100, 23, false);
 	this->cboDblClk = ui->NewComboBox(this->pnlControl, false);
-	this->cboDblClk->SetRect(794, 4, 100, 23, false);
+	this->cboDblClk->SetRect(894, 4, 100, 23, false);
 	this->cboDblClk->AddItem(CSTR("Edit"), 0);
 	this->cboDblClk->AddItem(CSTR("Paste"), 0);
 	this->cboDblClk->SetSelectedIndex(0);

@@ -149,37 +149,46 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 						}
 						me->wifiLogMap.Put(imac, wifiLog);
 
+						Net::MACInfo::AddressType addrType;
 						sptr = Text::StrHexBytes(sbuff, &id[0], 6, ':');
 						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap.GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
-						NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMAC64Info(imac);
-						me->lvLogWifi->SetSubItem(k, 1, {entry->name, entry->nameLen});
-						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
+						me->lvLogWifi->SetSubItem(k, 1, Net::MACInfo::AddressTypeGetName(addrType = Net::MACInfo::GetAddressType(id)));
+						if (addrType == Net::MACInfo::AddressType::UniversalUnicast || addrType == Net::MACInfo::AddressType::UniversalMulticast)
+						{
+							NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMAC64Info(imac);
+							me->lvLogWifi->SetSubItem(k, 2, {entry->name, entry->nameLen});
+						}
+						else
+						{
+							me->lvLogWifi->SetSubItem(k, 2, CSTR("-"));
+						}
+						me->lvLogWifi->SetSubItem(k, 3, wifiLog->ssid);
 						sptr = Text::StrInt32(sbuff, wifiLog->phyType);
-						me->lvLogWifi->SetSubItem(k, 3, CSTRP(sbuff, sptr));
-						sptr = Text::StrDouble(sbuff, wifiLog->freq);
 						me->lvLogWifi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+						sptr = Text::StrDouble(sbuff, wifiLog->freq);
+						me->lvLogWifi->SetSubItem(k, 5, CSTRP(sbuff, sptr));
 						if (wifiLog->manuf.SetTo(s))
-							me->lvLogWifi->SetSubItem(k, 5, s);
-						if (wifiLog->model.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 6, s);
-						if (wifiLog->serialNum.SetTo(s))
+						if (wifiLog->model.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 7, s);
-						if (wifiLog->country.SetTo(s))
+						if (wifiLog->serialNum.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 8, s);
+						if (wifiLog->country.SetTo(s))
+							me->lvLogWifi->SetSubItem(k, 9, s);
 						if (wifiLog->ouis[0][0] != 0 || wifiLog->ouis[0][1] != 0 || wifiLog->ouis[0][2] != 0)
 						{
 							NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0]);
-							me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
+							me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
 						}
 						if (wifiLog->ouis[1][0] != 0 || wifiLog->ouis[1][1] != 0 || wifiLog->ouis[1][2] != 0)
 						{
 							NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1]);
-							me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
+							me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
 						}
 						if (wifiLog->ouis[2][0] != 0 || wifiLog->ouis[2][1] != 0 || wifiLog->ouis[2][2] != 0)
 						{
 							NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2]);
-							me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
+							me->lvLogWifi->SetSubItem(k, 12, {entry->name, entry->nameLen});
 						}
 					}
 					else
@@ -190,50 +199,28 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 							if (wifiLog->manuf.IsNull() && bss->GetManuf().SetTo(s))
 							{
 								wifiLog->manuf = s->Clone();
-								me->lvLogWifi->SetSubItem((UOSInt)sk, 5, s);
+								me->lvLogWifi->SetSubItem((UOSInt)sk, 6, s);
 							}
 							if (wifiLog->model.IsNull() && bss->GetModel().SetTo(s))
 							{
 								wifiLog->model = s->Clone();
-								me->lvLogWifi->SetSubItem((UOSInt)sk, 6, s);
+								me->lvLogWifi->SetSubItem((UOSInt)sk, 7, s);
 							}
 							if (wifiLog->serialNum.IsNull() && bss->GetSN().SetTo(s))
 							{
 								wifiLog->serialNum = s->Clone();
-								me->lvLogWifi->SetSubItem((UOSInt)sk, 7, s);
+								me->lvLogWifi->SetSubItem((UOSInt)sk, 8, s);
 							}
 							if (wifiLog->country.IsNull() && bss->GetCountry().NotNull())
 							{
 								s = Text::String::OrEmpty(Text::String::NewOrNullSlow(bss->GetCountry()));
 								wifiLog->country = s;
-								me->lvLogWifi->SetSubItem((UOSInt)sk, 8, s);
+								me->lvLogWifi->SetSubItem((UOSInt)sk, 9, s);
 							}
 						}
 						UOSInt l;
 						UnsafeArray<const UInt8> oui;
 						oui = oui1;
-						if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
-						{
-							l = 0;
-							while (l < 3)
-							{
-								if (wifiLog->ouis[l][0] == oui[0] && wifiLog->ouis[l][1] == oui[1] && wifiLog->ouis[l][2] == oui[2])
-								{
-									break;
-								}
-								else if (wifiLog->ouis[l][0] == 0 && wifiLog->ouis[l][1] == 0 && wifiLog->ouis[l][2] == 0)
-								{
-									wifiLog->ouis[l][0] = oui[0];
-									wifiLog->ouis[l][1] = oui[1];
-									wifiLog->ouis[l][2] = oui[2];
-									NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
-									me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
-								}
-								l++;
-							}
-						}
-
-						oui = oui2;
 						if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 						{
 							l = 0;
@@ -255,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 							}
 						}
 
-						oui = oui3;
+						oui = oui2;
 						if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 						{
 							l = 0;
@@ -272,6 +259,28 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 									wifiLog->ouis[l][2] = oui[2];
 									NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
 									me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
+								}
+								l++;
+							}
+						}
+
+						oui = oui3;
+						if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
+						{
+							l = 0;
+							while (l < 3)
+							{
+								if (wifiLog->ouis[l][0] == oui[0] && wifiLog->ouis[l][1] == oui[1] && wifiLog->ouis[l][2] == oui[2])
+								{
+									break;
+								}
+								else if (wifiLog->ouis[l][0] == 0 && wifiLog->ouis[l][1] == 0 && wifiLog->ouis[l][2] == 0)
+								{
+									wifiLog->ouis[l][0] = oui[0];
+									wifiLog->ouis[l][1] = oui[1];
+									wifiLog->ouis[l][2] = oui[2];
+									NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									me->lvLogWifi->SetSubItem(k, 12, {entry->name, entry->nameLen});
 								}
 								l++;
 							}
@@ -635,12 +644,13 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUI
 	this->btnLogWifiSaveF = ui->NewButton(this->pnlLogWifi, CSTR("Save Unk only"));
 	this->btnLogWifiSaveF->SetRect(84, 4, 75, 23, false);
 	this->btnLogWifiSaveF->HandleButtonClick(OnLogWifiSaveFClicked, this);
-	this->lvLogWifi = ui->NewListView(this->tpLogWifi, UI::ListViewStyle::Table, 12);
+	this->lvLogWifi = ui->NewListView(this->tpLogWifi, UI::ListViewStyle::Table, 13);
 	this->lvLogWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvLogWifi->SetShowGrid(true);
 	this->lvLogWifi->SetFullRowSelect(true);
 	this->lvLogWifi->HandleDblClk(OnLogWifiDblClicked, this);
 	this->lvLogWifi->AddColumn(CSTR("MAC"), 120);
+	this->lvLogWifi->AddColumn(CSTR("AddrType"), 120);
 	this->lvLogWifi->AddColumn(CSTR("Vendor"), 120);
 	this->lvLogWifi->AddColumn(CSTR("SSID"), 200);
 	this->lvLogWifi->AddColumn(CSTR("PHYType"), 60);
