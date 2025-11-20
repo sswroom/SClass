@@ -1044,6 +1044,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		NN<Net::EthernetAnalyzer::MACStatus> mac;
 		NN<const Net::MACInfo::MACEntry> entry;
 		UInt8 macBuff[8];
+		Net::MACInfo::AddressType addrType;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseMAC(mutUsage);
 		macList = me->analyzer->MACGetList();
@@ -1058,8 +1059,24 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 				WriteMUInt64(macBuff, mac->mac64Addr);
 				sptr = Text::StrHexBytes(sbuff, &macBuff[0], 6, ':');
 				me->lvDevice->AddItem(CSTRP(sbuff, sptr), mac);
-				entry = Net::MACInfo::GetMAC64Info(mac->mac64Addr);
-				me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
+				addrType = Net::MACInfo::GetAddressType(macBuff);
+				if (addrType == Net::MACInfo::AddressType::UniversalMulticast)
+				{
+					me->lvDevice->SetSubItem(i, 1, CSTR("Universal Multicast"));
+				}
+				else if (addrType == Net::MACInfo::AddressType::LocalMulticast)
+				{
+					me->lvDevice->SetSubItem(i, 1, CSTR("Local Multicast"));
+				}
+				else if (addrType == Net::MACInfo::AddressType::LocalUnicast)
+				{
+					me->lvDevice->SetSubItem(i, 1, CSTR("Local Unicast"));
+				}
+				else
+				{
+					entry = Net::MACInfo::GetMAC64Info(mac->mac64Addr);
+					me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
+				}
 				if (mac->name.SetTo(s))
 				{
 					me->lvDevice->SetSubItem(i, 8, s->ToCString());
