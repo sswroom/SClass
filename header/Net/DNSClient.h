@@ -1,7 +1,7 @@
 //require dnsapi.lib
 #ifndef _SM_NET_DNSCLIENT
 #define _SM_NET_DNSCLIENT
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/UDPServer.h"
 #include "Text/CString.h"
 

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_SOCKETFACTORY
 #define _SM_NET_SOCKETFACTORY
-#include "Data/ArrayList.h"
-#include "Data/DataArray.h"
+#include "Data/ArrayList.hpp"
+#include "Data/DataArray.hpp"
 #include "Data/Duration.h"
 #include "IO/LogTool.h"
 #include "Net/SocketUtil.h"

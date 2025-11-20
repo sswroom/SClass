@@ -1,6 +1,6 @@
 #ifndef _SM_NET_MODBUSTCPLISTENER
 #define _SM_NET_MODBUSTCPLISTENER
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/MODBUSDevSim.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClientMgr.h"

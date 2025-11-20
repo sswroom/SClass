@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileAnalyse/EDIDFileAnalyse.h"
 #include "Math/Math_C.h"
 #include "Text/MyStringFloat.h"

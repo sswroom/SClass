@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileAnalyse/SMTCFileAnalyse.h"
 #include "Net/SocketFactory.h"
 #include "Sync/MutexUsage.h"

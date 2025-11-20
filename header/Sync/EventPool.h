@@ -1,8 +1,8 @@
 #ifndef _SM_SYNC_EVENTPOOL
 #define _SM_SYNC_EVENTPOOL
 #include "AnyType.h"
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 

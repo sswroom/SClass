@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_GEOMETRY_LINESTRING
 #define _SM_MATH_GEOMETRY_LINESTRING
-#include "Data/ArrayListA.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListA.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Math/Coord2DDbl.h"
 #include "Math/Geometry/Vector2D.h"
 

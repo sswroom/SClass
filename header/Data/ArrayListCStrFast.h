@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_ARRAYLISTCSTRFAST
 #define _SM_DATA_ARRAYLISTCSTRFAST
-#include "Data/SortableArrayList.h"
+#include "Data/SortableArrayList.hpp"
 #include "Text/CString.h"
 
 namespace Data

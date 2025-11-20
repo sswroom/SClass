@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ASN1NAMES
 #define _SM_NET_ASN1NAMES
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/ASN1Util.h"
 #include "Text/StringBuilderUTF8.h"
 

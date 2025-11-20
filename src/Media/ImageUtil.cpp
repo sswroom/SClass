@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/ImageCopy_C.h"
 #include "Media/ImageUtil.h"
 #include "Media/ImageUtil_C.h"

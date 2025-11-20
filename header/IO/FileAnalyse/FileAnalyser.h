@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_FILEANALYSER
 #define _SM_IO_FILEANALYSE_FILEANALYSER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/FileSelector.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FrameDetail.h"

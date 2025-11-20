@@ -1,6 +1,6 @@
 #ifndef _SM_IO_AMDGPUMANAGER
 #define _SM_IO_AMDGPUMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/GPUControl.h"
 #include "IO/Library.h"
 

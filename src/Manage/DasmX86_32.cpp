@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "Manage/DasmX86_32.h"

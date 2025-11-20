@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListString.h"
 #include "Data/ByteBuffer.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/HTTPClient.h"

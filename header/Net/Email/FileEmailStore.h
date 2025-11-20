@@ -1,6 +1,6 @@
 #ifndef _SM_NET_EMAIL_FILEEMAILSTORE
 #define _SM_NET_EMAIL_FILEEMAILSTORE
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/Email/EmailStore.h"
 
 namespace Net

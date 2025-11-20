@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/RC2Cipher.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 UInt8 Crypto::Encrypt::RC2Cipher::permute[256] = {
 	217,120,249,196, 25,221,181,237, 40,233,253,121, 74,160,216,157,

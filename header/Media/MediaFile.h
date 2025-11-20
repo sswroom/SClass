@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_MEDIAFILE
 #define _SM_MEDIA_MEDIAFILE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt32.h"
 #include "IO/ParsedObject.h"
 #include "Media/MediaSource.h"

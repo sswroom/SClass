@@ -2,7 +2,7 @@
 #ifndef _SM_MATH_EQUATION
 #define _SM_MATH_EQUATION
 #include "Data/ArrayListInt32.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/String.h"
 
 namespace Math

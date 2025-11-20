@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_PARSERLIST
 #define _SM_PARSER_PARSERLIST
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/FileParser.h"
 #include "IO/FileSelector.h"
 #include "IO/ObjectParser.h"

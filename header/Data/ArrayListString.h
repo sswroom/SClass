@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_ARRAYLISTSTRING
 #define _SM_DATA_ARRAYLISTSTRING
-#include "Data/SortableArrayList.h"
+#include "Data/SortableArrayList.hpp"
 #include "Text/String.h"
 
 namespace Data

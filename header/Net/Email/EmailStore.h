@@ -1,6 +1,6 @@
 #ifndef _SM_NET_EMAIL_EMAILSTORE
 #define _SM_NET_EMAIL_EMAILSTORE
-#include "Data/StringUTF8Map.h"
+#include "Data/StringUTF8Map.hpp"
 #include "IO/StreamData.h"
 #include "Net/Email/MailController.h"
 #include "Net/Email/SMTPServer.h"

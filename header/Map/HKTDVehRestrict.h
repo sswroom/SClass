@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKTDVEHRESTRICT
 #define _SM_MAP_HKTDVEHRESTRICT
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "DB/DBTool.h"
 #include "Map/MapDrawLayer.h"
 

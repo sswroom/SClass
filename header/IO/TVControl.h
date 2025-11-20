@@ -1,6 +1,6 @@
 #ifndef _SM_IO_TVCONTROL
 #define _SM_IO_TVCONTROL
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Text/CString.h"
 
 namespace IO

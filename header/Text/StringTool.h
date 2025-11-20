@@ -2,9 +2,9 @@
 #define _SM_TEXT_STRINGTOOL
 #include "Data/ArrayListStringNN.h"
 #include "Data/ByteArray.h"
-#include "Data/NamedClass.h"
-#include "Data/StringMap.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/NamedClass.hpp"
+#include "Data/StringMap.hpp"
+#include "Data/StringUTF8Map.hpp"
 #include "Math/Size2D.h"
 #include "Text/CString.h"
 #include "Text/JSText.h"

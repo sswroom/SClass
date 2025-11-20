@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/TCPClient.h"
 #include "SSWR/DataSync/SyncClient.h"
 #include "Sync/MutexUsage.h"

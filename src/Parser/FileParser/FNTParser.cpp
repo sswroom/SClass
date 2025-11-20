@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/MSFontRenderer.h"
 #include "Parser/FileParser/FNTParser.h"
 #include "Text/Encoding.h"

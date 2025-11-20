@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Math/Math_C.h"
 
 extern "C" void AudioUtil_Amplify8(UInt8 *audioBuff, UOSInt buffSize, Int32 vol)

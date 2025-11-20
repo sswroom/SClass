@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBMODEL
 #define _SM_DB_DBMODEL
-#include "Data/ICaseStringMapNN.h"
+#include "Data/ICaseStringMapNN.hpp"
 #include "DB/DBTool.h"
 #include "DB/TableDef.h"
 

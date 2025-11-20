@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_ORUXDBLAYER
 #define _SM_MAP_ORUXDBLAYER
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "DB/DBConn.h"
 #include "Map/MapDrawLayer.h"
 #include "Parser/ParserList.h"

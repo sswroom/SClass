@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SYSLOGSERVER
 #define _SM_NET_SYSLOGSERVER
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "IO/FileStream.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Net/SocketFactory.h"

@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_ML_MLMODEL
 #define _SM_DATA_ML_MLMODEL
-#include "Data/ArrayList.h"
-#include "Data/ArrayListArr.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "Text/StringBuilderUTF8.h"
 namespace Data
 {

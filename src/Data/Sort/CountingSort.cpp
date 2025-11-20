@@ -7,26 +7,26 @@ Data::Sort::CountingSort::CountingSort(Int32 minVal, Int32 maxVal)
 {
 	this->minVal = minVal;
 	this->maxVal = maxVal;
-	this->valCount = MemAllocA(Int32, maxVal - minVal + 1);
+	this->valCount = MemAllocAArr(Int32, maxVal - minVal + 1);
 }
 
 Data::Sort::CountingSort::~CountingSort()
 {
-	MemFreeA(this->valCount);
+	MemFreeAArr(this->valCount);
 }
 
-void Data::Sort::CountingSort::SortInt32(const Int32 *inputArr, Int32 *outputArr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::CountingSort::SortInt32(UnsafeArray<const Int32> inputArr, UnsafeArray<Int32> outputArr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt i;
 	OSInt cnt = this->maxVal - this->minVal + 1;
 	Int32 cval;
 	if (cnt & 3)
 	{
-		MemClear(this->valCount, sizeof(Int32) * cnt);
+		MemClear(this->valCount.Ptr(), sizeof(Int32) * cnt);
 	}
 	else
 	{
-		MemClearANC(this->valCount, sizeof(Int32) * cnt);
+		MemClearANC(this->valCount.Ptr(), sizeof(Int32) * cnt);
 	}
 	outputArr += firstIndex;
 	i = firstIndex;

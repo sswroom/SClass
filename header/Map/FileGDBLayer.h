@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_FILEGDBLAYER
 #define _SM_MAP_FILEGDBLAYER
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "DB/SharedReadingDB.h"
 #include "Map/MapDrawLayer.h"
 #include "Math/ArcGISPRJParser.h"

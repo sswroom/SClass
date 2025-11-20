@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_OCRENGINE
 #define _SM_MEDIA_OCRENGINE
 #include "AnyType.h"
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Media/StaticImage.h"
 #include "Media/OpenCV/OCVFrame.h"
 #include "Text/String.h"

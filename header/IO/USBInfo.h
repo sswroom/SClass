@@ -1,6 +1,6 @@
 #ifndef _SM_IO_USBINFO
 #define _SM_IO_USBINFO
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/CString.h"
 
 namespace IO

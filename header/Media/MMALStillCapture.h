@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_MMALSTILLCAPTURE
 #define _SM_MEDIA_MMALSTILLCAPTURE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "Media/PhotoCapturer.h"
 

@@ -2,7 +2,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Data/DateTime.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/OpenSSLClient.h"

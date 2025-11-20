@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/LRGBLimiter.h"
 
 extern "C" void LRGBLimiter_LimitImageLRGB(UInt8 * imgPtr, UOSInt w, UOSInt h)

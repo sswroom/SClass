@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRBTScanLogDevForm.h"

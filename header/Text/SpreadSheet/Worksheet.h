@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_SPREADSHEET_WORKSHEET
 #define _SM_TEXT_SPREADSHEET_WORKSHEET
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListDbl.h"
 #include "Data/DateTime.h"
 #include "Math/Unit/Distance.h"

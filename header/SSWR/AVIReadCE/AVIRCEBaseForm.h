@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREADCE_AVIRCEBASEFORM
 #define _SM_SSWR_AVIREADCE_AVIRCEBASEFORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_UI_WIN_WINDRAGDROP
 #define _SM_UI_WIN_WINDRAGDROP
-#include "Data/StringUTF8Map.h"
+#include "Data/StringUTF8Map.hpp"
 #include "UI/GUIControl.h"
 #include <windows.h>
 #include <ole2.h>

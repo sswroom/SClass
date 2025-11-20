@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/SMBIOS.h"
 #include "IO/StmData/MemoryDataCopy.h"
 #include "Text/MyString.h"

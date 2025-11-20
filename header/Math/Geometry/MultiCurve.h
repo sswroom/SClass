@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_MULTICURVE
 #define _SM_MATH_GEOMETRY_MULTICURVE
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 
 namespace Math
 {

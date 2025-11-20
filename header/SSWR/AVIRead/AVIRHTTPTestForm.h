@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHTTPTESTFORM
 #define _SM_SSWR_AVIREAD_AVIRHTTPTESTFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "Net/JMeter/JMeterStep.h"

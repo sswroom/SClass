@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Data/ArrayListNN.h" 
-#include "Data/ByteTool.h"
+#include "Data/ArrayListNN.hpp" 
+#include "Core/ByteTool_C.h"
 #include "IO/BTDevLog.h"
 #include "IO/FileStream.h"
 #include "Text/StringBuilderUTF8.h"

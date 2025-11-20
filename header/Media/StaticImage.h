@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_STATICIMAGE
 #define _SM_MEDIA_STATICIMAGE
 #include "Data/ByteArray.h"
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"
 #include "Media/ImageAlphaBlend.h"

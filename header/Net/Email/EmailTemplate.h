@@ -1,6 +1,6 @@
 #ifndef _SM_NET_EMAIL_EMAILTEMPLATE
 #define _SM_NET_EMAIL_EMAILTEMPLATE
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "IO/LogTool.h"
 #include "Net/Email/EmailMessage.h"
 #include "Text/StringBuilderUTF8.h"

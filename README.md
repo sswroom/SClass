@@ -55,3 +55,9 @@ It is the directory for startup file.
 
 ### ThirdParty
 It is the directory for ThirdParty libraries source/header files.
+
+
+## Naming Convention
+### File Name
+*_C.h - C-Styled function, all function should be named as *_xxx
+*.hpp - template class with body

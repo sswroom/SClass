@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_MIMEOBJ_MAILMESSAGE
 #define _SM_TEXT_MIMEOBJ_MAILMESSAGE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "IO/StreamData.h"
 #include "Text/EncodingFactory.h"

@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_CHARTPLOTTER
 #define _SM_DATA_CHARTPLOTTER
 #include "Media/DrawEngine.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListDbl.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/DateTime.h"

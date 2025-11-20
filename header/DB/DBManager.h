@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBMANAGER
 #define _SM_DB_DBMANAGER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBManagerCtrl.h"
 #include "Parser/ParserList.h"
 #include "Text/StringBuilderUTF8.h"

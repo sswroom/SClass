@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WIFILOGFILE
 #define _SM_NET_WIFILOGFILE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/WirelessLAN.h"
 
 namespace Net

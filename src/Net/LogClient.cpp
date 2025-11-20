@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/DateTime.h"
 #include "IO/Path.h"
 #include "Net/LogClient.h"

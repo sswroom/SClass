@@ -2,7 +2,7 @@
 #define _SM_TEXT_MYSTRING
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 #define SCOPY_TEXT(var) (((var) != 0)?Text::StrCopyNew(var).Ptr():0)
 #define SDEL_TEXT(var) {UnsafeArray<const UTF8Char> nnvar; if (var.SetTo(nnvar)) { Text::StrDelNew(nnvar); var = 0;}}

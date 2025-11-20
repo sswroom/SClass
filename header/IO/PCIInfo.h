@@ -1,6 +1,6 @@
 #ifndef _SM_IO_PCIINFO
 #define _SM_IO_PCIINFO
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/CString.h"
 
 namespace IO

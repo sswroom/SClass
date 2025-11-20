@@ -1,8 +1,8 @@
 #ifndef _SM_SSWR_ORGANWEB_ORGANWEBENV
 #define _SM_SSWR_ORGANWEB_ORGANWEBENV
 #include "Data/ArrayListDbl.h"
-#include "Data/FastMapNN.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastMapNN.hpp"
+#include "Data/StringUTF8Map.hpp"
 #include "DB/DBTool.h"
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"

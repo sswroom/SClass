@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/RandomOS.h"
 #include "Net/DNSClient.h"
 #include "Sync/MutexUsage.h"

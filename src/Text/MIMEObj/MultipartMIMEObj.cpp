@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Text/MailBase64Stream.h"
 #include "Text/MyString.h"

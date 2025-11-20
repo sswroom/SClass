@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "IO/StreamDataStream.h"

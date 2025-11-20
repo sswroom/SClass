@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/Encoding.h"
 #include "Text/EncodingFactory.h"
 #include "Text/MyString.h"

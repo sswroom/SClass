@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_JASPER_JASPERREPORT
 #define _SM_MEDIA_JASPER_JASPERREPORT
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "IO/ParsedObject.h"
 #include "Media/Jasper/JasperBand.h"

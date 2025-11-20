@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteOrderMSB.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 Data::ByteOrderMSB::ByteOrderMSB()
 {

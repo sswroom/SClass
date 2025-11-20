@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "Map/MapSearch.h"

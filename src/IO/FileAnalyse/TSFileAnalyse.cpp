@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/TSFileAnalyse.h"
 #include "Sync/ThreadUtil.h"

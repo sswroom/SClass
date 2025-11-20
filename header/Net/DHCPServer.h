@@ -1,7 +1,7 @@
 #ifndef _SM_NET_DHCPSERVER
 #define _SM_NET_DHCPSERVER
-#include "Data/ArrayList.h"
-#include "Data/FastMapNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

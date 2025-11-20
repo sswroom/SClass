@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANTIMEADJFORM
 #define _SM_SSWR_ORGANMGR_ORGANTIMEADJFORM
-#include "Data/StringMap.h"
+#include "Data/StringMap.hpp"
 #include "Map/MapView.h"
 #include "Map/TileMapLayer.h"
 #include "SSWR/OrganMgr/OrganEnv.h"

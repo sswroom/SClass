@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBUTIL
 #define _SM_DB_DBUTIL
-#include "Data/ArrayList.h"
-#include "Data/NamedClass.h"
+#include "Data/ArrayList.hpp"
+#include "Data/NamedClass.hpp"
 #include "Data/Class.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"

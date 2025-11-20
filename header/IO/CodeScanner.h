@@ -1,7 +1,7 @@
 #ifndef _SM_IO_CODESCANNER
 #define _SM_IO_CODESCANNER
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"

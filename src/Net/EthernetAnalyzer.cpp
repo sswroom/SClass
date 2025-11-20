@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Net/NTPServer.h"
 #include "Sync/Interlocked.h"

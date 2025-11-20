@@ -1,10 +1,10 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Manage/HiResClock.h"
 #include "Net/DNSProxy.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 #define REQTIMEOUT 10000
 

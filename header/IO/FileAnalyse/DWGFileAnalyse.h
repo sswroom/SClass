@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_DWGFILEANALYSE
 #define _SM_IO_FILEANALYSE_DWGFILEANALYSE
-#include "Data/SyncArrayListNN.h"
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"

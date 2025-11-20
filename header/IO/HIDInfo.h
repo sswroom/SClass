@@ -1,6 +1,6 @@
 #ifndef _SM_IO_HIDINFO
 #define _SM_IO_HIDINFO
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/Stream.h"
 #include "Text/String.h"
 

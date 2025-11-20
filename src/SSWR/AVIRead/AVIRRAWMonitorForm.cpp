@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Path.h"
 #include "IO/PcapngWriter.h"
 #include "IO/PcapWriter.h"

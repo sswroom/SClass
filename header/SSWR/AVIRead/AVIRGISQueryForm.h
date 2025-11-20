@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISQUERYFORM
 #define _SM_SSWR_AVIREAD_AVIRGISQUERYFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Map/VectorLayer.h"
 #include "Math/VectorTextWriterList.h"
 #include "SSWR/AVIRead/AVIRCore.h"

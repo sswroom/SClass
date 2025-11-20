@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "Map/MapLayerCollection.h"
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMParser.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCCLIENTDATAMGR
 #define _SM_SSWR_DATASYNC_SYNCCLIENTDATAMGR
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Sync/Mutex.h"
 
 namespace SSWR

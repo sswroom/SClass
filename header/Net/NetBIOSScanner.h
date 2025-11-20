@@ -1,7 +1,7 @@
 #ifndef _SM_NET_NETBIOSSCANNER
 #define _SM_NET_NETBIOSSCANNER
 #include "Data/CallbackStorage.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"

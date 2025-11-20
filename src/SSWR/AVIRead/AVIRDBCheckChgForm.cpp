@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/ColDef.h"
 #include "DB/CSVFile.h"

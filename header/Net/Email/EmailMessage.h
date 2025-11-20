@@ -1,7 +1,7 @@
 #ifndef _SM_NET_EMAIL_EMAILMESSAGE
 #define _SM_NET_EMAIL_EMAILMESSAGE
 #include "Crypto/Cert/X509Cert.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"

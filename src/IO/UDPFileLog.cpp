@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/UDPFileLog.h"
 #include "Net/SocketFactory.h"
 #include "Text/Encoding.h"

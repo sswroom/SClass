@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_MIMEOBJ_MULTIPARTMIMEOBJ
 #define _SM_TEXT_MIMEOBJ_MULTIPARTMIMEOBJ
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/StreamData.h"
 #include "Text/MIMEObject.h"
 #include "Text/MIMEObj/MIMEMessage.h"

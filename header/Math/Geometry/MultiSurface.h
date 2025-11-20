@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_MULTISURFACE
 #define _SM_MATH_GEOMETRY_MULTISURFACE
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 
 namespace Math
 {

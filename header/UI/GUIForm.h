@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUIFORM
 #define _SM_UI_GUIFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/CallbackStorage.h"
 #include "Text/String.h"
 #include "UI/GUICore.h"

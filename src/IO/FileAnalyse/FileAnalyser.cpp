@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileAnalyse/CCacheV2FileAnalyse.h"
 #include "IO/FileAnalyse/DBF3FileAnalyse.h"
 #include "IO/FileAnalyse/DWGFileAnalyse.h"

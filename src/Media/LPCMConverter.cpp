@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "SIMD.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Math/Math_C.h"
 #include "Media/LPCMConverter.h"
 

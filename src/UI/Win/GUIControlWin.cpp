@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Math/Math_C.h"
 #include "Media/GDIEngine.h"
 #include "Text/MyString.h"

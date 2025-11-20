@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
 #define _SM_SSWR_AVIREAD_AVIRBLUETOOTHLEFORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/BTManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

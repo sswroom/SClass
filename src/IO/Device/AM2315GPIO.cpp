@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Device/AM2315GPIO.h"
 #include "Sync/SimpleThread.h"
 #include "Text/StringBuilderUTF8.h"

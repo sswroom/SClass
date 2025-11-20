@@ -1,6 +1,6 @@
 #ifndef _SM_IO_IOPINCAPTURE
 #define _SM_IO_IOPINCAPTURE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/IOPin.h"
 #include "Manage/HiResClock.h"
 

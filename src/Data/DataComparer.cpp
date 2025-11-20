@@ -1,7 +1,7 @@
 ﻿
 #include "Stdafx.h"
 #include "Data/DataComparer.h"
-#include "Data/ReadonlyArray.h"
+#include "Data/ReadonlyArray.hpp"
 #include "Text/MyString.h"
 
 OSInt Data::DataComparer::Compare(UnsafeArray<const UTF8Char> val1, UnsafeArray<const UTF8Char> val2)

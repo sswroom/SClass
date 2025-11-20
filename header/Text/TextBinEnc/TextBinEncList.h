@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_TEXTBINENC_TEXTBINENCLIST
 #define _SM_TEXT_TEXTBINENC_TEXTBINENCLIST
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/EthernetWebHandler.h"
 #include "Net/MACInfo.h"
 #include "Sync/MutexUsage.h"

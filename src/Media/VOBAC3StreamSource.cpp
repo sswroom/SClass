@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Manage/HiResClock.h"
 #include "Media/VOBAC3StreamSource.h"
 #include "Media/BlockParser/AC3BlockParser.h"

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_HTTPDIRECTORYHANDLER
 #define _SM_NET_WEBSERVER_HTTPDIRECTORYHANDLER
-#include "Data/BTreeUTF8Map.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/BTreeUTF8Map.hpp"
+#include "Data/StringUTF8Map.hpp"
 #include "Data/Timestamp.h"
 #include "IO/VirtualPackageFile.h"
 #include "Parser/ParserList.h"

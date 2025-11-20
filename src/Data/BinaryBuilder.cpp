@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/BinaryBuilder.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyStringW.h"
 
 Data::BinaryBuilder::BinaryBuilder() : mstm()

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBLUETOOTHFORM
 #define _SM_SSWR_AVIREAD_AVIRBLUETOOTHFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/BTManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

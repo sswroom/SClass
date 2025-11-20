@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Manage/AddressResolver.h"
 #include "Manage/DasmARM.h"
 #include "Manage/ThreadContextARM.h"

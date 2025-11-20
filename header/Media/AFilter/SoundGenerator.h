@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AFILTER_SOUNDGENERATOR
 #define _SM_MEDIA_AFILTER_SOUNDGENERATOR
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Media/AudioFilter.h"
 #include "Media/AFilter/SoundGen/SoundTypeGen.h"
 

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/FileVideoSource.h"
 #include "Media/MediaFile.h"
 #include "Media/MPEGVideoParser.h"

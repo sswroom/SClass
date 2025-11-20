@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 extern "C" void CRC16R_InitTable(UInt16 *tab, UInt16 polynomial)
 {

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/Adler32.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyString.h"
 
 Crypto::Hash::Adler32::Adler32(NN<const Adler32> adler32)

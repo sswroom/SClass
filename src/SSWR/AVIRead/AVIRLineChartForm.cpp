@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "DB/ColDef.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/MyString.h"

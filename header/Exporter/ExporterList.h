@@ -1,7 +1,7 @@
 #ifndef _SM_EXPORTER_EXPORTERLIST
 #define _SM_EXPORTER_EXPORTERLIST
 #include "IO/FileExporter.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 
 namespace Exporter
 {

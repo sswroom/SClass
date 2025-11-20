@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC16.h"
 #include "Crypto/Hash/MD5.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "DB/DBReader.h"
 #include "DB/ODBCConn.h"
 #include "IO/FileStream.h"

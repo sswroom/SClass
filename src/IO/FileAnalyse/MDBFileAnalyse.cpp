@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/RC4Cipher.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "Sync/SimpleThread.h"

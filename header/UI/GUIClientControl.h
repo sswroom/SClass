@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUICLIENTCONTROL
 #define _SM_UI_GUICLIENTCONTROL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "UI/GUIControl.h"
 
 namespace UI

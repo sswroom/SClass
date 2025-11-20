@@ -13,7 +13,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Win32/WindowsBTScanner.h"
 #include "Win32/WinRTCore.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 using namespace winrt;
 using namespace Windows::Foundation;

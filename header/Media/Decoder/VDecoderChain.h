@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_DECODER_VDECODERCHAIN
 #define _SM_MEDIA_DECODER_VDECODERCHAIN
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Media/Decoder/VDecoderBase.h"
 
 namespace Media

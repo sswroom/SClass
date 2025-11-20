@@ -1,6 +1,6 @@
 #ifndef _SM_NET_MACINFOLIST
 #define _SM_NET_MACINFOLIST
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/MACInfo.h"
 namespace Net
 {

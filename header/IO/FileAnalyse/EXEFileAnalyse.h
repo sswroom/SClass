@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_EXEFILEANALYSE
 #define _SM_IO_FILEANALYSE_EXEFILEANALYSE
 #include "Data/ByteBuffer.h"
-#include "Data/SyncArrayListNN.h"
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"

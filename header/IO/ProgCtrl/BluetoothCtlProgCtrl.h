@@ -2,7 +2,7 @@
 #define _SM_IO_PROGCTRL_BLUETOOTHCTLPROGCTRL
 #include "AnyType.h"
 #include "Data/ArrayListUInt32.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/BTScanner.h"
 #include "Manage/ProcessExecution.h"
 #include "Sync/Mutex.h"

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/RandomMT19937.h"
 #include "Data/UUID.h"
 
@@ -8,7 +8,7 @@ Data::UUID::UUID()
 	MemClear(this->data, 16);
 }
 
-Data::UUID::UUID(const UInt8 *buff)
+Data::UUID::UUID(UnsafeArray<const UInt8> buff)
 {
 	this->SetValue(buff);
 }
@@ -56,9 +56,9 @@ void Data::UUID::SetValue(Text::CStringNN str)
 	Text::StrHex2Bytes(&str.v[24], &this->data[10]);
 }
 
-UOSInt Data::UUID::GetValue(UInt8 *buff) const
+UOSInt Data::UUID::GetValue(UnsafeArray<UInt8> buff) const
 {
-	MemCopyNO(buff, this->data, 16);
+	MemCopyNO(&buff[0], this->data, 16);
 	return 16;
 }
 
@@ -149,7 +149,7 @@ UInt64 Data::UUID::GetNode() const
 	return ReadMUInt64(&this->data[8]) & 0xffffffffffffLL;
 }
 
-const UInt8 *Data::UUID::GetBytes() const
+UnsafeArray<const UInt8> Data::UUID::GetBytes() const
 {
 	return this->data;
 }

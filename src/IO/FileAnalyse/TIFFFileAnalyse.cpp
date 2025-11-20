@@ -2,7 +2,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/FileAnalyse/TIFFFileAnalyse.h"

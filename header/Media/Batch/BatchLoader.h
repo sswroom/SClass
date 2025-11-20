@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_BATCH_BATCHLOADER
 #define _SM_MEDIA_BATCH_BATCHLOADER
 #include "AnyType.h"
-#include "Data/SyncCircularBuffNN.h"
+#include "Data/SyncCircularBuffNN.hpp"
 #include "Media/Batch/BatchHandler.h"
 #include "Parser/ParserList.h"
 #include "Sync/Event.h"

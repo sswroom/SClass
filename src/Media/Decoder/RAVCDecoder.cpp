@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/H264Parser.h"
 #include "Media/Decoder/RAVCDecoder.h"
 #include "Sync/MutexUsage.h"

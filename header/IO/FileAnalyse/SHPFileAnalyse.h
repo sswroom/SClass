@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_SHPFILEANALYSE
 #define _SM_IO_FILEANALYSE_SHPFILEANALYSE
-#include "Data/SyncArrayListNN.h"
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Thread.h"

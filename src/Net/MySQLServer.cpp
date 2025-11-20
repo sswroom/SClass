@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
-#include "Data/StringUTF8Map.h"
+#include "Core/ByteTool_C.h"
+#include "Data/StringUTF8Map.hpp"
 #include "DB/ColDef.h"
 #include "Net/MySQLServer.h"
 #include "Net/MySQLUtil.h"

@@ -19,7 +19,7 @@ NN<Data::ArrayList<Int64>> Data::ArrayListInt64::Clone() const
 	return newArr;
 }
 
-void Data::ArrayListInt64::AddRangeI32(Int32 *arr, UOSInt cnt)
+void Data::ArrayListInt64::AddRangeI32(UnsafeArray<Int32> arr, UOSInt cnt)
 {
 	UOSInt i;
 	UOSInt j;
@@ -44,7 +44,7 @@ void Data::ArrayListInt64::AddRangeI32(Int32 *arr, UOSInt cnt)
 	this->objCnt += cnt;
 }
 
-void Data::ArrayListInt64::AddRangeI32(const Data::ArrayList<Int32> *arr)
+void Data::ArrayListInt64::AddRangeI32(NN<const Data::ArrayList<Int32>> arr)
 {
 	UOSInt i;
 	UOSInt j;

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_LDAPCLIENT
 #define _SM_NET_LDAPCLIENT
 #include "AnyType.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"

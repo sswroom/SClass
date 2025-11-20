@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/ChartPlotter.h"
 #include "Exporter/GUIPNGExporter.h"
 #include "IO/MemoryStream.h"

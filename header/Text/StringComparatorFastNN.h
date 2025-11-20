@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_STRINGCOMPARATORFASTNN
 #define _SM_TEXT_STRINGCOMPARATORFASTNN
-#include "Data/Comparator.h"
+#include "Data/Comparator.hpp"
 #include "Text/String.h"
 
 namespace Text

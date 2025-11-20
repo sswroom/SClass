@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_STRINGBUILDERUTF32
 #define _SM_TEXT_STRINGBUILDERUTF32
-#include "Text/StringBuilder.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilder.hpp"
+#include "Text/StringBuilderUTFText.hpp"
 
 namespace Text
 {

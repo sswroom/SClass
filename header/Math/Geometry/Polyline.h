@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_POLYLINE
 #define _SM_MATH_GEOMETRY_POLYLINE
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 #include "Math/Geometry/LineString.h"
 
 namespace Math

@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_MAPENV
 #define _SM_MAP_MAPENV
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/RandomOS.h"
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/MapView.h"

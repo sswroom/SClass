@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ConsoleWriter.h"
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)

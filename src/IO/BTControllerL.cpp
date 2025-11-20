@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BTController.h"
 #include "IO/BTUtil.h"
 #include "Sync/SimpleThread.h"

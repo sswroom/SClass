@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRFILESEARCHFORM
 #define _SM_SSWR_AVIREAD_AVIRFILESEARCHFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/TextBinEnc/TextBinEncList.h"
 #include "UI/GUIButton.h"

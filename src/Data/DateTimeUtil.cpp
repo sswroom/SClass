@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/DateTimeUtil.h"
 #include "Data/TimeInstant.h"
 #include "Text/MyString.h"

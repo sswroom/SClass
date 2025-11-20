@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_VECTORLAYER
 #define _SM_MAP_VECTORLAYER
-#include "Data/ArrayListArr.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListArr.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Text/PString.h"
 #include "Text/String.h"

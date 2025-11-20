@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WIFICAPTURER
 #define _SM_NET_WIFICAPTURER
 #include "AnyType.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/WiFiLogFile.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"

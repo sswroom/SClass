@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMACGENFORM
 #define _SM_SSWR_AVIREAD_AVIRMACGENFORM
-#include "Data/BTreeUTF8Map.h"
+#include "Data/BTreeUTF8Map.hpp"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

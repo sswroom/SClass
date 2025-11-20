@@ -1,7 +1,7 @@
 #ifndef _SM_IO_BTDEVLOG
 #define _SM_IO_BTDEVLOG
 #include "Data/ArrayListUInt32.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/BTScanLog.h"
 
 namespace IO

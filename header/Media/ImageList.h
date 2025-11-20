@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_IMAGELIST
 #define _SM_MEDIA_IMAGELIST
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListUInt32.h"
 #include "IO/ParsedObject.h"

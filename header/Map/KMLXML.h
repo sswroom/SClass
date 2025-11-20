@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_KMLXML
 #define _SM_MAP_KMLXML
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMap.hpp"
 #include "Map/GPSTrack.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/VectorLayer.h"

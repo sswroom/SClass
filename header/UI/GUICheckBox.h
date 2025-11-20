@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GUICHECKBOX
 #define _SM_UI_GUICHECKBOX
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/CallbackStorage.h"
 #include "UI/GUIClientControl.h"
 

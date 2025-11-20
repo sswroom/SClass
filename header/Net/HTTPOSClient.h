@@ -1,6 +1,6 @@
 #ifndef _SM_NET_HTTPOSCLIENT
 #define _SM_NET_HTTPOSCLIENT
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "IO/MemoryStream.h"
 #include "IO/Stream.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRWIFICAPTURELITEFORM
 #define _SM_SSWR_AVIREAD_AVIRWIFICAPTURELITEFORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/FileStream.h"
 #include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"

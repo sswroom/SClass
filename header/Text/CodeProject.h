@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_CODEPROJECT
 #define _SM_TEXT_CODEPROJECT
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/ConfigFile.h"
 #include "IO/ParsedObject.h"
 

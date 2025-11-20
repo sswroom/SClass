@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUICALENDAR
 #define _SM_UI_GUICALENDAR
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "UI/GUIClientControl.h"
 

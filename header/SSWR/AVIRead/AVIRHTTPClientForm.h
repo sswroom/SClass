@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHTTPCLIENTFORM
 #define _SM_SSWR_AVIREAD_AVIRHTTPCLIENTFORM
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/MemoryStream.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Thread.h"

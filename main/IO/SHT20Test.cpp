@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/MODBUSRTUMaster.h"
 #include "IO/SerialPort.h"
 #include "IO/Device/SHT20.h"

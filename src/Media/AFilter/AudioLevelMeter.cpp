@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Math/Math_C.h"
 #include "Media/AFilter/AudioLevelMeter.h"
 #include "Sync/MutexUsage.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGPSSIMULATORFORM
 #define _SM_SSWR_AVIREAD_AVIRGPSSIMULATORFORM
-#include "Data/ArrayListA.h"
+#include "Data/ArrayListA.hpp"
 #include "IO/Stream.h"
 #include "Map/TileMapLayer.h"
 #include "Math/GeographicCoordinateSystem.h"

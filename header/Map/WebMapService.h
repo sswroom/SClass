@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_WEBMAPSERVICE
 #define _SM_MAP_WEBMAPSERVICE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Map/DrawMapService.h"
 #include "Net/SSLEngine.h"
 #include "Text/EncodingFactory.h"

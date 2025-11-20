@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/MPEGVideoParser.h"
 #include "Media/Decoder/MP2GDecoder.h"
 #include "Sync/SimpleThread.h"

@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Data/BTreeMap.h"
-#include "Data/FastStringMap.h"
-#include "Data/StringHashMap.h"
-#include "Data/StringMap.h"
+#include "Data/BTreeMap.hpp"
+#include "Data/FastStringMap.hpp"
+#include "Data/StringHashMap.hpp"
+#include "Data/StringMap.hpp"
 #include "Text/MyString.h"
 
 #include <stdio.h>

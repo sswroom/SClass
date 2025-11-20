@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VBOXMANAGER
 #define _SM_IO_VBOXMANAGER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/UUID.h"
 #include "IO/VBoxVMInfo.h"
 #include "Text/String.h"

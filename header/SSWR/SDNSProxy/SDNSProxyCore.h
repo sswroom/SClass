@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_SDNSPROXY_SDNSPROXYCORE
 #define _SM_SSWR_SDNSPROXY_SDNSPROXYCORE
 #include "Core/Core.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"

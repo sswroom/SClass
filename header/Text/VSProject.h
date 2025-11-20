@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_VSPROJECT
 #define _SM_TEXT_VSPROJECT
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/CodeProject.h"
 
 namespace Text

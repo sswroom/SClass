@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/ASN1Names.h"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"

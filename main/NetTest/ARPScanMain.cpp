@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ConsoleWriter.h"
 #include "Net/ARPHandler.h"
 #include "Net/ARPInfo.h"

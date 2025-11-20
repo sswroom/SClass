@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #define _SM_NET_WEBSERVER_WEBSERVICEHANDLER
-#include "Data/FastMap.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastMap.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 
 namespace Net

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"

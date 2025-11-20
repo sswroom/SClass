@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/Compress/LZWEncStream2.h"
 #include "Exporter/GIFExporter.h"
 #include "IO/MemoryStream.h"

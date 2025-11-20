@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Crypto/Hash/CRC32R.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {

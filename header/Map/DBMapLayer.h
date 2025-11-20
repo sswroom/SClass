@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_DBMAPLAYER
 #define _SM_MAP_DBMAPLAYER
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "DB/DBTool.h"
 #include "Map/MapDrawLayer.h"
 

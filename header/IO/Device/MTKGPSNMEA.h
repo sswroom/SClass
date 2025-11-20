@@ -1,6 +1,6 @@
 #ifndef _SM_IO_DEVICE_MTKGPSNMEA
 #define _SM_IO_DEVICE_MTKGPSNMEA
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayList.hpp"
 #include "IO/GPSNMEA.h"
 
 namespace IO

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/PacketExtractorEthernet.h"
 
 UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::EthernetExtractUDP(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> udpSize, Optional<EthernetHeader> etherHdr, Optional<IPv4Header> ipv4Hdr, NN<UDPHeader> udpHdr)

@@ -1,6 +1,6 @@
 #ifndef _SM_DB_PAGEREQUEST
 #define _SM_DB_PAGEREQUEST
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 
 namespace DB
 {

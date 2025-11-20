@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ADDRESSLIST
 #define _SM_NET_ADDRESSLIST
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/SocketUtil.h"
 
 namespace Net

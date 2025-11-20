@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #ifdef _WIN32_WCE
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #endif
 #include <windows.h>
 

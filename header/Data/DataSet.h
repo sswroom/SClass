@@ -1,9 +1,9 @@
 #ifndef _SM_DATA_DATASET
 #define _SM_DATA_DATASET
-#include "Data/ArrayList.h"
-#include "Data/FastMapNN.h"
-#include "Data/Comparator.h"
-#include "Data/SortableArrayListNative.h"
+#include "Data/ArrayList.hpp"
+#include "Data/FastMapNN.hpp"
+#include "Data/Comparator.hpp"
+#include "Data/SortableArrayListNative.hpp"
 #include "Data/TwinItem.h"
 #include "Data/VariItem.h"
 

@@ -2,8 +2,8 @@
 #define _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
 #include "AnyType.h"
 #include "Handles.h"
-#include "Data/FastMapNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastMapNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Media/VideoChecker.h"
 #include "Parser/ParserList.h"
 #include "Sync/Event.h"

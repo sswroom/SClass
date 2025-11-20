@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_MONITORMGR
 #define _SM_MEDIA_MONITORMGR
 #include "Handles.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "Sync/Mutex.h"
 
 namespace Media

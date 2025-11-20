@@ -1,9 +1,9 @@
 #ifndef _SM_IO_BTSCANLOG
 #define _SM_IO_BTSCANLOG
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ByteArray.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/ParsedObject.h"
 #include "Text/String.h"
 

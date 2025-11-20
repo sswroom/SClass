@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_SEARCHINDEXER
 #define _SM_TEXT_SEARCHINDEXER
 #include "Data/ArrayListInt64.h"
-#include "Data/ICaseBTreeUTF8Map.h"
+#include "Data/ICaseBTreeUTF8Map.hpp"
 #include "Text/CString.h"
 #include "Text/TextAnalyzer.h"
 

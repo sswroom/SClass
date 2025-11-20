@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPSERVERHANDLER
 #define _SM_MAP_MAPSERVERHANDLER
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Net/WebServer/WebServiceHandler.h"

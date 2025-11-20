@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/UDPLog.h"
 #include "Net/SocketFactory.h"
 #include "Text/Encoding.h"
@@ -18,7 +18,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 	else if (buffSize >= 10 && dataBuff[0] == 0xff && dataBuff[buffSize - 1] == 0xff)
 	{
 		UInt32 cmdSize = (UInt32)(dataBuff[1] << 8) | dataBuff[2];
-		Int64 termId = Data::ByteTool::GetBCD8(dataBuff[4]) * 100000000LL + Data::ByteTool::GetBCD32(&dataBuff[5]);
+		Int64 termId = ByteTool_GetBCD8(dataBuff[4]) * 100000000LL + ByteTool_GetBCD32(&dataBuff[5]);
 		if (cmdSize <= buffSize)
 		{
 			sb->AppendC(UTF8STRC("SP1000CS: "));
@@ -49,7 +49,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					{
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[14]) + 2000), ByteTool_GetBCD8(dataBuff[13]), ByteTool_GetBCD8(dataBuff[12]), ByteTool_GetBCD8(dataBuff[9]), ByteTool_GetBCD8(dataBuff[10]), ByteTool_GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDateTime(t);
 
 						Double lat;
@@ -72,7 +72,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						Text::SBAppendF64(sb, lat);
 						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
-						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
+						Int32 spdDir = ByteTool_GetBCD8(dataBuff[23]) * 10000 + ByteTool_GetBCD8(dataBuff[24]) * 100 + ByteTool_GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
 						sb->AppendC(UTF8STRC("\r\nSpeed = "));
@@ -209,7 +209,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					{
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[14]) + 2000), ByteTool_GetBCD8(dataBuff[13]), ByteTool_GetBCD8(dataBuff[12]), ByteTool_GetBCD8(dataBuff[9]), ByteTool_GetBCD8(dataBuff[10]), ByteTool_GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDateTime(t);
 
 						Double lat;
@@ -232,7 +232,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						Text::SBAppendF64(sb, lat);
 						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
-						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
+						Int32 spdDir = ByteTool_GetBCD8(dataBuff[23]) * 10000 + ByteTool_GetBCD8(dataBuff[24]) * 100 + ByteTool_GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
 						sb->AppendC(UTF8STRC("\r\nSpeed = "));
@@ -281,7 +281,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					{
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[14]) + 2000), ByteTool_GetBCD8(dataBuff[13]), ByteTool_GetBCD8(dataBuff[12]), ByteTool_GetBCD8(dataBuff[9]), ByteTool_GetBCD8(dataBuff[10]), ByteTool_GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDateTime(t);
 
 						Double lat;
@@ -304,7 +304,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						Text::SBAppendF64(sb, lat);
 						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
-						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
+						Int32 spdDir = ByteTool_GetBCD8(dataBuff[23]) * 10000 + ByteTool_GetBCD8(dataBuff[24]) * 100 + ByteTool_GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
 						sb->AppendC(UTF8STRC("\r\nSpeed = "));
@@ -384,7 +384,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					{
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[14]) + 2000), ByteTool_GetBCD8(dataBuff[13]), ByteTool_GetBCD8(dataBuff[12]), ByteTool_GetBCD8(dataBuff[9]), ByteTool_GetBCD8(dataBuff[10]), ByteTool_GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDateTime(t);
 
 						Double lat;
@@ -407,7 +407,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						Text::SBAppendF64(sb, lat);
 						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
-						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
+						Int32 spdDir = ByteTool_GetBCD8(dataBuff[23]) * 10000 + ByteTool_GetBCD8(dataBuff[24]) * 100 + ByteTool_GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
 						sb->AppendC(UTF8STRC("\r\nSpeed = "));
@@ -474,7 +474,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					{
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[14]) + 2000), ByteTool_GetBCD8(dataBuff[13]), ByteTool_GetBCD8(dataBuff[12]), ByteTool_GetBCD8(dataBuff[9]), ByteTool_GetBCD8(dataBuff[10]), ByteTool_GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDateTime(t);
 
 						Double lat;
@@ -497,7 +497,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						Text::SBAppendF64(sb, lat);
 						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
-						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
+						Int32 spdDir = ByteTool_GetBCD8(dataBuff[23]) * 10000 + ByteTool_GetBCD8(dataBuff[24]) * 100 + ByteTool_GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
 						sb->AppendC(UTF8STRC("\r\nSpeed = "));
@@ -603,7 +603,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 					if (cmdSize == 23)
 					{
 						Data::DateTime dt;
-						dt.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, (Int8)((Int8)dataBuff[15] * 4));
+						dt.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[14]) + 2000), ByteTool_GetBCD8(dataBuff[13]), ByteTool_GetBCD8(dataBuff[12]), ByteTool_GetBCD8(dataBuff[9]), ByteTool_GetBCD8(dataBuff[10]), ByteTool_GetBCD8(dataBuff[11]), 0, (Int8)((Int8)dataBuff[15] * 4));
 						sb->AppendC(UTF8STRC("\r\nDevice Time = "));
 						sb->AppendDateTime(dt);
 						sb->AppendC(UTF8STRC("\r\nBattery Status = 0x"));
@@ -644,7 +644,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[27]) + 2000), ByteTool_GetBCD8(dataBuff[26]), ByteTool_GetBCD8(dataBuff[25]), ByteTool_GetBCD8(dataBuff[22]), ByteTool_GetBCD8(dataBuff[23]), ByteTool_GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDateTime(t);
 						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
@@ -696,7 +696,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[27]) + 2000), ByteTool_GetBCD8(dataBuff[26]), ByteTool_GetBCD8(dataBuff[25]), ByteTool_GetBCD8(dataBuff[22]), ByteTool_GetBCD8(dataBuff[23]), ByteTool_GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDateTime(t);
 						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
@@ -754,7 +754,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						Text::SBAppendF64(sb, lon);
 						sb->AppendC(UTF8STRC("\r\nAltitude = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[52]));
-						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[54]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[55]) * 100 + Data::ByteTool::GetBCD8(dataBuff[56]);
+						Int32 spdDir = ByteTool_GetBCD8(dataBuff[54]) * 10000 + ByteTool_GetBCD8(dataBuff[55]) * 100 + ByteTool_GetBCD8(dataBuff[56]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
 						sb->AppendC(UTF8STRC("\r\nSpeed = "));
@@ -788,7 +788,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
 						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
-						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
+						t.SetValue((UInt16)(ByteTool_GetBCD8(dataBuff[27]) + 2000), ByteTool_GetBCD8(dataBuff[26]), ByteTool_GetBCD8(dataBuff[25]), ByteTool_GetBCD8(dataBuff[22]), ByteTool_GetBCD8(dataBuff[23]), ByteTool_GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDateTime(t);
 						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
@@ -836,7 +836,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuild
 	else if (buffSize >= 10 && dataBuff[0] == 0xfe && dataBuff[buffSize - 1] == 0xfe)
 	{
 		UInt32 cmdSize = (UInt32)(dataBuff[1] << 8) | dataBuff[2];
-		Int64 termId = Data::ByteTool::GetBCD8(dataBuff[4]) * 100000000LL + Data::ByteTool::GetBCD32(&dataBuff[5]);
+		Int64 termId = ByteTool_GetBCD8(dataBuff[4]) * 100000000LL + ByteTool_GetBCD32(&dataBuff[5]);
 		if (cmdSize <= buffSize)
 		{
 			sb->AppendC(UTF8STRC("SP1000SC: "));

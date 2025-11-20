@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/SPackageFile.h"
 #include "IO/StmData/MemoryDataCopy.h"

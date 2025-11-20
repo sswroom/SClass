@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPSEARCHMANAGER
 #define _SM_MAP_MAPSEARCHMANAGER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListICaseStringNN.h"
 #include "Map/MapSearchLayer.h"
 #include "Text/CString.h"

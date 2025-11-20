@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32R.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ProtoHdlr/ProtoMDataLSHandler.h"
 
 IO::ProtoHdlr::ProtoMDataLSHandler::ProtoMDataLSHandler(NN<IO::ProtocolHandler::DataListener> listener)

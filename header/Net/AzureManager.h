@@ -1,7 +1,7 @@
 #ifndef _SM_NET_AZUREMANAGER
 #define _SM_NET_AZUREMANAGER
 #include "Crypto/Cert/X509Key.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/SSLEngine.h"
 
 namespace Net

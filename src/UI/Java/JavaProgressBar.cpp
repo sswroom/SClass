@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Text/CSSBuilder.h"
 #include "UI/Java/JavaProgressBar.h"
 

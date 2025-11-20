@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_AUDIOCONCATSOURCE
 #define _SM_MEDIA_AUDIOCONCATSOURCE
 #include "Media/AudioSource.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 
 namespace Media
 {

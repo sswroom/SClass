@@ -1,8 +1,8 @@
 #ifndef _SM_NET_IPSCANDETECTOR
 #define _SM_NET_IPSCANDETECTOR
 #include "AnyType.h"
-#include "Data/FastMap.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

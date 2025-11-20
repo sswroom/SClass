@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRYTOOL
 #define _SM_MATH_GEOMETRYTOOL
-#include "Data/ArrayListA.h"
+#include "Data/ArrayListA.hpp"
 #include "Math/Coord2D.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Vector2D.h"

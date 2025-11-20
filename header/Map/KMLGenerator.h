@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_KMLGENERATOR
 #define _SM_MAP_KMLGENERATOR
 #include "IO/Stream.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 
 namespace Map
 {

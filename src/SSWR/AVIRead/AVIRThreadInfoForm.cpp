@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Manage/DasmX86_32.h"
 #include "Manage/DasmX86_64.h"
 #include "Manage/DasmARM64.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_TILEMAP
 #define _SM_MAP_TILEMAP
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Math/CoordinateSystem.h"
 #include "Math/Size2D.h"
 #include "Math/Geometry/Vector2D.h"

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/ICaseBTreeUTF8Map.h"
+#include "Data/ICaseBTreeUTF8Map.hpp"
 #include "Text/SearchIndexer.h"
 
 Text::SearchIndexer::SearchIndexer(NN<Text::TextAnalyzer> ta)

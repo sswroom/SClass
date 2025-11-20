@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DDCREADER
 #define _SM_MEDIA_DDCREADER
 #include "Handles.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 
 namespace Media
 {

@@ -1,8 +1,8 @@
 // link with Psapi.lib
 #ifndef _SM_MANAGE_PROCESS
 #define _SM_MANAGE_PROCESS
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Manage/HandleType.h"
 #include "Manage/MemoryReader.h"
 #include "Manage/ModuleInfo.h"

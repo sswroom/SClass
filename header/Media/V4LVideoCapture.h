@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_V4LVIDEOCAPTURE
 #define _SM_MEDIA_V4LVIDEOCAPTURE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Media/VideoCapturer.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"

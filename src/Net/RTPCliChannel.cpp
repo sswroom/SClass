@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Console.h"
 #include "Net/RTPPayloadHandler.h"
 #include "Net/RTPASource.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WELLKNOWNHANDLER
 #define _SM_NET_WEBSERVER_WELLKNOWNHANDLER
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/WebServer/WebServiceHandler.h"
 
 namespace Net

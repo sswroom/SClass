@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/ARPInfo.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/MACInfo.h"

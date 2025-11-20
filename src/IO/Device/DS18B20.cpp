@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Device/DS18B20.h"
 #include "Sync/ThreadUtil.h"
 

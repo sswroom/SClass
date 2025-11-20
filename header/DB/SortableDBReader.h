@@ -1,6 +1,6 @@
 #ifndef _SM_DB_SORTABLEDBREADER
 #define _SM_DB_SORTABLEDBREADER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "Text/String.h"

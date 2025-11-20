@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SMBIOS
 #define _SM_IO_SMBIOS
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "Text/StringBuilderUTF8.h"
 

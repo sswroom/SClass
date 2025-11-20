@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_DOC_DOCITEM
 #define _SM_TEXT_DOC_DOCITEM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ParsedObject.h"
 
 namespace Text

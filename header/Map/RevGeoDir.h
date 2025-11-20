@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_REVGEODIR
 #define _SM_MAP_REVGEODIR
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/Writer.h"
 #include "Map/ReverseGeocoder.h"
 #include "Map/RevGeoCfg.h"

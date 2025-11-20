@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_WEBFEATURESERVICE
 #define _SM_MAP_WEBFEATURESERVICE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Math/RectAreaDbl.h"
 #include "Net/SSLEngine.h"

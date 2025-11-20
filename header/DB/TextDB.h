@@ -1,7 +1,7 @@
 #ifndef _SM_DB_TEXTDB
 #define _SM_DB_TEXTDB
-#include "Data/ArrayListArr.h"
-#include "Data/StringMap.h"
+#include "Data/ArrayListArr.hpp"
+#include "Data/StringMap.hpp"
 #include "DB/ReadingDB.h"
 #include "Text/String.h"
 

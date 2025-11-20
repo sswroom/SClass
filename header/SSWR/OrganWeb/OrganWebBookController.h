@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_ORGANWEB_ORGANWEBBOOKCONTROLLER
 #define _SM_SSWR_ORGANWEB_ORGANWEBBOOKCONTROLLER
-#include "Data/Comparator.h"
+#include "Data/Comparator.hpp"
 #include "SSWR/OrganWeb/OrganWebController.h"
 
 namespace SSWR

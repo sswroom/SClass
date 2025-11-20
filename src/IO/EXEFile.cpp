@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/EXEFile.h"
 #include "IO/FileStream.h"
 #include "Parser/FileParser/FNTParser.h"

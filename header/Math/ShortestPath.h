@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_SHORTESTPATH
 #define _SM_MATH_SHORTESTPATH
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/Comparable.h"
 
 namespace Math

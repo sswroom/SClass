@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "DB/TableDef.h"
 #include "IO/Path.h"
 #include "IO/StmData/BufferedStreamData.h"

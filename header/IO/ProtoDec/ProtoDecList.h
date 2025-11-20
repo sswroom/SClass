@@ -1,6 +1,6 @@
 #ifndef _SM_IO_PROTODEC_PROTODECLIST
 #define _SM_IO_PROTODEC_PROTODECLIST
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ProtoDec/ProtocolDecoder.h"
 
 namespace IO

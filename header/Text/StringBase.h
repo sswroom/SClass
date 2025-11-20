@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_STRINGBASE
 #define _SM_TEXT_STRINGBASE
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/ByteArray.h"
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"

@@ -3,7 +3,7 @@
 #include "AnyType.h"
 #include "Media/OCREngine.h"
 #include "Media/OpenCV/OCVNumPlateFinder.h"
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Text/String.h"
 
 namespace Media

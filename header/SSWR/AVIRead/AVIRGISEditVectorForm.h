@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISEDITVECTORFORM
 #define _SM_SSWR_AVIREAD_AVIRGISEDITVECTORFORM
-#include "Data/ArrayListA.h"
+#include "Data/ArrayListA.hpp"
 #include "Map/VectorLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRMapNavigator.h"

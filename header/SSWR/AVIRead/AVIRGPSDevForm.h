@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGPSDEVFORM
 #define _SM_SSWR_AVIREAD_AVIRGPSDEVFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ProtoHdlr/ProtoGPSDevInfoHandler.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

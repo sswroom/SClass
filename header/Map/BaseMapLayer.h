@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_BASEMAPLAYER
 #define _SM_MAP_BASEMAPLAYER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"

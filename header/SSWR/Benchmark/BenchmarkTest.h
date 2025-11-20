@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_BENCHMARK_BENCHMARKTEST
 #define _SM_SSWR_BENCHMARK_BENCHMARKTEST
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 
 namespace SSWR
 {

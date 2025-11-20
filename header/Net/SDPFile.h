@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SDPFILE
 #define _SM_NET_SDPFILE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/Stream.h"

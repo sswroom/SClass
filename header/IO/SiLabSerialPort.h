@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SILABSERIALPORT
 #define _SM_IO_SILABSERIALPORT
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "IO/Stream.h"

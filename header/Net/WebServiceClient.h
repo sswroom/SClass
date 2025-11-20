@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVICECLIENT
 #define _SM_NET_WEBSERVICECLIENT
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Net/SocketFactory.h"
 
 namespace Net

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Math/Math_C.h"
 
 #define DIFFRATIO 0.0000001

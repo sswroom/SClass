@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORCORE
 #define _SM_SSWR_SMONITOR_SMONITORCORE
-#include "Data/ArrayListNN.h"
-#include "Data/FastMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastMapNN.hpp"
 #include "IO/MemoryStream.h"
 #include "Media/DrawEngine.h"
 #include "Sync/RWMutex.h"

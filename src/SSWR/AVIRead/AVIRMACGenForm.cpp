@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/RandomMT19937.h"
-#include "Data/Sort/ArtificialQuickSortFunc.h"
+#include "Data/Sort/ArtificialQuickSortFunc.hpp"
 #include "Net/ConnectionInfo.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "Text/MyString.h"

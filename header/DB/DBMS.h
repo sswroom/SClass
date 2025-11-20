@@ -1,9 +1,9 @@
 #ifndef _SM_DB_DBMS
 #define _SM_DB_DBMS
 #include "Crypto/Hash/SHA1.h"
-#include "Data/FastMapNN.h"
-#include "Data/FastStringMapNN.h"
-#include "Data/StringMapNN.h"
+#include "Data/FastMapNN.hpp"
+#include "Data/FastStringMapNN.hpp"
+#include "Data/StringMapNN.hpp"
 #include "DB/DBReader.h"
 #include "IO/LogTool.h"
 #include "Net/SocketUtil.h"

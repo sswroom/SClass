@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListInt32.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/UUID.h"
 #include "IO/SMBIOS.h"
 #include "IO/FileAnalyse/SMBIOSFileAnalyse.h"

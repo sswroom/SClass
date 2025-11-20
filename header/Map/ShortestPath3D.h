@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_SHORTESTPATH3D
 #define _SM_MAP_SHORTESTPATH3D
-#include "Data/ArrayListT.h"
-#include "Data/DataArray.h"
+#include "Data/ArrayListT.hpp"
+#include "Data/DataArray.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Math/Geometry/LineString.h"
 #include "Sync/Mutex.h"

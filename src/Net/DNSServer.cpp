@@ -1,7 +1,7 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/DNSServer.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {

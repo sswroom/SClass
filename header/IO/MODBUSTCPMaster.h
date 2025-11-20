@@ -1,7 +1,7 @@
 #ifndef _SM_IO_MODBUSTCPMASTER
 #define _SM_IO_MODBUSTCPMASTER
 #include "AnyType.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/MODBUSMaster.h"
 #include "IO/Stream.h"
 #include "Manage/HiResClock.h"

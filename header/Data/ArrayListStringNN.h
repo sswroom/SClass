@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_ARRAYLISTSTRINGNN
 #define _SM_DATA_ARRAYLISTSTRINGNN
-#include "Data/FastStringMap.h"
-#include "Data/SortableArrayListNN.h"
+#include "Data/FastStringMap.hpp"
+#include "Data/SortableArrayListNN.hpp"
 #include "Text/String.h"
 
 namespace Data

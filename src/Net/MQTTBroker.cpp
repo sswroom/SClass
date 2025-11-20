@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/MQTTBroker.h"
 #include "Net/MQTTUtil.h"
 #include "Sync/Interlocked.h"

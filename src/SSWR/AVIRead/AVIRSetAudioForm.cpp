@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/AudioDevice.h"
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(AnyType userObj)
 {

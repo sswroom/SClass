@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SYSTEMINFOLOG
 #define _SM_IO_SYSTEMINFOLOG
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ParsedObject.h"
 
 namespace IO

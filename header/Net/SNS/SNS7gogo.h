@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNS_SNS7GOGO
 #define _SM_NET_SNS_SNS7GOGO
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Net/SNS/SNSControl.h"

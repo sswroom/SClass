@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/WirelessLAN.h"
 #include "Net/WLANWindowsCore.h"
 #include "Net/WLANWindowsInterface.h"

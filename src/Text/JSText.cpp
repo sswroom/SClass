@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Text/JSText.h"
 #include "Text/MyStringW.h"
 

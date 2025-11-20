@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_PDFDOCUMENT
 #define _SM_MEDIA_PDFDOCUMENT
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/ParsedObject.h"
 #include "Media/ImageList.h"
 #include "Media/PDFObject.h"

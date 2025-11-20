@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANBOOKFORM
 #define _SM_SSWR_ORGANMGR_ORGANBOOKFORM
 
-#include "Data/SortableArrayList.h"
+#include "Data/SortableArrayList.hpp"
 #include "SSWR/OrganMgr/OrganEnv.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIDateTimePicker.h"

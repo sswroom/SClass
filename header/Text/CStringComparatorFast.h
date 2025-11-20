@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_CSTRINGCOMPARATORFAST
 #define _SM_TEXT_CSTRINGCOMPARATORFAST
-#include "Data/Comparator.h"
+#include "Data/Comparator.hpp"
 #include "Text/CString.h"
 
 namespace Text

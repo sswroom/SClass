@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/Sort/ArtificialQuickSortFunc.h"
+#include "Data/Sort/ArtificialQuickSortFunc.hpp"
 #include "Net/MACInfo.h"
 #include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/WebServer/CapturerWebHandler.h"

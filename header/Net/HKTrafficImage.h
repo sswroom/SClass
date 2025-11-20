@@ -1,7 +1,7 @@
 #ifndef _SM_NET_HKTRAFFICIMAGE
 #define _SM_NET_HKTRAFFICIMAGE
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Text/EncodingFactory.h"
 
 namespace Net

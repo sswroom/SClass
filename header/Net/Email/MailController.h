@@ -1,6 +1,6 @@
 #ifndef _SM_NET_EMAIL_MAILCONTROLLER
 #define _SM_NET_EMAIL_MAILCONTROLLER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "Text/CString.h"
 

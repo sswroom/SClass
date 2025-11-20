@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BTScanLog.h"
 
 void __stdcall IO::BTScanLog::FreeDev(NN<DevEntry> dev)

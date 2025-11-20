@@ -11,14 +11,14 @@ namespace Data
 
 	public:
 		UUID();
-		UUID(const UInt8 *buff);
+		UUID(UnsafeArray<const UInt8> buff);
 		UUID(Text::CStringNN str);
 		~UUID();
 
 		void SetValue(UnsafeArray<const UInt8> buff);
 		void SetValue(NN<UUID> uuid);
 		void SetValue(Text::CStringNN str);
-		UOSInt GetValue(UInt8 *buff) const;
+		UOSInt GetValue(UnsafeArray<UInt8> buff) const;
 		OSInt CompareTo(NN<UUID> uuid) const;
 
 		UInt32 GetTimeLow() const;
@@ -27,7 +27,7 @@ namespace Data
 		UInt8 GetClkSeqHiRes() const;
 		UInt8 GetClkSeqLow() const;
 		UInt64 GetNode() const;
-		const UInt8 *GetBytes() const;
+		UnsafeArray<const UInt8> GetBytes() const;
 
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff) const;

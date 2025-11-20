@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_OPENCV_OCVFRAME
 #define _SM_MEDIA_OPENCV_OCVFRAME
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Media/StaticImage.h"
 
 namespace Media

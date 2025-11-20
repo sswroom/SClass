@@ -2,7 +2,7 @@
 #define _SM_NET_MYSQLSERVER
 #include "Crypto/Hash/SHA1.h"
 #include "Data/RandomMT19937.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringUTF8Map.hpp"
 #include "DB/DBMS.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClientMgr.h"

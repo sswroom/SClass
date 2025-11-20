@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SSHCLIENT
 #define _SM_NET_SSHCLIENT
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/SSHConn.h"
 #include "Net/SSHForwarder.h"
 #include "Sync/Mutex.h"

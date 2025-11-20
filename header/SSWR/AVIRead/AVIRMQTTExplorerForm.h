@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTEXPLORERFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTEXPLORERFORM
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

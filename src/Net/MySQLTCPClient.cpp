@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/DateTime.h"
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"

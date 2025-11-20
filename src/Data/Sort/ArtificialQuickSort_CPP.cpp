@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/Comparable.h"
-#include "Data/Sort/InsertionSort.h"
+#include "Data/Sort/InsertionSort_C.h"
 #include "Text/MyString.h"
 
 extern "C" void ArtificialQuickSort_PreSortInt32(Int32 *arr, OSInt left, OSInt right)

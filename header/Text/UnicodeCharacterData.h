@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_UNICODECHARACTERDATA
 #define _SM_TEXT_UNICODECHARACTERDATA
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/PackageFile.h"
 #include "IO/Stream.h"
 

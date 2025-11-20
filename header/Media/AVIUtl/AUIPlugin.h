@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AVIUTL_AUIPLUGIN
 #define _SM_MEDIA_AVIUTL_AUIPLUGIN
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/FileSelector.h"
 #include "Media/AudioFormat.h"
 #include "Media/FrameInfo.h"

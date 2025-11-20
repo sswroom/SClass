@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_ANDROIDVIDEOCAPTURE
 #define _SM_MEDIA_ANDROIDVIDEOCAPTURE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Media/VideoCapturer.h"
 #include "Text/StringBuilderUTF8.h"
 
