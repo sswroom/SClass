@@ -31,14 +31,12 @@ namespace Data
 	};
 
 
-	template <class T> StringMapNN<T>::StringMapNN() : ArrayCmpMapNN<Optional<Text::String>, T>()
+	template <class T> StringMapNN<T>::StringMapNN() : ArrayCmpMapNN<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
 	{
-		NEW_CLASS(this->keys, Data::ArrayListString());
 	}
 
-	template <class T> StringMapNN<T>::StringMapNN(NN<const StringMapNN<T>> map) : ArrayCmpMapNN<Optional<Text::String>, T>()
+	template <class T> StringMapNN<T>::StringMapNN(NN<const StringMapNN<T>> map) : ArrayCmpMapNN<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
 	{
-		NEW_CLASS(this->keys, Data::ArrayListString());
 		UOSInt i = 0;
 		UOSInt j = map->keys->GetCount();
 		while (i < j)
@@ -58,7 +56,7 @@ namespace Data
 			if (this->keys->GetItem(i).SetTo(s))
 				s->Release();
 		}
-		DEL_CLASS(this->keys);
+		this->keys.Delete();
 	}
 
 	template <class T> Optional<T> StringMapNN<T>::Put(Optional<Text::String> key, NN<T> val)
@@ -100,7 +98,7 @@ namespace Data
 	template <class T> Optional<T> StringMapNN<T>::PutC(Text::CStringNN key, NN<T> val)
 	{
 		OSInt i;
-		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
+		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
 			Optional<T> oldVal = this->vals.GetItem((UOSInt)i);
@@ -146,7 +144,7 @@ namespace Data
 	template <class T> Optional<T> StringMapNN<T>::GetC(Text::CStringNN key) const
 	{
 		OSInt i;
-		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
+		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
 			return this->vals.GetItem((UOSInt)i);
@@ -195,7 +193,7 @@ namespace Data
 	{
 		NN<Text::String> s;
 		OSInt i;
-		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
+		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
 			if (this->keys->RemoveAt((UOSInt)i).SetTo(s))

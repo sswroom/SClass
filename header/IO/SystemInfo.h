@@ -61,7 +61,7 @@ namespace IO
 		} ChassisType;
 	public:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		SystemInfo();
 		~SystemInfo();

@@ -9,10 +9,10 @@ namespace Data
 	template <class T, class V> class ArrayCmpMapNN : public ListMapNN<T, V>
 	{
 	protected:
-		Data::SortableArrayList<T> *keys;
+		NN<Data::SortableArrayList<T>> keys;
 		Data::ArrayListNN<V> vals;
 
-		ArrayCmpMapNN();
+		ArrayCmpMapNN(NN<Data::SortableArrayList<T>> keys);
 	public:
 		virtual ~ArrayCmpMapNN();
 
@@ -30,14 +30,14 @@ namespace Data
 		virtual Optional<V> GetItem(UOSInt index) const;
 		virtual NN<V> GetItemNoCheck(UOSInt index) const;
 		virtual Bool IsEmpty() const;
-		virtual NN<V> *ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<NN<V>> ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
 
-	template <class T, class V> ArrayCmpMapNN<T, V>::ArrayCmpMapNN() : ListMapNN<T, V>()
+	template <class T, class V> ArrayCmpMapNN<T, V>::ArrayCmpMapNN(NN<Data::SortableArrayList<T>> keys) : ListMapNN<T, V>()
 	{
-		this->keys = 0;
+		this->keys = keys;
 	}
 
 	template <class T, class V> ArrayCmpMapNN<T, V>::~ArrayCmpMapNN()
@@ -120,7 +120,7 @@ namespace Data
 
 	template <class T, class V> NN<Data::SortableArrayList<T>> ArrayCmpMapNN<T, V>::GetKeys() const
 	{
-		return NN<Data::SortableArrayList<T>>::FromPtr(this->keys);
+		return this->keys;
 	}
 
 	template <class T, class V> UOSInt ArrayCmpMapNN<T, V>::GetCount() const
@@ -143,12 +143,12 @@ namespace Data
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> NN<V> *ArrayCmpMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<NN<V>> ArrayCmpMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
 		UnsafeArray<NN<V>> arr = this->vals.GetArr(cnt);
-		NN<V> *outArr = MemAlloc(NN<V>, cnt);
-		MemCopyNO(outArr, arr.Ptr(), sizeof(NN<V>) * cnt);
+		UnsafeArray<NN<V>> outArr = MemAllocArr(NN<V>, cnt);
+		MemCopyNO(outArr.Ptr(), arr.Ptr(), sizeof(NN<V>) * cnt);
 		objCnt.Set(cnt);
 		return outArr;
 	}

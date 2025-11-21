@@ -19,9 +19,9 @@ namespace IO
 		~StringLogger();
 
 		Bool IsModified();
-		void ReadLogs(IO::Reader *reader);
+		void ReadLogs(NN<IO::Reader> reader);
 		void LogStr(UnsafeArray<const UTF8Char> s, UOSInt len);
-		void WriteLogs(IO::Writer *writer);
+		void WriteLogs(NN<IO::Writer> writer);
 	};
 }
 #endif

@@ -12,12 +12,12 @@ Text::SearchIndexer::SearchIndexer(NN<Text::TextAnalyzer> ta)
 Text::SearchIndexer::~SearchIndexer()
 {
 	UOSInt cnt;
-	Data::ArrayListInt64**vals = this->strIndex.ToArray(cnt);
+	UnsafeArray<Data::ArrayListInt64*> vals = this->strIndex.ToArray(cnt);
 	while (cnt-- > 0)
 	{
 		DEL_CLASS(vals[cnt]);
 	}
-	MemFree(vals);
+	MemFreeArr(vals);
 }
 
 void Text::SearchIndexer::IndexString(UnsafeArray<const UTF8Char> str, Int64 key)

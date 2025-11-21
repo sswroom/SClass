@@ -1187,7 +1187,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Reader reader(fs);
-			this->uaLog.ReadLogs(&reader);
+			this->uaLog.ReadLogs(reader);
 		}
 
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
@@ -1195,7 +1195,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Reader reader(fs);
-			this->refererLog.ReadLogs(&reader);
+			this->refererLog.ReadLogs(reader);
 		}
 	}
 	if (!IO::IniFile::ParseProgConfig(0).SetTo(cfg))
@@ -2579,7 +2579,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UserAgent.txt"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);
-		this->uaLog.WriteLogs(&writer);
+		this->uaLog.WriteLogs(writer);
 	}
 }
 
@@ -2606,6 +2606,6 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererStore()
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Referer.txt"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);
-		this->refererLog.WriteLogs(&writer);
+		this->refererLog.WriteLogs(writer);
 	}
 }

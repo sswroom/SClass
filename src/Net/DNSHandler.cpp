@@ -10,7 +10,7 @@ Net::DNSHandler::~DNSHandler()
 {
 	UOSInt i;
 	UOSInt j;
-	DomainStatus **arr = this->reqv4Map.ToArray(j);
+	UnsafeArray<DomainStatus*> arr = this->reqv4Map.ToArray(j);
 	i = 0;
 	while (i < j)
 	{
@@ -28,7 +28,7 @@ Net::DNSHandler::~DNSHandler()
 		DEL_CLASS(arr[i]);
 		i++;
 	}
-	MemFree(arr);
+	MemFreeArr(arr);
 
 	arr = this->reqv6Map.ToArray(j);
 	i = 0;
@@ -45,7 +45,7 @@ Net::DNSHandler::~DNSHandler()
 		DEL_CLASS(arr[i]);
 		i++;
 	}
-	MemFree(arr);
+	MemFreeArr(arr);
 }
 
 Bool Net::DNSHandler::GetByDomainNamev4(NN<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)

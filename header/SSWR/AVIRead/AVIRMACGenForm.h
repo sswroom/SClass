@@ -29,11 +29,11 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboAdapter;
 			NN<UI::GUIButton> btnAdapterSet;
 
-			Data::BTreeUTF8Map<Data::ArrayListNN<Net::MACInfo::MACEntry>*> macMap;
+			Data::BTreeUTF8Map<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>> macMap;
 
 			static void __stdcall OnGenerateClicked(AnyType userObj);
 			static void __stdcall OnAdapterSetClicked(AnyType userObj);
-			static OSInt __stdcall ListCompare(Data::ArrayListNN<Net::MACInfo::MACEntry> *list1, Data::ArrayListNN<Net::MACInfo::MACEntry> *list2);
+			static OSInt __stdcall ListCompare(Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list1, Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list2);
 		public:
 			AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACGenForm();

@@ -27,7 +27,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> d
 	Data::ArrayList<UInt32> devIdList;
 	UOSInt ret = 0;
 	UOSInt i = 0;
-	UOSInt j = this->clsData->v4lMgr->GetDeviceList(&devIdList);
+	UOSInt j = this->clsData->v4lMgr->GetDeviceList(devIdList);
 	while (i < j)
 	{
 		devInfo = MemAllocNN(DeviceInfo);

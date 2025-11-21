@@ -8,9 +8,9 @@ namespace IO
 	class UnixConfigFile
 	{
 	public:
-		static IO::ConfigFile *Parse(Text::CStringNN fileName);
+		static Optional<IO::ConfigFile> Parse(Text::CStringNN fileName);
 	private:
-		static IO::ConfigFile *ParseReader(NN<Text::UTF8Reader> reader);
+		static Optional<IO::ConfigFile> ParseReader(NN<Text::UTF8Reader> reader);
 	};
 }
 #endif

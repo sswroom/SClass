@@ -15,8 +15,8 @@ namespace IO
 	private:
 		NN<IO::Stream> stm;
 		Bool needRelease;
-		IO::FileStream *writeLog;
-		IO::FileStream *readLog;
+		Optional<IO::FileStream> writeLog;
+		Optional<IO::FileStream> readLog;
 	public:
 		StreamLogger(NN<IO::Stream> srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath);
 		virtual ~StreamLogger();

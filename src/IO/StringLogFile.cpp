@@ -23,14 +23,14 @@ UOSInt IO::StringLogFile::GetCount(IO::LogHandler::LogLevel logLevel) const
 	return this->items.GetCount();
 }
 
-Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
+Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, OutParam<Data::Timestamp> ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
 {
 	NN<LogItem> item;
 	if (!this->items.GetItem(index).SetTo(item))
 	{
 		return false;
 	}
-	*ts = item->ts;
+	ts.Set(item->ts);
 	NN<Text::String> s;
 	if (item->message.SetTo(s))
 	{

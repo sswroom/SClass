@@ -1,3 +1,7 @@
+#ifndef _SM_MEDIA_FOGENGINE
+#define _SM_MEDIA_FOGENGINE
+#include "Media/DrawEngine.h"
+
 namespace Media
 {
 	class FogPen : public DrawPen
@@ -11,6 +15,18 @@ namespace Media
 		FogPen(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern);
 		~FogPen();
 
+	};
+
+	class FogEngine : public DrawEngine
+	{
+	public:
+		FogEngine();
+		virtual ~FogEngine();
+
+		virtual Optional<DrawImage> CreateImage32(Int32 width, Int32 height);
+		virtual Optional<DrawImage> LoadImageA(Char *fileName);
+		virtual Optional<DrawImage> LoadImageW(WChar *fileName);
+		virtual Bool DeleteImage(NN<DrawImage> img);
 	};
 
 	class FogImage : public DrawImage
@@ -51,16 +67,5 @@ namespace Media
 		
 		virtual Int32 SavePng(IO::SeekableStream *stm);
 	};
-
-	class FogEngine : public DrawEngine
-	{
-	public:
-		FogEngine();
-		virtual ~FogEngine();
-
-		virtual Optional<DrawImage> CreateImage32(Int32 width, Int32 height);
-		virtual Optional<DrawImage> LoadImageA(Char *fileName);
-		virtual Optional<DrawImage> LoadImageW(WChar *fileName);
-		virtual Bool DeleteImage(NN<DrawImage> img);
-	};
-};
+}
+#endif

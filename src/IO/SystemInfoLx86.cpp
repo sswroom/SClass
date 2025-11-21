@@ -37,7 +37,7 @@ Bool SystemInfo_ReadFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> s
 
 IO::SystemInfo::SystemInfo()
 {
-	ClassData *info = MemAlloc(ClassData, 1);
+	NN<ClassData> info = MemAllocNN(ClassData);
 	info->platformName = 0;
 	info->platformSN = 0;
 
@@ -79,7 +79,7 @@ IO::SystemInfo::~SystemInfo()
 {
 	SDEL_STRING(this->clsData->platformName);
 	SDEL_STRING(this->clsData->platformSN);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
@@ -220,10 +220,10 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 			{
 				mem = memList.GetItemNoCheck(i);
 				ram = MemAllocNN(RAMInfo);
-				ram->deviceLocator = Text::String::NewOrNullSlow((const UTF8Char*)mem->deviceLocator);
-				ram->manufacturer = Text::String::NewOrNullSlow((const UTF8Char*)mem->manufacturer);
-				ram->partNo = Text::String::NewOrNullSlow((const UTF8Char*)mem->partNo);
-				ram->sn = Text::String::NewOrNullSlow((const UTF8Char*)mem->sn);
+				ram->deviceLocator = Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->deviceLocator));
+				ram->manufacturer = Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->manufacturer));
+				ram->partNo = Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->partNo));
+				ram->sn = Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->sn));
 				ram->defSpdMHz = mem->maxSpeedMTs;
 				ram->confSpdMHz = mem->confSpeedMTs;
 				ram->dataWidth = mem->dataWidthBits;

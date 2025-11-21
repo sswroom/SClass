@@ -17,8 +17,8 @@ namespace Media
 			~OCVFrame();
 
 			void *GetFrame();
-			OCVFrame *CropToNew(Math::RectArea<UOSInt> *area);
-			void ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, UOSInt nPoints, UInt8 color);
+			NN<OCVFrame> CropToNew(Math::RectArea<UOSInt> area);
+			void ClearOutsidePolygon(UnsafeArray<Math::Coord2D<UOSInt>> poly, UOSInt nPoints, UInt8 color);
 			UOSInt GetWidth() const;
 			UOSInt GetHeight() const;
 			Math::Size2D<UOSInt> GetSize() const;
