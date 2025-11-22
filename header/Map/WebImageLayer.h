@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_WEBIMAGELAYER
 #define _SM_MAP_WEBIMAGELAYER
 #include "AnyType.h"
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Data/CallbackStorage.h"
 #include "Data/Comparable.h"
 #include "Map/MapDrawLayer.h"

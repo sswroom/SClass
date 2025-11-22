@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Encrypt/Base64.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Console.h"
 #include "Media/H264Parser.h"
 #include "Net/RTPH264Handler.h"

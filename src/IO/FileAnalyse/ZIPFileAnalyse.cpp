@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileAnalyse/ZIPFileAnalyse.h"
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"

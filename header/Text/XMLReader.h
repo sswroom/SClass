@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_XMLREADER
 #define _SM_TEXT_XMLREADER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "IO/Stream.h"
 #include "Text/Encoding.h"

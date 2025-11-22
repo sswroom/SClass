@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MULTIREVERSEGEOCODER
 #define _SM_MAP_MULTIREVERSEGEOCODER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/Writer.h"
 #include "Sync/Mutex.h"
 #include "Map/ReverseGeocoder.h"

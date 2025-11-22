@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/RAWMonitor.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "Net/PacketAnalyzer.h"

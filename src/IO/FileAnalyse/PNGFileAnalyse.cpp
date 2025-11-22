@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/Compress/Inflater.h"
 #include "IO/MemoryStream.h"
 #include "IO/FileAnalyse/PNGFileAnalyse.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKSPEEDLIMIT
 #define _SM_MAP_HKSPEEDLIMIT
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Map/HKRoadNetwork2.h"
 #include "Math/Geometry/Vector2D.h"
 

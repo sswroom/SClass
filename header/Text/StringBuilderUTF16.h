@@ -2,8 +2,8 @@
 #define _SM_TEXT_STRINGBUILDERUTF16
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "Text/StringBuilder.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilder.hpp"
+#include "Text/StringBuilderUTFText.hpp"
 
 namespace Text
 {

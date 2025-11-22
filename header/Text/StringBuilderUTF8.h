@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_STRINGBUILDERUTF8
 #define _SM_TEXT_STRINGBUILDERUTF8
 #include "MyMemory.h"
-#include "Data/ArrayIterator.h"
+#include "Data/ArrayIterator.hpp"
 #include "Data/ByteArray.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"

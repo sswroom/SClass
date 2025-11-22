@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #if defined(CPU_X86_64)
 #include <nmmintrin.h>
 #endif

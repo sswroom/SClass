@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "SIMD.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 extern "C" void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable)
 {

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKPARKINGVACANCY
 #define _SM_MAP_HKPARKINGVACANCY
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"

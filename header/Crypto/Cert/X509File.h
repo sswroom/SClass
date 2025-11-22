@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_X509FILE
 #define _SM_CRYPTO_CERT_X509FILE
 #include "Crypto/Hash/HashAlgorithm.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Net/ASN1Data.h"
 #include "Text/CString.h"

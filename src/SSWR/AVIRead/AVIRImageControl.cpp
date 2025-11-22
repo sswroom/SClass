@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringUTF8Map.hpp"
 #include "Exporter/GUIJPGExporter.h"
 #include "Exporter/GUIPNGExporter.h"
 #include "Exporter/TIFFExporter.h"

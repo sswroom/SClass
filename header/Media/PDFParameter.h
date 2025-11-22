@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_PDFPARAMETER
 #define _SM_MEDIA_PDFPARAMETER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/String.h"
 
 namespace Media

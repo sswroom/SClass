@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTSUBSCRIBEFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTSUBSCRIBEFORM
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

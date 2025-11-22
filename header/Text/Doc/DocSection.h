@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_DOC_DOCSECTION
 #define _SM_TEXT_DOC_DOCSECTION
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Media/PaperSize.h"
 #include "Text/Doc/DocItem.h"
 

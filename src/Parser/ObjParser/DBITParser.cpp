@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "DB/ReadingDB.h"
 #include "Map/GPSTrack.h"
 #include "Parser/ObjParser/DBITParser.h"

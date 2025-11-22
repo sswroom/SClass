@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBREQUEST
 #define _SM_NET_WEBSERVER_WEBREQUEST
 #include "Crypto/Cert/X509Cert.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Manage/OSInfo.h"
 #include "Net/BrowserInfo.h"
 #include "Net/NetConnection.h"

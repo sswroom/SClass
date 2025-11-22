@@ -1,8 +1,8 @@
 #ifndef _SM_TEXT_CPP_CPPCODEPARSER
 #define _SM_TEXT_CPP_CPPCODEPARSER
 #include "Data/ArrayListStringNN.h"
-#include "Data/StringUTF8Map.h"
-#include "Text/StringBuilder.h"
+#include "Data/StringUTF8Map.hpp"
+#include "Text/StringBuilder.hpp"
 #include "Text/Cpp/CppParseStatus.h"
 
 namespace Text

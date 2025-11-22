@@ -2,7 +2,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/MD5.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
 #include "DB/ODBCConn.h"

@@ -1,10 +1,10 @@
 #ifndef _SM_IO_VIRTUALPACKAGEFILE
 #define _SM_IO_VIRTUALPACKAGEFILE
 #include "Crypto/Hash/HashAlgorithm.h"
-#include "Data/ArrayListNN.h"
-#include "Data/FastMap.h"
-#include "Data/FastStringMap.h"
-#include "Data/StringMap.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastMap.hpp"
+#include "Data/FastStringMap.hpp"
+#include "Data/StringMap.hpp"
 #include "Data/Timestamp.h"
 #include "Data/Compress/Decompressor.h"
 #include "IO/ActiveStreamReader.h"

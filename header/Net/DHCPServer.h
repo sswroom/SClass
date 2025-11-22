@@ -1,7 +1,7 @@
 #ifndef _SM_NET_DHCPSERVER
 #define _SM_NET_DHCPSERVER
-#include "Data/ArrayList.h"
-#include "Data/FastMapNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -14,7 +14,7 @@ namespace Net
 	public:
 		typedef struct
 		{
-			UInt64 hwAddr;
+			UInt64 hwAddr64;
 			UInt32 assignedIP;
 			Int64 assignTime;
 			Bool updated;

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_PUSHMANAGER
 #define _SM_NET_PUSHMANAGER
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMap.hpp"
 #include "IO/LogFile.h"
 #include "Net/Google/GoogleFCMv1.h"
 #include "Net/Google/GoogleOAuth2.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32RIEEE.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryReadingStream.h"
 #include "IO/MemoryStream.h"

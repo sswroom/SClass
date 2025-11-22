@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_MEMORYWEBSESSION
 #define _SM_NET_WEBSERVER_MEMORYWEBSESSION
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "Net/WebServer/WebSession.h"
 #include "Sync/Mutex.h"
 

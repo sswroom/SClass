@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "UI/Win/WinCore.h"
 #include "UI/Win/WinTrackBar.h"
 

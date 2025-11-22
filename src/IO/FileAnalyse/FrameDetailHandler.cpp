@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Net/MACInfo.h"
 #include "Net/NetBIOSUtil.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCORE
 #define _SM_SSWR_AVIREAD_AVIRCORE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Exporter/ExporterList.h"
 #include "IO/GPIOControl.h"
 #include "IO/LogTool.h"

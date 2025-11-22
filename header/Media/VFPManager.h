@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_VFPMANAGER
 #define _SM_MEDIA_VFPMANAGER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/FileSelector.h"
 #include "Media/MediaSource.h"
 #include "Sync/Mutex.h"

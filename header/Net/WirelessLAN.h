@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WIRELESSLAN
 #define _SM_NET_WIRELESSLAN
 #include "AnyType.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/Library.h"
 #include "Net/WirelessLANIE.h"
 #include "Text/String.h"

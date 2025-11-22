@@ -20,7 +20,7 @@ Text::CString Manage::CPUInfoDetail::GetCPUModel()
 	return this->cpuModel;
 }
 
-Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
 {
 	return false;
 }

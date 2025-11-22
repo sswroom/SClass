@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/Compress/Inflate.h"
 #include "Exporter/PNGExporter.h"
 #include "Math/Math_C.h"

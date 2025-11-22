@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRARPSCANFORM
 #define _SM_SSWR_AVIREAD_AVIRARPSCANFORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
 #include "UI/GUIButton.h"

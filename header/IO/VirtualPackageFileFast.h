@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VIRTUALPACKAGEFILEFAST
 #define _SM_IO_VIRTUALPACKAGEFILEFAST
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "IO/VirtualPackageFile.h"
 
 namespace IO

@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNS_SNSCONTROL
 #define _SM_NET_SNS_SNSCONTROL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/CString.h"
 #include "Text/String.h"
 

@@ -1,8 +1,8 @@
 #ifndef _SM_MATH_GEOMETRY_POLYGON
 #define _SM_MATH_GEOMETRY_POLYGON
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Math/Geometry/LinearRing.h"
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 
 namespace Math
 {

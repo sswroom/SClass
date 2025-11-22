@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBQUEUE
 #define _SM_DB_DBQUEUE
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBTool.h"
 #include "Sync/Event.h"
 

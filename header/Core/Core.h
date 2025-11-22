@@ -1,6 +1,6 @@
 #ifndef _SM_CORE_CORE
 #define _SM_CORE_CORE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 
 namespace Media
 {

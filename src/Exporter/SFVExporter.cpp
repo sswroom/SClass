@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Exporter/SFVExporter.h"
 #include "IO/FileCheck.h"
 #include "Text/MyString.h"

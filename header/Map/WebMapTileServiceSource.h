@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_WEBMAPTILESERVICESOURCE
 #define _SM_MAP_WEBMAPTILESERVICESOURCE
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Map/TileMap.h"
 #include "Net/SocketFactory.h"
 #include "Text/String.h"

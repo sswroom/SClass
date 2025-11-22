@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringUTF8Map.hpp"
 #include "Text/Locale.h"
 
 // http://msdn.microsoft.com/en-us/library/0h88fahh%28VS.85%29.aspx

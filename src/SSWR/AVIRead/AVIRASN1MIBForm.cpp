@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"

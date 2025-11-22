@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_VIDEOCAPTUREMGR
 #define _SM_MEDIA_VIDEOCAPTUREMGR
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Media/VideoCapturer.h"
 #include "Text/CString.h"
 

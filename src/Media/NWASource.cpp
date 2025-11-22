@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BitReaderLSB.h"
 #include "IO/StreamData.h"
 #include "Media/MediaSource.h"

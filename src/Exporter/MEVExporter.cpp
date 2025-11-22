@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListICaseString.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Exporter/MEVExporter.h"
 #include "IO/Path.h"
 #include "Math/Math_C.h"

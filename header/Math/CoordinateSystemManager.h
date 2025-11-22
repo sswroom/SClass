@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_COORDINATESYSTEMMANAGER
 #define _SM_MATH_COORDINATESYSTEMMANAGER
-#include "Data/ArrayList.h"
-#include "Data/ArrayListArr.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Text/CString.h"
 

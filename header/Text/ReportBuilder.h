@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_REPORTBUILDER
 #define _SM_TEXT_REPORTBUILDER
-#include "Data/ArrayListArr.h"
+#include "Data/ArrayListArr.hpp"
 #include "Data/ChartPlotter.h"
 #include "Media/VectorDocument.h"
 #include "Text/String.h"

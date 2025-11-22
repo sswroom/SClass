@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Exporter/DBFExporter.h"
 #include "Exporter/SHPExporter.h"
 #include "IO/FileStream.h"

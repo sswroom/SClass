@@ -5,7 +5,7 @@
 #include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/JKSParser.h"
 #include "Parser/FileParser/X509Parser.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_ARRAYLISTINT64
 #define _SM_DATA_ARRAYLISTINT64
-#include "Data/SortableArrayListNative.h"
+#include "Data/SortableArrayListNative.hpp"
 
 namespace Data
 {
@@ -12,8 +12,8 @@ namespace Data
 
 		virtual NN<ArrayList<Int64>> Clone() const;
 
-		void AddRangeI32(Int32 *arr, UOSInt cnt);
-		void AddRangeI32(const Data::ArrayList<Int32> *arr);
+		void AddRangeI32(UnsafeArray<Int32> arr, UOSInt cnt);
+		void AddRangeI32(NN<const Data::ArrayList<Int32>> arr);
 	};
 }
 #endif

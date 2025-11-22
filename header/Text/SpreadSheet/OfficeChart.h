@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_SPREADSHEET_OFFICECHART
 #define _SM_TEXT_SPREADSHEET_OFFICECHART
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Math/Unit/Distance.h"
 #include "Text/String.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"

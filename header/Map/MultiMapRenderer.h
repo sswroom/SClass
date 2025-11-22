@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MULTIMAPRENDERER
 #define _SM_MAP_MULTIMAPRENDERER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Map/MapRenderer.h"
 
 namespace Map

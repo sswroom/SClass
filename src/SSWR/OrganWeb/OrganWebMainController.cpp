@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListICaseStringNN.h"
 #include "Data/ByteBuffer.h"
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Exporter/GUIJPGExporter.h"
 #include "IO/Path.h"

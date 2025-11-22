@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/I2C.h"
 #include "Sync/SimpleThread.h"
 #include "Text/MyString.h"

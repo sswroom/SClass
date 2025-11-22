@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_VECTORDOCUMENT
 #define _SM_MEDIA_VECTORDOCUMENT
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ParsedObject.h"
 #include "Math/Unit/Distance.h"
 #include "Media/PrintDocument.h"

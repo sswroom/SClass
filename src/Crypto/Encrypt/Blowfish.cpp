@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/Blowfish.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyString.h"
 
 #define N 16

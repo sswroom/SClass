@@ -3,7 +3,7 @@
 #include "Crypto/Hash/RIPEMD128.h"
 #include "IO/Console.h"
 #include "Text/MyString.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 extern "C"
 {

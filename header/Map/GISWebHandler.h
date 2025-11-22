@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_GISWEBHANDLER
 #define _SM_MAP_GISWEBHANDLER
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Map/GISWebService.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/WFSHandler.h"

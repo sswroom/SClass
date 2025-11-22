@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "SSWR/SDNSProxy/SDNSProxyCore.h"
 #include "SSWR/SDNSProxy/SDNSProxyWebHandler.h"
 #include "Sync/MutexUsage.h"

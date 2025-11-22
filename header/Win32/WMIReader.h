@@ -1,6 +1,6 @@
 #ifndef _SM_WIN32_WMIREADER
 #define _SM_WIN32_WMIREADER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "DB/DBReader.h"
 
 namespace Win32

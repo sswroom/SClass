@@ -1,7 +1,7 @@
 #ifndef _SM_PARSER_FILEPARSER_CFBPARSER
 #define _SM_PARSER_FILEPARSER_CFBPARSER
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "IO/FileParser.h"
 #include "Text/SpreadSheet/Workbook.h"
 

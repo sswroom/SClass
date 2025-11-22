@@ -1,7 +1,7 @@
 #ifndef _SM_IO_GPSNMEA
 #define _SM_IO_GPSNMEA
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/CallbackStorage.h"
 #include "Map/LocationService.h"
 #include "Sync/Event.h"

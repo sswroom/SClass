@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ProtoHdlr/ProtoJTT808Handler.h"
 
 typedef struct
@@ -22,17 +22,17 @@ AnyType IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NN<IO::Stream> stm)
 {
 	JTT808StreamData *data = MemAlloc(JTT808StreamData, 1);
 	UInt64 devId = this->devId;
-	data->devId[5] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+	data->devId[5] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[4] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+	data->devId[4] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[3] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+	data->devId[3] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[2] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+	data->devId[2] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[1] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+	data->devId[1] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	devId = devId / 100;
-	data->devId[0] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+	data->devId[0] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	return data;
 }
 
@@ -157,17 +157,17 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UnsafeArray<UInt8> buff, I
 	else
 	{
 		UInt64 devId = (UInt64)this->devId;
-		hdr[9] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+		hdr[9] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[8] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+		hdr[8] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[7] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+		hdr[7] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[6] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+		hdr[6] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[5] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+		hdr[5] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 		devId = devId / 100;
-		hdr[4] = Data::ByteTool::Int2BCDB((UInt32)(devId % 100));
+		hdr[4] = ByteTool_Int2BCDB((UInt32)(devId % 100));
 	}
 	UInt8 chk = 0;
 	UInt8 c;

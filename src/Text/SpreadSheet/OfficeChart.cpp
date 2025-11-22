@@ -130,11 +130,11 @@ void Text::SpreadSheet::OfficeChart::InitLineChart(Text::CString leftAxisName, T
 	NN<OfficeChartAxis> leftAxis = this->CreateAxis(AxisType::Numeric, AxisPosition::Left);
 	if (leftAxisName.leng > 0) leftAxis->SetTitle(leftAxisName);
 	leftAxis->SetCrosses(AxisCrosses::AutoZero);
-	leftAxis->SetMajorGridProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::LightGray)))))));
-	leftAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black)))))));
+	leftAxis->SetMajorGridProp(NEW_CLASS_D(OfficeShapeProp(Optional<OfficeLineStyle>(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::LightGray))))))));
+	leftAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(Optional<OfficeLineStyle>(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black))))))));
 	NN<OfficeChartAxis> bottomAxis = this->CreateAxis(bottomType, AxisPosition::Bottom);
 	if (bottomAxisName.leng > 0) bottomAxis->SetTitle(bottomAxisName);
-	bottomAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black)))))));
+	bottomAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(Optional<OfficeLineStyle>(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black))))))));
 	bottomAxis->SetTickLblPos(TickLabelPosition::Low);
 
 	this->InitChart(ChartType::LineChart, bottomAxis, leftAxis);

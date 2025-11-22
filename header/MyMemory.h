@@ -1,7 +1,7 @@
 #ifndef _SM_MYMEMORY
 #define _SM_MYMEMORY
 #include "Stdafx.h"
-#include "MemTool.h"
+#include "NotNullPtr.h"
 
 /*
 void NEW_CLASS(variable, className);
@@ -73,11 +73,11 @@ Int32 MemCountBlks();
 void MemIncCounter(void *ptr);
 void MemDecCounter(void *ptr);
 
-template <class T> T MemNewClass(T cls)
+template <class T> NN<T> MemNewClass(T *cls)
 {
 	MemPtrChk(cls);
 	//MemIncCounter(cls);
-	return cls;
+	return NN<T>(*cls);
 }
 
 #if 0 && defined(__cplusplus) && defined(THREADSAFE)

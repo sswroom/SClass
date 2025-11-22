@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509FileList.h"
 #include "Crypto/Cert/X509PubKey.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngine.h"

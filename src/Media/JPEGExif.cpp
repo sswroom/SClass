@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Sync/Event.h"
 #include "Text/MyString.h"
 #include "IO/Stream.h"

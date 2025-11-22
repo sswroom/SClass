@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "SIMD.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Sync/ThreadUtil.h"
 
 //#include "Text/MyString.h"

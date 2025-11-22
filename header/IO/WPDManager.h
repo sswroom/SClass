@@ -1,6 +1,6 @@
 #ifndef _SM_IO_WPDMANAGER
 #define _SM_IO_WPDMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO

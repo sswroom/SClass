@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRPACKAGEFORM
 #define _SM_SSWR_AVIREAD_AVIRPACKAGEFORM
 #include "AnyType.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/PackageFile.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"

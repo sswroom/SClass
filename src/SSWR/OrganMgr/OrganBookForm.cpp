@@ -1,5 +1,5 @@
 ﻿#include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSortFunc.h"
+#include "Data/Sort/ArtificialQuickSortFunc.hpp"
 #include "SSWR/OrganMgr/OrganBookForm.h"
 #include "Text/StringTool.h"
 #include "UI/Clipboard.h"

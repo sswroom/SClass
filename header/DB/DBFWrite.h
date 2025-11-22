@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBFWRITE
 #define _SM_DB_DBFWRITE
 
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "DB/DBUtil.h"
 #include "IO/Stream.h"
 #include "Text/Encoding.h"

@@ -1,7 +1,7 @@
 #ifndef _SM_NET_TFTPSERVER
 #define _SM_NET_TFTPSERVER
 #include "AnyType.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/LogTool.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"

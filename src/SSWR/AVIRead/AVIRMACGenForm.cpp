@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/RandomMT19937.h"
-#include "Data/Sort/ArtificialQuickSortFunc.h"
+#include "Data/Sort/ArtificialQuickSortFunc.hpp"
 #include "Net/ConnectionInfo.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "Text/MyString.h"
@@ -55,9 +55,23 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(AnyType userOb
 	}	
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(Data::ArrayListNN<Net::MACInfo::MACEntry> *list1, Data::ArrayListNN<Net::MACInfo::MACEntry> *list2)
+OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list1, Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>> list2)
 {
-	return Text::StrCompare(list1->GetItemNoCheck(0)->name, list2->GetItemNoCheck(0)->name);
+	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> nnlist1;
+	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> nnlist2;
+	if (list1 == list2)
+	{
+		return 0;
+	}
+	if (!list1.SetTo(nnlist1))
+	{
+		return -1;
+	}
+	if (!list2.SetTo(nnlist2))
+	{
+		return 1;
+	}
+	return Text::StrCompare(nnlist1->GetItemNoCheck(0)->name, nnlist2->GetItemNoCheck(0)->name);
 }
 
 SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 136, ui)
@@ -95,8 +109,8 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	this->btnAdapterSet->SetRect(304, 100, 75, 23, false);
 	this->btnAdapterSet->HandleButtonClick(OnAdapterSetClicked, this);
 
-	Data::ArrayListNN<Net::MACInfo::MACEntry> **macList;
-	Data::ArrayListNN<Net::MACInfo::MACEntry> *macArr;
+	UnsafeArray<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>> macList;
+	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> macArr;
 	UOSInt macCnt;
 	UOSInt i;
 	UnsafeArray<Net::MACInfo::MACEntry> entList;
@@ -107,10 +121,9 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	{
 		if (entList[i].nameLen > 0)
 		{
-			macArr = this->macMap.Get({entList[i].name, entList[i].nameLen});
-			if (macArr == 0)
+			if (!this->macMap.Get({entList[i].name, entList[i].nameLen}).SetTo(macArr))
 			{
-				NEW_CLASS(macArr, Data::ArrayListNN<Net::MACInfo::MACEntry>());
+				NEW_CLASSNN(macArr, Data::ArrayListNN<Net::MACInfo::MACEntry>());
 				this->macMap.Put({entList[i].name, entList[i].nameLen}, macArr);
 			}
 			macArr->Add(entList[i]);
@@ -119,15 +132,19 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	}
 
 	macList = this->macMap.ToArray(macCnt);
-	Data::Sort::ArtificialQuickSortFunc<Data::ArrayListNN<Net::MACInfo::MACEntry>*>::Sort(macList, ListCompare, 0, (OSInt)macCnt - 1);
+	Data::Sort::ArtificialQuickSortFunc<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>>::Sort(macList, ListCompare, 0, (OSInt)macCnt - 1);
+	NN<Data::ArrayListNN<Net::MACInfo::MACEntry>> mList;
 	i = 0;
 	while (i < macCnt)
 	{
-		NN<Net::MACInfo::MACEntry> ent = macList[i]->GetItemNoCheck(0);
-		this->cboVendor->AddItem({ent->name, ent->nameLen}, macList[i]);
+		if (macList[i].SetTo(mList))
+		{
+			NN<Net::MACInfo::MACEntry> ent = mList->GetItemNoCheck(0);
+			this->cboVendor->AddItem({ent->name, ent->nameLen}, mList);
+		}
 		i++;
 	}
-	MemFree(macList);
+	MemFreeArr(macList);
 	if (macCnt > 0)
 	{
 		this->cboVendor->SetSelectedIndex(0);
@@ -161,17 +178,17 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRMACGenForm::~AVIRMACGenForm()
 {
-	Data::ArrayListNN<Net::MACInfo::MACEntry> **macList;
+	UnsafeArray<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>> macList;
 	UOSInt macCnt;
 	UOSInt i;
 	macList = this->macMap.ToArray(macCnt);
 	i = 0;
 	while (i < macCnt)
 	{
-		DEL_CLASS(macList[i]);
+		macList[i].Delete();
 		i++;
 	}
-	MemFree(macList);
+	MemFreeArr(macList);
 }
 
 void SSWR::AVIRead::AVIRMACGenForm::OnMonitorChanged()

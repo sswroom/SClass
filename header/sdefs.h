@@ -351,7 +351,7 @@ Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 	return v1 < v2;
 }
 
-Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 {
 	v1 += v2 + c;
 	*cout = v1 < v2;
@@ -374,7 +374,7 @@ Bool __inline MySUB_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 	return v1 < v2;
 }
 
-Bool __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, Bool* cout)
+UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 {
 	v2 = v1 - v2 - c;
 	*cout = v1 < v2;
@@ -427,13 +427,20 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
 #define BSWAPU64(v) __builtin_bswap64(v)
 #if __GNUC__ > 4
-#define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#define MyADD_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
 #else
-Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 {
 	v1 += v2;
 	*outPtr = v1;
 	return v1 < v2;
+}
+
+UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+{
+	v1 += v2 + c;
+	*cout = v1 < v2;
+	return v1;
 }
 #endif
 
@@ -481,11 +488,32 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #if _OSINT_SIZE == 64
 #if defined(_M_ARM64) || defined(_M_ARM64EC)
 #include <intrin.h>
-Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 {
 	v1 += v2;
 	*outPtr = v1;
 	return v1 < v2;
+}
+
+UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+{
+	v1 += v2 + c;
+	*cout = v1 < v2;
+	return v1;
+}
+
+Bool __inline MySUB_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+{
+	v2 = v1 - v2;
+	*outPtr = v1;
+	return v1 < v2;
+}
+
+UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+{
+	v2 = v1 - v2 - c;
+	*cout = v1 < v2;
+	return v1;
 }
 
 UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
@@ -513,12 +541,14 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder
 	return ret;
 }
 #else
-#define MyADC_UOS(v1, v2, out) _addcarry_u64(0, v1, v2, out);
+#define MyADD_UOS(v1, v2, out) _addcarry_u64(0, v1, v2, out);
+#define MyADC_UOS(v1, v2, c, out) _addcarry_u64(c, v1, v2, out);
 #define MyMUL_UOS(x, y, hi) _umul128(x, y, hi)
 #define MyDIV_UOS(lo, hi, divider, reminder) _udiv128(hi, lo, divider, reminder)
 #endif
 #else
-#define MyADC_UOS(v1, v2, out) _addcarry_u32(0, v1, v2, out);
+#define MyADD_UOS(v1, v2, out) _addcarry_u32(0, v1, v2, out);
+#define MyADC_UOS(v1, v2, c, out) _addcarry_u32(c, v1, v2, out);
 #endif
 #elif defined(__APPLE__)
 #include <libkern/OSByteOrder.h>
@@ -526,7 +556,7 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt* reminder
 #define BSWAPU32(x) OSSwapInt32(x)
 #define BSWAP64(x) OSSwapInt64(x)
 #define BSWAPU64(x) OSSwapInt64(x)
-#define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#define MyADD_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
 
 UOSInt __inline MyMUL_UOS(UOSInt x, UOSInt y, UOSInt* hi)
 {
@@ -585,13 +615,20 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
 #define BSWAPU64(v) __builtin_bswap64(v)
 #if __GNUC__ >= 5
-#define MyADC_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#define MyADD_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
 #else
-Bool __inline MyADC_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 {
 	v1 += v2;
 	*outPtr = v1;
 	return v1 < v2;
+}
+
+UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+{
+	v1 += v2 + c;
+	*cout = v1 < v2
+	return v1;
 }
 #endif
 

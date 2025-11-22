@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDRAGDROPVIEWERFORM
 #define _SM_SSWR_AVIREAD_AVIRDRAGDROPVIEWERFORM
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"

@@ -1,8 +1,8 @@
 #ifndef _SM_MEDIA_COLORMANAGER
 #define _SM_MEDIA_COLORMANAGER
 #include "Handles.h"
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Media/ColorSess.h"
 #include "Sync/Mutex.h"
 #include "Sync/RWMutex.h"

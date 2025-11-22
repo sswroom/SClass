@@ -1,7 +1,7 @@
 #ifndef _SM_IO_DIRECTORYPACKAGE
 #define _SM_IO_DIRECTORYPACKAGE
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListUInt64.h"
 #include "IO/PackageFile.h"
 #include "Text/CString.h"

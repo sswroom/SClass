@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"

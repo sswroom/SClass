@@ -3,7 +3,7 @@
 #include "IO/StmData/FileData.h"
 #include "Media/ImageList.h"
 #include "SSWR/AVIRead/AVIRSNBHandlerForm.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnOkClicked(AnyType userObj)
 {

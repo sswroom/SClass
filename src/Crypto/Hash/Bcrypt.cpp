@@ -2,7 +2,7 @@
 #include "Crypto/Encrypt/Blowfish.h"
 #include "Crypto/Hash/Bcrypt.h"
 #include "Data/BinTool.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/RandomBytesGenerator.h"
 
 void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password, UnsafeArray<UInt8> hashBuff) const

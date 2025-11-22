@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOORDCONVFORM
 #define _SM_SSWR_AVIREAD_AVIRCOORDCONVFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"
 #include "UI/GUIButton.h"

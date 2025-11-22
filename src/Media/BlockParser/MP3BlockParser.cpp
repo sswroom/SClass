@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/BlockParser/MP3BlockParser.h"
 Media::BlockParser::MP3BlockParser::MP3BlockParser() : Media::AudioBlockParser()
 {

@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_CLASS
 #define _SM_DATA_CLASS
 #include "AnyType.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/VariItem.h"
 #include "Text/StringBuilderUTF8.h"
 

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_TILEMAPSERVICESOURCE
 #define _SM_MAP_TILEMAPSERVICESOURCE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Map/TileMap.h"
 #include "Net/SocketFactory.h"
 #include "Text/String.h"

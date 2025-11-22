@@ -1,6 +1,6 @@
 #ifndef _SM_IO_JMETERLOG
 #define _SM_IO_JMETERLOG
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "Data/ArrayListStringNN.h"
 
 namespace IO

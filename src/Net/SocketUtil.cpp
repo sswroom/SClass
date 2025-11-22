@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/SocketUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"

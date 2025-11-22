@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/Email/EmailStore.h"
 #include "Net/Email/POP3Server.h"
 #include "Net/Email/SMTPServer.h"

@@ -1,7 +1,7 @@
 #ifndef _SM_IO_ZIPBUILDER
 #define _SM_IO_ZIPBUILDER
 #include "Crypto/Hash/CRC32RIEEE.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/Timestamp.h"
 #include "Data/Compress/Inflate.h"
 #include "IO/BufferedOutputStream.h"

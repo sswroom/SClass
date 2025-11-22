@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/MODBUSDevice.h"
 #include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"

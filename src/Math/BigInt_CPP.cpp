@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 #if _WCHAR_SIZE == 2
 #define BigInt_ToString BigInt_ToStringW16

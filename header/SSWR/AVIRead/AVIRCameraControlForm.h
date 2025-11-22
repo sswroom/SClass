@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCAMERACONTROLFORM
 #define _SM_SSWR_AVIREAD_AVIRCAMERACONTROLFORM
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "IO/CameraControl.h"
 #include "Media/ImageList.h"
 #include "SSWR/AVIRead/AVIRCore.h"

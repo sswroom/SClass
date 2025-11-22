@@ -1,6 +1,6 @@
 #ifndef _SM_NET_DNSHANDLER
 #define _SM_NET_DNSHANDLER
-#include "Data/ICaseBTreeUTF8Map.h"
+#include "Data/ICaseBTreeUTF8Map.hpp"
 #include "Manage/HiResClock.h"
 #include "Net/DNSClient.h"
 #include "Sync/Mutex.h"

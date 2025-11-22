@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_DISCDB_DISCDBENV
 #define _SM_SSWR_DISCDB_DISCDBENV
-#include "Data/FastMapNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastMapNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "DB/DBTool.h"
 #include "IO/StreamData.h"
 #include "Media/MonitorMgr.h"

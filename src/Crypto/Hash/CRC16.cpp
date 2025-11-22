@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC16.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyString.h"
 
 void Crypto::Hash::CRC16::BuildTable(UInt16 polynomial)

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_DBASSISTEDRREVERSEGEOCODER
 #define _SM_MAP_DBASSISTEDRREVERSEGEOCODER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"
 #include "DB/DBTool.h"

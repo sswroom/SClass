@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_VARIITEMCOMPARATOR
 #define _SM_DATA_VARIITEMCOMPARATOR
-#include "Data/Comparator.h"
+#include "Data/Comparator.hpp"
 #include "Data/DataComparer.h"
 #include "Data/VariItem.h"
 

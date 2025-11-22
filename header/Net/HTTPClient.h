@@ -1,7 +1,7 @@
 #ifndef _SM_NET_HTTPCLIENT
 #define _SM_NET_HTTPCLIENT
 #include "Crypto/Cert/Certificate.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/DateTime.h"
 #include "IO/MemoryStream.h"

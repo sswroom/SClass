@@ -1,6 +1,6 @@
 #ifndef _SM_EXPORTER_DBHTMLEXPORTER
 #define _SM_EXPORTER_DBHTMLEXPORTER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ReadingDB.h"
 #include "IO/FileExporter.h"

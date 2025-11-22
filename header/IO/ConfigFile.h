@@ -1,7 +1,7 @@
 #ifndef _SM_IO_CONFIGFILE
 #define _SM_IO_CONFIGFILE
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 
 namespace IO
 {

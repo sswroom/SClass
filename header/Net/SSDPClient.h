@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SSDPCLIENT
 #define _SM_NET_SSDPCLIENT
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/UDPServer.h"
 #include "Sync/MutexUsage.h"
 #include "Text/EncodingFactory.h"

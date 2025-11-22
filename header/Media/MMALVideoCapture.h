@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_MMALVIDEOCAPTURE
 #define _SM_MEDIA_MMALVIDEOCAPTURE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Media/VideoCapturer.h"
 #include "Text/StringBuilderUTF8.h"
 

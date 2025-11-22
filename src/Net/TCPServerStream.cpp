@@ -3,7 +3,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 void __stdcall Net::TCPServerStream::ConnHandler(NN<Socket> s, AnyType userObj)
 {

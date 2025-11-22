@@ -1,6 +1,6 @@
 #ifndef _SM_DB_JAVADBUTIL
 #define _SM_DB_JAVADBUTIL
-#include "Data/StringMap.h"
+#include "Data/StringMap.hpp"
 #include "DB/DBTool.h"
 #include "Net/SocketFactory.h"
 

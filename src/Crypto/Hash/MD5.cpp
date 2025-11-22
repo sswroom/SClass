@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/MD5.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyString.h"
 
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "IO/Console.h"
 
 extern "C"

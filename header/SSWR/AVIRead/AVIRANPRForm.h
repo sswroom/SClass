@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRANPRFORM
 #define _SM_SSWR_AVIREAD_AVIRANPRFORM
-#include "Data/ArrayListA.h"
+#include "Data/ArrayListA.hpp"
 #include "Media/ANPR.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

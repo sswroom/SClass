@@ -3,7 +3,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 #define BUFFSIZE 2048
 

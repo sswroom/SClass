@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_MULTIPOLYGON
 #define _SM_MATH_GEOMETRY_MULTIPOLYGON
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 #include "Math/Geometry/Polygon.h"
 
 namespace Math

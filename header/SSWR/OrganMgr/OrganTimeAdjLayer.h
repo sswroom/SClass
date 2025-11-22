@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANTIMEADJLAYER
 #define _SM_SSWR_ORGANMGR_ORGANTIMEADJLAYER
 
-#include "Data/StringMap.h"
+#include "Data/StringMap.hpp"
 #include "Map/GPSTrack.h"
 #include "Map/MapDrawLayer.h"
 #include "SSWR/OrganMgr/OrganEnv.h"

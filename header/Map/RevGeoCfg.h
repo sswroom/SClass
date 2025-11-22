@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_REVGEOCFG
 #define _SM_MAP_REVGEOCFG
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Map/MapSearchManager.h"
 #include "Text/String.h"
 

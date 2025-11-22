@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Math/ComplexNumber.h"
 #include "Math/FFT.h"
 #include "Math/Math_C.h"

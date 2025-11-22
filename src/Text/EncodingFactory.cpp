@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringUTF8Map.hpp"
 #include "Text/EncodingFactory.h"
 #include "Text/MyStringW.h"
 #if defined(_MSC_VER)

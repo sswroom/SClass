@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/DWGUtil.h"
 #include "Data/UUID.h"
 #include "Data/Sort/ArtificialQuickSort.h"

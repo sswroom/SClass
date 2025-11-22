@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/SPackageFile.h"
 #include "IO/StmData/MemoryDataCopy.h"
@@ -422,12 +422,12 @@ IO::SPackageFile::~SPackageFile()
 	if (!this->fileMap.IsEmpty())
 	{
 		UOSInt i;
-		IO::SPackageFile::FileInfo **fileArr = this->fileMap.ToArray(i);
+		UnsafeArray<IO::SPackageFile::FileInfo*> fileArr = this->fileMap.ToArray(i);
 		while (i-- > 0)
 		{
 			MemFree(fileArr[i]);
 		}
-		MemFree(fileArr);
+		MemFreeArr(fileArr);
 	}
 }
 

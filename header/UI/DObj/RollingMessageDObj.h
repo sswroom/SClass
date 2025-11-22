@@ -1,7 +1,7 @@
 #ifndef _SM_UI_DOBJ_ROLLINGMESSAGEDOBJ
 #define _SM_UI_DOBJ_ROLLINGMESSAGEDOBJ
 #include "Data/DateTime.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "UI/DObj/DirectObject.h"
 
 namespace UI

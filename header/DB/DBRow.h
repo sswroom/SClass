@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBROW
 #define _SM_DB_DBROW
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Data/Timestamp.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"

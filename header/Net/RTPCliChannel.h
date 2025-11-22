@@ -2,7 +2,7 @@
 #define _SM_NET_RTPCLICHANNEL
 #include "AnyType.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "Media/AudioSource.h"
 #include "Media/MediaSource.h"
 #include "Media/VideoSource.h"

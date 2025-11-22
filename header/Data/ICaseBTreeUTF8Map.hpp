@@ -1,0 +1,259 @@
+#ifndef _SM_DATA_ICASEBTREEUTF8MAP
+#define _SM_DATA_ICASEBTREEUTF8MAP
+#include "Data/BTreeUTF8Map.hpp"
+
+namespace Data
+{
+	template <class T> class ICaseBTreeUTF8Map : public Data::BTreeUTF8Map<T>
+	{
+	protected:
+		T PutNode(NN<BTreeUTF8Node<T>> node, Text::CStringNN key, UInt32 hash, T val);
+		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const;
+	public:
+		ICaseBTreeUTF8Map();
+		virtual ~ICaseBTreeUTF8Map();
+
+		virtual T Get(Text::CStringNN key) const;
+		virtual T Remove(Text::CStringNN key);
+	};
+
+	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(NN<BTreeUTF8Node<T>> node, Text::CStringNN key, UInt32 hash, T val)
+	{
+		NN<BTreeUTF8Node<T>> leftNode;
+		NN<BTreeUTF8Node<T>> rightNode;
+		NN<BTreeUTF8Node<T>> tmpNode;
+		T retVal;
+		OSInt i;
+		if (node->nodeHash == hash)
+		{
+			i = Text::StrCompareICase(node->nodeKey, key.v);
+		}
+		else if (node->nodeHash > hash)
+		{
+			i = 1;
+		}
+		else
+		{
+			i = -1;
+		}
+		if (i == 0)
+		{
+			retVal = node->nodeVal;
+			node->nodeVal = val;
+			return retVal;
+		}
+		else if (i > 0)
+		{
+			if (!node->leftNode.SetTo(leftNode))
+			{
+				tmpNode = node;
+				node->leftNode = leftNode = this->NewNode(key, hash, val);
+				leftNode->parNode = node;
+				node->nodeCnt++;
+				while (node->parNode.SetTo(node))
+				{
+					node->nodeCnt++;
+				}
+				node = tmpNode;
+				UInt32 currLev = 1;
+				while (true)
+				{
+					if (node->maxLev >= currLev)
+					{
+						break;
+					}
+					node->maxLev = currLev;
+					currLev++;
+					if (!node->parNode.SetTo(node))
+					{
+						break;
+					}
+				}
+				return 0;
+			}
+			else
+			{
+				retVal = PutNode(leftNode, key, hash, val);
+/*				Int32 leftLev;
+				Int32 rightLev;
+				if (node->rightNode == 0)
+				{
+					rightLev = 0;
+				}
+				else
+				{
+					rightLev = node->rightNode->maxLev + 1;
+				}
+				leftLev = node->leftNode->maxLev + 1;
+				if (leftLev > rightLev + 1)
+				{
+					OptimizeNode(node);
+				}*/
+				return retVal;
+			}
+		}
+		else
+		{
+			if (!node->rightNode.SetTo(rightNode))
+			{
+				tmpNode = node;
+				node->rightNode = rightNode = this->NewNode(key, hash, val);
+				rightNode->parNode = node;
+				node->nodeCnt++;
+				while (node->parNode.SetTo(node))
+				{
+					node->nodeCnt++;
+				}
+				node = tmpNode;
+				UInt32 currLev = 1;
+				while (true)
+				{
+					if (node->maxLev >= currLev)
+					{
+						break;
+					}
+					node->maxLev = currLev;
+					currLev++;
+					if (!node->parNode.SetTo(node))
+					{
+						break;
+					}
+				}
+				return 0;
+			}
+			else
+			{
+				retVal = PutNode(rightNode, key, hash, val);
+/*				Int32 leftLev;
+				Int32 rightLev;
+				if (node->leftNode == 0)
+				{
+					leftLev = 0;
+				}
+				else
+				{
+					leftLev = node->leftNode->maxLev + 1;
+				}
+				rightLev = node->rightNode->maxLev + 1;
+				if (rightLev > leftLev + 1)
+				{
+					OptimizeNode(node);
+				}*/
+				return retVal;
+			}
+		}
+	}
+
+	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const
+	{
+		UTF8Char sbuff[256];
+		UOSInt charCnt = (UOSInt)(Text::StrToUpperC(sbuff, key, keyLen) - sbuff);
+		return this->crc->CalcDirect(sbuff, charCnt);
+	}
+
+	template <class T> ICaseBTreeUTF8Map<T>::ICaseBTreeUTF8Map() : BTreeUTF8Map<T>()
+	{
+	}
+
+	template <class T> ICaseBTreeUTF8Map<T>::~ICaseBTreeUTF8Map()
+	{
+	}
+
+	template <class T> T ICaseBTreeUTF8Map<T>::Get(Text::CStringNN key) const
+	{
+		UInt32 hash = CalHash(key.v, key.leng);
+		Optional<BTreeUTF8Node<T>> node = this->rootNode;
+		NN<BTreeUTF8Node<T>> nnnode;
+		while (node.SetTo(nnnode))
+		{
+			OSInt i;
+			if (nnnode->nodeHash == hash)
+			{
+				i = Text::StrCompareICase(nnnode->nodeKey, key.v);
+			}
+			else if (nnnode->nodeHash > hash)
+			{
+				i = 1;
+			}
+			else
+			{
+				i = -1;
+			}
+			if (i > 0)
+			{
+				node = nnnode->leftNode;
+			}
+			else if (i < 0)
+			{
+				node = nnnode->rightNode;
+			}
+			else
+			{
+				return nnnode->nodeVal;
+			}
+		}
+		return 0;
+	}
+
+	template <class T> T ICaseBTreeUTF8Map<T>::Remove(Text::CStringNN key)
+	{
+		NN<BTreeUTF8Node<T>> rootNode;
+		if (!this->rootNode.SetTo(rootNode))
+			return 0;
+		if (Text::StrEqualsICaseC(rootNode->nodeKey, rootNode->keyLen, key.v, key.leng))
+		{
+			T nodeVal = rootNode->nodeVal;
+			this->rootNode = this->RemoveNode(rootNode);
+			return nodeVal;
+		}
+		else
+		{
+			UInt32 hash = CalHash(key.v, key.leng);
+			Optional<BTreeUTF8Node<T>> node = rootNode;
+			NN<BTreeUTF8Node<T>> nnnode;
+			NN<BTreeUTF8Node<T>> parNode = rootNode;
+			while (node.SetTo(nnnode))
+			{
+				OSInt i;
+				if (nnnode->nodeHash == hash)
+				{
+					i = Text::StrCompareICase(nnnode->nodeKey, key.v);
+				}
+				else if (nnnode->nodeHash > hash)
+				{
+					i = 1;
+				}
+				else
+				{
+					i = -1;
+				}
+				if (i > 0)
+				{
+					parNode = nnnode;
+					node = nnnode->leftNode;
+				}
+				else if (i < 0)
+				{
+					parNode = nnnode;
+					node = nnnode->rightNode;
+				}
+				else
+				{
+					T nodeVal = nnnode->nodeVal;
+					if (parNode->leftNode == nnnode)
+					{
+						parNode->leftNode = this->RemoveNode(nnnode);
+					}
+					else
+					{
+						parNode->rightNode = this->RemoveNode(nnnode);
+					}
+					return nodeVal;
+				}
+			}
+			return 0;
+		}
+	}
+};
+
+#endif

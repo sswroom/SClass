@@ -60,10 +60,10 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> 
 	return 0;
 }
 
-void Manage::CPUInfo::GetFeatureFlags(Int32 *flag1, Int32 *flag2)
+void Manage::CPUInfo::GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> flag2)
 {
-	*flag1 = 0;
-	*flag2 = 0;
+	flag1.Set(0);
+	flag2.Set(0);
 }
 
 Manage::CPUInfo::~CPUInfo()
@@ -101,17 +101,17 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 	return 0;
 }
 
-Bool Manage::CPUInfo::GetCPURatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 {
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTurboRatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 {
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
+Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 {
 	return false;
 }

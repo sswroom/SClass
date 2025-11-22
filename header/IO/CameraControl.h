@@ -1,6 +1,6 @@
 #ifndef _SM_IO_CAMERACONTROL
 #define _SM_IO_CAMERACONTROL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/Stream.h"
 #include "Text/StringBuilderUTF8.h"
 

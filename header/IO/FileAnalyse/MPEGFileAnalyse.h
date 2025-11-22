@@ -1,10 +1,10 @@
 #ifndef _SM_IO_FILEANALYSE_MPEGFILEANALYSE
 #define _SM_IO_FILEANALYSE_MPEGFILEANALYSE
-#include "Data/SyncArrayListNN.h"
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Thread.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 namespace IO
 {

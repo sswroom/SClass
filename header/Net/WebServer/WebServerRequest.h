@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBSERVERREQUEST
 #define _SM_NET_WEBSERVER_WEBSERVERREQUEST
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "IO/MemoryStream.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClient.h"

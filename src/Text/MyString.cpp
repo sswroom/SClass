@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MemTool.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyString.h"
 
 #if defined(ENABLE_SSE) && (defined(CPU_X86_64) || defined(CPU_X86_32))

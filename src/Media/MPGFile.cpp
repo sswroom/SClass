@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/M2VStreamSource.h"
 #include "Media/MPAStreamSource.h"
 #include "Media/MPEGVideoParser.h"

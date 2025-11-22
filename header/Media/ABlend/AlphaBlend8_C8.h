@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_ABLEND_ALPHABLEND8_C8
 #define _SM_MEDIA_ABLEND_ALPHABLEND8_C8
 #include "AnyType.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Media/ColorProfile.h"
 #include "Media/ColorSess.h"
 #include "Media/ImageAlphaBlend.h"

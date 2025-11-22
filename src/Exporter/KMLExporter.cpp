@@ -127,7 +127,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		defHeight = *(Int32*)para.Ptr();
 	}
 	IO::BufferedOutputStream cstm(stm, 65536);
-	IO::StreamWriter writer(cstm, &enc);
+	IO::StreamWriter writer(cstm, enc);
 
 	sptr = Text::StrConcatC(sbuff2, UTF8STRC("<?xml version=\"1.0\" encoding=\""));
 	sptr = Text::EncodingFactory::GetInternetName(sptr, this->codePage);

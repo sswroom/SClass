@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOVID19FORM
 #define _SM_SSWR_AVIREAD_AVIRCOVID19FORM
-#include "Data/FastMapNN.h"
-#include "Data/StringMapNN.h"
+#include "Data/FastMapNN.hpp"
+#include "Data/StringMapNN.hpp"
 #include "Net/SSLEngine.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "SIMD.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 extern "C" void GRFilter_ProcessLayer32H(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt sbpl, OSInt dbpl, OSInt level, OSInt hOfst, OSInt vOfst)
 {

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/Sort/ArtificialQuickSortFunc.h"
+#include "Data/Sort/ArtificialQuickSortFunc.hpp"
 #include "Map/DrawMapRenderer.h"
 #include "Math/CoordinateSystemConverter.h"
 #include "Math/Math_C.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_SHPDATA
 #define _SM_MAP_SHPDATA
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListDbl.h"
 #include "DB/DBFFile.h"
 #include "IO/StmData/FileData.h"

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/MACInfo.h"
@@ -58,12 +58,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTDevLog::DevEntry>().SetTo(log))
 		return;
 	NN<const Net::MACInfo::MACEntry> entry;
-	Text::CString name = me->macList.GetEntry(log->macInt).SetTo(entry)?Text::CString(entry->name, entry->nameLen):nullptr;
+	Text::CString name = me->macList.GetEntry(log->mac64Int).SetTo(entry)?Text::CString(entry->name, entry->nameLen):nullptr;
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Text::String> name = frm.GetNameNew();
-		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
+		UOSInt i = me->macList.SetEntry(log->mac64Int, name->ToCString());
 		name->Release();
 		entry = me->macList.GetItemNoCheck(i);
 		me->UpdateStatus();
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 		while (i < j)
 		{
 			log = me->lvContent->GetItem(i).GetNN<const IO::BTDevLog::DevEntry>();
-			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
+			if (log->mac64Int >= entry->rangeStart && log->mac64Int <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
 			}
@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	while (i < j)
 	{
 		log = logList.GetItemNoCheck(i);
-		entry = this->macList.GetEntry(log->macInt);
+		entry = this->macList.GetEntry(log->mac64Int);
 		if (unkOnly && (entry.SetTo(nnentry) && nnentry->nameLen != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
 		{
 

@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_MAILCREATOR
 #define _SM_TEXT_MAILCREATOR
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/MIMEObj/MailMessage.h"
 #include "Text/StringBuilderUTF8.h"
 

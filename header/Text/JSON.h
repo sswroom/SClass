@@ -1,8 +1,8 @@
 #ifndef _SM_TEXT_JSON
 #define _SM_TEXT_JSON
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 

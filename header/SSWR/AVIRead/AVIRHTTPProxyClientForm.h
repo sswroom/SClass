@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHTTPPROXYCLIENTFORM
 #define _SM_SSWR_AVIREAD_AVIRHTTPPROXYCLIENTFORM
 #include "AnyType.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"

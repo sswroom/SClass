@@ -1,9 +1,9 @@
 #ifndef _SM_MAP_MAPDRAWLAYER
 #define _SM_MAP_MAPDRAWLAYER
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListString.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
@@ -11,7 +11,7 @@
 #include "Map/MapSearchLayer.h"
 #include "Map/MapView.h"
 #include "Math/GeographicCoordinateSystem.h"
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Math/Geometry/Vector2D.h"
 #include "Media/SharedImage.h"
 #include "Text/SearchIndexer.h"

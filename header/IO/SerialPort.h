@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SERIALPORT
 #define _SM_IO_SERIALPORT
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

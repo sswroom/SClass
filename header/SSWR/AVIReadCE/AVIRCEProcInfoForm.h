@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREADCE_AVIRCEPROCINFOFORM
 #define _SM_SSWR_AVIREADCE_AVIRCEPROCINFOFORM
 
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Manage/HiResClock.h"
 #include "Manage/SymbolResolver.h"
 #include "SSWR/AVIRead/AVIRCore.h"

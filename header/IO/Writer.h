@@ -1,6 +1,6 @@
 #ifndef _SM_IO_WRITER
 #define _SM_IO_WRITER
-#include "Data/ArrayIterator.h"
+#include "Data/ArrayIterator.hpp"
 #include "Text/CString.h"
 #include "Text/String.h"
 

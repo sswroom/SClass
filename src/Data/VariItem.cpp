@@ -1145,7 +1145,7 @@ void Data::VariItem::SetBool(Bool val)
 void Data::VariItem::SetByteArr(UnsafeArray<const UInt8> arr, UOSInt cnt)
 {
 	this->FreeItem();
-	this->val.byteArr = NEW_CLASS_D(Data::ReadonlyArray<UInt8>(arr, cnt));
+	this->val.byteArr = NEW_CLASS_D(Data::ReadonlyArray<UInt8>(arr, cnt)).Ptr();
 	this->itemType = ItemType::ByteArr;
 }
 

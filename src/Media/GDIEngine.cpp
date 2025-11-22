@@ -1,7 +1,7 @@
 //require gdiplus.lib msimg32.lib
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"

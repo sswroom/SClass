@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SMBIOS
 #define _SM_IO_SMBIOS
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListArr.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -69,14 +69,14 @@ namespace IO
 			UInt64 memorySize;
 			MemoryFormFactor formFactor;
 			UInt8 deviceSet;
-			const Char *deviceLocator;
-			const Char *bankLocator;
+			UnsafeArrayOpt<const Char> deviceLocator;
+			UnsafeArrayOpt<const Char> bankLocator;
 			MemoryType memType;
 			UInt16 maxSpeedMTs; //ddr4-2400 = 2400 (Transfer Speed, Clock Speed = 1200MHz)
-			const Char *manufacturer;
-			const Char *sn;
-			const Char *assetTag;
-			const Char *partNo;
+			UnsafeArrayOpt<const Char> manufacturer;
+			UnsafeArrayOpt<const Char> sn;
+			UnsafeArrayOpt<const Char> assetTag;
+			UnsafeArrayOpt<const Char> partNo;
 			UInt8 attributes;
 			UInt16 confSpeedMTs;
 			Double minVolt;
@@ -84,13 +84,13 @@ namespace IO
 			Double confVolt;
 		} MemoryDeviceInfo;
 	private:
-		const UInt8 *smbiosBuff;
+		UnsafeArray<const UInt8> smbiosBuff;
 		UOSInt smbiosBuffSize;
-		UInt8 *relPtr;
+		UnsafeArrayOpt<UInt8> relPtr;
 
-		void GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType) const;
+		void GetDataType(NN<Data::ArrayListArr<const UInt8>> dataList, UInt8 dataType) const;
 	public:
-		SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr);
+		SMBIOS(UnsafeArray<const UInt8> smbiosBuff, UOSInt smbiosBuffSize, UnsafeArrayOpt<UInt8> relPtr);
 		~SMBIOS();
 
 		UOSInt GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;

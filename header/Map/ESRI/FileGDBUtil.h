@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_ESRI_FILEGDBUTIL
 #define _SM_MAP_ESRI_FILEGDBUTIL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ByteArray.h"
 #include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystem.h"

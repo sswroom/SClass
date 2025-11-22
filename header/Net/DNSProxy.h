@@ -4,7 +4,7 @@
 #include "Data/ArrayListICaseString.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/CallbackStorage.h"
-#include "Data/ICaseStringMapNN.h"
+#include "Data/ICaseStringMapNN.hpp"
 #include "Net/DNSClient.h"
 #include "Net/DNSServer.h"
 

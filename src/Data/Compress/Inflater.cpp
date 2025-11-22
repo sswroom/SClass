@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/Compress/Inflater.h"
 #include "Math/Math_C.h"
 #include <assert.h>

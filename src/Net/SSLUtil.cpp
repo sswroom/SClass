@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509Cert.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/RandomBytesGenerator.h"
 #include "Net/SocketUtil.h"
 #include "Net/SSLUtil.h"

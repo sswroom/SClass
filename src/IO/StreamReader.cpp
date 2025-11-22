@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/SeekableStream.h"
 #include "IO/StreamReader.h"
 #include "Sync/Event.h"
@@ -57,7 +57,7 @@ void IO::StreamReader::FillBuffer()
 	{
 		dest = this->enc.UTF8FromBytes(&cbuff[cSize], buff, convSize, i);
 		cSize = (UOSInt)(dest - cbuff);
-		MemCopyO(buff, &buff[i], buffSize - i);
+		MemCopyO(&buff[0], &buff[i], buffSize - i);
 		buffSize -= i;
 	}
 }
@@ -100,9 +100,9 @@ void IO::StreamReader::CheckHeader()
 IO::StreamReader::StreamReader(NN<IO::Stream> stm)
 {
 	this->stm = stm;
-	this->buff = MemAlloc(UInt8, BUFFSIZE);
+	this->buff = MemAllocArr(UInt8, BUFFSIZE);
 	this->buffSize = 0;
-	this->cbuff = MemAlloc(UTF8Char, BUFFSIZE + 1);
+	this->cbuff = MemAllocArr(UTF8Char, BUFFSIZE + 1);
 	this->cSize = 0;
 	this->cPos = 0;
 	if (stm->CanSeek())
@@ -121,7 +121,7 @@ IO::StreamReader::StreamReader(NN<IO::Stream> stm)
 IO::StreamReader::StreamReader(NN<IO::Stream> stm, UInt32 codePage) : enc(codePage)
 {
 	this->stm = stm;
-	this->buff = MemAlloc(UInt8, BUFFSIZE);
+	this->buff = MemAllocArr(UInt8, BUFFSIZE);
 	this->buffSize = 0;
 	this->cbuff = MemAllocArr(UTF8Char, BUFFSIZE + 1);
 	this->cSize = 0;
@@ -141,7 +141,7 @@ IO::StreamReader::StreamReader(NN<IO::Stream> stm, UInt32 codePage) : enc(codePa
 
 IO::StreamReader::~StreamReader()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 	MemFreeArr(this->cbuff);
 }
 

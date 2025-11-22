@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_JASPER_JASPERBAND
 #define _SM_MEDIA_JASPER_JASPERBAND
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Media/Jasper/JasperElement.h"
 #include "Text/String.h"
 namespace Media

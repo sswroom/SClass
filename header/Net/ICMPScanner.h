@@ -1,7 +1,7 @@
 #ifndef _SM_NET_ICMPSCANNER
 #define _SM_NET_ICMPSCANNER
 #include "AnyType.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Manage/HiResClock.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Mutex.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
 #define _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "IO/Writer.h"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebStandardHandler.h"

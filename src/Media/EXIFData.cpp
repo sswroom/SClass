@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Math/Math_C.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ARPINFO
 #define _SM_NET_ARPINFO
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 //requires iphlpapi.lib
 
 namespace Net

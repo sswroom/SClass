@@ -297,7 +297,7 @@ void Media::V4LVideoCapture::SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fou
 	}
 }
 
-UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt)
+UOSInt Media::V4LVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt)
 {
 	UOSInt ret = 0;
 	struct v4l2_fmtdesc fmt;
@@ -509,7 +509,7 @@ Media::V4LVideoCaptureMgr::~V4LVideoCaptureMgr()
 {
 }
 
-UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
+UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(NN<Data::ArrayList<UInt32>> devList)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/dev/"));

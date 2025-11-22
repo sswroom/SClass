@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_BUILDER_HTMLBODYBUILDER
 #define _SM_TEXT_BUILDER_HTMLBODYBUILDER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextCommon.h"
 #include "Text/Builder/HTMLBuilder.h"

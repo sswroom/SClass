@@ -3,7 +3,7 @@
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
 #include "Sync/Event.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #ifndef _LARGEFILE64_SOURCE
 #define _LARGEFILE64_SOURCE
 #endif

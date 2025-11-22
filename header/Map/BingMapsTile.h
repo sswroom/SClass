@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_BINGMAPSTILE
 #define _SM_MAP_BINGMAPSTILE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Map/MercatorTileMap.h"
 #include "Media/SharedImage.h"
 #include "Sync/Mutex.h"

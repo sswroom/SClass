@@ -35,6 +35,6 @@ namespace IO
 
 		UTF8Char *IDSectorGetSN(UTF8Char *sbuff, UInt8 *idSector);
 	};
-};
+}
 
 #endif

@@ -1,6 +1,6 @@
 #ifndef _SM_NET_HTTPQUEUE
 #define _SM_NET_HTTPQUEUE
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Event.h"

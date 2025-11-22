@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/DHCPServer.h"
 #include "Sync/MutexUsage.h"
@@ -17,7 +17,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 	if (data.GetSize() >= 240 && data[0] == 1 && data[1] == 1 && data[2] == 6 && ReadMUInt32(&data[236]) == 0x63825363)
 	{
 		UInt8 dhcpType = 0;
-		UInt64 hwAddr = ReadMUInt64(&data[26]) & 0xffffffffffffLL;
+		UInt64 hwAddr = ReadMUInt64(&data[28]) & 0xffffffffffff0000LL;
 		UInt32 reqIP = 0;
 		UInt32 transactionId = ReadMUInt32(&data[4]);
 		UOSInt i;
@@ -73,7 +73,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 			repBuff[1] = 1;
 			repBuff[2] = 6;
 			WriteMUInt32(&repBuff[4], transactionId);
-			WriteMUInt64(&repBuff[26], hwAddr);
+			WriteMUInt64(&repBuff[28], hwAddr);
 			WriteNUInt32(&repBuff[20], me->infIP);
 			Sync::MutexUsage mutUsage(me->devMut);
 			if (me->devMap.Get(hwAddr).SetTo(dev))
@@ -83,7 +83,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 			else
 			{
 				dev = MemAllocNN(DeviceStatus);
-				dev->hwAddr = hwAddr;
+				dev->hwAddr64 = hwAddr;
 				dev->hostName = 0;
 				dev->vendorClass = 0;
 				dev->updated = true;
@@ -195,7 +195,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 			repBuff[1] = 1;
 			repBuff[2] = 6;
 			WriteMUInt32(&repBuff[4], transactionId);
-			WriteMUInt64(&repBuff[26], hwAddr);
+			WriteMUInt64(&repBuff[28], hwAddr);
 			Sync::MutexUsage mutUsage(me->devMut);
 			if (!me->devMap.Get(hwAddr).SetTo(dev))
 			{

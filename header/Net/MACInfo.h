@@ -14,15 +14,25 @@ namespace Net
 			const UTF8Char *name;
 			UOSInt nameLen;
 		} MACEntry;
+
+		enum class AddressType
+		{
+			UniversalUnicast,
+			UniversalMulticast,
+			LocalUnicast,
+			LocalMulticast
+		};
 		
 	private:
 		static MACEntry macList[];
 		static MACEntry uncMac;
 	public:
-		static NN<const MACEntry> GetMACInfo(UInt64 macAddr);
+		static NN<const MACEntry> GetMAC64Info(UInt64 macAddr);
 		static NN<const MACEntry> GetMACInfoBuff(UnsafeArray<const UInt8> mac);
 		static NN<const MACEntry> GetMACInfoOUI(UnsafeArray<const UInt8> oui);
 		static UnsafeArray<MACEntry> GetMACEntryList(OutParam<UOSInt> cnt);
+		static AddressType GetAddressType(UnsafeArray<const UInt8> mac);
+		static Text::CStringNN AddressTypeGetName(AddressType addrType);
 	};
 }
 #endif

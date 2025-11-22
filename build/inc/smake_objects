@@ -136,7 +136,6 @@ BinaryParser.o: ../../src/Data/BinaryParser.cpp
 BinTool.o: ../../src/Data/BinTool.cpp
 ByteOrderLSB.o: ../../src/Data/ByteOrderLSB.cpp
 ByteOrderMSB.o: ../../src/Data/ByteOrderMSB.cpp
-ByteTool.o: ../../src/Data/ByteTool.cpp
 ChartPlotter.o: ../../src/Data/ChartPlotter.cpp
 CircularByteBuff.o: ../../src/Data/CircularByteBuff.cpp
 Class.o: ../../src/Data/Class.cpp

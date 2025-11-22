@@ -1,9 +1,9 @@
 #ifndef _SM_MAP_DBASSISTEDREVERSEGEOCODERPL
 #define _SM_MAP_DBASSISTEDREVERSEGEOCODERPL
-#include "Data/ArrayListNN.h"
-#include "Data/BTreeMap.h"
-#include "Data/Comparator.h"
-#include "Data/FastMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/BTreeMap.hpp"
+#include "Data/Comparator.hpp"
+#include "Data/FastMapNN.hpp"
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"

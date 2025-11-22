@@ -2,9 +2,9 @@
 #define _SM_DATA_SORT_ARTIFICIALQUICKSORT
 #include "AnyType.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
-#include "Data/Comparator.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
+#include "Data/Comparator.hpp"
 #include "Data/Sort/ArtificialQuickSort_C.h"
 #include "Data/Sort/InsertionSort.h"
 #include "Sync/Event.h"

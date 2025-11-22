@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBDRIVER
 #define _SM_NET_WEBDRIVER
 #include "IO/MemoryStream.h"
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Net/RESTResource.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/JSONBuilder.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 #define SHA1HashSize 20
 #define SHA1CircularShift(y, x) (((x) << (y)) | ((x) >> (32-(y))))

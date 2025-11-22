@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_REGEX
 #define _SM_TEXT_REGEX
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Text/StringBuilderUTF8.h"
 

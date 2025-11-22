@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Map/GoogleMap/GoogleMapsUtil.h"
 
 Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(UnsafeArray<const UTF8Char> polylineText)

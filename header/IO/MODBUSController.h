@@ -1,6 +1,6 @@
 #ifndef _SM_IO_MODBUSCONTROLLER
 #define _SM_IO_MODBUSCONTROLLER
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "IO/MODBUSMaster.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

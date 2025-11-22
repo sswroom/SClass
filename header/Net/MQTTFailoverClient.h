@@ -1,8 +1,8 @@
 #ifndef _SM_NET_MQTTFAILOVERCLIENT
 #define _SM_NET_MQTTFAILOVERCLIENT
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/CallbackStorage.h"
-#include "Net/FailoverHandler.h"
+#include "Net/FailoverHandler.hpp"
 #include "Net/MQTTClient.h"
 #include "Net/MQTTConn.h"
 #include "Net/MQTTStaticClient.h"

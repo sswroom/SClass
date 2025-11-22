@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMap.hpp"
 #include "DB/DBModel.h"
 #include "Text/StringBuilderUTF8.h"
 

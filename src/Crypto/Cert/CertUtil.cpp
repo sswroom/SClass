@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/RandomBytesGenerator.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"

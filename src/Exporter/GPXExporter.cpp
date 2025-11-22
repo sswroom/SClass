@@ -74,7 +74,7 @@ Bool Exporter::GPXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 	Text::Encoding enc(this->codePage);
 	IO::BufferedOutputStream cstm(stm, 65536);
-	IO::StreamWriter writer(cstm, &enc);
+	IO::StreamWriter writer(cstm, enc);
 
 	writer.Write(CSTR("<?xml version=\"1.0\" encoding=\""));
 	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);

@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_CURVEPOLYGON
 #define _SM_MATH_GEOMETRY_CURVEPOLYGON
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 
 namespace Math
 {

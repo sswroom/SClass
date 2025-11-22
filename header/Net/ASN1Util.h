@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ASN1UTIL
 #define _SM_NET_ASN1UTIL
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/FileAnalyse/FrameDetail.h"
 #include "Text/StringBuilderUTF8.h"
 

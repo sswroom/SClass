@@ -82,13 +82,11 @@ NN<Text::SpreadSheet::Workbook> Text::SpreadSheet::Workbook::Clone() const
 	while (itStyle.HasNext())
 	{
 		newWB->styles.Add(itStyle.Next()->Clone());
-		i++;
 	}
 	Data::ArrayIterator<NN<Worksheet>> itSheet = this->sheets.Iterator();
 	while (itSheet.HasNext())
 	{
 		newWB->sheets.Add(itSheet.Next()->Clone(*this, newWB));
-		i++;
 	}
 	i = 0;
 	j = this->fonts.GetCount();

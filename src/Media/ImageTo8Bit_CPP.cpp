@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 extern "C" UOSInt ImageTo8Bit_CalDiff(Int32 col1, Int32 col2)
 {

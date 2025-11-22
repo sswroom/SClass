@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/I2CChannelOS.h"
 #include "IO/I2CMODBUS.h"
 #include "IO/Device/AM2315.h"

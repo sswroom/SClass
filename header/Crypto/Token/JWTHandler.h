@@ -2,8 +2,8 @@
 #define _SM_CRYPTO_TOKEN_JWTHANDLER
 #include "Crypto/Token/JWSignature.h"
 #include "Crypto/Token/JWTParam.h"
-#include "Data/StringMap.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.hpp"
+#include "Data/StringUTF8Map.hpp"
 #include "Net/SSLEngine.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"

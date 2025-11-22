@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
-#include "Data/FastMap.h"
+#include "Core/ByteTool_C.h"
+#include "Data/FastMap.hpp"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "Net/ConnectionInfo.h"

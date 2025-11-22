@@ -6,7 +6,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/TCPClient.h"
 #include "Text/MyStringFloat.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "Text/XMLDOM.h"
 
 Map::MapBar::MapBarAdjuster::MapBarAdjuster(NN<Net::SocketFactory> sockf, IO::Writer *errWriter)

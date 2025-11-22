@@ -2,7 +2,7 @@
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/BruteForceAttack.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"

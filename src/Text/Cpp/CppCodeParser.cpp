@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "Text/MyString.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "Text/Cpp/CppEnv.h"
 #include "Text/Cpp/CppCodeParser.h"
 

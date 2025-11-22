@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Core/X86Util.h"
+#include "Core/X86Util_C.h"
 #include "IO/FileStream.h"
 #include "IO/Library.h"
 #include "IO/Registry.h"
@@ -132,7 +132,7 @@ Manage::CPUInfo::CPUInfo()
 	this->clsData = info;
 #endif
 
-	Core::X86Util_cpuid(cpuInfo, 0);
+	X86Util_cpuid(cpuInfo, 0);
 	if (cpuInfo[0] <= 0)
 	{
 		this->infoCnt = 2;
@@ -162,7 +162,7 @@ Manage::CPUInfo::CPUInfo()
 		this->brand = Manage::CPUVendor::CB_UNKNOWN;
 	}
 
-	Core::X86Util_cpuid(cpuInfo, 1);
+	X86Util_cpuid(cpuInfo, 1);
 	if ((cpuInfo[0] & 0xf00) == 0xf00)
 	{
 		this->familyId = ((cpuInfo[0] & 0xf00) >> 8) + ((cpuInfo[0] & 0xff00000) >> 20);
@@ -207,7 +207,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 	Int32 cpuInfo[4];
 	if (this->brand == Manage::CPUVendor::CB_INTEL)
 	{
-		Core::X86Util_cpuid(cpuInfo, 6);
+		X86Util_cpuid(cpuInfo, 6);
 		return cpuInfo[0] & 1;
 	}
 	else
@@ -225,7 +225,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	case 0:
 		{
 			UTF8Char cbuff[13];
-			Core::X86Util_cpuid(cpuInfo, 0);
+			X86Util_cpuid(cpuInfo, 0);
 			*(Int32*)&cbuff[0] = cpuInfo[1];
 			*(Int32*)&cbuff[4] = cpuInfo[3];
 			*(Int32*)&cbuff[8] = cpuInfo[2];
@@ -235,13 +235,13 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 		return true;
 	case 1:
 		{
-			Core::X86Util_cpuid(cpuInfo, 0);
+			X86Util_cpuid(cpuInfo, 0);
 			sb->AppendI32(cpuInfo[0]);
 		}
 		return true;
 	case 2:
 		{
-			Core::X86Util_cpuid(cpuInfo, 0);
+			X86Util_cpuid(cpuInfo, 0);
 			if (this->brand == Manage::CPUVendor::CB_INTEL)
 			{
 				switch ((cpuInfo[0] >> 12) & 3)
@@ -269,7 +269,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	case 3:
 		{
 			Int32 v;
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			if ((cpuInfo[0] & 0xf00) == 0xf00)
 			{
 				v = ((cpuInfo[0] >> 20) & 0xff) + 15;
@@ -285,7 +285,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 		{
 			Int32 v;
 			Int32 v2;
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			if ((cpuInfo[0] & 0xf0) == 0xf0)
 			{
 				v = ((cpuInfo[0] >> 12) & 15) | ((cpuInfo[0] >> 4) & 15);
@@ -314,43 +314,43 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 		return true;
 	case 5:
 		{
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			sb->AppendI32(cpuInfo[0] & 15);
 		}
 		return true;
 	case 6:
 		{
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			sb->AppendI32(cpuInfo[1] & 255);
 		}
 		return true;
 	case 7:
 		{
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			sb->AppendI32((cpuInfo[1] >> 8) & 255);
 		}
 		return true;
 	case 8:
 		{
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			sb->AppendI32((cpuInfo[1] >> 16) & 255);
 		}
 		return true;
 	case 9:
 		{
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			sb->AppendI32((cpuInfo[1] >> 24) & 255);
 		}
 		return true;
 	case 10:
 		{
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			AppendNameInfo10((UInt32)cpuInfo[2], (UInt32)cpuInfo[3], sb);
 		}
 		return true;
 	case 11:
 		{
-			Core::X86Util_cpuid(cpuInfo, 1);
+			X86Util_cpuid(cpuInfo, 1);
 			AppendNameInfo11((UInt32)cpuInfo[2], (UInt32)cpuInfo[3], sb);
 		}
 		return true;
@@ -360,7 +360,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 			OSInt i;
 			Bool firstFound;
 			Text::CStringNN cstr;
-			Core::X86Util_cpuid(cpuInfo, 2);
+			X86Util_cpuid(cpuInfo, 2);
 			*(Int32*)&buff[0] = cpuInfo[0];
 			*(Int32*)&buff[4] = cpuInfo[3];
 			*(Int32*)&buff[8] = cpuInfo[2];
@@ -398,7 +398,7 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> 
 	UOSInt retCnt = 0;
 	Text::CStringNN cstr;
 	Int32 cpuInfo[4];
-	Core::X86Util_cpuid(cpuInfo, 2);
+	X86Util_cpuid(cpuInfo, 2);
 	*(Int32*)&buff[0] = cpuInfo[0];
 	*(Int32*)&buff[4] = cpuInfo[3];
 	*(Int32*)&buff[8] = cpuInfo[2];
@@ -417,7 +417,7 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> 
 void Manage::CPUInfo::GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> flag2)
 {
 	Int32 cpuInfo[4];
-	Core::X86Util_cpuid(cpuInfo, 1);
+	X86Util_cpuid(cpuInfo, 1);
 	flag1.Set(cpuInfo[3]);
 	flag2.Set(cpuInfo[2]);
 }

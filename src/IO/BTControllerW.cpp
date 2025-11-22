@@ -308,7 +308,7 @@ UInt16 IO::BTController::GetSubversion()
 	return this->subversion;
 }
 
-void IO::BTController::LEScanHandleResult(LEScanHandler leHdlr, AnyType leHdlrObj)
+void IO::BTController::LEScanHandleResult2(LEScanHandler leHdlr, AnyType leHdlrObj)
 {
 	this->leHdlr = leHdlr;
 	this->leHdlrObj = leHdlrObj;

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPLAYERCOLLECTION
 #define _SM_MAP_MAPLAYERCOLLECTION
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/CallbackStorage.h"
 #include "Map/MapDrawLayer.h"
 #include "Sync/RWMutex.h"

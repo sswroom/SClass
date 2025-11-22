@@ -23,7 +23,7 @@
 #endif
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include <windows.h>
 #include <psapi.h>
 #include <tlhelp32.h>

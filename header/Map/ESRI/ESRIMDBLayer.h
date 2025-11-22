@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_ESRIMDBLAYER
 #define _SM_MAP_ESRI_ESRIMDBLAYER
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "DB/DBReader.h"
 #include "DB/SharedDBConn.h"
 #include "Map/MapDrawLayer.h"

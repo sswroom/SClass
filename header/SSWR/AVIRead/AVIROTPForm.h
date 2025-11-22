@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIROTPFORM
 #define _SM_SSWR_AVIREAD_AVIROTPFORM
 #include "Crypto/OTP.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
