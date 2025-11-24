@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 			me->txtSourceDB->SetText(dbName->ToCString());
 			if (dbt->GetDBCollation(dbName->ToCString(), collation))
 			{
-				sptr = DB::DBUtil::SDBCollation(sbuff, &collation, dbt->GetSQLType());
+				sptr = DB::DBUtil::SDBCollation(sbuff, collation, dbt->GetSQLType());
 				me->txtSourceCollation->SetText(CSTRP(sbuff, sptr));
 			}
 			else

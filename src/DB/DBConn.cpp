@@ -126,7 +126,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				UOSInt colSize = 0;
 				UOSInt colDP = 0;
 				col->SetNativeType(CSTRP(buff, ptr));
-				col->SetColType(DB::DBUtil::ParseColType(DB::SQLType::MySQL, buff, &colSize, &colDP));
+				col->SetColType(DB::DBUtil::ParseColType(DB::SQLType::MySQL, buff, colSize, colDP));
 				col->SetColSize(colSize);
 				col->SetColDP(colDP);
 				if (col->GetColType() == DB::DBUtil::CT_DateTime)
@@ -207,7 +207,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				*ptr = 0;
 			}
 			col->SetNativeType(CSTRP(buff, ptr));
-			col->SetColType(DB::DBUtil::ParseColType(DB::SQLType::MSSQL, buff, &colSize, &colDP));
+			col->SetColType(DB::DBUtil::ParseColType(DB::SQLType::MSSQL, buff, colSize, colDP));
 			col->SetColSize(colSize);
 			col->SetColDP(colDP);
 			tab->AddCol(col);

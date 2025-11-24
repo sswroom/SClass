@@ -131,7 +131,7 @@ DB::DBQueue::DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UOSI
 	this->nextDB = 0;
 	this->stopping = false;
 	DB::DBHandler *dbHdlr;
-	NEW_CLASS(dbHdlr, DB::DBHandler(this, db));
+	NEW_CLASS(dbHdlr, DB::DBHandler(*this, db));
 	this->dbList.Add(dbHdlr);
 }
 
@@ -157,7 +157,7 @@ DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Tex
 	while (it.HasNext())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, it.Next()));
+		NEW_CLASS(dbHdlr, DB::DBHandler(*this, it.Next()));
 		this->dbList.Add(dbHdlr);
 	}
 }
@@ -184,7 +184,7 @@ DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::
 	while (it.HasNext())
 	{
 		DB::DBHandler *dbHdlr;
-		NEW_CLASS(dbHdlr, DB::DBHandler(this, it.Next()));
+		NEW_CLASS(dbHdlr, DB::DBHandler(*this, it.Next()));
 		this->dbList.Add(dbHdlr);
 	}
 }
@@ -272,7 +272,7 @@ DB::DBQueue::~DBQueue()
 void DB::DBQueue::AddDB(NN<DB::DBTool> db)
 {
 	DB::DBHandler *dbHdlr;
-	NEW_CLASS(dbHdlr, DB::DBHandler(this, db));
+	NEW_CLASS(dbHdlr, DB::DBHandler(*this, db));
 	this->dbList.Add(dbHdlr);
 }
 
@@ -539,7 +539,7 @@ Bool DB::DBQueue::IsExecTimeout()
 	while (i-- > 0)
 	{
 		db = this->dbList.GetItem(i);
-		if (db->IsTimeout(&dt))
+		if (db->IsTimeout(dt))
 		{
 			return true;
 		}
@@ -547,7 +547,7 @@ Bool DB::DBQueue::IsExecTimeout()
 	return false;
 }
 
-DB::DBHandler::DBHandler(DB::DBQueue *dbQ, NN<DB::DBTool> db)
+DB::DBHandler::DBHandler(NN<DB::DBQueue> dbQ, NN<DB::DBTool> db)
 {
 	this->processing = false;
 	this->dbQ = dbQ;
@@ -790,7 +790,7 @@ void DB::DBHandler::Wake()
 	this->evt.Set();
 }
 
-Bool DB::DBHandler::IsTimeout(Data::DateTime *currTime)
+Bool DB::DBHandler::IsTimeout(NN<Data::DateTime> currTime)
 {
 	if (!this->processing)
 		return false;

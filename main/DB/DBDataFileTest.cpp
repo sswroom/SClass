@@ -770,9 +770,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.url")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.username")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.password")))->v);
-		if (DB::JavaDBUtil::OpenJDBC(cfg->GetValue(CSTR("spring.datasource.url")).OrNull(),
-			cfg->GetValue(CSTR("spring.datasource.username")).OrNull(),
-			cfg->GetValue(CSTR("spring.datasource.password")).OrNull(), log, sockf).SetTo(db))
+		if (DB::JavaDBUtil::OpenJDBC(Text::String::OrEmpty(cfg->GetValue(CSTR("spring.datasource.url"))),
+			cfg->GetValue(CSTR("spring.datasource.username")),
+			cfg->GetValue(CSTR("spring.datasource.password")), log, sockf).SetTo(db))
 		{
 			UOSInt i;
 			Data::ArrayListNN<LamppostData> dataList;

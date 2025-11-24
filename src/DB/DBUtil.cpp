@@ -1238,11 +1238,11 @@ UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrUInt64(buff, val) - buff);
 }
 
-UnsafeArray<UTF8Char> DB::DBUtil::SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Optional<Data::DateTime> dat, DB::SQLType sqlType, Int8 tzQhr)
 {
 	UnsafeArray<UTF8Char> sptr;
 	NN<Data::DateTime> nnDat;
-	if (!nnDat.Set(dat))
+	if (!dat.SetTo(nnDat))
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	Data::DateTime dt(nnDat);
 	if (sqlType == DB::SQLType::Access)
@@ -1307,15 +1307,16 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Data
 	}
 }
 
-UOSInt DB::DBUtil::SDBDateTimeLeng(Data::DateTime *dat, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBDateTimeLeng(Optional<Data::DateTime> dat, DB::SQLType sqlType)
 {
-	if (dat == 0)
+	NN<Data::DateTime> nnDat;
+	if (!dat.SetTo(nnDat))
 		return 4;
 
 	if (sqlType == DB::SQLType::Access)
 	{
 		UTF8Char buff[100];
-		return (UOSInt)(dat->ToLocalStr(buff) - buff + 2);
+		return (UOSInt)(nnDat->ToLocalStr(buff) - buff + 2);
 	}
 	else if (sqlType == DB::SQLType::MSSQL || sqlType == DB::SQLType::SQLite)
 	{
@@ -2153,20 +2154,11 @@ UOSInt DB::DBUtil::SDBTrimLeng(Text::CStringNN val, DB::SQLType sqlType)
 	}
 }
 
-DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<const UTF8Char> tName, UOSInt *colSize, UOSInt *colDP)
+DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<const UTF8Char> tName, InOutParam<UOSInt> colSize, InOutParam<UOSInt> colDP)
 {
 	UTF8Char typeName[64];
 	UOSInt typeNameLen;
-	UOSInt tmp = 0;
 	UOSInt i;
-	if (colSize == 0)
-	{
-		colSize = &tmp;
-	}
-	if (colDP == 0)
-	{
-		colDP = &tmp;
-	}
 	typeNameLen = (UOSInt)(Text::StrConcat(typeName, tName) - typeName);
 
 	if (sqlType == DB::SQLType::MySQL)
@@ -2179,17 +2171,17 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[8]);
+					colSize.Set(Text::StrToUInt32(&typeName[8]));
 					typeName[i] = ')';
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[8]);
+					colSize.Set(Text::StrToUInt32(&typeName[8]));
 				}
 			}
 			else
 			{
-				*colSize = 0;
+				colSize.Set(0);
 			}
 			return DB::DBUtil::CT_VarUTF32Char;
 		}
@@ -2201,17 +2193,17 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[5]);
+					colSize.Set(Text::StrToUInt32(&typeName[5]));
 					typeName[i] = ')';
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[5]);
+					colSize.Set(Text::StrToUInt32(&typeName[5]));
 				}
 			}
 			else
 			{
-				*colSize = 0;
+				colSize.Set(0);
 			}
 			return DB::DBUtil::CT_UTF32Char;
 		}
@@ -2219,12 +2211,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		{
 			if (Text::StrIndexOfC(typeName, typeNameLen, UTF8STRC("unsigned")) == INVALID_INDEX)
 			{
-				*colSize = 21;
+				colSize.Set(21);
 				return DB::DBUtil::CT_Int64;
 			}
 			else
 			{
-				*colSize = 20;
+				colSize.Set(20);
 				return DB::DBUtil::CT_UInt64;
 			}
 		}
@@ -2232,12 +2224,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		{
 			if (Text::StrIndexOfC(typeName, typeNameLen, UTF8STRC("unsigned")) == INVALID_INDEX)
 			{
-				*colSize = 11;
+				colSize.Set(11);
 				return DB::DBUtil::CT_Int32;
 			}
 			else
 			{
-				*colSize = 10;
+				colSize.Set(10);
 				return DB::DBUtil::CT_UInt32;
 			}
 		}
@@ -2245,12 +2237,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		{
 			if (Text::StrIndexOfC(typeName, typeNameLen, UTF8STRC("unsigned")) == INVALID_INDEX)
 			{
-				*colSize = 6;
+				colSize.Set(6);
 				return DB::DBUtil::CT_Int16;
 			}
 			else
 			{
-				*colSize = 5;
+				colSize.Set(5);
 				return DB::DBUtil::CT_UInt16;
 			}
 		}
@@ -2262,17 +2254,17 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[9]);
+					colSize.Set(Text::StrToUInt32(&typeName[9]));
 					typeName[i] = ')';
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[9]);
+					colSize.Set(Text::StrToUInt32(&typeName[9]));
 				}
 			}
 			else
 			{
-				*colSize = 0;
+				colSize.Set(0);
 			}
 			return DB::DBUtil::CT_DateTime;
 		}
@@ -2284,48 +2276,48 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[10]);
+					colSize.Set(Text::StrToUInt32(&typeName[10]));
 					typeName[i] = ')';
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[10]);
+					colSize.Set(Text::StrToUInt32(&typeName[10]));
 				}
 			}
 			else
 			{
-				*colSize = 0;
+				colSize.Set(0);
 			}
 			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("date")))
 		{
-			*colSize = 0;
+			colSize.Set(0);
 			return DB::DBUtil::CT_Date;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("double")))
 		{
-			*colSize = 8;
+			colSize.Set(8);
 			return DB::DBUtil::CT_Double;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("float")))
 		{
-			*colSize = 4;
+			colSize.Set(4);
 			return DB::DBUtil::CT_Float;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("longtext")))
 		{
-			*colSize = 0xffffffff;
+			colSize.Set(0xffffffff);
 			return DB::DBUtil::CT_VarUTF32Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("mediumtext")))
 		{
-			*colSize = 0xffffff;
+			colSize.Set(0xffffff);
 			return DB::DBUtil::CT_VarUTF32Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("text")))
 		{
-			*colSize = 65535;
+			colSize.Set(65535);
 			return DB::DBUtil::CT_VarUTF32Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("numeric")) || Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("decimal")))
@@ -2339,43 +2331,43 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[8]);
-					*colDP = Text::StrToUInt32(&typeName[i + 1]);
+					colSize.Set(Text::StrToUInt32(&typeName[8]));
+					colDP.Set(Text::StrToUInt32(&typeName[i + 1]));
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[8]);
+					colSize.Set(Text::StrToUInt32(&typeName[8]));
 				}
 			}
 			else
 			{
-				*colSize = 0;
+				colSize.Set(0);
 			}
 			return DB::DBUtil::CT_Decimal;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1) unsigned")))
 		{
-			*colSize = 1;
+			colSize.Set(1);
 			return DB::DBUtil::CT_Bool;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1)")))
 		{
-			*colSize = 1;
+			colSize.Set(1);
 			return DB::DBUtil::CT_Bool;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(3) unsigned")))
 		{
-			*colSize = 3;
+			colSize.Set(3);
 			return DB::DBUtil::CT_Byte;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(4)")))
 		{
-			*colSize = 4;
+			colSize.Set(4);
 			return DB::DBUtil::CT_Int16;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("bit(1)")))
 		{
-			*colSize = 1;
+			colSize.Set(1);
 			return DB::DBUtil::CT_Bool;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("geometry")))
@@ -2384,12 +2376,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("blob")))
 		{
-			*colSize = 0xffffffff;
+			colSize.Set(0xffffffff);
 			return DB::DBUtil::CT_Binary;
 		}
 		else
 		{
-			*colSize = 0;
+			colSize.Set(0);
 			return DB::DBUtil::CT_Unknown;
 		}
 	}
@@ -2401,7 +2393,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("text")))
 		{
-			*colSize = 0x7FFFFFFF;
+			colSize.Set(0x7FFFFFFF);
 			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("char")))
@@ -2414,22 +2406,22 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("datetime")))
 		{
-			*colSize = 3;
+			colSize.Set(3);
 			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("time")))
 		{
-			if (*colSize >= 10 && *colSize <= 16)
+			if (colSize.Get() >= 10 && colSize.Get() <= 16)
 			{
-				*colSize = *colSize - 9;
+				colSize.Set(colSize.Get() - 9);
 			}
-			else if (*colSize == 8)
+			else if (colSize.Get() == 8)
 			{
-				*colSize = 0;
+				colSize.Set(0);
 			}
 			else
 			{
-				*colSize = 7;
+				colSize.Set(7);
 			}
 			return DB::DBUtil::CT_DateTime;
 		}
@@ -2441,19 +2433,19 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[10]);
+					colSize.Set(Text::StrToUInt32(&typeName[10]));
 					typeName[i] = ')';
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[10]);
+					colSize.Set(Text::StrToUInt32(&typeName[10]));
 				}
 			}
 			else
 			{
-				*colSize = 7;
+				colSize.Set(7);
 			}
-			*colSize = 7;
+			colSize.Set(7);
 			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetimeoffset")))
@@ -2464,17 +2456,17 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[15]);
+					colSize.Set(Text::StrToUInt32(&typeName[15]));
 					typeName[i] = ')';
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[15]);
+					colSize.Set(Text::StrToUInt32(&typeName[15]));
 				}
 			}
 			else
 			{
-				*colSize = 7;
+				colSize.Set(7);
 			}
 			return DB::DBUtil::CT_DateTimeTZ;
 		}
@@ -2489,12 +2481,12 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
-					*colSize = Text::StrToUInt32(&typeName[8]);
-					*colDP = Text::StrToUInt32(&typeName[i + 1]);
+					colSize.Set(Text::StrToUInt32(&typeName[8]));
+					colDP.Set(Text::StrToUInt32(&typeName[i + 1]));
 				}
 				else
 				{
-					*colSize = Text::StrToUInt32(&typeName[8]);
+					colSize.Set(Text::StrToUInt32(&typeName[8]));
 				}
 			}
 			return DB::DBUtil::CT_Decimal;
@@ -2529,7 +2521,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("ntext")))
 		{
-			*colSize = 0x3FFFFFFF;
+			colSize.Set(0x3FFFFFFF);
 			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nchar")))
@@ -2554,7 +2546,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("sysname")))
 		{
-			*colSize = 128;
+			colSize.Set(128);
 			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("binary")))
@@ -2567,7 +2559,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("image")))
 		{
-			*colSize = 0x7fffffff;
+			colSize.Set(0x7fffffff);
 			return DB::DBUtil::CT_Binary;
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("uniqueidentifier")))
@@ -2576,7 +2568,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 		}
 		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("xml")))
 		{
-			*colSize = 1073741823;
+			colSize.Set(1073741823);
 			return DB::DBUtil::CT_VarUTF16Char;
 		}
 		else
@@ -2588,112 +2580,112 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<co
 	{
 		if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INTEGER")))
 		{
-			*colSize = 4;
+			colSize.Set(4);
 			return DB::DBUtil::CT_Int32;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INT")))
 		{
-			*colSize = 4;
+			colSize.Set(4);
 			return DB::DBUtil::CT_Int32;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("SMALLINT")))
 		{
-			*colSize = 2;
+			colSize.Set(2);
 			return DB::DBUtil::CT_Int16;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("MEDIUMINT")))
 		{
-			*colSize = 2;
+			colSize.Set(2);
 			return DB::DBUtil::CT_Int16;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("TINYINT")))
 		{
-			*colSize = 1;
+			colSize.Set(1);
 			return DB::DBUtil::CT_Byte;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BIGINT")))
 		{
-			*colSize = 8;
+			colSize.Set(8);
 			return DB::DBUtil::CT_Int64;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INT2")))
 		{
-			*colSize = 2;
+			colSize.Set(2);
 			return DB::DBUtil::CT_Int16;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INT8")))
 		{
-			*colSize = 8;
+			colSize.Set(8);
 			return DB::DBUtil::CT_Int64;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("REAL")))
 		{
-			*colSize = 8;
+			colSize.Set(8);
 			return DB::DBUtil::CT_Double;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DOUBLE")))
 		{
-			*colSize = 8;
+			colSize.Set(8);
 			return DB::DBUtil::CT_Double;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DATE")))
 		{
-			*colSize = 3;
+			colSize.Set(3);
 			return DB::DBUtil::CT_Date;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("DATETIME")))
 		{
-			*colSize = 3;
+			colSize.Set(3);
 			return DB::DBUtil::CT_DateTime;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BLOB")))
 		{
-			*colSize = 2147483647;
+			colSize.Set(2147483647);
 			return DB::DBUtil::CT_Binary;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("TEXT")))
 		{
-			*colSize = 2147483647;
+			colSize.Set(2147483647);
 			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("VARCHAR")))
 		{
-			*colSize = 2147483647;
+			colSize.Set(2147483647);
 			return DB::DBUtil::CT_VarUTF8Char;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POINT")))
 		{
-			*colSize = (UOSInt)DB::ColDef::GeometryType::Point;
+			colSize.Set((UOSInt)DB::ColDef::GeometryType::Point);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("LINESTRING")))
 		{
-			*colSize = (UOSInt)DB::ColDef::GeometryType::Polyline;
+			colSize.Set((UOSInt)DB::ColDef::GeometryType::Polyline);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("POLYGON")))
 		{
-			*colSize = (UOSInt)DB::ColDef::GeometryType::Polygon;
+			colSize.Set((UOSInt)DB::ColDef::GeometryType::Polygon);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("MULTIPOLYGON")))
 		{
-			*colSize = (UOSInt)DB::ColDef::GeometryType::MultiPolygon;
+			colSize.Set((UOSInt)DB::ColDef::GeometryType::MultiPolygon);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("GEOMETRY")))
 		{
-			*colSize = (UOSInt)DB::ColDef::GeometryType::Any;
+			colSize.Set((UOSInt)DB::ColDef::GeometryType::Any);
 			return DB::DBUtil::CT_Vector;
 		}
 		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BOOLEAN")))
 		{
-			*colSize = 1;
+			colSize.Set(1);
 			return DB::DBUtil::CT_Byte;
 		}
 		else
 		{
-			*colSize = 0;
+			colSize.Set(0);
 			return DB::DBUtil::CT_Unknown;
 		}
 	}
@@ -2785,9 +2777,9 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBCharset(UnsafeArray<UTF8Char> sqlstr, Chars
 	}
 }
 
-UnsafeArray<UTF8Char> DB::DBUtil::SDBCollationName(UnsafeArray<UTF8Char> sqlstr, Charset charset, Language lang, SQLType sqlType, Bool *requireAS)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBCollationName(UnsafeArray<UTF8Char> sqlstr, Charset charset, Language lang, SQLType sqlType, OutParam<Bool> requireAS)
 {
-	*requireAS = false;
+	requireAS.Set(false);
 	sqlstr = SDBCharset(sqlstr, charset, sqlType);
 	switch (lang)
 	{
@@ -2800,18 +2792,18 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBCollationName(UnsafeArray<UTF8Char> sqlstr,
 		break;
 	case Language::Unicode0900:
 		sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_0900"));
-		*requireAS = true;
+		requireAS.Set(true);
 		break;
 	}
 	return sqlstr;
 }
 
-UnsafeArray<UTF8Char> DB::DBUtil::SDBCollation(UnsafeArray<UTF8Char> sqlstr, const Collation *collation, SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBCollation(UnsafeArray<UTF8Char> sqlstr, NN<const Collation> collation, SQLType sqlType)
 {
 	if (sqlType == SQLType::MySQL)
 	{
 		Bool requireAS;
-		sqlstr = SDBCollationName(sqlstr, collation->charset, collation->lang, sqlType, &requireAS);
+		sqlstr = SDBCollationName(sqlstr, collation->charset, collation->lang, sqlType, requireAS);
 		if (requireAS)
 		{
 			if (collation->accentSensitive)
@@ -2828,7 +2820,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBCollation(UnsafeArray<UTF8Char> sqlstr, con
 	else if (sqlType == SQLType::MSSQL)
 	{
 		Bool requireAS;
-		sqlstr = SDBCollationName(sqlstr, collation->charset, collation->lang, sqlType, &requireAS);
+		sqlstr = SDBCollationName(sqlstr, collation->charset, collation->lang, sqlType, requireAS);
 		if (collation->caseSensitive)
 			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("_cs"));
 		else
