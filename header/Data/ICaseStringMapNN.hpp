@@ -43,7 +43,7 @@ namespace Data
 	template <class T> NN<StringMapNN<T>> ICaseStringMapNN<T>::Clone() const
 	{
 		NN<ICaseStringMapNN<T>> ret;
-		NEW_CLASSNN(ret, ICaseStringMapNN<T>(*this));
+		NEW_CLASSNN(ret, ICaseStringMapNN<T>(NNTHIS));
 		return ret;
 	}
 }

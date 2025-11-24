@@ -114,4 +114,5 @@ public:
 };
 
 #define NotNullPtr NN
+#define NNTHIS (*this)
 #endif

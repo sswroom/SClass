@@ -37,9 +37,9 @@ Bool Math::ShortestPath::Path::AddNode(NN<Math::ShortestPath::PathNode> node, Do
 	return true;
 }
 
-OSInt Math::ShortestPath::Path::CompareTo(Data::Comparable *obj) const
+OSInt Math::ShortestPath::Path::CompareTo(NN<Data::Comparable> obj) const
 {
-	Math::ShortestPath::Path *path2 = (Math::ShortestPath::Path*)obj;
+	NN<Math::ShortestPath::Path> path2 = NN<Math::ShortestPath::Path>::ConvertFrom(obj);
 	if (this->totalDistance > path2->totalDistance)
 	{
 		return -1;
@@ -60,7 +60,7 @@ Optional<Math::ShortestPath::Path> Math::ShortestPath::GetShortestPath(NN<Math::
 	NN<Math::ShortestPath::Path> tmpPath;
 	Optional<Math::ShortestPath::PathNode> currNode;
 	Optional<Math::ShortestPath::PathNode> nextNode;
-	Data::ArrayList<Math::ShortestPath::PathNode*> *neighbourNodes;
+	NN<Data::ArrayListNN<Math::ShortestPath::PathNode>> neighbourNodes;
 	Data::ArrayListNN<Path> paths;
 	Double distance;
 	OSInt cnt;
@@ -100,7 +100,7 @@ Optional<Math::ShortestPath::Path> Math::ShortestPath::GetShortestPath(NN<Math::
 				{
 					if (tmpPath->AddNode(nextNode, distance))
 					{
-						paths->SortedInsert(tmpPath);
+						paths.SortedInsert(tmpPath);
 						tmpPath = path->Clone();
 						if (paths.GetCount() >= 10000)
 							break;

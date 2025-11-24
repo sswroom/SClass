@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/AMDGPUManager.h"
 #include "IO/GPUManager.h"
 

@@ -49,7 +49,7 @@ namespace Data
 		UOSInt GetCount() const { return this->itemCnt; }
 		Bool GetKey(UOSInt index, NN<VariItem> key) const { if (index < itemCnt) {key->Set(items[index << 1]); return true;} return false; }
 		Bool GetValue(UOSInt index, NN<VariItem> val) const { if (index < itemCnt) {val->Set(items[(index << 1) + 1]); return true;} return false; }
-		DataSetMonthGrouper GroupKeyByMonth() { return DataSetMonthGrouper(*this); }
+		DataSetMonthGrouper GroupKeyByMonth() { return DataSetMonthGrouper(NNTHIS); }
 		void ValueCounts(NN<Data::ArrayList<UInt32>> result) const;
 		NN<DataSet> ValueCountsAsDS() const;
 		void SortByValue(NN<Data::Comparator<NN<VariItem>>> comparator);

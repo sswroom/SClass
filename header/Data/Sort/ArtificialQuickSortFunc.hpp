@@ -164,8 +164,8 @@ namespace Data
 				OSInt levi[256];
 				OSInt desni[256];
 #else
-				OSInt *levi = MemAlloc(OSInt, 65536);
-				OSInt *desni = &levi[32768];
+				UnsafeArray<OSInt> levi = MemAllocArr(OSInt, 65536);
+				UnsafeArray<OSInt> desni = &levi[32768];
 #endif
 				OSInt index;
 				OSInt i;
@@ -238,7 +238,7 @@ namespace Data
 					}
 				}
 #if _OSINT_SIZE != 16
-				MemFree(levi);
+				MemFreeArr(levi);
 #endif
 			}
 
@@ -252,12 +252,12 @@ namespace Data
 				OSInt j;
 				OSInt left;
 				OSInt right;
-				void *meja;
+				T meja;
 				OSInt left1;
 				OSInt right1;
-				void *temp1;
-				void *temp2;
-				void *temp;
+				T temp1;
+				T temp2;
+				T temp;
 
 				PreSortInv(arr, func, firstIndex, lastIndex);
 

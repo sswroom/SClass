@@ -36,11 +36,11 @@ Bool SSWR::ProcMonForm::SearchProcId(NN<SSWR::ProcMonForm::ProgInfo> prog)
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
 	i = progPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(progPath->ToCString().Substring(i + 1));
-	if (sess)
+	NN<Manage::Process::FindProcSess> sess;
+	if (Manage::Process::FindProcess(progPath->ToCString().Substring(i + 1)).SetTo(sess))
 	{
 		Text::StringBuilderUTF8 sb;
-		while (Manage::Process::FindProcessNext(sbuff, sess, &info).NotNull())
+		while (Manage::Process::FindProcessNext(sbuff, sess, info).NotNull())
 		{
 			Manage::Process proc(info.processId, false);
 			sb.ClearStr();

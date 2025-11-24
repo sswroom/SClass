@@ -46,7 +46,7 @@ namespace Data
 
 	template <class T> T ReadonlyArray<T>::GetItem(UOSInt index) const
 	{
-		return (*this)[index];
+		return NNTHIS[index];
 	}
 	
 	template <class T> T ReadonlyArray<T>::operator [](UOSInt index) const

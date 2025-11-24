@@ -17,9 +17,9 @@ namespace Data
 			UOSInt nextTableSize;
 			UInt32 resetCode;
 			UInt32 endCode;
-			UInt8 *lzwTable;
+			UnsafeArray<UInt8> lzwTable;
 			UOSInt tableSize;
-			UInt8 *decBuff;
+			UnsafeArray<UInt8> decBuff;
 			UOSInt decBuffSize;
 			UOSInt codeSizeAdj;
 			UInt32 localCode;

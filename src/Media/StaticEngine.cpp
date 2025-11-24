@@ -4,7 +4,7 @@
 #include "IO/StmData/FileData.h"
 #include "Math/Math_C.h"
 #include "Media/ImageResizer.h"
-#include "Media/ImageCopyC.h"
+#include "Media/ImageCopy_C.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
 #include "Media/StaticEngine.h"
@@ -12,15 +12,15 @@
 #include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Text/MyStringW.h"
 
-Media::StaticEngine::StaticEngine(Parser::ParserList *parsers)
+Media::StaticEngine::StaticEngine(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
-	NEW_CLASS(this->iab32, Media::ABlend::AlphaBlend8_C8(0, false));
+	NEW_CLASSNN(this->iab32, Media::ABlend::AlphaBlend8_C8(0, false));
 }
 
 Media::StaticEngine::~StaticEngine()
 {
-	DEL_CLASS(this->iab32);
+	this->iab32.Delete();
 }
 
 Optional<Media::DrawImage> Media::StaticEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
@@ -38,9 +38,10 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileNa
 	NN<Media::ImageList> nnimgList;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		if (this->parsers)
+		NN<Parser::ParserList> parsers;
+		if (this->parsers.SetTo(parsers))
 		{
-			imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::ImageList));
+			imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		}
 	}
 
@@ -57,7 +58,7 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileNa
 	return simg;
 }
 
-Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(const WChar *fileName)
+Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(UnsafeArray<const WChar> fileName)
 {
 	Optional<Media::ImageList> imgList = 0;
 	NN<Media::ImageList> nnimgList;
@@ -65,9 +66,10 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(const WChar *fileName
 	{
 		IO::StmData::FileData fd(s, false);
 		s->Release();
-		if (this->parsers)
+		NN<Parser::ParserList> parsers;
+		if (this->parsers.SetTo(parsers))
 		{
-			imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::ImageList));
+			imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		}
 	}
 
@@ -118,14 +120,16 @@ Media::StaticBrush::~StaticBrush()
 {
 }
 
-Media::StaticPen::StaticPen(UInt32 color, Double thick, const UInt8 *pattern, UOSInt nPattern)
+Media::StaticPen::StaticPen(UInt32 color, Double thick, UnsafeArrayOpt<const UInt8> pattern, UOSInt nPattern)
 {
 	this->color = color;
 	this->thick = thick;
-	if (pattern)
+	UnsafeArray<const UInt8> srcPattern;
+	UnsafeArray<UInt8> destPattern;
+	if (pattern.SetTo(srcPattern))
 	{
-		this->pattern = MemAlloc(UInt8, nPattern);
-		MemCopyNO(this->pattern, pattern, nPattern);
+		this->pattern = destPattern = MemAllocArr(UInt8, nPattern);
+		destPattern.CopyFromNO(srcPattern, nPattern);
 		this->nPattern = nPattern;
 	}
 	else
@@ -137,9 +141,10 @@ Media::StaticPen::StaticPen(UInt32 color, Double thick, const UInt8 *pattern, UO
 
 Media::StaticPen::~StaticPen()
 {
-	if (this->pattern)
+	UnsafeArray<UInt8> nnpattern;
+	if (this->pattern.SetTo(nnpattern))
 	{
-		MemFree(this->pattern);
+		MemFreeArr(nnpattern);
 	}
 }
 
@@ -148,7 +153,7 @@ Double Media::StaticPen::GetThick()
 	return this->thick;
 }
 
-Media::StaticDrawImage::StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
+Media::StaticDrawImage::StaticDrawImage(NN<StaticEngine> eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
 	this->eng = eng;
 }
@@ -209,7 +214,7 @@ void Media::StaticDrawImage::SetVDPI(Double dpi)
 	}
 }
 
-UInt8 *Media::StaticDrawImage::GetImgBits(OutParam<Bool> revOrder)
+UnsafeArrayOpt<UInt8> Media::StaticDrawImage::GetImgBits(OutParam<Bool> revOrder)
 {
 	revOrder.Set(false);
 	return this->data;
@@ -228,8 +233,8 @@ Bool Media::StaticDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coor
 	}
 	if (this->info.pf == Media::PF_B8G8R8A8)
 	{
-		img->To32bpp();
-		if (img->info.atype == Media::AT_NO_ALPHA)
+		img->ToB8G8R8A8();
+		if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
 		{
 			Int32 x = Double2Int32(tl.x);
 			Int32 y = Double2Int32(tl.y);
@@ -260,15 +265,15 @@ Bool Media::StaticDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coor
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(img->data + (sy * img->info.storeSize.x << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, img->info.storeSize.x << 2, this->info.storeSize.x << 2);
+				ImageCopy_ImgCopy(img->data.Ptr() + (sy * img->info.storeSize.x << 2) + (sx << 2), this->data.Ptr() + y * bpl + (x << 2), w << 2, h, img->info.storeSize.x << 2, this->info.storeSize.x << 2);
 			}
 		}
 		else
 		{
 			OSInt w = img->info.dispSize.x;
 			OSInt h = img->info.dispSize.y;
-			UInt8 *dbits = this->data;
-			UInt8 *sbits = img->data;
+			UnsafeArray<UInt8> dbits = this->data;
+			UnsafeArray<UInt8> sbits = img->data;
 			OSInt dbpl = this->info.storeSize.x << 2;
 			OSInt sbpl = img->info.storeSize.x << 2;
 
@@ -315,8 +320,8 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 	}
 	if (this->info.pf == Media::PF_B8G8R8A8)
 	{
-		simg->To32bpp();
-		if (simg->info.atype == Media::AT_NO_ALPHA)
+		simg->ToB8G8R8A8();
+		if (simg->info.atype == Media::AT_IGNORE_ALPHA || simg->info.atype == Media::AT_ALPHA_ALL_FF)
 		{
 			Int32 x = Double2Int32(destTL.x);
 			Int32 y = Double2Int32(destTL.y);
@@ -347,7 +352,7 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(simg->data + (sy * simg->info.storeSize.x << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, simg->info.storeSize.x << 2, bpl);
+				ImageCopy_ImgCopy(simg->data.Ptr() + (sy * simg->info.storeSize.x << 2) + (sx << 2), this->data.Ptr() + y * bpl + (x << 2), w << 2, h, simg->info.storeSize.x << 2, bpl);
 			}
 		}
 		else
@@ -358,8 +363,8 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 			Int32 sy = Double2Int32(srcTL.y);
 			OSInt w = Double2Int32(srcSize.x);
 			OSInt h = Double2Int32(srcSize.y);
-			UInt8 *dbits = (UInt8*)this->data;
-			UInt8 *sbits = (UInt8*)simg->data;
+			UnsafeArray<UInt8> dbits = this->data;
+			UnsafeArray<UInt8> sbits = simg->data;
 			OSInt dbpl = this->info.storeSize.x << 2;
 			OSInt sbpl = simg->info.storeSize.x << 2;
 
@@ -396,7 +401,7 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 	return false;
 }
 
-NN<Media::DrawPen> Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	NN<Media::StaticPen> p;
 	NEW_CLASSNN(p, Media::StaticPen(color, thick, pattern, nPattern));
@@ -422,9 +427,9 @@ void Media::StaticDrawImage::DelBrush(NN<DrawBrush> b)
 	brush.Delete();
 }
 
-Media::StaticImage *Media::StaticDrawImage::ToStaticImage() const
+Optional<Media::StaticImage> Media::StaticDrawImage::ToStaticImage() const
 {
-	return (Media::StaticImage*)this->Clone().Ptr();
+	return NN<Media::StaticImage>::ConvertFrom(this->Clone());
 }
 
 UOSInt Media::StaticDrawImage::SaveGIF(NN<IO::SeekableStream> stm)

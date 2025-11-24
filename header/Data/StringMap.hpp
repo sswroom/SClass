@@ -225,7 +225,7 @@ namespace Data
 	template <class T> NN<StringMap<T>> StringMap<T>::Clone() const
 	{
 		NN<StringMap<T>> ret;
-		NEW_CLASSNN(ret, StringMap<T>(*this));
+		NEW_CLASSNN(ret, StringMap<T>(NNTHIS));
 		return ret;
 	}
 }

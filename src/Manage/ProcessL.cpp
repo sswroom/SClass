@@ -958,7 +958,7 @@ struct Manage::Process::FindProcSess
 	Optional<Text::String> procName;
 };
 
-Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
+Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CString processName)
 {
 	NN<IO::Path::FindFileSession> ffsess;
 	FindProcSess *sess;
@@ -968,19 +968,11 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString proces
 	}
 	sess = MemAlloc(FindProcSess, 1);
 	sess->findFileSess = ffsess;
-	Text::CStringNN nnprocessName;
-	if (processName.SetTo(nnprocessName))
-	{
-		sess->procName = Text::String::New(nnprocessName);
-	}
-	else
-	{
-		sess->procName = 0;
-	}
+	sess->procName = Text::String::NewOrNull(processName);
 	return sess;
 }
 
-Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
+Optional<Manage::Process::FindProcSess> Manage::Process::FindProcessW(UnsafeArrayOpt<const WChar> processName)
 {
 	NN<IO::Path::FindFileSession> ffsess;
 	FindProcSess *sess;
@@ -990,18 +982,11 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 	}
 	sess = MemAlloc(FindProcSess, 1);
 	sess->findFileSess = ffsess;
-	if (processName)
-	{
-		sess->procName = Text::String::NewNotNull(processName);
-	}
-	else
-	{
-		sess->procName = 0;
-	}
+	sess->procName = Text::String::NewOrNull(processName);
 	return sess;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, NN<Manage::Process::FindProcSess> fpsess, NN<Manage::Process::ProcessInfo> info)
 {
 	UInt32 pid;
 	UTF8Char sbuff[256];
@@ -1069,7 +1054,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 	return 0;
 }
 
-UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, NN<Manage::Process::FindProcSess> fpsess, NN<Manage::Process::ProcessInfo> info)
 {
 	UInt32 pid;
 	UTF8Char sbuff[256];
@@ -1137,11 +1122,11 @@ UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> proce
 	return 0;
 }
 
-void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *fpsess)
+void Manage::Process::FindProcessClose(NN<Manage::Process::FindProcSess> fpsess)
 {
 	IO::Path::FindFileClose(fpsess->findFileSess);
 	OPTSTR_DEL(fpsess->procName);
-	MemFree(fpsess);
+	MemFreeNN(fpsess);
 }
 
 Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilderUTF8> result)
@@ -1248,7 +1233,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::StringBuilderUTF8> result)
 {
 	NN<Text::String> s = Text::String::NewNotNull(cmd);
 	Int32 ret = ExecuteProcess(s->ToCString(), result);
@@ -1270,7 +1255,7 @@ Bool Manage::Process::OpenPath(Text::CStringNN path)
 	return ret == 0;
 }
 
-Bool Manage::Process::OpenPathW(const WChar *path)
+Bool Manage::Process::OpenPathW(UnsafeArray<const WChar> path)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));

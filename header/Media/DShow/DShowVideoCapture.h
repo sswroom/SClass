@@ -57,7 +57,7 @@ namespace Media
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
 			virtual void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom);
-			virtual UOSInt GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt);
+			virtual UOSInt GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt);
 			virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
 		};
 

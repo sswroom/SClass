@@ -21,23 +21,18 @@ NN<Data::ArrayListNN<Math::ShortestPath::PathNode>> Map::PathSearcher::PointNode
 	return this->nearNodes;
 }
 
-Map::PathSearcher::PointNode *Map::PathSearcher::GetNode(Double x, Double y, Bool toAdd)
+Optional<Map::PathSearcher::PointNode> Map::PathSearcher::GetNode(Double x, Double y, OptOut<OSInt> index)
 {
 	OSInt i = 0;
-	OSInt j = nodes->GetCount() - 1;
+	OSInt j = this->nodes.GetCount() - 1;
 	OSInt k;
-	PointNode *n;
+	NN<PointNode> n;
 	Int32 ix = (Int32)(x * 200000.0);
 	Int32 iy = (Int32)(y * 200000.0);
-/*	if (ix == 22827576 && iy == 4457438)
-	{
-		ix = 22827576;
-		iy = 4457438;
-	}*/
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		n = (PointNode*)nodes->GetItem(k);
+		n = this->nodes.GetItemNoCheck((UOSInt)k);
 		if (n->ix > ix)
 		{
 			j = k - 1;
@@ -56,22 +51,28 @@ Map::PathSearcher::PointNode *Map::PathSearcher::GetNode(Double x, Double y, Boo
 		}
 		else
 		{
+			index.Set(i);
 			return n;
 		}
 	}
-	if (toAdd)
-	{
-		NEW_CLASS(n, Map::PathSearcher::PointNode(x, y, ix, iy));
-		nodes->Insert(i, n);
-		return n;
-	}
-	else
-	{
-		return 0;
-	}
+	index.Set(i);
+	return 0;
 }
 
-Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
+NN<Map::PathSearcher::PointNode> Map::PathSearcher::GetOrAddNode(Double x, Double y)
+{
+	OSInt i;
+	NN<Map::PathSearcher::PointNode> n;
+	if (GetNode(x, y, i).SetTo(n))
+	{
+		return n;
+	}
+	NEW_CLASSNN(n, Map::PathSearcher::PointNode(x, y, (Int32)(x * 200000.0), (Int32)(y * 200000.0)));
+	nodes.Insert(i, n);
+	return n;
+}
+
+Map::PathSearcher::PathSearcher(NN<Map::MapDrawLayer> layer, Double minAngleRad)
 {
 	this->nodes = 0;
 	this->minAngleRad = minAngleRad;
@@ -81,47 +82,48 @@ Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
 	}
 
 	Data::ArrayListInt64 objIds;
-	Map::NameArray *nameArr;
-	Math::Geometry::Polyline *pl;
-	Map::GetObjectSess *sess;
+	Optional<Map::NameArray> nameArr;
+	NN<Math::Geometry::Polyline> pl;
+	NN<Map::GetObjectSess> sess;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	PointNode *lastNode;
-	PointNode *currNode;
+	Optional<PointNode> lastNode;
+	NN<PointNode> nnlastNode;
+	NN<PointNode> currNode;
+	NN<Math::Geometry::LineString> ls;
 
-	NEW_CLASS(nodes, Data::ArrayList<Math::ShortestPath::PathNode*>());
 	sess = layer->BeginGetObject();
-	layer->GetAllObjectIds(objIds, &nameArr);
+	layer->GetAllObjectIds(objIds, nameArr);
 
 	i = objIds.GetCount();
 	while (i-- > 0)
 	{
-		pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds.GetItem(i));
-		if (pl)
+		if (Optional<Math::Geometry::Polyline>::ConvertFrom(layer->GetNewVectorById(sess, objIds.GetItem(i))).SetTo(pl))
 		{
-			Math::Coord2DDbl *points;
-			UInt32 *parts;
-			points = pl->GetPointList(k);
-			parts = pl->GetPtOfstList(j);
+			UnsafeArray<Math::Coord2DDbl> points;
+			j = pl->GetCount();
 			while (j-- > 0)
 			{
-				lastNode = 0;
-				l = parts[j];
-				while (k-- > l)
+				if (pl->GetItem(j).SetTo(ls))
 				{
-					currNode = GetNode(points[k].x, points[k].y, true);
-					if (lastNode)
+					lastNode = 0;
+					points = ls->GetPointList(k);
+					while (k-- > 0)
 					{
-						lastNode->nearNodes.Add(currNode);
-						currNode->nearNodes.Add(lastNode);
+						currNode = GetOrAddNode(points[k].x, points[k].y);
+						if (lastNode.SetTo(nnlastNode))
+						{
+							nnlastNode->nearNodes.Add(currNode);
+							currNode->nearNodes.Add(nnlastNode);
+						}
+						lastNode = currNode;
 					}
-					lastNode = currNode;
 				}
-				k = l;
+
 			}
-			DEL_CLASS(pl);
+			pl.Delete();
 		}
 	}
 
@@ -130,38 +132,28 @@ Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
 
 Map::PathSearcher::~PathSearcher()
 {
-	if (nodes)
-	{
-		PointNode *n;
-		OSInt i = nodes->GetCount();
-		while (i-- > 0)
-		{
-			n = (PointNode*)nodes->GetItem(i);
-			DEL_CLASS(n);
-		}
-		DEL_CLASS(nodes);
-		nodes = 0;
-	}
+	this->nodes.DeleteAll();
 }
 
-Double Map::PathSearcher::CalNodeDistance(Math::ShortestPath::PathNode *node1, Math::ShortestPath::PathNode *node2)
+Double Map::PathSearcher::CalNodeDistance(NN<Math::ShortestPath::PathNode> node1, NN<Math::ShortestPath::PathNode> node2)
 {
-	Map::PathSearcher::PointNode *n1 = (Map::PathSearcher::PointNode*)node1;
-	Map::PathSearcher::PointNode *n2 = (Map::PathSearcher::PointNode*)node2;
+	NN<Map::PathSearcher::PointNode> n1 = NN<Map::PathSearcher::PointNode>::ConvertFrom(node1);
+	NN<Map::PathSearcher::PointNode> n2 = NN<Map::PathSearcher::PointNode>::ConvertFrom(node2);
 	Double xDiff = n1->x - n2->x;
 	Double yDiff = n1->y - n2->y;
 	return Math_Sqrt(xDiff * xDiff + yDiff * yDiff); //Math::Geometry::SphereDistDeg(n1->y, n1->x, n2->y, n2->x, Math::Geometry::RADIUS_METER_EARTH_WGS1984);
 }
 
-Bool Map::PathSearcher::PathValid(PathNode *lastNode, PathNode *currNode, PathNode *nextNode)
+Bool Map::PathSearcher::PathValid(Optional<PathNode> lastNode, NN<PathNode> currNode, NN<PathNode> nextNode)
 {
-	if (lastNode == 0)
+	NN<PathNode> nnlastNode;
+	if (!lastNode.SetTo(nnlastNode))
 		return true;
 	if (lastNode == nextNode)
 		return false;
-	PointNode *lastPoint = (PointNode*)lastNode;
-	PointNode *currPoint = (PointNode*)currNode;
-	PointNode *nextPoint = (PointNode*)nextNode;
+	NN<PointNode> lastPoint = NN<PointNode>::ConvertFrom(nnlastNode);
+	NN<PointNode> currPoint = NN<PointNode>::ConvertFrom(currNode);
+	NN<PointNode> nextPoint = NN<PointNode>::ConvertFrom(nextNode);
 	Double angle1;
 	Double angle2;
 	if (lastPoint->x == currPoint->x && lastPoint->y == currPoint->y)
@@ -190,22 +182,22 @@ Bool Map::PathSearcher::PathValid(PathNode *lastNode, PathNode *currNode, PathNo
 	return angle1 < minAngleRad;
 }
 
-Math::ShortestPath::PathNode *Map::PathSearcher::GetNearestNode(Double x, Double y)
+Optional<Math::ShortestPath::PathNode> Map::PathSearcher::GetNearestNode(Double x, Double y)
 {
 	Double minDistance;
-	PointNode *minNode;
+	NN<PointNode> minNode;
 	Double distance;
-	PointNode *node;
+	NN<PointNode> node;
 
-	OSInt i = this->nodes->GetCount();
+	UOSInt i = this->nodes.GetCount();
 	if (i <= 0)
 		return 0;
-	minNode = (Map::PathSearcher::PointNode*)this->nodes->GetItem(0);
+	minNode = this->nodes.GetItemNoCheck(0);
 	minDistance = Math::GeometryTool::SphereDistDeg(y, x, minNode->y, minNode->x, Math::GeometryTool::RADIUS_METER_EARTH_WGS1984);
 
 	while (i-- > 0)
 	{
-		node = (Map::PathSearcher::PointNode*)this->nodes->GetItem(i);
+		node = this->nodes.GetItemNoCheck(i);
 		distance = Math::GeometryTool::SphereDistDeg(y, x, node->y, node->x, Math::GeometryTool::RADIUS_METER_EARTH_WGS1984);
 		if (distance < minDistance)
 		{
@@ -218,7 +210,7 @@ Math::ShortestPath::PathNode *Map::PathSearcher::GetNearestNode(Double x, Double
 
 Bool Map::PathSearcher::IsError()
 {
-	return this->nodes == 0;
+	return this->nodes.GetCount() == 0;
 }
 
 NN<Math::Geometry::LineString> Map::PathSearcher::ToPolyline(NN<Math::ShortestPath::Path> path)
@@ -226,7 +218,7 @@ NN<Math::Geometry::LineString> Map::PathSearcher::ToPolyline(NN<Math::ShortestPa
 	NN<Math::Geometry::LineString> pl;
 	NN<Map::PathSearcher::PointNode> n;
 
-	Math::Coord2DDbl *points;
+	UnsafeArray<Math::Coord2DDbl> points;
 	UOSInt i;
 	NEW_CLASSNN(pl, Math::Geometry::LineString(0, path->nodes.GetCount(), false, false));
 	points = pl->GetPointList(i);

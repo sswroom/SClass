@@ -88,7 +88,7 @@ namespace Text
 	{
 		this->buff = MemAllocArr(T, this->buffSize = 1024);
 		this->buffEnd = this->buff;
-		*buff = 0;
+		this->buff[0] = 0;
 	}
 
 	template<class T> Text::StringBuilder<T>::~StringBuilder()
@@ -100,42 +100,42 @@ namespace Text
 	{
 		this->AllocLeng(6);
 		this->buffEnd = Text::StrInt16(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU16(UInt16 iVal)
 	{
 		this->AllocLeng(5);
 		this->buffEnd = Text::StrUInt16(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI32(Int32 iVal)
 	{
 		this->AllocLeng(11);
 		this->buffEnd = Text::StrInt32(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU32(UInt32 iVal)
 	{
 		this->AllocLeng(10);
 		this->buffEnd = Text::StrUInt32(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI64(Int64 iVal)
 	{
 		this->AllocLeng(22);
 		this->buffEnd = Text::StrInt64(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU64(UInt64 iVal)
 	{
 		this->AllocLeng(20);
 		this->buffEnd = Text::StrUInt64(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendDate(NN<Data::DateTime> dt)
@@ -145,7 +145,7 @@ namespace Text
 		sptr = dt->ToString(sbuff, CHSTR("yyyy-MM-dd HH:mm:ss"));
 		this->AllocLeng(19);
 		this->buffEnd = Text::StrConcatC(this->buffEnd.Ptr(), (const T*)sbuff, (UOSInt)(sptr - sbuff));
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendOSInt(OSInt iVal)
@@ -157,7 +157,7 @@ namespace Text
 		this->AllocLeng(11);
 		this->buffEnd = Text::StrInt32(this->buffEnd.Ptr(), (Int32)iVal);
 	#endif
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendUOSInt(UOSInt iVal)
@@ -169,7 +169,7 @@ namespace Text
 		this->AllocLeng(11);
 		this->buffEnd = Text::StrUInt32(this->buffEnd.Ptr(), (UInt32)iVal);
 	#endif
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendSB(NN<Text::StringBuilder<T>> sb)
@@ -178,56 +178,56 @@ namespace Text
 		this->AllocLeng(slen);
 		MemCopyNO(this->buffEnd.Ptr(), sb->buff, (slen + 1) * sizeof(T));
 		this->buffEnd = &this->buffEnd[slen];
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex8(UInt8 iVal)
 	{
 		this->AllocLeng(2);
 		this->buffEnd = Text::StrHexByte(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex16(UInt16 iVal)
 	{
 		this->AllocLeng(4);
 		this->buffEnd = Text::StrHexVal16(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex24(UInt32 iVal)
 	{
 		this->AllocLeng(6);
 		this->buffEnd = Text::StrHexVal24(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32(UInt32 iVal)
 	{
 		this->AllocLeng(8);
 		this->buffEnd = Text::StrHexVal32(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32V(UInt32 iVal)
 	{
 		this->AllocLeng(8);
 		this->buffEnd = Text::StrHexVal32V(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64(UInt64 iVal)
 	{
 		this->AllocLeng(16);
 		this->buffEnd = Text::StrHexVal64(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64V(UInt64 iVal)
 	{
 		this->AllocLeng(16);
 		this->buffEnd = Text::StrHexVal64V(this->buffEnd.Ptr(), iVal);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHexOS(UOSInt iVal)
@@ -246,7 +246,7 @@ namespace Text
 		UOSInt lbCnt = (buffSize >> 4);
 		OSInt i;
 		if (buffSize == 0)
-			return *this;
+			return NNTHIS;
 		if ((buffSize & 15) == 0)
 			lbCnt -= 1;
 		if (lineBreak == LineBreakType::CRLF)
@@ -264,8 +264,8 @@ namespace Text
 			this->AllocLeng((buffSize << 1) + lbCnt);
 			while (buffSize-- > 0)
 			{
-				this->buffEnd[0] = (T)MyString_STRHEXARR[*buff >> 4];
-				this->buffEnd[1] = (T)MyString_STRHEXARR[*buff & 15];
+				this->buffEnd[0] = (T)MyString_STRHEXARR[buff[0] >> 4];
+				this->buffEnd[1] = (T)MyString_STRHEXARR[buff[0] & 15];
 				this->buffEnd += 2;
 				buff++;
 				i++;
@@ -293,8 +293,8 @@ namespace Text
 			this->AllocLeng(buffSize * 3 + lbCnt - 1);
 			while (buffSize-- > 0)
 			{
-				this->buffEnd[0] = (T)MyString_STRHEXARR[*buff >> 4];
-				this->buffEnd[1] = (T)MyString_STRHEXARR[*buff & 15];
+				this->buffEnd[0] = (T)MyString_STRHEXARR[buff[0] >> 4];
+				this->buffEnd[1] = (T)MyString_STRHEXARR[buff[0] & 15];
 				this->buffEnd[2] = seperator;
 				this->buffEnd += 3;
 				buff++;
@@ -318,7 +318,7 @@ namespace Text
 			}
 			*--buffEnd = 0;
 		}
-		return *this;
+		return NNTHIS;
 	}
 
 	template<class T> void Text::StringBuilder<T>::ClearStr()
@@ -357,7 +357,7 @@ namespace Text
 		{
 			buffEnd -= cnt;
 		}
-		*buffEnd = 0;
+		buffEnd[0] = 0;
 	}
 
 	template<class T> void Text::StringBuilder<T>::RemoveChars(UOSInt index, UOSInt cnt)
@@ -393,7 +393,7 @@ namespace Text
 		if ((this->buffEnd - this->buff) > (OSInt)leng)
 		{
 			this->buffEnd = &this->buff[leng];
-			*this->buffEnd = 0;
+			this->buffEnd[0] = 0;
 		}
 	}
 
@@ -402,14 +402,14 @@ namespace Text
 		if (index >= (UOSInt)(this->buffEnd - this->buff))
 		{
 			buffEnd = buff;
-			*buff = 0;
+			buff[0] = 0;
 		}
 		else if (index > 0)
 		{
 			MemCopyO(this->buff, &this->buff[index], ((UOSInt)(this->buffEnd - this->buff) - index + 1) * sizeof(T));
 			this->buffEnd -= index;
 		}
-		return *this;
+		return NNTHIS;
 	}
 
 	template<class T> void Text::StringBuilder<T>::ToUpper()

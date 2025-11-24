@@ -155,7 +155,7 @@ namespace Data
 	{
 		NN<ArrayList<T>> newArr;
 		NEW_CLASSNN(newArr, ArrayList<T>(this->capacity));
-		newArr->AddAll(*this);
+		newArr->AddAll(NNTHIS);
 		return newArr;
 	}
 
@@ -226,7 +226,7 @@ namespace Data
 		this->Clear();
 		this->EnsureCapacity(v.capacity);
 		this->AddAll(v);
-		return *this;
+		return NNTHIS;
 	}
 
 }

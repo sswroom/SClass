@@ -95,7 +95,7 @@ namespace Math
 		{
 			this->x += v.x;
 			this->y += v.y;
-			return *this;
+			return NNTHIS;
 		}
 
 		Math::Value2D<T> SwapXY() const

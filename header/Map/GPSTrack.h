@@ -156,7 +156,7 @@ namespace Map
 	private:
 		NN<Map::GPSTrack> gps;
 		OSInt currRow;
-		GPSTrack::GPSRecordFull *currRec;
+		Optional<GPSTrack::GPSRecordFull> currRec;
 	public:
 		GPSDataReader(NN<Map::GPSTrack> gps);
 		virtual ~GPSDataReader();

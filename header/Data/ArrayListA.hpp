@@ -230,7 +230,7 @@ namespace Data
 	{
 		NN<ArrayListA<T>> newArr;
 		NEW_CLASSNN(newArr, ArrayListA<T>(this->capacity));
-		newArr->AddAll(*this);
+		newArr->AddAll(NNTHIS);
 		return newArr;
 	}
 

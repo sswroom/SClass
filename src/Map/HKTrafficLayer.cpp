@@ -716,7 +716,7 @@ const Map::HKTrafficLayer::NodeInfo Map::HKTrafficLayer::nodeTable[] = {
 {993026, 828232.358585403, 825962.975994093}
 };
 
-const Map::HKTrafficLayer::NodeInfo *Map::HKTrafficLayer::GetNodeInfo(Int32 nodeId)
+Optional<const Map::HKTrafficLayer::NodeInfo> Map::HKTrafficLayer::GetNodeInfo(Int32 nodeId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(nodeTable) / sizeof(nodeTable[0])) - 1;
@@ -744,14 +744,15 @@ const Map::HKTrafficLayer::NodeInfo *Map::HKTrafficLayer::GetNodeInfo(Int32 node
 
 void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed)
 {
-	const NodeInfo *fromNode = GetNodeInfo(fromId);
-	const NodeInfo *toNode = GetNodeInfo(toId);
-	if (fromNode == 0 || toNode == 0)
+	NN<const NodeInfo> fromNode;
+	NN<const NodeInfo> toNode;
+	if (!GetNodeInfo(fromId).SetTo(fromNode) || !GetNodeInfo(toId).SetTo(toNode))
 	{
 		return;
 	}
 	Int64 id = (((Int64)fromId) << 32) | (UInt32)toId;
 	NN<RoadInfo> road;
+	NN<Math::Geometry::Vector2D> vec;
 
 	Sync::MutexUsage mutUsage(this->roadMut);
 	if (!this->roadMap.Get(id).SetTo(road))
@@ -768,9 +769,9 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		NN<CenterlineInfo> lineInfo;
 		if (this->vecMap.Get(id).SetTo(lineInfo))
 		{
-			road->vec = lineInfo->pl->Clone().Ptr();
+			road->vec = vec = lineInfo->pl->Clone();
 			Math::RectAreaDbl bounds;
-			bounds = road->vec->GetBounds();
+			bounds = vec->GetBounds();
 			road->minX = bounds.min.x;
 			road->minY = bounds.min.y;
 			road->maxX = bounds.max.x;
@@ -792,7 +793,7 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 	mutUsage.EndUse();
 }
 
-IO::Stream *Map::HKTrafficLayer::OpenURLStream()
+Optional<IO::Stream> Map::HKTrafficLayer::OpenURLStream()
 {
 	if (this->url->StartsWithICase(UTF8STRC("FILE:///")))
 	{
@@ -867,10 +868,7 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 	while (i-- > 0)
 	{
 		road = this->roadMap.GetItemNoCheck(i);
-		if (road->vec)
-		{
-			DEL_CLASS(road->vec);
-		}
+		road->vec.Delete();
 		MemFreeNN(road);
 	}
 
@@ -885,7 +883,7 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 	this->url->Release();
 }
 
-void Map::HKTrafficLayer::SetURL(Text::String *url)
+void Map::HKTrafficLayer::SetURL(NN<Text::String> url)
 {
 	this->url->Release();
 	this->url = url->Clone();
@@ -1010,10 +1008,9 @@ void Map::HKTrafficLayer::ReloadData()
 {
 	UInt8 buff[2048];
 	UOSInt readSize;
-	IO::Stream *stm;
+	NN<IO::Stream> stm;
 //	printf("Reloading traffic data...");
-	stm = this->OpenURLStream();
-	if (stm)
+	if (this->OpenURLStream().SetTo(stm))
 	{
 		IO::MemoryStream mstm;
 		while (true)
@@ -1109,7 +1106,7 @@ void Map::HKTrafficLayer::ReloadData()
 		{
 //			printf("failed\r\n");
 		}
-		DEL_CLASS(stm);
+		stm.Delete();
 	}
 	else
 	{
@@ -1135,7 +1132,7 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Opt
 	while (i < j)
 	{
 		road = this->roadMap.GetItemNoCheck(i);
-		if (road->vec)
+		if (road->vec.NotNull())
 		{
 			outArr->Add(road->objId);
 			ret++;
@@ -1163,7 +1160,7 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, O
 	while (i < j)
 	{
 		road = this->roadMap.GetItemNoCheck(i);
-		if (road->vec && road->minX <= rect.max.x && road->maxX >= rect.min.x && road->minY <= rect.max.y && road->maxY >= rect.min.y)
+		if (road->vec.NotNull() && road->minX <= rect.max.x && road->maxX >= rect.min.x && road->minY <= rect.max.y && road->maxY >= rect.min.y)
 		{
 			outArr->Add(road->objId);
 			retCnt++;
@@ -1240,22 +1237,23 @@ void Map::HKTrafficLayer::EndGetObject(NN<GetObjectSess> session)
 Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<RoadInfo> road;
-	Math::Geometry::Vector2D *vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = 0;
+	NN<Math::Geometry::Vector2D> nnvec;
 	Sync::MutexUsage mutUsage(this->roadMut);
-	if (this->roadMap.Get(id).SetTo(road) && road->vec)
+	if (this->roadMap.Get(id).SetTo(road) && road->vec.SetTo(nnvec))
 	{
-		vec = road->vec->Clone().Ptr();
+		vec = nnvec = nnvec->Clone();
 		if (road->lev == Map::HKTrafficLayer::SL_GOOD)
 		{
-			((Math::Geometry::Polyline*)vec)->SetColor(0xff00ff00);
+			NN<Math::Geometry::Polyline>::ConvertFrom(nnvec)->SetColor(0xff00ff00);
 		}
 		else if (road->lev == Map::HKTrafficLayer::SL_AVERAGE)
 		{
-			((Math::Geometry::Polyline*)vec)->SetColor(0xffffff00);
+			NN<Math::Geometry::Polyline>::ConvertFrom(nnvec)->SetColor(0xffffff00);
 		}
 		else if (road->lev == Map::HKTrafficLayer::SL_BAD)
 		{
-			((Math::Geometry::Polyline*)vec)->SetColor(0xffff0000);
+			NN<Math::Geometry::Polyline>::ConvertFrom(nnvec)->SetColor(0xffff0000);
 		}
 	}
 	return vec;
@@ -1271,7 +1269,7 @@ Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_HKTRAFFIC_LAYER;
 }
 
-Map::MapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
+Optional<Map::MapDrawLayer> Map::HKTrafficLayer::GetNodePoints()
 {
 	Map::VectorLayer *layer;
 	UTF8Char sbuff[32];

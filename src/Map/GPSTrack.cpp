@@ -1164,67 +1164,68 @@ OSInt Map::GPSDataReader::GetRowChanged()
 
 Int32 Map::GPSDataReader::GetInt32(UOSInt colIndex)
 {
-	if (this->currRec == 0)
+	NN<GPSTrack::GPSRecordFull> currRec;
+	if (!this->currRec.SetTo(currRec))
 		return 0;
 	if (colIndex == 2)
 	{
-		return Double2Int32(this->currRec->pos.GetLat());
+		return Double2Int32(currRec->pos.GetLat());
 	}
 	else if (colIndex == 3)
 	{
-		return Double2Int32(this->currRec->pos.GetLon());
+		return Double2Int32(currRec->pos.GetLon());
 	}
 	else if (colIndex == 4)
 	{
-		return Double2Int32(this->currRec->speed);
+		return Double2Int32(currRec->speed);
 	}
 	else if (colIndex == 5)
 	{
-		return Double2Int32(this->currRec->heading);
+		return Double2Int32(currRec->heading);
 	}
 	else if (colIndex == 6)
 	{
-		return this->currRec->valid;
+		return currRec->valid;
 	}
 	else if (colIndex == 7)
 	{
-		return this->currRec->nSateUsedGPS;
+		return currRec->nSateUsedGPS;
 	}
 	else if (colIndex == 8)
 	{
-		return this->currRec->nSateViewGPS;
+		return currRec->nSateViewGPS;
 	}
 	else if (colIndex == 9)
 	{
-		return this->currRec->nSateUsed;
+		return currRec->nSateUsed;
 	}
 	else if (colIndex == 10)
 	{
-		return this->currRec->nSateUsedSBAS;
+		return currRec->nSateUsedSBAS;
 	}
 	else if (colIndex == 11)
 	{
-		return this->currRec->nSateUsedGLO;
+		return currRec->nSateUsedGLO;
 	}
 	else if (colIndex == 12)
 	{
-		return this->currRec->nSateViewGLO;
+		return currRec->nSateViewGLO;
 	}
 	else if (colIndex == 13)
 	{
-		return this->currRec->nSateViewGA;
+		return currRec->nSateViewGA;
 	}
 	else if (colIndex == 14)
 	{
-		return this->currRec->nSateViewQZSS;
+		return currRec->nSateViewQZSS;
 	}
 	else if (colIndex == 15)
 	{
-		return this->currRec->nSateViewBD;
+		return currRec->nSateViewBD;
 	}
 	else if (colIndex == 16)
 	{
-		return Double2Int32(this->currRec->altitude);
+		return Double2Int32(currRec->altitude);
 	}
 	return 0;
 }
@@ -1236,7 +1237,7 @@ Int64 Map::GPSDataReader::GetInt64(UOSInt colIndex)
 
 UnsafeArrayOpt<WChar> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
-	if (this->currRec == 0)
+	if (this->currRec.IsNull())
 		return 0;
 	if (colIndex == 0)
 	{
@@ -1280,7 +1281,7 @@ Optional<Text::String> Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 
 UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
-	if (this->currRec == 0)
+	if (this->currRec.IsNull())
 		return 0;
 	if (colIndex == 0)
 	{
@@ -1299,78 +1300,80 @@ UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray
 
 Data::Timestamp Map::GPSDataReader::GetTimestamp(UOSInt colIndex)
 {
-	if (this->currRec == 0)
+	NN<GPSTrack::GPSRecordFull> currRec;
+	if (!this->currRec.SetTo(currRec))
 		return Data::Timestamp(0);
 	if (colIndex == 0)
 	{
-		return Data::Timestamp(this->currRec->recTime, Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp(currRec->recTime, Data::DateTimeUtil::GetLocalTzQhr());
 	}
 	return Data::Timestamp(0);
 }
 
 Double Map::GPSDataReader::GetDblOrNAN(UOSInt colIndex)
 {
-	if (this->currRec == 0)
+	NN<GPSTrack::GPSRecordFull> currRec;
+	if (!this->currRec.SetTo(currRec))
 		return NAN;
 	if (colIndex == 2)
 	{
-		return this->currRec->pos.GetLat();
+		return currRec->pos.GetLat();
 	}
 	else if (colIndex == 3)
 	{
-		return this->currRec->pos.GetLon();
+		return currRec->pos.GetLon();
 	}
 	else if (colIndex == 4)
 	{
-		return this->currRec->speed;
+		return currRec->speed;
 	}
 	else if (colIndex == 5)
 	{
-		return this->currRec->heading;
+		return currRec->heading;
 	}
 	else if (colIndex == 6)
 	{
-		return this->currRec->valid;
+		return currRec->valid;
 	}
 	else if (colIndex == 7)
 	{
-		return this->currRec->nSateUsedGPS;
+		return currRec->nSateUsedGPS;
 	}
 	else if (colIndex == 8)
 	{
-		return this->currRec->nSateViewGPS;
+		return currRec->nSateViewGPS;
 	}
 	else if (colIndex == 9)
 	{
-		return this->currRec->nSateUsed;
+		return currRec->nSateUsed;
 	}
 	else if (colIndex == 10)
 	{
-		return this->currRec->nSateUsedSBAS;
+		return currRec->nSateUsedSBAS;
 	}
 	else if (colIndex == 11)
 	{
-		return this->currRec->nSateUsedGLO;
+		return currRec->nSateUsedGLO;
 	}
 	else if (colIndex == 12)
 	{
-		return this->currRec->nSateViewGLO;
+		return currRec->nSateViewGLO;
 	}
 	else if (colIndex == 13)
 	{
-		return this->currRec->nSateViewGA;
+		return currRec->nSateViewGA;
 	}
 	else if (colIndex == 14)
 	{
-		return this->currRec->nSateViewQZSS;
+		return currRec->nSateViewQZSS;
 	}
 	else if (colIndex == 15)
 	{
-		return this->currRec->nSateViewBD;
+		return currRec->nSateViewBD;
 	}
 	else if (colIndex == 16)
 	{
-		return this->currRec->altitude;
+		return currRec->altitude;
 	}
 	return NAN;
 }
@@ -1392,18 +1395,19 @@ UOSInt Map::GPSDataReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 
 Optional<Math::Geometry::Vector2D> Map::GPSDataReader::GetVector(UOSInt colIndex)
 {
-	if (this->currRec == 0)
+	NN<GPSTrack::GPSRecordFull> currRec;
+	if (!this->currRec.SetTo(currRec))
 		return 0;
 	if (colIndex != 1)
 		return 0;
 	Math::Geometry::Point *pt;
 	if (this->gps->GetHasAltitude())
 	{
-		NEW_CLASS(pt, Math::Geometry::PointZ(4326, this->currRec->pos.x, this->currRec->pos.y, this->currRec->altitude));
+		NEW_CLASS(pt, Math::Geometry::PointZ(4326, currRec->pos.x, currRec->pos.y, currRec->altitude));
 	}
 	else
 	{
-		NEW_CLASS(pt, Math::Geometry::Point(4326, this->currRec->pos.x, this->currRec->pos.y));
+		NEW_CLASS(pt, Math::Geometry::Point(4326, currRec->pos.x, currRec->pos.y));
 	}
 	return pt;
 }
@@ -1423,7 +1427,7 @@ UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetName(UOSInt colIndex, UnsafeArra
 
 Bool Map::GPSDataReader::IsNull(UOSInt colIndex)
 {
-	if (this->currRec == 0)
+	if (this->currRec.IsNull())
 		return true;
 	if (colIndex > 16)
 		return true;

@@ -110,8 +110,8 @@ namespace DB
 		static UOSInt SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName, SQLType sqlType);
 		static UOSInt SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, SQLType sqlType);
-		static UnsafeArray<UTF8Char> SDBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName, SQLType sqlType);
-		static UOSInt SDBColWLeng(const WChar *colName, SQLType sqlType);
+		static UnsafeArray<UTF8Char> SDBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const WChar> colName, SQLType sqlType);
+		static UOSInt SDBColWLeng(UnsafeArray<const WChar> colName, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CStringNN val, SQLType sqlType);
 		static UOSInt SDBTrimLeng(Text::CStringNN val, SQLType sqlType);
 		static DB::DBUtil::ColType ParseColType(SQLType sqlType, UnsafeArray<const UTF8Char> typeName, InOutParam<UOSInt> colSize, InOutParam<UOSInt> colDP);

@@ -18,12 +18,12 @@ void *Media::OpenCV::OCVFrame::GetFrame()
 	return this->frame;
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSInt> *area)
+NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSInt> area)
 {
-	return 0;
+	return NEW_CLASS_D(OCVFrame(this->frame));
 }
 
-void Media::OpenCV::OCVFrame::ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, UOSInt nPoints, UInt8 color)
+void Media::OpenCV::OCVFrame::ClearOutsidePolygon(UnsafeArray<Math::Coord2D<UOSInt>> poly, UOSInt nPoints, UInt8 color)
 {
 
 }

@@ -4,7 +4,7 @@
 #include "Math/Math_C.h"
 #include "Sync/MutexUsage.h"
 
-Map::MultiReverseGeocoder::MultiReverseGeocoder(IO::Writer *errWriter)
+Map::MultiReverseGeocoder::MultiReverseGeocoder(Optional<IO::Writer> errWriter)
 {
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
@@ -12,23 +12,25 @@ Map::MultiReverseGeocoder::MultiReverseGeocoder(IO::Writer *errWriter)
 
 Map::MultiReverseGeocoder::~MultiReverseGeocoder()
 {
+	NN<Map::ReverseGeocoder> revGeo;
 	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		Map::ReverseGeocoder *revGeo;
-		revGeo = revGeos.RemoveAt(i);
-		DEL_CLASS(revGeo);
+		if (revGeos.RemoveAt(i).SetTo(revGeo))
+		{
+			revGeo.Delete();
+		}
 	}
 }
 
-UTF8Char *Map::MultiReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::MultiReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	OSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos.GetItem(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
+		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
@@ -38,7 +40,7 @@ UTF8Char *Map::MultiReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize,
 			break;
 		}
 	}
-	if (sptr && buff[0])
+	if (sptr.NotNull() && buff[0])
 	{
 		return sptr;
 	}
@@ -48,14 +50,14 @@ UTF8Char *Map::MultiReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize,
 	}
 }
 
-UTF8Char *Map::MultiReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::MultiReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	OSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos.GetItem(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
+		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
@@ -65,7 +67,7 @@ UTF8Char *Map::MultiReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, 
 			break;
 		}
 	}
-	if (sptr && buff[0])
+	if (sptr.NotNull() && buff[0])
 	{
 		return sptr;
 	}
@@ -75,7 +77,7 @@ UTF8Char *Map::MultiReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, 
 	}
 }
 
-void Map::MultiReverseGeocoder::AddReverseGeocoder(Map::ReverseGeocoder *revGeo)
+void Map::MultiReverseGeocoder::AddReverseGeocoder(NN<Map::ReverseGeocoder> revGeo)
 {
 	this->revGeos.Add(revGeo);
 }

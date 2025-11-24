@@ -9,7 +9,7 @@ namespace Data
 	template <class T> class SyncArrayListNN : public ReadingListNN<T>
 	{
 	public:
-		typedef void (__stdcall *FreeFunc)(NN<T> v);
+		typedef void (CALLBACKFUNC FreeFunc)(NN<T> v);
 	private:
 		Data::ArrayListNN<T> arr;
 		Sync::Mutex mut;
@@ -20,7 +20,7 @@ namespace Data
 		virtual ~SyncArrayListNN();
 
 		virtual UOSInt Add(NN<T> val);
-		virtual UOSInt AddRange(const NN<T> *arr, UOSInt cnt);
+		virtual UOSInt AddRange(UnsafeArray<const NN<T>> arr, UOSInt cnt);
 		virtual Bool Remove(NN<T> val);
 		virtual Optional<T> RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, NN<T> val);
@@ -61,7 +61,7 @@ namespace Data
 		return this->arr.Add(val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayListNN<T>::AddRange(const NN<T> *arr, UOSInt cnt)
+	template <class T> UOSInt Data::SyncArrayListNN<T>::AddRange(UnsafeArray<const NN<T>> arr, UOSInt cnt)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.AddRange(arr, cnt);

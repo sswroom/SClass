@@ -31,7 +31,7 @@ namespace Map
 			Int64 objId;
 			Int32 fromId;
 			Int32 toId;
-			Math::Geometry::Vector2D *vec;
+			Optional<Math::Geometry::Vector2D> vec;
 			SaturationLevel lev;
 			Int32 spd;
 			Double minX;
@@ -61,14 +61,14 @@ namespace Map
 		Data::FastMapNN<Int64, RoadInfo> roadMap;
 		Data::FastMapNN<Int64, CenterlineInfo> vecMap;
 
-		static const NodeInfo *GetNodeInfo(Int32 nodeId);
+		static Optional<const NodeInfo> GetNodeInfo(Int32 nodeId);
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);
-		IO::Stream *OpenURLStream();
+		Optional<IO::Stream> OpenURLStream();
 	public:
 		HKTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact);
 		virtual ~HKTrafficLayer();
 
-		void SetURL(Text::String *url);
+		void SetURL(NN<Text::String> url);
 		Bool AddRoadLayer(NN<Map::MapDrawLayer> roadLayer);
 		void EndInit();
 		void ReloadData();
@@ -95,7 +95,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 
-		static Map::MapDrawLayer *GetNodePoints();
+		static Optional<Map::MapDrawLayer> GetNodePoints();
 	};
 }
 #endif

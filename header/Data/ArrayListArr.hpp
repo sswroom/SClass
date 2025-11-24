@@ -268,7 +268,7 @@ namespace Data
 	{
 		NN<ArrayListArr<T>> newArr;
 		NEW_CLASSNN(newArr, ArrayListArr<T>(this->capacity));
-		newArr->AddAll(*this);
+		newArr->AddAll(NNTHIS);
 		return newArr;
 	}
 
@@ -419,7 +419,7 @@ namespace Data
 		this->Clear();
 		this->EnsureCapacity(v.capacity);
 		this->AddAll(v);
-		return *this;
+		return NNTHIS;
 	}
 
 	template <class T> void ArrayListArr<T>::Reverse()

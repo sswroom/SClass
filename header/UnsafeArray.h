@@ -272,6 +272,11 @@ public:
 		MemCopyNO(this->p, srcArr.Ptr(), arrSize * sizeof(T));
 	}
 
+	void CopyFromO(UnsafeArray<const T> srcArr, UOSInt arrSize)
+	{
+		MemCopyO(this->p, srcArr.Ptr(), arrSize * sizeof(T));
+	}
+
 	template <typename V> static UnsafeArray<T> ConvertFrom(UnsafeArray<V> ptr)
 	{
 		UnsafeArray<T> ret;

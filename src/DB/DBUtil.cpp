@@ -2114,7 +2114,7 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, DB::SQLTy
 	}
 }
 
-UnsafeArray<UTF8Char> DB::DBUtil::SDBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const WChar> colName, DB::SQLType sqlType)
 {
 	UnsafeArray<const UTF8Char> sptr = Text::StrToUTF8New(colName);
 	UnsafeArray<UTF8Char> ret = SDBColUTF8(sqlstr, sptr, sqlType);
@@ -2122,7 +2122,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBColW(UnsafeArray<UTF8Char> sqlstr, const WC
 	return ret;
 }
 
-UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBColWLeng(UnsafeArray<const WChar> colName, DB::SQLType sqlType)
 {
 	UnsafeArray<const UTF8Char> sptr = Text::StrToUTF8New(colName);
 	UOSInt ret = SDBColUTF8Leng(sptr, sqlType);

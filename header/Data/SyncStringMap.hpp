@@ -7,36 +7,38 @@
 
 namespace Data
 {
-	template <class T> class SyncStringMap : public SyncArrayMap<const UTF8Char*, T>
+	template <class T> class SyncStringMap : public SyncArrayMap<UnsafeArrayOpt<const UTF8Char>, T>
 	{
 	public:
 		SyncStringMap();
 		virtual ~SyncStringMap();
 
-		virtual T Put(const UTF8Char *key, T val);
-		virtual T Get(const UTF8Char *key);
-		virtual T Remove(const UTF8Char *key);
-		virtual const UTF8Char *GetKey(OSInt index);
+		virtual T Put(UnsafeArrayOpt<const UTF8Char> key, T val);
+		virtual T Get(UnsafeArrayOpt<const UTF8Char> key);
+		virtual T Remove(UnsafeArrayOpt<const UTF8Char> key);
+		virtual UnsafeArrayOpt<const UTF8Char> GetKey(OSInt index);
 		virtual void Clear();
 	};
 
 
-	template <class T> SyncStringMap<T>::SyncStringMap() : SyncArrayMap<const UTF8Char*, T>()
+	template <class T> SyncStringMap<T>::SyncStringMap() : SyncArrayMap<UnsafeArrayOpt<const UTF8Char>* T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListStrUTF8());
 	}
 
 	template <class T> SyncStringMap<T>::~SyncStringMap()
 	{
+		UnsafeArray<const UTF8Char> key;
 		OSInt i = this->keys->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew((UTF8Char*)this->keys->GetItem(i));
+			if (this->keys->GetItem(i).SetTo(key))
+				Text::StrDelNew(key);
 		}
 		DEL_CLASS(this->keys);
 	}
 
-	template <class T> T SyncStringMap<T>::Put(const UTF8Char *key, T val)
+	template <class T> T SyncStringMap<T>::Put(UnsafeArrayOpt<const UTF8Char> key, T val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		OSInt i;
@@ -55,7 +57,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T SyncStringMap<T>::Get(const UTF8Char *key)
+	template <class T> T SyncStringMap<T>::Get(UnsafeArrayOpt<const UTF8Char> key)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		OSInt i;
@@ -70,7 +72,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T SyncStringMap<T>::Remove(const UTF8Char *key)
+	template <class T> T SyncStringMap<T>::Remove(UnsafeArrayOpt<const UTF8Char> key)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		OSInt i;
@@ -86,7 +88,7 @@ namespace Data
 		}
 	}
 
-	template <class T> const UTF8Char *SyncStringMap<T>::GetKey(OSInt index)
+	template <class T> UnsafeArrayOpt<const UTF8Char> SyncStringMap<T>::GetKey(OSInt index)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->keys->GetItem(index);
@@ -95,11 +97,13 @@ namespace Data
 	template <class T> void SyncStringMap<T>::Clear()
 	{
 		Sync::MutexUsage mutUsage(this->mut);
+		UnsafeArray<const UTF8Char> key;
 		OSInt i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->keys->RemoveAt(i));
+			if (this->keys->RemoveAt(i).SetTo(key))
+				Text::StrDelNew(key);
 		}
 		this->vals->Clear();
 	}

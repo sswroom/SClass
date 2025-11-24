@@ -25,7 +25,7 @@ namespace Text
 		virtual NN<StringBuilderUTF> AppendDate(NN<Data::DateTime> dt) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendDate(dt)); }
 		virtual NN<StringBuilderUTF> AppendOSInt(OSInt iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendOSInt(iVal)); }
 		virtual NN<StringBuilderUTF> AppendUOSInt(UOSInt iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendUOSInt(iVal)); }
-		virtual NN<StringBuilderUTF> AppendLB(Text::LineBreakType lbt) {if (lbt == Text::LineBreakType::CRLF) return AppendC(UTF8STRC("\r\n")); else if (lbt == Text::LineBreakType::CR) return AppendChar('\r', 1); else if (lbt == Text::LineBreakType::LF) return AppendChar('\n', 1); else return *this; }
+		virtual NN<StringBuilderUTF> AppendLB(Text::LineBreakType lbt) {if (lbt == Text::LineBreakType::CRLF) return AppendC(UTF8STRC("\r\n")); else if (lbt == Text::LineBreakType::CR) return AppendChar('\r', 1); else if (lbt == Text::LineBreakType::LF) return AppendChar('\n', 1); else return NNTHIS; }
 
 		virtual NN<StringBuilderUTF> AppendHex8(UInt8 iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex8(iVal)); }
 		virtual NN<StringBuilderUTF> AppendHex16(UInt16 iVal) { return NN<StringBuilderUTF>::ConvertFrom(::Text::StringBuilder<T>::AppendHex16(iVal)); }

@@ -124,18 +124,18 @@ namespace Math
 		Double2D& operator+=(Double2D v)
 		{
 			this->vals = PADDPD(this->vals, v.vals);
-			return *this;
+			return NNTHIS;
 		}
 
 		Double2D& operator-=(Double2D v)
 		{
 			this->vals = PSUBPD(this->vals, v.vals);
-			return *this;
+			return NNTHIS;
 		}
 
 		Double SumSqr() const
 		{
-			Double2D sqr = *this * this->vals;
+			Double2D sqr = NNTHIS * this->vals;
 			return sqr.x + sqr.y;
 		}
 

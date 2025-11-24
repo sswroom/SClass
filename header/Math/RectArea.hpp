@@ -84,7 +84,7 @@ namespace Math
 
 		Math::RectArea<T> Reorder() const
 		{
-			Math::RectArea<T> ret = *this;
+			Math::RectArea<T> ret = NNTHIS;
 			T tmp;
 			if (ret.min.x > ret.max.x)
 			{

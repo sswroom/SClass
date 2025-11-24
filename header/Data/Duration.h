@@ -207,7 +207,7 @@ namespace Data
 			{
 				this->seconds += dur.seconds;
 			}
-			return *this;
+			return NNTHIS;
 		}
 
 		Data::Duration operator-(Data::Duration dur) const
@@ -233,7 +233,7 @@ namespace Data
 				this->seconds -= 1;
 				this->ns = 1000000000 + this->ns - dur.ns;
 			}
-			return *this;
+			return NNTHIS;
 		}
 
 

@@ -73,7 +73,7 @@ namespace Data
 
 		void FORCEINLINE CopyFrom(const ByteArrayR &srcArr) const
 		{
-			CopyArray(*this, srcArr);
+			CopyArray(NNTHIS, srcArr);
 		}
 
 		void CopyInner(UOSInt destIndex, UOSInt srcIndex, UOSInt cnt)
@@ -95,7 +95,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 
 		ByteArray &operator+=(OSInt ofst)
@@ -111,7 +111,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += (UOSInt)ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 
 #if _OSINT_SIZE == 64
@@ -123,7 +123,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 
 		ByteArray &operator+=(Int32 ofst)
@@ -139,7 +139,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += (UOSInt)(OSInt)ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 #endif
 
@@ -162,7 +162,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize -= ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 
 		ByteArray operator+(UOSInt ofst)
@@ -381,7 +381,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 
 		ByteArrayR &operator+=(OSInt ofst)
@@ -397,7 +397,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += (UOSInt)ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 
 #if _OSINT_SIZE == 64
@@ -409,7 +409,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 
 		ByteArrayR &operator+=(Int32 ofst)
@@ -425,7 +425,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			this->prevSize += (UOSInt)(OSInt)ofst;
 #endif
-			return *this;
+			return NNTHIS;
 		}
 #endif
 	};
