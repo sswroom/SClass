@@ -65,7 +65,7 @@ Bool Exporter::MD4Exporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[16];
 	Text::Encoding enc(this->codePage);
-	IO::StreamWriter writer(stm, &enc);
+	IO::StreamWriter writer(stm, enc);
 	UOSInt i = 0;
 	UOSInt cnt = fchk->GetCount();
 	while (i < cnt)

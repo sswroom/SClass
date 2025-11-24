@@ -77,8 +77,8 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(Optional<UI::GUIClientCo
 	this->txtStateSince->SetRect(104, 28, 150, 23, false);
 	this->txtStateSince->SetReadOnly(true);
 
-	Text::String *version = this->vbox.GetVersion();
-	if (version)
+	NN<Text::String> version;
+	if (this->vbox.GetVersion().SetTo(version))
 	{
 		this->txtVersion->SetText(version->ToCString());
 	}

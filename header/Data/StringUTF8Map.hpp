@@ -21,9 +21,8 @@ namespace Data
 	};
 
 
-	template <class T> StringUTF8Map<T>::StringUTF8Map() : ArrayCmpMap<UnsafeArrayOpt<const UTF8Char>, T>()
+	template <class T> StringUTF8Map<T>::StringUTF8Map() : ArrayCmpMap<UnsafeArrayOpt<const UTF8Char>, T>(NEW_CLASS_D(Data::ArrayListStrUTF8()))
 	{
-		NEW_CLASS(this->keys, Data::ArrayListStrUTF8());
 	}
 
 	template <class T> StringUTF8Map<T>::~StringUTF8Map()
@@ -37,7 +36,7 @@ namespace Data
 				Text::StrDelNew(nnkey);
 			}
 		}
-		DEL_CLASS(this->keys);
+		this->keys.Delete();
 	}
 
 	template <class T> T StringUTF8Map<T>::Put(UnsafeArrayOpt<const UTF8Char> key, T val)

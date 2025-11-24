@@ -7,7 +7,7 @@ namespace Data
 	template <class T> class ICaseBTreeUTF8Map : public Data::BTreeUTF8Map<T>
 	{
 	protected:
-		T PutNode(BTreeUTF8Node<T> *node, Text::CStringNN key, UInt32 hash, T val);
+		T PutNode(NN<BTreeUTF8Node<T>> node, Text::CStringNN key, UInt32 hash, T val);
 		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const;
 	public:
 		ICaseBTreeUTF8Map();
@@ -17,9 +17,11 @@ namespace Data
 		virtual T Remove(Text::CStringNN key);
 	};
 
-	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(BTreeUTF8Node<T> *node, Text::CStringNN key, UInt32 hash, T val)
+	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(NN<BTreeUTF8Node<T>> node, Text::CStringNN key, UInt32 hash, T val)
 	{
-		BTreeUTF8Node<T> *tmpNode;
+		NN<BTreeUTF8Node<T>> leftNode;
+		NN<BTreeUTF8Node<T>> rightNode;
+		NN<BTreeUTF8Node<T>> tmpNode;
 		T retVal;
 		OSInt i;
 		if (node->nodeHash == hash)
@@ -42,19 +44,19 @@ namespace Data
 		}
 		else if (i > 0)
 		{
-			if (node->leftNode == 0)
+			if (!node->leftNode.SetTo(leftNode))
 			{
 				tmpNode = node;
-				node->leftNode = this->NewNode(key, hash, val);
-				node->leftNode->parNode = node;
-				while (node)
+				node->leftNode = leftNode = this->NewNode(key, hash, val);
+				leftNode->parNode = node;
+				node->nodeCnt++;
+				while (node->parNode.SetTo(node))
 				{
 					node->nodeCnt++;
-					node = node->parNode;
 				}
 				node = tmpNode;
 				UInt32 currLev = 1;
-				while (node)
+				while (true)
 				{
 					if (node->maxLev >= currLev)
 					{
@@ -62,13 +64,16 @@ namespace Data
 					}
 					node->maxLev = currLev;
 					currLev++;
-					node = node->parNode;
+					if (!node->parNode.SetTo(node))
+					{
+						break;
+					}
 				}
 				return 0;
 			}
 			else
 			{
-				retVal = PutNode(node->leftNode, key, hash, val);
+				retVal = PutNode(leftNode, key, hash, val);
 /*				Int32 leftLev;
 				Int32 rightLev;
 				if (node->rightNode == 0)
@@ -89,19 +94,19 @@ namespace Data
 		}
 		else
 		{
-			if (node->rightNode == 0)
+			if (!node->rightNode.SetTo(rightNode))
 			{
 				tmpNode = node;
-				node->rightNode = this->NewNode(key, hash, val);
-				node->rightNode->parNode = node;
-				while (node)
+				node->rightNode = rightNode = this->NewNode(key, hash, val);
+				rightNode->parNode = node;
+				node->nodeCnt++;
+				while (node->parNode.SetTo(node))
 				{
 					node->nodeCnt++;
-					node = node->parNode;
 				}
 				node = tmpNode;
 				UInt32 currLev = 1;
-				while (node)
+				while (true)
 				{
 					if (node->maxLev >= currLev)
 					{
@@ -109,13 +114,16 @@ namespace Data
 					}
 					node->maxLev = currLev;
 					currLev++;
-					node = node->parNode;
+					if (!node->parNode.SetTo(node))
+					{
+						break;
+					}
 				}
 				return 0;
 			}
 			else
 			{
-				retVal = PutNode(node->rightNode, key, hash, val);
+				retVal = PutNode(rightNode, key, hash, val);
 /*				Int32 leftLev;
 				Int32 rightLev;
 				if (node->leftNode == 0)
@@ -134,7 +142,6 @@ namespace Data
 				return retVal;
 			}
 		}
-
 	}
 
 	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const
@@ -155,15 +162,16 @@ namespace Data
 	template <class T> T ICaseBTreeUTF8Map<T>::Get(Text::CStringNN key) const
 	{
 		UInt32 hash = CalHash(key.v, key.leng);
-		BTreeUTF8Node<T> *node = this->rootNode;
-		while (node)
+		Optional<BTreeUTF8Node<T>> node = this->rootNode;
+		NN<BTreeUTF8Node<T>> nnnode;
+		while (node.SetTo(nnnode))
 		{
 			OSInt i;
-			if (node->nodeHash == hash)
+			if (nnnode->nodeHash == hash)
 			{
-				i = Text::StrCompareICase(node->nodeKey, key.v);
+				i = Text::StrCompareICase(nnnode->nodeKey, key.v);
 			}
-			else if (node->nodeHash > hash)
+			else if (nnnode->nodeHash > hash)
 			{
 				i = 1;
 			}
@@ -173,15 +181,15 @@ namespace Data
 			}
 			if (i > 0)
 			{
-				node = node->leftNode;
+				node = nnnode->leftNode;
 			}
 			else if (i < 0)
 			{
-				node = node->rightNode;
+				node = nnnode->rightNode;
 			}
 			else
 			{
-				return node->nodeVal;
+				return nnnode->nodeVal;
 			}
 		}
 		return 0;
@@ -189,27 +197,29 @@ namespace Data
 
 	template <class T> T ICaseBTreeUTF8Map<T>::Remove(Text::CStringNN key)
 	{
-		if (this->rootNode == 0)
+		NN<BTreeUTF8Node<T>> rootNode;
+		if (!this->rootNode.SetTo(rootNode))
 			return 0;
-		if (Text::StrEqualsICaseC(this->rootNode->nodeKey, this->rootNode->keyLen, key.v, key.leng))
+		if (Text::StrEqualsICaseC(rootNode->nodeKey, rootNode->keyLen, key.v, key.leng))
 		{
-			T nodeVal = this->rootNode->nodeVal;
-			this->rootNode = this->RemoveNode(this->rootNode);
+			T nodeVal = rootNode->nodeVal;
+			this->rootNode = this->RemoveNode(rootNode);
 			return nodeVal;
 		}
 		else
 		{
 			UInt32 hash = CalHash(key.v, key.leng);
-			BTreeUTF8Node<T> *node = this->rootNode;
-			BTreeUTF8Node<T>* parNode = node;
-			while (node)
+			Optional<BTreeUTF8Node<T>> node = rootNode;
+			NN<BTreeUTF8Node<T>> nnnode;
+			NN<BTreeUTF8Node<T>> parNode = rootNode;
+			while (node.SetTo(nnnode))
 			{
 				OSInt i;
-				if (node->nodeHash == hash)
+				if (nnnode->nodeHash == hash)
 				{
-					i = Text::StrCompareICase(node->nodeKey, key.v);
+					i = Text::StrCompareICase(nnnode->nodeKey, key.v);
 				}
-				else if (node->nodeHash > hash)
+				else if (nnnode->nodeHash > hash)
 				{
 					i = 1;
 				}
@@ -219,24 +229,24 @@ namespace Data
 				}
 				if (i > 0)
 				{
-					parNode = node;
-					node = node->leftNode;
+					parNode = nnnode;
+					node = nnnode->leftNode;
 				}
 				else if (i < 0)
 				{
-					parNode = node;
-					node = node->rightNode;
+					parNode = nnnode;
+					node = nnnode->rightNode;
 				}
 				else
 				{
-					T nodeVal = node->nodeVal;
-					if (parNode->leftNode == node)
+					T nodeVal = nnnode->nodeVal;
+					if (parNode->leftNode == nnnode)
 					{
-						parNode->leftNode = this->RemoveNode(node);
+						parNode->leftNode = this->RemoveNode(nnnode);
 					}
 					else
 					{
-						parNode->rightNode = this->RemoveNode(node);
+						parNode->rightNode = this->RemoveNode(nnnode);
 					}
 					return nodeVal;
 				}

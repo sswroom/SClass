@@ -28,15 +28,15 @@ void *Media::OpenCV::OCVFrame::GetFrame()
 	return this->frame;
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSInt> *area)
+NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CropToNew(Math::RectArea<UOSInt> area)
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	cv::Mat *cimg = new cv::Mat();
-	*cimg = (*fr)(cv::Range((int)area->min.y, (int)area->max.y), cv::Range((int)area->min.x, (int)area->max.x)).clone();
+	*cimg = (*fr)(cv::Range((int)area.min.y, (int)area.max.y), cv::Range((int)area.min.x, (int)area.max.x)).clone();
 	return NEW_CLASS_D(OCVFrame(cimg));
 }
 
-void Media::OpenCV::OCVFrame::ClearOutsidePolygon(Math::Coord2D<UOSInt> *poly, UOSInt nPoints, UInt8 color)
+void Media::OpenCV::OCVFrame::ClearOutsidePolygon(UnsafeArray<Math::Coord2D<UOSInt>> poly, UOSInt nPoints, UInt8 color)
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	int nPt = (int)nPoints;

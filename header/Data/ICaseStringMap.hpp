@@ -18,14 +18,14 @@ namespace Data
 
 	template <class T> ICaseStringMap<T>::ICaseStringMap() : StringMap<T>()
 	{
-		DEL_CLASS(this->keys);
-		NEW_CLASS(this->keys, Data::ArrayListICaseString());
+		this->keys.Delete();
+		NEW_CLASSNN(this->keys, Data::ArrayListICaseString());
 	}
 
 	template <class T> ICaseStringMap<T>::ICaseStringMap(NN<const ICaseStringMap<T>> map) : StringMap<T>()
 	{
-		DEL_CLASS(this->keys);
-		NEW_CLASS(this->keys, Data::ArrayListICaseString());
+		this->keys.Delete();
+		NEW_CLASSNN(this->keys, Data::ArrayListICaseString());
 		UOSInt i = 0;
 		UOSInt j = map->keys->GetCount();
 		while (i < j)

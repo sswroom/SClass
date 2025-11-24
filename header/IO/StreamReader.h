@@ -16,7 +16,7 @@ namespace IO
 		UnsafeArray<UTF8Char> cbuff;
 		UOSInt cSize;
 		UOSInt cPos;
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UOSInt buffSize;
 		Text::LineBreakType lineBreak;
 

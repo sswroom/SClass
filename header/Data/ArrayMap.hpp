@@ -8,11 +8,11 @@ namespace Data
 	template <class T, class V> class ArrayMap : public ListMap<T, V>
 	{
 	protected:
-		Data::SortableArrayListNative<T> *keys;
+		NN<Data::SortableArrayListNative<T>> keys;
 		Data::ArrayList<V> vals;
 
+		ArrayMap(NN<Data::SortableArrayListNative<T>> keys);
 	public:
-		ArrayMap();
 		virtual ~ArrayMap();
 
 		virtual V Put(T key, V val);
@@ -24,7 +24,7 @@ namespace Data
 
 		void AllocSize(UOSInt cnt);
 		NN<const Data::ArrayList<V>> GetValues() const;
-		const Data::SortableArrayListNative<T> *GetKeys() const;
+		NN<const Data::SortableArrayListNative<T>> GetKeys() const;
 		virtual UOSInt GetCount() const;
 		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
@@ -33,8 +33,9 @@ namespace Data
 	};
 
 
-	template <class T, class V> ArrayMap<T, V>::ArrayMap() : ListMap<T, V>()
+	template <class T, class V> ArrayMap<T, V>::ArrayMap(NN<Data::SortableArrayListNative<T>> keys) : ListMap<T, V>()
 	{
+		this->keys = keys;
 	}
 
 	template <class T, class V> ArrayMap<T, V>::~ArrayMap()
@@ -115,7 +116,7 @@ namespace Data
 		return this->vals;
 	}
 
-	template <class T, class V> const Data::SortableArrayListNative<T> *ArrayMap<T, V>::GetKeys() const
+	template <class T, class V> NN<const Data::SortableArrayListNative<T>> ArrayMap<T, V>::GetKeys() const
 	{
 		return this->keys;
 	}
@@ -138,9 +139,9 @@ namespace Data
 	template <class T, class V> UnsafeArray<V> ArrayMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
-		V *arr = this->vals.GetArray(&cnt);
-		V *outArr = MemAlloc(V, cnt);
-		MemCopyNO(outArr, arr, sizeof(V) * cnt);
+		UnsafeArray<V> arr = this->vals.GetArray(cnt);
+		UnsafeArray<V> outArr = MemAllocArr(V, cnt);
+		MemCopyNO(outArr.Ptr(), arr.Ptr(), sizeof(V) * cnt);
 		objCnt.Set(cnt);
 		return outArr;
 	}

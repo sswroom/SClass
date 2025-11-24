@@ -15,8 +15,8 @@ namespace Data
 
 	template <class T> ICaseStringUTF8Map<T>::ICaseStringUTF8Map() : StringUTF8Map<T>()
 	{
-		DEL_CLASS(this->keys);
-		NEW_CLASS(this->keys, Data::ArrayListICaseStrUTF8());
+		this->keys.Delete();
+		NEW_CLASSNN(this->keys, Data::ArrayListICaseStrUTF8());
 	}
 
 	template <class T> ICaseStringUTF8Map<T>::~ICaseStringUTF8Map()

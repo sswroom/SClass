@@ -17,15 +17,15 @@ namespace IO
 		};
 	private:
 		Data::ArrayListNN<VMId> vms;
-		Text::String *progPath;
-		Text::String *version;
+		Optional<Text::String> progPath;
+		Optional<Text::String> version;
 
 		UOSInt GetVMList(NN<Data::ArrayListNN<VMId>> vms);
 	public:
 		VBoxManager();
 		~VBoxManager();
 
-		Text::String *GetVersion() const;
+		Optional<Text::String> GetVersion() const;
 		NN<const Data::ArrayListNN<VMId>> GetVMS() const;
 		Optional<VBoxVMInfo> GetVMInfo(NN<VMId> vm) const;
 	};

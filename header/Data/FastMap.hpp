@@ -28,7 +28,7 @@ namespace Data
 		virtual V GetItem(UOSInt index) const;
 		V RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
-		virtual V *ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<V> ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
@@ -162,10 +162,10 @@ namespace Data
 		return this->values.GetCount() == 0;
 	}
 
-	template <class T, class V> V *FastMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<V> FastMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = this->values.GetCount();
-		V *outArr = MemAlloc(V, cnt);
+		UnsafeArray<V> outArr = MemAllocArr(V, cnt);
 		objCnt.Set(cnt);
 		while (cnt-- > 0)
 		{

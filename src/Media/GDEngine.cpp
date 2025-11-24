@@ -1,15 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Sync/Event.h"
-#include "IO/Stream.h"
+#include "IO/FileStream.h"
+#include "Math/Unit/Angle.h"
 #include "Media/DrawEngine.h"
 #include "Media/GDEngine.h"
-#include "Text/Encoding.h"
-#include "gd.h"
-
-#ifdef WIN32
-#include <share.h>
-#endif
+#include "Sync/Event.h"
+#include "Text/MyStringW.h"
+#include <gd.h>
 
 #define PI 3.1415926535898
 
@@ -96,43 +93,6 @@ gdImagePtr GDELoadBitmap(int dataSize, void *dataPtr)
 				lineW = lineW + 4 - (lineW & 3);
 			}
 			
-			_asm
-			{
-				mov edi,pixelData
-				mov eax,imgHeight
-				shl eax,2
-				add edi,eax
-				mov esi,currPtr
-				mov ebx,pal
-				mov ecx,imgHeight
-				cld
-glb8lop2:
-				sub edi,4
-				mov eax,dword ptr [edi]
-				push edi
-				mov edi,eax
-				mov eax,0
-
-				push ecx
-				push esi
-				mov ecx,imgWidth
-glb8lop:
-				lodsb
-				mov edx,dword ptr [ebx+eax*4]
-				or edx,0x7f000000
-				mov dword ptr [edi],edx
-				add edi,4
-				dec ecx
-				jnz glb8lop
-
-				pop esi
-				pop ecx
-				add esi,lineW
-				pop edi
-				dec ecx
-				jnz glb8lop2
-
-			}
 			break;
 		case 16:
 			currPtr = &imgData[*(Int32*)&hdr[10]];
@@ -146,65 +106,9 @@ glb8lop:
 				lineW = lineW + 4 - (lineW & 3);
 			}
 			
-			_asm
-			{
-				mov esi,currPtr
-				mov edx,pixelData
-				mov eax,imgHeight
-				shl eax,2
-				add edx,eax
-
-				mov al,0x7f
-				mov ebx,imgHeight
-				cld
-glb24lop2:
-				sub edx,4
-				mov edi,dword ptr [edx]
-
-				push esi
-				mov ecx,imgWidth
-
-glb24lop:
-				movsw
-				movsb
-				stosb
-				dec ecx
-				jnz glb24lop
-
-				pop esi
-				add esi,lineW
-				dec ebx
-				jnz glb24lop2
-			}
 			break;
 		case 32:
 			currPtr = &imgData[*(Int32*)&hdr[10]];
-			_asm
-			{
-				mov edx,pixelData
-				mov eax,imgHeight
-				shl eax,2
-				add edx,eax
-				mov esi,currPtr
-				mov ecx,imgHeight
-				cld
-glb32lop2:
-				sub edx,4
-				mov edi,dword ptr [edx]
-				mov ebx,imgWidth
-glb32lop:
-				movsw
-				movsb
-				lodsb
-				shr al,1
-				xor al,0x7f
-				stosb
-				dec ebx
-				jnz glb32lop
-
-				dec ecx
-				jnz glb32lop2
-			}
 			break;
 		default:
 			gdImageDestroy(img);
@@ -227,176 +131,114 @@ Media::GDEngine::~GDEngine()
 {
 }
 
-Media::DrawImage *Media::GDEngine::CreateImage32(Int32 width, Int32 height)
+Optional<Media::DrawImage> Media::GDEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
 {
 	GDImage *img;
-	gdImagePtr imgPtr = gdImageCreateTrueColor(width, height);
+	gdImagePtr imgPtr = gdImageCreateTrueColor((int)size.GetWidth(), (int)size.GetHeight());
 	if (imgPtr == 0)
 		return 0;
-	NEW_CLASS(img, GDImage(this, width, height, 32, imgPtr));
+	NEW_CLASS(img, GDImage(*this, size, 32, imgPtr));
 	return img;
 }
 
-Media::DrawImage *Media::GDEngine::LoadImageA(Char *fileName)
+Optional<Media::DrawImage> Media::GDEngine::LoadImage(Text::CStringNN fileName)
 {
 	FILE *f;
 	DrawImage *img;
 	gdImagePtr imgPtr = 0;
-#if 0//WIN32
-	f = _fsopen(fileName, "rb", _SH_DENYWR);
-#else
-	f = fopen(fileName, "rb");
-#endif
 
-	if (f)
 	{
-		void *dataPtr;
-		UInt32 dataSize;
-		dataSize = fseek(f, 0, SEEK_END);
-		dataSize = ftell(f);
-		fseek(f, 0, SEEK_SET);
-		dataPtr = MemAlloc(dataSize);
-		fread(dataPtr, 1, dataSize, f);
-		fclose(f);
+		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (fs.IsError())
+		{
+			return 0;
+		}
+		UOSInt fileSize = (UOSInt)fs.GetLength();
+		UnsafeArray<UInt8> dataPtr;
+		dataPtr = MemAllocArr(UInt8, fileSize);
+		if (fs.Read(Data::ByteArray(dataPtr, fileSize)) != fileSize)
+		{
+			MemFreeArr(dataPtr);
+			return 0;
+		}
 
 		if (imgPtr == 0)
 		{
-			imgPtr = GDELoadBitmap(dataSize, dataPtr);
+			imgPtr = GDELoadBitmap((int)fileSize, dataPtr.Ptr());
 		}
 		if (imgPtr == 0)
 		{
-			imgPtr = gdImageCreateFromJpegPtr(dataSize, dataPtr);
+			imgPtr = gdImageCreateFromJpegPtr((int)fileSize, dataPtr.Ptr());
 		}
 		if (imgPtr == 0)
 		{
-			imgPtr = gdImageCreateFromPngPtr(dataSize, dataPtr);
+			imgPtr = gdImageCreateFromPngPtr((int)fileSize, dataPtr.Ptr());
 		}
 		if (imgPtr == 0)
 		{
-			imgPtr = gdImageCreateFromGifPtr(dataSize, dataPtr);
+			imgPtr = gdImageCreateFromGifPtr((int)fileSize, dataPtr.Ptr());
 		}
 		if (imgPtr == 0)
 		{
-			imgPtr = gdImageCreateFromGdPtr(dataSize, dataPtr);
+			imgPtr = gdImageCreateFromGdPtr((int)fileSize, dataPtr.Ptr());
 		}
 		if (imgPtr == 0)
 		{
-			imgPtr = gdImageCreateFromGd2Ptr(dataSize, dataPtr);
+			imgPtr = gdImageCreateFromGd2Ptr((int)fileSize, dataPtr.Ptr());
 		}
 		if (imgPtr == 0)
 		{
-			imgPtr = gdImageCreateFromWBMPPtr(dataSize, dataPtr);
+			imgPtr = gdImageCreateFromWBMPPtr((int)fileSize, dataPtr.Ptr());
 		}
-		MemFree(dataPtr);
+		MemFreeArr(dataPtr);
 	}
 
 	if (imgPtr)
 	{
-		NEW_CLASS(img, GDImage(this, gdImageSX(imgPtr), gdImageSY(imgPtr), 32, imgPtr));
+		NEW_CLASS(img, GDImage(*this, Math::Size2D<UOSInt>(gdImageSX(imgPtr), gdImageSY(imgPtr)), 32, imgPtr));
 		return img;
 	}
 	return 0;
 }
 
-Media::DrawImage *Media::GDEngine::LoadImageW(WChar *fileName)
+Bool Media::GDEngine::DeleteImage(NN<DrawImage> img)
 {
-	FILE *f;
-	DrawImage *img;
-	gdImagePtr imgPtr = 0;
-#if 0//WIN32
-	f = _wfsopen(fileName, L"rb", _SH_DENYWR);
-#else
-	f = _wfopen(fileName, L"rb");
-#endif
-
-	if (f)
-	{
-		void *dataPtr;
-		UInt32 dataSize;
-		dataSize = fseek(f, 0, SEEK_END);
-		dataSize = ftell(f);
-		fseek(f, 0, SEEK_SET);
-		dataPtr = MemAlloc(dataSize);
-		fread(dataPtr, 1, dataSize, f);
-		fclose(f);
-
-		if (imgPtr == 0)
-		{
-			imgPtr = GDELoadBitmap(dataSize, dataPtr);
-		}
-		if (imgPtr == 0)
-		{
-			imgPtr = gdImageCreateFromJpegPtr(dataSize, dataPtr);
-		}
-		if (imgPtr == 0)
-		{
-			imgPtr = gdImageCreateFromPngPtr(dataSize, dataPtr);
-		}
-		if (imgPtr == 0)
-		{
-			imgPtr = gdImageCreateFromGifPtr(dataSize, dataPtr);
-		}
-		if (imgPtr == 0)
-		{
-			imgPtr = gdImageCreateFromGdPtr(dataSize, dataPtr);
-		}
-		if (imgPtr == 0)
-		{
-			imgPtr = gdImageCreateFromGd2Ptr(dataSize, dataPtr);
-		}
-		if (imgPtr == 0)
-		{
-			imgPtr = gdImageCreateFromWBMPPtr(dataSize, dataPtr);
-		}
-		MemFree(dataPtr);
-	}
-
-	if (imgPtr)
-	{
-		NEW_CLASS(img, GDImage(this, gdImageSX(imgPtr), gdImageSY(imgPtr), 32, imgPtr));
-		return img;
-	}
-	return 0;
-}
-
-Bool Media::GDEngine::DeleteImage(DrawImage *img)
-{
-	Media::GDImage *gimg = (GDImage*)img;
-	gdImageDestroy((gdImagePtr)gimg->imgPtr);
-	DEL_CLASS((GDImage *)img);
+	NN<Media::GDImage> gimg = NN<GDImage>::ConvertFrom(img);
+	gdImageDestroy(gimg->imgPtr.GetOpt<gdImage>().OrNull());
+	gimg.Delete();
 	return true;
 }
 
 int GDE_GetC(struct gdIOCtx *ctx)
 {
-	IO::Stream *stm = *(IO::Stream**)&((char*)ctx)[-(int)sizeof(IO::Stream*)];
+	NN<IO::Stream> stm = *(NN<IO::Stream>*)&((char*)ctx)[-(int)sizeof(NN<IO::Stream>)];
 	unsigned char buff = 0;
-	stm->Read(&buff, 1);
+	stm->Read(Data::ByteArray(&buff, 1));
 	return buff;
 }
 
 int GDE_GetBuf(struct gdIOCtx *ctx, void *buf, int size)
 {
-	IO::Stream *stm = *(IO::Stream**)&((char*)ctx)[-(int)sizeof(IO::Stream*)];
-	return stm->Read((UInt8*)buf, size);
+	NN<IO::Stream> stm = *(NN<IO::Stream>*)&((char*)ctx)[-(int)sizeof(NN<IO::Stream>)];
+	return stm->Read(Data::ByteArray((UInt8*)buf, (UOSInt)size));
 }
 
 void GDE_PutC(struct gdIOCtx *ctx, int ch)
 {
-	IO::Stream *stm = *(IO::Stream**)&((char*)ctx)[-(int)sizeof(IO::Stream*)];
-	stm->Write((UInt8*)&ch, 1);
+	NN<IO::Stream> stm = *(NN<IO::Stream>*)&((char*)ctx)[-(int)sizeof(NN<IO::Stream>)];
+	stm->Write(Data::ByteArrayR((UInt8*)&ch, 1));
 }
 
 int GDE_PutBuf(struct gdIOCtx *ctx, const void *buf, int size)
 {
-	IO::Stream *stm = *(IO::Stream**)&((char*)ctx)[-(int)sizeof(IO::Stream*)];
-	return stm->Write((UInt8*)buf, size);
+	NN<IO::Stream> stm = *(NN<IO::Stream>*)&((char*)ctx)[-(int)sizeof(NN<IO::Stream>)];
+	return stm->Write(Data::ByteArrayR((UInt8*)buf, size));
 }
 
 int GDE_Seek(struct gdIOCtx *ctx, const int pos)
 {
-	IO::Stream *stm = *(IO::Stream**)&((char*)ctx)[-(int)sizeof(IO::Stream*)];
-	if (stm->Seek(IO::Stream::Begin, pos) == pos)
+	NN<IO::SeekableStream> stm = *(NN<IO::SeekableStream>*)&((char*)ctx)[-(int)sizeof(NN<IO::Stream>)];
+	if (stm->SeekFromBeginning(pos) == pos)
 		return 1;
 	else
 		return 0;
@@ -404,8 +246,8 @@ int GDE_Seek(struct gdIOCtx *ctx, const int pos)
 
 long GDE_Tell(struct gdIOCtx *ctx)
 {
-	IO::Stream *stm = *(IO::Stream**)&((char*)ctx)[-(int)sizeof(IO::Stream*)];
-	return (long)stm->Seek(IO::Stream::Current, 0);
+	NN<IO::SeekableStream> stm = *(NN<IO::SeekableStream>*)&((char*)ctx)[-(int)sizeof(NN<IO::Stream>)];
+	return (long)stm->GetPosition();
 }
 
 void GDE_GD_Free(struct gdIOCtx *ctx)
@@ -413,11 +255,11 @@ void GDE_GD_Free(struct gdIOCtx *ctx)
 }
 
 
-void *Media::GDEngine::CreateIOCtx(IO::Stream *stm)
+void *Media::GDEngine::CreateIOCtx(NN<IO::SeekableStream> stm)
 {
-	void *obj = MemAlloc(sizeof(IO::Stream*) + sizeof(gdIOCtx));
-	gdIOCtx *io = (gdIOCtx*)&((char*)obj)[sizeof(IO::Stream*)];
-	*((IO::Stream**)obj) = stm;
+	UInt8 *obj = MemAlloc(UInt8, sizeof(NN<IO::SeekableStream>) + sizeof(gdIOCtx));
+	gdIOCtx *io = (gdIOCtx*)&obj[sizeof(NN<IO::SeekableStream>)];
+	*((NN<IO::SeekableStream>*)obj) = stm;
 
 	io->getC = GDE_GetC;
 	io->getBuf = GDE_GetBuf;
@@ -431,13 +273,13 @@ void *Media::GDEngine::CreateIOCtx(IO::Stream *stm)
 
 void Media::GDEngine::DeleteIOCtx(void *obj)
 {
-	void *o = &((char*)obj)[-(int)sizeof(IO::Stream*)];
+	void *o = &((char*)obj)[-(int)sizeof(NN<IO::SeekableStream>)];
 	MemFree(o);
 }
 
-Media::GDBrush::GDBrush(Int32 color, Media::DrawImage *img)
+Media::GDBrush::GDBrush(UInt32 color, NN<Media::DrawImage> img)
 {
-	gdImagePtr im = (gdImagePtr) ((Media::GDImage*)img)->imgPtr;
+	gdImagePtr im = NN<Media::GDImage>::ConvertFrom(img)->imgPtr.GetOpt<gdImage>().OrNull();
 	this->color = gdImageColorAllocateAlpha(im, (color & 0xff0000) >> 16, (color & 0xff00) >> 8, (color & 0xff), ((color >> 25) & 0x7f) ^ 0x7f);
 }
 
@@ -445,30 +287,32 @@ Media::GDBrush::~GDBrush()
 {
 }
 
-Int32 Media::GDBrush::InitImage(Media::DrawImage *img)
+Int32 Media::GDBrush::InitImage(NN<Media::DrawImage> img)
 {
-	return this->color;
+	return (Int32)this->color;
 }
 
-Media::GDPen::GDPen(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern, DrawImage *img)
+Media::GDPen::GDPen(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern, NN<DrawImage> img)
 {
-	gdImagePtr im = (gdImagePtr) ((GDImage*)img)->imgPtr;
+	gdImagePtr im = NN<Media::GDImage>::ConvertFrom(img)->imgPtr.GetOpt<gdImage>().OrNull();
 	this->color = gdImageColorAllocateAlpha(im, (color & 0xff0000) >> 16, (color & 0xff00) >> 8, (color & 0xff), ((color >> 25) & 0x7f) ^ 0x7f);
 	this->thick = thick;
 	if (this->thick <= 1)
 		this->thick = 1;
-	if (nPattern > 0)
+	UnsafeArray<UInt8> tmp;
+	UnsafeArray<UInt8> tmp3;
+	if (nPattern > 0 && pattern.SetTo(tmp))
 	{
-		UInt8 *tmp = pattern;
+		tmp3 = tmp;
 		Int32 i = nPattern;
 		Int32 totalPixel = 0;
 		while (i--)
 			totalPixel += *tmp++;
 
-		this->pattern = (int*)MemAlloc(totalPixel * this->thick * sizeof(int));
+		this->pattern = MemAlloc(int, totalPixel * this->thick);
 		this->nPattern = totalPixel * this->thick;
 		int *tmp2 = this->pattern;
-		tmp = pattern;
+		tmp = tmp3;
 
 		while (nPattern-- > 0)
 		{
@@ -505,9 +349,9 @@ Media::GDPen::~GDPen()
 	}
 }
 
-Int32 Media::GDPen::InitImage(DrawImage *img)
+Int32 Media::GDPen::InitImage(NN<DrawImage> img)
 {
-	gdImagePtr im = (gdImagePtr)((GDImage*)img)->imgPtr;
+	gdImagePtr im = NN<Media::GDImage>::ConvertFrom(img)->imgPtr.GetOpt<gdImage>().OrNull();
 	gdImageSetThickness(im, this->thick);
 	if (this->nPattern > 0)
 	{
@@ -520,68 +364,60 @@ Int32 Media::GDPen::InitImage(DrawImage *img)
 	}
 }
 
-Media::GDFont::GDFont(Char *name, Int16 pxSize, Int16 style)
+Double Media::GDPen::GetThick()
 {
-	Char *tmp = name;
-	while (*tmp++);
-	tmp = this->name = (Char*)MemAlloc((Int32)(tmp - name + 4));
-	while (*tmp++ = *name++);
-	this->pxSize = pxSize;
-	this->style = style;
-	this->isTTCName = false;
+	return this->thick;
 }
 
-Media::GDFont::GDFont(WChar *name, Int16 pxSize, Int16 style)
+Media::GDFont::GDFont(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle style)
 {
-	Text::Encoding enc(65001);
-	WChar *tmp = name;
-	while (*tmp++);
-	this->name = (Char*)MemAlloc(enc.CountBytes(name, tmp - name - 1) + 1);
-	this->name[enc.ToBytes((UInt8*)this->name, name, tmp - name - 1)] = 0;
+	this->name = Text::String::New(name);
 	this->pxSize = pxSize;
 	this->style = style;
-	this->isTTCName = false;
+	this->ttcName = 0;
 }
 
 Media::GDFont::~GDFont()
 {
-	MemFree(this->name);
+	this->name->Release();
+	OPTSTR_DEL(this->ttcName);
 }
 
-Char *Media::GDFont::GetName()
+NN<Text::String> Media::GDFont::GetName() const
 {
-	return this->name; 
+	return this->name;
 }
 
-Char *Media::GDFont::GetTTCName()
+NN<Text::String> Media::GDFont::GetTTCName()
 {
-	if (this->isTTCName)
-		return this->name;
-	this->isTTCName = true;
-	Char *dest = this->name;
-	Char *src;
-	while (*dest++);
-	dest--;
-	src = ".ttc";
-	while (*dest++ = *src++);
-	return this->name; 
+	NN<Text::String> ttcName;
+	if (this->ttcName.SetTo(ttcName))
+		return ttcName;
+	this->ttcName = ttcName = Text::String::New(this->name->leng + 4);
+	Text::StrConcatC(Text::StrConcatC(ttcName->v, this->name->v, this->name->leng), UTF8STRC(".ttc"));
+	return ttcName;
 }
 
-Int16 Media::GDFont::GetPointSize()
+Double Media::GDFont::GetPXSize() const
 {
 	return this->pxSize;
 }
 
-Int16 Media::GDFont::GetFontStyle()
+Double Media::GDFont::GetPointSize() const
+{
+	return this->pxSize * 72.0 / 96.0;
+}
+
+Media::DrawEngine::DrawFontStyle Media::GDFont::GetFontStyle() const
 {
 	return this->style;
 }
 
-Media::GDImage::GDImage(GDEngine *eng, Int32 width, Int32 height, Int32 bitCount, void *imgPtr)
+Media::GDImage::GDImage(NN<GDEngine> eng, Math::Size2D<UOSInt> size, UInt32 bitCount, AnyType imgPtr)
 {
 	this->eng = eng;
-	this->width = width;
-	this->height = height;
+	this->width = size.GetWidth();
+	this->height = size.GetHeight();
 	this->bitCount = bitCount;
 	this->imgPtr = imgPtr;
 }
@@ -590,284 +426,220 @@ Media::GDImage::~GDImage()
 {
 }
 
-Int32 Media::GDImage::GetWidth()
+UOSInt Media::GDImage::GetWidth() const
 {
-	return width;
+	return this->width;
 }
 
-Int32 Media::GDImage::GetHeight()
+UOSInt Media::GDImage::GetHeight() const
 {
-	return height;
+	return this->height;
 }
 
-Int32 Media::GDImage::GetBitCount()
+Math::Size2D<UOSInt> Media::GDImage::GetSize() const
+{
+	return Math::Size2D<UOSInt>(this->width, this->height);
+}
+
+UInt32 Media::GDImage::GetBitCount() const
 {
 	return bitCount;
 }
 
-Bool Media::GDImage::DrawLine(Int32 x1, Int32 y1, Int32 x2, Int32 y2, DrawPen *p)
+Bool Media::GDImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDPen *pen = (GDPen*)p;
-	Int32 c = pen->InitImage(this);
-	gdImageLine(im, x1, y1, x2, y2, c);
+	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
+	NN<GDPen> pen = NN<GDPen>::ConvertFrom(p);
+	Int32 c = pen->InitImage(*this);
+	gdImageLine(im, Double2Int32(x1), Double2Int32(y1), Double2Int32(x2), Double2Int32(y2), c);
 	return true;
 }
 
-Bool Media::GDImage::DrawPolyline(Int32 *points, Int32 nPoints, DrawPen *p)
+Bool Media::GDImage::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p)
 {
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDPen *pen = (GDPen*)p;
-	Int32 c = pen->InitImage(this);
-	gdImageOpenPolygon(im, (gdPointPtr)points, nPoints, c);
+	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
+	NN<GDPen> pen = NN<GDPen>::ConvertFrom(p);
+	Int32 c = pen->InitImage(*this);
+	gdImageOpenPolygon(im, (gdPointPtr)points.Ptr(), nPoints, c);
 	return true;
 }
 
-Bool Media::GDImage::DrawPolygon(Int32 *points, Int32 nPoints, DrawPen *p, DrawBrush *b)
+Bool Media::GDImage::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDPen *pen = (GDPen*)p;
-	GDBrush *brush = (GDBrush*)b;
+	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
+	NN<GDPen> pen;
+	NN<GDBrush> brush;
 	Int32 c;
-	if (b)
+	if (Optional<GDBrush>::ConvertFrom(b).SetTo(brush))
 	{
-		c = brush->InitImage(this);
-		gdImageFilledPolygon(im, (gdPointPtr)points, nPoints, c);
+		c = brush->InitImage(*this);
+		gdImageFilledPolygon(im, (gdPointPtr)points.Ptr(), nPoints, c);
 	}
-	if (p)
+	if (Optional<GDPen>::ConvertFrom(p).SetTo(pen))
 	{
-		c = pen->InitImage(this);
-		gdImagePolygon(im, (gdPointPtr)points, nPoints, c);
+		c = pen->InitImage(*this);
+		gdImagePolygon(im, (gdPointPtr)points.Ptr(), nPoints, c);
 	}
 	return true;
 }
 
-Bool Media::GDImage::DrawPolyPolygon(Int32 *points, Int32 *pointCnt, Int32 nPointCnt, DrawPen *p, DrawBrush *b)
+Bool Media::GDImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDPen *pen = (GDPen*)p;
-	GDBrush *brush = (GDBrush*)b;
+	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
+	NN<GDPen> pen;
+	NN<GDBrush> brush;
 	Int32 c;
-	Int32 i;
-	Int32 j;
-	if (b)
+	UOSInt i;
+	UOSInt j;
+	if (Optional<GDBrush>::ConvertFrom(b).SetTo(brush))
 	{
-		c = brush->InitImage(this);
+		c = brush->InitImage(*this);
 		i = 0;
 		j = 0;
 		while (i < nPointCnt)
 		{
-			gdImageFilledPolygon(im, (gdPointPtr)&points[j<<1], pointCnt[i], c);
+			gdImageFilledPolygon(im, (gdPointPtr)&points[j<<1], (Int32)pointCnt[i], c);
 			j += pointCnt[i++];
 		}
 	}
-	if (p)
+	if (Optional<GDPen>::ConvertFrom(p).SetTo(pen))
 	{
-		c = pen->InitImage(this);
+		c = pen->InitImage(*this);
 		i = 0;
 		j = 0;
 		while (i < nPointCnt)
 		{
-			gdImagePolygon(im, (gdPointPtr)&points[j<<1], pointCnt[i], c);
+			gdImagePolygon(im, (gdPointPtr)&points[j<<1], (Int32)pointCnt[i], c);
 			j += pointCnt[i++];
 		}
 	}
 	return true;
 }
 
-Bool Media::GDImage::DrawRect(Int32 x, Int32 y, Int32 w, Int32 h, DrawPen *p, DrawBrush *b)
+Bool Media::GDImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDPen *pen = (GDPen*)p;
-	GDBrush *brush = (GDBrush*)b;
+	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
+	NN<GDPen> pen;
+	NN<GDBrush> brush;
 	Int32 c;
-	if (b)
+	if (Optional<GDBrush>::ConvertFrom(b).SetTo(brush))
 	{
-		c = brush->InitImage(this);
-		gdImageFilledRectangle(im, x, y, x + w, y + h, c);
+		c = brush->InitImage(*this);
+		gdImageFilledRectangle(im, Double2Int32(tl.x), Double2Int32(tl.y), Double2Int32(tl.x + size.GetWidth()), Double2Int32(tl.y + size.GetHeight()), c);
 	}
-	if (p)
+	if (Optional<GDPen>::ConvertFrom(p).SetTo(pen))
 	{
-		c = pen->InitImage(this);
-		gdImageRectangle(im, x, y, x + w, y + h, c);
+		c = pen->InitImage(*this);
+		gdImageRectangle(im, Double2Int32(tl.x), Double2Int32(tl.y), Double2Int32(tl.x + size.GetWidth()), Double2Int32(tl.y + size.GetHeight()), c);
 	}
 	return true;
 }
 
-Bool Media::GDImage::DrawStringW(Int32 tlx, Int32 tly, WChar *str, DrawFont *f, DrawBrush *p)
+Bool Media::GDImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b)
 {
-	Char utf8Str[256];
-	WChar *src = str;
-	while (*src++);
-	utf8Str[UCS2UTF8(str, (Int32)((src - str - 1) << 1), utf8Str)] = 0;
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDBrush *b = (GDBrush*)p;
-	GDFont *fnt = (GDFont*)f;
+	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
+	NN<GDBrush> brush = NN<GDBrush>::ConvertFrom(b);
+	NN<GDFont> fnt = NN<GDFont>::ConvertFrom(f);
 	int brect[8];
-	int c = b->InitImage(this);
-
-	Int32 x;
-	Int32 y;
-	Char *retV = gdImageStringFT(0, brect, 0, fnt->GetName(), fnt->GetPointSize(), 0, 0, 0, utf8Str);
-	if (retV != 0)
+	int c = brush->InitImage(*this);
+	if (gdImageStringFT(im, brect, c, (const Char*)fnt->GetName().Ptr(), fnt->GetPointSize(), 0, Double2Int32(tl.x), Double2Int32(tl.y), (const Char*)str.v.Ptr()) != 0)
 	{
-		retV = gdImageStringFT(0, brect, 0, fnt->GetTTCName(), fnt->GetPointSize(), 0, 0, 0, utf8Str);
+		gdImageStringFT(im, brect, c, (const Char*)fnt->GetTTCName().Ptr(), fnt->GetPointSize(), 0, Double2Int32(tl.x), Double2Int32(tl.y), (const Char*)str.v.Ptr());
 	}
-	x = tlx - brect[6];
-	y = tly - brect[7];
-
-	retV = gdImageStringFT(im, brect, c, fnt->GetName(), fnt->GetPointSize(), 0, x, y, utf8Str);
 	return true;
 }
 
-Bool Media::GDImage::DrawStringRotW(Int32 centX, Int32 centY, WChar *str, DrawFont *f, DrawBrush *p, Int32 angleDegree)
+Bool Media::GDImage::DrawStringRot(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW)
 {
-	Char utf8Str[256];
-	WChar *src = str;
-	while (*src++);
-	utf8Str[UCS2UTF8(str, (Int32)((src - str - 1) << 1), utf8Str)] = 0;
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDBrush *b = (GDBrush*)p;
-	GDFont *fnt = (GDFont*)f;
+	gdImagePtr im = this->imgPtr.GetOpt<gdImage>().OrNull();
+	NN<GDBrush> brush = NN<GDBrush>::ConvertFrom(b);
+	NN<GDFont> fnt = NN<GDFont>::ConvertFrom(f);
 	int brect[8];
-	int c = b->InitImage(this);
-	double rad = angleDegree * PI / 180.0;
+	int c = brush->InitImage(*this);
+	double rad = Math::Unit::Angle::Convert(Math::Unit::Angle::AU_DEGREE, Math::Unit::Angle::AU_RADIAN, angleDegreeACW);
 	int tlx;
 	int tly;
-	Char *retV = gdImageStringFT(0, brect, 0, fnt->GetName(), fnt->GetPointSize(), rad, 0, 0, utf8Str);
+	Char *retV = gdImageStringFT(0, brect, 0, (const Char*)fnt->GetName().Ptr(), fnt->GetPointSize(), rad, 0, 0, (const Char*)str->v.Ptr());
 	if (retV != 0)
 	{
-		retV = gdImageStringFT(0, brect, 0, fnt->GetTTCName(), fnt->GetPointSize(), rad, 0, 0, utf8Str);
+		gdImageStringFT(0, brect, 0, (const Char*)fnt->GetTTCName().Ptr(), fnt->GetPointSize(), rad, 0, 0, (const Char*)str->v.Ptr());
 	}
 	tlx = ((brect[4] + brect[0]) >> 1);
 	tly = ((brect[5] + brect[1]) >> 1);
 
-	retV = gdImageStringFT(im, brect, c, fnt->GetName(), fnt->GetPointSize(), rad, centX - tlx, centY - tly, utf8Str);
+	retV = gdImageStringFT(im, brect, c, (const Char*)fnt->GetName().Ptr(), fnt->GetPointSize(), rad, Double2Int32(center.x) - tlx, Double2Int32(center.y) - tly, (const Char*)str->v.Ptr());
 	return retV == 0;
 }
 
-Bool Media::GDImage::DrawImagePt(DrawImage *img, Int32 tlx, Int32 tly)
+Bool Media::GDImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 {
-	gdImageCopy((gdImagePtr)this->imgPtr, (gdImagePtr)((GDImage*)img)->imgPtr, tlx, tly, 0, 0, ((GDImage*)img)->GetWidth(), ((GDImage*)img)->GetHeight());
+	gdImageCopy(this->imgPtr.GetOpt<gdImage>().OrNull(), NN<GDImage>::ConvertFrom(img)->imgPtr.GetOpt<gdImage>().OrNull(), Double2Int32(tl.x), Double2Int32(tl.y), 0, 0, Double2Int32(NN<GDImage>::ConvertFrom(img)->GetWidth()), Double2Int32(NN<GDImage>::ConvertFrom(img)->GetHeight()));
 	return true;
 }
 
-Bool Media::GDImage::DrawString(Int32 tlx, Int32 tly, Char *utf8Str, DrawFont *f, DrawBrush *p)
+NN<Media::DrawPen> Media::GDImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDBrush *b = (GDBrush*)p;
-	GDFont *fnt = (GDFont*)f;
-	int brect[8];
-	int c = b->InitImage(this);
-	if (gdImageStringFT(im, brect, c, fnt->GetName(), fnt->GetPointSize(), 0, tlx, tly, utf8Str) != 0)
-	{
-		gdImageStringFT(im, brect, c, fnt->GetTTCName(), fnt->GetPointSize(), 0, tlx, tly, utf8Str);
-	}
-	return true;
-}
-
-Bool Media::GDImage::DrawStringRot(Int32 centX, Int32 centY, Char *utf8Str, DrawFont *f, DrawBrush *p, Int32 angleDegree)
-{
-	gdImagePtr im = (gdImagePtr)this->imgPtr;
-	GDBrush *b = (GDBrush*)p;
-	GDFont *fnt = (GDFont*)f;
-	int brect[8];
-	int c = b->InitImage(this);
-	double rad = angleDegree * PI / 180.0;
-	int tlx;
-	int tly;
-	Char *retV = gdImageStringFT(0, brect, 0, fnt->GetName(), fnt->GetPointSize(), rad, 0, 0, utf8Str);
-	if (retV != 0)
-	{
-		gdImageStringFT(0, brect, 0, fnt->GetTTCName(), fnt->GetPointSize(), rad, 0, 0, utf8Str);
-	}
-	tlx = ((brect[4] + brect[0]) >> 1);
-	tly = ((brect[5] + brect[1]) >> 1);
-
-	retV = gdImageStringFT(im, brect, c, fnt->GetName(), fnt->GetPointSize(), rad, centX - tlx, centY - tly, utf8Str);
-	return retV == 0;
-}
-
-Media::DrawPen *Media::GDImage::NewPenARGB(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern)
-{
-	GDPen *p;
-	NEW_CLASS(p, GDPen(color, thick, pattern, nPattern, this));
+	NN<GDPen> p;
+	NEW_CLASSNN(p, GDPen(color, thick, pattern, nPattern, *this));
 	return p;
 }
 
-Media::DrawBrush *Media::GDImage::NewBrushARGB(Int32 color)
+NN<Media::DrawBrush> Media::GDImage::NewBrushARGB(UInt32 color)
 {
-	GDBrush *b;
-	NEW_CLASS(b, GDBrush(color, this));
+	NN<GDBrush> b;
+	NEW_CLASSNN(b, GDBrush(color, *this));
 	return b;
 }
 
-Media::DrawFont *Media::GDImage::NewFontA(Char *name, Int16 pxSize, Int16 fontStyle)
+NN<Media::DrawFont> Media::GDImage::NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	GDFont *f;
-	NEW_CLASS(f, GDFont(name, pxSize, fontStyle));
+	NN<GDFont> f;
+	NEW_CLASSNN(f, GDFont(name, ptSize * 96 / 72, fontStyle));
 	return f;
 }
 
-Media::DrawFont *Media::GDImage::NewFontW(WChar *name, Int16 pxSize, Int16 fontStyle)
+NN<Media::DrawFont> Media::GDImage::NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	GDFont *f;
-	NEW_CLASS(f, GDFont(name, pxSize, fontStyle));
+	NN<GDFont> f;
+	NEW_CLASSNN(f, GDFont(name, pxSize, fontStyle));
 	return f;
 }
 
-void Media::GDImage::DelPen(DrawPen *p)
+void Media::GDImage::DelPen(NN<DrawPen> p)
 {
-	DEL_CLASS((GDPen*)p);
+	NN<GDPen>::ConvertFrom(p).Delete();
 }
 
-void Media::GDImage::DelBrush(DrawBrush *b)
+void Media::GDImage::DelBrush(NN<DrawBrush> b)
 {
-	DEL_CLASS((GDBrush*)b);
+	NN<GDBrush>::ConvertFrom(b).Delete();
 }
 
-void Media::GDImage::DelFont(DrawFont *f)
+void Media::GDImage::DelFont(NN<DrawFont> f)
 {
-	DEL_CLASS((GDFont*)f);
+	NN<GDFont>::ConvertFrom(f).Delete();
 }
 
-Bool Media::GDImage::GetTextSize(DrawFont *fnt, WChar *txt, Int32 txtLen, Int32 *sz)
+Math::Size2DDbl Media::GDImage::GetTextSize(NN<DrawFont> fnt, Text::CStringNN txt)
 {
-	/////////////////////////////////
-	GDFont *f = (GDFont*)fnt;
+	NN<GDFont> f = NN<GDFont>::ConvertFrom(fnt);
 	int brect[8];
-	Text::Encoding enc(65001);
-	UInt8 bytes[512];
-	Int32 retSize;
-	bytes[retSize = enc.ToBytes(bytes, txt, txtLen)] = 0;
-	Char *name = f->GetName();
-	if (retSize > 511)
-	{
-		_asm int 3;
-	}
-	Char *ret = gdImageStringFT(0, brect, 0, name, f->GetPointSize(), 0, 0, 0, (Char*)bytes);
+	Char *ret = gdImageStringFT(0, brect, 0, (const Char*)f->GetName()->v.Ptr(), f->GetPointSize(), 0, 0, 0, (const Char*)txt.v.Ptr());
 	if (ret != 0)
 	{
-			sz[0] = 0;
-			sz[1] = 0;
-			return 0;
-		ret = gdImageStringFT(0, brect, 0, f->GetTTCName(), f->GetPointSize(), 0, 0, 0, (Char*)bytes);
+		ret = gdImageStringFT(0, brect, 0, (const Char*)f->GetTTCName()->v.Ptr(), f->GetPointSize(), 0, 0, 0, (const Char*)txt.v.Ptr());
 		if (ret != 0)
 		{
-			sz[0] = 0;
-			sz[1] = 0;
-			return 0;
+			return Math::Size2DDbl(0, 0);
 		}
 	}
-	sz[0] = brect[2] - brect[6];
-	sz[1] = brect[3] - brect[7];
-	return 1;
+	return Math::Size2DDbl(brect[2] - brect[6], brect[3] - brect[7]);
 }
 
-Int32 Media::GDImage::SavePng(IO::SeekableStream *stm)
+UOSInt Media::GDImage::SavePng(NN<IO::SeekableStream> stm)
 {
 	gdIOCtxPtr ptr = (gdIOCtxPtr)eng->CreateIOCtx(stm);
-	gdImagePngCtx((gdImagePtr)this->imgPtr, ptr);
+	gdImagePngCtx(this->imgPtr.GetOpt<gdImage>().OrNull(), ptr);
 	eng->DeleteIOCtx(ptr);
 	return false;
 }

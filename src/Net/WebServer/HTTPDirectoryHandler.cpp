@@ -462,13 +462,13 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
 	this->rootDir->Release();
 	UOSInt cacheCnt;
-	CacheInfo **cacheList = this->fileCache.ToArray(cacheCnt);
+	UnsafeArray<CacheInfo*> cacheList = this->fileCache.ToArray(cacheCnt);
 	while (cacheCnt-- > 0)
 	{
 		MemFree(cacheList[cacheCnt]->buff);
 		MemFree(cacheList[cacheCnt]);
 	}
-	MemFree(cacheList);
+	MemFreeArr(cacheList);
 	if (this->packageMap.SetTo(packageMap))
 	{
 		NN<PackageInfo> package;
@@ -1692,13 +1692,13 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
-	CacheInfo **cacheList = this->fileCache.ToArray(cacheCnt);
+	UnsafeArray<CacheInfo*> cacheList = this->fileCache.ToArray(cacheCnt);
 	while (cacheCnt-- > 0)
 	{
 		MemFree(cacheList[cacheCnt]->buff);
 		MemFree(cacheList[cacheCnt]);
 	}
-	MemFree(cacheList);
+	MemFreeArr(cacheList);
 	this->fileCache.Clear();
 }
 

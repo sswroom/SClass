@@ -24,7 +24,9 @@ namespace Data
 		T Next()
 		{
 			this->cnt--;
-			return *(arr)++;
+			T ret = arr[0];
+			arr++;
+			return ret;
 		}
 	};
 }

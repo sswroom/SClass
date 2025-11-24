@@ -77,7 +77,7 @@ namespace Data
 		virtual NN<V> GetItemNoCheck(UOSInt index) const;
 		Optional<V> RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
-		virtual Optional<V> *ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<Optional<V>> ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 		FastMapNNIterator<T,V> Iterator() const;
 		void DeleteAll();
@@ -221,10 +221,10 @@ namespace Data
 		return this->values.GetCount() == 0;
 	}
 
-	template <class T, class V> Optional<V> *FastMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<Optional<V>> FastMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = this->values.GetCount();
-		Optional<V> *outArr = MemAlloc(Optional<V>, cnt);
+		UnsafeArray<Optional<V>> outArr = MemAlloc(Optional<V>, cnt);
 		objCnt.Set(cnt);
 		while (cnt-- > 0)
 		{

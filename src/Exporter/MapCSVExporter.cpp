@@ -69,7 +69,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	UnsafeArray<UTF8Char> sptr;
 	Text::Encoding enc(this->codePage);
 	IO::BufferedOutputStream cstm(stm, 65536);
-	IO::StreamWriter writer(cstm, &enc);
+	IO::StreamWriter writer(cstm, enc);
 	
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 	{

@@ -6,11 +6,11 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void IO::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dataType) const
+void IO::SMBIOS::GetDataType(NN<Data::ArrayListArr<const UInt8>> dataList, UInt8 dataType) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->smbiosBuffSize;
-	const UInt8 *buff = this->smbiosBuff;
+	UnsafeArray<const UInt8> buff = this->smbiosBuff;
 	while (i < j)
 	{
 		if (dataType == buff[i])
@@ -26,7 +26,7 @@ void IO::SMBIOS::GetDataType(Data::ArrayList<const UInt8 *> *dataList, UInt8 dat
 	}
 }
 
-IO::SMBIOS::SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr)
+IO::SMBIOS::SMBIOS(UnsafeArray<const UInt8> smbiosBuff, UOSInt smbiosBuffSize, UnsafeArrayOpt<UInt8> relPtr)
 {
 	this->smbiosBuff = smbiosBuff;
 	this->smbiosBuffSize = smbiosBuffSize;
@@ -35,16 +35,17 @@ IO::SMBIOS::SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr
 
 IO::SMBIOS::~SMBIOS()
 {
-	if (this->relPtr)
+	UnsafeArray<UInt8> relPtr;
+	if (this->relPtr.SetTo(relPtr))
 	{
-		MemFree(this->relPtr);
+		MemFreeArr(relPtr);
 	}
 }
 
 UOSInt IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const
 {
-	Data::ArrayList<const UInt8 *> dataList;
-	const UInt8 *dataBuff;
+	Data::ArrayListArr<const UInt8> dataList;
+	UnsafeArray<const UInt8> dataBuff;
 	const Char *carr[8];
 	NN<MemoryDeviceInfo> mem;
 	UOSInt i;
@@ -52,12 +53,12 @@ UOSInt IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList
 	UOSInt k;
 	UOSInt l;
 	UOSInt ret = 0;
-	this->GetDataType(&dataList, 17);
+	this->GetDataType(dataList, 17);
 	i = 0;
 	j = dataList.GetCount();
 	while (i < j)
 	{
-		dataBuff = dataList.GetItem(i);
+		dataBuff = dataList.GetItemNoCheck(i);
 		k = 8;
 		while (k-- > 0)
 		{
@@ -151,8 +152,8 @@ void IO::SMBIOS::FreeMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList)
 
 UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformName(UnsafeArray<UTF8Char> buff) const
 {
-	Data::ArrayList<const UInt8 *> dataList;
-	const UInt8 *dataBuff;
+	Data::ArrayListArr<const UInt8> dataList;
+	UnsafeArray<const UInt8> dataBuff;
 	const Char *carr[32];
 	UOSInt i;
 	UOSInt j;
@@ -160,12 +161,12 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformName(UnsafeArray<UTF8Char> buff)
 	UOSInt l;
 	UnsafeArrayOpt<UTF8Char> ret = 0;
 	UnsafeArray<UTF8Char> nnret;
-	this->GetDataType(&dataList, 2);
+	this->GetDataType(dataList, 2);
 	i = 0;
 	j = dataList.GetCount();
 	while (i < j)
 	{
-		dataBuff = dataList.GetItem(i);
+		dataBuff = dataList.GetItemNoCheck(i);
 		k = 8;
 		while (k-- > 0)
 		{
@@ -205,20 +206,20 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformName(UnsafeArray<UTF8Char> buff)
 
 UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformSN(UnsafeArray<UTF8Char> buff) const
 {
-	Data::ArrayList<const UInt8 *> dataList;
-	const UInt8 *dataBuff;
+	Data::ArrayListArr<const UInt8> dataList;
+	UnsafeArray<const UInt8> dataBuff;
 	const Char *carr[32];
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
 	UnsafeArrayOpt<UTF8Char> ret = 0;
-	this->GetDataType(&dataList, 2);
+	this->GetDataType(dataList, 2);
 	i = 0;
 	j = dataList.GetCount();
 	while (i < j)
 	{
-		dataBuff = dataList.GetItem(i);
+		dataBuff = dataList.GetItemNoCheck(i);
 		k = 8;
 		while (k-- > 0)
 		{
@@ -265,12 +266,12 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformSN(UnsafeArray<UTF8Char> buff) c
 	}
 	if (ret == 0)
 	{
-		this->GetDataType(&dataList, 1);
+		this->GetDataType(dataList, 1);
 		i = 0;
 		j = dataList.GetCount();
 		while (i < j)
 		{
-			dataBuff = dataList.GetItem(i);
+			dataBuff = dataList.GetItemNoCheck(i);
 			k = 8;
 			while (k-- > 0)
 			{
@@ -321,17 +322,17 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformSN(UnsafeArray<UTF8Char> buff) c
 
 Int32 IO::SMBIOS::GetChassisType() const
 {
-	Data::ArrayList<const UInt8 *> dataList;
-	const UInt8 *dataBuff;
+	Data::ArrayListArr<const UInt8> dataList;
+	UnsafeArray<const UInt8> dataBuff;
 	UOSInt i;
 	UOSInt j;
 	Int32 ret = 0;
-	this->GetDataType(&dataList, 3);
+	this->GetDataType(dataList, 3);
 	i = 0;
 	j = dataList.GetCount();
 	while (i < j)
 	{
-		dataBuff = dataList.GetItem(i);
+		dataBuff = dataList.GetItemNoCheck(i);
 
 		ret = dataBuff[5];
 		break;
@@ -347,7 +348,7 @@ Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UOSInt j = this->smbiosBuffSize;
 	UOSInt k;
 	UOSInt l;
-	const UInt8 *buff = this->smbiosBuff;
+	UnsafeArray<const UInt8> buff = this->smbiosBuff;
 	while (i < j)
 	{
 		k = 32;

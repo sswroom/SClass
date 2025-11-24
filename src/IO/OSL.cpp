@@ -24,15 +24,15 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/os-release")) == IO::Path::PathType::File)
 	{
-		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
-		if (cfg)
+		NN<IO::ConfigFile> cfg;
+		if (IO::UnixConfigFile::Parse(CSTR("/etc/os-release")).SetTo(cfg))
 		{
 			NN<Text::String> s;
 			if (cfg->GetValue(CSTR("NAME")).SetTo(s))
 			{
 				sbuff = s->ConcatTo(sbuff);
 			}
-			DEL_CLASS(cfg);
+			cfg.Delete();
 			return sbuff;
 		}
 	}
@@ -159,8 +159,8 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/os-release")) == IO::Path::PathType::File)
 	{
-		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
-		if (cfg)
+		NN<IO::ConfigFile> cfg;
+		if (IO::UnixConfigFile::Parse(CSTR("/etc/os-release")).SetTo(cfg))
 		{
 			NN<Text::String> s;
 			if (cfg->GetValue(CSTR("VERSION")).SetTo(s))
@@ -172,7 +172,7 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 				*sbuff++ = ' ';
 				sbuff = s->ConcatTo(sbuff);
 			}
-			DEL_CLASS(cfg);
+			cfg.Delete();
 			return sbuff;
 		}
 	}
@@ -202,9 +202,9 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/VERSION")) == IO::Path::PathType::File)
 	{
-		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/VERSION"));
+		NN<IO::ConfigFile> cfg;
 		NN<Text::String> s;
-		if (cfg)
+		if (IO::UnixConfigFile::Parse(CSTR("/etc/VERSION")).SetTo(cfg))
 		{
 			if (cfg->GetValue(CSTR("productversion")).SetTo(s))
 			{
@@ -214,7 +214,7 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 			{
 				sbuff = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("-")));
 			}
-			DEL_CLASS(cfg);
+			cfg.Delete();
 			return sbuff;
 		}
 	}
