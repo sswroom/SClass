@@ -20,7 +20,7 @@ namespace Text
 		static NN<String> New(const Text::CStringNN &str)
 		{
 			if (str.leng == 0) return NewEmpty();
-			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(str.leng + sizeof(String)));
+			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, str.leng + sizeof(String)));
 			s->v = UARR(s->vbuff);
 			s->leng = str.leng;
 			s->useCnt = 1;
@@ -32,7 +32,7 @@ namespace Text
 		static NN<String> New(UnsafeArray<const UTF8Char> str, UOSInt len)
 		{
 			if (len == 0) return NewEmpty();
-			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 			s->v = UARR(s->vbuff);
 			s->leng = len;
 			s->useCnt = 1;
@@ -46,7 +46,7 @@ namespace Text
 
 		static NN<String> New(UOSInt len)
 		{
-			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 			s->v = UARR(s->vbuff);
 			s->leng = len;
 			s->useCnt = 1;

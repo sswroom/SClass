@@ -19,7 +19,7 @@ struct IO::SystemInfo::ClassData
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	data->platformName = 0;
 	data->platformSN = 0;
 	this->clsData = data;
@@ -54,7 +54,7 @@ IO::SystemInfo::~SystemInfo()
 {
 	SDEL_STRING(this->clsData->platformName);
 	SDEL_STRING(this->clsData->platformSN);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)

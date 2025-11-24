@@ -16,7 +16,7 @@ Optional<Text::String> Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char
 	if (!str.SetTo(nnstr)) return 0;
 	if (nnstr[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(nnstr);
-	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	Text::String *s = (Text::String*)MemAllocA(UInt8, len + sizeof(String));
 	s->v = s->vbuff;
 	s->leng = len;
 	s->useCnt = 1;
@@ -28,7 +28,7 @@ NN<Text::String> Text::String::NewNotNullSlow(UnsafeArray<const UTF8Char> str)
 {
 	if (str[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(str);
-	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
 	s->useCnt = 1;
@@ -41,7 +41,7 @@ Optional<Text::String> Text::String::NewOrNull(Text::CString str)
 	Text::CStringNN nnstr;
 	if (!str.SetTo(nnstr)) return 0;
 	if (nnstr.leng == 0) return NewEmpty();
-	Text::String *s = (Text::String*)MAlloc(nnstr.leng + sizeof(String));
+	Text::String *s = (Text::String*)MemAllocA(UInt8, nnstr.leng + sizeof(String));
 	s->v = s->vbuff;
 	s->leng = nnstr.leng;
 	s->useCnt = 1;
@@ -55,7 +55,7 @@ NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArray
 	UnsafeArray<const UTF8Char> strE;
 	if (!strEnd.SetTo(strE) || strE == str) return NewEmpty();
 	UOSInt len = (UOSInt)(strE - str);
-	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
 	s->useCnt = 1;
@@ -68,7 +68,7 @@ NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArray
 {
 	if (strEnd == str) return NewEmpty();
 	UOSInt len = (UOSInt)(strEnd - str);
-	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MemAllocA(UInt8, len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
 	s->useCnt = 1;
@@ -195,13 +195,13 @@ void Text::String::Release()
 #endif
 	if (cnt == 0)
 	{
-		MemFree(this);
+		MemFreeA(this);
 	}
 #else
 	this->useCnt--;
 	if (this->useCnt == 0)
 	{
-		MemFree(this);
+		MemFreeA(this);
 	}
 #endif
 }

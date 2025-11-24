@@ -616,6 +616,11 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAPU64(v) __builtin_bswap64(v)
 #if __GNUC__ >= 5
 #define MyADD_UOS(v1, v2, outPtr) __builtin_add_overflow(v1, v2, outPtr)
+#if _OSINT_SIZE == 64
+#define MyADC_UOS(v1, v2, c, cout) __builtin_addcll(v1, v2, c, cout)
+#else
+#define MyADC_UOS(v1, v2, c, cout) __builtin_addcl(v1, v2, c, cout)
+#endif
 #else
 Bool __inline MyADD_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
 {
@@ -628,6 +633,29 @@ UOSInt __inline MyADC_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
 {
 	v1 += v2 + c;
 	*cout = v1 < v2
+	return v1;
+}
+#endif
+
+#if __GNUC__ > 4
+#define MySUB_UOS(v1, v2, outPtr) __builtin_sub_overflow(v1, v2, outPtr)
+#if _OSINT_SIZE == 64
+#define MySBB_UOS(v1, v2, c, cout) __builtin_subcll(v1, v2, c, cout)
+#else
+#define MySBB_UOS(v1, v2, c, cout) __builtin_subcl(v1, v2, c, cout)
+#endif
+#else
+Bool __inline MySUB_UOS(UOSInt v1, UOSInt v2, UOSInt* outPtr)
+{
+	v2 = v1 - v2;
+	*outPtr = v1;
+	return v1 < v2;
+}
+
+UOSInt __inline MySBB_UOS(UOSInt v1, UOSInt v2, Bool c, UOSInt* cout)
+{
+	v2 = v1 - v2 - c;
+	*cout = v1 < v2;
 	return v1;
 }
 #endif
