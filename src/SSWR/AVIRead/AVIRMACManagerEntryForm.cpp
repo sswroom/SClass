@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Sort/ArtificialQuickSortFunc.h"
+#include "Data/Sort/ArtificialQuickSortFunc.hpp"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRMACManagerEntryForm.h"
 #include "Text/MyString.h"

@@ -35,7 +35,7 @@ namespace IO
 
 		struct RunOptions;
 
-		typedef void (__stdcall *StepStatusHandler)(AnyType userObj, UOSInt cmdIndex, Data::Duration dur);
+		typedef void (CALLBACKFUNC StepStatusHandler)(AnyType userObj, UOSInt cmdIndex, Data::Duration dur);
 	private:
 		NN<Net::TCPClientFactory> clif;
 		UOSInt lastErrorIndex;

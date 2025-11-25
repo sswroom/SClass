@@ -6,6 +6,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "Exporter/DBFExporter.h"
+#include "IO/MemoryStream.h"
 
 Exporter::DBFExporter::DBFExporter()
 {
@@ -84,7 +85,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt nCol;
 	UOSInt nOut;
 
-	Text::String **colNames;
+	UnsafeArray<NN<Text::String>> colNames;
 	UOSInt *colSize;
 	UOSInt *colDP;
 	DB::DBUtil::ColType *colTypes;
@@ -95,7 +96,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Data::DateTime dt;
 
 	nCol = r->ColCount();
-	colNames = MemAlloc(Text::String *, nCol);
+	colNames = MemAllocArr(NN<Text::String>, nCol);
 	colSize = MemAlloc(UOSInt, nCol);
 	colDP = MemAlloc(UOSInt, nCol);
 	colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
@@ -114,7 +115,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			else
 			{
 				colMap[nOut] = i;
-				colNames[nOut] = colDef.GetColName()->Clone().Ptr();
+				colNames[nOut] = colDef.GetColName()->Clone();
 				if (colDef.GetColType() == DB::DBUtil::CT_DateTime)
 				{
 					colSize[nOut] = 8;
@@ -189,7 +190,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		colNames[i]->Release();
 	}
 	MemFree(colMap);
-	MemFree(colNames);
+	MemFreeArr(colNames);
 	MemFree(colSize);
 	MemFree(colDP);
 	MemFree(colTypes);

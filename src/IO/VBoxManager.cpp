@@ -7,7 +7,7 @@
 UOSInt IO::VBoxManager::GetVMList(NN<Data::ArrayListNN<VMId>> vms)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append(this->progPath);
+	sb.AppendOpt(this->progPath);
 	sb.AppendC(UTF8STRC(" list vms"));
 	Text::StringBuilderUTF8 sbResult;
 	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
@@ -43,16 +43,16 @@ IO::VBoxManager::VBoxManager()
 	if (sb.leng > 0)
 	{
 		sb.TrimWSCRLF();
-		this->progPath = Text::String::New(UTF8STRC("vboxmanage")).Ptr();
-		this->version = Text::String::New(sb.ToCString()).Ptr();
+		this->progPath = Text::String::New(UTF8STRC("vboxmanage"));
+		this->version = Text::String::New(sb.ToCString());
 		this->GetVMList(this->vms);
 	}
 }
 
 IO::VBoxManager::~VBoxManager()
 {
-	SDEL_STRING(this->progPath);
-	SDEL_STRING(this->version);
+	OPTSTR_DEL(this->progPath);
+	OPTSTR_DEL(this->version);
 	UOSInt i = this->vms.GetCount();
 	NN<VMId> vm;
 	while (i-- > 0)
@@ -63,7 +63,7 @@ IO::VBoxManager::~VBoxManager()
 	}
 }
 
-Text::String *IO::VBoxManager::GetVersion() const
+Optional<Text::String> IO::VBoxManager::GetVersion() const
 {
 	return this->version;
 }
@@ -76,7 +76,7 @@ NN<const Data::ArrayListNN<IO::VBoxManager::VMId>> IO::VBoxManager::GetVMS() con
 Optional<IO::VBoxVMInfo> IO::VBoxManager::GetVMInfo(NN<VMId> vm) const
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append(this->progPath);
+	sb.AppendOpt(this->progPath);
 	sb.AppendC(UTF8STRC(" showvminfo "));
 	vm->uuid.ToString(sb);
 	Text::StringBuilderUTF8 sbResult;

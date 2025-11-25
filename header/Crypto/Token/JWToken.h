@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Crypto/Token/JWTParam.h"
 #include "Crypto/Token/JWSignature.h"
-#include "Data/StringMap.h"
+#include "Data/StringMap.hpp"
 #include "Net/SSLEngine.h"
 #include "Text/StringBuilderUTF8.h"
 

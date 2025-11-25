@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_CHINESEINFO
 #define _SM_TEXT_CHINESEINFO
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/FileStream.h"
 
 namespace Text

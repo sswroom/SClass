@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 extern "C" unsigned int __sync_add_and_fetch_4(volatile void* pVal, unsigned int inc)
 {

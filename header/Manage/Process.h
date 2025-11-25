@@ -1,8 +1,8 @@
 // link with Psapi.lib
 #ifndef _SM_MANAGE_PROCESS
 #define _SM_MANAGE_PROCESS
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Manage/HandleType.h"
 #include "Manage/MemoryReader.h"
 #include "Manage/ModuleInfo.h"
@@ -124,16 +124,16 @@ namespace Manage
 			UInt32 parentId;
 		} ProcessInfo;
 
-		static FindProcSess *FindProcess(Text::CString processName);
-		static FindProcSess *FindProcessW(const WChar *processName);
-		static UnsafeArrayOpt<UTF8Char> FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, FindProcSess *sess, ProcessInfo *info);
-		static UnsafeArrayOpt<WChar> FindProcessNextW(UnsafeArray<WChar> processNameBuff, FindProcSess *sess, ProcessInfo *info);
-		static void FindProcessClose(FindProcSess *sess);
+		static Optional<FindProcSess> FindProcess(Text::CString processName);
+		static Optional<FindProcSess> FindProcessW(UnsafeArrayOpt<const WChar> processName);
+		static UnsafeArrayOpt<UTF8Char> FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, NN<FindProcSess> sess, NN<ProcessInfo> info);
+		static UnsafeArrayOpt<WChar> FindProcessNextW(UnsafeArray<WChar> processNameBuff, NN<FindProcSess> sess, NN<ProcessInfo> info);
+		static void FindProcessClose(NN<FindProcSess> sess);
 		static Int32 ExecuteProcess(Text::CStringNN cmdLine, NN<Text::StringBuilderUTF8> result);
-		static Int32 ExecuteProcessW(const WChar *cmdLine, NN<Text::StringBuilderUTF8> result);
+		static Int32 ExecuteProcessW(UnsafeArray<const WChar> cmdLine, NN<Text::StringBuilderUTF8> result);
 		static Bool IsAlreadyStarted();
 		static Bool OpenPath(Text::CStringNN path);
-		static Bool OpenPathW(const WChar *path);
+		static Bool OpenPathW(UnsafeArray<const WChar> path);
 		static Text::CStringNN GetPriorityName(ProcessPriority priority);
 	};
 }

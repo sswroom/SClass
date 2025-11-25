@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/AES192.h"
 #include "Crypto/Encrypt/AESBase.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 Crypto::Encrypt::AES192::AES192(UnsafeArray<const UInt8> key) : Crypto::Encrypt::BlockCipher(16)
 {

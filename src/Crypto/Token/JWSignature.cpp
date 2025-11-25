@@ -5,7 +5,7 @@
 #include "Crypto/Hash/SHA384.h"
 #include "Crypto/Hash/SHA512.h"
 #include "Crypto/Token/JWSignature.h"
-#include "Text/EnumFinder.h"
+#include "Text/EnumFinder.hpp"
 #include "Text/TextBinEnc/Base64Enc.h"
 
 Crypto::Token::JWSignature::JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, UnsafeArray<const UInt8> privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType)

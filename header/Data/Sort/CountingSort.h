@@ -11,12 +11,12 @@ namespace Data
 		private:
 			Int32 minVal;
 			Int32 maxVal;
-			Int32 *valCount;
+			UnsafeArray<Int32> valCount;
 		public:
 			CountingSort(Int32 minVal, Int32 maxVal);
 			~CountingSort();
 
-			void SortInt32(const Int32 *inputArr, Int32 *outputArr, OSInt firstIndex, OSInt lastIndex);
+			void SortInt32(UnsafeArray<const Int32> inputArr, UnsafeArray<Int32> outputArr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }

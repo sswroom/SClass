@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Manage/AddressResolver.h"
 #include "Manage/DasmARM.h"
 #include "Manage/ThreadContextARM.h"
@@ -228,6 +228,7 @@ Bool DasmARM_09(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_0A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("beq 0x"));
@@ -240,10 +241,10 @@ Bool DasmARM_0A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -252,6 +253,7 @@ Bool DasmARM_0A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_0B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bleq 0x"));
@@ -264,10 +266,10 @@ Bool DasmARM_0B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -346,6 +348,7 @@ Bool DasmARM_19(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_1A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bne 0x"));
@@ -358,10 +361,10 @@ Bool DasmARM_1A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -370,6 +373,7 @@ Bool DasmARM_1A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_1B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blne 0x"));
@@ -382,10 +386,10 @@ Bool DasmARM_1B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -464,6 +468,7 @@ Bool DasmARM_29(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_2A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bcs 0x"));
@@ -476,10 +481,10 @@ Bool DasmARM_2A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -488,6 +493,7 @@ Bool DasmARM_2A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_2B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blcs 0x"));
@@ -500,10 +506,10 @@ Bool DasmARM_2B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -582,6 +588,7 @@ Bool DasmARM_39(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_3A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bcc 0x"));
@@ -594,10 +601,10 @@ Bool DasmARM_3A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -606,6 +613,7 @@ Bool DasmARM_3A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_3B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blcc 0x"));
@@ -618,10 +626,10 @@ Bool DasmARM_3B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -700,6 +708,7 @@ Bool DasmARM_49(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_4A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bmi 0x"));
@@ -712,10 +721,10 @@ Bool DasmARM_4A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -724,6 +733,7 @@ Bool DasmARM_4A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_4B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blmi 0x"));
@@ -736,10 +746,10 @@ Bool DasmARM_4B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -818,6 +828,7 @@ Bool DasmARM_59(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_5A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bpl 0x"));
@@ -830,10 +841,10 @@ Bool DasmARM_5A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -842,6 +853,7 @@ Bool DasmARM_5A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_5B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blpl 0x"));
@@ -854,10 +866,10 @@ Bool DasmARM_5B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -936,6 +948,7 @@ Bool DasmARM_69(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_6A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bvs 0x"));
@@ -948,10 +961,10 @@ Bool DasmARM_6A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -960,6 +973,7 @@ Bool DasmARM_6A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_6B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blvs 0x"));
@@ -972,10 +986,10 @@ Bool DasmARM_6B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1054,6 +1068,7 @@ Bool DasmARM_79(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_7A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bvc 0x"));
@@ -1066,10 +1081,10 @@ Bool DasmARM_7A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1078,6 +1093,7 @@ Bool DasmARM_7A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_7B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blvc 0x"));
@@ -1090,10 +1106,10 @@ Bool DasmARM_7B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1313,6 +1329,7 @@ Bool DasmARM_89(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_8A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bhi 0x"));
@@ -1325,10 +1342,10 @@ Bool DasmARM_8A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1337,6 +1354,7 @@ Bool DasmARM_8A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_8B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blhi 0x"));
@@ -1349,10 +1367,10 @@ Bool DasmARM_8B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1431,6 +1449,7 @@ Bool DasmARM_99(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_9A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bls 0x"));
@@ -1443,10 +1462,10 @@ Bool DasmARM_9A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1455,6 +1474,7 @@ Bool DasmARM_9A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_9B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blls 0x"));
@@ -1467,10 +1487,10 @@ Bool DasmARM_9B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1549,6 +1569,7 @@ Bool DasmARM_A9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_AA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bge 0x"));
@@ -1561,10 +1582,10 @@ Bool DasmARM_AA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1573,6 +1594,7 @@ Bool DasmARM_AA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_AB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blge 0x"));
@@ -1585,10 +1607,10 @@ Bool DasmARM_AB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1667,6 +1689,7 @@ Bool DasmARM_B9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_BA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blt 0x"));
@@ -1679,10 +1702,10 @@ Bool DasmARM_BA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1691,6 +1714,7 @@ Bool DasmARM_BA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_BB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bllt 0x"));
@@ -1703,10 +1727,10 @@ Bool DasmARM_BB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1785,6 +1809,7 @@ Bool DasmARM_C9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_CA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bgt 0x"));
@@ -1797,10 +1822,10 @@ Bool DasmARM_CA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1809,6 +1834,7 @@ Bool DasmARM_CA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_CB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blgt 0x"));
@@ -1821,10 +1847,10 @@ Bool DasmARM_CB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1903,6 +1929,7 @@ Bool DasmARM_D9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_DA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ble 0x"));
@@ -1915,10 +1942,10 @@ Bool DasmARM_DA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -1927,6 +1954,7 @@ Bool DasmARM_DA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_DB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blle 0x"));
@@ -1939,10 +1967,10 @@ Bool DasmARM_DB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
@@ -2027,6 +2055,7 @@ Bool DasmARM_E0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_E1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	UInt32 *regPtrd;
 	UInt32 *regPtrs;
 	UInt32 *regPtrs2;
@@ -2047,10 +2076,10 @@ Bool DasmARM_E1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" (0x"));
 				sess->sbuff = Text::StrHexVal32(sess->sbuff, *regPtrs);
 				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-				if (sess->addrResol)
+				if (sess->addrResol.SetTo(addrResol))
 				{
 					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-					sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, *regPtrs).Or(sess->sbuff);
+					sess->sbuff = addrResol->ResolveName(sptr = sess->sbuff, *regPtrs).Or(sess->sbuff);
 					if (DasmARM_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 					{
 						sess->endType = Manage::DasmARM::ET_EXIT;
@@ -2885,6 +2914,7 @@ Bool DasmARM_E9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_EA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("b 0x"));
@@ -2897,10 +2927,10 @@ Bool DasmARM_EA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 
@@ -2913,6 +2943,7 @@ Bool DasmARM_EA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 
 Bool DasmARM_EB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	Int32 addr;
 	UnsafeArray<UTF8Char> sptr;
 	sess->regs.PC += 4;
@@ -2926,10 +2957,10 @@ Bool DasmARM_EB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 	}
 	sess->sbuff = Text::StrInt32(sess->sbuff, addr);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sptr = sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 		if (DasmARM_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM::ET_EXIT;
@@ -4859,7 +4890,7 @@ Text::CStringNN Manage::DasmARM::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::MemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];

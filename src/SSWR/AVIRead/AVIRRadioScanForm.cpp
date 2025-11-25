@@ -158,28 +158,29 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 				{
 					bss = me->wlanBSSList.GetItemNoCheck(i);
 					ssid = bss->GetSSID();
-					MemCopyNO(&id[2], bss->GetMAC().Ptr(), 6);
-					id[0] = 0;
-					id[1] = 0;
+					MemCopyNO(&id[0], bss->GetMAC().Ptr(), 6);
+					id[6] = 0;
+					id[7] = 0;
 					imac = ReadMUInt64(id);
 
-					sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
+					sptr = Text::StrHexBytes(sbuff, &id[0], 6, ':');
 					k = me->lvWiFi->AddItem(CSTRP(sbuff, sptr), bss);
+					me->lvWiFi->SetSubItem(k, 1, Net::MACInfo::AddressTypeGetName(Net::MACInfo::GetAddressType(&id[0])));
 					sptr = Math::Unit::Count::WellFormat(sbuff, bss->GetFreq(), "0.000");
-					me->lvWiFi->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-					sptr = Text::StrDouble(sbuff, bss->GetRSSI());
 					me->lvWiFi->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+					sptr = Text::StrDouble(sbuff, bss->GetRSSI());
+					me->lvWiFi->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 					if (Net::WiFiUtil::GuessDeviceType(sbuff, bss).SetTo(sptr))
-						me->lvWiFi->SetSubItem(k, 3, CSTRP(sbuff, sptr));
-					me->lvWiFi->SetSubItem(k, 4, ssid);
-					NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfo(imac);
-					me->lvWiFi->SetSubItem(k, 5, {entry->name, entry->nameLen});
+						me->lvWiFi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+					me->lvWiFi->SetSubItem(k, 5, ssid);
+					NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMAC64Info(imac);
+					me->lvWiFi->SetSubItem(k, 6, {entry->name, entry->nameLen});
 					if (bss->GetManuf().SetTo(s))
-						me->lvWiFi->SetSubItem(k, 6, s);
-					if (bss->GetModel().SetTo(s))
 						me->lvWiFi->SetSubItem(k, 7, s);
-					if (bss->GetSN().SetTo(s))
+					if (bss->GetModel().SetTo(s))
 						me->lvWiFi->SetSubItem(k, 8, s);
+					if (bss->GetSN().SetTo(s))
+						me->lvWiFi->SetSubItem(k, 9, s);
 
 					i++;
 				}
@@ -685,7 +686,7 @@ UOSInt SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64,
 			}
 			else
 			{
-				NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMACInfo(rec->macInt);
+				NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMAC64Info(rec->mac64Int);
 				this->lvBluetooth->SetSubItem(k, 6, {mac->name, mac->nameLen});
 			}
 			if (rec->company == 0)
@@ -774,11 +775,12 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->txtWiFiDetail->SetReadOnly(true);
 	this->txtWiFiDetail->SetRect(0, 0, 100, 100, false);
 	this->txtWiFiDetail->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	this->lvWiFi = ui->NewListView(this->tpWiFi, UI::ListViewStyle::Table, 9);
+	this->lvWiFi = ui->NewListView(this->tpWiFi, UI::ListViewStyle::Table, 10);
 	this->lvWiFi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWiFi->SetShowGrid(true);
 	this->lvWiFi->SetFullRowSelect(true);
 	this->lvWiFi->AddColumn(CSTR("MAC Address"), 120);
+	this->lvWiFi->AddColumn(CSTR("AddrType"), 60);
 	this->lvWiFi->AddColumn(CSTR("Frequency"), 60);
 	this->lvWiFi->AddColumn(CSTR("RSSI"), 50);
 	this->lvWiFi->AddColumn(CSTR("Device"), 150);

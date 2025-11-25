@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_QUERYCONDITIONS
 #define _SM_DATA_QUERYCONDITIONS
-#include "Data/ArrayList.h"
-#include "Data/ArrayListArr.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/Condition.h"
 #include "Data/ObjectGetter.h"

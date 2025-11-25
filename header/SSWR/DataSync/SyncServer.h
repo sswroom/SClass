@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCSERVER
 #define _SM_SSWR_DATASYNC_SYNCSERVER
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/ProtocolHandler.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"

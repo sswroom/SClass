@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ProtoDec/TK109ProtocolDecoder.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"

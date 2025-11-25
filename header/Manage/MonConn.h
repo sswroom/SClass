@@ -2,7 +2,7 @@
 #define _SM_MANAGE_MONCONN
 #include "AnyType.h"
 #include "Data/DateTime.h"
-#include "Data/SyncArrayList.h"
+#include "Data/SyncArrayList.hpp"
 #include "IO/ConsoleWriter.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClientFactory.h"

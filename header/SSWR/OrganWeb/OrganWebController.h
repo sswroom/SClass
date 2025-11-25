@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_ORGANWEB_ORGANWEBCONTROLLER
 #define _SM_SSWR_ORGANWEB_ORGANWEBCONTROLLER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ConfigFile.h"
 #include "IO/MemoryStream.h"
 #include "IO/Writer.h"

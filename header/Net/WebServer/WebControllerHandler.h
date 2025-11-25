@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBCONTROLLERHANDLER
 #define _SM_NET_WEBSERVER_WEBCONTROLLERHANDLER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/WebController.h"
 

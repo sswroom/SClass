@@ -24,7 +24,7 @@ namespace DB
 		static Bool GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, NN<DB::DBReader> r);
 		static Bool GenInsertCmd(NN<DB::SQLBuilder> sql, NN<DB::TableDef> tabDef, NN<DB::DBReader> r);
 		static Bool GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, Optional<DB::TableDef> tabDef, NN<DB::DBReader> r);
-		static Bool GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName, const Collation *collation);
+		static Bool GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName, Optional<const Collation> collation);
 		static Bool GenDeleteDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName);
 		static Bool GenCreateSchemaCmd(NN<DB::SQLBuilder> sql, Text::CStringNN schemaName);
 		static Bool GenDeleteSchemaCmd(NN<DB::SQLBuilder> sql, Text::CStringNN schemaName);

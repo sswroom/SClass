@@ -2,8 +2,8 @@
 #define _SM_SSWR_ORGANMGR_ORGANENV
 
 #include "Data/ArrayListInt64.h"
-#include "Data/Comparator.h"
-#include "Data/FastMapNN.h"
+#include "Data/Comparator.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Data/Timestamp.h"
 #include "IO/ConfigFile.h"
 #include "IO/Writer.h"

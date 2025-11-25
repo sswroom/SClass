@@ -59,7 +59,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NN<Data::ArrayListIn
 
 Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax() const
 {
-	return (Int64)userFileList->GetCount() - 1;
+	return (Int64)this->userFileList->GetCount() - 1;
+}
+
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetRecordCnt() const
+{
+	return this->userFileList->GetCount();
 }
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Optional<Map::NameArray> nameArr)
@@ -76,17 +81,17 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	return 0;
 }
 
-DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }

@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUITREEVIEW
 #define _SM_UI_GUITREEVIEW
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "UI/GUIClientControl.h"
 
 namespace UI

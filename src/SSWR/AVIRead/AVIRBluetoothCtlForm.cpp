@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BTDevLog.h"
 #include "Net/MACInfo.h"
 #include "Net/PacketAnalyzerBluetooth.h"
@@ -89,16 +89,16 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTSca
 	Sync::MutexUsage mutUsage(me->devMut);
 	if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		if (me->randDevMap.GetIndex(dev->macInt) >= 0)
+		if (me->randDevMap.GetIndex(dev->mac64Int) >= 0)
 		{
-			me->randDevMap.Put(dev->macInt, 1);
+			me->randDevMap.Put(dev->mac64Int, 1);
 		}
 	}
 	else
 	{
-		if (me->pubDevMap.GetIndex(dev->macInt) >= 0)
+		if (me->pubDevMap.GetIndex(dev->mac64Int) >= 0)
 		{
-			me->pubDevMap.Put(dev->macInt, 1);
+			me->pubDevMap.Put(dev->mac64Int, 1);
 		}
 	}
 }
@@ -122,7 +122,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 		dev = devMap->GetItemNoCheck(j);
 		i = j + baseIndex;
 		Sync::MutexUsage devMutUsage(this->devMut);
-		if (statusMap->GetIndex(dev->macInt) < 0)
+		if (statusMap->GetIndex(dev->mac64Int) < 0)
 		{
 			sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
 			this->lvDevices->InsertItem(i, CSTRP(sbuff, sptr), dev);
@@ -148,12 +148,12 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 			}
 			else
 			{
-				NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMACInfo(dev->macInt);
+				NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMAC64Info(dev->mac64Int);
 				this->lvDevices->SetSubItem(i, 4, {mac->name, mac->nameLen});
 			}
-			statusMap->Put(dev->macInt, 1);
+			statusMap->Put(dev->mac64Int, 1);
 		}
-		if (statusMap->Get(dev->macInt) != 0)
+		if (statusMap->Get(dev->mac64Int) != 0)
 		{
 			if (dev->name.SetTo(s))
 			{
@@ -186,7 +186,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 				}
 			}
 			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
-			statusMap->Put(dev->macInt, 0);
+			statusMap->Put(dev->mac64Int, 0);
 		}
 		j++;
 	}

@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_ENCODINGFACTORY
 #define _SM_TEXT_ENCODINGFACTORY
 #include "Data/ArrayListInt32.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 
 namespace Text
 {

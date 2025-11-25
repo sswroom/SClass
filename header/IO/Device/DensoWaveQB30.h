@@ -1,7 +1,7 @@
 #ifndef _SM_IO_DEVICE_DENSOWAVEQB30
 #define _SM_IO_DEVICE_DENSOWAVEQB30
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/CodeScanner.h"
 #include "IO/Stream.h"
 #include "Sync/Mutex.h"

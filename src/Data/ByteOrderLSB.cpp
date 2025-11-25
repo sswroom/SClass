@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteOrderLSB.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 Data::ByteOrderLSB::ByteOrderLSB()
 {

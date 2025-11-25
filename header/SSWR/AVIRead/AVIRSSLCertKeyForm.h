@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSSLCERTKEYFORM
 #define _SM_SSWR_AVIREAD_AVIRSSLCERTKEYFORM
 #include "Crypto/Cert/X509File.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"

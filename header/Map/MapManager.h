@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_MAPMANAGER
 #define _SM_MAP_MAPMANAGER
 
-#include "Data/ArrayListNN.h"
-#include "Data/StringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/StringMapNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapEnv.h"
 #include "Parser/ParserList.h"

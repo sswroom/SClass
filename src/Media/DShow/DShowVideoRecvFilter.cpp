@@ -56,7 +56,7 @@ public:
 				VIDEOINFOHEADER *format = (VIDEOINFOHEADER *)pmt->Format();
 				Data::ArrayListUInt32 csList;
 				OSInt i;
-				Media::CS::CSConverter::GetSupportedCS(&csList);
+				Media::CS::CSConverter::GetSupportedCS(csList);
 				i = csList.GetCount();
 				while (i-- > 0)
 				{
@@ -83,7 +83,7 @@ public:
 				VIDEOINFOHEADER2 *format = (VIDEOINFOHEADER2 *)pmt->Format();
 				Data::ArrayListUInt32 csList;
 				OSInt i;
-				Media::CS::CSConverter::GetSupportedCS(&csList);
+				Media::CS::CSConverter::GetSupportedCS(csList);
 				i = csList.GetCount();
 				while (i-- > 0)
 				{

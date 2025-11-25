@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBSTANDARDHANDLER
 #define _SM_NET_WEBSERVER_WEBSTANDARDHANDLER
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/WebServer/WebHandler.h"
 
 namespace Net

@@ -717,7 +717,7 @@ void Map::WebMapService::SetLayer(UOSInt index)
 		while (i < j)
 		{
 			crs = layer->crsList.GetItemNoCheck(i);
-			if (Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(crs->name)->ToCString()).SetTo(csys))
+			if (Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(crs->name)->ToCString(), nullptr).SetTo(csys))
 			{
 				if (csys->Equals(this->envCsys))
 				{

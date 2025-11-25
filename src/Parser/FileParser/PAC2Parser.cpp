@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/PAC2Parser.h"
 #include "Text/Encoding.h"

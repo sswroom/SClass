@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Comparator.h"
+#include "Data/Comparator.hpp"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/CSVFile.h"
 #include "DB/TableDef.h"

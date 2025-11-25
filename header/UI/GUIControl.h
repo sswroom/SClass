@@ -2,7 +2,7 @@
 #define _SM_UI_GUICONTROL
 #include "AnyType.h"
 #include "Handles.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/CallbackStorage.h"
 #include "Math/Size2D.h"
 #include "Media/DrawEngine.h"

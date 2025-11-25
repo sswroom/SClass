@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnOKClick(AnyType userObj)
 {

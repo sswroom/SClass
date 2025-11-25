@@ -87,8 +87,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 	Manage::Process::ProcessInfo proc;
 	UOSInt i;
 	OSInt si;
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(nullptr);
-	if (sess)
+	NN<Manage::Process::FindProcSess> sess;
+	if (Manage::Process::FindProcess(nullptr).SetTo(sess))
 	{
 		i = me->procList.GetCount();
 		while (i-- > 0)
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 			procInfo->found = false;
 		}
 
-		while (Manage::Process::FindProcessNext(sbuff, sess, &proc).SetTo(sptr))
+		while (Manage::Process::FindProcessNext(sbuff, sess, proc).SetTo(sptr))
 		{
 			si = me->procIds.SortedIndexOf(proc.processId);
 			if (si >= 0)

@@ -1,7 +1,7 @@
 #ifndef _SM_EXPORTER_XLSXEXPORTER
 #define _SM_EXPORTER_XLSXEXPORTER
 #include "Data/DateTime.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringUTF8Map.hpp"
 #include "IO/FileExporter.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"

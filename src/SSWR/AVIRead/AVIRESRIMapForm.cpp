@@ -6,7 +6,7 @@
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "UI/GUITextBox.h"
 
 SSWR::AVIRead::AVIRESRIMapForm::MapServer SSWR::AVIRead::AVIRESRIMapForm::mapSvrs[] = {

@@ -32,7 +32,7 @@ namespace Math
 
 		Double CalcLengTo(Coord2DDbl coord) const
 		{
-			Math::Coord2DDbl diff = *this - coord;
+			Math::Coord2DDbl diff = NNTHIS - coord;
 			diff = diff * diff;
 			return Math_Sqrt(diff.x + diff.y);
 		}
@@ -69,7 +69,7 @@ namespace Math
 
 		Math::Coord2DDbl Rotate(Double rotateAngleRad, Math::Coord2DDbl rotateCenter) const
 		{
-			Math::Coord2DDbl diff = *this - rotateCenter;
+			Math::Coord2DDbl diff = NNTHIS - rotateCenter;
 			Double sAng = Math_Sin(-rotateAngleRad);
 			Double cAng = Math_Cos(-rotateAngleRad);
 			return rotateCenter + Math::Coord2DDbl(diff.x * cAng + diff.y * sAng, -diff.x * sAng + diff.y * cAng);

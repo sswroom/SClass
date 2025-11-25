@@ -219,6 +219,11 @@ Int64 Map::GeoPackageLayer::GetObjectIdMax() const
 	return (Int64)(this->vecList.GetCount() - 1);
 }
 
+UOSInt Map::GeoPackageLayer::GetRecordCnt() const
+{
+	return this->vecList.GetCount();
+}
+
 void Map::GeoPackageLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<StringSession> sess;
@@ -250,7 +255,7 @@ UOSInt Map::GeoPackageLayer::GetColumnCnt() const
 	return tabDef->GetColCnt();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))
@@ -261,7 +266,7 @@ UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Cha
 	return col->GetColName()->ConcatTo(buff);
 }
 
-DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))
@@ -273,7 +278,7 @@ DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<
 	return col->GetColType();
 }
 
-Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))

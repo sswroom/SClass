@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Manage/HiResClock.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRWifiScanForm.h"
@@ -85,19 +85,19 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		{
 			bss = bssList.GetItemNoCheck(i);
 			ssid = bss->GetSSID();
-			MemCopyNO(&id[2], bss->GetMAC().Ptr(), 6);
-			id[0] = 0;
-			id[1] = 0;
+			MemCopyNO(&id[0], bss->GetMAC().Ptr(), 6);
+			id[6] = 0;
+			id[7] = 0;
 			imac = ReadMUInt64(id);
 
 			this->lvWifi->AddItem(ssid, bss);
 			this->bssList.Add(bss);
 			sptr = Text::StrUInt32(sbuff, bss->GetPHYId());
 			this->lvWifi->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
+			sptr = Text::StrHexBytes(sbuff, &id[0], 6, ':');
 			this->lvWifi->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			sptr = Text::StrInt32(sbuff, bss->GetBSSType());
-			NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfo(imac);
+			NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMAC64Info(imac);
 			this->lvWifi->SetSubItem(i, 3, {entry->name, entry->nameLen});
 			this->lvWifi->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 			sptr = Text::StrInt32(sbuff, bss->GetPHYType());

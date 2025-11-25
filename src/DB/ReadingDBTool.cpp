@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt32.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/DateTime.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/PostgreSQLConn.h"
@@ -502,7 +502,7 @@ UnsafeArray<UTF8Char> DB::ReadingDBTool::DBColUTF8(UnsafeArray<UTF8Char> sqlstr,
 	return DB::DBUtil::SDBColUTF8(sqlstr, colName, this->sqlType);
 }
 
-UnsafeArray<UTF8Char> DB::ReadingDBTool::DBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const WChar> colName)
 {
 	return DB::DBUtil::SDBColW(sqlstr, colName, this->sqlType);
 }
@@ -517,7 +517,7 @@ UnsafeArray<UTF8Char> DB::ReadingDBTool::DBStrUTF8(UnsafeArray<UTF8Char> sqlStr,
 	return DB::DBUtil::SDBStrUTF8(sqlStr, val, this->sqlType);
 }
 
-UnsafeArray<UTF8Char> DB::ReadingDBTool::DBStrW(UnsafeArray<UTF8Char> sqlStr, const WChar *val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBStrW(UnsafeArray<UTF8Char> sqlStr, UnsafeArrayOpt<const WChar> val)
 {
 	return DB::DBUtil::SDBStrW(sqlStr, val, this->sqlType);
 }
@@ -547,7 +547,7 @@ UnsafeArray<UTF8Char> DB::ReadingDBTool::DBBool(UnsafeArray<UTF8Char> sqlStr, Bo
 	return DB::DBUtil::SDBBool(sqlStr, val, this->sqlType);
 }
 
-UnsafeArray<UTF8Char> DB::ReadingDBTool::DBDateTime(UnsafeArray<UTF8Char> sqlStr, Data::DateTime *val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBDateTime(UnsafeArray<UTF8Char> sqlStr, Optional<Data::DateTime> val)
 {
 	return DB::DBUtil::SDBDateTime(sqlStr, val, this->sqlType, (Int8)this->GetTzQhr());
 }

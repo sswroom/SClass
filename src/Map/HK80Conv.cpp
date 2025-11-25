@@ -106,7 +106,7 @@ Map::HK80Conv::~HK80Conv()
 {
 }
 
-void Map::HK80Conv::ToWGS84(Double *pt_hk80, Double *pt_wgs84, Int32 ptCnt)
+void Map::HK80Conv::ToWGS84(UnsafeArray<Math::Coord2DDbl> pt_hk80, UnsafeArray<Math::Coord2DDbl> pt_wgs84, UOSInt ptCnt)
 {
 	Double psi;
 	Double M;
@@ -118,7 +118,7 @@ void Map::HK80Conv::ToWGS84(Double *pt_hk80, Double *pt_wgs84, Int32 ptCnt)
 
 	while (ptCnt-- > 0)
 	{
-		M = getM(pt_hk80[0]);
+		M = getM(pt_hk80[0].y);
 		latp = getLatp(M);
 
 		t = gett(latp);
@@ -126,7 +126,7 @@ void Map::HK80Conv::ToWGS84(Double *pt_hk80, Double *pt_wgs84, Int32 ptCnt)
 		p = getp(latp);
 
 		psi = getpsi(v,p);
-		Double dE = pt_hk80[1] - E0;
+		Double dE = pt_hk80[0].x - E0;
 		
 		Double Fs  = psi;
 		Double t2 = t * t;
@@ -149,7 +149,7 @@ void Map::HK80Conv::ToWGS84(Double *pt_hk80, Double *pt_wgs84, Int32 ptCnt)
 		Double p2 = p0 * (pow(dE, 4.0) / 24.0 / pow(mf , 3.0) / pow( Vs , 3.0)) * (-4.0 * (Fs * Fs) + 9.0 * Fs * (1.0 - t2) + 12 * t2);
 		Double p3 = p0 * (pow(dE , 6.0) / 720.0 / pow(mf , 5.0) / pow( Vs , 5.0)) * (p31 - p32 + p33 + p34 + p35);
 		Double p4 = p0 * (pow(dE , 8.0 )/ 40320.0 / pow(mf , 7.0) / pow( Vs , 7.0)) * (13856.0 + 3633.0 * t2 + 4095.0 * t4 + 1575.0 * t6);
-		pt_wgs84[0] = (ToDegrees(latp - p1 + p2 - p3 + p4)) + adjHK80toWGS84LAT;
+		pt_wgs84[0].y = (ToDegrees(latp - p1 + p2 - p3 + p4)) + adjHK80toWGS84LAT;
 		
 		//Eq4
 		Double secLatp = 1.0 / cos(latp);
@@ -164,10 +164,10 @@ void Map::HK80Conv::ToWGS84(Double *pt_hk80, Double *pt_wgs84, Int32 ptCnt)
 		p3 = secLatp * (pow(dE , 5) / 120.0 / pow(mf , 5) / pow(Vs , 5)) * (-p31 + p32 + p33 + p34);
 		p4 = secLatp * (pow(dE , 7) / 5040.0 / pow(mf , 7) / pow(Vs , 7)) * (61 + 662 * t2 + 1320 * t4 + 720 * t6);
 
-		pt_wgs84[1] = ToDegrees( ToRadians(LNG0) + p1 - p2 + p3 - p4) + adjHK80toWGS84LNG;
+		pt_wgs84[0].x = ToDegrees( ToRadians(LNG0) + p1 - p2 + p3 - p4) + adjHK80toWGS84LNG;
 
-		pt_hk80 += 2;
-		pt_wgs84 += 2;
+		pt_hk80 += 1;
+		pt_wgs84 += 1;
 	}
 
 	return;

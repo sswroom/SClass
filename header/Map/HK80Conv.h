@@ -1,3 +1,7 @@
+#ifndef _SM_MAP_HK80CONV
+#define _SM_MAP_HK80CONV
+#include "Math/Coord2DDbl.h"
+
 namespace Map
 {
 	class HK80Conv
@@ -30,6 +34,7 @@ namespace Map
 		HK80Conv();
 		~HK80Conv();
 
-		void ToWGS84(Double *pt_hk80, Double *pt_wgs84, Int32 ptCnt); //Y, X, Y, X, ...
+		void ToWGS84(UnsafeArray<Math::Coord2DDbl> pt_hk80, UnsafeArray<Math::Coord2DDbl> pt_wgs84, UOSInt ptCnt); //Y, X, Y, X, ...
 	};
-};
+}
+#endif

@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_ESRI_ESRICURVE
 #define _SM_MAP_ESRI_ESRICURVE
-#include "Data/ArrayList.h"
-#include "Data/ArrayListA.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListA.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Math/Coord2DDbl.h"
 #include "Math/Geometry/Vector2D.h"
 

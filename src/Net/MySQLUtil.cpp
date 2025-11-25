@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/SHA1.h"
 #include "Crypto/Hash/SHA256.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/MySQLUtil.h"
 #include "Text/MyString.h"
 

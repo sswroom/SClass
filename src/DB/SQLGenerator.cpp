@@ -1183,21 +1183,22 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 	return true;
 }
 
-Bool DB::SQLGenerator::GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName, const Collation *collation)
+Bool DB::SQLGenerator::GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName, Optional<const Collation> collation)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	sql->AppendCmdC(CSTR("CREATE DATABASE "));
 	sql->AppendCol(databaseName.v);
-	if (collation != 0)
+	NN<const Collation> nncollation;
+	if (collation.SetTo(nncollation))
 	{
 		if (sql->GetSQLType() == SQLType::MySQL)
 		{
 			sql->AppendCmdC(CSTR(" CHARACTER SET "));
-			sptr = DB::DBUtil::SDBCharset(sbuff, collation->charset, SQLType::MySQL);
+			sptr = DB::DBUtil::SDBCharset(sbuff, nncollation->charset, SQLType::MySQL);
 			sql->AppendCmdC(CSTRP(sbuff, sptr));
 			sql->AppendCmdC(CSTR(" COLLATE "));
-			sptr = DB::DBUtil::SDBCollation(sbuff, collation, SQLType::MySQL);
+			sptr = DB::DBUtil::SDBCollation(sbuff, nncollation, SQLType::MySQL);
 			sql->AppendCmdC(CSTRP(sbuff, sptr));
 		}
 	}

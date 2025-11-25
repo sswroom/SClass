@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 #define SHASTEP(v1, v2, v3, v4, v5, v6, v7, v8, n, k) \
 	temp1 = ROR64(v5, 14) ^ ROR64(v5, 18) ^ ROR64(v5, 41); \

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_LOCATIONSERVICE
 #define _SM_MAP_LOCATIONSERVICE
-#include "Data/DataArray.h"
+#include "Data/DataArray.hpp"
 #include "Map/GPSTrack.h"
 
 namespace Map

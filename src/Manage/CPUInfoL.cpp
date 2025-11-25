@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Core/X86Util.h"
+#include "Core/X86Util_C.h"
 #include "IO/FileStream.h"
 #include "Manage/CPUInfo.h"
 #include "Text/MyString.h"

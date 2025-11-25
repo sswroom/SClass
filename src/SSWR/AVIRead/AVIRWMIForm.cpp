@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRWMIForm.h"
 #include "Text/MyStringW.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "Win32/WMIQuery.h"
 
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(AnyType userObj)

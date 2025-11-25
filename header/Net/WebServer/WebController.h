@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBCONTROLLER
 #define _SM_NET_WEBSERVER_WEBCONTROLLER
-#include "Data/FastMap.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastMap.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/WebServer/WebRequest.h"
 #include "Net/WebServer/WebResponse.h"
 

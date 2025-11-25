@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GTK_GTKDRAGDROP
 #define _SM_UI_GTK_GTKDRAGDROP
-#include "Data/FastMapNN.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastMapNN.hpp"
+#include "Data/StringUTF8Map.hpp"
 #include "Text/String.h"
 #include "UI/GUIControl.h"
 #include <gtk/gtk.h>

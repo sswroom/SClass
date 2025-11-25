@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteBufferA.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/Compress/LZWDecStream.h"
 #include "IO/BitReaderLSB.h"
 #include "IO/StreamData.h"

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"

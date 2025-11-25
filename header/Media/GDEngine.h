@@ -10,24 +10,27 @@ namespace Media
 		GDEngine();
 		virtual ~GDEngine();
 
-		virtual Optional<DrawImage> CreateImage32(Int32 width, Int32 height);
-		virtual Optional<DrawImage> LoadImageA(Char *fileName);
-		virtual Optional<DrawImage> LoadImageW(WChar *fileName);
+		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
+		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
+		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm);
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess);
+		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img);
 		virtual Bool DeleteImage(NN<DrawImage> img);
+		virtual void EndColorSess(NN<Media::ColorSess> colorSess);
 
-		void *CreateIOCtx(IO::Stream *stm);
+		void *CreateIOCtx(NN<IO::SeekableStream> stm);
 		void DeleteIOCtx(void *obj);
 	};
 
 	class GDBrush : public DrawBrush
 	{
 	private:
-		Int32 color;
+		UInt32 color;
 	public:
-		GDBrush(Int32 color, DrawImage *img);
+		GDBrush(UInt32 color, NN<DrawImage> img);
 		~GDBrush();
 		
-		Int32 InitImage(DrawImage *img);
+		Int32 InitImage(NN<DrawImage> img);
 	};
 
 	class GDPen : public DrawPen
@@ -38,77 +41,104 @@ namespace Media
 		int *pattern;
 		Int32 nPattern;
 	public:
-		GDPen(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern, DrawImage *img);
+		GDPen(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern, NN<DrawImage> img);
 		~GDPen();
 		
-		Int32 InitImage(DrawImage *img);
+		Int32 InitImage(NN<DrawImage> img);
+		virtual Double GetThick();
 	};
 
 	class GDFont : public DrawFont
 	{
 	private:
-		Char *name;
-		Int16 pxSize;
-		Int16 style;
-		Bool isTTCName;
+		NN<Text::String> name;
+		Optional<Text::String> ttcName;
+		Double pxSize;
+		Media::DrawEngine::DrawFontStyle style;
 	public:
-		GDFont(Char *name, Int16 pxSize, Int16 style);
-		GDFont(WChar *name, Int16 pxSize, Int16 style);
+		GDFont(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle style);
 		~GDFont();
 
-		Char *GetName();
-		Char *GetTTCName();
-		Int16 GetPointSize();
-		Int16 GetFontStyle();
+		NN<Text::String> GetName() const;
+		NN<Text::String> GetTTCName();
+		Double GetPXSize() const;
+		Double GetPointSize() const;
+		Media::DrawEngine::DrawFontStyle GetFontStyle() const;
 	};
 
 	class GDImage : public DrawImage
 	{
 	private:
-		GDEngine *eng;
-		Int32 width;
-		Int32 height;
-		Int32 bitCount;
+		NN<GDEngine> eng;
+		UOSInt width;
+		UOSInt height;
+		UInt32 bitCount;
 	public:
-		void *imgPtr;
+		AnyType imgPtr;
 
-		GDImage(GDEngine *eng, Int32 width, Int32 height, Int32 bitCount, void *imgPtr);
+		GDImage(NN<GDEngine> eng, Math::Size2D<UOSInt> size, UInt32 bitCount, AnyType imgPtr);
 		virtual ~GDImage();
 
-		virtual Int32 GetWidth();
-		virtual Int32 GetHeight();
-		virtual Int32 GetBitCount();
+		virtual UOSInt GetWidth() const;
+		virtual UOSInt GetHeight() const;
+		virtual Math::Size2D<UOSInt> GetSize() const;
+		virtual UInt32 GetBitCount() const;
+		virtual NN<const ColorProfile> GetColorProfile() const;
+		virtual void SetColorProfile(NN<const ColorProfile> color);
+		virtual Media::AlphaType GetAlphaType() const;
+		virtual void SetAlphaType(Media::AlphaType atype);
+		virtual Double GetHDPI() const;
+		virtual Double GetVDPI() const;
+		virtual void SetHDPI(Double dpi);
+		virtual void SetVDPI(Double dpi);
+		virtual UnsafeArrayOpt<UInt8> GetImgBits(OutParam<Bool> revOrder);
+		virtual void GetImgBitsEnd(Bool modified);
+		virtual UOSInt GetImgBpl() const;
+		virtual Optional<Media::EXIFData> GetEXIF() const;
+		virtual Media::PixelFormat GetPixelFormat() const;
+		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
 
-		virtual Bool DrawLine(Int32 x1, Int32 y1, Int32 x2, Int32 y2, DrawPen *p);
-		virtual Bool DrawPolyline(Int32 *points, Int32 nPoints, DrawPen *p);
-		virtual Bool DrawPolygon(Int32 *points, Int32 nPoints, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawPolyPolygon(Int32 *points, Int32 *pointCnt, Int32 nPointCnt, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawRect(Int32 x, Int32 y, Int32 w, Int32 h, DrawPen *p, DrawBrush *b);
-		virtual Bool DrawStringW(Int32 tlx, Int32 tly, WChar *str, DrawFont *f, DrawBrush *p);
-		virtual Bool DrawStringRotW(Int32 centX, Int32 centY, WChar *str, DrawFont *f, DrawBrush *p, Int32 angleDegree);
-		virtual Bool DrawStringWB(Int32 tlx, Int32 tly, WChar *str, DrawFont *f, DrawBrush *p, Int32 buffSize);
-		virtual Bool DrawStringRotWB(Int32 centX, Int32 centY, WChar *str, DrawFont *f, DrawBrush *p, Int32 angleDegree, Int32 buffSize);
-		virtual Bool DrawString(Int32 tlx, Int32 tly, Char *utf8Str, DrawFont *f, DrawBrush *p);
-		virtual Bool DrawStringRot(Int32 centX, Int32 centY, Char *utf8Str, DrawFont *f, DrawBrush *p, Int32 angleDegree);
-		virtual Bool DrawImagePt(DrawImage *img, Int32 tlx, Int32 tly);
+		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p);
+		virtual Bool DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p);
+		virtual Bool DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, NN<DrawPen> p);
+		virtual Bool DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b);
+		virtual Bool DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b);
+		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b);
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW);
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW);
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize);
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegreeACW, UOSInt buffSize);
+		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
+		virtual Bool DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilateral quad);
 
-		virtual DrawPen *NewPenARGB(Int32 color, Int32 thick, UInt8 *pattern, Int32 nPattern);
-		virtual DrawBrush *NewBrushARGB(Int32 color);
-		virtual DrawFont *NewFontA(Char *name, Int16 pxSize, Int16 fontStyle);
-		virtual DrawFont *NewFontW(WChar *name, Int16 pxSize, Int16 fontStyle);
-		virtual void DelPen(DrawPen *p);
-		virtual void DelBrush(DrawBrush *b);
-		virtual void DelFont(DrawFont *f);
+		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern);
+		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
+		virtual NN<DrawFont> NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage); // 72 dpi size
+		virtual NN<DrawFont> NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage); // Actual size
+		virtual NN<DrawFont> CloneFont(NN<DrawFont> f);
+		virtual void DelPen(NN<DrawPen> p);
+		virtual void DelBrush(NN<DrawBrush> b);
+		virtual void DelFont(NN<DrawFont> f);
 
-		virtual Bool GetTextSize(Media::DrawFont *fnt, WChar *txt, Int32 txtLen, Int32 *sz);
+		virtual Math::Size2DDbl GetTextSize(NN<DrawFont> fnt, Text::CStringNN txt);
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos);
-		virtual void GetStringBoundW(Int32 *pos, Int32 centX, Int32 centY, WChar *str, DrawFont *f, Int32 *drawX, Int32 *drawY);
-		virtual void GetStringBoundRotW(Int32 *pos, Int32 centX, Int32 centY, WChar *str, DrawFont *f, Int32 angleDegree, Int32 *drawX, Int32 *drawY);
-		virtual void CopyBits(Int32 x, Int32 y, void *imgPtr, Int32 bpl, Int32 width, Int32 height);
+		virtual void GetStringBound(UnsafeArray<Int32> pos, OSInt centX, OSInt centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY);
+		virtual void GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY);
+		virtual void CopyBits(OSInt x, OSInt y, UnsafeArray<UInt8> imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const;
 
-		virtual Int32 SavePng(IO::SeekableStream *stm);
-		virtual Int32 SaveGIF(IO::SeekableStream *stm);
-		virtual Int32 SaveJPG(IO::SeekableStream *stm);
+		virtual Optional<Media::StaticImage> ToStaticImage() const;
+		virtual UOSInt SavePng(NN<IO::SeekableStream> stm);
+		virtual UOSInt SaveGIF(NN<IO::SeekableStream> stm);
+		virtual UOSInt SaveJPG(NN<IO::SeekableStream> stm);
 	};
-};
+}
 #endif

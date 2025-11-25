@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIREWDTU01FORM
 #define _SM_SSWR_AVIREAD_AVIREWDTU01FORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/MQTTStaticClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
@@ -22,7 +22,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt8 mac[6];
-				UInt64 macInt;
+				UInt64 mac64Int;
 				Int32 rssi;
 				Optional<Text::String> name;
 				Optional<Text::String> remark;

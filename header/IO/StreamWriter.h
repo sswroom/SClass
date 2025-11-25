@@ -13,20 +13,20 @@ namespace IO
 	private:
 		Text::Encoding enc;
 		NN<IO::Stream> stm;
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UInt32 buffSize;
 
 	public:
-		StreamWriter(NN<IO::Stream> stm, Text::Encoding *enc);
+		StreamWriter(NN<IO::Stream> stm, NN<Text::Encoding> enc);
 		StreamWriter(NN<IO::Stream> stm, UInt32 codePage);
 		virtual ~StreamWriter();
 
 		virtual Bool Write(Text::CStringNN str);
 		virtual Bool WriteLine(Text::CStringNN str);
-		virtual Bool WriteW(const WChar *str, UOSInt nChar);
-		virtual Bool WriteW(const WChar *str);
-		virtual Bool WriteLineW(const WChar *str, UOSInt nChar);
-		virtual Bool WriteLineW(const WChar *str);
+		virtual Bool WriteW(UnsafeArray<const WChar> str, UOSInt nChar);
+		virtual Bool WriteW(UnsafeArray<const WChar> str);
+		virtual Bool WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar);
+		virtual Bool WriteLineW(UnsafeArray<const WChar> str);
 		virtual Bool WriteLine();
 
 		void WriteSignature();

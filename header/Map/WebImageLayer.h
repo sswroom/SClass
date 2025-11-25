@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_WEBIMAGELAYER
 #define _SM_MAP_WEBIMAGELAYER
 #include "AnyType.h"
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Data/CallbackStorage.h"
 #include "Data/Comparable.h"
 #include "Map/MapDrawLayer.h"
@@ -83,12 +83,13 @@ namespace Map
 		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
 		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
+		virtual UOSInt GetRecordCnt() const;
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr);
 		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt colIndex);
 		virtual UOSInt GetColumnCnt() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const;
+		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const;
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const;
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 

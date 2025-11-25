@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_TSFILEANALYSE
 #define _SM_IO_FILEANALYSE_TSFILEANALYSE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"

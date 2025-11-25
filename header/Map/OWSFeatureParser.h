@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_OWSFEATUREPARSER
 #define _SM_MAP_OWSFEATUREPARSER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Text/EncodingFactory.h"

@@ -183,7 +183,7 @@ Bool IO::BTController::BTDevice::EnableService(NN<Data::UUID> guid, Bool toEnabl
 		return false;
 
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
-	return ERROR_SUCCESS == SetState((HANDLE)this->hRadio, dev, (GUID*)guid->GetBytes(), toEnable?BLUETOOTH_SERVICE_ENABLE:BLUETOOTH_SERVICE_DISABLE);
+	return ERROR_SUCCESS == SetState((HANDLE)this->hRadio, dev, (GUID*)guid->GetBytes().Ptr(), toEnable?BLUETOOTH_SERVICE_ENABLE:BLUETOOTH_SERVICE_DISABLE);
 }
 
 IO::BTController::BTController(void *internalData, void *hand)
@@ -308,7 +308,7 @@ UInt16 IO::BTController::GetSubversion()
 	return this->subversion;
 }
 
-void IO::BTController::LEScanHandleResult(LEScanHandler leHdlr, AnyType leHdlrObj)
+void IO::BTController::LEScanHandleResult2(LEScanHandler leHdlr, AnyType leHdlrObj)
 {
 	this->leHdlr = leHdlr;
 	this->leHdlrObj = leHdlrObj;

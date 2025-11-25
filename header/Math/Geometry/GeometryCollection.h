@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_GEOMETRYCOLLECTION
 #define _SM_MATH_GEOMETRY_GEOMETRYCOLLECTION
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 
 namespace Math
 {

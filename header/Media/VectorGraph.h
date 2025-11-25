@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_VECTORGRAPH
 #define _SM_MEDIA_VECTORGRAPH
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Math/Size2D.h"
 #include "Math/Geometry/Vector2D.h"
 #include "Math/Unit/Distance.h"

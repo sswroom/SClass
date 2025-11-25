@@ -4,9 +4,9 @@
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListICaseStringNN.h"
 #include "Data/CallbackStorage.h"
-#include "Data/FastMap.h"
-#include "Data/FixedCircularBuff.h"
-#include "Data/ICaseStringMapNN.h"
+#include "Data/FastMap.hpp"
+#include "Data/FixedCircularBuff.hpp"
+#include "Data/ICaseStringMapNN.hpp"
 #include "IO/PacketAnalyse.h"
 #include "IO/ParsedObject.h"
 #include "IO/Writer.h"
@@ -51,7 +51,7 @@ namespace Net
 
 		typedef struct
 		{
-			UInt64 macAddr;
+			UInt64 mac64Addr;
 			UInt32 ipv4Addr[4];
 			Bool ipv4ByARP;
 			Net::SocketUtil::AddressInfo ipv6Addr;
@@ -113,7 +113,7 @@ namespace Net
 
 		struct DHCPInfo
 		{
-			UInt64 iMAC;
+			UInt64 iMAC64;
 			Bool updated;
 			Sync::Mutex mut;
 			Data::Timestamp ipAddrTime;
@@ -212,7 +212,7 @@ namespace Net
 
 		static void NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UOSInt nameSize);
 
-		NN<MACStatus> MACGet(UInt64 macAddr);
+		NN<MACStatus> MAC64Get(UInt64 mac64Addr);
 		void MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans);
 	public:
 		EthernetAnalyzer(Optional<IO::Writer> errWriter, AnalyzeType ctype, NN<Text::String> name);
@@ -258,10 +258,10 @@ namespace Net
 		Bool PacketNull(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketEthernet(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketLinux(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
-		Bool PacketEthernetData(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC); //Return valid
-		Bool PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
-		Bool PacketIPv6(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
-		Bool PacketARP(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketEthernetData2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
+		Bool PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
+		Bool PacketIPv6_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
+		Bool PacketARP_2(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC64, UInt64 destMAC64); //Return valid
 
 		AnalyzeType GetAnalyzeType();
 		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, AnyType userObj);

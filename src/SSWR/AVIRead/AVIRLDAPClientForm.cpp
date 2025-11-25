@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "SSWR/AVIRead/AVIRLDAPClientForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userObj)

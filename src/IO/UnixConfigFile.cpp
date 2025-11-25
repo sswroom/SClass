@@ -3,9 +3,9 @@
 #include "IO/FileStream.h"
 #include "IO/UnixConfigFile.h"
 
-IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CStringNN fileName)
+Optional<IO::ConfigFile> IO::UnixConfigFile::Parse(Text::CStringNN fileName)
 {
-	IO::ConfigFile *cfg;
+	Optional<IO::ConfigFile> cfg;
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	if (fstm.IsError())
 	{
@@ -19,7 +19,7 @@ IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CStringNN fileName)
 	return cfg;
 }
 
-IO::ConfigFile *IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> reader)
+Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UnsafeArray<UTF8Char> name;

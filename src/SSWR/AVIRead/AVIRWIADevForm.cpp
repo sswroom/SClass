@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/SerialPort.h"
-#include "Text/StringBuilder.h"
 #include "SSWR/AVIRead/AVIRWIADevForm.h"
+#include "Text/StringBuilder.hpp"
 
 void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(AnyType userObj)
 {

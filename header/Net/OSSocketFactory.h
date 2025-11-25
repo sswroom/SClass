@@ -1,7 +1,7 @@
 //require ws2_32.lib iphlpapi.lib dnsapi.lib
 #ifndef _SM_NET_OSSOCKETFACTORY
 #define _SM_NET_OSSOCKETFACTORY
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Net/SocketFactory.h"
 
 namespace Net

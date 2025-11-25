@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBCACHE
 #define _SM_DB_DBCACHE
-#include "Data/ArrayListNN.h"
-#include "Data/ICaseStringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/ICaseStringMapNN.hpp"
 #include "DB/DBModel.h"
 #include "DB/DBRow.h"
 #include "DB/PageRequest.h"

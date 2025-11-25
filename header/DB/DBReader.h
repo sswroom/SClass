@@ -2,7 +2,7 @@
 #define _SM_DB_DBREADER
 #include "Data/ByteBuffer.h"
 #include "Data/Class.h"
-#include "Data/StringMap.h"
+#include "Data/StringMap.hpp"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 #include "Math/Geometry/Vector2D.h"

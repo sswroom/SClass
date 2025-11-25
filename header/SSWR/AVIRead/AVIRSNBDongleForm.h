@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSNBDONGLEFORM
 #define _SM_SSWR_AVIREAD_AVIRSNBDONGLEFORM
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "IO/LogTool.h"
 #include "IO/SNBDongle.h"
 #include "SSWR/AVIRead/AVIRCore.h"

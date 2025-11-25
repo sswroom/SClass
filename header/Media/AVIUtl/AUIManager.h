@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AVIUTL_AUIMANAGER
 #define _SM_MEDIA_AVIUTL_AUIMANAGER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/FileSelector.h"
 #include "Media/AVIUtl/AUIPlugin.h"
 #include "Media/MediaSource.h"

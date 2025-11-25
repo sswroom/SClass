@@ -1,6 +1,6 @@
 #ifndef _SM_DB_JAVADBUTIL
 #define _SM_DB_JAVADBUTIL
-#include "Data/StringMap.h"
+#include "Data/StringMap.hpp"
 #include "DB/DBTool.h"
 #include "Net/SocketFactory.h"
 
@@ -19,7 +19,7 @@ namespace DB
 		static void AppendFieldOrderItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName, Bool isLast);
 		
 	public:
-		static Optional<DB::DBTool> OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf);
+		static Optional<DB::DBTool> OpenJDBC(NN<Text::String> url, Optional<Text::String> username, Optional<Text::String> password, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf);
 		static Bool ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> schemaName, NN<Text::String> tableName, Optional<Text::String> databaseName, NN<DB::ReadingDB> db);
 	};
 }

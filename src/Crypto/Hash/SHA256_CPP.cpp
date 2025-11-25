@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 #define SHASTEP1(v1, v2, v3, v4, v5, v6, v7, v8, n, k) \
 	temp1 = w[n] = ReadMUInt32(&Message_Block[n * 4]); \

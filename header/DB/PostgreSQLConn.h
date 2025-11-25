@@ -1,6 +1,6 @@
 #ifndef _SM_DB_POSTGRESQLCONN
 #define _SM_DB_POSTGRESQLCONN
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_IO_JAVACLASS
 #define _SM_IO_JAVACLASS
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"

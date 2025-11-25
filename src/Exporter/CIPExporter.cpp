@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Exporter/CIPExporter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"

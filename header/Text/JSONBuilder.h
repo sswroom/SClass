@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_JSONBUILDER
 #define _SM_TEXT_JSONBUILDER
-#include "Data/ArrayList.h"
-#include "Data/ArrayListA.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListA.hpp"
 #include "Data/VariItem.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/Vector3.h"

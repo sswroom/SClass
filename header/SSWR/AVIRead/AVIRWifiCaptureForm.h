@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRWIFICAPTUREFORM
 #define _SM_SSWR_AVIREAD_AVIRWIFICAPTUREFORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/FileStream.h"
 #include "IO/GPSNMEA.h"
 #include "IO/MotionDetectorAccelerometer.h"

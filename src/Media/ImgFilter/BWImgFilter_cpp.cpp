@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/ImgFilter/BWImgFilter.h"
 
 void BWImgFilter_ProcYUY2(UInt8 *imgData, UOSInt pxCnt)

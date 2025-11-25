@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNMPMANAGER
 #define _SM_NET_SNMPMANAGER
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/SNMPClient.h"
 #include "SSWR/SMonitor/SMonitorCore.h"
 #include "SSWR/SMonitor/SAnalogSensor.h"

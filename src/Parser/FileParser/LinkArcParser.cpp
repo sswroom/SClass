@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/DateTime.h"
 #include "IO/VirtualPackageFileFast.h"
 #include "Parser/FileParser/LinkArcParser.h"

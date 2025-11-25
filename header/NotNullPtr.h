@@ -1,6 +1,6 @@
 #ifndef _SM_NOTNULLPTR
 #define _SM_NOTNULLPTR
-#include "MyMemory.h"
+#include "MemTool.h"
 #include <stdio.h>
 
 template <typename T> struct NN
@@ -114,4 +114,5 @@ public:
 };
 
 #define NotNullPtr NN
+#define NNTHIS (*this)
 #endif

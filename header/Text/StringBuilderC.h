@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_STRINGBUILDERC
 #define _SM_TEXT_STRINGBUILDERC
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 
 namespace Text
 {

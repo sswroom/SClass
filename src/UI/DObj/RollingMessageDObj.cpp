@@ -4,7 +4,7 @@
 #include "Media/ImageUtil.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "UI/DObj/RollingMessageDObj.h"
 
 void UI::DObj::RollingMessageDObj::FreeMessage(NN<MessageInfo> msg)

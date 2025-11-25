@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_DOC_TEXTDOCUMENT
 #define _SM_TEXT_DOC_TEXTDOCUMENT
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/ParsedObject.h"
 #include "Media/PrintDocument.h"
 #include "Text/Doc/DocSection.h"

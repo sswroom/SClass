@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTBROKERFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTBROKERFORM
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Net/MQTTBroker.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

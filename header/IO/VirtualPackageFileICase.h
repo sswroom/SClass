@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VIRTUALPACKAGEFILEICASE
 #define _SM_IO_VIRTUALPACKAGEFILEICASE
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMap.hpp"
 #include "IO/VirtualPackageFile.h"
 
 namespace IO

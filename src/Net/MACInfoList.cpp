@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -122,7 +122,7 @@ Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntryOUI(const UInt8
 
 UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CStringNN name)
 {
-	UInt64 mask = 0xffffff;
+	UInt64 mask = 0xffffffffffLL;
 	return SetEntry(macInt & ~mask, macInt | mask, name);
 }
 

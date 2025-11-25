@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_LOCALE
 #define _SM_TEXT_LOCALE
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 
 namespace Text
 {

@@ -3,7 +3,7 @@ MemTool.h:
 @MemTool.o
 @MemTool_CPP.o
 
-Core/X86Util.h:
+Core/X86Util_C.h:
 
 Manage/CPUInfo.h:
 @CPUInfoL.o

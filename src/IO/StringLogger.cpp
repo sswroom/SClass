@@ -19,7 +19,7 @@ Bool IO::StringLogger::IsModified()
 	return this->modified;
 }
 
-void IO::StringLogger::ReadLogs(IO::Reader *reader)
+void IO::StringLogger::ReadLogs(NN<IO::Reader> reader)
 {
 	Text::StringBuilderUTF8 sb;
 	while (reader->ReadLine(sb, 4096))
@@ -41,7 +41,7 @@ void IO::StringLogger::LogStr(UnsafeArray<const UTF8Char> s, UOSInt len)
 	}
 }
 
-void IO::StringLogger::WriteLogs(IO::Writer *writer)
+void IO::StringLogger::WriteLogs(NN<IO::Writer> writer)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Text::String> s;

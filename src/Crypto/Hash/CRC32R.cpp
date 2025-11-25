@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyString.h"
 
 extern "C"

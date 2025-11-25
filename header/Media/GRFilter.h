@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_GRFILTER
 #define _SM_MEDIA_GRFILTER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 
 namespace Media
 {

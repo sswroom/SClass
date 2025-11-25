@@ -2,8 +2,8 @@
 #define _SM_DATA_INVEST_INVESTMENTMANAGER
 #include "Data/ArrayListDbl.h"
 #include "Data/ArrayListTS.h"
-#include "Data/Comparator.h"
-#include "Data/FastMapNN.h"
+#include "Data/Comparator.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Data/Timestamp.h"
 #include "DB/ReadingDB.h"
 #include "Text/String.h"

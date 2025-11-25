@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_SMTCFILEANALYSE
 #define _SM_IO_FILEANALYSE_SMTCFILEANALYSE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"

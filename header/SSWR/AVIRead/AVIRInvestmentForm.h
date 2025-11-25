@@ -74,6 +74,8 @@ namespace SSWR
 			NN<UI::GUILabel> lblCurrencyValue;
 			NN<UI::GUITextBox> txtCurrencyValue;
 			NN<UI::GUIButton> btnCurrencyImport;
+			NN<UI::GUILabel> lblCurrencyRange;
+			NN<UI::GUIComboBox> cboCurrencyRange;
 			NN<UI::GUIPictureBox> pbCurrency;
 			NN<UI::GUITabPage> tpCurrencyHist;
 			NN<UI::GUIPanel> pnlCurrencyHist;
@@ -112,6 +114,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtAssetsValue;
 			NN<UI::GUIButton> btnAssetsImport;
 			NN<UI::GUIButton> btnAssetsImportDiv;
+			NN<UI::GUILabel> lblAssetsRange;
+			NN<UI::GUIComboBox> cboAssetsRange;
 			NN<UI::GUIPictureBox> pbAssets;
 			NN<UI::GUITabPage> tpAssetsHist;
 			NN<UI::GUIPanel> pnlAssetsHist;

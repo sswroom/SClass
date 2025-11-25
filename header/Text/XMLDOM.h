@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_XMLDOM
 #define _SM_TEXT_XMLDOM
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "IO/Stream.h"
 #include "Text/CString.h"
 #include "Text/EncodingFactory.h"

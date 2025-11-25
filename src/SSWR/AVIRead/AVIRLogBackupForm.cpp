@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringUTF8Map.hpp"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/Path.h"

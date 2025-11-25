@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DSHOW_DSHOWFILESOURCE
 #define _SM_MEDIA_DSHOW_DSHOWFILESOURCE
 #include "Media/FrameInfo.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 
 __interface IPin;
 __interface IGraphBuilder;

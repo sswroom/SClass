@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRTHREADINFOFORM
 #define _SM_SSWR_AVIREAD_AVIRTHREADINFOFORM
-#include "Data/ArrayListArr.h"
+#include "Data/ArrayListArr.hpp"
 #include "Manage/SymbolResolver.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"

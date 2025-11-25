@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"

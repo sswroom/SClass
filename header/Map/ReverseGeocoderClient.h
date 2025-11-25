@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_REVERSEGEOCODERCLIENT
 #define _SM_MAP_REVERSEGEOCODERCLIENT
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "DB/DBTool.h"
 #include "IO/Writer.h"
 #include "IO/LogTool.h"

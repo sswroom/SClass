@@ -32,10 +32,10 @@ void Data::Compress::LZWDecStream::ResetTable()
 Data::Compress::LZWDecStream::LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
 	this->tableSize = ((UOSInt)1 << maxCodeSize);
-	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
+	this->lzwTable = MemAllocArr(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
-	this->decBuff = MemAlloc(UInt8, DECBUFFSIZE);
+	this->decBuff = MemAllocArr(UInt8, DECBUFFSIZE);
 	this->decBuffSize = 0;
 	this->codeSizeAdj = codeSizeAdj;
 	this->resetCode = (UInt32)(1 << minCodeSize);
@@ -55,10 +55,10 @@ Data::Compress::LZWDecStream::LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt 
 Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(CSTR("LZWStream"))
 {
 	this->tableSize = ((UOSInt)1 << maxCodeSize);
-	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
+	this->lzwTable = MemAllocArr(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
-	this->decBuff = MemAlloc(UInt8, DECBUFFSIZE);
+	this->decBuff = MemAllocArr(UInt8, DECBUFFSIZE);
 	this->decBuffSize = 0;
 	this->codeSizeAdj = codeSizeAdj;
 	this->resetCode = (UInt32)(1 << minCodeSize);
@@ -70,8 +70,8 @@ Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease
 
 Data::Compress::LZWDecStream::~LZWDecStream()
 {
-	MemFree(this->decBuff);
-	MemFree(this->lzwTable);
+	MemFreeArr(this->decBuff);
+	MemFreeArr(this->lzwTable);
 	if (this->toRelease)
 	{
 		DEL_CLASS(this->reader);
@@ -97,7 +97,7 @@ UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 			this->decBuffSize -= myBuff.GetSize();
 			if (this->decBuffSize > 0)
 			{
-				MemCopyO(this->decBuff, &this->decBuff[myBuff.GetSize()], this->decBuffSize);
+				this->decBuff.CopyFromO(&this->decBuff[myBuff.GetSize()], this->decBuffSize);
 			}
 			return myBuff.GetSize();
 		}

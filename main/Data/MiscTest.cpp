@@ -2,7 +2,9 @@
 #include "Core/Core.h"
 #include "Crypto/Encrypt/JasyptEncryptor.h"
 #include "Data/TableData.h"
+#include "DB/CSVFile.h"
 #include "DB/MSSQLConn.h"
+#include "IO/BufferedOutputStream.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/ConsoleLogHandler.h"
 #include "IO/DirectoryPackage.h"
@@ -1175,9 +1177,157 @@ Int32 FGDBTest2()
 	return 0;
 }
 
+struct OUIEntry
+{
+	UInt64 startRange;
+	UInt64 endRange;
+	Bool oui24;
+	NN<Text::String> name;
+};
+
+Int32 OUICSVConv()
+{
+	NN<DB::DBReader> r;
+	NN<Text::String> s;
+	UInt64 oui;
+	NN<OUIEntry> ent;
+	Data::UInt64FastMapNN<OUIEntry> ouiMap;
+	//https://standards-oui.ieee.org/oui/oui.csv
+	{
+		DB::CSVFile csv(CSTR("oui.csv"), 65001);
+		if (csv.QueryTableData(nullptr, CSTR("oui"), 0, 0, 0, nullptr, 0).SetTo(r))
+		{
+			while (r->ReadNext())
+			{
+				s = r->GetNewStrNN(1);
+				if (s->Hex2UInt64(oui))
+				{
+					s->Release();
+					ent = MemAllocNN(OUIEntry);
+					ent->startRange = oui << 40;
+					ent->endRange = ent->startRange | 0xffffffffffLL;
+					ent->oui24 = true;
+					ent->name = r->GetNewStrNN(2);
+					if (ouiMap.Put(ent->startRange, ent).SetTo(ent))
+					{
+						ent->name->Release();
+						MemFreeNN(ent);
+					}
+				}
+				else
+				{
+					s->Release();
+				}
+			}
+			csv.CloseReader(r);
+		}
+	}
+	//https://standards-oui.ieee.org/oui28/mam.csv
+	{
+		DB::CSVFile csv(CSTR("mam.csv"), 65001);
+		if (csv.QueryTableData(nullptr, CSTR("mam"), 0, 0, 0, nullptr, 0).SetTo(r))
+		{
+			while (r->ReadNext())
+			{
+				s = r->GetNewStrNN(1);
+				if (s->Hex2UInt64(oui))
+				{
+					s->Release();
+					if (ouiMap.Get((oui & 0xffffff0LL) << 36).SetTo(ent))
+					{
+						if (ent->oui24)
+						{
+							ouiMap.Remove(ent->startRange);
+							ent->name->Release();
+							MemFreeNN(ent);
+						}
+					}
+					ent = MemAllocNN(OUIEntry);
+					ent->startRange = oui << 36;
+					ent->endRange = ent->startRange | 0xfffffffffLL;
+					ent->oui24 = false;
+					ent->name = r->GetNewStrNN(2);
+					if (ouiMap.Put(ent->startRange, ent).SetTo(ent))
+					{
+						ent->name->Release();
+						MemFreeNN(ent);
+					}
+				}
+				else
+				{
+					s->Release();
+				}
+			}
+			csv.CloseReader(r);
+		}
+	}
+	//https://standards-oui.ieee.org/oui36/oui36.csv
+	{
+		DB::CSVFile csv(CSTR("oui36.csv"), 65001);
+		if (csv.QueryTableData(nullptr, CSTR("oui36"), 0, 0, 0, nullptr, 0).SetTo(r))
+		{
+			while (r->ReadNext())
+			{
+				s = r->GetNewStrNN(1);
+				if (s->Hex2UInt64(oui))
+				{
+					s->Release();
+					if (ouiMap.Get((oui & 0xffffff000LL) << 28).SetTo(ent))
+					{
+						if (ent->oui24)
+						{
+							ouiMap.Remove(ent->startRange);
+							ent->name->Release();
+							MemFreeNN(ent);
+						}
+					}
+					ent = MemAllocNN(OUIEntry);
+					ent->startRange = oui << 28;
+					ent->endRange = ent->startRange | 0xfffffffLL;
+					ent->oui24 = false;
+					ent->name = r->GetNewStrNN(2);
+					if (ouiMap.Put(ent->startRange, ent).SetTo(ent))
+					{
+						ent->name->Release();
+						MemFreeNN(ent);
+					}
+				}
+				else
+				{
+					s->Release();
+				}
+			}
+			csv.CloseReader(r);
+		}
+	}
+
+	IO::FileStream fs(CSTR("MACList.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	IO::BufferedOutputStream bos(fs, 65536);
+	Text::StringBuilderUTF8 sb;
+	UOSInt i = 0;
+	UOSInt j = ouiMap.GetCount();
+	while (i < j)
+	{
+		ent = ouiMap.GetItemNoCheck(i);
+		sb.ClearStr();
+		sb.Append(CSTR("	{0x"));
+		sb.AppendHex64(ent->startRange);
+		sb.Append(CSTR("LL, 0x"));
+		sb.AppendHex64(ent->endRange);
+		sb.Append(CSTR("LL, UTF8STRCPTR("));
+		Text::CPPText::ToCPPString(sb, ent->name->v);
+		sb.Append(CSTR(")},\r\n"));
+		bos.Write(sb.ToByteArray());
+		ent->name->Release();
+		MemFreeNN(ent);
+		i++;
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 33;
+	UOSInt testType = 34;
 	switch (testType)
 	{
 	case 0:
@@ -1248,6 +1398,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return StrDoubleTest();
 	case 33:
 		return FGDBTest2();
+	case 34:
+		return OUICSVConv();
 	default:
 		return 0;
 	}

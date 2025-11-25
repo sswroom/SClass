@@ -3,7 +3,7 @@
 #include "AnyType.h"
 #include "Data/CallbackStorage.h"
 #include "Math/Coord2D.h"
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Media/ColorManager.h"
 #include "Media/ImageResizer.h"
 #include "Media/StaticImage.h"

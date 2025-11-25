@@ -1,7 +1,7 @@
 //need setupapi.lib
 #ifndef _SM_IO_DEVICEMANAGER
 #define _SM_IO_DEVICEMANAGER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/DeviceInfo.h"
 
 namespace IO

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayListA.h"
-#include "Data/ByteTool.h"
+#include "Data/ArrayListA.hpp"
+#include "Core/ByteTool_C.h"
 #include "DB/JSONDB.h"
 #include "IO/SeleniumIDE.h"
 #include "Map/DBMapLayer.h"
@@ -134,7 +134,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 					NN<Text::String> crsName;
 					if (NN<Text::JSONObject>::ConvertFrom(crsProp)->GetObjectString(CSTR("name")).SetTo(crsName))
 					{
-						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
+						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString(), nullptr);
 						if (csys.SetTo(nncsys))
 						{
 							srid = nncsys->GetSRID();

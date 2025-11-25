@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_SHPCONV_SHPCONVENG
 #define _SM_SSWR_SHPCONV_SHPCONVENG
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Text/String.h"
 
 namespace SSWR

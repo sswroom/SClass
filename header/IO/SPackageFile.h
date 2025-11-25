@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SPACKAGEFILE
 #define _SM_IO_SPACKAGEFILE
 #include "Data/ByteBuffer.h"
-#include "Data/BTreeUTF8Map.h"
+#include "Data/BTreeUTF8Map.hpp"
 #include "IO/StreamData.h"
 #include "IO/MemoryStream.h"
 #include "IO/PackageFile.h"

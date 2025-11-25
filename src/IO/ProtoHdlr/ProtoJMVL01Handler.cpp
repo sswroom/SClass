@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC16.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 
 IO::ProtoHdlr::ProtoJMVL01Handler::ProtoJMVL01Handler(NN<IO::ProtocolHandler::DataListener> listener, UInt64 devId) : crc(Crypto::Hash::CRC16::GetPolynomialCCITT())

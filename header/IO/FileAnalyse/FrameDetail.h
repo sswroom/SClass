@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_FRAMEDETAIL
 #define _SM_IO_FILEANALYSE_FRAMEDETAIL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Text/String.h"

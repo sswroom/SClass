@@ -479,7 +479,7 @@ void IO::GPIOControl::ClearEvent(UOSInt pinNum)
 	}
 }
 
-static Text::CString GPIOControl_ALT0[] = {
+static Text::CStringNN GPIOControl_ALT0[] = {
 	CSTR("SDA0"),
 	CSTR("SCL0"),
 	CSTR("SDA1"),
@@ -541,7 +541,7 @@ static Text::CString GPIOControl_ALT0[] = {
 	CSTR("Reserved"),
 };
 
-static Text::CString GPIOControl_ALT1[] = {
+static Text::CStringNN GPIOControl_ALT1[] = {
 	CSTR("SA5"),
 	CSTR("SA4"),
 	CSTR("SA3"),
@@ -603,7 +603,7 @@ static Text::CString GPIOControl_ALT1[] = {
 	CSTR("Unknown"),
 };
 
-static Text::CString GPIOControl_ALT2[] = {
+static Text::CStringNN GPIOControl_ALT2[] = {
 	CSTR("Reserved"),
 	CSTR("Reserved"),
 	CSTR("Reserved"),
@@ -665,7 +665,7 @@ static Text::CString GPIOControl_ALT2[] = {
 	CSTR("Unknown"),
 };
 
-static Text::CString GPIOControl_ALT3[] = {
+static Text::CStringNN GPIOControl_ALT3[] = {
 	CSTR("Unknown"),
 	CSTR("Unknown"),
 	CSTR("Unknown"),
@@ -727,7 +727,7 @@ static Text::CString GPIOControl_ALT3[] = {
 	CSTR("Unknown"),
 };
 
-static Text::CString GPIOControl_ALT4[] = {
+static Text::CStringNN GPIOControl_ALT4[] = {
 	CSTR("Unknown"),
 	CSTR("Unknown"),
 	CSTR("Unknown"),
@@ -789,7 +789,7 @@ static Text::CString GPIOControl_ALT4[] = {
 	CSTR("Unknown"),
 };
 
-static Text::CString GPIOControl_ALT5[] = {
+static Text::CStringNN GPIOControl_ALT5[] = {
 	CSTR("Unknown"),
 	CSTR("Unknown"),
 	CSTR("Unknown"),
@@ -851,7 +851,7 @@ static Text::CString GPIOControl_ALT5[] = {
 	CSTR("Unknown"),
 };
 
-Text::CString IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinMode)
+Text::CStringNN IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinMode)
 {
 	if (pinMode == 0)
 	{

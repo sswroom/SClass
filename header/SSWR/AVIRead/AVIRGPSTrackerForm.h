@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGPSTRACKERFORM
 #define _SM_SSWR_AVIREAD_AVIRGPSTRACKERFORM
-#include "Data/SyncCircularBuff.h"
+#include "Data/SyncCircularBuff.hpp"
 #include "IO/GPSNMEA.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRMapNavigator.h"

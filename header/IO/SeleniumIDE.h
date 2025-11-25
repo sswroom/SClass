@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SELENIUMIDE
 #define _SM_IO_SELENIUMIDE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ParsedObject.h"
 #include "Text/JSON.h"
 

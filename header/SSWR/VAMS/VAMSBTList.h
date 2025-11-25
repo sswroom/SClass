@@ -1,9 +1,9 @@
 #ifndef _SM_SSWR_VAMS_VAMSBTLIST
 #define _SM_SSWR_VAMS_VAMSBTLIST
-#include "Data/ArrayListNN.h"
-#include "Data/FastMap.h"
-#include "Data/FastMapNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Sync/Mutex.h"
 
 namespace SSWR

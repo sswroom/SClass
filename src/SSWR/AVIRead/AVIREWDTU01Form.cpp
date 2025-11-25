@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIREWDTU01Form.h"
 #include "Text/JSON.h"
@@ -44,9 +44,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 				name = obj->GetObjectString(CSTR("name"));
 				if (obj->GetObjectString(CSTR("mac")).SetTo(mac) && obj->GetObjectString(CSTR("rssi")).SetTo(rssi) && mac->leng == 12)
 				{
-					Text::StrHex2Bytes(mac->v, &macBuff[2]);
-					macBuff[0] = 0;
-					macBuff[1] = 0;
+					Text::StrHex2Bytes(mac->v, &macBuff[0]);
+					macBuff[6] = 0;
+					macBuff[7] = 0;
 					macInt = ReadMUInt64(macBuff);
 					irssi = rssi->ToInt32();
 					if (me->dataMap.Get(macInt).SetTo(entry))
@@ -63,13 +63,13 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 					else
 					{
 						entry = MemAllocNN(DeviceEntry);
-						entry->mac[0] = macBuff[2];
-						entry->mac[1] = macBuff[3];
-						entry->mac[2] = macBuff[4];
-						entry->mac[3] = macBuff[5];
-						entry->mac[4] = macBuff[6];
-						entry->mac[5] = macBuff[7];
-						entry->macInt = macInt;
+						entry->mac[0] = macBuff[0];
+						entry->mac[1] = macBuff[1];
+						entry->mac[2] = macBuff[2];
+						entry->mac[3] = macBuff[3];
+						entry->mac[4] = macBuff[4];
+						entry->mac[5] = macBuff[5];
+						entry->mac64Int = macInt;
 						entry->rssi = irssi;
 						entry->name = Text::String::CopyOrNull(name);
 						entry->remark = 0;
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 			{
 				me->lvDevices->SetSubItem(i, 1, s);
 			}
-			macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
+			macEntry = Net::MACInfo::GetMAC64Info(entry->mac64Int);
 			me->lvDevices->SetSubItem(i, 2, {macEntry->name, macEntry->nameLen});
 			sptr = Text::StrInt32(sbuff, entry->rssi);
 			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));

@@ -1,8 +1,8 @@
 #ifndef _SM_CRYPTO_CERT_CERTSTORE
 #define _SM_CRYPTO_CERT_CERTSTORE
 #include "Crypto/Cert/X509Cert.h"
-#include "Data/FastStringMapNN.h"
-#include "Data/ReadingList.h"
+#include "Data/FastStringMapNN.hpp"
+#include "Data/ReadingList.hpp"
 #include "IO/PackageFile.h"
 
 namespace Crypto

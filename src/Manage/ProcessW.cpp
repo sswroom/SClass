@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileUtil.h"
 #include "IO/Library.h"
 #include "IO/Path.h"
@@ -1229,7 +1229,7 @@ struct Manage::Process::FindProcSess
 	Bool isFirst;
 };
 
-Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
+Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CString processName)
 {
 	Manage::Process::FindProcSess *sess;
 	HANDLE hand;
@@ -1251,7 +1251,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString proces
 	return sess;
 }
 
-Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
+Optional<Manage::Process::FindProcSess> Manage::Process::FindProcessW(UnsafeArrayOpt<const WChar> processName)
 {
 	Manage::Process::FindProcSess *sess;
 	HANDLE hand;
@@ -1260,19 +1260,20 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 		return 0;
 	sess = MemAlloc(Manage::Process::FindProcSess, 1);
 	sess->hand = hand;
-	if (processName == 0)
+	UnsafeArray<const WChar> nnprocessName;
+	if (!processName.SetTo(nnprocessName))
 	{
 		sess->fileName = 0;
 	}
 	else
 	{
-		sess->fileName = Text::StrCopyNew(processName);
+		sess->fileName = Text::StrCopyNew(nnprocessName);
 	}
 	sess->isFirst = true;
 	return sess;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, NN<Manage::Process::FindProcSess> pfsess, NN<Manage::Process::ProcessInfo> info)
 {
 #ifdef _WIN32_WCE
 	PROCESSENTRY32 pe32;
@@ -1350,7 +1351,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 #endif
 }
 
-UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, NN<Manage::Process::FindProcSess> pfsess, NN<Manage::Process::ProcessInfo> info)
 {
 #ifdef _WIN32_WCE
 	PROCESSENTRY32 pe32;
@@ -1428,7 +1429,7 @@ UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> proce
 #endif
 }
 
-void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
+void Manage::Process::FindProcessClose(NN<Manage::Process::FindProcSess> pfsess)
 {
 	UnsafeArray<const WChar> fileName;
 	if (pfsess->fileName.SetTo(fileName))
@@ -1436,7 +1437,7 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 		Text::StrDelNew(fileName);
 	}
 	CloseToolhelp32Snapshot(pfsess->hand);
-	MemFree(pfsess);
+	MemFreeNN(pfsess);
 }
 
 Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilderUTF8> result)
@@ -1451,7 +1452,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcessW(UnsafeArray<const WChar> cmd, NN<Text::StringBuilderUTF8> result)
 {
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
@@ -1563,7 +1564,8 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderU
 Bool Manage::Process::IsAlreadyStarted()
 {
 	WChar wbuff[512];
-	Manage::Process::FindProcSess *sess;
+	Optional<Manage::Process::FindProcSess> sess;
+	NN<Manage::Process::FindProcSess> nnsess;
 	Bool found = false;
 	UOSInt procId = GetCurrProcId();
 	UOSInt i;
@@ -1579,9 +1581,9 @@ Bool Manage::Process::IsAlreadyStarted()
 	{
 		sess = Manage::Process::FindProcessW(wbuff);
 	}
-	if (sess)
+	if (sess.SetTo(nnsess))
 	{
-		while (Manage::Process::FindProcessNextW(wbuff, sess, &info).NotNull())
+		while (Manage::Process::FindProcessNextW(wbuff, nnsess, info).NotNull())
 		{
 			if (info.processId != procId)
 			{
@@ -1589,7 +1591,7 @@ Bool Manage::Process::IsAlreadyStarted()
 				break;
 			}
 		}
-		Manage::Process::FindProcessClose(sess);
+		Manage::Process::FindProcessClose(nnsess);
 	}
 	return found;
 }
@@ -1608,12 +1610,12 @@ Bool Manage::Process::OpenPath(Text::CStringNN path)
 #endif
 }
 
-Bool Manage::Process::OpenPathW(const WChar *path)
+Bool Manage::Process::OpenPathW(UnsafeArray<const WChar> path)
 {
 #ifdef _WIN32_WCE
 	return false;
 #else
-	Bool succ = 32 < (OSInt)ShellExecuteW(0, L"open", path, 0, 0, SW_SHOW);
+	Bool succ = 32 < (OSInt)ShellExecuteW(0, L"open", path.Ptr(), 0, 0, SW_SHOW);
 	return succ;
 #endif
 }

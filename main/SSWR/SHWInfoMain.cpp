@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BuildTime.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/DeviceDB.h"

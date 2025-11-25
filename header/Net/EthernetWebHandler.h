@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ETHERNETWEBHANDLER
 #define _SM_NET_ETHERNETWEBHANDLER
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "Net/EthernetAnalyzer.h"
 #include "Net/WebServer/WebStandardHandler.h"
 

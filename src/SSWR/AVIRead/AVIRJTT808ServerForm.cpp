@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyStringFloat.h"
@@ -312,7 +312,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[20]));
 		{
 			Data::DateTime dt;
-			dt.SetValue((UInt16)(2000 + Data::ByteTool::GetBCD8(packetContent[22])), Data::ByteTool::GetBCD8(packetContent[23]), Data::ByteTool::GetBCD8(packetContent[24]), Data::ByteTool::GetBCD8(packetContent[25]), Data::ByteTool::GetBCD8(packetContent[26]), Data::ByteTool::GetBCD8(packetContent[27]), 0, 32);
+			dt.SetValue((UInt16)(2000 + ByteTool_GetBCD8(packetContent[22])), ByteTool_GetBCD8(packetContent[23]), ByteTool_GetBCD8(packetContent[24]), ByteTool_GetBCD8(packetContent[25]), ByteTool_GetBCD8(packetContent[26]), ByteTool_GetBCD8(packetContent[27]), 0, 32);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Time = "));
 			sptr = dt.ToString(sptr);
 		}

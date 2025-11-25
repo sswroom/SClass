@@ -21,17 +21,17 @@ namespace DB
 	private:
 		NN<IO::SeekableStream> stm;
 		UOSInt colCnt;
-		DBFColumn *columns;
+		UnsafeArray<DBFColumn> columns;
 		UOSInt rowCnt;
 		UInt64 refPos;
-		Text::Encoding *enc;
-		UInt8 *rec;
+		NN<Text::Encoding> enc;
+		UnsafeArray<UInt8> rec;
 		UOSInt recSize;
 
 	public:
-		DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, Text::String **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage);
+		DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, UnsafeArray<NN<Text::String>> colNames, UnsafeArray<const UOSInt> colSize, UnsafeArray<const UOSInt> dp, UnsafeArray<DB::DBUtil::ColType> colTypes, UInt32 codePage);
 		~DBFFixWriter();
-		void AddRecord(const UTF8Char **rowValues);
+		void AddRecord(UnsafeArray<UnsafeArray<const UTF8Char>> rowValues);
 
 		Bool SetColumnDT(UOSInt index, NN<Data::DateTime> val);
 		Bool SetColumnTS(UOSInt index, const Data::Timestamp &val);

@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_VECTORTEXTWRITERLIST
 #define _SM_MATH_VECTORTEXTWRITERLIST
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Math/VectorTextWriter.h"
 
 namespace Math

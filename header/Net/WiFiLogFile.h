@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WIFILOGFILE
 #define _SM_NET_WIFILOGFILE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/WirelessLAN.h"
 
 namespace Net
@@ -11,7 +11,7 @@ namespace Net
 		typedef struct
 		{
 			UInt8 mac[6];
-			UInt64 macInt;
+			UInt64 mac64Int;
 			NN<Text::String> ssid;
 			Int32 phyType;
 			Double freq;

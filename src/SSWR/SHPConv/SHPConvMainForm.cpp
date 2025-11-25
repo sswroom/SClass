@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "DB/DBFFile.h"

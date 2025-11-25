@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/BitWriterLSB.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 #define BUFFSIZE 1024
 

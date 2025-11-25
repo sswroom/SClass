@@ -197,9 +197,9 @@ void DB::JavaDBUtil::AppendFieldOrderItem(NN<Text::StringBuilderUTF8> sb, NN<Tex
 	}
 }
 
-Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf)
+Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Text::String> username, Optional<Text::String> password, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf)
 {
-	if (url == 0 || !url->StartsWith(UTF8STRC("jdbc:")))
+	if (!url->StartsWith(UTF8STRC("jdbc:")))
 	{
 		return 0;
 	}
@@ -236,7 +236,7 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *u
 				encrypt = true;
 			}
 		}
-		return MSSQLConn::CreateDBToolTCP(sarr2[0].ToCString(), port, encrypt, dbName, STR_CSTR(username), STR_CSTR(password), log, LOGPREFIX);
+		return MSSQLConn::CreateDBToolTCP(sarr2[0].ToCString(), port, encrypt, dbName, OPTSTR_CSTR(username), OPTSTR_CSTR(password), log, LOGPREFIX);
 	}
 	return 0;
 }

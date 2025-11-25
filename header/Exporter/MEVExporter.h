@@ -1,9 +1,9 @@
 #ifndef _SM_EXPORTER_MEVEXPORTER
 #define _SM_EXPORTER_MEVEXPORTER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "IO/FileExporter.h"
 #include "Map/MapEnv.h"
 

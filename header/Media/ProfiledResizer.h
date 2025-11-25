@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_PROFILEDRESIZER
 #define _SM_MEDIA_PROFILEDRESIZER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Parser/ParserList.h"
 #include "Media/Batch/BatchLimiter.h"
 #include "Media/Batch/BatchLoader.h"

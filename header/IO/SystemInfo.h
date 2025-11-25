@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SYSTEMINFO
 #define _SM_IO_SYSTEMINFO
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/String.h"
 
 namespace IO
@@ -61,7 +61,7 @@ namespace IO
 		} ChassisType;
 	public:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		SystemInfo();
 		~SystemInfo();

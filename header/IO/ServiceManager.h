@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SERVICEMANAGER
 #define _SM_IO_SERVICEMANAGER
-#include "Data/ArrayListNN.h"
-#include "Data/Comparator.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/Comparator.hpp"
 #include "Data/Timestamp.h"
 #include "IO/ServiceInfo.h"
 #include "Text/String.h"

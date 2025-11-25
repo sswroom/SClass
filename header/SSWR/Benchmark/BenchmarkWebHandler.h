@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_BENCHMARK_BENCHMARKWEBHANDLER
 #define _SM_SSWR_BENCHMARK_BENCHMARKWEBHANDLER
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebStandardHandler.h"
 

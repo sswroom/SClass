@@ -3,7 +3,7 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
 #include "Data/DateTime.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "Map/GoogleMap/GoogleStaticMap.h"
 #include "Net/SocketFactory.h"

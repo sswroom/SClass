@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Math/Math_C.h"
 #include "Media/DrawImageTool.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "UI/DObj/TextDObj.h"
 
 UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size) : DirectObject(tl)

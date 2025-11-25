@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMap.hpp"
 #include "DB/DBCache.h"
 #include "DB/DBReader.h"
 #include "DB/SQLGenerator.h"

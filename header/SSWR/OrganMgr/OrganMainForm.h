@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANMAINFORM
 #define _SM_SSWR_ORGANMGR_ORGANMAINFORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Map/DrawMapRenderer.h"
 #include "Map/TileMap.h"
 #include "Map/TileMapLayer.h"

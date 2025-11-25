@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_GEOMETRY_COMPOUNDCURVE
 #define _SM_MATH_GEOMETRY_COMPOUNDCURVE
 #include "Math/Geometry/LineString.h"
-#include "Math/Geometry/MultiGeometry.h"
+#include "Math/Geometry/MultiGeometry.hpp"
 
 namespace Math
 {

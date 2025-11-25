@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_OBJPARSER_PKGMAPPARSER
 #define _SM_PARSER_OBJPARSER_PKGMAPPARSER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/ObjectParser.h"
 #include "Map/MapDrawLayer.h"
 

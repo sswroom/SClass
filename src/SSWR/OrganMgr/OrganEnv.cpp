@@ -1,7 +1,7 @@
 ﻿#include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/MD5.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Exporter/GUIJPGExporter.h"
 #include "Exporter/MDBExporter.h"
 #include "IO/FileStream.h"

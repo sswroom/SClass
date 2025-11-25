@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Device/DHT22.h"
 #include "Manage/HiResClock.h"
 #include "Sync/SimpleThread.h"

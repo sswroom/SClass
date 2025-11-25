@@ -1,7 +1,7 @@
 #ifndef _SM_IO_BTSCANNER
 #define _SM_IO_BTSCANNER
 #include "AnyType.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/BTScanLog.h"
 #include "Sync/MutexUsage.h"
 

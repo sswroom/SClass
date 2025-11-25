@@ -1,7 +1,7 @@
 #ifndef _SM_UI_CLIPBOARD
 #define _SM_UI_CLIPBOARD
 #include "Handles.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"

@@ -2,8 +2,8 @@
 #define _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #include "Crypto/Hash/CRC32RC.h"
 #include "Crypto/Hash/HashCalc.h"
-#include "Data/FastMap.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastMap.hpp"
+#include "Data/StringUTF8Map.hpp"
 #include "DB/DBTool.h"
 #include "IO/Writer.h"
 #include "IO/StringLogger.h"

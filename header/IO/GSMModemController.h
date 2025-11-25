@@ -1,6 +1,6 @@
 #ifndef _SM_IO_GSMMODEMCONTROLLER
 #define _SM_IO_GSMMODEMCONTROLLER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/DateTime.h"
 #include "IO/ModemController.h"
 #include "Text/SMSMessage.h"

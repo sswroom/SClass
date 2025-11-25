@@ -1,7 +1,7 @@
 #ifndef _SM_IO_BTDEVLOG
 #define _SM_IO_BTDEVLOG
 #include "Data/ArrayListUInt32.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/BTScanLog.h"
 
 namespace IO
@@ -12,7 +12,7 @@ namespace IO
 		typedef struct
 		{
 			UInt8 mac[6];
-			UInt64 macInt;
+			UInt64 mac64Int;
 			Optional<Text::String> name;
 			IO::BTScanLog::RadioType radioType;
 			IO::BTScanLog::AddressType addrType;
@@ -31,7 +31,7 @@ namespace IO
 		BTDevLog();
 		~BTDevLog();
 
-		NN<DevEntry> AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
+		NN<DevEntry> AddEntry64(UInt64 mac64Int, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
 		void AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap);
 		void ClearList();
 		Bool LoadFile(Text::CStringNN fileName);

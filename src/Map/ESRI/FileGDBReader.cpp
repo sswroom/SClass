@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Data/UUID.h"
 #include "DB/ColDef.h"
 #include "Map/ESRI/ESRICurve.h"

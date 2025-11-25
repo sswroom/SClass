@@ -2,7 +2,7 @@
 #define _SM_IO_MODBUSRTUMASTER
 #include "AnyType.h"
 #include "Crypto/Hash/CRC16R.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/MODBUSMaster.h"
 #include "IO/Stream.h"
 #include "Manage/HiResClock.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSITE_WEBSITE48IDOLCONTROL
 #define _SM_NET_WEBSITE_WEBSITE48IDOLCONTROL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Net/SSLEngine.h"
 #include "Net/TCPClientFactory.h"
 #include "Text/EncodingFactory.h"

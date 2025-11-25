@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRBluetoothLEForm.h"
 #include "Sync/MutexUsage.h"
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(AnyType userOb
 
 	if (!me->cboInterface->GetSelectedItem().GetOpt<IO::BTController>().SetTo(btCtrl))
 		return;
-	btCtrl->LEScanHandleResult(OnLEScanItem, me);
+	btCtrl->LEScanHandleResult2(OnLEScanItem, me);
 	if (btCtrl->LEScanBegin())
 	{
 		me->btCtrl = btCtrl;
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 			{
 				me->lvDevices->SetSubItem(i, 1, s);
 			}
-			NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMACInfo(dev->mac);
+			NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMAC64Info(dev->mac);
 			me->lvDevices->SetSubItem(i, 2, {mac->name, mac->nameLen});
 			sptr = Text::StrInt32(sbuff, dev->rssi);
 			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));

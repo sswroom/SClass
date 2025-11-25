@@ -1,6 +1,6 @@
 ﻿#include "Stdafx.h"
-#include "Data/ByteTool.h"
-#include "Data/Sort/ArtificialQuickSortFunc.h"
+#include "Core/ByteTool_C.h"
+#include "Data/Sort/ArtificialQuickSortFunc.hpp"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/MemoryReadingStream.h"

@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBQUEUE
 #define _SM_DB_DBQUEUE
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBTool.h"
 #include "Sync/Event.h"
 
@@ -165,7 +165,7 @@ namespace DB
 	class DBHandler
 	{
 	private:
-		DBQueue *dbQ;
+		NN<DBQueue> dbQ;
 		NN<DBTool> db;
 		Sync::Event evt;
 		Sync::Mutex mut;
@@ -174,7 +174,7 @@ namespace DB
 		Data::DateTime procTime;
 
 	public:
-		DBHandler(DBQueue *dbQ, NN<DBTool> db);
+		DBHandler(NN<DBQueue> dbQ, NN<DBTool> db);
 		~DBHandler();
 
 	public:
@@ -186,7 +186,7 @@ namespace DB
 
 	public:
 		void Wake();
-		Bool IsTimeout(Data::DateTime *currTime);
+		Bool IsTimeout(NN<Data::DateTime> currTime);
 	};
 }
 #endif

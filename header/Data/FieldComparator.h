@@ -1,8 +1,8 @@
 #ifndef _SM_DATA_FIELDCOMPARATOR
 #define _SM_DATA_FIELDCOMPARATOR
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
-#include "Data/Comparator.h"
+#include "Data/Comparator.hpp"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 #include "Text/StringBuilderUTF8.h"

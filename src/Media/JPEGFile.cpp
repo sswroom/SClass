@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/MemoryStream.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Media/JPEGFile.h"

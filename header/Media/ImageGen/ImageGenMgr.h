@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_IMAGEGEN_IMAGEGENMGR
 #define _SM_MEDIA_IMAGEGEN_IMAGEGENMGR
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Media/ImageGenerator.h"
 
 namespace Media

@@ -1,6 +1,6 @@
 #ifndef _SM_MANAGE_ENVIRONMENTVAR
 #define _SM_MANAGE_ENVIRONMENTVAR
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMap.hpp"
 
 namespace Manage
 {

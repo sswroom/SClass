@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKTRAFFICLAYER
 #define _SM_MAP_HKTRAFFICLAYER
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -31,7 +31,7 @@ namespace Map
 			Int64 objId;
 			Int32 fromId;
 			Int32 toId;
-			Math::Geometry::Vector2D *vec;
+			Optional<Math::Geometry::Vector2D> vec;
 			SaturationLevel lev;
 			Int32 spd;
 			Double minX;
@@ -61,14 +61,14 @@ namespace Map
 		Data::FastMapNN<Int64, RoadInfo> roadMap;
 		Data::FastMapNN<Int64, CenterlineInfo> vecMap;
 
-		static const NodeInfo *GetNodeInfo(Int32 nodeId);
+		static Optional<const NodeInfo> GetNodeInfo(Int32 nodeId);
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);
-		IO::Stream *OpenURLStream();
+		Optional<IO::Stream> OpenURLStream();
 	public:
 		HKTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact);
 		virtual ~HKTrafficLayer();
 
-		void SetURL(Text::String *url);
+		void SetURL(NN<Text::String> url);
 		Bool AddRoadLayer(NN<Map::MapDrawLayer> roadLayer);
 		void EndInit();
 		void ReloadData();
@@ -78,12 +78,13 @@ namespace Map
 		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
 		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
+		virtual UOSInt GetRecordCnt() const;
 		virtual void ReleaseNameArr(Optional<NameArray> nameArr);
 		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex);
-		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const;
+		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const;
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const;
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
@@ -94,7 +95,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 
-		static Map::MapDrawLayer *GetNodePoints();
+		static Optional<Map::MapDrawLayer> GetNodePoints();
 	};
 }
 #endif

@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_LNKFILEANALYSE
 #define _SM_IO_FILEANALYSE_LNKFILEANALYSE
-#include "Data/SyncArrayListNN.h"
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"

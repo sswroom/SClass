@@ -3,7 +3,7 @@
 #include "Crypto/HOTP.h"
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/TextBinEnc/Base32Enc.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 

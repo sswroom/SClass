@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Net/HTTPClient.h"

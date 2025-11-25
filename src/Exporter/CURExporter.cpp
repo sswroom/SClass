@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Exporter/CURExporter.h"
 #include "IO/MemoryStream.h"
 #include "Math/Math_C.h"

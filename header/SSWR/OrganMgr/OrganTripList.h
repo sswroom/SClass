@@ -2,7 +2,7 @@
 #define _SM_SSWR_ORGANMGR_ORGANTRIPLIST
 
 #include "Data/DateTime.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "DB/DBTool.h"
 #include "Text/CString.h"
 #include "Text/String.h"

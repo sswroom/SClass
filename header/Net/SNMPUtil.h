@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNMPUTIL
 #define _SM_NET_SNMPUTIL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/CString.h"
 
 namespace Net

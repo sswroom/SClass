@@ -479,6 +479,12 @@ Int64 Map::WebImageLayer::GetObjectIdMax() const
 	return maxId;
 }
 
+
+UOSInt Map::WebImageLayer::GetRecordCnt() const
+{
+	return this->loadedList.GetCount();
+}
+
 void Map::WebImageLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
@@ -504,14 +510,14 @@ UOSInt Map::WebImageLayer::GetColumnCnt() const
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::WebImageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::WebImageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex > 0)
 		return 0;
 	return Text::StrConcatC(buff, UTF8STRC("Name"));
 }
 
-DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -521,7 +527,7 @@ DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, OptOut<UO
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex == 0)
 	{

@@ -85,13 +85,13 @@ namespace DB
 		virtual Bool IsDBTool() const;
 		
 		UnsafeArray<UTF8Char> DBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName);
-		UnsafeArray<UTF8Char> DBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName);
+		UnsafeArray<UTF8Char> DBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const WChar> colName);
 		UnsafeArray<UTF8Char> DBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CStringNN val);
 		UnsafeArray<UTF8Char> DBStrUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UTF8Char> str);
-		UnsafeArray<UTF8Char> DBStrW(UnsafeArray<UTF8Char> sqlstr, const WChar *str);
+		UnsafeArray<UTF8Char> DBStrW(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const WChar> str);
 		UnsafeArray<UTF8Char> DBInt32(UnsafeArray<UTF8Char> sqlstr, Int32 val);
 		UnsafeArray<UTF8Char> DBInt64(UnsafeArray<UTF8Char> sqlstr, Int64 val);
-		UnsafeArray<UTF8Char> DBDateTime(UnsafeArray<UTF8Char> sqlstr, Data::DateTime *dat);
+		UnsafeArray<UTF8Char> DBDateTime(UnsafeArray<UTF8Char> sqlstr, Optional<Data::DateTime> dat);
 		UnsafeArray<UTF8Char> DBSng(UnsafeArray<UTF8Char> sqlstr, Single val);
 		UnsafeArray<UTF8Char> DBDbl(UnsafeArray<UTF8Char> sqlstr, Double val);
 		UnsafeArray<UTF8Char> DBBool(UnsafeArray<UTF8Char> sqlstr, Bool val);

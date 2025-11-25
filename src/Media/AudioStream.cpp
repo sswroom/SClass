@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <mmreg.h>
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Sync/Mutex.h"
 #include "Media/AudioFilter.h"
 #include "Media/AudioStream.h"

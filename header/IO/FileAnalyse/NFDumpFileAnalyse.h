@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_NFDUMPFILEANALYSE
 #define _SM_IO_FILEANALYSE_NFDUMPFILEANALYSE
-#include "Data/FastMap.h"
-#include "Data/SyncArrayListNN.h"
+#include "Data/FastMap.hpp"
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Thread.h"

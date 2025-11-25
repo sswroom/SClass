@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_SMSUSERDATA
 #define _SM_TEXT_SMSUSERDATA
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/SMSUtil.h"
 
 namespace Text

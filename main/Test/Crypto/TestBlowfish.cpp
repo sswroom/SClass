@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Crypto/Encrypt/Blowfish.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 Bool BFTest(UInt64 key, UInt64 plainText, UInt64 cipherText)
 {

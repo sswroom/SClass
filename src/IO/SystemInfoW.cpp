@@ -12,7 +12,6 @@
 
 IO::SystemInfo::SystemInfo()
 {
-	this->clsData = 0;
 }
 
 IO::SystemInfo::~SystemInfo()
@@ -192,6 +191,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 	NN<RAMInfo> ram;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> csptr;
 	NN<DB::DBReader> r;
 	NN<IO::SMBIOS> smbios;
 	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
@@ -208,41 +208,33 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 			{
 				mem = memList.GetItemNoCheck(i);
 				ram = MemAllocNN(RAMInfo);
-				if (mem->deviceLocator)
+				if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->deviceLocator).SetTo(csptr))
 				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::String::New(sb.ToCString()).Ptr();
+					ram->deviceLocator = Text::String::NewNotNullSlow(csptr);
 				}
 				else
 				{
 					ram->deviceLocator = 0;
 				}
-				if (mem->manufacturer)
+				if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->manufacturer).SetTo(csptr))
 				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::String::New(sb.ToCString()).Ptr();
+					ram->manufacturer = Text::String::NewNotNullSlow(csptr);
 				}
 				else
 				{
 					ram->manufacturer = 0;
 				}
-				if (mem->partNo)
+				if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->partNo).SetTo(csptr))
 				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::String::New(sb.ToCString()).Ptr();
+					ram->partNo = Text::String::NewNotNullSlow(csptr);
 				}
 				else
 				{
 					ram->partNo = 0;
 				}
-				if (mem->sn)
+				if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->sn).SetTo(csptr))
 				{
-					sb.ClearStr();
-					sb.AppendSlow((const UTF8Char*)mem->sn);
-					ram->sn = Text::String::New(sb.ToCString()).Ptr();
+					ram->sn = Text::String::NewNotNullSlow(csptr);
 				}
 				else
 				{

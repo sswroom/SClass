@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUITABCONTROL
 #define _SM_UI_GUITABCONTROL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Text/CString.h"
 #include "UI/GUIClientControl.h"
 

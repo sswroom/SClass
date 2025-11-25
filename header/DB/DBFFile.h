@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBFFILE
 #define _SM_DB_DBFFILE
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/StreamData.h"

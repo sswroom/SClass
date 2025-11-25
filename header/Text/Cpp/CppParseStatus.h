@@ -1,9 +1,9 @@
 #ifndef _SM_TEXT_CPP_CPPPARSESTATUS
 #define _SM_TEXT_CPP_CPPPARSESTATUS
 #include "Data/ArrayListICaseString.h"
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
+#include "Data/StringUTF8Map.hpp"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 

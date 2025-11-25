@@ -23,18 +23,19 @@ namespace Map
 			virtual NN<Data::ArrayListNN<Math::ShortestPath::PathNode>> GetNeighbourNodes();
 		};
 	private:
-		Data::ArrayList<Math::ShortestPath::PathNode*> *nodes;
+		Data::ArrayListNN<Math::ShortestPath::PathNode> nodes;
 		Double minAngleRad;
 
 	private:
-		Map::PathSearcher::PointNode *GetNode(Double x, Double y, Bool toAdd);
+		Optional<Map::PathSearcher::PointNode> GetNode(Double x, Double y, OptOut<OSInt> index);
+		NN<Map::PathSearcher::PointNode> GetOrAddNode(Double x, Double y);
 	public:
-		PathSearcher(Map::MapDrawLayer *layer, Double  minAngleRad);
+		PathSearcher(NN<Map::MapDrawLayer> layer, Double  minAngleRad);
 		virtual ~PathSearcher();
 		
-		virtual Double CalNodeDistance(PathNode *node1, PathNode *node2);
-		virtual Bool PathValid(PathNode *lastNode, PathNode *currNode, PathNode *nextNode);
-		Math::ShortestPath::PathNode *GetNearestNode(Double x, Double y);
+		virtual Double CalNodeDistance(NN<PathNode> node1, NN<PathNode> node2);
+		virtual Bool PathValid(Optional<PathNode> lastNode, NN<PathNode> currNode, NN<PathNode> nextNode);
+		Optional<Math::ShortestPath::PathNode> GetNearestNode(Double x, Double y);
 		Bool IsError();
 		static NN<Math::Geometry::LineString> ToPolyline(NN<Math::ShortestPath::Path> path);
 	};

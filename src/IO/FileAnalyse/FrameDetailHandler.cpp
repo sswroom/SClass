@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Net/MACInfo.h"
 #include "Net/NetBIOSUtil.h"
@@ -243,7 +243,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddStrS(UOSInt frameOfst, UOSInt size,
 {
 	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, size + 1);
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Text::StrConcatS(sbuff, vBuff, size + 1);
+	sptr = Text::StrConcatS(sbuff, vBuff, size);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 	MemFreeArr(sbuff);
 }

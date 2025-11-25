@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRBANDWIDTHLOGFORM
 #define _SM_SSWR_AVIREAD_AVIRBANDWIDTHLOGFORM
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_XMLPARSER
 #define _SM_PARSER_FILEPARSER_XMLPARSER
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMap.hpp"
 #include "IO/FileParser.h"
 #include "Map/VectorLayer.h"
 #include "Map/GPSTrack.h"

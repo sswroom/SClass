@@ -239,6 +239,11 @@ Int64 Map::FileGDBLayer::GetObjectIdMax() const
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
+UOSInt Map::FileGDBLayer::GetRecordCnt() const
+{
+	return this->objects.GetCount();
+}
+
 void Map::FileGDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
@@ -298,7 +303,7 @@ UOSInt Map::FileGDBLayer::GetColumnCnt() const
 	return this->colNames.GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	NN<Text::String> colName;
 	if (this->colNames.GetItem(colIndex).SetTo(colName))
@@ -308,12 +313,12 @@ UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> 
 	return 0;
 }
 
-DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	NN<DB::TableDef> tabDef;
 	NN<DB::ColDef> col;

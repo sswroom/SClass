@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_JPEGEXIF
 #define _SM_MEDIA_JPEGEXIF
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 namespace Media
 {
 	class JPEGExif

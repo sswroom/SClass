@@ -206,7 +206,7 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 								colSize = 0;
 								colDP = 0;
 								col->SetNativeType(sb.ToCString());
-								DB::DBUtil::ColType colType = DB::DBUtil::ParseColType(sqlType, sb.ToString(), &colSize, &colDP);
+								DB::DBUtil::ColType colType = DB::DBUtil::ParseColType(sqlType, sb.ToString(), colSize, colDP);
 								if (colType == DB::DBUtil::CT_Unknown)
 								{
 									printf("SQLCommand: Unsupported column type: %s\r\n", sb.ToPtr());

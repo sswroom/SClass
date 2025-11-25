@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_FILEGDBDIR
 #define _SM_MAP_ESRI_FILEGDBDIR
-#include "Data/FastStringMap.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "DB/ReadingDB.h"
 #include "IO/PackageFile.h"
 #include "Map/ESRI/FileGDBTable.h"

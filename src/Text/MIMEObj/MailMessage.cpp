@@ -3,7 +3,7 @@
 #include "Crypto/Encrypt/Base64.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/MIMEObj/MailMessage.h"
 #include "Text/MIMEObj/MultipartMIMEObj.h"

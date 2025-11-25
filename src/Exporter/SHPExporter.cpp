@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Exporter/DBFExporter.h"
 #include "Exporter/SHPExporter.h"
 #include "IO/FileStream.h"
+#include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "Map/MapDrawLayer.h"
 #include "Math/Geometry/PointZ.h"
@@ -127,7 +128,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				WriteMInt32(&buff[4], 10);
 				shx->Write(Data::ByteArrayR(buff, 8));
 
-				WriteMInt32(buff, (Int32)i);
+				WriteMInt32(buff, (Int32)i + 1);
 				*(Int32*)&buff[8] = 1;
 				*(Double*)&buff[12] = coord.x;
 				*(Double*)&buff[20] = coord.y;
@@ -176,7 +177,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				WriteMInt32(&buff[4], 18);
 				shx->Write(Data::ByteArrayR(buff, 8));
 
-				WriteMInt32(buff, (Int32)i);
+				WriteMInt32(buff, (Int32)i + 1);
 				*(Int32*)&buff[8] = 11;
 				*(Double*)&buff[12] = coord.x;
 				*(Double*)&buff[20] = coord.y;
@@ -426,10 +427,13 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("dbf"));
 	{
-		IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		IO::MemoryStream mstm;
 		Exporter::DBFExporter exporter;
 		exporter.SetCodePage(this->codePage);
-		exporter.ExportFile(fs, CSTRP(fileName2, sptr), layer, 0);
+		exporter.ExportFile(mstm, CSTRP(fileName2, sptr), layer, 0);
+		IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		mstm.SeekFromBeginning(0);
+		mstm.ReadToEnd(fs, 1048576);
 	}
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("prj"));

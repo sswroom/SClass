@@ -61,6 +61,11 @@ Int64 SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdMax() const
 	return (Int64)this->objList.GetCount() - 1;
 }
 
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetRecordCnt() const
+{
+	return this->objList.GetCount();
+}
+
 void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Optional<Map::NameArray> nameArr)
 {
 }
@@ -91,7 +96,7 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetColumnCnt() const
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex == 0)
 	{
@@ -100,7 +105,7 @@ UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeAr
 	return 0;
 }
 
-DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -110,7 +115,7 @@ DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colInd
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex == 0)
 	{

@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_ARRAYLISTSTRUTF8
 #define _SM_DATA_ARRAYLISTSTRUTF8
-#include "Data/SortableArrayList.h"
+#include "Data/SortableArrayList.hpp"
 
 namespace Data
 {

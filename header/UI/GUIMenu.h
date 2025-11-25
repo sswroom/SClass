@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUIMENU
 #define _SM_UI_GUIMENU
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "UI/GUIControl.h"
 
 namespace UI

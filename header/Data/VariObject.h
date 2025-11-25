@@ -1,8 +1,8 @@
 #ifndef _SM_DATA_VARIOBJECT
 #define _SM_DATA_VARIOBJECT
-//#include "Data/BTreeUTF8Map.h"
+//#include "Data/BTreeUTF8Map.hpp"
 #include "Data/Class.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringUTF8Map.hpp"
 #include "Data/VariItem.h"
 
 namespace Data

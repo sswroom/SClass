@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_LEICA_LEICALEVELFILE
 #define _SM_MAP_LEICA_LEICALEVELFILE
-#include "Data/StringMapNN.h"
+#include "Data/StringMapNN.hpp"
 #include "Map/Leica/LeicaGSIFile.h"
 
 namespace Map

@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SNBDONGLE
 #define _SM_IO_SNBDONGLE
 #include "AnyType.h"
-#include "Data/FastMap.h"
+#include "Data/FastMap.hpp"
 #include "IO/SNBProtocol.h"
 #include "Sync/RWMutex.h"
 #include "Text/CString.h"

@@ -213,6 +213,19 @@ Int64 Map::OruxDBLayer::GetObjectIdMax() const
 	}
 	else
 	{
+		return -1;
+	}
+}
+
+UOSInt Map::OruxDBLayer::GetRecordCnt() const
+{
+	NN<Map::OruxDBLayer::LayerInfo> lyr;
+	if (this->layerMap.Get(this->currLayer).SetTo(lyr))
+	{
+		return lyr->max.x * lyr->max.y;
+	}
+	else
+	{
 		return 0;
 	}
 }
@@ -231,17 +244,17 @@ UOSInt Map::OruxDBLayer::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::OruxDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::OruxDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	return 0;
 }
 
-DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	return false;
 }

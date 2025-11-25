@@ -2,7 +2,7 @@
 #include "Math/Math_C.h"
 #include "Media/DrawImageTool.h"
 #include "Media/ImageUtil_C.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "UI/DObj/RollingTextDObj.h"
 
 void UI::DObj::RollingTextDObj::UpdateBGImg()

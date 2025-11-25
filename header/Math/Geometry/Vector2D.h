@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_GEOMETRY_VECTOR2D
 #define _SM_MATH_GEOMETRY_VECTOR2D
-#include "Data/ArrayList.h"
-#include "Data/ArrayListA.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListA.hpp"
 #include "Math/Coord2DDbl.h"
 #include "Math/CoordinateConverter.h"
 #include "Math/RectAreaDbl.h"

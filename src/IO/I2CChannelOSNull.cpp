@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/I2CChannelOS.h"
 #include "Text/MyString.h"
 
@@ -18,12 +18,12 @@ Bool IO::I2CChannelOS::IsError()
 	return this->hand == 0;
 }
 
-UOSInt IO::I2CChannelOS::I2CRead(UInt8 *buff, UOSInt buffSize)
+UOSInt IO::I2CChannelOS::I2CRead(UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	return 0;
 }
 
-UOSInt IO::I2CChannelOS::I2CWrite(const UInt8 *buff, UOSInt buffSize)
+UOSInt IO::I2CChannelOS::I2CWrite(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	return 0;
 }

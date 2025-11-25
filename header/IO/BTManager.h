@@ -1,6 +1,6 @@
 #ifndef _SM_IO_BTMANAGER
 #define _SM_IO_BTMANAGER
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "IO/BTController.h"
 
 namespace IO

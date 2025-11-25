@@ -423,7 +423,7 @@ void Media::DShow::DShowVideoCapture::EnumFrameInfos(FrameInfoCallback cb, AnyTy
 {
 }
 
-UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt)
+UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt)
 {
 	if (captureFilter == 0)
 	{

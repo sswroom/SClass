@@ -136,7 +136,6 @@ BinaryParser.o: ../../src/Data/BinaryParser.cpp
 BinTool.o: ../../src/Data/BinTool.cpp
 ByteOrderLSB.o: ../../src/Data/ByteOrderLSB.cpp
 ByteOrderMSB.o: ../../src/Data/ByteOrderMSB.cpp
-ByteTool.o: ../../src/Data/ByteTool.cpp
 ChartPlotter.o: ../../src/Data/ChartPlotter.cpp
 CircularByteBuff.o: ../../src/Data/CircularByteBuff.cpp
 Class.o: ../../src/Data/Class.cpp
@@ -662,6 +661,7 @@ TelitLE910.o: ../../src/IO/Device/TelitLE910.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 ASN1FileAnalyse.o: ../../src/IO/FileAnalyse/ASN1FileAnalyse.cpp
 CCacheV2FileAnalyse.o: ../../src/IO/FileAnalyse/CCacheV2FileAnalyse.cpp
+DBF3FileAnalyse.o: ../../src/IO/FileAnalyse/DBF3FileAnalyse.cpp
 DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EDIDFileAnalyse.o: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
@@ -845,6 +845,7 @@ WebFeatureService.o: ../../src/Map/WebFeatureService.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 WebMapService.o: ../../src/Map/WebMapService.cpp
 WebMapTileServiceSource.o: ../../src/Map/WebMapTileServiceSource.cpp
+WFSHandler.o: ../../src/Map/WFSHandler.cpp
 ESRICurve.o: ../../src/Map/ESRI/ESRICurve.cpp
 ESRIFeatureServer.o: ../../src/Map/ESRI/ESRIFeatureServer.cpp
 ESRIMapServer.o: ../../src/Map/ESRI/ESRIMapServer.cpp

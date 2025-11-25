@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/VirtualPackageFileFast.h"
 #include "IO/StmData/ConcatStreamData.h"
 #include "IO/StmData/FileData.h"

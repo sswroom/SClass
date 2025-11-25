@@ -5,21 +5,21 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-IO::StreamWriter::StreamWriter(NN<IO::Stream> stm, Text::Encoding *enc) : enc(enc->GetEncCodePage())
+IO::StreamWriter::StreamWriter(NN<IO::Stream> stm, NN<Text::Encoding> enc) : enc(enc->GetEncCodePage())
 {
 	this->stm = stm;
-	this->buff = MemAlloc(UInt8, this->buffSize = 256);
+	this->buff = MemAllocArr(UInt8, this->buffSize = 256);
 }
 
 IO::StreamWriter::StreamWriter(NN<IO::Stream> stm, UInt32 codePage) : enc(codePage)
 {
 	this->stm = stm;
-	this->buff = MemAlloc(UInt8, this->buffSize = 256);
+	this->buff = MemAllocArr(UInt8, this->buffSize = 256);
 }
 
 IO::StreamWriter::~StreamWriter()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
 Bool IO::StreamWriter::Write(Text::CStringNN str)
@@ -41,8 +41,8 @@ Bool IO::StreamWriter::Write(Text::CStringNN str)
 			{
 				buffSize <<= 1;
 			}
-			MemFree(this->buff);
-			this->buff = MemAlloc(UInt8, this->buffSize);
+			MemFreeArr(this->buff);
+			this->buff = MemAllocArr(UInt8, this->buffSize);
 		}
 		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar);
 		MemFree(ws);
@@ -78,8 +78,8 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 			{
 				buffSize <<= 1;
 			}
-			MemFree(this->buff);
-			this->buff = MemAlloc(UInt8, this->buffSize);
+			MemFreeArr(this->buff);
+			this->buff = MemAllocArr(UInt8, this->buffSize);
 		}
 		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
 		MemFree(ws);
@@ -87,7 +87,7 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 	}
 }
 
-Bool IO::StreamWriter::WriteW(const WChar *str, UOSInt nChar)
+Bool IO::StreamWriter::WriteW(UnsafeArray<const WChar> str, UOSInt nChar)
 {
 	UOSInt strSize = 3 * nChar;
 	if (strSize > buffSize)
@@ -96,19 +96,19 @@ Bool IO::StreamWriter::WriteW(const WChar *str, UOSInt nChar)
 		{
 			buffSize <<= 1;
 		}
-		MemFree(this->buff);
-		this->buff = MemAlloc(UInt8, this->buffSize);
+		MemFreeArr(this->buff);
+		this->buff = MemAllocArr(UInt8, this->buffSize);
 	}
 	nChar = enc.WToBytesC(this->buff, str, nChar);
 	return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 }
 
-Bool IO::StreamWriter::WriteW(const WChar *str)
+Bool IO::StreamWriter::WriteW(UnsafeArray<const WChar> str)
 {
 	return WriteW(str, Text::StrCharCnt(str));
 }
 
-Bool IO::StreamWriter::WriteLineW(const WChar *str, UOSInt nChar)
+Bool IO::StreamWriter::WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar)
 {
 	UOSInt strSize = 3 * nChar + 2;
 	if (strSize > buffSize)
@@ -117,8 +117,8 @@ Bool IO::StreamWriter::WriteLineW(const WChar *str, UOSInt nChar)
 		{
 			buffSize <<= 1;
 		}
-		MemFree(this->buff);
-		this->buff = MemAlloc(UInt8, this->buffSize);
+		MemFreeArr(this->buff);
+		this->buff = MemAllocArr(UInt8, this->buffSize);
 	}
 	nChar = enc.WToBytesC(this->buff, str, nChar);
 	this->buff[nChar] = 0xd;
@@ -126,7 +126,7 @@ Bool IO::StreamWriter::WriteLineW(const WChar *str, UOSInt nChar)
 	return this->stm->Write(Data::ByteArrayR(this->buff, nChar + 2)) == nChar + 2;
 }
 
-Bool IO::StreamWriter::WriteLineW(const WChar *str)
+Bool IO::StreamWriter::WriteLineW(UnsafeArray<const WChar> str)
 {
 	Bool ret = WriteLineW(str, Text::StrCharCnt(str));
 	return ret;

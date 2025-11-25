@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/SocketMonitor.h"
 #include "Sync/Interlocked.h"
 #include "Sync/ThreadUtil.h"

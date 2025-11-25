@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilder.hpp"
 #include "Crypto/Hash/CRC32R.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/Path.h"

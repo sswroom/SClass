@@ -34,6 +34,11 @@ struct AnyType
 		this->p = p.Ptr();
 	}
 
+	template<typename T> AnyType(UnsafeArray<T> p)
+	{
+		this->p = p.Ptr();
+	}
+
 	template<typename T> NN<T> GetNN() const
 	{
 		return NN<T>::FromPtr((T*)this->p);

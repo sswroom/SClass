@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "UI/Java/JavaRadioButton.h"
 
 void UI::Java::JavaRadioButton::ChangeSelected(Bool selVal)

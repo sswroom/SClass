@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRIMAGECONTROL
 #define _SM_SSWR_AVIREAD_AVIRIMAGECONTROL
-#include "Data/ICaseStringUTF8Map.h"
-#include "Data/StringMapNN.h"
+#include "Data/ICaseStringUTF8Map.hpp"
+#include "Data/StringMapNN.hpp"
 #include "Data/SyncLinkedList.h"
 #include "Media/RGBColorFilter.h"
 #include "Media/Resizer/LanczosResizerRGB_C8.h"

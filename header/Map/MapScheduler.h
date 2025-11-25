@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_MAPSCHEDULER
 #define _SM_MAP_MAPSCHEDULER
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
 #include "Math/Geometry/CompoundCurve.h"

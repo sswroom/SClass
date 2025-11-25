@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBUTIL
 #define _SM_DB_DBUTIL
-#include "Data/ArrayList.h"
-#include "Data/NamedClass.h"
+#include "Data/ArrayList.hpp"
+#include "Data/NamedClass.hpp"
 #include "Data/Class.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
@@ -92,8 +92,8 @@ namespace DB
 		static UOSInt SDBUInt32Leng(UInt32 val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBUInt64(UnsafeArray<UTF8Char> sqlstr, UInt64 val, SQLType sqlType);
 		static UOSInt SDBUInt64Leng(UInt64 val, SQLType sqlType);
-		static UnsafeArray<UTF8Char> SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Data::DateTime *dat, SQLType sqlType, Int8 tzQhr);
-		static UOSInt SDBDateTimeLeng(Data::DateTime *dat, SQLType sqlType);
+		static UnsafeArray<UTF8Char> SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Optional<Data::DateTime> dat, SQLType sqlType, Int8 tzQhr);
+		static UOSInt SDBDateTimeLeng(Optional<Data::DateTime> dat, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBTS(UnsafeArray<UTF8Char> sqlstr, const Data::Timestamp &ts, SQLType sqlType, Int8 tzQhr);
 		static UOSInt SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBDate(UnsafeArray<UTF8Char> sqlstr, const Data::Date &d, SQLType sqlType);
@@ -110,15 +110,15 @@ namespace DB
 		static UOSInt SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName, SQLType sqlType);
 		static UOSInt SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, SQLType sqlType);
-		static UnsafeArray<UTF8Char> SDBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName, SQLType sqlType);
-		static UOSInt SDBColWLeng(const WChar *colName, SQLType sqlType);
+		static UnsafeArray<UTF8Char> SDBColW(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const WChar> colName, SQLType sqlType);
+		static UOSInt SDBColWLeng(UnsafeArray<const WChar> colName, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CStringNN val, SQLType sqlType);
 		static UOSInt SDBTrimLeng(Text::CStringNN val, SQLType sqlType);
-		static DB::DBUtil::ColType ParseColType(SQLType sqlType, UnsafeArray<const UTF8Char> typeName, UOSInt *colSize, UOSInt *colDP);
+		static DB::DBUtil::ColType ParseColType(SQLType sqlType, UnsafeArray<const UTF8Char> typeName, InOutParam<UOSInt> colSize, InOutParam<UOSInt> colDP);
 		static UnsafeArray<UTF8Char> ColTypeGetString(UnsafeArray<UTF8Char> sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP);
 		static UnsafeArray<UTF8Char> SDBCharset(UnsafeArray<UTF8Char> sqlstr, Charset charset, SQLType sqlType);
-		static UnsafeArray<UTF8Char> SDBCollationName(UnsafeArray<UTF8Char> sqlstr, Charset charset, Language lang, SQLType sqlType, Bool *requireAS);
-		static UnsafeArray<UTF8Char> SDBCollation(UnsafeArray<UTF8Char> sqlstr, const Collation *collation, SQLType sqlType);
+		static UnsafeArray<UTF8Char> SDBCollationName(UnsafeArray<UTF8Char> sqlstr, Charset charset, Language lang, SQLType sqlType, OutParam<Bool> requireAS);
+		static UnsafeArray<UTF8Char> SDBCollation(UnsafeArray<UTF8Char> sqlstr, NN<const Collation> collation, SQLType sqlType);
 		static Bool CollationParseMySQL(Text::CStringNN collName, NN<Collation> collation);
 
 		static UnsafeArray<UTF8Char> DB2FieldName(UnsafeArray<UTF8Char> fieldNameBuff, UnsafeArray<const UTF8Char> dbName);

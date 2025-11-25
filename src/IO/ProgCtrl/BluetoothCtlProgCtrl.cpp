@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/ProgCtrl/BluetoothCtlProgCtrl.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
@@ -351,19 +351,19 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	{
 		return 0;
 	}
-	macBuff[0] = 0;
-	macBuff[1] = 0;
+	macBuff[6] = 0;
+	macBuff[7] = 0;
 	s.ConcatTo(sbuff);
 	if (Text::StrSplit(sarr, 7, sbuff, ':') != 6)
 	{
 		return 0;
 	}
-	macBuff[2] = Text::StrHex2UInt8C(sarr[0]);
-	macBuff[3] = Text::StrHex2UInt8C(sarr[1]);
-	macBuff[4] = Text::StrHex2UInt8C(sarr[2]);
-	macBuff[5] = Text::StrHex2UInt8C(sarr[3]);
-	macBuff[6] = Text::StrHex2UInt8C(sarr[4]);
-	macBuff[7] = Text::StrHex2UInt8C(sarr[5]);
+	macBuff[0] = Text::StrHex2UInt8C(sarr[0]);
+	macBuff[1] = Text::StrHex2UInt8C(sarr[1]);
+	macBuff[2] = Text::StrHex2UInt8C(sarr[2]);
+	macBuff[3] = Text::StrHex2UInt8C(sarr[3]);
+	macBuff[4] = Text::StrHex2UInt8C(sarr[4]);
+	macBuff[5] = Text::StrHex2UInt8C(sarr[5]);
 	UInt64 macInt = ReadMUInt64(macBuff);
 	NN<IO::BTScanLog::ScanRecord3> dev;
 	Sync::MutexUsage mutUsage(this->devMut);
@@ -371,13 +371,13 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 		return dev;
 	dev = MemAllocNN(IO::BTScanLog::ScanRecord3);
 	dev.ZeroContent();
-	dev->mac[0] = macBuff[2];
-	dev->mac[1] = macBuff[3];
-	dev->mac[2] = macBuff[4];
-	dev->mac[3] = macBuff[5];
-	dev->mac[4] = macBuff[6];
-	dev->mac[5] = macBuff[7];
-	dev->macInt = macInt;
+	dev->mac[0] = macBuff[0];
+	dev->mac[1] = macBuff[1];
+	dev->mac[2] = macBuff[2];
+	dev->mac[3] = macBuff[3];
+	dev->mac[4] = macBuff[4];
+	dev->mac[5] = macBuff[5];
+	dev->mac64Int = macInt;
 	dev->addrType = IO::BTScanLog::AT_UNKNOWN;
 	dev->radioType = IO::BTScanLog::RT_UNKNOWN;
 	dev->company = 0;

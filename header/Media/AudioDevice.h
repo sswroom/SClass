@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AUDIODEVICE
 #define _SM_MEDIA_AUDIODEVICE
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Media/AudioRenderer.h"
 
 namespace Media

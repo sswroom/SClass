@@ -1,7 +1,7 @@
 #ifndef _SM_NET_LOGSERVER
 #define _SM_NET_LOGSERVER
 #include "AnyType.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/FileStream.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Net/SocketFactory.h"

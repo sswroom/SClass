@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNS_SNSINSTAGRAM
 #define _SM_NET_SNS_SNSINSTAGRAM
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Net/SNS/SNSControl.h"

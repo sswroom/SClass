@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/SSDPClient.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLReader.h"

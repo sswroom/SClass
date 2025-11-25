@@ -4,7 +4,7 @@
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListUInt64.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/StmData/BlockStreamData.h"
 #include "Media/AudioFrameSource.h"
 #include "Media/FileVideoSource.h"

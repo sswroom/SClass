@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/Path.h"
 #include "IO/PcapngWriter.h"
 #include "IO/PcapWriter.h"
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(AnyType userData, U
 			plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
 		}
 	}
-	me->analyzer->PacketIPv4(rawData, packetSize, 0, 0);
+	me->analyzer->PacketIPv4_2(rawData, packetSize, 0, 0);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(AnyType userObj)
@@ -1044,6 +1044,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		NN<Net::EthernetAnalyzer::MACStatus> mac;
 		NN<const Net::MACInfo::MACEntry> entry;
 		UInt8 macBuff[8];
+		Net::MACInfo::AddressType addrType;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseMAC(mutUsage);
 		macList = me->analyzer->MACGetList();
@@ -1055,11 +1056,27 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			while (i < j)
 			{
 				mac = macList->GetItemNoCheck(i);
-				WriteMUInt64(macBuff, mac->macAddr);
-				sptr = Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
+				WriteMUInt64(macBuff, mac->mac64Addr);
+				sptr = Text::StrHexBytes(sbuff, &macBuff[0], 6, ':');
 				me->lvDevice->AddItem(CSTRP(sbuff, sptr), mac);
-				entry = Net::MACInfo::GetMACInfo(mac->macAddr);
-				me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
+				addrType = Net::MACInfo::GetAddressType(macBuff);
+				if (addrType == Net::MACInfo::AddressType::UniversalMulticast)
+				{
+					me->lvDevice->SetSubItem(i, 1, CSTR("Universal Multicast"));
+				}
+				else if (addrType == Net::MACInfo::AddressType::LocalMulticast)
+				{
+					me->lvDevice->SetSubItem(i, 1, CSTR("Local Multicast"));
+				}
+				else if (addrType == Net::MACInfo::AddressType::LocalUnicast)
+				{
+					me->lvDevice->SetSubItem(i, 1, CSTR("Local Unicast"));
+				}
+				else
+				{
+					entry = Net::MACInfo::GetMAC64Info(mac->mac64Addr);
+					me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
+				}
 				if (mac->name.SetTo(s))
 				{
 					me->lvDevice->SetSubItem(i, 8, s->ToCString());
@@ -1139,10 +1156,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			while (i < j)
 			{
 				dhcp = dhcpList->GetItemNoCheck(i);
-				WriteMUInt64(mac, dhcp->iMAC);
-				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+				WriteMUInt64(mac, dhcp->iMAC64);
+				sptr = Text::StrHexBytes(sbuff, &mac[0], 6, ':');
 				me->lvDHCP->AddItem(CSTRP(sbuff, sptr), dhcp);
-				macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
+				macInfo = Net::MACInfo::GetMAC64Info(dhcp->iMAC64);
 				me->lvDHCP->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
 				if (dhcp.Ptr() == currSel.OrNull())
 				{

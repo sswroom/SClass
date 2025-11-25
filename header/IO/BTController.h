@@ -1,8 +1,8 @@
 #ifndef _SM_IO_BTCONTROLLER
 #define _SM_IO_BTCONTROLLER
 #include "AnyType.h"
-#include "Data/ArrayList.h"
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Data/DateTime.h"
 #include "Data/UUID.h"
 #include "Text/String.h"
@@ -12,7 +12,7 @@ namespace IO
 	class BTController
 	{
 	public:
-		typedef void (CALLBACKFUNC LEScanHandler)(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name);
+		typedef void (CALLBACKFUNC LEScanHandler)(AnyType userObj, UInt64 mac64, Int32 rssi, Text::CString name);
 
 		class BTDevice
 		{
@@ -68,7 +68,7 @@ namespace IO
 		UInt16 GetManufacturer();
 		UInt16 GetSubversion();
 
-		void LEScanHandleResult(LEScanHandler leHdlr, AnyType leHdlrObj);
+		void LEScanHandleResult2(LEScanHandler leHdlr, AnyType leHdlrObj);
 		Bool LEScanBegin();
 		Bool LEScanEnd();
 	};

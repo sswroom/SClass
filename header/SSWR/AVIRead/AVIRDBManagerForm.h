@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
 #define _SM_SSWR_AVIREAD_AVIRDBMANAGERFORM
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBManagerCtrl.h"
 #include "Map/DBMapLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"

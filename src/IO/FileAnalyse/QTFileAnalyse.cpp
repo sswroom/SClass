@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListInt32.h"
 #include "Data/ByteBuffer.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileAnalyse/QTFileAnalyse.h"
 #include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"

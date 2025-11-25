@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/EthernetWebHandler.h"
 #include "Net/MACInfo.h"
 #include "Sync/MutexUsage.h"
@@ -83,10 +83,10 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(NN<EthernetWebHandler> me, NN<
 		{
 			mac = macList->GetItemNoCheck(i);
 			sb.AppendC(UTF8STRC("<tr><td>"));
-			WriteMUInt64(sbuff, mac->macAddr);
-			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
+			WriteMUInt64(sbuff, mac->mac64Addr);
+			sb.AppendHexBuff(&sbuff[0], 6, ':', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("</td><td>"));
-			macInfo = Net::MACInfo::GetMACInfo(mac->macAddr);
+			macInfo = Net::MACInfo::GetMAC64Info(mac->mac64Addr);
 			sb.AppendC(macInfo->name, macInfo->nameLen);
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sb.AppendU64(mac->ipv4SrcCnt);
@@ -797,10 +797,10 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(NN<EthernetWebHandler> me, NN<Ne
 			dhcp = dhcpList->GetItemNoCheck(i);
 			Sync::MutexUsage mutUsage(dhcp->mut);
 			sb.AppendC(UTF8STRC("<tr><td>"));
-			WriteMUInt64(sbuff, dhcp->iMAC);
-			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
+			WriteMUInt64(sbuff, dhcp->iMAC64);
+			sb.AppendHexBuff(&sbuff[0], 6, ':', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("</td><td>"));
-			macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
+			macInfo = Net::MACInfo::GetMAC64Info(dhcp->iMAC64);
 			sb.AppendC(macInfo->name, macInfo->nameLen);
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->ipAddr);

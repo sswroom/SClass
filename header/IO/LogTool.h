@@ -1,6 +1,6 @@
 #ifndef _SM_IO_LOGTOOL
 #define _SM_IO_LOGTOOL
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListInt32.h"
 #include "Data/Timestamp.h"
 #include "Sync/Mutex.h"

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/MACInfo.h"
@@ -128,8 +128,8 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	while (i < j)
 	{
 		log = logList.GetItemNoCheck(i);
-		WriteMUInt64(mac, log->macInt);
-		sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+		WriteMUInt64(mac, log->mac64Int);
+		sptr = Text::StrHexBytes(sbuff, &mac[0], 6, ':');
 		l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
 		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
@@ -151,7 +151,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		if (log->addrType == IO::BTScanLog::AT_RANDOM)
 		{
-			switch ((log->macInt >> 40) & 0xc0)
+			switch (mac[0] & 0xc0)
 			{
 			case 0x00:
 				this->lvContent->SetSubItem(i, 4, CSTR("Non-resolvable Random"));
@@ -169,7 +169,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		else
 		{
-			if (this->macList.GetEntry(log->macInt).SetTo(entry))
+			if (this->macList.GetEntry(log->mac64Int).SetTo(entry))
 			{
 				this->lvContent->SetSubItem(l, 4, {entry->name, entry->nameLen});
 			}

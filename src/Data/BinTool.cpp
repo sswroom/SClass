@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/BinTool.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 Bool Data::BinTool::Equals(UnsafeArray<const UInt8> buff1, UnsafeArray<const UInt8> buff2, UOSInt len)
 {

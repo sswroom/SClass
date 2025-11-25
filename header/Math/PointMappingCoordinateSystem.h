@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_POINTMAPPINGCOORDINATESYSTEM
 #define _SM_MATH_POINTMAPPINGCOORDINATESYSTEM
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Math/CoordinateSystem.h"
 
 namespace Math

@@ -3,7 +3,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/SHA1.h"
 #include "Crypto/Hash/SHA256.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"

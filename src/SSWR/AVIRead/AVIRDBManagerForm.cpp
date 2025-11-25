@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/Sort/ArtificialQuickSortAList.h"
+#include "Data/Sort/ArtificialQuickSortAList_C.h"
 #include "DB/ColDef.h"
 #include "DB/DBExporter.h"
 #include "DB/DBManager.h"

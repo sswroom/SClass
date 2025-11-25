@@ -1,12 +1,14 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
+#include "DB/TableDef.h"
 #include "IO/Path.h"
 #include "IO/StmData/BufferedStreamData.h"
 #include "Map/SHPData.h"
 #include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math_C.h"
+#include "Math/WKTWriter.h"
 #include "Math/Geometry/Polyline.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Point.h"
@@ -412,7 +414,7 @@ UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opt
 		j = this->ptX->GetCount();
 		while (i < j)
 		{
-			outArr->Add((Int64)i);
+			outArr->Add((Int64)i + 1);
 			i++;
 		}
 		return j;
@@ -423,7 +425,7 @@ UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opt
 		i = 0;
 		while (i < j)
 		{
-			outArr->Add((Int64)i);
+			outArr->Add((Int64)i + 1);
 			i++;
 		}
 		return j;
@@ -455,7 +457,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<O
 			y = this->ptY->GetItem(i);
 			if (rect.ContainPt(x, y))
 			{
-				outArr->Add((Int64)i);
+				outArr->Add((Int64)i + 1);
 				retCnt++;
 			}
 			i++;
@@ -472,7 +474,7 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<O
 			{
 				if (rec->x2 >= rect.min.x && rec->x1 <= rect.max.x && rec->y2 >= rect.min.y && rec->y1 <= rect.max.y)
 				{
-					outArr->Add((Int64)i);
+					outArr->Add((Int64)i + 1);
 					retCnt++;
 				}
 			}
@@ -490,11 +492,11 @@ Int64 Map::SHPData::GetObjectIdMax() const
 {
 	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		return (Int64)this->ptX->GetCount() - 1;
+		return (Int64)this->ptX->GetCount();
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		return (Int64)this->recs->GetCount() - 1;
+		return (Int64)this->recs->GetCount();
 	}
 	else
 	{
@@ -502,35 +504,76 @@ Int64 Map::SHPData::GetObjectIdMax() const
 	}
 }
 
+UOSInt Map::SHPData::GetRecordCnt() const
+{
+	if (this->layerType == Map::DRAW_LAYER_POINT || this->layerType == Map::DRAW_LAYER_POINT3D)
+	{
+		return this->ptX->GetCount();
+	}
+	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	{
+		return this->recs->GetCount();
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void Map::SHPData::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt colIndex)
 {
-	Bool ret = this->dbf->GetRecord(sb, (UOSInt)id, strIndex);
+	if (id <= 0)
+		return false;
+	if (colIndex == 0)
+	{
+		NN<Math::Geometry::Vector2D> vec;
+		if (this->GetNewVectorById(NN<GetObjectSess>::ConvertFrom(NN<SHPData>(*this)), id).SetTo(vec))
+		{
+			Bool succ = Math::WKTWriter().ToText(sb, vec);
+			vec.Delete();
+			return succ;
+		}
+		return false;
+	}
+	Bool ret = this->dbf->GetRecord(sb, (UOSInt)id - 1, colIndex - 1);
 	sb->TrimSp();
 	return ret;
 }
 
 UOSInt Map::SHPData::GetColumnCnt() const
 {
-	return this->dbf->GetColCount();
+	return this->dbf->GetColCount() + 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
-	return this->dbf->GetColumnName(colIndex, buff);
+	if (colIndex == 0)
+		return Text::StrConcatC(buff, UTF8STRC("Shape"));
+	return this->dbf->GetColumnName(colIndex - 1, buff);
 }
 
-DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
-	return this->dbf->GetColumnType(colIndex, colSize);
+	if (colIndex == 0)
+	{
+		colSize.Set(Map::MapLayerReader::GetShapeColSize(this->layerType));
+		return DB::DBUtil::CT_Vector;
+	}
+	return this->dbf->GetColumnType(colIndex - 1, colSize);
 }
 
-Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
-	return this->dbf->GetColumnDef(colIndex, colDef);
+	if (colIndex == 0)
+	{
+		Map::MapLayerReader::GetShapeColDef(colDef, *this);
+		return true;
+	}
+	return this->dbf->GetColumnDef(colIndex - 1, colDef);
 }
 
 UInt32 Map::SHPData::GetCodePage() const
@@ -568,28 +611,28 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	if (this->layerType == Map::DRAW_LAYER_POINT)
 	{
 		Math::Geometry::Point *pt;
-		if (id < 0 || (UInt64)id >= this->ptX->GetCount())
+		if (id <= 0 || (UInt64)id > this->ptX->GetCount())
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Geometry::Point(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id)));
+		NEW_CLASS(pt, Math::Geometry::Point(srid, this->ptX->GetItem((UOSInt)id - 1), this->ptY->GetItem((UOSInt)id - 1)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
 		Math::Geometry::PointZ *pt;
-		if (id < 0 || (UInt64)id >= this->ptX->GetCount())
+		if (id <= 0 || (UInt64)id > this->ptX->GetCount())
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
+		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UOSInt)id - 1), this->ptY->GetItem((UOSInt)id - 1), this->ptZ->GetItem((UOSInt)id - 1)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON && mut.Set(this->recsMut))
 	{
 		Math::Geometry::Polygon *pg;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
+		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
 			return 0;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
@@ -607,7 +650,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	{
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
+		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
 			return 0;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
@@ -625,7 +668,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	{
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
-		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
+		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
 			return 0;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
@@ -653,14 +696,17 @@ UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 	return this->dbf->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
-{
-	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
-}
+//Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
+//{
+//	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
+//}
 
 Optional<DB::TableDef> Map::SHPData::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	return this->dbf->GetTableDef(schemaName, tableName);
+	NN<DB::TableDef> tab;
+	NEW_CLASSNN(tab, DB::TableDef(schemaName, tableName));
+	this->AddColDefs(tab);
+	return tab;
 }
 
 void Map::SHPData::CloseReader(NN<DB::DBReader> r)
@@ -681,7 +727,7 @@ void Map::SHPData::Reconnect()
 
 UOSInt Map::SHPData::GetGeomCol() const
 {
-	return INVALID_INDEX;
+	return 0;
 }
 
 Map::MapDrawLayer::ObjectClass Map::SHPData::GetObjectClass() const

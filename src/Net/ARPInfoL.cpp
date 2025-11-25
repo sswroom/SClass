@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringUTF8Map.hpp"
 #include "IO/FileStream.h"
 #include "Net/ARPInfo.h"
 #include "Net/SocketUtil.h"

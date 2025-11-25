@@ -5,7 +5,7 @@
 #include "Crypto/Encrypt/JasyptEncryptor.h"
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA512.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
 UnsafeArray<const UInt8> Crypto::Encrypt::JasyptEncryptor::DecGetSalt(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> salt)

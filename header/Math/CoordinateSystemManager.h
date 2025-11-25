@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_COORDINATESYSTEMMANAGER
 #define _SM_MATH_COORDINATESYSTEMMANAGER
-#include "Data/ArrayList.h"
-#include "Data/ArrayListArr.h"
+#include "Data/ArrayList.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Text/CString.h"
 
@@ -178,7 +178,7 @@ namespace Math
 		static Optional<Math::ProjectedCoordinateSystem> SRCreateProjCSys(UInt32 epsgId);
 		static Optional<Math::GeographicCoordinateSystem> SRCreateGeogCSys(UInt32 epsgId);
 		
-		static Optional<Math::CoordinateSystem> CreateFromName(Text::CStringNN name);
+		static Optional<Math::CoordinateSystem> CreateFromName(Text::CStringNN name, OptOut<Bool> axisInvertable);
 		static NN<Math::CoordinateSystem> CreateFromNameOrDef(Text::CStringNN name);
 
 		static Optional<const Math::CoordinateSystemManager::DatumInfo> GetDatumInfoByName(UnsafeArray<const UTF8Char> name);

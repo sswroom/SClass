@@ -1,6 +1,6 @@
 #ifndef _SM_IO_LOGFILEMANAGER
 #define _SM_IO_LOGFILEMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "Text/String.h"
 #include "Text/StyledTextWriter.h"

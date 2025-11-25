@@ -2,7 +2,7 @@
 #define _SM_MEDIA_VCDMPGFILE
 #include "AnyType.h"
 #include "Data/ByteBuffer.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/SectorData.h"
 #include "Media/AudioSource.h"
 #include "Media/M2VStreamSource.h"

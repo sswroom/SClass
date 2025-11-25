@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt32.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "DB/ColDef.h"
 #include "IO/BufferedInputStream.h"
 #include "IO/FileStream.h"
@@ -382,6 +382,11 @@ Int64 Map::SPDLayer::GetObjectIdMax() const
 	return this->maxId;
 }
 
+UOSInt Map::SPDLayer::GetRecordCnt() const
+{
+	return (UOSInt)(this->maxId + 1);
+}
+
 void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<Data::ArrayList<UTF16Char *>> tmpArr;
@@ -420,7 +425,7 @@ UOSInt Map::SPDLayer::GetColumnCnt() const
 	return 1;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex == 0)
 	{
@@ -432,7 +437,7 @@ UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff
 	}
 }
 
-DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	if (colIndex == 0)
 	{
@@ -446,7 +451,7 @@ DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	if (colIndex != 0)
 		return false;

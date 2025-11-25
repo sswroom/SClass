@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "IO/BTController.h"
 #include "IO/BTUtil.h"
 #include "Sync/SimpleThread.h"
@@ -357,7 +357,7 @@ UInt16 IO::BTController::GetSubversion()
 	return this->subversion;
 }
 
-void IO::BTController::LEScanHandleResult(LEScanHandler leHdlr, AnyType leHdlrObj)
+void IO::BTController::LEScanHandleResult2(LEScanHandler leHdlr, AnyType leHdlrObj)
 {
 	this->leHdlrObj = leHdlrObj;
 	this->leHdlr = leHdlr;

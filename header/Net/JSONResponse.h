@@ -1,7 +1,7 @@
 #ifndef _SM_NET_JSONRESPONSE
 #define _SM_NET_JSONRESPONSE
-#include "Data/ArrayListNN.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/HTTPJSONReader.h"
 #include "Text/JSON.h"
 

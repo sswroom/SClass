@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_SHPLAYER
 #define _SM_MAP_SHPLAYER
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "Data/ArrayListDbl.h"
 #include "DB/DBFFile.h"
 #include "IO/FileStream.h"

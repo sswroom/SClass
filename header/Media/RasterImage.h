@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_RASTERIMAGE
 #define _SM_MEDIA_RASTERIMAGE
-#include "Math/RectArea.h"
+#include "Math/RectArea.hpp"
 #include "Media/FrameInfo.h"
 #include "Media/EXIFData.h"
 #include "Text/CString.h"

@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VIRTUALIOPINMGR
 #define _SM_IO_VIRTUALIOPINMGR
-#include "Data/ArrayList.h"
+#include "Data/ArrayList.hpp"
 #include "IO/IOPin.h"
 #include "Sync/Mutex.h"
 

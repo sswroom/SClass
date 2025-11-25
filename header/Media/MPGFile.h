@@ -2,7 +2,7 @@
 #define _SM_MEDIA_MPGFILE
 #include "AnyType.h"
 #include "Data/ByteBuffer.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/StreamData.h"
 #include "Media/AudioSource.h"
 #include "Media/MediaStream.h"

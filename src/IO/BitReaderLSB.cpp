@@ -2,7 +2,7 @@
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "IO/BitReaderLSB.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 
 IO::BitReaderLSB::BitReaderLSB(NN<IO::Stream> stm)
 {

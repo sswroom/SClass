@@ -1,7 +1,7 @@
 #ifndef _SM_NET_SNS_SNSRSS
 #define _SM_NET_SNS_SNSRSS
 #include "Crypto/Hash/CRC32R.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Net/SNS/SNSControl.h"

@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_ENCRYPT_JASYPTCONFIGFILE
 #define _SM_CRYPTO_ENCRYPT_JASYPTCONFIGFILE
 #include "Crypto/Encrypt/JasyptEncryptor.h"
-#include "Data/FastStringMapNN.h"
+#include "Data/FastStringMapNN.hpp"
 #include "IO/ConfigFile.h"
 
 namespace Crypto

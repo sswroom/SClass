@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Media/SSRC/SleefRNG.h"
 
 #define C0 0xf3dd0fb7820fde37ULL

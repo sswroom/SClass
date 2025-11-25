@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRLOGSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIRLOGSERVERFORM
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "Net/LogServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/ListBoxLogger.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
+#include "Core/ByteTool_C.h"
 #include "Net/TraceRoute.h"
 
 void __stdcall Net::TraceRoute::RecvThread(NN<Sync::Thread> thread)

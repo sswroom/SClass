@@ -252,7 +252,7 @@ namespace Data
 		{
 			if (this->IsNull())
 			{
-				*buff = 0;
+				buff[0] = 0;
 				return buff;
 			}
 			else if (this->inst.nanosec == 0)
@@ -277,7 +277,7 @@ namespace Data
 		{
 			if (this->IsNull())
 			{
-				*buff = 0;
+				buff[0] = 0;
 				return buff;
 			}
 			else if (this->inst.nanosec == 0)
@@ -302,7 +302,7 @@ namespace Data
 		{
 			if (this->IsNull())
 			{
-				*buff = 0;
+				buff[0] = 0;
 				return buff;
 			}
 			else if (this->inst.nanosec == 0)
@@ -420,7 +420,7 @@ namespace Data
 			}
 			else
 			{
-				return *this;
+				return NNTHIS;
 			}
 		}
 

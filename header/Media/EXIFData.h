@@ -3,7 +3,7 @@
 #include "AnyType.h"
 #include "Data/ByteOrder.h"
 #include "Data/DateTime.h"
-#include "Data/FastMapNN.h"
+#include "Data/FastMapNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
 #include "Media/FrameInfo.h"

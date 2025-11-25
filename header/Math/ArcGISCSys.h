@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_ARCGISCSYS
 #define _SM_MATH_ARCGISCSYS
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMap.hpp"
 #include "Text/CString.h"
 
 namespace Math

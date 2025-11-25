@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Data/ArrayListA.h"
-#include "Data/ByteTool.h"
+#include "Data/ArrayListA.hpp"
+#include "Core/ByteTool_C.h"
 #include "Math/WKBReader.h"
 #include "Math/Geometry/CircularString.h"
 #include "Math/Geometry/CurvePolygon.h"

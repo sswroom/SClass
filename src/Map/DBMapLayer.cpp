@@ -281,6 +281,11 @@ Int64 Map::DBMapLayer::GetObjectIdMax() const
 	return this->vecMap.GetKey(this->vecMap.GetCount() - 1);
 }
 
+UOSInt Map::DBMapLayer::GetRecordCnt() const
+{
+	return this->vecMap.GetCount();
+}
+
 void Map::DBMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<DB::TableDef> tabDef;
@@ -369,7 +374,7 @@ UOSInt Map::DBMapLayer::GetColumnCnt() const
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::DBMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::DBMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -383,7 +388,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBMapLayer::GetColumnName(UnsafeArray<UTF8Char> bu
 	return 0;
 }
 
-DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
+DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -398,7 +403,7 @@ DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSIn
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
+Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef) const
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
