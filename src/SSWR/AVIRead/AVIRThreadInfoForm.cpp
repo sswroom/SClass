@@ -581,7 +581,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 			while (i < j)
 			{
 				sbuff[0] = 0;
-				sptr = context->GetRegister(i, sbuff, buff, &bitCnt).Or(sbuff);
+				sptr = context->GetRegister(i, sbuff, buff, bitCnt).Or(sbuff);
 				k = this->lvContext->AddItem(CSTRP(sbuff, sptr), 0);
 				if (bitCnt == 8)
 				{

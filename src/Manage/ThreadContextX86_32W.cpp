@@ -81,270 +81,270 @@ UOSInt Manage::ThreadContextX86_32::GetRegisterCnt() const
 	return cnt;
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UInt8 *regVal, UInt32 *regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const
 {
 	switch (index)
 	{
 	case 0:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rax;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rax;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Eax;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Eax;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("EAX"));
 	case 1:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rdx;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rdx;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Edx;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Edx;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("EDX"));
 	case 2:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rcx;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rcx;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Ecx;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Ecx;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("ECX"));
 	case 3:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rbx;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rbx;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Ebx;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Ebx;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("EBX"));
 	case 4:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rsi;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rsi;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Esi;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Esi;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("ESI"));
 	case 5:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rdi;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rdi;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Edi;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Edi;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("EDI"));
 	case 6:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rsp;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rsp;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Esp;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Esp;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("ESP"));
 	case 7:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rbp;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rbp;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Ebp;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Ebp;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("EBP"));
 	case 8:
 #ifdef CONTEXT_VX86
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Rip;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Rip;
 #else
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->Eip;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->Eip;
 #endif
-		*regBitCount = 32;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("EIP"));
 	case 9:
-		*(UInt32*)regVal = ((CONTEXT_TYPE*)this->context)->EFlags;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((CONTEXT_TYPE*)this->context)->EFlags;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("EFLAGS"));
 	case 10:
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->SegCs;
-		*regBitCount = 16;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->SegCs;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("CS"));
 	case 11:
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->SegSs;
-		*regBitCount = 16;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->SegSs;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("SS"));
 	case 12:
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->SegDs;
-		*regBitCount = 16;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->SegDs;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("DS"));
 	case 13:
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->SegEs;
-		*regBitCount = 16;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->SegEs;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("ES"));
 	case 14:
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->SegFs;
-		*regBitCount = 16;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->SegFs;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("FS"));
 	case 15:
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->SegGs;
-		*regBitCount = 16;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->SegGs;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("GS"));
 	case 16:
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Dr0;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Dr0;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("DR0"));
 	case 17:
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Dr1;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Dr1;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("DR1"));
 	case 18:
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Dr2;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Dr2;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("DR2"));
 	case 19:
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Dr3;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Dr3;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("DR3"));
 	case 20:
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Dr6;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Dr6;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("DR6"));
 	case 21:
-		*(UInt32*)regVal = (UInt32)((CONTEXT_TYPE*)this->context)->Dr7;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = (UInt32)((CONTEXT_TYPE*)this->context)->Dr7;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("DR7"));
 	case 22:
 		GetST0(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST0"));
 	case 23:
 		GetST1(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST1"));
 	case 24:
 		GetST2(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST2"));
 	case 25:
 		GetST3(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST3"));
 	case 26:
 		GetST4(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST4"));
 	case 27:
 		GetST5(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST5"));
 	case 28:
 		GetST6(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST6"));
 	case 29:
 		GetST7(regVal);
-		*regBitCount = 80;
+		regBitCount.Set(80);
 		return Text::StrConcatC(buff, UTF8STRC("ST7"));
 	case 30:
 #ifdef CONTEXT_VX86
 		
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.ControlWord;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.ControlWord;
 #else
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->FloatSave.ControlWord;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->FloatSave.ControlWord;
 #endif
-		*regBitCount = 16;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("CTRL"));
 	case 31:
 #ifdef CONTEXT_VX86
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.StatusWord;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.StatusWord;
 #else
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord;
 #endif
-		*regBitCount = 16;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("STAT"));
 	case 32:
 #ifdef CONTEXT_VX86
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.TagWord;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->FltSave.TagWord;
 #else
-		*(UInt16*)regVal = (UInt16)((CONTEXT_TYPE*)this->context)->FloatSave.TagWord;
+		UnsafeArray<UInt16>::ConvertFrom(regVal)[0] = (UInt16)((CONTEXT_TYPE*)this->context)->FloatSave.TagWord;
 #endif
-		*regBitCount = 16;
+		regBitCount.Set(16);
 		return Text::StrConcatC(buff, UTF8STRC("TAG"));
 	case 33:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[0];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[0];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM0"));
 	case 34:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[1];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[1];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 16];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 16];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM1"));
 	case 35:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[2];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[2];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 32];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 32];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM2"));
 	case 36:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[3];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[3];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 48];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 48];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM3"));
 	case 37:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[4];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[4];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 64];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 64];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM4"));
 	case 38:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[5];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[5];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 80];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 80];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM5"));
 	case 39:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[6];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[6];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 96];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 96];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM6"));
 	case 40:
 		if (this->mmOfst < 0)
 			return 0;
 #ifdef CONTEXT_VX86
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[7];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[7];
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 112];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->mmOfst + 112];
 #endif
-		*regBitCount = 64;
+		regBitCount.Set(64);
 		return Text::StrConcatC(buff, UTF8STRC("MM7"));
 	case 41:
 		if (this->xmmOfst < 0)
@@ -352,10 +352,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm0;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 8];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM0"));
 	case 42:
 		if (this->xmmOfst < 0)
@@ -363,10 +363,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm1;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 16];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 16];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 24];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM1"));
 	case 43:
 		if (this->xmmOfst < 0)
@@ -374,10 +374,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm2;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 32];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 32];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 40];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM2"));
 	case 44:
 		if (this->xmmOfst < 0)
@@ -385,10 +385,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm3;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 48];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 48];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 56];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM3"));
 	case 45:
 		if (this->xmmOfst < 0)
@@ -396,10 +396,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm4;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 64];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 64];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 72];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM4"));
 	case 46:
 		if (this->xmmOfst < 0)
@@ -407,10 +407,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm5;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 80];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 80];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 88];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM5"));
 	case 47:
 		if (this->xmmOfst < 0)
@@ -418,10 +418,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm6;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 96];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 96];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 104];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM6"));
 	case 48:
 		if (this->xmmOfst < 0)
@@ -429,10 +429,10 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UOSInt index, 
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm7;
 #else
-		*(Int64*)regVal = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 112];
+		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 112];
 		*(Int64*)&regVal[8] = *(Int64*)&((CONTEXT_TYPE*)this->context)->ExtendedRegisters[this->xmmOfst + 120];
 #endif
-		*regBitCount = 128;
+		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM7"));
 	default:
 		return 0;
@@ -451,7 +451,7 @@ void Manage::ThreadContextX86_32::ToString(NN<Text::StringBuilderUTF8> sb) const
 
 	while (i < j)
 	{
-		if (this->GetRegister(i, sbuff, regBuff, &bitCnt).SetTo(sptr))
+		if (this->GetRegister(i, sbuff, regBuff, bitCnt).SetTo(sptr))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
@@ -799,75 +799,75 @@ UInt32 Manage::ThreadContextX86_32::GetDR7() const
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST0(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST0(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 0) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 0) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 0) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 0) & 7)], 10);
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST1(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST1(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 1) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 1) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 1) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 1) & 7)], 10);
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST2(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST2(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 2) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 2) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 2) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 2) & 7)], 10);
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST3(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST3(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 3) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 3) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 3) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 3) & 7)], 10);
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST4(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST4(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 4) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 4) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 4) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 4) & 7)], 10);
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST5(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST5(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 5) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 5) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 5) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 5) & 7)], 10);
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST6(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST6(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 6) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 6) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 6) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 6) & 7)], 10);
 #endif
 }
 
-void Manage::ThreadContextX86_32::GetST7(UInt8 *val) const
+void Manage::ThreadContextX86_32::GetST7(UnsafeArray<UInt8> val) const
 {
 #ifdef CONTEXT_VX86
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 7) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FltSave.FloatRegisters[(((((CONTEXT_TYPE*)this->context)->FltSave.StatusWord >> 11) + 7) & 7)], 10);
 #else
-	MemCopyNO(val, &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 7) & 7)], 10);
+	MemCopyNO(&val[0], &((CONTEXT_TYPE*)this->context)->FloatSave.RegisterArea[10 * (((((CONTEXT_TYPE*)this->context)->FloatSave.StatusWord >> 11) + 7) & 7)], 10);
 #endif
 }
 

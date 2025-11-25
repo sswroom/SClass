@@ -24,7 +24,7 @@ namespace Manage
 		virtual ~ThreadContext() {};
 
 		virtual UOSInt GetRegisterCnt() const = 0;
-		virtual UnsafeArrayOpt<UTF8Char> GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UInt8 *regVal, UInt32 *regBitCount) const = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const = 0;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
 		virtual ContextType GetType() const = 0;
 		virtual UOSInt GetThreadId() const = 0;

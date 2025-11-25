@@ -8,7 +8,7 @@
 #pragma warning( disable : 4311 4312)
 #endif
 
-UTF8Char *DasmMIPS_ParseReg8(Manage::DasmMIPS::DasmMIPS_Sess* sess, UTF8Char *regName, Int32 regNo)
+UnsafeArrayOpt<UTF8Char> DasmMIPS_ParseReg8(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess, UnsafeArray<UTF8Char> regName, Int32 regNo)
 {
 	switch (regNo)
 	{
@@ -80,642 +80,642 @@ UTF8Char *DasmMIPS_ParseReg8(Manage::DasmMIPS::DasmMIPS_Sess* sess, UTF8Char *re
 	return 0;
 }
 
-Bool DasmMIPS_00(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_00(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_01(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_01(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_02(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_02(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_03(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_03(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_04(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_04(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_05(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_05(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_06(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_06(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_07(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_07(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_08(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_08(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_09(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_09(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_10(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_10(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_11(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_11(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_12(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_12(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_13(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_13(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_14(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_14(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_15(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_15(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_16(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_16(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_17(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_17(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_18(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_18(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_19(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_19(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_1A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_1A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_1B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_1B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_1C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_1C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_1D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_1D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_1E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_1E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_1F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_1F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_20(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_20(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_21(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_21(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_22(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_22(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_23(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_23(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_24(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_24(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_25(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_25(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_26(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_26(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_27(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_27(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_28(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_28(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_29(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_29(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_2A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_2A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_2B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_2B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_2C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_2C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_2D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_2D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_2E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_2E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_2F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_2F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_30(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_30(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_31(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_31(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_32(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_32(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_33(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_33(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_34(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_34(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_35(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_35(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_36(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_36(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_37(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_37(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_38(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_38(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_39(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_39(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_3A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_3A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_3B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_3B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_3C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_3C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_3D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_3D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_3E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_3E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_3F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_3F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_00(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_00(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_01(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_01(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_02(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_02(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_03(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_03(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_04(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_04(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_05(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_05(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_06(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_06(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_07(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_07(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_08(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_08(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_09(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_09(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_0A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_0A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_0B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_0B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_0C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_0C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_0D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_0D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_0E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_0E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_0F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_0F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_10(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_10(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_11(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_11(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_12(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_12(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_13(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_13(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_14(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_14(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_15(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_15(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_16(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_16(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_17(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_17(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_18(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_18(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_19(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_19(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_1A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_1A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_1B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_1B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_1C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_1C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_1D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_1D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_1E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_1E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_1F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_1F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_20(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_20(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_21(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_21(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_22(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_22(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_23(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_23(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_24(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_24(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_25(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_25(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_26(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_26(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_27(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_27(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_28(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_28(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_29(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_29(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_2A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_2A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_2B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_2B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_2C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_2C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_2D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_2D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_2E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_2E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_2F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_2F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_30(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_30(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_31(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_31(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_32(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_32(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_33(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_33(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_34(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_34(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_35(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_35(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_36(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_36(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_37(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_37(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_38(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_38(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_39(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_39(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_3A(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_3A(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_3B(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_3B(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_3C(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_3C(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_3D(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_3D(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_3E(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_3E(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmMIPS_0_3F(Manage::DasmMIPS::DasmMIPS_Sess *sess)
+Bool DasmMIPS_0_3F(NN<Manage::DasmMIPS::DasmMIPS_Sess> sess)
 {
 	return false;
 }
@@ -862,7 +862,7 @@ Manage::DasmMIPS::~DasmMIPS()
 	MemFree(this->codes_0);
 }
 
-Text::CStringNN Manage::DasmMIPS::GetHeader(Bool fullRegs)
+Text::CStringNN Manage::DasmMIPS::GetHeader(Bool fullRegs) const
 {
 	if (fullRegs)
 	{
@@ -874,7 +874,7 @@ Text::CStringNN Manage::DasmMIPS::GetHeader(Bool fullRegs)
 	}
 }
 
-Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::MemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmMIPS::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
@@ -883,7 +883,7 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	OSInt initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
-	MemCopyNO(&sess.regs, regs, sizeof(DasmMIPS_Regs));
+	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(DasmMIPS_Regs));
 	sess.regs.pc = *currInst;
 	sess.regs.sp = *currStack;
 	sess.regs.fp = *currFrame;
@@ -928,7 +928,7 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 		}
 		else
 		{
-			ret = this->codes[buff[0] >> 2](&sess);
+			ret = this->codes[buff[0] >> 2](sess);
 		}
 		if (!ret)
 		{
@@ -983,12 +983,12 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	}
 }
 
-NN<Manage::Dasm::Dasm_Regs> Manage::DasmMIPS::CreateRegs()
+NN<Manage::Dasm::Dasm_Regs> Manage::DasmMIPS::CreateRegs() const
 {
 	return MemAllocNN(Manage::DasmMIPS::DasmMIPS_Regs);
 }
 
-void Manage::DasmMIPS::FreeRegs(NN<Dasm_Regs> regs)
+void Manage::DasmMIPS::FreeRegs(NN<Dasm_Regs> regs) const
 {
 	MemFreeNN(regs);
 }

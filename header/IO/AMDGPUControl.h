@@ -1,5 +1,5 @@
 #ifndef _SM_IO_AMDGPUCONTROL
-#define _SM_IO_AMGGPUCONTROL
+#define _SM_IO_AMDGPUCONTROL
 #include "AnyType.h"
 #include "IO/AMDGPUManager.h"
 
@@ -23,5 +23,5 @@ namespace IO
 		virtual Bool GetMemoryClock(OutParam<Double> mhz);
 		virtual Bool GetVoltage(OutParam<Double> volt);
 	};
-};
+}
 #endif

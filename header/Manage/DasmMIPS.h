@@ -78,8 +78,8 @@ namespace Manage
 			UInt16 endIP;
 			EndType endType;
 			
-			Manage::AddressResolver *addrResol;
-			Manage::MemoryReader *memReader;
+			Optional<Manage::AddressResolver> addrResol;
+			NN<Manage::MemoryReader> memReader;
 
 			void **codeHdlrs;
 			void **code_0Hdlrs;
@@ -95,10 +95,10 @@ namespace Manage
 		DasmMIPS();
 		virtual ~DasmMIPS();
 
-		virtual Text::CStringNN GetHeader(Bool fullRegs);
-		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::MemoryReader *memReader, Bool fullRegs); // true = succ
-		virtual NN<Dasm_Regs> CreateRegs();
-		virtual void FreeRegs(NN<Dasm_Regs> regs);
+		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
+		virtual Bool Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs); // true = succ
+		virtual NN<Dasm_Regs> CreateRegs() const;
+		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
 		NN<DasmMIPS_Sess> CreateSess(NN<DasmMIPS_Regs> regs, UInt8 *code, UInt16 codeSegm);
 		void DeleteSess(NN<DasmMIPS_Sess> sess);

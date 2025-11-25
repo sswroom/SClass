@@ -29,72 +29,72 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextARM::GetRegister(UOSInt index, Uns
 	switch (index)
 	{
 	case 0:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r0;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r0;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R0"));
 	case 1:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r1;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r1;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R1"));
 	case 2:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r2;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r2;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R2"));
 	case 3:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r3;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r3;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R3"));
 	case 4:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r4;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r4;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R4"));
 	case 5:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r5;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r5;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R5"));
 	case 6:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r6;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r6;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R6"));
 	case 7:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r7;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r7;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R7"));
 	case 8:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r8;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r8;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R8"));
 	case 9:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r9;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r9;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R9"));
 	case 10:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r10;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_r10;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("R10"));
 	case 11:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_fp;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_fp;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("FP (R11)"));
 	case 12:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_ip;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_ip;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("IP (R12)"));
 	case 13:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_sp;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_sp;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("Sp"));
 	case 14:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_lr;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_lr;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("Lr"));
 	case 15:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_pc;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_pc;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("Pc"));
 	case 16:
-		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_cpsr;
-		*regBitCount = 32;
+		UnsafeArray<UInt32>::ConvertFrom(regVal)[0] = ((ucontext_t*)this->context)->uc_mcontext.arm_cpsr;
+		regBitCount.Set(32);
 		return Text::StrConcatC(buff, UTF8STRC("Cpsr"));
 	default:
 		return 0;

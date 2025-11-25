@@ -319,8 +319,8 @@ void Data::Compress::Deflater::FindMatch(NN<DeflateCompressor> d, UInt32 lookahe
 		probe_len = 32;
 		do
 		{
-		} while ((ReadUInt16(++p) == ReadUInt16(++q)) && (ReadUInt16(++p) == ReadUInt16(++q)) &&
-					(ReadUInt16(++p) == ReadUInt16(++q)) && (ReadUInt16(++p) == ReadUInt16(++q)) && (--probe_len > 0));
+		} while ((ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) && (ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) &&
+					(ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) && (ReadUInt16((const UInt8*)++p) == ReadUInt16((const UInt8*)++q)) && (--probe_len > 0));
 		if (!probe_len)
 		{
 			*pMatch_dist = dist;

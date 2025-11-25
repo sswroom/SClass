@@ -18,7 +18,7 @@ namespace Manage
 		virtual ~ThreadContextX86_32();
 
 		virtual UOSInt GetRegisterCnt() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UInt8 *regVal, UInt32 *regBitCount) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UnsafeArray<UInt8> regVal, OutParam<UInt32> regBitCount) const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		virtual ContextType GetType() const;
 		virtual UOSInt GetThreadId() const;
@@ -56,14 +56,14 @@ namespace Manage
 		UInt32 GetDR3() const;
 		UInt32 GetDR6() const;
 		UInt32 GetDR7() const;
-		void GetST0(UInt8 *val) const;
-		void GetST1(UInt8 *val) const;
-		void GetST2(UInt8 *val) const;
-		void GetST3(UInt8 *val) const;
-		void GetST4(UInt8 *val) const;
-		void GetST5(UInt8 *val) const;
-		void GetST6(UInt8 *val) const;
-		void GetST7(UInt8 *val) const;
+		void GetST0(UnsafeArray<UInt8> val) const;
+		void GetST1(UnsafeArray<UInt8>val) const;
+		void GetST2(UnsafeArray<UInt8>val) const;
+		void GetST3(UnsafeArray<UInt8>val) const;
+		void GetST4(UnsafeArray<UInt8>val) const;
+		void GetST5(UnsafeArray<UInt8>val) const;
+		void GetST6(UnsafeArray<UInt8>val) const;
+		void GetST7(UnsafeArray<UInt8>val) const;
 		UInt16 GetCTRL() const;
 		UInt16 GetSTAT() const;
 		UInt16 GetTAG() const;
