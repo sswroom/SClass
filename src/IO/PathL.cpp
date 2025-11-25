@@ -574,7 +574,7 @@ IO::Path::PathType IO::Path::GetPathType(Text::CStringNN path)
 	int status = lstat64((const Char*)path.v.Ptr(), &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)path.v, &s);
+	int status = lstat((const Char*)path.v.Ptr(), &s);
 #endif
 	if (status != 0)
 	{
@@ -630,7 +630,7 @@ Bool IO::Path::PathExists(UnsafeArray<const UTF8Char> path, UOSInt pathLen)
 	int status = lstat64((const Char*)path.Ptr(), &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)path, &s);
+	int status = lstat((const Char*)path.Ptr(), &s);
 #endif
 	return status == 0;
 }
@@ -661,7 +661,7 @@ UnsafeArray<WChar> IO::Path::GetFullPathW(UnsafeArray<WChar> buff, UnsafeArray<c
 	status = lstat64((const Char*)sptr.Ptr(), &s);
 #else
 	struct stat s;
-	status = lstat((const Char*)sptr, &s);
+	status = lstat((const Char*)sptr.Ptr(), &s);
 #endif
 	if (status != 0)
 	{
@@ -677,7 +677,7 @@ UnsafeArray<WChar> IO::Path::GetFullPathW(UnsafeArray<WChar> buff, UnsafeArray<c
 #if defined(__USE_LARGEFILE64)
 			status = lstat64((const Char*)sptr.Ptr(), &s);
 #else
-			status = lstat((const Char*)sptr, &s);
+			status = lstat((const Char*)sptr.Ptr(), &s);
 #endif
 			if (status == 0)
 			{
@@ -895,7 +895,7 @@ UInt64 IO::Path::GetFileSize(UnsafeArray<const UTF8Char> path)
 	int status = lstat64((const Char*)path.Ptr(), &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)path, &s);
+	int status = lstat((const Char*)path.Ptr(), &s);
 #endif
 	if (status != 0)
 		return 0;
@@ -910,7 +910,7 @@ UInt64 IO::Path::GetFileSizeW(UnsafeArray<const WChar> path)
 	int status = lstat64((const Char*)utfPath.Ptr(), &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)utfPath, &s);
+	int status = lstat((const Char*)utfPath.Ptr(), &s);
 #endif
 	Text::StrDelNew(utfPath);
 	if (status != 0)
@@ -999,7 +999,7 @@ Data::Timestamp IO::Path::GetModifyTime(UnsafeArray<const UTF8Char> path)
 	int status = lstat64((const Char*)path.Ptr(), &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)path, &s);
+	int status = lstat((const Char*)path.Ptr(), &s);
 #endif
 	if (status != 0)
 		return Data::Timestamp(0);
@@ -1017,7 +1017,7 @@ UInt32 IO::Path::GetFileUnixAttr(Text::CStringNN path)
 	int status = lstat64((const Char*)path.v.Ptr(), &s);
 #else
 	struct stat s;
-	int status = lstat((const Char*)path.v, &s);
+	int status = lstat((const Char*)path.v.Ptr(), &s);
 #endif
 	if (status != 0)
 		return 0;
