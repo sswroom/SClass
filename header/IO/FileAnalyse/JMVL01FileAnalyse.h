@@ -21,7 +21,7 @@ namespace IO
 				UOSInt size;
 			} JMVL01Tag;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<JMVL01Tag> tags;
 
 			Bool pauseParsing;

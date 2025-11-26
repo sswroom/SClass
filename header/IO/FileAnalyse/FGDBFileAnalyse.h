@@ -31,7 +31,7 @@ namespace IO
 				UOSInt size;
 			};
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<TagInfo> tags;
 			Optional<Map::ESRI::FileGDBTableInfo> tableInfo;
 			Math::ArcGISPRJParser prjParser;

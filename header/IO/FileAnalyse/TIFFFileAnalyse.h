@@ -28,9 +28,9 @@ namespace IO
 				PackType packType;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
-			Data::ByteOrder *bo;
+			Optional<Data::ByteOrder> bo;
 
 			Bool pauseParsing;
 			Sync::Thread thread;

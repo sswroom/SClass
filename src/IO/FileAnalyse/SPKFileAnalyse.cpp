@@ -8,13 +8,13 @@
 #include "Net/SocketFactory.h"
 #include "Sync/SimpleThread.h"
 
-void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 dirSize)
+void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(NN<IO::StreamData> fd, UInt64 dirOfst, UInt64 dirSize)
 {
 	if (dirSize < 26)
 		return;
 	UOSInt ofst = 0;
 	Data::ByteBuffer buff((UOSInt)dirSize);
-	this->fd->GetRealData(dirOfst, (UOSInt)dirSize, buff);
+	fd->GetRealData(dirOfst, (UOSInt)dirSize, buff);
 	while (dirSize - ofst >= 26)
 	{
 		UInt64 fileOfst = ReadUInt64(&buff[ofst]);
@@ -35,7 +35,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 	}
 }
 
-void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 dirSize)
+void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(NN<IO::StreamData> fd, UInt64 dirOfst, UInt64 dirSize)
 {
 	if (dirOfst <= 0 || dirSize < 16)
 	{
@@ -50,9 +50,9 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 		return;
 	}
 	UInt8 buff[16];
-	this->fd->GetRealData(dirOfst, 16, BYTEARR(buff));
-	this->ParseV2Directory(ReadUInt64(&buff[0]), ReadUInt64(&buff[8]));
-	this->ParseV1Directory(dirOfst + 16, dirSize - 16);
+	fd->GetRealData(dirOfst, 16, BYTEARR(buff));
+	this->ParseV2Directory(fd, ReadUInt64(&buff[0]), ReadUInt64(&buff[8]));
+	this->ParseV1Directory(fd, dirOfst + 16, dirSize - 16);
 
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 	pack->fileOfst = dirOfst;
@@ -67,7 +67,12 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	NN<IO::FileAnalyse::SPKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SPKFileAnalyse>();
 	UInt8 buff[256];
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
-	me->fd->GetRealData(0, 256, BYTEARR(buff));
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
+	fd->GetRealData(0, 256, BYTEARR(buff));
 	Int32 flags = ReadInt32(&buff[4]);
 	UOSInt endOfst;
 	UInt64 lastOfst = ReadUInt64(&buff[8]);
@@ -99,18 +104,18 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	me->packs.Add(pack);
 	if (dirType == PT_V1DIRECTORY)
 	{
-		me->ParseV1Directory(lastOfst, me->fd->GetDataSize() - lastOfst);
+		me->ParseV1Directory(fd, lastOfst, fd->GetDataSize() - lastOfst);
 
 		pack = MemAllocNN(IO::FileAnalyse::SPKFileAnalyse::PackInfo);
 		pack->fileOfst = lastOfst;
-		pack->packSize = (UOSInt)(me->fd->GetDataSize() - lastOfst);
+		pack->packSize = (UOSInt)(fd->GetDataSize() - lastOfst);
 		pack->packType = PT_V1DIRECTORY;
 		pack->fileName = 0;
 		me->packs.Add(pack);
 	}
 	else if (dirType == PT_V2DIRECTORY)
 	{
-		me->ParseV2Directory(lastOfst, lastSize);
+		me->ParseV2Directory(fd, lastOfst, lastSize);
 	}
 }
 
@@ -138,7 +143,7 @@ IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.FreeAll(FreePackInfo);
 }
 
@@ -217,7 +222,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
@@ -253,7 +261,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 		UInt32 flags;
 		UOSInt endOfst;
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		frame->AddHex32(4, CSTR("Flags"), flags = ReadUInt32(&packBuff[4]));
 		frame->AddUInt64(8, CSTR("Last Directory Offset"), ReadUInt64(&packBuff[8]));
@@ -297,13 +305,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	else if (pack->packType == PT_V1DIRECTORY)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		this->GetDetailDirs(packBuff.Arr(), pack->packSize, 0, frame);
 	}
 	else if (pack->packType == PT_V2DIRECTORY)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt64(0, CSTR("Prev Directory Offset"), ReadUInt64(&packBuff[0]));
 		frame->AddUInt64(8, CSTR("Prev Directory Size"), ReadUInt64(&packBuff[8]));
 		this->GetDetailDirs(packBuff.Arr() + 16, pack->packSize - 16, 16, frame);
@@ -313,17 +321,17 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 		if (pack->packSize <= 64)
 		{
 			Data::ByteBuffer packBuff(pack->packSize);
-			this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+			fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 			frame->AddHexBuff(0, CSTR("FileData"), packBuff, true);
 		}
 		else
 		{
 			UInt8 buff[32];
 			Text::StringBuilderUTF8 sb;
-			this->fd->GetRealData(pack->fileOfst, 32, BYTEARR(buff));
+			fd->GetRealData(pack->fileOfst, 32, BYTEARR(buff));
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 			sb.AppendC(UTF8STRC("\r\n...\r\n"));
-			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, BYTEARR(buff));
+			fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, BYTEARR(buff));
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(0, pack->packSize, CSTR("FileData"), sb.ToCString());
 		}
@@ -333,7 +341,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::SPKFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::SPKFileAnalyse::IsParsing()

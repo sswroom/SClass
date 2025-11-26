@@ -28,14 +28,14 @@ namespace IO
 				Text::String *fileName;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
 
-			void ParseV1Directory(UInt64 dirOfst, UInt64 dirSize);
-			void ParseV2Directory(UInt64 dirOfst, UInt64 dirSize);
+			void ParseV1Directory(NN<IO::StreamData> fd, UInt64 dirOfst, UInt64 dirSize);
+			void ParseV2Directory(NN<IO::StreamData> fd, UInt64 dirOfst, UInt64 dirSize);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			static void __stdcall FreePackInfo(NN<PackInfo> pack);
 		public:

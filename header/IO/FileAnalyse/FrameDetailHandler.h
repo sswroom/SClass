@@ -46,9 +46,9 @@ namespace IO
 			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UInt8> vBuff, UTF8Char seperator, Bool multiLine);
 			void AddHexBuff(UOSInt frameOfst, Text::CStringNN name, Data::ByteArrayR vBuff, Bool multiLine);
 			void AddHexBuff(UOSInt frameOfst, Text::CStringNN name, Data::ByteArrayR vBuff, UTF8Char seperator, Bool multiLine);
-			void AddIPv4(UOSInt frameOfst, Text::CStringNN name, const UInt8 *vBuff);
-			void AddIPv6(UOSInt frameOfst, Text::CStringNN name, const UInt8 *vBuff);
-			void AddMACAddr(UOSInt frameOfst, Text::CStringNN name, const UInt8 *macBuff, Bool showVendor);
+			void AddIPv4(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> vBuff);
+			void AddIPv6(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> vBuff);
+			void AddMACAddr(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> macBuff, Bool showVendor);
 			void AddNetBIOSName(UOSInt frameOfst, UOSInt size, Text::CStringNN name, Text::CStringNN nbName);
 
 			void AddTextHexBuff(UOSInt frameOfst, UOSInt size, UnsafeArray<const UInt8> vBuff, Bool multiLine);

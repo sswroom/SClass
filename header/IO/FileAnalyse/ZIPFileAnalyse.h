@@ -19,10 +19,10 @@ namespace IO
 				UInt32 tagType;
 				UInt64 ofst;
 				UInt64 size;
-				Text::String *fileName;
+				Optional<Text::String> fileName;
 			};
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<ZIPRecord> tags;
 
 			Bool pauseParsing;
@@ -30,7 +30,7 @@ namespace IO
 
 			static Text::CString GetTagName(UInt32 tagType);
 			static Text::CString GetCompName(UInt16 comp);
-			UOSInt ParseCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst);
+			UOSInt ParseCentDir(NN<IO::StreamData> fd, UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst);
 			UOSInt AddCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			static void ParseExtraTag(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst);

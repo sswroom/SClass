@@ -1,10 +1,8 @@
-#ifndef _SM_IO_FILEANALYSE_SMTCFILEANALYSE
-#define _SM_IO_FILEANALYSE_SMTCFILEANALYSE
-#include "Data/ArrayListNN.hpp"
-#include "Data/ByteBuffer.h"
+#ifndef _SM_IO_FILEANALYSE_PSTFILEANALYSE
+#define _SM_IO_FILEANALYSE_PSTFILEANALYSE
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
-#include "Sync/Mutex.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -12,29 +10,31 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class SMTCFileAnalyse : public IO::FileAnalyse::FileAnalyser
+		class PSTFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
-			struct DataInfo
+			enum class PackType
 			{
+				ANSIHeader,
+				UnicodeHeader
+			};
+			struct PackItem
+			{
+				PackType packType;
 				UInt64 ofst;
 				UOSInt size;
-				UInt8 type;
 			};
-			
 		private:
 			Optional<IO::StreamData> fd;
-			Data::ArrayListNN<DataInfo> dataList;
-			Sync::Mutex dataMut;
-			Data::ByteBuffer packetBuff;
+			Data::SyncArrayListNN<PackItem> items;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
 
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 		public:
-			SMTCFileAnalyse(NN<IO::StreamData> fd);
-			virtual ~SMTCFileAnalyse();
+			PSTFileAnalyse(NN<IO::StreamData> fd);
+			virtual ~PSTFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();

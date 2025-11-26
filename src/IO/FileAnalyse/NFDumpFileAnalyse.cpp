@@ -17,6 +17,9 @@ void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NN<Sync::Thread> 
 	UInt8 buff[12];
 	UInt32 sz;
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+		return;
 
 	pack = MemAllocNN(IO::FileAnalyse::NFDumpFileAnalyse::PackInfo);
 	pack->fileOfst = 0;
@@ -29,7 +32,7 @@ void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NN<Sync::Thread> 
 	pack->packType = 1;
 	me->packs.Add(pack);
 
-	endOfst = me->fd->GetDataSize();
+	endOfst = fd->GetDataSize();
 	ofst = 276;
 	while (ofst <= (endOfst - 12) && !thread->IsStopping())
 	{
@@ -39,7 +42,7 @@ void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NN<Sync::Thread> 
 		}
 		else
 		{
-			me->fd->GetRealData(ofst, 12, BYTEARR(buff));
+			fd->GetRealData(ofst, 12, BYTEARR(buff));
 			sz = ReadUInt32(&buff[4]);
 			if (ofst + sz + 12 > endOfst)
 			{
@@ -89,16 +92,24 @@ IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NN<IO::StreamData> fd) : t
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
+	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->thread.Start();
 }
 
 IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
-	LIST_CALL_FUNC(&this->extMap, MemFree);
+	UOSInt i = this->extMap.GetCount();
+	UnsafeArray<UInt8> ext;
+	while (i-- > 0)
+	{
+		if (this->extMap.GetItem(i).SetTo(ext))
+		{
+			MemFreeArr(ext);
+		}
+	}
 }
 
 Text::CStringNN IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
@@ -143,8 +154,9 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	UInt8 *extBuff;
+	UnsafeArray<UInt8> extBuff;
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
+	NN<IO::StreamData> fd;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -172,11 +184,15 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 	}
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendI32((Int32)pack->packSize);
+	if (!this->fd.SetTo(fd))
+	{
+		return true;
+	}
 
 	if (pack->packType == 0)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nVersion = "));
 		sb->AppendU16(ReadUInt16(&packBuff[2]));
@@ -202,7 +218,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 	else if (pack->packType == 1)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nNumber of flows = "));
 		sb->AppendI64(ReadInt64(&packBuff[0]));
@@ -248,7 +264,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 	else if (pack->packType == 2)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nNumber of records = "));
 		sb->AppendU32(ReadUInt32(&packBuff[0]));
@@ -278,7 +294,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		if (dispSize > 256)
 			dispSize = 256;
 		Data::ByteBuffer packBuff(size);
-		this->fd->GetRealData(pack->fileOfst, size, packBuff);
+		fd->GetRealData(pack->fileOfst, size, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\n\r\n"));
 		sb->AppendHexBuff(packBuff.WithSize(dispSize), ' ', Text::LineBreakType::CRLF);
@@ -379,8 +395,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 							j += 4;
 						}
-						extBuff = this->extMap.Get(ReadUInt16(&decBuff[i + 6]));
-						if (extBuff)
+						if (this->extMap.Get(ReadUInt16(&decBuff[i + 6])).SetTo(extBuff))
 						{
 							OSInt extId;
 							k = ReadUInt16(&extBuff[2]);
@@ -599,11 +614,10 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 							j++;
 							k += 2;
 						}
-						extBuff = this->extMap.Get(ReadUInt16(&decBuff[i + 4]));
-						if (extBuff == 0)
+						if (!this->extMap.Get(ReadUInt16(&decBuff[i + 4])).SetTo(extBuff))
 						{
 							extBuff = MemAlloc(UInt8, recSize - 4);
-							MemCopyNO(extBuff, &decBuff[i + 4], recSize - 4);
+							MemCopyNO(&extBuff[0], &decBuff[i + 4], recSize - 4);
 							WriteInt16(&extBuff[2], recSize - 4);
 							this->extMap.Put(ReadUInt16(&decBuff[i + 4]), extBuff);
 						}
@@ -736,9 +750,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
-
+	if (!this->fd.SetTo(fd))
+		return 0;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	if (pack->packType == 0)
 	{
@@ -760,7 +776,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 	if (pack->packType == 0)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt(2, 2, CSTR("Version"), ReadUInt16(&packBuff[2]));
 		frame->AddHex32(4, CSTR("Flags"), ReadUInt32(&packBuff[4]));
 		if (packBuff[4] & 1)
@@ -782,7 +798,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 	else if (pack->packType == 1)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt64(0, CSTR("Number of flows"), ReadUInt64(&packBuff[0]));
 		frame->AddUInt64(8, CSTR("Number of bytes"), ReadUInt64(&packBuff[8]));
 		frame->AddUInt64(16, CSTR("Number of packets"), ReadUInt64(&packBuff[16]));
@@ -807,7 +823,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 	else if (pack->packType == 2)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt(0, 4, CSTR("Number of records"), ReadUInt32(&packBuff[0]));
 		frame->AddUInt(4, 4, CSTR("Block size"), ReadUInt32(&packBuff[4]));
 		frame->AddUInt(8, 2, CSTR("Block ID"), ReadUInt16(&packBuff[8]));
@@ -830,7 +846,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 		UOSInt size = pack->packSize;
 		UOSInt dispSize = size;
 		Data::ByteBuffer packBuff(size);
-		this->fd->GetRealData(pack->fileOfst, size, packBuff);
+		fd->GetRealData(pack->fileOfst, size, packBuff);
 
 		if (dispSize > 256)
 		{
@@ -1275,7 +1291,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 
 Bool IO::FileAnalyse::NFDumpFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::NFDumpFileAnalyse::IsParsing()

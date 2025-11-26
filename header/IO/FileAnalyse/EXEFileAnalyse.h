@@ -23,7 +23,7 @@ namespace IO
 				Int32 packType;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
 			Data::ByteBuffer imageBuff;
 			UOSInt imageSize;

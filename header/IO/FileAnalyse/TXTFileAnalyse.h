@@ -14,7 +14,7 @@ namespace IO
 		class TXTFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::ArrayListUInt64 lineOfsts;
 			Sync::Mutex mut;
 			UInt64 fileSize;

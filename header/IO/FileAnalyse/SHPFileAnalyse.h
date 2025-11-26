@@ -19,7 +19,7 @@ namespace IO
 				UOSInt packSize;
 			};
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
 
 			Bool pauseParsing;

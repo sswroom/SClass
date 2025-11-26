@@ -13,11 +13,16 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NN<Sync::Thread> th
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 packetHdr[23];
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 	ofst = 4;
-	dataSize = me->fd->GetDataSize();
+	dataSize = fd->GetDataSize();
 	while (ofst <= dataSize - 21 && !thread->IsStopping())
 	{
-		if (me->fd->GetRealData(ofst, 23, BYTEARR(packetHdr)) < 21)
+		if (fd->GetRealData(ofst, 23, BYTEARR(packetHdr)) < 21)
 			break;
 		
 		data = MemAllocNN(DataInfo);
@@ -66,7 +71,7 @@ IO::FileAnalyse::SMTCFileAnalyse::SMTCFileAnalyse(NN<IO::StreamData> fd) : packe
 IO::FileAnalyse::SMTCFileAnalyse::~SMTCFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 }
 
 Text::CStringNN IO::FileAnalyse::SMTCFileAnalyse::GetFormatName()
@@ -81,6 +86,7 @@ UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
 	if (index == 0)
 	{
 		sb->AppendC(UTF8STRC("SMTC Header"));
@@ -91,13 +97,17 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	{
 		return false;
 	}
+	if (!this->fd.SetTo(fd))
+	{
+		return false;
+	}
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 hdr[21];
 	Sync::MutexUsage mutUsage(this->dataMut);
 	data = this->dataList.GetItemNoCheck(index - 1);
 	mutUsage.EndUse();
-	this->fd->GetRealData(data->ofst, 21, BYTEARR(hdr));
+	fd->GetRealData(data->ofst, 21, BYTEARR(hdr));
 	Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadInt64(&hdr[0]), ReadUInt32(&hdr[8])), Data::DateTimeUtil::GetLocalTzQhr());
 	UInt32 ip;
 	UInt16 port;
@@ -165,6 +175,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::StreamData> fd;
+	if (!this->fd.SetTo(fd))
+	{
+		return 0;
+	}
 	if (index == 0)
 	{
 		NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, 4));
@@ -225,7 +240,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 
 Bool IO::FileAnalyse::SMTCFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::SMTCFileAnalyse::IsParsing()

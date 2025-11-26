@@ -10,14 +10,19 @@
 void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::SSLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SSLFileAnalyse>();
+	NN<IO::StreamData> fd;
 	NN<PackInfo> pack;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 	UInt8 buff[16];
 	UInt64 ofst = 0;
-	UInt64 leng = me->fd->GetDataSize();
+	UInt64 leng = fd->GetDataSize();
 	UOSInt packLen;
 	while (ofst < leng)
 	{
-		if (me->fd->GetRealData(ofst, 16, BYTEARR(buff)) < 5)
+		if (fd->GetRealData(ofst, 16, BYTEARR(buff)) < 5)
 		{
 			break;
 		}
@@ -83,7 +88,7 @@ IO::FileAnalyse::SSLFileAnalyse::SSLFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::SSLFileAnalyse::~SSLFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.FreeAll(FreePackInfo);
 }
 
@@ -140,7 +145,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrame
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	UOSInt i;
@@ -148,7 +156,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrame
 	UOSInt k;
 	UOSInt l;
 	Data::ByteBuffer packBuff(pack->packSize);
-	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+	fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	frame->AddUIntName(0, 1, CSTR("SSL record Type"), packBuff[0], Net::SSLUtil::RecordTypeGetName(packBuff[0]));
 	frame->AddHex16Name(1, CSTR("SSL version"), packBuff.ReadMU16(1), Net::SSLVerGetName(packBuff.ReadMU16(1)));
@@ -248,7 +256,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::SSLFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::SSLFileAnalyse::IsParsing()

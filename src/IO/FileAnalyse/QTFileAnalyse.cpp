@@ -7,7 +7,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
+void IO::FileAnalyse::QTFileAnalyse::ParseRange(NN<IO::StreamData> fd, UOSInt lev, UInt64 ofst, UInt64 size)
 {
 	UInt8 buff[16];
 	UInt64 endOfst = ofst + size;
@@ -29,7 +29,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 		}
 		else
 		{
-			this->fd->GetRealData(ofst, 16, BYTEARR(buff));
+			fd->GetRealData(ofst, 16, BYTEARR(buff));
 			sz = ReadMUInt32(&buff[0]);
 			if (sz == 1)
 			{
@@ -52,7 +52,7 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 			}
 			if (contList.SortedIndexOf(pack->packType) >= 0)
 			{
-				this->ParseRange(lev + 1, pack->fileOfst + 8, pack->packSize - 8);
+				this->ParseRange(fd, lev + 1, pack->fileOfst + 8, pack->packSize - 8);
 			}
 
 			ofst += sz;
@@ -63,7 +63,11 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 void __stdcall IO::FileAnalyse::QTFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::QTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::QTFileAnalyse>();
-	me->ParseRange(0, 0, me->fd->GetDataSize());
+	NN<IO::StreamData> fd;
+	if (me->fd.SetTo(fd))
+	{
+		me->ParseRange(fd, 0, 0, fd->GetDataSize());
+	}
 }
 
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
@@ -119,7 +123,7 @@ IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NN<IO::StreamData> fd) : thread(Pa
 IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -157,6 +161,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 
@@ -170,11 +175,15 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 	sb->AppendC(UTF8STRC("\r\nLev="));
 	sb->AppendUOSInt(pack->lev);
 	sb->AppendC(UTF8STRC("\r\n"));
+	if (!this->fd.SetTo(fd))
+	{
+		return true;
+	}
 
 	if (pack->packType == *(Int32*)"ftyp")
 	{
 		Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-		this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nMajor_Brand = "));
 		*(Int32*)buff = *(Int32*)&packBuff[0];
@@ -199,7 +208,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize > 8)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nData:\r\n"));
 			sb->AppendHexBuff(packBuff, ' ', Text::LineBreakType::CRLF);
@@ -210,7 +219,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nModification date = "));
 			sb->AppendI32(ReadMInt32(&packBuff[0]));
@@ -229,7 +238,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		{
 			Data::Timestamp ts;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -292,7 +301,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		{
 			Data::Timestamp ts;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -351,7 +360,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		{
 			Data::Timestamp ts;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -378,7 +387,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 32)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -405,7 +414,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -426,7 +435,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -443,7 +452,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -479,7 +488,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -609,7 +618,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -639,7 +648,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -673,7 +682,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -707,7 +716,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -743,7 +752,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -779,7 +788,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -813,7 +822,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Strin
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
 			sb->AppendU16(packBuff[0]);
@@ -874,7 +883,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
@@ -908,7 +920,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 	else if (pack->packType == *(Int32*)"ftyp")
 	{
 		Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-		this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
 		frame->AddStrS(8, 4, CSTR("Major_Brand"), &packBuff[0]);
 		frame->AddHex32(12, CSTR("Minor_Version"), ReadMUInt32(&packBuff[4]));
 		i = 8;
@@ -925,7 +937,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize > 8)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddHexBuff(8, CSTR("Data"), packBuff, true);
 		}
 	}
@@ -934,7 +946,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddInt(8, 4, CSTR("Modification date"), ReadMInt32(&packBuff[0]));
 			frame->AddUInt(12, 2, CSTR("Version number"), ReadMUInt16(&packBuff[4]));
 			frame->AddStrS(14, 4, CSTR("Atom type"), &packBuff[6]);
@@ -947,7 +959,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		{
 			Data::DateTime dt;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
@@ -996,7 +1008,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		{
 			Data::DateTime dt;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
@@ -1043,7 +1055,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		{
 			Data::DateTime dt;
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
@@ -1063,7 +1075,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 32)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddStrS(12, 4, CSTR("Component type"), &packBuff[4]);
@@ -1079,7 +1091,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 2, CSTR("Graphic mode"), ReadMUInt16(&packBuff[4]));
@@ -1093,7 +1105,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 2, CSTR("Balance"), ReadMUInt16(&packBuff[4]));
@@ -1105,7 +1117,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
@@ -1133,7 +1145,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
@@ -1224,7 +1236,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
@@ -1248,7 +1260,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Entry count"), j = ReadMUInt32(&packBuff[4]));
@@ -1276,7 +1288,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
@@ -1304,7 +1316,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 16)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
@@ -1333,7 +1345,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Sample size"), ReadMUInt32(&packBuff[4]));
@@ -1362,7 +1374,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
@@ -1390,7 +1402,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 		if (pack->packSize >= 20)
 		{
 			Data::ByteBuffer packBuff((UOSInt)(pack->packSize - 8));
-			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
+			fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
@@ -1418,7 +1430,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 
 Bool IO::FileAnalyse::QTFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::QTFileAnalyse::IsParsing()

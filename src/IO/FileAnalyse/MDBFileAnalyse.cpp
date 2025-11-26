@@ -15,6 +15,11 @@ void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	UInt64 readOfst;
 	UOSInt readSize;
 	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 	readOfst = 0;
 	while (!thread->IsStopping())
 	{
@@ -24,7 +29,7 @@ void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		}
 		else
 		{
-			readSize = me->fd->GetRealData(readOfst, 4096, BYTEARR(readBuff));
+			readSize = fd->GetRealData(readOfst, 4096, BYTEARR(readBuff));
 			if (readSize != 4096)
 			{
 				break;
@@ -69,7 +74,7 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -137,11 +142,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 	UnsafeArray<UTF8Char> sptr2;
 	UInt8 packBuff[4096];
 	UInt8 decBuff[128];
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
-	this->fd->GetRealData(pack->fileOfst, pack->packSize, BYTEARR(packBuff));
+	fd->GetRealData(pack->fileOfst, pack->packSize, BYTEARR(packBuff));
 	frame->AddHex16(0, CSTR("Frame Type"), ReadUInt16(&packBuff[0]));
 	frame->AddUInt(2, 2, CSTR("Free Space"), ReadUInt16(&packBuff[2]));
 	switch (pack->packType)
@@ -397,7 +405,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::MDBFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::MDBFileAnalyse::IsParsing()

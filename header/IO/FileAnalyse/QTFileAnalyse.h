@@ -21,14 +21,14 @@ namespace IO
 				Int32 packType;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
 			UOSInt maxLev;
 
-			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
+			void ParseRange(NN<IO::StreamData> fd, UOSInt lev, UInt64 ofst, UInt64 size);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:

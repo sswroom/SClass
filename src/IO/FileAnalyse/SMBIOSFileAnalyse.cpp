@@ -54,7 +54,7 @@ IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NN<IO::StreamData> fd)
 
 IO::FileAnalyse::SMBIOSFileAnalyse::~SMBIOSFileAnalyse()
 {
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -117,11 +117,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt k;
 	UOSInt l;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	Data::ByteBuffer packBuff(pack->packSize);
-	if (this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff) != pack->packSize)
+	if (fd->GetRealData(pack->fileOfst, pack->packSize, packBuff) != pack->packSize)
 	{
 		return 0;
 	}
@@ -1347,7 +1350,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 
 Bool IO::FileAnalyse::SMBIOSFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::SMBIOSFileAnalyse::IsParsing()

@@ -6,17 +6,21 @@
 void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::TXTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TXTFileAnalyse>();
+	NN<IO::StreamData> fd;
 	UInt64 buffOfst = 0;
 	UOSInt buffSize = 0;
 	UOSInt readSize;
 	UOSInt i;
 	UOSInt lineStart;
 	Data::ByteBuffer buff(65536);
+	if (!me->fd.SetTo(fd))
+		return;
+	
 	{
 		Sync::MutexUsage mutUsage(me->mut);
 		me->lineOfsts.Add(0);
 	}
-	buffSize = me->fd->GetRealData(0, buff.GetSize(), buff);
+	buffSize = fd->GetRealData(0, buff.GetSize(), buff);
 	i = 0;
 	lineStart = 0;
 	if (buffSize >= 3)
@@ -41,7 +45,7 @@ void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NN<Sync::Thread> thr
 			buff.CopyInner(0, lineStart, buffSize - lineStart);
 			buffSize -= lineStart;
 			lineStart = 0;
-			readSize = me->fd->GetRealData(buffOfst + buffSize, buff.GetSize() - buffSize, buff.SubArray(buffSize));
+			readSize = fd->GetRealData(buffOfst + buffSize, buff.GetSize() - buffSize, buff.SubArray(buffSize));
 			if (readSize == 0)
 				break;
 			if (buffSize > 0)
@@ -99,7 +103,7 @@ IO::FileAnalyse::TXTFileAnalyse::TXTFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::TXTFileAnalyse::~TXTFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 }
 
 Text::CStringNN IO::FileAnalyse::TXTFileAnalyse::GetFormatName()
@@ -148,9 +152,12 @@ UOSInt IO::FileAnalyse::TXTFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrameDetail(UOSInt index)
 {
+	NN<IO::StreamData> fd;
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineOfsts.GetCount();
 	if (index >= cnt)
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 	UInt64 lineOfst = this->lineOfsts.GetItem(index);
 	UOSInt size;
@@ -168,7 +175,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 	UInt8 buff[4096];
 	if (size <= sizeof(buff))
 	{
-		if (this->fd->GetRealData(lineOfst, size, BYTEARR(buff)) == size)
+		if (fd->GetRealData(lineOfst, size, BYTEARR(buff)) == size)
 		{
 			UOSInt txtSize;
 			if (size == 3 && buff[0] == 0xef && buff[1] == 0xbb && buff[2] == 0xbf)
@@ -209,7 +216,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 	else
 	{
 		Data::ByteBuffer buff2(size);
-		if (this->fd->GetRealData(lineOfst, size, buff2) == size)
+		if (fd->GetRealData(lineOfst, size, buff2) == size)
 		{
 			UOSInt txtSize;
 			if (size == 3 && buff2[0] == 0xef && buff2[1] == 0xbb && buff2[2] == 0xbf)
@@ -252,7 +259,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::TXTFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::TXTFileAnalyse::IsParsing()

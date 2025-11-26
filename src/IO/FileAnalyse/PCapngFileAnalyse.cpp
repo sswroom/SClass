@@ -9,6 +9,7 @@
 void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::PCapngFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapngFileAnalyse>();
+	NN<IO::StreamData> fd;
 	UInt64 ofst;
 	UInt64 dataSize;
 	UInt32 thisSize;
@@ -16,11 +17,15 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> 
 	UInt8 packetHdr[16];
 	Data::ArrayList<UInt16> linkTypeList;
 	Data::ArrayList<Int8> resList;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 	ofst = 0;
-	dataSize = me->fd->GetDataSize();
+	dataSize = fd->GetDataSize();
 	while (ofst < dataSize - 16 && !thread->IsStopping())
 	{
-		if (me->fd->GetRealData(ofst, 12, BYTEARR(packetHdr)) != 12)
+		if (fd->GetRealData(ofst, 12, BYTEARR(packetHdr)) != 12)
 			break;
 		
 		if (me->isBE)
@@ -55,7 +60,7 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> 
 		else if (block->blockType == 1)
 		{
 			Data::ByteBuffer packetBuff(thisSize);
-			me->fd->GetRealData(ofst, thisSize, packetBuff);
+			fd->GetRealData(ofst, thisSize, packetBuff);
 			UInt16 linkType;
 			Int8 timeResol = 0;
 			UInt16 optCode;
@@ -158,7 +163,7 @@ IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NN<IO::StreamData> fd) : p
 IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->blockList.MemFreeAll();
 }
 
@@ -175,10 +180,13 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
+	NN<IO::StreamData> fd;
 	if (index >= this->blockList.GetCount())
 	{
 		return false;
 	}
+	if (!this->fd.SetTo(fd))
+		return false;
 	block = this->blockList.GetItemNoCheck(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendU64(block->ofst);
@@ -266,10 +274,13 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
+	NN<IO::StreamData> fd;
 	if (index >= this->blockList.GetCount())
 	{
 		return false;
 	}
+	if (!this->fd.SetTo(fd))
+		return false;
 	block = this->blockList.GetItemNoCheck(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendC(UTF8STRC("Offset="));
@@ -570,7 +581,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		}
 		sb->AppendC(UTF8STRC("\r\nInterface ID="));
 		sb->AppendU32(ifId);
-		SetTime(&dt, ts, block->timeResol);
+		SetTime(dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendC(UTF8STRC("\r\nTime="));
@@ -667,7 +678,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		}
 		sb->AppendC(UTF8STRC("\r\nInterface ID="));
 		sb->AppendU32(ifId);
-		SetTime(&dt, ts, block->timeResol);
+		SetTime(dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendC(UTF8STRC("\r\nTime="));
@@ -715,7 +726,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				{
 					ts = (((Int64)ReadInt32(&this->packetBuff[i + 4])) << 32) | ReadUInt32(&this->packetBuff[i + 8]);
 				}
-				SetTime(&dt, ts, block->timeResol);
+				SetTime(dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
@@ -731,7 +742,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				{
 					ts = (((Int64)ReadInt32(&this->packetBuff[i + 4])) << 32) | ReadUInt32(&this->packetBuff[i + 8]);
 				}
-				SetTime(&dt, ts, block->timeResol);
+				SetTime(dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
@@ -844,7 +855,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
+	NN<IO::StreamData> fd;
 	if (index >= this->blockList.GetCount())
+	{
+		return 0;
+	}
+	if (!this->fd.SetTo(fd))
 	{
 		return 0;
 	}
@@ -1142,7 +1158,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 			oriPSize = ReadUInt32(&this->packetBuff[24]);
 		}
 		frame->AddUInt(8, 4, CSTR("Interface ID"), ifId);
-		SetTime(&dt, ts, block->timeResol);
+		SetTime(dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		frame->AddField(12, 8, CSTR("Time"), CSTRP(sbuff, sptr));
@@ -1243,7 +1259,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 			ts = (((Int64)ReadInt32(&this->packetBuff[12])) << 32) | ReadUInt32(&this->packetBuff[16]);
 		}
 		frame->AddUInt(8, 4, CSTR("Interface ID"), ifId);
-		SetTime(&dt, ts, block->timeResol);
+		SetTime(dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		frame->AddField(12, 8, CSTR("Time"), CSTRP(sbuff, sptr));
@@ -1287,7 +1303,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 				{
 					ts = (((Int64)ReadInt32(&this->packetBuff[i + 4])) << 32) | ReadUInt32(&this->packetBuff[i + 8]);
 				}
-				SetTime(&dt, ts, block->timeResol);
+				SetTime(dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				frame->AddField(i + 4, 8, CSTR("Start Time"), CSTRP(sbuff, sptr));
@@ -1302,7 +1318,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 				{
 					ts = (((Int64)ReadInt32(&this->packetBuff[i + 4])) << 32) | ReadUInt32(&this->packetBuff[i + 8]);
 				}
-				SetTime(&dt, ts, block->timeResol);
+				SetTime(dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				frame->AddField(i + 4, 8, CSTR("End Time"), CSTRP(sbuff, sptr));
@@ -1392,7 +1408,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 
 Bool IO::FileAnalyse::PCapngFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::PCapngFileAnalyse::IsParsing()
@@ -1405,7 +1421,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-void IO::FileAnalyse::PCapngFileAnalyse::SetTime(Data::DateTime *dt, Int64 ts, Int8 timeResol)
+void IO::FileAnalyse::PCapngFileAnalyse::SetTime(NN<Data::DateTime> dt, Int64 ts, Int8 timeResol)
 {
 	switch (timeResol)
 	{

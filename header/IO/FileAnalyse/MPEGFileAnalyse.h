@@ -20,7 +20,7 @@ namespace IO
 				UInt8 packType;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
 			Int32 mpgVer;
 

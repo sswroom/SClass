@@ -278,15 +278,15 @@ void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, Text::CSt
 	this->AddField(frameOfst, vBuff.GetSize(), name, sb.ToCString());
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddIPv4(UOSInt frameOfst, Text::CStringNN name, const UInt8 *vBuff)
+void IO::FileAnalyse::FrameDetailHandler::AddIPv4(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> vBuff)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(vBuff));
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&vBuff[0]));
 	this->AddField(frameOfst, 4, name, CSTRP(sbuff, sptr));
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, Text::CStringNN name, const UInt8 *vBuff)
+void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> vBuff)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -296,7 +296,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, Text::CStrin
 	this->AddField(frameOfst, 16, name, CSTRP(sbuff, sptr));
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CStringNN name, const UInt8 *macBuff, Bool showVendor)
+void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> macBuff, Bool showVendor)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(macBuff, 6, ':', Text::LineBreakType::None);

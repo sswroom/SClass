@@ -8,7 +8,7 @@
 
 //https://en.wikipedia.org/wiki/Extended_Display_Identification_Data
 
-void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, const UInt8 *buff, UOSInt ofst)
+void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, UnsafeArray<const UInt8> buff, UOSInt ofst)
 {
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -221,7 +221,7 @@ IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(NN<IO::StreamData> fd)
 
 IO::FileAnalyse::EDIDFileAnalyse::~EDIDFileAnalyse()
 {
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 }
 
 Text::CStringNN IO::FileAnalyse::EDIDFileAnalyse::GetFormatName()
@@ -236,13 +236,14 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
 	if (index >= this->blockCnt)
 	{
-		if (index == this->blockCnt && this->fd && this->blockCnt * 128 < this->fd->GetDataSize())
+		if (index == this->blockCnt && this->fd.SetTo(fd) && this->blockCnt * 128 < fd->GetDataSize())
 		{
 			sb->AppendUOSInt(index * 128);
 			sb->AppendC(UTF8STRC(": Type=Dummy, size="));
-			sb->AppendU64(this->fd->GetDataSize() - index * 128);
+			sb->AppendU64(fd->GetDataSize() - index * 128);
 			return true;
 		}
 		return false;
@@ -263,10 +264,11 @@ Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 
 UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
+	NN<IO::StreamData> fd;
 	UOSInt blockId = (UOSInt)(ofst >> 7);
 	if (blockId >= this->blockCnt)
 	{
-		if (this->fd && ofst < this->fd->GetDataSize())
+		if (this->fd.SetTo(fd) && ofst < fd->GetDataSize())
 		{
 			return this->blockCnt;
 		}
@@ -277,14 +279,15 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(UOSInt index)
 {
+	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (index >= this->blockCnt)
 	{
-		if (index == this->blockCnt && this->fd && this->blockCnt * 128 < this->fd->GetDataSize())
+		if (index == this->blockCnt && this->fd.SetTo(fd) && this->blockCnt * 128 < fd->GetDataSize())
 		{
-			UOSInt blockSize = (UOSInt)(this->fd->GetDataSize() - index * 128);
+			UOSInt blockSize = (UOSInt)(fd->GetDataSize() - index * 128);
 			Data::ByteBuffer dummyBlock(blockSize);
-			if (this->fd->GetRealData(index * 128, blockSize, dummyBlock) != blockSize)
+			if (fd->GetRealData(index * 128, blockSize, dummyBlock) != blockSize)
 			{
 				return 0;
 			}
@@ -301,7 +304,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	if (this->fd->GetRealData(index << 7, 128, BYTEARR(buff)) != 128)
+	if (!this->fd.SetTo(fd) || fd->GetRealData(index << 7, 128, BYTEARR(buff)) != 128)
 		return 0;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(index << 7, 128));
 	if (index == 0)
@@ -735,7 +738,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 
 Bool IO::FileAnalyse::EDIDFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::EDIDFileAnalyse::IsParsing()

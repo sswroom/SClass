@@ -45,11 +45,16 @@ Text::CString IO::FileAnalyse::SHPFileAnalyse::ShapeTypeGetName(UInt32 shapeType
 void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::SHPFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SHPFileAnalyse>();
+	NN<IO::StreamData> fd;
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[12];
 	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
-	dataSize = me->fd->GetDataSize();
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
+	dataSize = fd->GetDataSize();
 	pack = MemAllocNN(PackInfo);
 	pack->fileOfst = 0;
 	pack->packSize = 100;
@@ -57,7 +62,7 @@ void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	ofst = 100;
 	while (ofst < dataSize && !thread->IsStopping())
 	{
-		if (me->fd->GetRealData(ofst, 12, BYTEARR(recHdr)) != 12)
+		if (fd->GetRealData(ofst, 12, BYTEARR(recHdr)) != 12)
 			break;
 		
 		UInt32 recSize = ReadMUInt32(&recHdr[4]);
@@ -94,7 +99,7 @@ IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::SHPFileAnalyse::~SHPFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -152,7 +157,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
@@ -160,7 +168,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	Data::ByteBuffer tagData(pack->packSize);
-	this->fd->GetRealData(pack->fileOfst, pack->packSize, tagData);
+	fd->GetRealData(pack->fileOfst, pack->packSize, tagData);
 	if (index == 0)
 	{
 		frame->AddUInt(0, 4, CSTR("File Code"), ReadMUInt32(&tagData[0]));
@@ -265,7 +273,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::SHPFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::SHPFileAnalyse::IsParsing()

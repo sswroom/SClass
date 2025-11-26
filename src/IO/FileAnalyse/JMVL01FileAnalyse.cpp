@@ -50,12 +50,15 @@ void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NN<Sync::Thread> 
 	UInt64 ofst;
 	UInt8 tagHdr[5];
 	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+		return;
 	ofst = 0;
-	dataSize = me->fd->GetDataSize();
+	dataSize = fd->GetDataSize();
 	
 	while (ofst < dataSize - 10 && !thread->IsStopping())
 	{
-		if (me->fd->GetRealData(ofst, 5, BYTEARR(tagHdr)) != 5)
+		if (fd->GetRealData(ofst, 5, BYTEARR(tagHdr)) != 5)
 			break;
 		
 		if (tagHdr[0] == 0x78 && tagHdr[1] == 0x78)
@@ -106,7 +109,7 @@ IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(NN<IO::StreamData> fd) : t
 IO::FileAnalyse::JMVL01FileAnalyse::~JMVL01FileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->tags.MemFreeAll();
 }
 
@@ -173,7 +176,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
+	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
@@ -181,7 +187,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	Data::ByteBuffer tagData(tag->size);
-	this->fd->GetRealData(tag->ofst, tag->size, tagData);
+	fd->GetRealData(tag->ofst, tag->size, tagData);
 	frame->AddHexBuff(0, CSTR("Start of Packet"), tagData.WithSize(2), false);
 	UOSInt frameSize;
 	UOSInt currOfst;
@@ -375,7 +381,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 
 Bool IO::FileAnalyse::JMVL01FileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::JMVL01FileAnalyse::IsParsing()

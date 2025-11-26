@@ -11,6 +11,9 @@
 void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::PNGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PNGFileAnalyse>();
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+		return;
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
@@ -19,14 +22,14 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	Optional<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	NN<PNGTag> nntag;
 	ofst = 4;
-	dataSize = me->fd->GetDataSize();
+	dataSize = fd->GetDataSize();
 	lastSize = 0;
 	
 	tag = 0;
 
 	while (ofst < dataSize && !thread->IsStopping())
 	{
-		readSize = me->fd->GetRealData(ofst, 12, BYTEARR(tagHdr));
+		readSize = fd->GetRealData(ofst, 12, BYTEARR(tagHdr));
 		if (readSize < 4)
 			break;
 		
@@ -66,7 +69,7 @@ IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->tags.MemFreeAll();
 }
 
@@ -97,8 +100,11 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 
 Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
+		return false;
+	if (!this->fd.SetTo(fd))
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
 	sb->AppendUOSInt(index);
@@ -111,7 +117,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	if (tag->tagType == *(Int32*)"IHDR")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nWidth = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
 		sb->AppendC(UTF8STRC("\r\nHeight = "));
@@ -130,7 +136,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	else if (tag->tagType == *(Int32*)"gAMA")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nGamma = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
 		sb->AppendC(UTF8STRC(" ("));
@@ -140,14 +146,14 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	else if (tag->tagType == *(Int32*)"sRGB")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nRendering intent = "));
 		sb->AppendU16(tagData[8]);
 	}
 	else if (tag->tagType == *(Int32*)"cHRM")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nWhite Point x = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[8]) / 100000.0);
 		sb->AppendC(UTF8STRC("\r\nWhite Point y = "));
@@ -171,7 +177,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	else if (tag->tagType == *(Int32*)"acTL")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nNumber of frames = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
 		sb->AppendC(UTF8STRC("\r\nNumber of time to loop = "));
@@ -180,7 +186,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	else if (tag->tagType == *(Int32*)"fcTL")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nSequence number = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
 		sb->AppendC(UTF8STRC("\r\nWidth = "));
@@ -203,14 +209,14 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	else if (tag->tagType == *(Int32*)"fdAT")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nSequence number = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
 	}
 	else if (tag->tagType == *(Int32*)"pHYs")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nH Pixel per unit = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
 		sb->AppendC(UTF8STRC("\r\nV Pixel per unit = "));
@@ -222,7 +228,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	{
 		UOSInt i;
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		i = Text::StrCharCnt((UTF8Char*)&tagData[8]) + 9;
 		sb->AppendC(UTF8STRC("\r\nProfile name = "));
 		sb->AppendSlow((UTF8Char*)&tagData[8]);
@@ -238,7 +244,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 			sb->AppendC(UTF8STRC("\r\nCheck value = 0x"));
 			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
-			NN<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			NN<IO::StreamData> stmData = fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 
 			IO::MemoryStream mstm;
 			Data::Compress::Inflater istm(mstm, false);
@@ -274,7 +280,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 			UOSInt i;
 			UOSInt j;
 			Data::ByteBuffer tagData(tag->size - 12);
-			this->fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
+			fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
 			i = 0;
 			j = 0;
 			while (j < tag->size - 12)
@@ -329,7 +335,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
+	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, U8STR("Tag")), index);
@@ -339,7 +348,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	if (tag->tagType == *(Int32*)"IHDR")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(8, 4, CSTR("Width"), ReadMUInt32(&tagData[8]));
 		frame->AddUInt(12, 4, CSTR("Height"), ReadMUInt32(&tagData[12]));
 		frame->AddUInt(16, 1, CSTR("Bit depth"), tagData[16]);
@@ -351,20 +360,20 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	else if (tag->tagType == *(Int32*)"gAMA")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddInt(8, 4, CSTR("Gamma"), ReadMInt32(&tagData[8]));
 		frame->AddFloat(8, 4, CSTR("Gamma"), 100000.0 / ReadMInt32(&tagData[8]));
 	}
 	else if (tag->tagType == *(Int32*)"sRGB")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(8, 1, CSTR("Rendering intent"), tagData[8]);
 	}
 	else if (tag->tagType == *(Int32*)"cHRM")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddFloat(8, 4, CSTR("White Point x"), ReadMInt32(&tagData[8]) / 100000.0);
 		frame->AddFloat(12, 4, CSTR("White Point y"), ReadMInt32(&tagData[12]) / 100000.0);
 		frame->AddFloat(16, 4, CSTR("Red x"), ReadMInt32(&tagData[16]) / 100000.0);
@@ -377,14 +386,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	else if (tag->tagType == *(Int32*)"acTL")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(8, 4, CSTR("Number of frames"), ReadMUInt32(&tagData[8]));
 		frame->AddUInt(12, 4, CSTR("Number of time to loop"), ReadMUInt32(&tagData[12]));
 	}
 	else if (tag->tagType == *(Int32*)"fcTL")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(8, 4, CSTR("Sequence number"), ReadMUInt32(&tagData[8]));
 		frame->AddUInt(12, 4, CSTR("Width"), ReadMUInt32(&tagData[12]));
 		frame->AddUInt(16, 4, CSTR("Height"), ReadMUInt32(&tagData[16]));
@@ -398,13 +407,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	else if (tag->tagType == *(Int32*)"fdAT")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddUInt(8, 4, CSTR("Sequence number"), ReadMUInt32(&tagData[8]));
 	}
 	else if (tag->tagType == *(Int32*)"pHYs")
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		frame->AddInt(8, 4, CSTR("H Pixel per unit"), ReadMInt32(&tagData[8]));
 		frame->AddInt(12, 4, CSTR("V Pixel per unit"), ReadMInt32(&tagData[12]));
 		frame->AddUInt(16, 1, CSTR("Unit type"), tagData[16]);
@@ -413,7 +422,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	{
 		UOSInt i;
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		i = Text::StrCharCnt((UTF8Char*)&tagData[8]);
 		frame->AddStrS(8, i + 1, CSTR("Profile name"), &tagData[8]);
 		i += 9;
@@ -452,7 +461,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 			UOSInt i;
 			UOSInt j;
 			Data::ByteBuffer tagData(tag->size - 12);
-			this->fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
+			fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
 			i = 0;
 			j = 0;
 			while (j < tag->size - 12)
@@ -478,7 +487,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::PNGFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::PNGFileAnalyse::IsParsing()

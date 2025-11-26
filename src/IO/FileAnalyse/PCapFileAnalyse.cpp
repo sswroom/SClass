@@ -9,15 +9,18 @@
 void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::PCapFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapFileAnalyse>();
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+		return;
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 thisSize;
 	UInt8 packetHdr[16];
 	ofst = 24;
-	dataSize = me->fd->GetDataSize();
+	dataSize = fd->GetDataSize();
 	while (ofst < dataSize - 16 && !thread->IsStopping())
 	{
-		if (me->fd->GetRealData(ofst, 16, BYTEARR(packetHdr)) != 16)
+		if (fd->GetRealData(ofst, 16, BYTEARR(packetHdr)) != 16)
 			break;
 		
 		if (me->isBE)
@@ -72,7 +75,7 @@ IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NN<IO::StreamData> fd) : packe
 IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 }
 
 Text::CStringNN IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
@@ -87,6 +90,7 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
 
 Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
 	if (index == 0)
 	{
 		sb->AppendC(UTF8STRC("PCAP Header"));
@@ -96,6 +100,10 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	UInt64 size;
 	UInt32 psize;
 	if (index > this->ofstList.GetCount())
+	{
+		return false;
+	}
+	if (!this->fd.SetTo(fd))
 	{
 		return false;
 	}
@@ -125,6 +133,11 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 
 Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
+	if (!this->fd.SetTo(fd))
+	{
+		return false;
+	}
 	if (index == 0)
 	{
 		UInt16 version_major;
@@ -247,6 +260,11 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index)
 {
+	NN<IO::StreamData> fd;
+	if (!this->fd.SetTo(fd))
+	{
+		return 0;
+	}
 	Text::StringBuilderUTF8 sb;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
@@ -332,7 +350,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFram
 
 Bool IO::FileAnalyse::PCapFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::PCapFileAnalyse::IsParsing()

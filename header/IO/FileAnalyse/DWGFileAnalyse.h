@@ -35,7 +35,7 @@ namespace IO
 				PackType packType;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
 
 			UInt32 fileVer;

@@ -35,7 +35,7 @@ namespace IO
 				UOSInt size;
 			};
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<TagInfo> tags;
 			
 			Bool pauseParsing;

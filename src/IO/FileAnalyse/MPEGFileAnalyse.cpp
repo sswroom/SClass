@@ -8,6 +8,7 @@
 void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::MPEGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MPEGFileAnalyse>();
+	NN<IO::StreamData> fd;
 	UInt8 readBuff[256];
 	UInt64 currOfst;
 	UInt64 readOfst;
@@ -16,6 +17,10 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> th
 	UOSInt frameSize;
 	UOSInt j;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 
 	currOfst = 0;
 	readOfst = 0;
@@ -30,7 +35,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> th
 		{
 			if (buffSize < 256)
 			{
-				readSize = me->fd->GetRealData(readOfst, 256 - buffSize, BYTEARR(readBuff).SubArray(buffSize));
+				readSize = fd->GetRealData(readOfst, 256 - buffSize, BYTEARR(readBuff).SubArray(buffSize));
 				buffSize += readSize;
 				readOfst += readSize;
 			}
@@ -137,7 +142,7 @@ IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(NN<IO::StreamData> fd) : threa
 IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -196,12 +201,15 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
+	if (!this->fd.SetTo(fd))
+		return false;
 
 	Data::ByteBuffer packBuff(pack->packSize);
-	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+	fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 	switch (packBuff[3])
 	{
@@ -759,15 +767,18 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
+	NN<IO::StreamData> fd;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 
 	Data::ByteBuffer packBuff(pack->packSize);
-	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+	fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
 	switch (packBuff[3])
 	{
@@ -1193,7 +1204,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::MPEGFileAnalyse::IsParsing()
@@ -1209,6 +1220,9 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	UOSInt frameSize;
 	UInt64 readOfst;
 	Bool valid = true;
+	NN<IO::StreamData> fd;
+	if (!this->fd.SetTo(fd))
+		return false;
 	IO::FileStream *dfs;
 	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (dfs->IsError())
@@ -1223,7 +1237,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	{
 		if (buffSize < 256)
 		{
-			readSize = this->fd->GetRealData(readOfst, 256, readBuff.SubArray(buffSize));
+			readSize = fd->GetRealData(readOfst, 256, readBuff.SubArray(buffSize));
 			readOfst += readSize;
 			buffSize += readSize;
 		}
@@ -1289,7 +1303,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 		}
 		else
 		{
-			readSize = this->fd->GetRealData(readOfst, j + frameSize - buffSize, readBuff.SubArray(buffSize));
+			readSize = fd->GetRealData(readOfst, j + frameSize - buffSize, readBuff.SubArray(buffSize));
 			readOfst += readSize;
 			if (readSize == j + frameSize - buffSize)
 			{

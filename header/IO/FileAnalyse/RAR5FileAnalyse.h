@@ -21,19 +21,19 @@ namespace IO
 				UInt64 dataSize;
 			} BlockInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<BlockInfo> packs;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
 
-			static const UInt8 *ReadVInt(const UInt8 *buffPtr, UInt64 *val);
-			static Data::ByteArray ReadVInt(Data::ByteArray buffPtr, UInt64 *val);
-			static const UInt8 *AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr);
-			static const UInt8 *AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val);
+			static UnsafeArray<const UInt8> ReadVInt(UnsafeArray<const UInt8> buffPtr, OutParam<UInt64> val);
+			static Data::ByteArray ReadVInt(Data::ByteArray buffPtr, OutParam<UInt64> val);
+			static UnsafeArray<const UInt8> AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr);
+			static UnsafeArray<const UInt8> AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr, OptOut<UInt64> val);
 			static Data::ByteArray AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr);
 			static Data::ByteArray AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
-			static const UInt8 *AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val);
+			static UnsafeArray<const UInt8> AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, UnsafeArray<const UInt8> buffPtr, OptOut<UInt64> val);
 			static Data::ByteArray AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 		public:

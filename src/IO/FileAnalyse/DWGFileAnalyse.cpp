@@ -34,10 +34,15 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 {
 	NN<IO::FileAnalyse::DWGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::DWGFileAnalyse>();
 	UInt8 buff[256];
+	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)
 	{
-		me->fd->GetRealData(0, 256, BYTEARR(buff));
+		fd->GetRealData(0, 256, BYTEARR(buff));
 		UOSInt sectionCnt = ReadUInt32(&buff[21]);
 		UOSInt i;
 		UOSInt ofst;
@@ -90,7 +95,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		}
 
 		UInt32 imgAddr = ReadUInt32(&buff[13]);
-		me->fd->GetRealData(imgAddr, 256, BYTEARR(buff));
+		fd->GetRealData(imgAddr, 256, BYTEARR(buff));
 		UInt32 imgSize = ReadUInt32(&buff[16]);
 		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
 		pack->fileOfst = imgAddr;
@@ -105,7 +110,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	}
 	else if (me->fileVer == 27)
 	{
-		me->fd->GetRealData(0, 256, BYTEARR(buff));
+		fd->GetRealData(0, 256, BYTEARR(buff));
 		pack = MemAllocNN(IO::FileAnalyse::DWGFileAnalyse::PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 256;
@@ -151,7 +156,7 @@ IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::DWGFileAnalyse::~DWGFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -209,7 +214,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	UInt8 buff[128];
@@ -229,7 +237,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	case PackType::FileHeaderV1:
 	{
 		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddStrC(0, 4, CSTR("Magic number"), &packBuff[0]);
 		frame->AddUInt(4, 2, CSTR("File Version"), this->fileVer);
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
@@ -262,7 +270,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	case PackType::R2004FileHeader:
 	{
 		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddStrC(0, 4, CSTR("Magic number"), &packBuff[0]);
 		frame->AddUInt(4, 2, CSTR("File Version"), this->fileVer);
 		frame->AddHexBuff(6, 5, CSTR("All Zero"), &packBuff[6], false);
@@ -290,7 +298,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	case PackType::PreviewImage:
 	{
 		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
-		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
+		fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		uuid.SetValue(packBuff.Arr());
 		sptr = uuid.ToString(sbuff);
@@ -335,7 +343,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::DWGFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::DWGFileAnalyse::IsParsing()

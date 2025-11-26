@@ -21,6 +21,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> th
 	Int32 rowSize;
 	UInt8 tagHdr[15];
 	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
+	NN<IO::StreamData> fd;
 	Bool lastIsFree = false;
 
 	tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
@@ -28,8 +29,12 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> th
 	tag->size = 40;
 	tag->tagType = TagType::Header;
 	me->tags.Add(tag);
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 
-	me->fd->GetRealData(40, 4, BYTEARR(tagHdr));
+	fd->GetRealData(40, 4, BYTEARR(tagHdr));
 	lastSize = ReadUInt32(tagHdr);
 	tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
 	tag->ofst = 40;
@@ -39,17 +44,17 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> th
 
 	{
 		Data::ByteBuffer fieldBuff(tag->size);
-		me->fd->GetRealData(40, tag->size, fieldBuff);
+		fd->GetRealData(40, tag->size, fieldBuff);
 		me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, me->prjParser);
 	}
 	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	if (me->tableInfo.SetTo(tableInfo))
 	{
 		ofst = 40 + tag->size;
-		dataSize = me->fd->GetDataSize();
+		dataSize = fd->GetDataSize();
 		while (ofst < dataSize - 4 && !me->thread.IsStopping())
 		{
-			if (me->fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
+			if (fd->GetRealData(ofst, 4, BYTEARR(tagHdr)) != 4)
 				break;
 
 			TagType tagType = TagType::Row;
@@ -116,7 +121,7 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 		Map::ESRI::FileGDBUtil::FreeTableInfo(tableInfo);
 		this->tableInfo = 0;
 	}
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->tags.MemFreeAll();
 }
 
@@ -172,10 +177,13 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::StreamData> fd;
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	
@@ -184,7 +192,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	Data::ByteBuffer tagData(tag->size);
-	this->fd->GetRealData(tag->ofst, tag->size, tagData);
+	fd->GetRealData(tag->ofst, tag->size, tagData);
 	if (tag->tagType == TagType::Header)
 	{
 		frame->AddUInt(0, 4, CSTR("Signature"), ReadUInt32(&tagData[0]));
@@ -273,7 +281,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 					frame->AddField(ofst + 2, srsLen, CSTR("SRS"), CSTRP(sbuff, sptr));
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
 					NN<Math::CoordinateSystem> csys;
-					if (this->prjParser.ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, csysLen).SetTo(csys))
+					if (this->prjParser.ParsePRJBuff(fd->GetFullName()->ToCString(), sbuff, csysLen, csysLen).SetTo(csys))
 					{
 						Text::StringBuilderUTF8 sb;
 						csys->ToString(sb);
@@ -927,7 +935,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 
 Bool IO::FileAnalyse::FGDBFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::FGDBFileAnalyse::IsParsing()

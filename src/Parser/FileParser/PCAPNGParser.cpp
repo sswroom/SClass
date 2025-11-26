@@ -134,7 +134,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 						break;
 					}
 					Int64 ts = (((Int64)ReadInt32(&packetBuff[12])) << 32) | ReadUInt32(&packetBuff[16]);
-					IO::FileAnalyse::PCapngFileAnalyse::SetTime(&dt, ts, resolList.GetItem(0));
+					IO::FileAnalyse::PCapngFileAnalyse::SetTime(dt, ts, resolList.GetItem(0));
 					scanLog->AddBTRAWPacket(dt.ToTicks(), Data::ByteArrayR(&packetBuff[28], inclLen));
 				}
 				else
@@ -237,7 +237,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 					{
 						break;
 					}
-					IO::FileAnalyse::PCapngFileAnalyse::SetTime(&dt, ReadMInt64(&packetBuff[12]), resolList.GetItem(0));
+					IO::FileAnalyse::PCapngFileAnalyse::SetTime(dt, ReadMInt64(&packetBuff[12]), resolList.GetItem(0));
 					scanLog->AddBTRAWPacket(dt.ToTicks(), Data::ByteArrayR(&packetBuff[28], inclLen));
 				}
 				else

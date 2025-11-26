@@ -43,7 +43,7 @@ namespace IO
 				Text::CStringNN elementName;
 			} ElementInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
 
 			Bool pauseParsing;
@@ -52,8 +52,8 @@ namespace IO
 
 			static ElementInfo elements[];
 
-			static const UInt8 *ReadInt(const UInt8 *buffPtr, UInt64 *val, UInt32 *intSize);
-			static const ElementInfo *GetElementInfo(UInt32 elementId);
+			static UnsafeArray<const UInt8> ReadInt(UnsafeArray<const UInt8> buffPtr, OutParam<UInt64> val, OptOut<UInt32> intSize);
+			static Optional<const ElementInfo> GetElementInfo(UInt32 elementId);
 			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);

@@ -18,7 +18,7 @@ namespace IO
 				UInt8 packType;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::ArrayListNN<PackInfo> packs;
 
 		public:

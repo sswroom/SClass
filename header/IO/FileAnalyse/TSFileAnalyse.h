@@ -13,7 +13,7 @@ namespace IO
 		class TSFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			UInt32 packSize;
 			UInt64 fileSize;
 			Bool hasTime;

@@ -23,7 +23,7 @@ namespace IO
 				Int8 timeResol;
 			} BlockInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Bool isBE;
 			Data::SyncArrayListNN<BlockInfo> blockList;
 			Data::ByteBuffer packetBuff;
@@ -47,7 +47,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			static void SetTime(Data::DateTime *dt, Int64 ts, Int8 timeResol);
+			static void SetTime(NN<Data::DateTime> dt, Int64 ts, Int8 timeResol);
 		};
 	}
 }

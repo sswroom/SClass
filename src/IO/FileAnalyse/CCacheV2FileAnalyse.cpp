@@ -10,6 +10,7 @@
 void __stdcall IO::FileAnalyse::CCacheV2FileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::CCacheV2FileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::CCacheV2FileAnalyse>();
+	NN<IO::StreamData> fd;
 //	UInt64 dataSize;
 //	UInt64 ofst;
 //	UInt32 lastSize;
@@ -34,7 +35,7 @@ void __stdcall IO::FileAnalyse::CCacheV2FileAnalyse::ParseThread(NN<Sync::Thread
 	tag->tagType = TagType::UserHeader;
 	me->tags.Add(tag);
 	UInt8 index[0x20000];
-	if (me->fd->GetRealData(64, 0x20000, BYTEARR(index)) == 0x20000)
+	if (me->fd.SetTo(fd) && fd->GetRealData(64, 0x20000, BYTEARR(index)) == 0x20000)
 	{
 		UOSInt ofst;
 		UInt64 idx;
@@ -90,7 +91,7 @@ IO::FileAnalyse::CCacheV2FileAnalyse::CCacheV2FileAnalyse(NN<IO::StreamData> fd)
 IO::FileAnalyse::CCacheV2FileAnalyse::~CCacheV2FileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->tags.MemFreeAll();
 }
 
@@ -149,7 +150,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::CCacheV2FileAnalyse::TagInfo> tag;
+	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag))
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
@@ -157,7 +161,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	Data::ByteBuffer tagData(tag->size);
-	this->fd->GetRealData(tag->ofst, tag->size, tagData);
+	fd->GetRealData(tag->ofst, tag->size, tagData);
 	if (tag->tagType == TagType::Header)
 	{
 		frame->AddUInt(0, 4, CSTR("Version"), ReadUInt32(&tagData[0]));
@@ -212,7 +216,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 
 Bool IO::FileAnalyse::CCacheV2FileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::CCacheV2FileAnalyse::IsParsing()

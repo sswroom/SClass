@@ -15,7 +15,7 @@ namespace IO
 		class PCapFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Bool isBE;
 			UInt32 linkType;
 			Data::ArrayList<UInt64> ofstList;

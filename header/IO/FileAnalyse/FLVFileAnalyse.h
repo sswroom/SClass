@@ -21,7 +21,7 @@ namespace IO
 				UOSInt size;
 			} FLVTag;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<FLVTag> tags;
 			UOSInt hdrSize;
 

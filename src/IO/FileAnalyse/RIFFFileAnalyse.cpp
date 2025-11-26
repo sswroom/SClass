@@ -6,7 +6,7 @@
 #include "Media/ICCProfile.h"
 #include "Sync/SimpleThread.h"
 
-void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
+void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(NN<IO::StreamData> fd, UOSInt lev, UInt64 ofst, UInt64 size)
 {
 	UInt8 buff[12];
 	UInt64 endOfst = ofst + size;
@@ -21,7 +21,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 		}
 		else
 		{
-			this->fd->GetRealData(ofst, 12, BYTEARR(buff));
+			fd->GetRealData(ofst, 12, BYTEARR(buff));
 			sz = ReadUInt32(&buff[4]);
 			if (ofst + sz + 8 > endOfst)
 			{
@@ -48,7 +48,7 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 			
 			if (pack->subPackType != 0)
 			{
-				ParseRange(lev + 1, ofst + 12, sz - 4);
+				ParseRange(fd, lev + 1, ofst + 12, sz - 4);
 			}
 			ofst += sz + 8;
 			if (sz & 1)
@@ -62,7 +62,11 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 void __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::RIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::RIFFFileAnalyse>();
-	me->ParseRange(0, 0, me->fd->GetDataSize());
+	NN<IO::StreamData> fd;
+	if (me->fd.SetTo(fd))
+	{
+		me->ParseRange(fd, 0, 0, fd->GetDataSize());
+	}
 }
 
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
@@ -118,7 +122,7 @@ IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NN<IO::StreamData> fd) : threa
 IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -162,7 +166,10 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
+	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
+		return false;
+	if (!this->fd.SetTo(fd))
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
@@ -183,7 +190,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	if (pack->packType == *(Int32*)"avih")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nMicroSec Per Frame = "));
 		sb->AppendU32(ReadUInt32(&packBuff[0]));
@@ -209,7 +216,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"strh")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nfccType = "));
 		*(Int32*)buff = *(Int32*)&packBuff[0];
@@ -248,7 +255,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"strf")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		if (ReadUInt32(&packBuff[0]) == pack->packSize - 8)
 		{
@@ -302,7 +309,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"JUNK")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\n"));
 		sb->AppendHexBuff(packBuff, ' ', Text::LineBreakType::CRLF);
@@ -310,7 +317,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"dmlh")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nFrame Count = "));
 		sb->AppendU32(ReadUInt32(&packBuff[0]));
@@ -318,7 +325,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"00db" || pack->packType == *(Int32*)"00dc" || pack->packType == *(Int32*)"01wb" || pack->packType == *(Int32*)"02wb")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\n"));
 		sb->AppendHexBuff(packBuff, ' ', Text::LineBreakType::CRLF);
@@ -326,7 +333,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"idx1")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		i = 0;
 		j = (pack->packSize - 8) >> 4;
@@ -352,7 +359,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"anih")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\ncbSize = "));
 		sb->AppendU32(ReadUInt32(&packBuff[0]));
@@ -376,7 +383,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 	else if (pack->packType == *(Int32*)"icon")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->AppendC(UTF8STRC("\r\nFile Header = "));
 		sb->AppendU16(ReadUInt16(&packBuff[0]));
@@ -445,7 +452,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	UOSInt j;
 	UOSInt k;
 	NN<IO::StreamData> fd;
-	if (!this->packs.GetItem(index).SetTo(pack) || !fd.Set(this->fd))
+	if (!this->packs.GetItem(index).SetTo(pack) || !this->fd.SetTo(fd))
 		return 0;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
@@ -459,7 +466,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	if (pack->packType == *(Int32*)"avih")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddUInt(8, 4, CSTR("MicroSec Per Frame"), ReadUInt32(&packBuff[0]));
 		frame->AddUInt(12, 4, CSTR("Max Bytes Per Second"), ReadUInt32(&packBuff[4]));
 		frame->AddUInt(16, 4, CSTR("Padding Granularity"), ReadUInt32(&packBuff[8]));
@@ -474,7 +481,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	else if (pack->packType == *(Int32*)"strh")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddStrS(8, 4, CSTR("fccType"), &packBuff[0]);
 		if (*(Int32*)&packBuff[4] == 0)
 		{
@@ -498,7 +505,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	else if (pack->packType == *(Int32*)"strf")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		if (ReadUInt32(&packBuff[0]) == pack->packSize - 8)
 		{
@@ -534,25 +541,25 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	else if (pack->packType == *(Int32*)"JUNK")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddHexBuff(8, CSTR("Unused"), packBuff, true);
 	}
 	else if (pack->packType == *(Int32*)"dmlh")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddUInt(8, 4, CSTR("Frame Count"), ReadUInt32(&packBuff[0]));
 	}
 	else if (pack->packType == *(Int32*)"00db" || pack->packType == *(Int32*)"00dc" || pack->packType == *(Int32*)"01wb" || pack->packType == *(Int32*)"02wb")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddHexBuff(8, CSTR("Data"), packBuff, true);
 	}
 	else if (pack->packType == *(Int32*)"idx1")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		i = 0;
 		j = (pack->packSize - 8) >> 4;
@@ -571,7 +578,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	else if (pack->packType == *(Int32*)"anih")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddUInt(8, 4, CSTR("cbSize"), ReadUInt32(&packBuff[0]));
 		frame->AddUInt(12, 4, CSTR("Number of Frames"), ReadUInt32(&packBuff[4]));
 		frame->AddUInt(16, 4, CSTR("Number of Steps"), ReadUInt32(&packBuff[8]));
@@ -585,7 +592,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	else if (pack->packType == *(Int32*)"icon")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddUInt(8, 2, CSTR("File Header"), ReadUInt32(&packBuff[0]));
 		frame->AddUInt(10, 2, CSTR("File Format"), ReadUInt32(&packBuff[2]));
 		frame->AddUInt(12, 2, CSTR("Number of Images"), ReadUInt32(&packBuff[4]));
@@ -610,7 +617,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	else if (pack->packType == *(Int32*)"VP8X")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		frame->AddBool(8, CSTR("ICC profile"), (packBuff[0] & 0x20));
 		frame->AddBool(8, CSTR("Alpha"), (packBuff[0] & 0x10));
 		frame->AddBool(8, CSTR("Exif metadata"), (packBuff[0] & 0x8));
@@ -623,7 +630,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	else if (pack->packType == *(Int32*)"ICCP")
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
-		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
+		fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 		Media::ICCProfile::ParseFrame(frame, 8, packBuff.Arr(), pack->packSize - 8);
 	}
 	else if (pack->packType == *(Int32*)"EXIF")
@@ -639,7 +646,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 
 Bool IO::FileAnalyse::RIFFFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::RIFFFileAnalyse::IsParsing()

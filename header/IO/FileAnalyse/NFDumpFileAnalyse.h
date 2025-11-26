@@ -21,9 +21,9 @@ namespace IO
 				Int32 packType;
 			} PackInfo;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
-			Data::FastMap<Int32, UInt8*> extMap;
+			Data::FastMap<Int32, UnsafeArrayOpt<UInt8>> extMap;
 			Bool hasLZODecomp;
 
 			Bool pauseParsing;

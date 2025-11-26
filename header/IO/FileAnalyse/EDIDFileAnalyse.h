@@ -11,9 +11,9 @@ namespace IO
 		{
 		private:
 			UOSInt blockCnt;
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 
-			static void ParseDescriptor(NN<FrameDetail> frame, const UInt8 *buff, UOSInt ofst);
+			static void ParseDescriptor(NN<FrameDetail> frame, UnsafeArray<const UInt8> buff, UOSInt ofst);
 			static void RemoveNonASCII(UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd);
 		public:
 			EDIDFileAnalyse(NN<IO::StreamData> fd);

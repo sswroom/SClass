@@ -264,65 +264,65 @@ IO::FileAnalyse::EBMLFileAnalyse::ElementInfo IO::FileAnalyse::EBMLFileAnalyse::
 	{0xF43B675, IO::FileAnalyse::EBMLFileAnalyse::ET_MASTER, {UTF8STRC("Cluster")}},
 };
 
-const UInt8 *IO::FileAnalyse::EBMLFileAnalyse::ReadInt(const UInt8 *buffPtr, UInt64 *val, UInt32 *intSize)
+UnsafeArray<const UInt8> IO::FileAnalyse::EBMLFileAnalyse::ReadInt(UnsafeArray<const UInt8> buffPtr, OutParam<UInt64> val, OptOut<UInt32> intSize)
 {
 	if (*buffPtr & 0x80)
 	{
-		*val = buffPtr[0] & 0x7f;
-		if (intSize) *intSize = 1;
+		val.Set(buffPtr[0] & 0x7f);
+		intSize.Set(1);
 		return buffPtr + 1;
 	}
 	else if (*buffPtr & 0x40)
 	{
-		*val = (((UInt32)buffPtr[0] & 0x3f) << 8) | (buffPtr[1]);
-		if (intSize) *intSize = 2;
+		val.Set((((UInt32)buffPtr[0] & 0x3f) << 8) | (buffPtr[1]));
+		intSize.Set(2);
 		return buffPtr + 2;
 	}
 	else if (*buffPtr & 0x20)
 	{
-		*val = (((UInt32)buffPtr[0] & 0x1f) << 16) | (((UInt32)buffPtr[1]) << 8) | (buffPtr[2]);
-		if (intSize) *intSize = 3;
+		val.Set((((UInt32)buffPtr[0] & 0x1f) << 16) | (((UInt32)buffPtr[1]) << 8) | (buffPtr[2]));
+		intSize.Set(3);
 		return buffPtr + 3;
 	}
 	else if (*buffPtr & 0x10)
 	{
-		*val = (((UInt32)buffPtr[0] & 0xf) << 24) | (((UInt32)buffPtr[1]) << 16) | ((UInt32)buffPtr[2] << 8) | (buffPtr[3]);
-		if (intSize) *intSize = 4;
+		val.Set((((UInt32)buffPtr[0] & 0xf) << 24) | (((UInt32)buffPtr[1]) << 16) | ((UInt32)buffPtr[2] << 8) | (buffPtr[3]));
+		intSize.Set(4);
 		return buffPtr + 4;
 	}
 	else if (*buffPtr & 0x8)
 	{
-		*val = (((UInt64)buffPtr[0] & 0x7) << 32) | (((UInt64)buffPtr[1]) << 24) | (((UInt64)buffPtr[2]) << 16) | (((UInt64)buffPtr[3]) << 8) | ((UInt64)buffPtr[4]);
-		if (intSize) *intSize = 5;
+		val.Set((((UInt64)buffPtr[0] & 0x7) << 32) | (((UInt64)buffPtr[1]) << 24) | (((UInt64)buffPtr[2]) << 16) | (((UInt64)buffPtr[3]) << 8) | ((UInt64)buffPtr[4]));
+		intSize.Set(5);
 		return buffPtr + 5;
 	}
 	else if (*buffPtr & 0x4)
 	{
-		*val = (((UInt64)buffPtr[0] & 0x3) << 40) | (((UInt64)buffPtr[1]) << 32) | (((UInt64)buffPtr[2]) << 24) | (((UInt64)buffPtr[3]) << 16) | (((UInt64)buffPtr[4]) << 8) | ((UInt64)buffPtr[5]);
-		if (intSize) *intSize = 6;
+		val.Set((((UInt64)buffPtr[0] & 0x3) << 40) | (((UInt64)buffPtr[1]) << 32) | (((UInt64)buffPtr[2]) << 24) | (((UInt64)buffPtr[3]) << 16) | (((UInt64)buffPtr[4]) << 8) | ((UInt64)buffPtr[5]));
+		intSize.Set(6);
 		return buffPtr + 6;
 	}
 	else if (*buffPtr & 0x2)
 	{
-		*val = (((UInt64)buffPtr[0] & 0x1) << 48) | (((UInt64)buffPtr[1]) << 40) | (((UInt64)buffPtr[2]) << 32) | (((UInt64)buffPtr[3]) << 24) | (((UInt64)buffPtr[4]) << 16) | (((UInt64)buffPtr[5]) << 8) | ((UInt64)buffPtr[6]);
-		if (intSize) *intSize = 7;
+		val.Set((((UInt64)buffPtr[0] & 0x1) << 48) | (((UInt64)buffPtr[1]) << 40) | (((UInt64)buffPtr[2]) << 32) | (((UInt64)buffPtr[3]) << 24) | (((UInt64)buffPtr[4]) << 16) | (((UInt64)buffPtr[5]) << 8) | ((UInt64)buffPtr[6]));
+		intSize.Set(7);
 		return buffPtr + 7;
 	}
 	else if (*buffPtr & 0x1)
 	{
-		*val = (((UInt64)buffPtr[1]) << 48) | (((UInt64)buffPtr[2]) << 40) | (((UInt64)buffPtr[3]) << 32) | (((UInt64)buffPtr[4]) << 24) | (((UInt64)buffPtr[5]) << 16) | (((UInt64)buffPtr[6]) << 8) | ((UInt64)buffPtr[7]);
-		if (intSize) *intSize = 8;
+		val.Set((((UInt64)buffPtr[1]) << 48) | (((UInt64)buffPtr[2]) << 40) | (((UInt64)buffPtr[3]) << 32) | (((UInt64)buffPtr[4]) << 24) | (((UInt64)buffPtr[5]) << 16) | (((UInt64)buffPtr[6]) << 8) | ((UInt64)buffPtr[7]));
+		intSize.Set(8);
 		return buffPtr + 8;
 	}
 	else
 	{
-		*val = 0;
-		if (intSize) *intSize = 0;
+		val.Set(0);
+		intSize.Set(0);
 		return buffPtr;
 	}
 }
 
-const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *IO::FileAnalyse::EBMLFileAnalyse::GetElementInfo(UInt32 elementId)
+Optional<const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo> IO::FileAnalyse::EBMLFileAnalyse::GetElementInfo(UInt32 elementId)
 {
 	const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element;
 	OSInt i = 0;
@@ -350,12 +350,15 @@ const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *IO::FileAnalyse::EBMLFileAn
 
 void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
 {
+	NN<IO::StreamData> fd;
 	UInt8 buff[12];
 	UInt64 endOfst = ofst + size;
-	const UInt8 *buffPtr;
+	UnsafeArray<const UInt8> buffPtr;
 	UInt64 id;
 	UInt64 sz;
 	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
+	if (!this->fd.SetTo(fd))
+		return;
 
 	while (ofst <= (endOfst - 3) && !this->thread.IsStopping())
 	{
@@ -365,9 +368,9 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 		}
 		else
 		{
-			this->fd->GetRealData(ofst, 12, BYTEARR(buff));
-			buffPtr = ReadInt(buff, &id, 0);
-			buffPtr = ReadInt(buffPtr, &sz, 0);
+			fd->GetRealData(ofst, 12, BYTEARR(buff));
+			buffPtr = ReadInt(buff, id, 0);
+			buffPtr = ReadInt(buffPtr, sz, 0);
 			if (ofst + sz + (UOSInt)(buffPtr - buff) > endOfst)
 			{
 				return;
@@ -384,8 +387,8 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 				this->maxLev = lev;
 			}
 			
-			const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)id);
-			if (element && element->type == ET_MASTER)
+			NN<const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo> element;
+			if (GetElementInfo((UInt32)id).SetTo(element) && element->type == ET_MASTER)
 			{
 				ParseRange(lev + 1, ofst + (UOSInt)(buffPtr - buff), sz);
 			}
@@ -397,7 +400,11 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 void __stdcall IO::FileAnalyse::EBMLFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::EBMLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::EBMLFileAnalyse>();
-	me->ParseRange(0, 0, me->fd->GetDataSize());
+	NN<IO::StreamData> fd;
+	if (me->fd.SetTo(fd))
+	{
+		me->ParseRange(0, 0, fd->GetDataSize());
+	}
 }
 
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
@@ -441,14 +448,14 @@ IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NN<IO::StreamData> fd) : threa
 	{
 		return;
 	}
-	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
+	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->thread.Start();
 }
 
 IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->packs.MemFreeAll();
 }
 
@@ -487,9 +494,9 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 		sb->AppendHexBuff(pack->packType, 4, ' ', Text::LineBreakType::None);
 	}
 	UInt64 eleId;
-	ReadInt(pack->packType, &eleId, 0);
-	const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)eleId);
-	if (element)
+	ReadInt(pack->packType, eleId, 0);
+	NN<const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo> element;
+	if (GetElementInfo((UInt32)eleId).SetTo(element))
 	{
 		sb->AppendUTF8Char(' ');
 		sb->Append(element->elementName);
@@ -525,13 +532,13 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		sb->AppendHexBuff(pack->packType, 4, ' ', Text::LineBreakType::None);
 	}
 	UInt64 eleId;
-	ReadInt(pack->packType, &eleId, 0);
+	ReadInt(pack->packType, eleId, 0);
 	sb->AppendC(UTF8STRC("\r\nElement ID=0x"));
 	sb->AppendHex64V(eleId);
 	sb->AppendC(UTF8STRC("\r\nsize="));
 	sb->AppendI32((Int32)pack->packSize);
-	const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)eleId);
-	if (element)
+	NN<const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo> element;
+	if (GetElementInfo((UInt32)eleId).SetTo(element))
 	{
 		sb->AppendC(UTF8STRC("\r\nElement Name="));
 		sb->Append(element->elementName);
@@ -567,139 +574,143 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 			sb->AppendC(UTF8STRC("Unknown Element"));
 			break;
 		}
-		if (eleId == 0x23) //SimpleBlock
+		NN<IO::StreamData> fd;
+		if (this->fd.SetTo(fd))
 		{
-			UInt8 hdr[12];
-			const UInt8 *buffPtr;
-			UInt64 iVal;
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, 12, BYTEARR(hdr));
-			buffPtr = ReadInt(hdr, &iVal, 0);
-			sb->AppendC(UTF8STRC("\r\nTrack Number="));
-			sb->AppendU64(iVal);
-			sb->AppendC(UTF8STRC("\r\nTimecode="));
-			sb->AppendI16(ReadMInt16(buffPtr));
-			sb->AppendC(UTF8STRC("\r\nFlags=0x"));
-			sb->AppendHex8(buffPtr[2]);
-			buffPtr += 3;
-			sb->AppendC(UTF8STRC("\r\nData:\r\n"));
-			UOSInt sz = pack->packSize - pack->hdrSize - (UOSInt)(buffPtr - hdr);
-			if (sz <= 64)
+			if (eleId == 0x23) //SimpleBlock
 			{
+				UInt8 hdr[12];
+				UnsafeArray<const UInt8> buffPtr;
+				UInt64 iVal;
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, 12, BYTEARR(hdr));
+				buffPtr = ReadInt(hdr, iVal, 0);
+				sb->AppendC(UTF8STRC("\r\nTrack Number="));
+				sb->AppendU64(iVal);
+				sb->AppendC(UTF8STRC("\r\nTimecode="));
+				sb->AppendI16(ReadMInt16(buffPtr));
+				sb->AppendC(UTF8STRC("\r\nFlags=0x"));
+				sb->AppendHex8(buffPtr[2]);
+				buffPtr += 3;
+				sb->AppendC(UTF8STRC("\r\nData:\r\n"));
+				UOSInt sz = pack->packSize - pack->hdrSize - (UOSInt)(buffPtr - hdr);
+				if (sz <= 64)
+				{
+					Data::ByteBuffer buff(sz);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, buff);
+					sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+				}
+				else
+				{
+					Data::ByteBuffer buff(32);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), 32, buff);
+					sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+					sb->AppendC(UTF8STRC("\r\n..\r\n"));
+					fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
+					sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+				}
+			}
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_STRING || element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UTF8)
+			{
+				sb->AppendC(UTF8STRC("\r\nValue="));
+				Data::ByteBuffer buff(pack->packSize - pack->hdrSize);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, pack->packSize - pack->hdrSize, buff);
+				if (buff[pack->packSize - pack->hdrSize - 1] == 0)
+				{
+					sb->AppendC(buff.Arr(), pack->packSize - pack->hdrSize - 1);
+				}
+				else
+				{
+					sb->AppendC(buff.Arr(), pack->packSize - pack->hdrSize);
+				}
+			}
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UINT)
+			{
+				sb->AppendC(UTF8STRC("\r\nValue="));
+				UOSInt sz = pack->packSize - pack->hdrSize;
 				Data::ByteBuffer buff(sz);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, buff);
-				sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+				if (sz == 1)
+				{
+					sb->AppendU16(buff[0]);
+				}
+				else if (sz == 2)
+				{
+					sb->AppendU16(ReadMUInt16(&buff[0]));
+				}
+				else if (sz == 3)
+				{
+					sb->AppendU32(ReadMUInt24(&buff[0]));
+				}
+				else if (sz == 4)
+				{
+					sb->AppendU32(ReadMUInt32(&buff[0]));
+				}
+				else if (sz == 8)
+				{
+					sb->AppendU64(ReadMUInt64(&buff[0]));
+				}
 			}
-			else
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_SINT)
 			{
-				Data::ByteBuffer buff(32);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), 32, buff);
-				sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-				sb->AppendC(UTF8STRC("\r\n..\r\n"));
-				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_STRING || element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UTF8)
-		{
-			sb->AppendC(UTF8STRC("\r\nValue="));
-			Data::ByteBuffer buff(pack->packSize - pack->hdrSize);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, pack->packSize - pack->hdrSize, buff);
-			if (buff[pack->packSize - pack->hdrSize - 1] == 0)
-			{
-				sb->AppendC(buff.Arr(), pack->packSize - pack->hdrSize - 1);
-			}
-			else
-			{
-				sb->AppendC(buff.Arr(), pack->packSize - pack->hdrSize);
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UINT)
-		{
-			sb->AppendC(UTF8STRC("\r\nValue="));
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			Data::ByteBuffer buff(sz);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-			if (sz == 1)
-			{
-				sb->AppendU16(buff[0]);
-			}
-			else if (sz == 2)
-			{
-				sb->AppendU16(ReadMUInt16(&buff[0]));
-			}
-			else if (sz == 3)
-			{
-				sb->AppendU32(ReadMUInt24(&buff[0]));
-			}
-			else if (sz == 4)
-			{
-				sb->AppendU32(ReadMUInt32(&buff[0]));
-			}
-			else if (sz == 8)
-			{
-				sb->AppendU64(ReadMUInt64(&buff[0]));
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_SINT)
-		{
-			sb->AppendC(UTF8STRC("\r\nValue="));
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			Data::ByteBuffer buff(sz);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-			if (sz == 1)
-			{
-				sb->AppendI16((Int8)buff[0]);
-			}
-			else if (sz == 2)
-			{
-				sb->AppendI16(ReadMInt16(&buff[0]));
-			}
-			else if (sz == 3)
-			{
-				sb->AppendI32(ReadMInt24(&buff[0]));
-			}
-			else if (sz == 4)
-			{
-				sb->AppendI32(ReadMInt32(&buff[0]));
-			}
-			else if (sz == 8)
-			{
-				sb->AppendI64(ReadMInt64(&buff[0]));
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_FLOAT)
-		{
-			sb->AppendC(UTF8STRC("\r\nValue="));
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			Data::ByteBuffer buff(sz);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-			if (sz == 4)
-			{
-				Text::SBAppendF32(sb, ReadMFloat(&buff[0]));
-			}
-			else if (sz == 8)
-			{
-				Text::SBAppendF64(sb, ReadMDouble(&buff[0]));
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_BINARY)
-		{
-			sb->AppendC(UTF8STRC("\r\nData:\r\n"));
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			if (sz <= 64)
-			{
+				sb->AppendC(UTF8STRC("\r\nValue="));
+				UOSInt sz = pack->packSize - pack->hdrSize;
 				Data::ByteBuffer buff(sz);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-				sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+				if (sz == 1)
+				{
+					sb->AppendI16((Int8)buff[0]);
+				}
+				else if (sz == 2)
+				{
+					sb->AppendI16(ReadMInt16(&buff[0]));
+				}
+				else if (sz == 3)
+				{
+					sb->AppendI32(ReadMInt24(&buff[0]));
+				}
+				else if (sz == 4)
+				{
+					sb->AppendI32(ReadMInt32(&buff[0]));
+				}
+				else if (sz == 8)
+				{
+					sb->AppendI64(ReadMInt64(&buff[0]));
+				}
 			}
-			else
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_FLOAT)
 			{
-				Data::ByteBuffer buff(32);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize, 32, buff);
-				sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-				sb->AppendC(UTF8STRC("\r\n..\r\n"));
-				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+				sb->AppendC(UTF8STRC("\r\nValue="));
+				UOSInt sz = pack->packSize - pack->hdrSize;
+				Data::ByteBuffer buff(sz);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+				if (sz == 4)
+				{
+					Text::SBAppendF32(sb, ReadMFloat(&buff[0]));
+				}
+				else if (sz == 8)
+				{
+					Text::SBAppendF64(sb, ReadMDouble(&buff[0]));
+				}
+			}
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_BINARY)
+			{
+				sb->AppendC(UTF8STRC("\r\nData:\r\n"));
+				UOSInt sz = pack->packSize - pack->hdrSize;
+				if (sz <= 64)
+				{
+					Data::ByteBuffer buff(sz);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+					sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+				}
+				else
+				{
+					Data::ByteBuffer buff(32);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize, 32, buff);
+					sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+					sb->AppendC(UTF8STRC("\r\n..\r\n"));
+					fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
+					sb->AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+				}
 			}
 		}
 	}
@@ -735,12 +746,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFram
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	UInt64 eleId;
 	UInt32 intSize;
-	ReadInt(pack->packType, &eleId, &intSize);
+	ReadInt(pack->packType, eleId, intSize);
 	frame->AddHexBuff(0, intSize, CSTR("Type"), pack->packType, false);
 	frame->AddHex64V(0, intSize, CSTR("Element ID"), eleId);
 	frame->AddUInt(intSize, pack->hdrSize - intSize, CSTR("Size"), pack->packSize - pack->hdrSize);
-	const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)eleId);
-	if (element)
+	NN<const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo> element;
+	if (GetElementInfo((UInt32)eleId).SetTo(element))
 	{
 		frame->AddField(0, intSize, CSTR("Element Name"), element->elementName);
 		switch (element->type)
@@ -774,139 +785,143 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFram
 			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Unknown Element"));
 			break;
 		}
-		if (eleId == 0x23) //SimpleBlock
+		NN<IO::StreamData> fd;
+		if (this->fd.SetTo(fd))
 		{
-			UInt8 hdr[12];
-			const UInt8 *buffPtr;
-			UInt64 iVal;
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, 12, BYTEARR(hdr));
-			buffPtr = ReadInt(hdr, &iVal, &intSize);
-			frame->AddUInt(pack->hdrSize, intSize, CSTR("Track Number"), (UOSInt)iVal);
-			frame->AddInt(pack->hdrSize + (UOSInt)(buffPtr - hdr), 2, CSTR("Timecode"), ReadMInt16(buffPtr));
-			frame->AddHex8(pack->hdrSize + (UOSInt)(buffPtr - hdr) + 2, CSTR("Flags"), buffPtr[2]);
-			buffPtr += 3;
-			UOSInt sz = pack->packSize - pack->hdrSize - (UOSInt)(buffPtr - hdr);
-			if (sz <= 64)
+			if (eleId == 0x23) //SimpleBlock
 			{
+				UInt8 hdr[12];
+				UnsafeArray<const UInt8> buffPtr;
+				UInt64 iVal;
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, 12, BYTEARR(hdr));
+				buffPtr = ReadInt(hdr, iVal, intSize);
+				frame->AddUInt(pack->hdrSize, intSize, CSTR("Track Number"), (UOSInt)iVal);
+				frame->AddInt(pack->hdrSize + (UOSInt)(buffPtr - hdr), 2, CSTR("Timecode"), ReadMInt16(buffPtr));
+				frame->AddHex8(pack->hdrSize + (UOSInt)(buffPtr - hdr) + 2, CSTR("Flags"), buffPtr[2]);
+				buffPtr += 3;
+				UOSInt sz = pack->packSize - pack->hdrSize - (UOSInt)(buffPtr - hdr);
+				if (sz <= 64)
+				{
+					Data::ByteBuffer buff(sz);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, buff);
+					frame->AddHexBuff(pack->hdrSize + (UOSInt)(buffPtr - hdr), CSTR("Data"), buff, true);
+				}
+				else
+				{
+					Data::ByteBuffer buff(32);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), 32, buff);
+					Text::StringBuilderUTF8 sb;
+					sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+					sb.AppendC(UTF8STRC("\r\n..\r\n"));
+					fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
+					sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+					frame->AddField(pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, CSTR("Data"), sb.ToCString());
+				}
+			}
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_STRING || element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UTF8)
+			{
+				Data::ByteBuffer buff(pack->packSize - pack->hdrSize);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, pack->packSize - pack->hdrSize, buff);
+				if (buff[pack->packSize - pack->hdrSize - 1] == 0)
+				{
+					frame->AddStrS(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.Arr());
+				}
+				else
+				{
+					frame->AddStrC(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.Arr());
+				}
+			}
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UINT)
+			{
+				UOSInt sz = pack->packSize - pack->hdrSize;
 				Data::ByteBuffer buff(sz);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, buff);
-				frame->AddHexBuff(pack->hdrSize + (UOSInt)(buffPtr - hdr), CSTR("Data"), buff, true);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+				if (sz == 1)
+				{
+					frame->AddUInt(pack->hdrSize, sz, element->elementName, buff[0]);
+				}
+				else if (sz == 2)
+				{
+					frame->AddUInt(pack->hdrSize, sz, element->elementName, ReadMUInt16(&buff[0]));
+				}
+				else if (sz == 3)
+				{
+					frame->AddUInt(pack->hdrSize, sz, element->elementName, ReadMUInt24(&buff[0]));
+				}
+				else if (sz == 4)
+				{
+					frame->AddUInt(pack->hdrSize, sz, element->elementName, ReadMUInt32(&buff[0]));
+				}
+				else if (sz == 8)
+				{
+					frame->AddUInt64(pack->hdrSize, element->elementName, ReadMUInt64(&buff[0]));
+				}
 			}
-			else
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_SINT)
 			{
-				Data::ByteBuffer buff(32);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), 32, buff);
-				Text::StringBuilderUTF8 sb;
-				sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-				sb.AppendC(UTF8STRC("\r\n..\r\n"));
-				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-				frame->AddField(pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, CSTR("Data"), sb.ToCString());
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_STRING || element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UTF8)
-		{
-			Data::ByteBuffer buff(pack->packSize - pack->hdrSize);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, pack->packSize - pack->hdrSize, buff);
-			if (buff[pack->packSize - pack->hdrSize - 1] == 0)
-			{
-				frame->AddStrS(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.Arr());
-			}
-			else
-			{
-				frame->AddStrC(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.Arr());
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UINT)
-		{
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			Data::ByteBuffer buff(sz);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-			if (sz == 1)
-			{
-				frame->AddUInt(pack->hdrSize, sz, element->elementName, buff[0]);
-			}
-			else if (sz == 2)
-			{
-				frame->AddUInt(pack->hdrSize, sz, element->elementName, ReadMUInt16(&buff[0]));
-			}
-			else if (sz == 3)
-			{
-				frame->AddUInt(pack->hdrSize, sz, element->elementName, ReadMUInt24(&buff[0]));
-			}
-			else if (sz == 4)
-			{
-				frame->AddUInt(pack->hdrSize, sz, element->elementName, ReadMUInt32(&buff[0]));
-			}
-			else if (sz == 8)
-			{
-				frame->AddUInt64(pack->hdrSize, element->elementName, ReadMUInt64(&buff[0]));
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_SINT)
-		{
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			Data::ByteBuffer buff(sz);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-			if (sz == 1)
-			{
-				frame->AddInt(pack->hdrSize, sz, element->elementName, (Int8)buff[0]);
-			}
-			else if (sz == 2)
-			{
-				frame->AddInt(pack->hdrSize, sz, element->elementName, ReadMInt16(&buff[0]));
-			}
-			else if (sz == 3)
-			{
-				frame->AddInt(pack->hdrSize, sz, element->elementName, ReadMInt24(&buff[0]));
-			}
-			else if (sz == 4)
-			{
-				frame->AddInt(pack->hdrSize, sz, element->elementName, ReadMInt32(&buff[0]));
-			}
-			else if (sz == 8)
-			{
-				frame->AddInt64(pack->hdrSize, element->elementName, ReadMInt64(&buff[0]));
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_FLOAT)
-		{
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			Data::ByteBuffer buff(sz);
-			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-			if (sz == 4)
-			{
-				frame->AddFloat(pack->hdrSize, 4, element->elementName, ReadMFloat(&buff[0]));
-			}
-			else if (sz == 8)
-			{
-				frame->AddFloat(pack->hdrSize, 8, element->elementName, ReadMDouble(&buff[0]));
-			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_BINARY)
-		{
-			UOSInt sz = pack->packSize - pack->hdrSize;
-			if (sz <= 64)
-			{
+				UOSInt sz = pack->packSize - pack->hdrSize;
 				Data::ByteBuffer buff(sz);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-				frame->AddHexBuff(pack->hdrSize, element->elementName, buff, true);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+				if (sz == 1)
+				{
+					frame->AddInt(pack->hdrSize, sz, element->elementName, (Int8)buff[0]);
+				}
+				else if (sz == 2)
+				{
+					frame->AddInt(pack->hdrSize, sz, element->elementName, ReadMInt16(&buff[0]));
+				}
+				else if (sz == 3)
+				{
+					frame->AddInt(pack->hdrSize, sz, element->elementName, ReadMInt24(&buff[0]));
+				}
+				else if (sz == 4)
+				{
+					frame->AddInt(pack->hdrSize, sz, element->elementName, ReadMInt32(&buff[0]));
+				}
+				else if (sz == 8)
+				{
+					frame->AddInt64(pack->hdrSize, element->elementName, ReadMInt64(&buff[0]));
+				}
 			}
-			else
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_FLOAT)
 			{
-				Data::ByteBuffer buff(32);
-				this->fd->GetRealData(pack->fileOfst + pack->hdrSize, 32, buff);
-				Text::StringBuilderUTF8 sb;
-				sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-				sb.AppendC(UTF8STRC("\r\n..\r\n"));
-				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-				frame->AddField(pack->hdrSize, sz, element->elementName, sb.ToCString());
+				UOSInt sz = pack->packSize - pack->hdrSize;
+				Data::ByteBuffer buff(sz);
+				fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+				if (sz == 4)
+				{
+					frame->AddFloat(pack->hdrSize, 4, element->elementName, ReadMFloat(&buff[0]));
+				}
+				else if (sz == 8)
+				{
+					frame->AddFloat(pack->hdrSize, 8, element->elementName, ReadMDouble(&buff[0]));
+				}
 			}
-		}
-		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_MASTER)
-		{
-			frame->AddSubframe(pack->hdrSize, pack->packSize - pack->hdrSize);
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_BINARY)
+			{
+				UOSInt sz = pack->packSize - pack->hdrSize;
+				if (sz <= 64)
+				{
+					Data::ByteBuffer buff(sz);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
+					frame->AddHexBuff(pack->hdrSize, element->elementName, buff, true);
+				}
+				else
+				{
+					Data::ByteBuffer buff(32);
+					fd->GetRealData(pack->fileOfst + pack->hdrSize, 32, buff);
+					Text::StringBuilderUTF8 sb;
+					sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+					sb.AppendC(UTF8STRC("\r\n..\r\n"));
+					fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
+					sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
+					frame->AddField(pack->hdrSize, sz, element->elementName, sb.ToCString());
+				}
+			}
+			else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_MASTER)
+			{
+				frame->AddSubframe(pack->hdrSize, pack->packSize - pack->hdrSize);
+			}
 		}
 	}
 	return frame;
@@ -914,7 +929,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFram
 
 Bool IO::FileAnalyse::EBMLFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::EBMLFileAnalyse::IsParsing()

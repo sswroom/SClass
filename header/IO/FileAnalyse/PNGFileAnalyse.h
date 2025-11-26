@@ -21,7 +21,7 @@ namespace IO
 				UOSInt size;
 			} PNGTag;
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PNGTag> tags;
 
 			Bool pauseParsing;

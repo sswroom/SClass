@@ -121,12 +121,17 @@ void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	UInt32 lastSize;
 	UInt8 tagHdr[15];
 	NN<IO::FileAnalyse::FLVFileAnalyse::FLVTag> tag;
+	NN<IO::StreamData> fd;
+	if (!me->fd.SetTo(fd))
+	{
+		return;
+	}
 	ofst = me->hdrSize + 4;
-	dataSize = me->fd->GetDataSize();
+	dataSize = fd->GetDataSize();
 	lastSize = 0;
 	while (ofst < dataSize - 11 && !thread->IsStopping())
 	{
-		if (me->fd->GetRealData(ofst - 4, 15, BYTEARR(tagHdr)) != 15)
+		if (fd->GetRealData(ofst - 4, 15, BYTEARR(tagHdr)) != 15)
 			break;
 		
 		if (ReadMUInt32(tagHdr) != lastSize)
@@ -168,7 +173,7 @@ IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(NN<IO::StreamData> fd) : thread(
 IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 {
 	this->thread.Stop();
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 	this->tags.MemFreeAll();
 }
 
@@ -202,10 +207,13 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 
 Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
+	if (!this->fd.SetTo(fd))
+		return false;
 	UInt8 buff[128];
 	if (index == 0)
 	{
-		this->fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
+		fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
 		sb->AppendC(UTF8STRC("Version = "));
 		sb->AppendU16(buff[3]);
 		sb->AppendC(UTF8STRC("\r\nTypeFlagsReserved = "));
@@ -225,7 +233,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		return false;
 	sb->AppendC(UTF8STRC("Tag"));
 	sb->AppendUOSInt(index);
-	this->fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
+	fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
 	sb->AppendC(UTF8STRC("\r\nReserved = "));
 	sb->AppendU16((UInt16)(buff[0] >> 6));
 	sb->AppendC(UTF8STRC("\r\nFilter = "));
@@ -253,7 +261,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	if (tag->tagType == 8)
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 
 		sb->AppendC(UTF8STRC("\r\n"));
 		if (tag->size >= 256 + 11)
@@ -268,7 +276,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	else if (tag->tagType == 9)
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 
 		sb->AppendC(UTF8STRC("\r\n"));
 		if (tag->size >= 256 + 11)
@@ -283,7 +291,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	else if (tag->tagType == 18)
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		IO::FileAnalyse::SBFrameDetail frame(sb);
 		ParseScriptData(tagData.Arr(), 11, tag->size, 0, frame);
 	}
@@ -322,15 +330,18 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index)
 {
+	NN<IO::StreamData> fd;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	Text::CString vName;
+	if (!this->fd.SetTo(fd))
+		return 0;
 	if (index == 0)
 	{
 		NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, this->hdrSize));
-		this->fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
+		fd->GetRealData(0, this->hdrSize, BYTEARR(buff));
 		sptr = Text::StrConcatC(sbuff, buff, 3);
 		frame->AddField(0, 3, CSTR("Magic"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, buff[3]);
@@ -357,7 +368,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 
-	this->fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
+	fd->GetRealData(tag->ofst, 11, BYTEARR(buff));
 	frame->AddUInt(0, 1, CSTR("Reserved"), (UInt16)(buff[0] >> 6));
 	frame->AddUInt(0, 1, CSTR("Filter"), (UInt16)((buff[0] >> 5) & 1));
 	vName = nullptr;
@@ -380,7 +391,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	if (tag->tagType == 8)
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 
 		if (tag->size >= 256 + 11)
 		{
@@ -396,7 +407,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	else if (tag->tagType == 9)
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		if (tag->size >= 256 + 11)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -411,7 +422,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	else if (tag->tagType == 18)
 	{
 		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
+		fd->GetRealData(tag->ofst, tag->size, tagData);
 		ParseScriptData(tagData.Arr(), 11, tag->size, 0, frame);
 	}
 	return frame;
@@ -419,7 +430,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 
 Bool IO::FileAnalyse::FLVFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::FLVFileAnalyse::IsParsing()

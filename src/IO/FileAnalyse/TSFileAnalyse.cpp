@@ -32,7 +32,7 @@ IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(NN<IO::StreamData> fd)
 
 IO::FileAnalyse::TSFileAnalyse::~TSFileAnalyse()
 {
-	SDEL_CLASS(this->fd);
+	this->fd.Delete();
 }
 
 Text::CStringNN IO::FileAnalyse::TSFileAnalyse::GetFormatName()
@@ -59,8 +59,11 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringB
 
 Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
+	NN<IO::StreamData> fd;
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
+		return false;
+	if (!this->fd.SetTo(fd))
 		return false;
 
 	UInt8 buff[192];
@@ -276,8 +279,11 @@ UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::StreamData> fd;
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
+		return 0;
+	if (!this->fd.SetTo(fd))
 		return 0;
 
 	UTF8Char sbuff[32];
@@ -414,7 +420,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameD
 
 Bool IO::FileAnalyse::TSFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::TSFileAnalyse::IsParsing()

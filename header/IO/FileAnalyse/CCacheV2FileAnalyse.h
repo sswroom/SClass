@@ -31,7 +31,7 @@ namespace IO
 				UOSInt col;
 			};
 		private:
-			IO::StreamData *fd;
+			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<TagInfo> tags;
 			UInt32 maxRowSize;
 
