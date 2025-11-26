@@ -255,8 +255,8 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 	essidEnd = essid;
 	while (buffEnd - buffCurr >= 8)
 	{
-		len = ReadUInt16(&buffCurr[0]);
-		cmd = ReadUInt16(&buffCurr[2]);
+		len = ReadNUInt16(&buffCurr[0]);
+		cmd = ReadNUInt16(&buffCurr[2]);
 //		printf("%x %d\r\n", cmd, len);
 		if (len < 8 || (buffEnd - buffCurr) < len)
 		{
@@ -337,10 +337,10 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		case 0x8B05: //SIOCGIWFREQ:
 			if (len >= firstOfst + 8)
 			{
-				UInt32 exp = ReadUInt32(&buffCurr[firstOfst + 4]);
+				UInt32 exp = ReadNUInt32(&buffCurr[firstOfst + 4]);
 				if (exp > 0)
 				{
-					bss.freq = ReadUInt32(&buffCurr[firstOfst]);
+					bss.freq = ReadNUInt32(&buffCurr[firstOfst]);
 					if (exp < 10)
 					{
 						while (exp-- > 0)
@@ -354,7 +354,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		case 0x8B07: //SIOCGIWMODE:
 			if (len >= firstOfst + 4)
 			{
-				UInt32 mode = ReadUInt32(&buffCurr[firstOfst]);
+				UInt32 mode = ReadNUInt32(&buffCurr[firstOfst]);
 				if (mode >= 2)
 				{
 					bss.bssType = Net::WirelessLAN::BST_INFRASTRUCTURE;
