@@ -41,8 +41,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		{
 			Text::StringBuilderUTF8 sb;
 			IO::RadioSignalLogger radioLogger;
-			radioLogger.CaptureBT(&btCapturer);
-			radioLogger.CaptureWiFi(&wifiCapturer);
+			radioLogger.CaptureBT(btCapturer);
+			radioLogger.CaptureWiFi(wifiCapturer);
 			Net::OSSocketFactory sockf(true);
 			Net::TCPClientFactory clif(sockf);
 			{

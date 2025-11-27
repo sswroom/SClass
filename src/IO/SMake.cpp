@@ -1773,7 +1773,7 @@ void IO::SMake::SetMessageWriter(Optional<IO::Writer> messageWriter)
 	this->messageWriter = messageWriter;
 }
 
-void IO::SMake::SetCommandWriter(IO::Writer *cmdWriter)
+void IO::SMake::SetCommandWriter(Optional<IO::Writer> cmdWriter)
 {
 	this->cmdWriter = cmdWriter;
 }

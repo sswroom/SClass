@@ -39,20 +39,20 @@ namespace IO
 			static Text::CString MemoryLocationGetName(UInt8 location);
 			static Text::CString PointingDeviceInterfaceGetName(UInt8 v);
 			static Text::CString SlotTypeGetName(UInt8 v);
-			static void AddString(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddHex8(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddHex16(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddHex32(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddHex64(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddUInt8(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddUInt16(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddUInt32(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddUInt64(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddUUID(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddDate(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name);
-			static void AddBits(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, const Char *bitNames[]);
-			static void AddEnum(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt);
-			static void AddEnum(NN<FrameDetail> frame, UOSInt ofst, UInt8 val, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt);
+			static void AddString(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddHex8(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddHex16(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddHex32(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddHex64(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddUInt8(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddUInt16(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddUInt32(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddUInt64(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddUUID(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddDate(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name);
+			static void AddBits(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, const Char *bitNames[]);
+			static void AddEnum(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, UnsafeArray<Text::CString> carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt);
+			static void AddEnum(NN<FrameDetail> frame, UOSInt ofst, UInt8 val, UnsafeArray<Text::CString> carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt);
 		};
 	}
 }

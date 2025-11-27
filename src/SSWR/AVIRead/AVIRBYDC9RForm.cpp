@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
 	IO::Device::BYDC9R::DeviceStatus currStatus;
-	me->c9r.GetStatus(&currStatus);
+	me->c9r.GetStatus(currStatus);
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 
@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(Optional<UI::GUIClientControl> par
 
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	this->c9r.GetStatus(&this->dispStatus);
+	this->c9r.GetStatus(this->dispStatus);
 	this->lblSpeedKmHr = ui->NewLabel(*this, CSTR("Speed (km/Hr)"));
 	this->lblSpeedKmHr->SetRect(4, 64, 100, 23, false);
 	this->txtSpeedKmHr = ui->NewTextBox(*this, CSTR("0"));

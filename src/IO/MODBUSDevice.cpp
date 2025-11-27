@@ -8,34 +8,35 @@
 void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize)
 {
 	NN<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
+	UnsafeArray<UInt8> reqBResult;
 	if (funcCode == 4)
 	{
-		if (me->reqBResult)
+		if (me->reqBResult.SetTo(reqBResult))
 		{
-			MemCopyNO(me->reqBResult, result.Ptr(), resultSize);
+			reqBResult.CopyFromNO(result, resultSize);
 			me->reqHasResult = true;
 			me->cbEvt.Set();
 		}
 		else if (resultSize == 4)
 		{
-			if (me->reqDResult)
+			if (me->reqDResult.IsNotNull())
 			{
-				me->reqDResult[0] = ReadMFloat(&result[0]);
+				me->reqDResult.SetNoCheck(ReadMFloat(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
-			else if (me->reqIResult)
+			else if (me->reqIResult.IsNotNull())
 			{
-				me->reqIResult[0] = ReadMInt32(&result[0]);
+				me->reqIResult.SetNoCheck(ReadMInt32(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 		}
 		else if (resultSize == 2)
 		{
-			if (me->reqIResult)
+			if (me->reqIResult.IsNotNull())
 			{
-				me->reqIResult[0] = ReadMUInt16(&result[0]);
+				me->reqIResult.SetNoCheck(ReadMUInt16(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -43,32 +44,32 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, Uns
 	}
 	else if (funcCode == 3)
 	{
-		if (me->reqBResult)
+		if (me->reqBResult.SetTo(reqBResult))
 		{
-			MemCopyNO(me->reqBResult, result.Ptr(), resultSize);
+			reqBResult.CopyFromNO(result, resultSize);
 			me->reqHasResult = true;
 			me->cbEvt.Set();
 		}
 		else if (resultSize == 4)
 		{
-			if (me->reqDResult)
+			if (me->reqDResult.IsNotNull())
 			{
-				me->reqDResult[0] = ReadMFloat(&result[0]);
+				me->reqDResult.SetNoCheck(ReadMFloat(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
-			else if (me->reqIResult)
+			else if (me->reqIResult.IsNotNull())
 			{
-				me->reqIResult[0] = ReadMInt32(&result[0]);
+				me->reqIResult.SetNoCheck(ReadMInt32(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 		}
 		else if (resultSize == 2)
 		{
-			if (me->reqIResult)
+			if (me->reqIResult.IsNotNull())
 			{
-				me->reqIResult[0] = ReadMUInt16(&result[0]);
+				me->reqIResult.SetNoCheck(ReadMUInt16(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -76,29 +77,29 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, Uns
 	}
 	else if (funcCode == 2)
 	{
-		if (me->reqIResult)
+		if (me->reqIResult.IsNotNull())
 		{
 			if (resultSize == 1)
 			{
-				me->reqIResult[0] = result[0];
+				me->reqIResult.SetNoCheck(result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 2)
 			{
-				me->reqIResult[0] = ReadUInt16(&result[0]);
+				me->reqIResult.SetNoCheck(ReadUInt16(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 3)
 			{
-				me->reqIResult[0] = (Int32)ReadUInt24(&result[0]);
+				me->reqIResult.SetNoCheck((Int32)ReadUInt24(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 4)
 			{
-				me->reqIResult[0] = ReadInt32(&result[0]);
+				me->reqIResult.SetNoCheck(ReadInt32(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -106,29 +107,29 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, Uns
 	}
 	else if (funcCode == 1)
 	{
-		if (me->reqIResult)
+		if (me->reqIResult.IsNotNull())
 		{
 			if (resultSize == 1)
 			{
-				me->reqIResult[0] = result[0];
+				me->reqIResult.SetNoCheck(result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 2)
 			{
-				me->reqIResult[0] = ReadUInt16(&result[0]);
+				me->reqIResult.SetNoCheck(ReadUInt16(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 3)
 			{
-				me->reqIResult[0] = (Int32)ReadUInt24(&result[0]);
+				me->reqIResult.SetNoCheck((Int32)ReadUInt24(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 4)
 			{
-				me->reqIResult[0] = ReadInt32(&result[0]);
+				me->reqIResult.SetNoCheck(ReadInt32(&result[0]));
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -159,11 +160,11 @@ Bool IO::MODBUSDevice::ReadInputI16(UInt16 addr, OutParam<Int32> outVal)
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = outVal.Ptr();
+	this->reqIResult = outVal;
 	this->cbEvt.Clear();
 	this->modbus->ReadInputRegisters(this->addr, addr, 1);
 	this->cbEvt.Wait(this->timeout);
-	this->reqIResult = 0;
+	this->reqIResult = nullptr;
 	succ = this->reqHasResult;
 	mutUsage.EndUse();
 	return succ;
@@ -173,15 +174,15 @@ Bool IO::MODBUSDevice::ReadInputFloat(UInt16 addr, OutParam<Double> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqDResult = outVal.Ptr();
+	this->reqDResult = outVal;
 	this->cbEvt.Clear();
 	this->modbus->ReadInputRegisters(this->addr, addr, 2);
 	this->cbEvt.Wait(this->timeout);
-	this->reqDResult = 0;
+	this->reqDResult = nullptr;
 	return this->reqHasResult;
 }
 
-Bool IO::MODBUSDevice::ReadInputBuff(UInt16 addr, UInt16 regCnt, UInt8 *buff)
+Bool IO::MODBUSDevice::ReadInputBuff(UInt16 addr, UInt16 regCnt, UnsafeArray<UInt8> buff)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
@@ -198,11 +199,11 @@ Bool IO::MODBUSDevice::ReadHoldingI16(UInt16 addr, OutParam<Int32> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = outVal.Ptr();
+	this->reqIResult = outVal;
 	this->cbEvt.Clear();
 	this->modbus->ReadHoldingRegisters(this->addr, addr, 1);
 	this->cbEvt.Wait(this->timeout);
-	this->reqIResult = 0;
+	this->reqIResult = nullptr;
 	return this->reqHasResult;
 }
 
@@ -210,11 +211,11 @@ Bool IO::MODBUSDevice::ReadHoldingI32(UInt16 addr, OutParam<Int32> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = outVal.Ptr();
+	this->reqIResult = outVal;
 	this->cbEvt.Clear();
 	this->modbus->ReadHoldingRegisters(this->addr, addr, 2);
 	this->cbEvt.Wait(this->timeout);
-	this->reqIResult = 0;
+	this->reqIResult = nullptr;
 	return this->reqHasResult;
 }
 
@@ -222,11 +223,11 @@ Bool IO::MODBUSDevice::ReadHoldingFloat(UInt16 addr, OutParam<Double> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqDResult = outVal.Ptr();
+	this->reqDResult = outVal;
 	this->cbEvt.Clear();
 	this->modbus->ReadHoldingRegisters(this->addr, addr, 2);
 	this->cbEvt.Wait(this->timeout);
-	this->reqDResult = 0;
+	this->reqDResult = nullptr;
 	return this->reqHasResult;
 }
 
@@ -242,7 +243,7 @@ Bool IO::MODBUSDevice::WriteHoldingU16(UInt16 addr, UInt16 val)
 	return this->reqHasResult;
 }
 
-Bool IO::MODBUSDevice::WriteHoldingsU16(UInt16 addr, UInt16 cnt, UInt16 *val)
+Bool IO::MODBUSDevice::WriteHoldingsU16(UInt16 addr, UInt16 cnt, UnsafeArray<UInt16> val)
 {
 	UInt8 buff[256];
 	OSInt i = 0;
@@ -293,11 +294,11 @@ Bool IO::MODBUSDevice::ReadDInput(UInt16 addr)
 	Int32 outVal = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = &outVal;
+	this->reqIResult = OptOut<Int32>(outVal);
 	this->cbEvt.Clear();
 	this->modbus->ReadInputs(this->addr, addr, 1);
 	this->cbEvt.Wait(this->timeout);
-	this->reqIResult = 0;
+	this->reqIResult = nullptr;
 	if (this->reqHasResult)
 	{
 		return outVal != 0;
@@ -308,7 +309,7 @@ Bool IO::MODBUSDevice::ReadDInput(UInt16 addr)
 	}
 }
 
-Bool IO::MODBUSDevice::ReadDInputs(UInt16 addr, UInt16 cnt, Int32 *outVal)
+Bool IO::MODBUSDevice::ReadDInputs(UInt16 addr, UInt16 cnt, OutParam<Int32> outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
@@ -316,7 +317,7 @@ Bool IO::MODBUSDevice::ReadDInputs(UInt16 addr, UInt16 cnt, Int32 *outVal)
 	this->cbEvt.Clear();
 	this->modbus->ReadInputs(this->addr, addr, cnt);
 	this->cbEvt.Wait(this->timeout);
-	this->reqIResult = 0;
+	this->reqIResult = nullptr;
 	return this->reqHasResult;
 }
 
@@ -325,11 +326,11 @@ Bool IO::MODBUSDevice::ReadCoil(UInt16 addr)
 	Int32 outVal = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqHasResult = false;
-	this->reqIResult = &outVal;
+	this->reqIResult = OptOut<Int32>(outVal);
 	this->cbEvt.Clear();
 	this->modbus->ReadCoils(this->addr, addr, 1);
 	this->cbEvt.Wait(this->timeout);
-	this->reqIResult = 0;
+	this->reqIResult = nullptr;
 	if (this->reqHasResult)
 	{
 		return outVal != 0;
@@ -357,8 +358,8 @@ IO::MODBUSDevice::MODBUSDevice(NN<IO::MODBUSMaster> modbus, UInt8 addr)
 	this->modbus = modbus;
 	this->addr = addr;
 	this->timeout = 200;
-	this->reqDResult = 0;
-	this->reqIResult = 0;
+	this->reqDResult = nullptr;
+	this->reqIResult = nullptr;
 	this->reqBResult = 0;
 	this->reqSetStartAddr = 0;
 	this->reqSetCount = 0;

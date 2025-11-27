@@ -17,12 +17,12 @@ namespace IO
 		class BluetoothCtlProgCtrl : public IO::BTScanner
 		{
 		private:
-			Manage::ProcessExecution *prog;
+			NN<Manage::ProcessExecution> prog;
 			Sync::Mutex devMut;
 			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> devMap;
 			Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3> randDevMap;
 			Sync::Mutex lastCmdMut;
-			Text::String *lastCmd;
+			Optional<Text::String> lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
 			AnyType recHdlrObj;
 			Sync::Thread thread;

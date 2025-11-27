@@ -10,14 +10,14 @@ namespace IO
 		class QQZMSerialCamera
 		{
 		private:
-			IO::Stream *stm;
+			NN<IO::Stream> stm;
 			UInt8 cameraId;
 			Bool toRelease;
 
 			Bool threadToStop;
 			Bool threadRunning;
 
-			UInt8 *imgBuff;
+			UnsafeArrayOpt<UInt8> imgBuff;
 			UInt32 imgSize;
 			Int32 imgPackets;
 			UInt32 imgNextOfst;
@@ -27,10 +27,10 @@ namespace IO
 
 			static UInt32 __stdcall RecvThread(AnyType userObj);
 		public:
-			QQZMSerialCamera(IO::Stream *stm, UInt8 cameraId, Bool toRelease);
+			QQZMSerialCamera(NN<IO::Stream> stm, UInt8 cameraId, Bool toRelease);
 			~QQZMSerialCamera();
 
-			Bool CapturePhoto(IO::Stream *outStm);
+			Bool CapturePhoto(NN<IO::Stream> outStm);
 		};
 	}
 }

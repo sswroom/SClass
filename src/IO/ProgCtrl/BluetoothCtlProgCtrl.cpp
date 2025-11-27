@@ -15,6 +15,7 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 	UOSInt readSize;
 	Text::PString sarr[2];
 	UOSInt i;
+	NN<Text::String> lastCmd;
 	NN<IO::BTScanLog::ScanRecord3> dev;
 
 	{
@@ -34,7 +35,7 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 			while ((i = Text::StrSplitLineP(sarr, 2, sarr[1])) == 2)
 			{
 				Sync::MutexUsage mutUsage(me->lastCmdMut);
-				if (me->lastCmd && me->lastCmd->Equals(sarr[0].v, sarr[0].leng))
+				if (me->lastCmd.SetTo(lastCmd) && lastCmd->Equals(sarr[0].v, sarr[0].leng))
 				{
 					me->cmdReady = true;
 				}
@@ -322,8 +323,8 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd
 	this->cmdReady = false;
 	{
 		Sync::MutexUsage mutUsage(this->lastCmdMut);
-		SDEL_STRING(this->lastCmd);
-		this->lastCmd = Text::String::New(cmd, cmdLen).Ptr();
+		OPTSTR_DEL(this->lastCmd);
+		this->lastCmd = Text::String::New(cmd, cmdLen);
 	}
 	if (cmdLen < 255)
 	{
@@ -401,7 +402,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl() : thread(ReadThread, 
 	this->agentOn = false;
 	this->scanOn = false;
 	this->cmdReady = false;
-	NEW_CLASS(this->prog, Manage::ProcessExecution(CSTR("bluetoothctl")));
+	NEW_CLASSNN(this->prog, Manage::ProcessExecution(CSTR("bluetoothctl")));
 	if (this->prog->IsRunning())
 	{
 		this->thread.Start();
@@ -411,9 +412,9 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl() : thread(ReadThread, 
 IO::ProgCtrl::BluetoothCtlProgCtrl::~BluetoothCtlProgCtrl()
 {
 	this->Close();
-	DEL_CLASS(this->prog);
+	this->prog.Delete();
 	this->devMap.FreeAll(DeviceFree);
-	SDEL_STRING(this->lastCmd);
+	OPTSTR_DEL(this->lastCmd);
 }
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::HandleRecordUpdate(RecordHandler hdlr, AnyType userObj)

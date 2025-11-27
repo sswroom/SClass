@@ -32,16 +32,16 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 					sb.ClearStr();
 					reader.ReadNodeText(sb);
 					sb.TrimWSCRLF();
-					SDEL_STRING(this->oiVersion);
-					this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					OPTSTR_DEL(this->oiVersion);
+					this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 				else if (nodeName->Equals(UTF8STRC("oitrackversion")))
 				{
 					sb.ClearStr();
 					reader.ReadNodeText(sb);
 					sb.TrimWSCRLF();
-					SDEL_STRING(this->oiTrackVersion);
-					this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+					OPTSTR_DEL(this->oiTrackVersion);
+					this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 				else if (nodeName->Equals(UTF8STRC("support")))
 				{
@@ -81,9 +81,11 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 
 void IO::Device::OlympusCameraControl::GetImageList()
 {
-	if (this->fileList == 0)
+	NN<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> fileList;
+	if (this->fileList.IsNull())
 	{
-		NEW_CLASS(this->fileList, Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>());
+		NEW_CLASSNN(fileList, Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>());
+		this->fileList = fileList;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		NN<Net::HTTPClient> cli;
@@ -127,7 +129,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 				{
 					file->fileType = IO::CameraControl::FT_IMAGE;
 				}
-				this->fileList->Add(file);
+				fileList->Add(file);
 			}
 		}
 		DEL_CLASS(reader);
@@ -137,7 +139,8 @@ void IO::Device::OlympusCameraControl::GetImageList()
 
 void IO::Device::OlympusCameraControl::GetGPSLogList()
 {
-	if (this->cmdList.SortedIndexOfC(CSTR("get_gpsloglist")) < 0)
+	NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList;
+	if (this->cmdList.SortedIndexOfC(CSTR("get_gpsloglist")) < 0 || !this->fileList.SetTo(fileList))
 	{
 		return;
 	}
@@ -177,7 +180,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7].v[0] - 48) * 10 + (sarr[7].v[1] - 48), (sarr[7].v[2] - 48) * 10 + (sarr[7].v[3] - 48), (sarr[7].v[4] - 48) * 10 + (sarr[7].v[5] - 48), 0);
 				file->fileTimeTicks = dt.ToTicks();
 				file->fileType = IO::CameraControl::FT_GPSLOG;
-				this->fileList->Add(file);
+				fileList->Add(file);
 			}
 		}
 	}
@@ -188,7 +191,8 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 
 void IO::Device::OlympusCameraControl::GetSNSLogList()
 {
-	if (this->cmdList.SortedIndexOfC(CSTR("get_snsloglist")) < 0)
+	NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList;
+	if (this->cmdList.SortedIndexOfC(CSTR("get_snsloglist")) < 0 || !this->fileList.SetTo(fileList))
 	{
 		return;
 	}
@@ -228,7 +232,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7].v[0] - 48) * 10 + (sarr[7].v[1] - 48), (sarr[7].v[2] - 48) * 10 + (sarr[7].v[3] - 48), (sarr[7].v[4] - 48) * 10 + (sarr[7].v[5] - 48), 0);
 				file->fileTimeTicks = dt.ToTicks();
 				file->fileType = IO::CameraControl::FT_SENSORLOG;
-				this->fileList->Add(file);
+				fileList->Add(file);
 			}
 		}
 	}
@@ -236,9 +240,9 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	cli.Delete();
 }
 
-IO::Device::OlympusCameraControl::OlympusCameraControl(NN<Net::TCPClientFactory> clif, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
+IO::Device::OlympusCameraControl::OlympusCameraControl(NN<Net::TCPClientFactory> clif, Optional<Text::EncodingFactory> encFact, NN<const Net::SocketUtil::AddressInfo> addr) : IO::CameraControl()
 {
-	this->addr = *addr;
+	this->addr = addr.Ptr()[0];
 	this->clif = clif;
 	this->encFact = encFact;
 	this->oiVersion = 0;
@@ -249,40 +253,42 @@ IO::Device::OlympusCameraControl::OlympusCameraControl(NN<Net::TCPClientFactory>
 
 IO::Device::OlympusCameraControl::~OlympusCameraControl()
 {
+	NN<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> fileList;
 	this->cmdList.FreeAll();
-	if (this->fileList)
+	if (this->fileList.SetTo(fileList))
 	{
 		NN<IO::CameraControl::FileInfo> file;
-		UOSInt i = this->fileList->GetCount();
+		UOSInt i = fileList->GetCount();
 		while (i-- > 0)
 		{
-			file = this->fileList->GetItemNoCheck(i);
+			file = fileList->GetItemNoCheck(i);
 			MemFreeNN(file);
 		}
-		DEL_CLASS(this->fileList);
+		fileList.Delete();
 	}
-	SDEL_STRING(this->oiVersion);
-	SDEL_STRING(this->oiTrackVersion);
+	OPTSTR_DEL(this->oiVersion);
+	OPTSTR_DEL(this->oiTrackVersion);
 }
 
 UOSInt IO::Device::OlympusCameraControl::GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	Text::StringBuilderUTF8 sb;
+	NN<Text::String> s;
 	UOSInt initCnt = nameList->GetCount();
 	if (this->GetModel(sb))
 	{
 		nameList->Add(Text::String::New(UTF8STRC("Model")));
 		valueList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 	}
-	if (this->oiVersion)
+	if (this->oiVersion.SetTo(s))
 	{
 		nameList->Add(Text::String::New(UTF8STRC("OI Version")));
-		valueList->Add(this->oiVersion->Clone());
+		valueList->Add(s->Clone());
 	}
-	if (this->oiTrackVersion)
+	if (this->oiTrackVersion.SetTo(s))
 	{
 		nameList->Add(Text::String::New(UTF8STRC("OI Track Version")));
-		valueList->Add(this->oiTrackVersion->Clone());
+		valueList->Add(s->Clone());
 	}
 	return nameList->GetCount() - initCnt;
 }
@@ -295,14 +301,14 @@ void IO::Device::OlympusCameraControl::FreeInfoList(NN<Data::ArrayListStringNN> 
 
 UOSInt IO::Device::OlympusCameraControl::GetFileList(NN<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> fileList)
 {
-	if (this->fileList == 0)
+	if (this->fileList.IsNull())
 	{
 		this->GetImageList();
 		this->GetGPSLogList();
 		this->GetSNSLogList();
 	}
 	NN<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> nnfileList;
-	if (nnfileList.Set(this->fileList))
+	if (this->fileList.SetTo(nnfileList))
 	{
 		fileList->AddAll(nnfileList);
 		return nnfileList->GetCount();
@@ -372,12 +378,12 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(NN<IO::Device::OlympusCa
 	return totalSize > 512;
 }
 
-Text::String *IO::Device::OlympusCameraControl::GetOIVersion()
+Optional<Text::String> IO::Device::OlympusCameraControl::GetOIVersion()
 {
 	return this->oiVersion;
 }
 
-Text::String *IO::Device::OlympusCameraControl::GetOITrackVersion()
+Optional<Text::String> IO::Device::OlympusCameraControl::GetOITrackVersion()
 {
 	return this->oiTrackVersion;
 }
@@ -443,7 +449,7 @@ Optional<IO::Device::OlympusCameraControl> IO::Device::OlympusCameraControl::Cre
 		Net::SocketUtil::AddressInfo addr;
 		Net::SocketUtil::SetAddrInfoV4(addr, ip);
 		IO::Device::OlympusCameraControl *ctrl;
-		NEW_CLASS(ctrl, IO::Device::OlympusCameraControl(clif, encFact, &addr));
+		NEW_CLASS(ctrl, IO::Device::OlympusCameraControl(clif, encFact, addr));
 		return ctrl;
 	}
 	return 0;

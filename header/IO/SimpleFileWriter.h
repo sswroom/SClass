@@ -12,15 +12,15 @@ namespace IO
 
 		UOSInt WriteBuff(UnsafeArray<const UInt8> buff, UOSInt size);
 	public:
-		SimpleFileWriter(const UTF8Char *fileName, IO::FileMode mode, IO::FileShare share);
+		SimpleFileWriter(UnsafeArray<const UTF8Char> fileName, IO::FileMode mode, IO::FileShare share);
 		virtual ~SimpleFileWriter();
 
 		virtual Bool Write(Text::CStringNN str);
 		virtual Bool WriteLine(Text::CStringNN str);
-		virtual Bool WriteW(const WChar *str, UOSInt nChar);
-		virtual Bool WriteW(const WChar *str);
-		virtual Bool WriteLineW(const WChar *str, UOSInt nChar);
-		virtual Bool WriteLineW(const WChar *str);
+		virtual Bool WriteW(UnsafeArray<const WChar> str, UOSInt nChar);
+		virtual Bool WriteW(UnsafeArray<const WChar> str);
+		virtual Bool WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar);
+		virtual Bool WriteLineW(UnsafeArray<const WChar> str);
 		virtual Bool WriteLine();
 	};
 }

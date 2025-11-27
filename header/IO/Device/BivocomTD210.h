@@ -12,7 +12,7 @@ namespace IO
 			BivocomTD210(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~BivocomTD210();
 
-			Bool ReadIOs(Int32 *io); //Bit0 = IO1, Bit1 = IO@, Bit2 = IO3
+			Bool ReadIOs(OutParam<Int32> io); //Bit0 = IO1, Bit1 = IO@, Bit2 = IO3
 			Bool SetOutput1(Bool isHigh);
 			Bool SetOutput2(Bool isHigh);
 			Bool SetOutput3(Bool isHigh);

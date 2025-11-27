@@ -25,7 +25,7 @@ namespace IO
 				UInt64 fileOfst;
 				UOSInt packSize;
 				PackType packType;
-				Text::String *fileName;
+				Optional<Text::String> fileName;
 			} PackInfo;
 		private:
 			Optional<IO::StreamData> fd;

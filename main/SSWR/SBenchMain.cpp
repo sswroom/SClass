@@ -20,7 +20,7 @@
 #include "IO/OS.h"
 #include "IO/Path.h"
 #include "IO/SystemInfo.h"
-#include "Manage/Benchmark.h"
+#include "Manage/Benchmark_C.h"
 #include "Manage/CPUDB.h"
 #include "Manage/CPUInfoDetail.h"
 #include "Manage/ExceptionRecorder.h"

@@ -12,7 +12,7 @@ typedef struct
 	WORD wCodePage;
 } LANGANDCODEPAGE;
 
-IO::FileVersion::FileVersion(UInt8 *buff, UInt32 buffSize)
+IO::FileVersion::FileVersion(UnsafeArray<UInt8> buff, UInt32 buffSize)
 {
 	this->buff = buff;
 	this->buffSize = buffSize;
@@ -20,7 +20,7 @@ IO::FileVersion::FileVersion(UInt8 *buff, UInt32 buffSize)
 
 IO::FileVersion::~FileVersion()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
 Int32 IO::FileVersion::GetFirstLang()
@@ -65,20 +65,21 @@ UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetFileDescription(Int32 lang, UnsafeA
 	return 0;
 }
 
-IO::FileVersion *IO::FileVersion::Open(const UTF8Char *file)
+Optional<IO::FileVersion> IO::FileVersion::Open(UnsafeArrayOpt<const UTF8Char> file)
 {
 	DWORD dwSize;
 	UTF8Char sbuff[512];
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UnsafeArray<const WChar> fileName;
-	if (file == 0)
+	UnsafeArray<const UTF8Char> nnfile;
+	if (!file.SetTo(nnfile))
 	{
 		IO::Path::GetProcessFileName(sbuff);
 		fileName = Text::StrToWCharNew(sbuff);;
 	}
 	else
 	{
-		fileName = Text::StrToWCharNew(file);
+		fileName = Text::StrToWCharNew(nnfile);
 	}
 	dwSize = GetFileVersionInfoSizeW(fileName.Ptr(), 0);
 	if (dwSize > 0)
@@ -93,7 +94,7 @@ IO::FileVersion *IO::FileVersion::Open(const UTF8Char *file)
 		}
 		else
 		{
-			MemFree(buff);
+			MemFreeArr(buff);
 			Text::StrDelNew(fileName);
 			return 0;
 		}

@@ -22,13 +22,13 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UO
 		}
 		else
 		{
-			this->cmdWResults.Add(Text::String::New(cmd, cmdLen).Ptr());
+			this->cmdWResults.Add(Text::String::New(cmd, cmdLen));
 			this->cmdEvt.Set();
 		}
 	}
 	else
 	{
-		this->cmdWResults.Add(Text::String::New(cmd, cmdLen).Ptr());
+		this->cmdWResults.Add(Text::String::New(cmd, cmdLen));
 		this->cmdEvt.Set();
 	}
 }
@@ -44,11 +44,11 @@ IO::Device::MTKGPSNMEA::MTKGPSNMEA(NN<IO::Stream> stm, Bool relStm) : IO::GPSNME
 IO::Device::MTKGPSNMEA::~MTKGPSNMEA()
 {
 	this->stm->Close();
-	LIST_FREE_STRING(&this->cmdWResults);
-	SDEL_STRING(this->firmwareBuild);
-	SDEL_STRING(this->firmwareRel);
-	SDEL_STRING(this->productMode);
-	SDEL_STRING(this->sdkVer);
+	NNLIST_FREE_STRING(&this->cmdWResults);
+	OPTSTR_DEL(this->firmwareBuild);
+	OPTSTR_DEL(this->firmwareRel);
+	OPTSTR_DEL(this->productMode);
+	OPTSTR_DEL(this->sdkVer);
 }
 
 Map::LocationService::ServiceType IO::Device::MTKGPSNMEA::GetServiceType()
@@ -89,8 +89,8 @@ Bool IO::Device::MTKGPSNMEA::IsMTKDevice()
 	UInt8 buff[64];
 	Bool succ = false;
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK000"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001"), 2000).SetTo(result))
 		return false;
 	succ = result->StartsWith(UTF8STRC("$PMTK001,0,3*"));
 	result->Release();
@@ -106,8 +106,8 @@ Bool IO::Device::MTKGPSNMEA::QueryFirmware()
 	UOSInt i;
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK605"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK705"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK705"), 2000).SetTo(result))
 		return false;
 	
 	sptr = result->ConcatTo(sbuff);
@@ -116,14 +116,14 @@ Bool IO::Device::MTKGPSNMEA::QueryFirmware()
 	i = Text::StrSplitP(sarr, 5, sarr2[0], ',');
 	if (i == 5)
 	{
-		SDEL_STRING(this->firmwareBuild);
-		SDEL_STRING(this->firmwareRel);
-		SDEL_STRING(this->productMode);
-		SDEL_STRING(this->sdkVer);
-		this->firmwareRel = Text::String::New(sarr[1].v, sarr[1].leng).Ptr();
-		this->firmwareBuild = Text::String::New(sarr[2].v, sarr[2].leng).Ptr();
-		this->productMode = Text::String::New(sarr[3].v, sarr[3].leng).Ptr();
-		this->sdkVer = Text::String::New(sarr[4].v, sarr[4].leng).Ptr();
+		OPTSTR_DEL(this->firmwareBuild);
+		OPTSTR_DEL(this->firmwareRel);
+		OPTSTR_DEL(this->productMode);
+		OPTSTR_DEL(this->sdkVer);
+		this->firmwareRel = Text::String::New(sarr[1].v, sarr[1].leng);
+		this->firmwareBuild = Text::String::New(sarr[2].v, sarr[2].leng);
+		this->productMode = Text::String::New(sarr[3].v, sarr[3].leng);
+		this->sdkVer = Text::String::New(sarr[4].v, sarr[4].leng);
 		return true;
 	}
 	else
@@ -138,8 +138,8 @@ Bool IO::Device::MTKGPSNMEA::IsLogEnabled()
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,7"), buff);
 	UTF8Char sbuff[128];
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,7,"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,7,"), 2000).SetTo(result))
 		return false;
 	sptr = result->ConcatTo(sbuff);
 	UOSInt i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '*');
@@ -159,8 +159,8 @@ Bool IO::Device::MTKGPSNMEA::DisableLog()
 {
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,5"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,5,3"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,5,3"), 2000).SetTo(result))
 		return false;
 	result->Release();
 	return true;
@@ -170,8 +170,8 @@ Bool IO::Device::MTKGPSNMEA::EnableLog()
 {
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,4"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,4,3"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,4,3"), 2000).SetTo(result))
 		return false;
 	result->Release();
 	return true;
@@ -189,7 +189,7 @@ UOSInt IO::Device::MTKGPSNMEA::CalLogBlockCount(UOSInt logSize)
 	}
 }
 
-Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
+Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UnsafeArray<UInt8> buff)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -202,9 +202,11 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 	sptr = Text::StrHexVal32(sptr, 0x400);
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	Text::String *data = 0;
-	Text::String *resp = 0;
-	Text::String *cmdRes;
+	Optional<Text::String> data = 0;
+	Optional<Text::String> resp = 0;
+	NN<Text::String> nndata;
+	NN<Text::String> nnresp;
+	NN<Text::String> cmdRes;
 	i = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), cbuff);
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->stm->Write(Data::ByteArrayR(cbuff, i));
@@ -216,23 +218,25 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 		while (this->cmdWResults.GetCount() > 0)
 		{
 			dt.SetCurrTimeUTC();
-			cmdRes = this->cmdWResults.RemoveAt(0);
-			if (cmdRes->StartsWith(UTF8STRC("$PMTK182,8")))
+			if (this->cmdWResults.RemoveAt(0).SetTo(cmdRes))
 			{
-				SDEL_STRING(data);
-				data = cmdRes;
-			}
-			else if (cmdRes->StartsWith(UTF8STRC("$PMTK001,182,7,")))
-			{
-				resp = cmdRes;
-				break;
-			}
-			else
-			{
-				cmdRes->Release();
+				if (cmdRes->StartsWith(UTF8STRC("$PMTK182,8")))
+				{
+					OPTSTR_DEL(data);
+					data = cmdRes;
+				}
+				else if (cmdRes->StartsWith(UTF8STRC("$PMTK001,182,7,")))
+				{
+					resp = cmdRes;
+					break;
+				}
+				else
+				{
+					cmdRes->Release();
+				}
 			}
 		}
-		if (resp)
+		if (resp.NotNull())
 			break;
 		dt2.SetCurrTimeUTC();
 		if (dt2.DiffMS(dt) >= 2000)
@@ -240,33 +244,33 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 	}
 
 	mutUsage.EndUse();
-	if (resp && data)
+	if (resp.SetTo(nnresp) && data.SetTo(nndata))
 	{
 		Bool succ = false;
-		Text::StrConcatC(sbuff, &data->v[11], 8);
+		Text::StrConcatC(sbuff, &nndata->v[11], 8);
 		i = Text::StrHex2UInt32C(sbuff);
-		j = data->leng;
+		j = nndata->leng;
 		if (i == addr && j == 2071)
 		{
-			j = Text::StrHex2Bytes(&data->v[20], buff);
+			j = Text::StrHex2Bytes(&nndata->v[20], buff);
 			if (j == 1024)
 			{
 				succ = true;
 			}
 		}
-		data->Release();
-		resp->Release();
+		nndata->Release();
+		nnresp->Release();
 		return succ;
 	}
 	else
 	{
-		SDEL_STRING(data);
-		SDEL_STRING(resp);
+		OPTSTR_DEL(data);
+		OPTSTR_DEL(resp);
 		return false;
 	}
 }
 
-Bool IO::Device::MTKGPSNMEA::ReadLogBlock(UOSInt addr, UInt8 *buff)
+Bool IO::Device::MTKGPSNMEA::ReadLogBlock(UOSInt addr, UnsafeArray<UInt8> buff)
 {
 	UOSInt retryCnt = 0;
 	UOSInt ofst = 0;
@@ -326,8 +330,8 @@ Bool IO::Device::MTKGPSNMEA::DelLogData()
 {
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,6,1"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,6,3"), 30000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,6,3"), 30000).SetTo(result))
 		return false;
 	result->Release();
 	return true;
@@ -340,8 +344,8 @@ Bool IO::Device::MTKGPSNMEA::SetLogFormat(LogFormat lf)
 	UInt8 buff[64];
 	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("$PMTK182,1,2,")), (UInt32)lf);
 	UOSInt cmdSize = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000).SetTo(result))
 		return false;
 	result->Release();
 	return true;
@@ -354,8 +358,8 @@ Bool IO::Device::MTKGPSNMEA::SetLogInterval(UInt32 sec)
 	UInt8 buff[64];
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("$PMTK182,1,3,")), sec * 10);
 	UOSInt cmdSize = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000).SetTo(result))
 		return false;
 	result->Release();
 	return true;
@@ -368,8 +372,8 @@ Bool IO::Device::MTKGPSNMEA::SetLogDistance(UInt32 meter)
 	UInt8 buff[64];
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("$PMTK182,1,4,")), meter * 10);
 	UOSInt cmdSize = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000).SetTo(result))
 		return false;
 	result->Release();
 	return true;
@@ -392,8 +396,8 @@ Bool IO::Device::MTKGPSNMEA::SetLogMode(LogMode lm)
 		return false;
 	}
 	UOSInt cmdSize = GenNMEACommand(cmd.v, cmd.leng, buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000).SetTo(result))
 		return false;
 	result->Release();
 	return true;
@@ -405,8 +409,8 @@ IO::Device::MTKGPSNMEA::LogFormat IO::Device::MTKGPSNMEA::GetLogFormat()
 	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,2"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,2"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,2"), 2000).SetTo(result))
 		return LF_UNKNOWN;
 	sptr = result->ConcatTo(sbuff);
 	UOSInt i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '*');
@@ -427,8 +431,8 @@ UInt32 IO::Device::MTKGPSNMEA::GetLogInterval()
 	UTF8Char sbuff[128];
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,3"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,3"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,3"), 2000).SetTo(result))
 		return 0;
 	result->ConcatTo(sbuff);
 	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
@@ -449,8 +453,8 @@ UInt32 IO::Device::MTKGPSNMEA::GetLogDistance()
 	UTF8Char sbuff[128];
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,4"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,4"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,4"), 2000).SetTo(result))
 		return 0;
 	result->ConcatTo(sbuff);
 	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
@@ -472,8 +476,8 @@ IO::Device::MTKGPSNMEA::LogMode IO::Device::MTKGPSNMEA::GetLogMode()
 	LogMode lm = LM_UNKNOWN;
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,6"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,6"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,6"), 2000).SetTo(result))
 		return LM_UNKNOWN;
 	result->ConcatTo(sbuff);
 	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
@@ -502,8 +506,8 @@ UOSInt IO::Device::MTKGPSNMEA::GetLogSize()
 	UTF8Char sbuff[128];
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,8"), buff);
-	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,8"), 2000);
-	if (result == 0)
+	NN<Text::String> result;
+	if (!SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,8"), 2000).SetTo(result))
 		return 0;
 	result->ConcatTo(sbuff);
 	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
@@ -519,15 +523,15 @@ UOSInt IO::Device::MTKGPSNMEA::GetLogSize()
 	return i;
 }
 
-Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, UnsafeArray<const UTF8Char> resultStart, UOSInt resultStartLen, Data::Duration timeout)
+Optional<Text::String> IO::Device::MTKGPSNMEA::SendMTKCommand(UnsafeArray<const UInt8> cmdBuff, UOSInt cmdSize, UnsafeArray<const UTF8Char> resultStart, UOSInt resultStartLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	Text::String *cmdRes;
+	NN<Text::String> cmdRes;
 
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->stm->Write(Data::ByteArrayR(cmdBuff, cmdSize));
-	Text::String *resultStr = 0;
+	Optional<Text::String> resultStr = 0;
 	
 	dt.SetCurrTimeUTC();
 	while (true)
@@ -536,18 +540,20 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 		while (this->cmdWResults.GetCount() > 0)
 		{
 			dt.SetCurrTimeUTC();
-			cmdRes = this->cmdWResults.RemoveAt(0);
-			if (cmdRes->StartsWith(resultStart, resultStartLen))
+			if (this->cmdWResults.RemoveAt(0).SetTo(cmdRes))
 			{
-				resultStr = cmdRes;
-				break;
-			}
-			else
-			{
-				cmdRes->Release();
+				if (cmdRes->StartsWith(resultStart, resultStartLen))
+				{
+					resultStr = cmdRes;
+					break;
+				}
+				else
+				{
+					cmdRes->Release();
+				}
 			}
 		}
-		if (resultStr)
+		if (resultStr.NotNull())
 			break;
 		dt2.SetCurrTimeUTC();
 		if (dt2.Diff(dt) >= timeout)
@@ -557,22 +563,22 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 	return resultStr;
 }
 
-Text::String *IO::Device::MTKGPSNMEA::GetFirmwareRel()
+Optional<Text::String> IO::Device::MTKGPSNMEA::GetFirmwareRel()
 {
 	return this->firmwareRel;
 }
 
-Text::String *IO::Device::MTKGPSNMEA::GetFirmwareBuild()
+Optional<Text::String> IO::Device::MTKGPSNMEA::GetFirmwareBuild()
 {
 	return this->firmwareBuild;
 }
 
-Text::String *IO::Device::MTKGPSNMEA::GetProductMode()
+Optional<Text::String> IO::Device::MTKGPSNMEA::GetProductMode()
 {
 	return this->productMode;
 }
 
-Text::String *IO::Device::MTKGPSNMEA::GetSDKVer()
+Optional<Text::String> IO::Device::MTKGPSNMEA::GetSDKVer()
 {
 	return this->sdkVer;
 }
@@ -586,7 +592,7 @@ UOSInt IO::Device::MTKGPSNMEA::GetMTKSerialPort()
 	return port;
 }
 
-Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, NN<Map::GPSTrack> gps)
+Bool IO::Device::MTKGPSNMEA::ParseBlock(UnsafeArray<UInt8> block, NN<Map::GPSTrack> gps)
 {
 	Int32 bitmask;
 	Map::GPSTrack::GPSRecord3 rec;

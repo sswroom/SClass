@@ -170,10 +170,10 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(AnyType u
 	NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
 	if (mtk->QueryFirmware())
 	{
-		me->txtMTKRelease->SetText(mtk->GetFirmwareRel()->ToCString());
-		me->txtMTKBuildID->SetText(mtk->GetFirmwareBuild()->ToCString());
-		me->txtMTKProdMode->SetText(mtk->GetProductMode()->ToCString());
-		me->txtMTKSDKVer->SetText(mtk->GetSDKVer()->ToCString());
+		me->txtMTKRelease->SetText(Text::String::OrEmpty(mtk->GetFirmwareRel())->ToCString());
+		me->txtMTKBuildID->SetText(Text::String::OrEmpty(mtk->GetFirmwareBuild())->ToCString());
+		me->txtMTKProdMode->SetText(Text::String::OrEmpty(mtk->GetProductMode())->ToCString());
+		me->txtMTKSDKVer->SetText(Text::String::OrEmpty(mtk->GetSDKVer())->ToCString());
 	}
 }
 

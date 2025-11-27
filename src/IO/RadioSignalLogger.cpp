@@ -6,7 +6,8 @@
 void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj)
 {
 	NN<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
-	if (me->fs)
+	NN<IO::FileStream> fs;
+	if (me->fs.SetTo(fs))
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
@@ -22,7 +23,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo>
 		sb.AppendUTF8Char('\t');
 		sb.AppendDouble(bss->GetRSSI());
 		sb.AppendC(UTF8STRC("\r\n"));
-		me->fs->Write(sb.ToByteArray());
+		fs->Write(sb.ToByteArray());
 		me->wifiCnt++;
 	}
 }
@@ -30,7 +31,8 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo>
 void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
 	NN<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
-	if (updateType == IO::BTScanner::UT_RSSI)
+	NN<IO::FileStream> fs;
+	if (updateType == IO::BTScanner::UT_RSSI && me->fs.SetTo(fs))
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
@@ -66,7 +68,7 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> 
 		sb.AppendUTF8Char('\t');
 		sb.AppendI32(dev->rssi);
 		sb.AppendC(UTF8STRC("\r\n"));
-		me->fs->Write(sb.ToByteArray());
+		fs->Write(sb.ToByteArray());
 		me->btCnt++;
 	}
 }
@@ -80,6 +82,7 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	this->btCnt = 0;
 
 	UTF8Char sbuff[512];
+	NN<IO::FileStream> fs;
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Data::DateTime dt;
@@ -90,11 +93,10 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("radio"));
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-	NEW_CLASS(this->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (this->fs->IsError())
+	NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	if (fs->IsError())
 	{
-		DEL_CLASS(this->fs);
-		this->fs = 0;
+		fs.Delete();
 	}
 }
 
@@ -103,48 +105,51 @@ IO::RadioSignalLogger::~RadioSignalLogger()
 	this->Stop();
 }
 
-void IO::RadioSignalLogger::CaptureWiFi(Net::WiFiCapturer *wifiCapture)
+void IO::RadioSignalLogger::CaptureWiFi(NN<Net::WiFiCapturer> wifiCapture)
 {
-	if (this->fs)
+	NN<Net::WiFiCapturer> nnwifiCapture;
+	if (this->fs.NotNull())
 	{
-		if (this->wifiCapture)
+		if (this->wifiCapture.SetTo(nnwifiCapture))
 		{
-			this->wifiCapture->SetUpdateHandler(0, 0);
+			nnwifiCapture->SetUpdateHandler(0, 0);
 		}
 		this->wifiCapture = wifiCapture;
-		this->wifiCapture->SetUpdateHandler(OnWiFiUpdate, this);
+		wifiCapture->SetUpdateHandler(OnWiFiUpdate, this);
 	}
 }
 
-void IO::RadioSignalLogger::CaptureBT(IO::BTCapturer *btCapture)
+void IO::RadioSignalLogger::CaptureBT(NN<IO::BTCapturer> btCapture)
 {
-	if (this->fs)
+	NN<IO::BTCapturer> nnbtCapture;
+	if (this->fs.NotNull())
 	{
-		if (this->btCapture)
+		if (this->btCapture.SetTo(nnbtCapture))
 		{
-			this->btCapture->SetUpdateHandler(0, 0);
+			nnbtCapture->SetUpdateHandler(0, 0);
 		}
 		this->btCapture = btCapture;
-		this->btCapture->SetUpdateHandler(OnBTUpdate, this);
+		btCapture->SetUpdateHandler(OnBTUpdate, this);
 	}
 }
 
 void IO::RadioSignalLogger::Stop()
 {
-	if (this->fs)
+	NN<Net::WiFiCapturer> wifiCapture;
+	NN<IO::BTCapturer> btCapture;
+	if (this->fs.NotNull())
 	{
-		if (this->btCapture)
+		if (this->btCapture.SetTo(btCapture))
 		{
-			this->btCapture->SetUpdateHandler(0, 0);
+			btCapture->SetUpdateHandler(0, 0);
 			this->btCapture = 0;
 		}
-		if (this->wifiCapture)
+		if (this->wifiCapture.SetTo(wifiCapture))
 		{
-			this->wifiCapture->SetUpdateHandler(0, 0);
+			wifiCapture->SetUpdateHandler(0, 0);
 			this->wifiCapture = 0;
 		}
-		DEL_CLASS(this->fs);
-		this->fs = 0;
+		this->fs.Delete();
 	}
 }
 

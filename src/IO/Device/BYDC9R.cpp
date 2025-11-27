@@ -94,10 +94,10 @@ void IO::Device::BYDC9R::OKLED(Bool ledOn)
 	this->status.okLED = ledOn;
 }
 
-void IO::Device::BYDC9R::GetStatus(DeviceStatus *status)
+void IO::Device::BYDC9R::GetStatus(NN<DeviceStatus> status)
 {
 	Sync::MutexUsage mutUsage(this->statusMut);
-	MemCopyNO(status, &this->status, sizeof(DeviceStatus));
+	status.CopyFrom(this->status);
 }
 
 NN<IO::CANHandler> IO::Device::BYDC9R::GetCANHandler()

@@ -78,8 +78,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::RadioSignalLogger *radioLogger;
 	Net::WebServer::WebListener *listener;
 	UInt16 webPort = 8081;
-	IO::BTCapturer *capturer;
-	NEW_CLASS(capturer, IO::BTCapturer(true));
+	NN<IO::BTCapturer> capturer;
+	NEW_CLASSNN(capturer, IO::BTCapturer(true));
 	if (capturer->IsError())
 	{
 		console.WriteLine(CSTR("Error in initializing Bluetooth"));
@@ -119,6 +119,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		DEL_CLASS(radioLogger);
 	}
 
-	DEL_CLASS(capturer);
+	capturer.Delete();
 	return 0;
 }

@@ -29,7 +29,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(NN<IO::StreamData> fd, UI
 		pack->fileOfst = fileOfst;
 		pack->packSize = (UOSInt)fileSize;
 		pack->packType = PT_FILE;
-		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize).Ptr();
+		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize);
 		this->packs.Add(pack);
 		ofst += 26 + (UOSInt)fileNameSize;
 	}
@@ -121,7 +121,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 
 void __stdcall IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack)
 {
-	SDEL_STRING(pack->fileName);
+	OPTSTR_DEL(pack->fileName);
 	MemFreeNN(pack);
 }
 
@@ -160,6 +160,7 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
+	NN<Text::String> s;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return false;
 	sb->AppendU64(pack->fileOfst);
@@ -182,10 +183,10 @@ Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, NN<Text::String
 	}
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendI32((Int32)pack->packSize);
-	if (pack->fileName)
+	if (pack->fileName.SetTo(s))
 	{
 		sb->AppendUTF8Char(' ');
-		sb->Append(pack->fileName);
+		sb->Append(s);
 	}
 	return true;
 }
@@ -223,6 +224,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::StreamData> fd;
+	NN<Text::String> s;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 	if (!this->fd.SetTo(fd))
@@ -248,11 +250,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
 	frame->AddText(0, CSTRP(sbuff, sptr));
 
-	if (pack->fileName)
+	if (pack->fileName.SetTo(s))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("File Name="));
-		sb.Append(pack->fileName);
+		sb.Append(s);
 		frame->AddText(0, sb.ToCString());
 	}
 

@@ -31,9 +31,8 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(AnyType userObj
 		me->txtDevice->SetText(CSTRP(sbuff, sptr));
 		me->txtDispName->SetText(usb->GetDispName());
 
-		const IO::DeviceDB::USBDeviceInfo *dev;
-		dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
-		if (dev)
+		NN<const IO::DeviceDB::USBDeviceInfo> dev;
+		if (IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision()).SetTo(dev))
 		{
 			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCntCh(dev->productName)});
 			Text::CStringNN vendorName = IO::DeviceDB::GetUSBVendorName(dev->vendorId);

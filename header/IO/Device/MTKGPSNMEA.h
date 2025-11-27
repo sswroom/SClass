@@ -1,6 +1,6 @@
 #ifndef _SM_IO_DEVICE_MTKGPSNMEA
 #define _SM_IO_DEVICE_MTKGPSNMEA
-#include "Data/SyncArrayList.hpp"
+#include "Data/SyncArrayListNN.hpp"
 #include "IO/GPSNMEA.h"
 
 namespace IO
@@ -44,12 +44,12 @@ namespace IO
 		private:
 			Sync::Mutex cmdMut;
 			Sync::Event cmdEvt;
-			Data::SyncArrayList<Text::String *> cmdWResults;
+			Data::SyncArrayListNN<Text::String> cmdWResults;
 
-			Text::String *firmwareRel;
-			Text::String *firmwareBuild;
-			Text::String *productMode;
-			Text::String *sdkVer;
+			Optional<Text::String> firmwareRel;
+			Optional<Text::String> firmwareBuild;
+			Optional<Text::String> productMode;
+			Optional<Text::String> sdkVer;
 		private:
 			virtual void ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 		public:
@@ -68,8 +68,8 @@ namespace IO
 			Bool DisableLog();
 			Bool EnableLog();
 			UOSInt CalLogBlockCount(UOSInt logSize);
-			Bool ReadLogPart(UOSInt addr, UInt8 *buff); //1024 bytes
-			Bool ReadLogBlock(UOSInt addr, UInt8 *buff); //65536 bytes
+			Bool ReadLogPart(UOSInt addr, UnsafeArray<UInt8> buff); //1024 bytes
+			Bool ReadLogBlock(UOSInt addr, UnsafeArray<UInt8> buff); //65536 bytes
 			Bool ParseLog(NN<Map::GPSTrack> gps);
 			Bool DelLogData();
 			Bool SetLogFormat(LogFormat lf);
@@ -83,15 +83,15 @@ namespace IO
 			UInt32 GetLogSpeed();
 			LogMode GetLogMode();
 			UOSInt GetLogSize(); //Bytes
-			Text::String *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, UnsafeArray<const UTF8Char> resultStart, UOSInt resultStartLen, Data::Duration timeout);
+			Optional<Text::String> SendMTKCommand(UnsafeArray<const UInt8> cmdBuff, UOSInt cmdSize, UnsafeArray<const UTF8Char> resultStart, UOSInt resultStartLen, Data::Duration timeout);
 
-			Text::String *GetFirmwareRel();
-			Text::String *GetFirmwareBuild();
-			Text::String *GetProductMode();
-			Text::String *GetSDKVer();
+			Optional<Text::String> GetFirmwareRel();
+			Optional<Text::String> GetFirmwareBuild();
+			Optional<Text::String> GetProductMode();
+			Optional<Text::String> GetSDKVer();
 
 			static UOSInt GetMTKSerialPort();
-			static Bool ParseBlock(UInt8 *block, NN<Map::GPSTrack> gps);
+			static Bool ParseBlock(UnsafeArray<UInt8> block, NN<Map::GPSTrack> gps);
 		};
 	}
 }

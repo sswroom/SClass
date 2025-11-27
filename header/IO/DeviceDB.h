@@ -47,9 +47,9 @@ namespace IO
 		static SDCardInfo emmcList[];
 
 	public:
-		static const USBDeviceInfo *GetUSBInfo(UInt16 vendorId, UInt16 productId, UInt16 bcdDevice);
-		static const DeviceInfo *GetPCIInfo(UInt16 vendorId, UInt16 productId);
-		static const DeviceInfo *GetBTInfo(UInt16 vendorId, UInt16 productId);
+		static Optional<const USBDeviceInfo> GetUSBInfo(UInt16 vendorId, UInt16 productId, UInt16 bcdDevice);
+		static Optional<const DeviceInfo> GetPCIInfo(UInt16 vendorId, UInt16 productId);
+		static Optional<const DeviceInfo> GetBTInfo(UInt16 vendorId, UInt16 productId);
 		static Text::CStringNN GetUSBVendorName(UInt16 vendorId);
 		static Text::CStringNN GetPCIVendorName(UInt16 vendorId);
 	};

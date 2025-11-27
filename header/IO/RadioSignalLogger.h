@@ -10,12 +10,12 @@ namespace IO
 	class RadioSignalLogger
 	{
 	private:
-		IO::FileStream *fs;
+		Optional<IO::FileStream> fs;
 		Sync::Mutex fsMut;
 		UInt64 wifiCnt;
 		UInt64 btCnt;
-		IO::BTCapturer *btCapture;
-		Net::WiFiCapturer *wifiCapture;
+		Optional<IO::BTCapturer> btCapture;
+		Optional<Net::WiFiCapturer> wifiCapture;
 		
 		static void __stdcall OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj);
 		static void __stdcall OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
@@ -23,8 +23,8 @@ namespace IO
 		RadioSignalLogger();
 		~RadioSignalLogger();
 
-		void CaptureWiFi(Net::WiFiCapturer *wifiCapture);
-		void CaptureBT(IO::BTCapturer *btCapture);
+		void CaptureWiFi(NN<Net::WiFiCapturer> wifiCapture);
+		void CaptureBT(NN<IO::BTCapturer> btCapture);
 		void Stop();
 
 		UInt64 GetWiFiCount() const;

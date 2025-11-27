@@ -47,7 +47,7 @@ namespace IO
 			virtual void BatteryCharging(ChargingStatus status);
 			virtual void OKLED(Bool ledOn);
 
-			void GetStatus(DeviceStatus *status);
+			void GetStatus(NN<DeviceStatus> status);
 			NN<CANHandler> GetCANHandler();
 		};
 	}

@@ -55,7 +55,7 @@ namespace IO
 			Bool ReadDemandTime(OutParam<Int32> timeMin);
 			Bool ReadDemandPeriod(OutParam<Int32> period);
 			Bool ReadRelayDivisor(OutParam<Int32> divisor);
-			Bool GetRelayPulseWidth(OutParam<Int32> width); //n * 20ms
+			Bool GetRelayPulseWidth(OutParam<Int32> width); //n x 20ms
 		};
 	}
 }

@@ -7,11 +7,11 @@ namespace IO
 	class FileVersion
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UInt32 buffSize;
 
 	private:
-		FileVersion(UInt8 *buff, UInt32 buffSize);
+		FileVersion(UnsafeArray<UInt8> buff, UInt32 buffSize);
 
 	public:
 		~FileVersion();
@@ -20,7 +20,7 @@ namespace IO
 		UnsafeArrayOpt<UTF8Char> GetInternalName(Int32 lang, UnsafeArray<UTF8Char> sbuff);
 		UnsafeArrayOpt<UTF8Char> GetFileDescription(Int32 lang, UnsafeArray<UTF8Char> sbuff);
 
-		static FileVersion *Open(const UTF8Char *file);
+		static Optional<FileVersion> Open(UnsafeArrayOpt<const UTF8Char> file);
 	};
-};
+}
 #endif

@@ -2290,7 +2290,7 @@ IO/TVCtrl/NECTVControl.h:
 
 Manage/AddressResolver.h:
 @AddressResolver.o
-Manage/Benchmark.h:
+Manage/Benchmark_C.h:
 @Benchmark_CPP.o
 Manage/CodeSymbol.h:
 @CodeSymbol.o

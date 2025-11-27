@@ -18,9 +18,9 @@ namespace IO
 		UInt8 addr;
 		Sync::Event cbEvt;
 		Sync::Mutex reqMut;
-		Double *reqDResult;
-		Int32 *reqIResult;
-		UInt8 *reqBResult;
+		OptOut<Double> reqDResult;
+		OptOut<Int32> reqIResult;
+		UnsafeArrayOpt<UInt8> reqBResult;
 		Bool reqHasResult;
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
@@ -32,16 +32,16 @@ namespace IO
 
 		Bool ReadInputI16(UInt16 addr, OutParam<Int32> outVal);
 		Bool ReadInputFloat(UInt16 addr, OutParam<Double> outVal);
-		Bool ReadInputBuff(UInt16 addr, UInt16 regCnt, UInt8 *buff);
+		Bool ReadInputBuff(UInt16 addr, UInt16 regCnt, UnsafeArray<UInt8> buff);
 		Bool ReadHoldingI16(UInt16 addr, OutParam<Int32> outVal);
 		Bool ReadHoldingI32(UInt16 addr, OutParam<Int32> outVal);
 		Bool ReadHoldingFloat(UInt16 addr, OutParam<Double> outVal);
 		Bool WriteHoldingU16(UInt16 addr, UInt16 val);
-		Bool WriteHoldingsU16(UInt16 addr, UInt16 cnt, UInt16 *vals);
+		Bool WriteHoldingsU16(UInt16 addr, UInt16 cnt, UnsafeArray<UInt16> vals);
 		Bool WriteHoldingI32(UInt16 addr, Int32 val);
 		Bool WriteHoldingF32(UInt16 addr, Single val);
 		Bool ReadDInput(UInt16 addr);
-		Bool ReadDInputs(UInt16 addr, UInt16 cnt, Int32 *outVal);
+		Bool ReadDInputs(UInt16 addr, UInt16 cnt, OutParam<Int32> outVal);
 		Bool ReadCoil(UInt16 addr);
 		Bool WriteDOutput(UInt16 addr, Bool isHigh);
 	public:

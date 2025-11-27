@@ -854,7 +854,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		Data::ArrayListNN<IO::USBInfo> usbList;
 		NN<IO::USBInfo> usb;
-		const IO::DeviceDB::USBDeviceInfo *dev;
+		NN<const IO::DeviceDB::USBDeviceInfo> dev;
 		IO::USBInfo::GetUSBList(usbList);
 		console->WriteLine();
 		writer->WriteLine();
@@ -865,7 +865,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		while (i < j)
 		{
 			usb = usbList.GetItemNoCheck(i);
-			dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("USB "));
 			sb.AppendHex16(usb->GetVendorId());
@@ -886,7 +885,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendC(UTF8STRC(" "));
 			sb.AppendHex16(usb->GetRevision());
 			sb.AppendC(UTF8STRC(" DB: "));
-			if (dev)
+			if (IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision()).SetTo(dev))
 			{
 				if (dev->dispName)
 				{
@@ -921,7 +920,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		Data::ArrayListNN<IO::PCIInfo> pciList;
 		NN<IO::PCIInfo> pci;
-		const IO::DeviceDB::DeviceInfo *dev;
+		NN<const IO::DeviceDB::DeviceInfo> dev;
 		IO::PCIInfo::GetPCIList(pciList);
 		console->WriteLine();
 		writer->WriteLine();
@@ -932,7 +931,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		while (i < j)
 		{
 			pci = pciList.GetItemNoCheck(i);
-			dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("PCI "));
 			sb.AppendHex16(pci->GetVendorId());
@@ -949,7 +947,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.AppendC(UTF8STRC(":"));
 			sb.AppendHex16(pci->GetProductId());
 			sb.AppendC(UTF8STRC(" DB: "));
-			if (dev)
+			if (IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId()).SetTo(dev))
 			{
 				if (dev->dispName)
 				{

@@ -2301,7 +2301,7 @@ IO::DeviceDB::SDCardInfo IO::DeviceDB::emmcList[] = {
 };
 #endif
 
-const IO::DeviceDB::USBDeviceInfo *IO::DeviceDB::GetUSBInfo(UInt16 vendorId, UInt16 productId, UInt16 bcdDevice)
+Optional<const IO::DeviceDB::USBDeviceInfo> IO::DeviceDB::GetUSBInfo(UInt16 vendorId, UInt16 productId, UInt16 bcdDevice)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(usbList) / sizeof(usbList[0])) - 1;
@@ -2374,7 +2374,7 @@ const IO::DeviceDB::USBDeviceInfo *IO::DeviceDB::GetUSBInfo(UInt16 vendorId, UIn
 	return 0;
 }
 
-const IO::DeviceDB::DeviceInfo *IO::DeviceDB::GetPCIInfo(UInt16 vendorId, UInt16 productId)
+Optional<const IO::DeviceDB::DeviceInfo> IO::DeviceDB::GetPCIInfo(UInt16 vendorId, UInt16 productId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(pciList) / sizeof(pciList[0])) - 1;

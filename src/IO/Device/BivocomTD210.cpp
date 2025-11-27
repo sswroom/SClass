@@ -10,7 +10,7 @@ IO::Device::BivocomTD210::~BivocomTD210()
 {
 }
 
-Bool IO::Device::BivocomTD210::ReadIOs(Int32 *io)
+Bool IO::Device::BivocomTD210::ReadIOs(OutParam<Int32> io)
 {
 	return this->ReadDInputs(0, 3, io);
 }

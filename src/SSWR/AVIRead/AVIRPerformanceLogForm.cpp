@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/SystemInfo.h"
-#include "Manage/Benchmark.h"
+#include "Manage/Benchmark_C.h"
 #include "Manage/HiResClock.h"
 #include "SSWR/AVIRead/AVIRPerformanceLogForm.h"
 #include "Sync/ThreadUtil.h"

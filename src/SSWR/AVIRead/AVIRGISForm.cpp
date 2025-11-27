@@ -1461,7 +1461,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						dt.ToLocalTime();
 						if (mtk->QueryFirmware())
 						{
-							sptr = mtk->GetProductMode()->ConcatTo(sbuff);
+							sptr = Text::String::OrEmpty(mtk->GetProductMode())->ConcatTo(sbuff);
 							*sptr++ = '_';
 						}
 						else

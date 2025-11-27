@@ -92,7 +92,7 @@ namespace IO
 		Bool HasError() const;
 		Bool GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb) const;
 		void SetMessageWriter(Optional<IO::Writer> messageWriter);
-		void SetCommandWriter(IO::Writer *cmdWriter);
+		void SetCommandWriter(Optional<IO::Writer> cmdWriter);
 		void SetDebugObj(Text::CString debugObj);
 		void SetThreadCnt(UOSInt threadCnt);
 		void SetAsyncMode(Bool asyncMode);

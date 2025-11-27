@@ -19,6 +19,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 	UOSInt buffSize = 0;
 	UOSInt recvSize;
 	UOSInt i;
+	UnsafeArray<UInt8> imgBuff;
 	me->threadRunning = true;
 	NEW_CLASS(dt, Data::DateTime());
 	while (!me->threadToStop)
@@ -76,16 +77,16 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 
 							me->imgNextOfst = 0;
 							me->imgNextPacket = 1;
-							if (me->imgBuff)
+							if (me->imgBuff.SetTo(imgBuff))
 							{
-								MemFree(me->imgBuff);
+								MemFreeArr(imgBuff);
 							}
 							if (me->imgSize > 0)
 							{
 								dt->SetCurrTimeUTC();
 								me->imgLastUpdateTime = dt->ToTicks();
 
-								me->imgBuff = MemAlloc(UInt8, me->imgSize);
+								me->imgBuff = imgBuff = MemAllocArr(UInt8, me->imgSize);
 
 								cmdBuff[0] = 'U';
 								cmdBuff[1] = 'E';
@@ -119,9 +120,9 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 						else
 						{
 //							printf("Image Packet %d Received\r\n", packNum);
-							if (me->imgNextPacket == packNum && (me->imgNextOfst + packSize) <= me->imgSize)
+							if (me->imgNextPacket == packNum && (me->imgNextOfst + packSize) <= me->imgSize && me->imgBuff.SetTo(imgBuff))
 							{
-								MemCopyNO(&me->imgBuff[me->imgNextOfst], &buff[i + 7], packSize);
+								MemCopyNO(&imgBuff[me->imgNextOfst], &buff[i + 7], packSize);
 								me->imgNextOfst += packSize;
 								me->imgNextPacket++;
 								if (me->imgNextPacket <= me->imgPackets)
@@ -171,7 +172,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 	return 0;
 }
 
-IO::Device::QQZMSerialCamera::QQZMSerialCamera(IO::Stream *stm, UInt8 cameraId, Bool toRelease)
+IO::Device::QQZMSerialCamera::QQZMSerialCamera(NN<IO::Stream> stm, UInt8 cameraId, Bool toRelease)
 {
 	this->stm = stm;
 	this->cameraId = cameraId;
@@ -192,28 +193,30 @@ IO::Device::QQZMSerialCamera::QQZMSerialCamera(IO::Stream *stm, UInt8 cameraId, 
 
 IO::Device::QQZMSerialCamera::~QQZMSerialCamera()
 {
+	UnsafeArray<UInt8> imgBuff;
 	this->threadToStop = true;
 	this->stm->Close();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	if (this->imgBuff)
+	if (this->imgBuff.SetTo(imgBuff))
 	{
-		MemFree(this->imgBuff);
+		MemFreeArr(imgBuff);
 		this->imgBuff = 0;
 	}
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->stm);
+		this->stm.Delete();
 	}
 }
 
-Bool IO::Device::QQZMSerialCamera::CapturePhoto(IO::Stream *outStm)
+Bool IO::Device::QQZMSerialCamera::CapturePhoto(NN<IO::Stream> outStm)
 {
 	Data::DateTime dt;
 	UInt8 cmdBuff[7];
 	Int64 currTime;
+	UnsafeArray<UInt8> imgBuff;
 	cmdBuff[0] = 'U';
 	cmdBuff[1] = 'H';
 	cmdBuff[2] = this->cameraId;
@@ -236,12 +239,12 @@ Bool IO::Device::QQZMSerialCamera::CapturePhoto(IO::Stream *outStm)
 		}
 		Sync::SimpleThread::Sleep(100);
 	}
-	if (this->imgEnd && this->imgBuff)
+	if (this->imgEnd && this->imgBuff.SetTo(imgBuff))
 	{
 //		printf("CapturePhoto Success\r\n");
 		this->imgNextPacket = -1;
-		outStm->Write(Data::ByteArrayR(this->imgBuff, this->imgSize));
-		MemFree(this->imgBuff);
+		outStm->Write(Data::ByteArrayR(imgBuff, this->imgSize));
+		MemFreeArr(imgBuff);
 		this->imgBuff = 0;
 		return true;
 	}

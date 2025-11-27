@@ -18,17 +18,17 @@ namespace IO
 			Net::SocketUtil::AddressInfo addr;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Text::EncodingFactory> encFact;
-			Text::String *oiVersion;
-			Text::String *oiTrackVersion;
+			Optional<Text::String> oiVersion;
+			Optional<Text::String> oiTrackVersion;
 			Data::ArrayListStringNN cmdList;
-			Data::ArrayListNN<IO::CameraControl::FileInfo> *fileList;
+			Optional<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList;
 
 			void GetCommandList();
 			void GetImageList();
 			void GetGPSLogList();
 			void GetSNSLogList();
 		public:
-			OlympusCameraControl(NN<Net::TCPClientFactory> clif, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr);
+			OlympusCameraControl(NN<Net::TCPClientFactory> clif, Optional<Text::EncodingFactory> encFact, NN<const Net::SocketUtil::AddressInfo> addr);
 			virtual ~OlympusCameraControl();
 
 			virtual UOSInt GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList);
@@ -37,8 +37,8 @@ namespace IO
 			virtual Bool GetFile(NN<FileInfo> file, NN<IO::Stream> outStm);
 			virtual Bool GetThumbnailFile(NN<FileInfo> file, NN<IO::Stream> outStm);
 
-			Text::String *GetOIVersion();
-			Text::String *GetOITrackVersion();
+			Optional<Text::String> GetOIVersion();
+			Optional<Text::String> GetOITrackVersion();
 			Bool GetModel(NN<Text::StringBuilderUTF8> sb);
 			
 			static Optional<OlympusCameraControl> CreateControl(NN<Net::TCPClientFactory> clif, Optional<Text::EncodingFactory> encFact);

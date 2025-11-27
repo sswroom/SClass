@@ -20,7 +20,7 @@ UOSInt IO::SimpleFileWriter::WriteBuff(UnsafeArray<const UInt8> buff, UOSInt siz
 	}
 }
 
-IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileMode mode, IO::FileShare share)
+IO::SimpleFileWriter::SimpleFileWriter(UnsafeArray<const UTF8Char> fileName, IO::FileMode mode, IO::FileShare share)
 {
 	WChar wfileName[512];
 	Text::StrUTF8_WChar(wfileName, fileName, 0);
@@ -95,7 +95,7 @@ Bool IO::SimpleFileWriter::WriteLine(Text::CStringNN str)
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteW(const WChar *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteW(UnsafeArray<const WChar> str, UOSInt nChar)
 {
 	UOSInt writeCnt = 0;
 	UInt8 buff[512];
@@ -115,7 +115,7 @@ Bool IO::SimpleFileWriter::WriteW(const WChar *str, UOSInt nChar)
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteW(const WChar *str)
+Bool IO::SimpleFileWriter::WriteW(UnsafeArray<const WChar> str)
 {
 	UOSInt writeCnt = 0;
 	UInt8 buff[512];
@@ -132,7 +132,7 @@ Bool IO::SimpleFileWriter::WriteW(const WChar *str)
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteLineW(const WChar *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteLineW(UnsafeArray<const WChar> str, UOSInt nChar)
 {
 	UOSInt writeCnt = 0;
 	UInt8 buff[512];
@@ -154,7 +154,7 @@ Bool IO::SimpleFileWriter::WriteLineW(const WChar *str, UOSInt nChar)
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteLineW(const WChar *str)
+Bool IO::SimpleFileWriter::WriteLineW(UnsafeArray<const WChar> str)
 {
 	UOSInt writeCnt = 0;
 	UInt8 buff[512];

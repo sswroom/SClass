@@ -26,8 +26,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	IO::SerialPort *port;
-	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
+	NN<IO::SerialPort> port;
+	NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		console->WriteLine(CSTR("Error in opening the port"));
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		IO::Device::QQZMSerialCamera *camera;
 		NEW_CLASS(camera, IO::Device::QQZMSerialCamera(port, 0, false));
 		IO::MemoryStream mstm;
-		if (camera->CapturePhoto(&mstm))
+		if (camera->CapturePhoto(mstm))
 		{
 			console->WriteLine(CSTR("Capture Image succeeded"));
 		}
@@ -47,7 +47,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		DEL_CLASS(camera);
 	}
-	DEL_CLASS(port);
+	port.Delete();
 	DEL_CLASS(console);
 	return 0;
 }
