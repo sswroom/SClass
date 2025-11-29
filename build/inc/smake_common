@@ -2210,6 +2210,8 @@ IO/FileAnalyse/PCapngFileAnalyse.h:
 @PCapngFileAnalyse.o
 IO/FileAnalyse/PNGFileAnalyse.h:
 @PNGFileAnalyse.o
+IO/FileAnalyse/PSTFileAnalyse.h:
+@PSTFileAnalyse.o
 IO/FileAnalyse/QTFileAnalyse.h:
 @QTFileAnalyse.o
 IO/FileAnalyse/RAR5FileAnalyse.h:

@@ -15,8 +15,7 @@ namespace IO
 		private:
 			enum class PackType
 			{
-				ANSIHeader,
-				UnicodeHeader
+				Header
 			};
 			struct PackItem
 			{
@@ -27,6 +26,7 @@ namespace IO
 		private:
 			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackItem> items;
+			Bool unicode;
 
 			Bool pauseParsing;
 			Sync::Thread thread;
@@ -45,6 +45,9 @@ namespace IO
 			virtual Bool IsError();
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
+
+			static Text::CStringNN PackTypeGetName(PackType packType);
+			static Text::CString NIDTypeGetName(UInt32 nidType);
 		};
 	}
 }

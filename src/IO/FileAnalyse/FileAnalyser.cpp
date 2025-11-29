@@ -19,6 +19,7 @@
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "IO/FileAnalyse/PNGFileAnalyse.h"
+#include "IO/FileAnalyse/PSTFileAnalyse.h"
 #include "IO/FileAnalyse/QTFileAnalyse.h"
 #include "IO/FileAnalyse/RAR5FileAnalyse.h"
 #include "IO/FileAnalyse/RIFFFileAnalyse.h"
@@ -164,6 +165,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	else if (buffSize >= 25 && *(Int32*)&buff[0] == *(Int32*)"SmTC" && buff[24] == 0)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::SMTCFileAnalyse(fd));
+	}
+	else if (buffSize >= 256 && buff[0] == '!' && buff[1] == 'B' && buff[2] == 'D' && buff[3] == 'N' && buff[8] == 0x53 && buff[9] == 0x4d)
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::PSTFileAnalyse(fd));
 	}
 	else if (fileName->Equals(UTF8STRC("README")) || fileName->Equals(UTF8STRC("LICENSE")) || fileName->EndsWith(UTF8STRC(".txt")))
 	{

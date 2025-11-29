@@ -8,41 +8,61 @@
 void __stdcall IO::FileAnalyse::PSTFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
 	NN<IO::FileAnalyse::PSTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PSTFileAnalyse>();
-	UInt64 dataSize;
-	UInt64 ofst;
-	UInt32 lastSize;
-	UOSInt readSize;
-	UInt8 hdr[12];
-	Optional<IO::FileAnalyse::PSTFileAnalyse::PackItem> item;
-	NN<PackItem> nnitem;
-	ofst = 4;
-	dataSize = me->fd->GetDataSize();
-	lastSize = 0;
-	
-	item = 0;
-
-	while (ofst < dataSize && !thread->IsStopping())
+	NN<IO::StreamData> fd;
+//	UInt64 dataSize;
+//	UInt64 ofst;
+//	UInt32 lastSize;
+//	UOSInt readSize;
+	UInt8 buff[256];
+	NN<PackItem> item;
+	if (!me->fd.SetTo(fd))
 	{
-		readSize = me->fd->GetRealData(ofst, 12, BYTEARR(hdr));
+		return;
+	}
+	if (fd->GetRealData(0, 256, BYTEARR(buff)) != 256)
+	{
+		return;
+	}
+	if (buff[0] != '!' || buff[1] != 'B' || buff[2] != 'D' || buff[3] != 'N' || buff[8] != 0x53 || buff[9] != 0x4d)
+	{
+		return;
+	}
+	UInt16 wVer = ReadUInt16(&buff[10]);
+	me->unicode = wVer >= 23;
+	if (me->unicode)
+	{
+		item = MemAllocNN(IO::FileAnalyse::PSTFileAnalyse::PackItem);
+		item->ofst = 0;
+		item->size = 564;
+		item->packType = PackType::Header;
+		me->items.Add(item);
+	}
+	else
+	{
+		item = MemAllocNN(IO::FileAnalyse::PSTFileAnalyse::PackItem);
+		item->ofst = 0;
+		item->size = 516;
+		item->packType = PackType::Header;
+		me->items.Add(item);
+	}
+
+/*	while (ofst < dataSize && !thread->IsStopping())
+	{
+		readSize = fd->GetRealData(ofst, 12, BYTEARR(buff));
 		if (readSize < 4)
 			break;
 		
-		if (item.SetTo(nnitem))
-		{
-			nnitem->crc = ReadMUInt32(&hdr[0]);
-		}
 		if (readSize < 12)
 			break;
-		lastSize = ReadMUInt32(&hdr[4]);
+		lastSize = ReadMUInt32(&buff[4]);
 
-		nnitem = MemAllocNN(IO::FileAnalyse::PSTFileAnalyse::PackItem);
-		nnitem->ofst = ofst + 4;
-		nnitem->size = lastSize + 12;
-		nnitem->packType = (PackType)ReadInt32(&hdr[8]);
-		me->tags.Add(nnitem);
-		tag = nntag;
+		item = MemAllocNN(IO::FileAnalyse::PSTFileAnalyse::PackItem);
+		item->ofst = ofst + 4;
+		item->size = lastSize + 12;
+		item->packType = (PackType)ReadInt32(&buff[8]);
+		me->items.Add(item);
 		ofst += lastSize + 12;
-	}
+	}*/
 }
 
 IO::FileAnalyse::PSTFileAnalyse::PSTFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("PSTFileAnalyse"))
@@ -50,8 +70,9 @@ IO::FileAnalyse::PSTFileAnalyse::PSTFileAnalyse(NN<IO::StreamData> fd) : thread(
 	UInt8 buff[256];
 	this->fd = 0;
 	this->pauseParsing = false;
+	this->unicode = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
-	if (buff[0] != '!' || buff[1] != 'B' || buff[2] != 'D' || buff[3] != 'N' || buff[8] != 0x53 && buff[9] != 0x4d)
+	if (buff[0] != '!' || buff[1] != 'B' || buff[2] != 'D' || buff[3] != 'N' || buff[8] != 0x53 || buff[9] != 0x4d)
 	{
 		return;
 	}
@@ -119,160 +140,115 @@ UOSInt IO::FileAnalyse::PSTFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PSTFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FrameDetail> frame;
-	NN<IO::FileAnalyse::PSTFileAnalyse::PackItem> tag;
-	if (!this->items.GetItem(index).SetTo(tag))
+	NN<IO::FileAnalyse::PSTFileAnalyse::PackItem> item;
+	NN<IO::StreamData> fd;
+	UOSInt i;
+	UOSInt j;
+	UInt32 v32;
+	if (!this->items.GetItem(index).SetTo(item))
 		return 0;
-	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
-	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, U8STR("Tag")), index);
-	frame->AddHeader(CSTRP(sbuff, sptr));
-	frame->AddUInt(0, 4, CSTR("Size"), tag->size - 12);
-	frame->AddStrC(4, 4, CSTR("TagType"), (const UTF8Char*)&tag->tagType);
-	if (tag->tagType == *(Int32*)"IHDR")
+	if (!this->fd.SetTo(fd))
+		return 0;
+	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(item->ofst, item->size));
+	if (item->packType == PackType::Header)
 	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddUInt(8, 4, CSTR("Width"), ReadMUInt32(&tagData[8]));
-		frame->AddUInt(12, 4, CSTR("Height"), ReadMUInt32(&tagData[12]));
-		frame->AddUInt(16, 1, CSTR("Bit depth"), tagData[16]);
-		frame->AddUInt(17, 1, CSTR("Color type"), tagData[17]);
-		frame->AddUInt(18, 1, CSTR("Compression method"), tagData[18]);
-		frame->AddUInt(19, 1, CSTR("Filter method"), tagData[19]);
-		frame->AddUInt(20, 1, CSTR("Interlace method"), tagData[20]);
-	}
-	else if (tag->tagType == *(Int32*)"gAMA")
-	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddInt(8, 4, CSTR("Gamma"), ReadMInt32(&tagData[8]));
-		frame->AddFloat(8, 4, CSTR("Gamma"), 100000.0 / ReadMInt32(&tagData[8]));
-	}
-	else if (tag->tagType == *(Int32*)"sRGB")
-	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddUInt(8, 1, CSTR("Rendering intent"), tagData[8]);
-	}
-	else if (tag->tagType == *(Int32*)"cHRM")
-	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddFloat(8, 4, CSTR("White Point x"), ReadMInt32(&tagData[8]) / 100000.0);
-		frame->AddFloat(12, 4, CSTR("White Point y"), ReadMInt32(&tagData[12]) / 100000.0);
-		frame->AddFloat(16, 4, CSTR("Red x"), ReadMInt32(&tagData[16]) / 100000.0);
-		frame->AddFloat(20, 4, CSTR("Red y"), ReadMInt32(&tagData[20]) / 100000.0);
-		frame->AddFloat(24, 4, CSTR("Green x"), ReadMInt32(&tagData[24]) / 100000.0);
-		frame->AddFloat(28, 4, CSTR("Green y"), ReadMInt32(&tagData[28]) / 100000.0);
-		frame->AddFloat(32, 4, CSTR("Blue x"), ReadMInt32(&tagData[32]) / 100000.0);
-		frame->AddFloat(36, 4, CSTR("Blue y"), ReadMInt32(&tagData[36]) / 100000.0);
-	}
-	else if (tag->tagType == *(Int32*)"acTL")
-	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddUInt(8, 4, CSTR("Number of frames"), ReadMUInt32(&tagData[8]));
-		frame->AddUInt(12, 4, CSTR("Number of time to loop"), ReadMUInt32(&tagData[12]));
-	}
-	else if (tag->tagType == *(Int32*)"fcTL")
-	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddUInt(8, 4, CSTR("Sequence number"), ReadMUInt32(&tagData[8]));
-		frame->AddUInt(12, 4, CSTR("Width"), ReadMUInt32(&tagData[12]));
-		frame->AddUInt(16, 4, CSTR("Height"), ReadMUInt32(&tagData[16]));
-		frame->AddInt(20, 4, CSTR("X Offset"), ReadMInt32(&tagData[20]));
-		frame->AddInt(24, 4, CSTR("Y Offset"), ReadMInt32(&tagData[24]));
-		frame->AddInt(28, 2, CSTR("Delay numerator"), ReadMInt16(&tagData[28]));
-		frame->AddInt(30, 2, CSTR("Delay denominator"), ReadMInt16(&tagData[30]));
-		frame->AddInt(32, 1, CSTR("Disposal operation"), tagData[32]);
-		frame->AddInt(33, 1, CSTR("Blend operation"), tagData[33]);
-	}
-	else if (tag->tagType == *(Int32*)"fdAT")
-	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddUInt(8, 4, CSTR("Sequence number"), ReadMUInt32(&tagData[8]));
-	}
-	else if (tag->tagType == *(Int32*)"pHYs")
-	{
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		frame->AddInt(8, 4, CSTR("H Pixel per unit"), ReadMInt32(&tagData[8]));
-		frame->AddInt(12, 4, CSTR("V Pixel per unit"), ReadMInt32(&tagData[12]));
-		frame->AddUInt(16, 1, CSTR("Unit type"), tagData[16]);
-	}
-	else if (tag->tagType == *(Int32*)"iCCP")
-	{
-		UOSInt i;
-		Data::ByteBuffer tagData(tag->size);
-		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		i = Text::StrCharCnt((UTF8Char*)&tagData[8]);
-		frame->AddStrS(8, i + 1, CSTR("Profile name"), &tagData[8]);
-		i += 9;
-		frame->AddUInt(i, 1, CSTR("Compression Method"), tagData[i]);
-
-		if (tagData[i] == 0)
+		Data::ByteBuffer packData(item->size);
+		fd->GetRealData(item->ofst, item->size, packData);
+		frame->AddStrC(0, 4, CSTR("dwMagic"), &packData[0]);
+		frame->AddHex32(4, CSTR("dwCRCPartial"), ReadUInt32(&packData[4]));
+		frame->AddHex16(8, CSTR("wMagicClient"), ReadUInt16(&packData[8]));
+		frame->AddUInt(10, 2, CSTR("wVer"), ReadUInt16(&packData[10]));
+		frame->AddUInt(12, 2, CSTR("wVerClient"), ReadUInt16(&packData[12]));
+		frame->AddUInt(14, 1, CSTR("bPlatformCreate"), packData[14]);
+		frame->AddUInt(15, 1, CSTR("bPlatformAccess"), packData[15]);
+		frame->AddUInt(16, 4, CSTR("dwReserved1"), ReadUInt32(&packData[16]));
+		frame->AddUInt(20, 4, CSTR("dwReserved2"), ReadUInt32(&packData[20]));
+		if (this->unicode)
 		{
-			frame->AddUInt(i + 1, 1, CSTR("zlib Compression Method"), tagData[i + 1]);
-			frame->AddUInt(i + 2, 1, CSTR("Additional flags"), tagData[i + 2]);
-			frame->AddHex32(tag->size - 8, CSTR("Check value"), ReadMUInt32(&tagData[tag->size - 8]));
-
-/*			IO::MemoryStream *mstm;
-			NN<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
-			Data::Compress::Inflate comp;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
-			if (!comp.Decompress(mstm, stmData))
-			{
-				UOSInt iccSize;
-				UInt8 *iccBuff = mstm->GetBuff(&iccSize);
-				Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
-				if (icc)
-				{
-					sb->AppendC(UTF8STRC("\r\n\r\n"));
-					icc->ToString(sb);
-					DEL_CLASS(icc);
-				}
-			}
-			DEL_CLASS(mstm);
-			DEL_CLASS(stmData);*/
-		}
-	}
-	else if (tag->tagType == *(Int32*)"PLTE")
-	{
-		if (tag->size <= 768 + 12 && (tag->size % 3) == 0)
-		{
-			UOSInt i;
-			UOSInt j;
-			Data::ByteBuffer tagData(tag->size - 12);
-			this->fd->GetRealData(tag->ofst + 8, tag->size - 12, tagData);
+			frame->AddHex64(24, CSTR("bidUnused"), ReadUInt64(&packData[24]));
+			frame->AddHex64(32, CSTR("bidNextP"), ReadUInt64(&packData[32]));
+			frame->AddHex32(40, CSTR("dwUnique"), ReadUInt32(&packData[40]));
 			i = 0;
-			j = 0;
-			while (j < tag->size - 12)
+			j = 32;
+			while (i < j)
 			{
-				sptr2 = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Entry "), i) + 1;
-				sptr = sptr2;
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"R");
-				sptr = Text::StrUInt16(sptr, tagData[j + 0]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"G");
-				sptr = Text::StrUInt16(sptr, tagData[j + 1]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"B");
-				sptr = Text::StrUInt16(sptr, tagData[j + 2]);
-				frame->AddField(8 + j, 3, CSTRP(sbuff, sptr), CSTRP(sptr2, sptr));
-				
+				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
+				v32 = ReadUInt32(&packData[44 + i * 4]);
+				frame->AddHex32Name(44 + i * 4, CSTRP(sbuff, sptr), v32, NIDTypeGetName(v32));
 				i++;
-				j += 3;
 			}
+			frame->AddUInt64(172, CSTR("qwUnused"), ReadUInt64(&packData[172]));
+			frame->AddUInt(180, 4, CSTR("ROOT.dwReserved"), ReadUInt32(&packData[180]));
+			frame->AddUInt64(184, CSTR("ROOT.ibFileEof"), ReadUInt64(&packData[184]));
+			frame->AddUInt64(192, CSTR("ROOT.ibAMapLast"), ReadUInt64(&packData[192]));
+			frame->AddUInt64(200, CSTR("ROOT.cbAMapFree"), ReadUInt64(&packData[200]));
+			frame->AddUInt64(208, CSTR("ROOT.cbPMapFree"), ReadUInt64(&packData[208]));
+			frame->AddUInt64(216, CSTR("ROOT.BREFNBT.bid"), ReadUInt64(&packData[216]));
+			frame->AddUInt64(224, CSTR("ROOT.BREFNBT.ib"), ReadUInt64(&packData[224]));
+			frame->AddUInt64(232, CSTR("ROOT.BREFBBT.bid"), ReadUInt64(&packData[232]));
+			frame->AddUInt64(240, CSTR("ROOT.BREFBBT.ib"), ReadUInt64(&packData[240]));
+			frame->AddUInt(248, 1, CSTR("ROOT.fAMapValid"), packData[248]);
+			frame->AddUInt(249, 1, CSTR("ROOT.bReserved"), packData[249]);
+			frame->AddUInt(250, 2, CSTR("ROOT.wReserved"), ReadUInt16(&packData[250]));
+			frame->AddUInt(252, 4, CSTR("dwAlign"), ReadUInt32(&packData[252]));
+			frame->AddHexBuff(256, CSTR("rgbFM"), packData.SubArray(256, 128), true);
+			frame->AddHexBuff(384, CSTR("rgbFP"), packData.SubArray(384, 128), true);
+			frame->AddHex8(512, CSTR("bSentinel"), packData[512]);
+			frame->AddHex8(513, CSTR("bCryptMethod"), packData[513]);
+			frame->AddHex16(514, CSTR("rgbReserved"), ReadUInt16(&packData[514]));
+			frame->AddHex64(516, CSTR("bidNextB"), ReadUInt64(&packData[516]));
+			frame->AddHex32(524, CSTR("dwCRCFull"), ReadUInt32(&packData[524]));
+			frame->AddUInt(528, 3, CSTR("rgbReserved2"), ReadUInt24(&packData[528]));
+			frame->AddUInt(531, 1, CSTR("bReserved"), packData[531]);
+			frame->AddHexBuff(532, CSTR("rgbReserved3"), packData.SubArray(532, 32), true);
+		}
+		else
+		{
+			frame->AddHex32(24, CSTR("bidNextB"), ReadUInt32(&packData[24]));
+			frame->AddHex32(28, CSTR("bidNextP"), ReadUInt32(&packData[28]));
+			frame->AddHex32(32, CSTR("dwUnique"), ReadUInt32(&packData[32]));
+			i = 0;
+			j = 32;
+			while (i < j)
+			{
+				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("rgnid[")), i), UTF8STRC("]"));
+				v32 = ReadUInt32(&packData[36 + i * 4]);
+				frame->AddHex32Name(36 + i * 4, CSTRP(sbuff, sptr), v32, NIDTypeGetName(v32));
+				i++;
+			}
+			frame->AddUInt(164, 4, CSTR("ROOT.dwReserved"), ReadUInt32(&packData[164]));
+			frame->AddUInt(168, 4, CSTR("ROOT.ibFileEof"), ReadUInt32(&packData[168]));
+			frame->AddUInt(172, 4, CSTR("ROOT.ibAMapLast"), ReadUInt32(&packData[172]));
+			frame->AddUInt(176, 4, CSTR("ROOT.cbAMapFree"), ReadUInt32(&packData[176]));
+			frame->AddUInt(180, 4, CSTR("ROOT.cbPMapFree"), ReadUInt32(&packData[180]));
+			frame->AddUInt(184, 4, CSTR("ROOT.BREFNBT.bid"), ReadUInt32(&packData[184]));
+			frame->AddUInt(188, 4, CSTR("ROOT.BREFNBT.ib"), ReadUInt32(&packData[188]));
+			frame->AddUInt(192, 4, CSTR("ROOT.BREFBBT.bid"), ReadUInt32(&packData[192]));
+			frame->AddUInt(196, 4, CSTR("ROOT.BREFBBT.ib"), ReadUInt32(&packData[196]));
+			frame->AddUInt(200, 1, CSTR("ROOT.fAMapValid"), packData[200]);
+			frame->AddUInt(201, 1, CSTR("ROOT.bReserved"), packData[201]);
+			frame->AddUInt(202, 2, CSTR("ROOT.wReserved"), ReadUInt16(&packData[202]));
+			frame->AddUInt(204, 4, CSTR("dwAlign"), ReadUInt32(&packData[204]));
+			frame->AddHexBuff(208, CSTR("rgbFM"), packData.SubArray(208, 128), true);
+			frame->AddHexBuff(336, CSTR("rgbFP"), packData.SubArray(336, 128), true);
+			frame->AddHex8(464, CSTR("bSentinel"), packData[464]);
+			frame->AddHex8(465, CSTR("bCryptMethod"), packData[465]);
+			frame->AddHex16(466, CSTR("rgbReserved"), ReadUInt16(&packData[466]));
+			frame->AddHex64(468, CSTR("ullReserved"), ReadUInt64(&packData[468]));
+			frame->AddHex32(476, CSTR("dwReserved"), ReadUInt32(&packData[476]));
+			frame->AddUInt(480, 3, CSTR("rgbReserved2"), ReadUInt24(&packData[480]));
+			frame->AddUInt(483, 1, CSTR("bReserved"), packData[483]);
+			frame->AddHexBuff(484, CSTR("rgbReserved3"), packData.SubArray(484, 32), true);
 		}
 	}
-	frame->AddHex32(tag->size - 4, CSTR("CRC"), tag->crc);
 	return frame;
 }
 
 Bool IO::FileAnalyse::PSTFileAnalyse::IsError()
 {
-	return this->fd == 0;
+	return this->fd.IsNull();
 }
 
 Bool IO::FileAnalyse::PSTFileAnalyse::IsParsing()
@@ -283,4 +259,32 @@ Bool IO::FileAnalyse::PSTFileAnalyse::IsParsing()
 Bool IO::FileAnalyse::PSTFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
+}
+
+Text::CStringNN IO::FileAnalyse::PSTFileAnalyse::PackTypeGetName(PackType packType)
+{
+	switch (packType)
+	{
+	case PackType::Header:
+		return CSTR("Header");
+	default:
+		return CSTR("Unknown");
+	}
+}
+
+Text::CString IO::FileAnalyse::PSTFileAnalyse::NIDTypeGetName(UInt32 nidType)
+{
+	switch (nidType)
+	{
+	case 0x400:
+		return CSTR("NID_TYPE_NORMAL_FOLDER");
+	case 0x4000:
+		return CSTR("NID_TYPE_SEARCH_FOLDER");
+	case 0x8000:
+		return CSTR("NID_TYPE_ASSOC_MESSAGE");
+	case 0x10000:
+		return CSTR("NID_TYPE_NORMAL_MESSAGE");
+	default:
+		return nullptr;
+	}
 }

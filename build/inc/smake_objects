@@ -681,6 +681,7 @@ NFDumpFileAnalyse.o: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp
 PCapFileAnalyse.o: ../../src/IO/FileAnalyse/PCapFileAnalyse.cpp
 PCapngFileAnalyse.o: ../../src/IO/FileAnalyse/PCapngFileAnalyse.cpp
 PNGFileAnalyse.o: ../../src/IO/FileAnalyse/PNGFileAnalyse.cpp
+PSTFileAnalyse.o: ../../src/IO/FileAnalyse/PSTFileAnalyse.cpp
 QTFileAnalyse.o: ../../src/IO/FileAnalyse/QTFileAnalyse.cpp
 RAR5FileAnalyse.o: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp
 RIFFFileAnalyse.o: ../../src/IO/FileAnalyse/RIFFFileAnalyse.cpp
