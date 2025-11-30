@@ -8,24 +8,24 @@ Data::Sort::PigeonholeSort::PigeonholeSort(Int32 minVal, Int32 maxVal)
 {
 	this->minVal = minVal;
 	this->maxVal = maxVal;
-	this->valCount = MemAllocA(Int32, maxVal - minVal + 1);
+	this->valCount = MemAllocAArr(Int32, maxVal - minVal + 1);
 }
 
 Data::Sort::PigeonholeSort::~PigeonholeSort()
 {
-	MemFreeA(this->valCount);
+	MemFreeAArr(this->valCount);
 }
 
-void Data::Sort::PigeonholeSort::SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::PigeonholeSort::SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt cnt = this->maxVal - this->minVal + 1;
 	if (cnt & 3)
 	{
-		MemClear(this->valCount, sizeof(Int32) * cnt);
+		MemClear(this->valCount.Ptr(), sizeof(Int32) * cnt);
 	}
 	else
 	{
-		MemClearANC(this->valCount, sizeof(Int32) * cnt);
+		MemClearANC(this->valCount.Ptr(), sizeof(Int32) * cnt);
 	}
 	Int32 cval;
 	OSInt i;

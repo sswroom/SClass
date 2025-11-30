@@ -7,10 +7,10 @@ namespace Data
 	class Usage
 	{
 	private:
-		Data::Usable *usable;
+		Optional<Data::Usable> usable;
 
 	public:
-		Usage(Data::Usable *usable);
+		Usage(Optional<Data::Usable> usable);
 		~Usage();
 
 		void EndUse();

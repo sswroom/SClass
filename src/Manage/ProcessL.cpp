@@ -744,7 +744,7 @@ Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 	return false;
 }
 
-Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(OptOut<UOSInt> pageFault, OptOut<UOSInt> workingSetSize, OptOut<UOSInt> pagedPoolUsage, OptOut<UOSInt> nonPagedPoolUsage, OptOut<UOSInt> pageFileUsage)
 {
 	UOSInt pageSize = (UOSInt)sysconf(_SC_PAGESIZE);
 	UTF8Char sbuff[128];
@@ -762,32 +762,26 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 		{
 			UOSInt wsSize = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[1]));
 			succ = true;
-			if (pageFault)
+			pageFault.Set(0);
+			workingSetSize.Set(wsSize * pageSize);
+			if (pagedPoolUsage.IsNotNull())
 			{
-				*pageFault = 0;
+				pagedPoolUsage.SetNoCheck((UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[2])) * pageSize);
 			}
-			if (workingSetSize)
+			if (nonPagedPoolUsage.IsNotNull())
 			{
-				*workingSetSize = wsSize * pageSize;
+				nonPagedPoolUsage.SetNoCheck((UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[5])) * pageSize);
 			}
-			if (pagedPoolUsage)
+			if (pageFileUsage.IsNotNull())
 			{
-				*pagedPoolUsage = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[2])) * pageSize;
-			}
-			if (nonPagedPoolUsage)
-			{
-				*nonPagedPoolUsage = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[5])) * pageSize;
-			}
-			if (pageFileUsage)
-			{
-				*pageFileUsage = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[0])) * pageSize;
+				pageFileUsage.SetNoCheck((UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[0])) * pageSize);
 			}
 		}
 	}
 	return succ;
 }
 
-Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *kernelTime, Data::Timestamp *userTime)
+Bool Manage::Process::GetTimeInfo(OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> kernelTime, OptOut<Data::Timestamp> userTime)
 {
 	OSInt hertz = (OSInt)sysconf(_SC_CLK_TCK);
 	UTF8Char sbuff[128];
@@ -805,20 +799,20 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 		{
 			Int64 ticks;
 			succ = true;
-			if (createTime)
+			if (createTime.IsNotNull())
 			{
 				ticks = Text::StrToInt64(UnsafeArray<const UTF8Char>(sarr[21]));
-				*createTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
+				createTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0));
 			}
-			if (kernelTime)
+			if (kernelTime.IsNotNull())
 			{
 				ticks = Text::StrToInt64(UnsafeArray<const UTF8Char>(sarr[14]));
-				*kernelTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
+				kernelTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0));
 			}
-			if (userTime)
+			if (userTime.IsNotNull())
 			{
 				ticks = Text::StrToInt64(UnsafeArray<const UTF8Char>(sarr[13]));
-				*userTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
+				userTime.SetNoCheck(Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0));
 			}
 		}
 	}

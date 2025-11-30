@@ -52,7 +52,7 @@ void Data::MacType::Release()
 	DEL_CLASS(this);
 }
 
-Data::MacString *Data::MacType::CopyTypeDesc() const
+Optional<Data::MacString> Data::MacType::CopyTypeDesc() const
 {
 	CFStringRef s = CFCopyTypeIDDescription(CFGetTypeID(this->val));
 	if (s)

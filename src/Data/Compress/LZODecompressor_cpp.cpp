@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
-#include "Data/Compress/LZODecompressor.h"
+#include "Data/Compress/LZODecompressor_C.h"
 
 Bool LZODecompressor_Decompress(const UInt8 *in, UOSInt in_len, UInt8 *out, UOSInt *out_len)
 {

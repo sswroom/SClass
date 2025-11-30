@@ -13,13 +13,13 @@ namespace Data
 			static void Sort(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
 			static void Sort(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex);
 			static void Sort(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex);
-			static void Sort(Data::Comparable **arr, OSInt firstIndex, OSInt lastIndex);
+			static void Sort(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
 			static void Sort(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex);
 			static void SortInv(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
 			static void SortInv(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
 			static void SortInv(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex);
 			static void SortInv(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortInv(Data::Comparable **arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortInv(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
 			static void SortInv(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}

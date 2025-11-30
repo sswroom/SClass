@@ -42,17 +42,17 @@ Data::Compress::LZWDecStream::LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt 
 	this->endCode = this->resetCode + 1;
 	if (lsb)
 	{
-		NEW_CLASS(this->reader, IO::BitReaderLSB(stm));
+		NEW_CLASSNN(this->reader, IO::BitReaderLSB(stm));
 	}
 	else
 	{
-		NEW_CLASS(this->reader, IO::BitReaderMSB(stm));
+		NEW_CLASSNN(this->reader, IO::BitReaderMSB(stm));
 	}
 	this->toRelease = true;
 	ResetTable();
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(CSTR("LZWStream"))
+Data::Compress::LZWDecStream::LZWDecStream(NN<IO::BitReader> reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(CSTR("LZWStream"))
 {
 	this->tableSize = ((UOSInt)1 << maxCodeSize);
 	this->lzwTable = MemAllocArr(UInt8, this->tableSize * 4);
@@ -74,7 +74,7 @@ Data::Compress::LZWDecStream::~LZWDecStream()
 	MemFreeArr(this->lzwTable);
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->reader);
+		this->reader.Delete();
 	}
 }
 

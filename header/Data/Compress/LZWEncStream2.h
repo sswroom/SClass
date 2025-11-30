@@ -13,18 +13,18 @@ namespace Data
 			UOSInt minCodeSize;
 			UOSInt maxCodeSize;
 			UOSInt currCodeSize;
-			UInt8 *encBuff;
+			UnsafeArray<UInt8> encBuff;
 			UOSInt buffSize;
 			UInt16 currTableSize;
 			UInt16 nextTableSize;
-			UInt16 *lzwTable;
+			UnsafeArray<UInt16> lzwTable;
 			UInt16 resetCode;
 			UInt16 endCode;
 			UInt16 nextTableOfst;
 			UOSInt tableSize;
 			OSInt codeSizeAdj;
 			NN<IO::Stream> stm;
-			IO::BitWriter *writer;
+			NN<IO::BitWriter> writer;
 			Bool toRelease;
 
 		private:

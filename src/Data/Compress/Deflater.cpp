@@ -145,7 +145,7 @@ struct Data::Compress::DeflateCompressor
 	UInt32 m_saved_match_dist, m_saved_match_len, m_saved_lit, m_output_flush_ofs, m_output_flush_remaining, m_finished, m_block_index, m_wants_to_finish;
 	DeflateStatus m_prev_return_status;
 	const void *m_pIn_buf;
-	void *m_pOut_buf;
+	UInt8 *m_pOut_buf;
 	UOSInt *m_pIn_buf_size, *m_pOut_buf_size;
 	DeflateFlush m_flush;
 	const UInt8 *m_pSrc;
@@ -900,7 +900,7 @@ Data::Compress::DeflateStatus Data::Compress::Deflater::FlushOutputBuffer(NN<Def
 	if (d->m_pOut_buf_size)
 	{
 		UOSInt n = Math_Min(*d->m_pOut_buf_size - d->m_out_buf_ofs, d->m_output_flush_remaining);
-		memcpy((UInt8 *)d->m_pOut_buf + d->m_out_buf_ofs, d->m_output_buf + d->m_output_flush_ofs, n);
+		memcpy(d->m_pOut_buf + d->m_out_buf_ofs, d->m_output_buf + d->m_output_flush_ofs, n);
 		d->m_output_flush_ofs += (UInt32)n;
 		d->m_output_flush_remaining -= (UInt32)n;
 		d->m_out_buf_ofs += n;
@@ -1060,13 +1060,13 @@ Int32 Data::Compress::Deflater::FlushBlock(NN<DeflateCompressor> d, DeflateFlush
 	return (Int32)d->m_output_flush_remaining;
 }
 
-Data::Compress::DeflateStatus Data::Compress::Deflater::Compress(NN<DeflateCompressor> d, const void *pIn_buf, UOSInt *pIn_buf_size, void *pOut_buf, UOSInt *pOut_buf_size, DeflateFlush flush)
+Data::Compress::DeflateStatus Data::Compress::Deflater::Compress(NN<DeflateCompressor> d, const UInt8 *pIn_buf, UOSInt *pIn_buf_size, UInt8 *pOut_buf, UOSInt *pOut_buf_size, DeflateFlush flush)
 {
 	d->m_pIn_buf = pIn_buf;
 	d->m_pIn_buf_size = pIn_buf_size;
 	d->m_pOut_buf = pOut_buf;
 	d->m_pOut_buf_size = pOut_buf_size;
-	d->m_pSrc = (const UInt8 *)(pIn_buf);
+	d->m_pSrc = pIn_buf;
 	d->m_src_buf_left = pIn_buf_size ? *pIn_buf_size : 0;
 	d->m_out_buf_ofs = 0;
 	d->m_flush = flush;

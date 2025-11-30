@@ -6,7 +6,7 @@ namespace Data
 	class RandomMT19937 : public Data::Random
 	{
 	private:
-		UInt32 *mt;
+		UnsafeArray<UInt32> mt;
 		OSInt mt_index;
 
 	public:

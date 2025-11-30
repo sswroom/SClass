@@ -27,22 +27,22 @@ void Data::Compress::LZWEncStream2::ResetTable()
 Data::Compress::LZWEncStream2::LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
 	this->tableSize = ((UOSInt)1 << maxCodeSize);
-	this->lzwTable = MemAllocA(UInt16, this->tableSize * 512);
+	this->lzwTable = MemAllocAArr(UInt16, this->tableSize * 512);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
 	this->codeSizeAdj = codeSizeAdj;
 	this->resetCode = (UInt16)(1 << minCodeSize);
 	this->endCode = (UInt16)(this->resetCode + 1);
-	this->encBuff = MemAlloc(UInt8, this->tableSize);
+	this->encBuff = MemAllocArr(UInt8, this->tableSize);
 	this->buffSize = 0;
 	this->stm  = stm;
 	if (lsb)
 	{
-		NEW_CLASS(this->writer, IO::BitWriterLSB(stm));
+		NEW_CLASSNN(this->writer, IO::BitWriterLSB(stm));
 	}
 	else
 	{
-		NEW_CLASS(this->writer, IO::BitWriterMSB(stm));
+		NEW_CLASSNN(this->writer, IO::BitWriterMSB(stm));
 	}
 	this->toRelease = true;
 	ResetTable();
@@ -51,7 +51,7 @@ Data::Compress::LZWEncStream2::LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UOSIn
 
 Data::Compress::LZWEncStream2::~LZWEncStream2()
 {
-	UInt8 *buff = this->encBuff;
+	UnsafeArray<UInt8> buff = this->encBuff;
 	UOSInt i;
 	UOSInt j;
 	UInt32 bestCode;
@@ -113,12 +113,12 @@ Data::Compress::LZWEncStream2::~LZWEncStream2()
 		}
 	}
 	this->writer->WriteBits(this->endCode, this->currCodeSize);
-	MemFreeA(this->lzwTable);
+	MemFreeAArr(this->lzwTable);
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->writer);
+		this->writer.Delete();
 	}
-	MemFree(this->encBuff);
+	MemFreeArr(this->encBuff);
 }
 
 Bool Data::Compress::LZWEncStream2::IsDown() const
@@ -147,7 +147,7 @@ UOSInt Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 	else
 	{
 		relBuff = MemAlloc(UInt8, buff.GetSize() + this->buffSize);
-		MemCopyNO(relBuff, this->encBuff, this->buffSize);
+		MemCopyNO(relBuff, this->encBuff.Ptr(), this->buffSize);
 		MemCopyNO(&relBuff[this->buffSize], buff.Ptr(), buff.GetSize());
 		sizeLeft = buff.GetSize() + this->buffSize;
 		buff = Data::ByteArrayR(relBuff, sizeLeft);
@@ -212,7 +212,7 @@ UOSInt Data::Compress::LZWEncStream2::Write(Data::ByteArrayR buff)
 			}
 		}
 	}
-	MemCopyNO(this->encBuff, buff.Ptr(), sizeLeft);
+	MemCopyNO(this->encBuff.Ptr(), buff.Ptr(), sizeLeft);
 	this->buffSize = sizeLeft;
 	if (relBuff)
 	{

@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/Compress/LZODecompressor.h"
+#include "Data/Compress/LZODecompressor_C.h"
 
 Data::Compress::LZODecompressor::LZODecompressor()
 {

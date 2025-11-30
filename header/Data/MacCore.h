@@ -31,7 +31,7 @@ namespace Data
 		Bool IsArray() const;
 		Bool IsDictionary() const;
 		void Release();
-		MacString *CopyTypeDesc() const;
+		Optional<MacString> CopyTypeDesc() const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 

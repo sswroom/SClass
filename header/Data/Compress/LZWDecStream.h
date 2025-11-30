@@ -23,14 +23,14 @@ namespace Data
 			UOSInt decBuffSize;
 			UOSInt codeSizeAdj;
 			UInt32 localCode;
-			IO::BitReader *reader;
+			NN<IO::BitReader> reader;
 			Bool toRelease;
 
 		private:
 			void ResetTable();
 		public:
 			LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
-			LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
+			LZWDecStream(NN<IO::BitReader> reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
 			virtual ~LZWDecStream();
 
 			virtual Bool IsDown() const;

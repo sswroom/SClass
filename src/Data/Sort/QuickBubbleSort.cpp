@@ -1,8 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/Comparable.h"
-#include "Data/Sort/QuickBubbleSort.h"
 #include "Data/Sort/BubbleSort.h"
+#include "Data/Sort/BubbleSort_C.h"
+#include "Data/Sort/QuickBubbleSort.h"
 
 void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
 {
@@ -260,19 +261,19 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Single> arr, OSInt firstIndex
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(Data::Comparable **arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
-	Data::Comparable *pivot;
-	Data::Comparable *tmp;
-	Data::Comparable **tmparr;
+	NN<Data::Comparable> pivot;
+	NN<Data::Comparable> tmp;
+	UnsafeArray<NN<Data::Comparable>> tmparr;
 
 	while (hi > lo)
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortCmpO(arr, lo, hi);
+			BubbleSort::SortCmpO(arr, lo, hi);
 			return;
 		}
 
@@ -644,19 +645,19 @@ void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Single> arr, OSInt firstIn
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(Data::Comparable **arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
-	Data::Comparable *pivot;
-	Data::Comparable *tmp;
-	Data::Comparable **tmparr;
+	NN<Data::Comparable> pivot;
+	NN<Data::Comparable> tmp;
+	UnsafeArray<NN<Data::Comparable>> tmparr;
 
 	while (hi > lo)
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortCmpOInv(arr, lo, hi);
+			BubbleSort::SortCmpOInv(arr, lo, hi);
 			return;
 		}
 

@@ -1,12 +1,13 @@
 #include "Stdafx.h"
 #include "Data/Usage.h"
 
-Data::Usage::Usage(Data::Usable *usable)
+Data::Usage::Usage(Optional<Data::Usable> usable)
 {
+	NN<Data::Usable> nnusable;
 	this->usable = usable;
-	if (this->usable)
+	if (this->usable.SetTo(nnusable))
 	{
-		this->usable->BeginUse();
+		nnusable->BeginUse();
 	}
 }
 
@@ -17,9 +18,10 @@ Data::Usage::~Usage()
 
 void Data::Usage::EndUse()
 {
-	if (this->usable)
+	NN<Data::Usable> nnusable;
+	if (this->usable.SetTo(nnusable))
 	{
-		this->usable->EndUse();
+		nnusable->EndUse();
 		this->usable = 0;
 	}
 }

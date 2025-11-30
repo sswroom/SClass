@@ -4,7 +4,7 @@
 
 Data::RandomMT19937::RandomMT19937(UInt32 seed)
 {
-	this->mt = MemAlloc(UInt32, 624);
+	this->mt = MemAllocArr(UInt32, 624);
 	this->mt_index = 624;
 
     mt[0] = seed;
@@ -18,7 +18,7 @@ Data::RandomMT19937::RandomMT19937(UInt32 seed)
 
 Data::RandomMT19937::~RandomMT19937()
 {
-	MemFree(this->mt);
+	MemFreeArr(this->mt);
 }
 
 Double Data::RandomMT19937::NextDouble()

@@ -24,14 +24,14 @@ namespace Data
 			OSInt currCodeSize;
 			OSInt currTableSize;
 			OSInt nextTableSize;
-			TableItem *lzwTable;
-			UInt8 *encBuff;
+			UnsafeArray<TableItem> lzwTable;
+			UnsafeArray<UInt8> encBuff;
 			OSInt buffSize;
 			Int32 resetCode;
 			Int32 endCode;
 			OSInt tableSize;
 			OSInt codeSizeAdj;
-			IO::BitWriter *writer;
+			NN<IO::BitWriter> writer;
 			Bool toRelease;
 			OSInt maxCodeLeng;
 
@@ -39,11 +39,11 @@ namespace Data
 		private:
 			void ResetTable();
 		public:
-			LZWEncStream(IO::Stream *stm, Bool lsb, OSInt minCodeSize, OSInt maxCodeSize, OSInt codeSizeAdj);
+			LZWEncStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
 			virtual ~LZWEncStream();
 
-			virtual OSInt Read(UInt8 *buff, OSInt size);
-			virtual OSInt Write(const UInt8 *buff, OSInt size);
+			virtual UOSInt Read(const Data::ByteArray &buff);
+			virtual UOSInt Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();

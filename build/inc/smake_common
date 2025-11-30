@@ -1636,9 +1636,10 @@ Data/Compress/Inflater.h:
 Data/Compress/InflateStream.h:
 @?(NO_MINIZ == 0)InflateStreamMiniz.o
 @?(NO_MINIZ > 0)InflateStreamZlib.o
+Data/Compress/LZODecompressor_C.h:
+@LZODecompressor_CPP.o
 Data/Compress/LZODecompressor.h:
 @LZODecompressor.o
-@LZODecompressor_CPP.o
 Data/Compress/LZWDecompressor.h:
 @LZWDecompressor.o
 Data/Compress/LZWDecStream.h:

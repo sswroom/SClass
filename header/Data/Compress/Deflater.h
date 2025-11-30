@@ -70,17 +70,17 @@ namespace Data
 			Optional<Crypto::Hash::HashAlgorithm> hash;
 			UInt8 buff[DEFLATER_BUFF_SIZE];
 
-			const UInt8 *next_in; /* pointer to next byte to read */
-			UInt32 avail_in;        /* number of bytes available at next_in */
-			UInt32 total_in;            /* total number of bytes consumed so far */
+			const UInt8 *next_in;	// pointer to next byte to read
+			UInt32 avail_in;		// number of bytes available at next_in
+			UInt32 total_in;		// total number of bytes consumed so far
 
-			UInt8 *next_out; /* pointer to next byte to write */
-			UInt32 avail_out;  /* number of bytes that can be written to next_out */
-			UInt32 total_out;      /* total number of bytes produced so far */
+			UInt8 *next_out;		// pointer to next byte to write
+			UInt32 avail_out;		// number of bytes that can be written to next_out
+			UInt32 total_out;		// total number of bytes produced so far
 
-			NN<DeflateCompressor> state; /* internal state, allocated by zalloc/zfree */
+			NN<DeflateCompressor> state; // internal state, allocated by zalloc/zfree
 
-			UInt32 adler;    /* adler32 of the source or uncompressed data */
+			UInt32 adler;			// adler32 of the source or uncompressed data
 
 			static const UInt32 s_tdefl_num_probes[];
 			static const UInt8 s_tdefl_packed_code_size_syms_swizzle[];
@@ -108,7 +108,7 @@ namespace Data
 			static Bool CompressNormal(NN<DeflateCompressor> d);
 			static DeflateStatus FlushOutputBuffer(NN<DeflateCompressor> d);
 		    static Int32 FlushBlock(NN<DeflateCompressor> d, DeflateFlush flush);
-			static DeflateStatus Compress(NN<DeflateCompressor> d, const void *pIn_buf, UOSInt *pIn_buf_size, void *pOut_buf, UOSInt *pOut_buf_size, DeflateFlush flush);
+			static DeflateStatus Compress(NN<DeflateCompressor> d, const UInt8 *pIn_buf, UOSInt *pIn_buf_size, UInt8 *pOut_buf, UOSInt *pOut_buf_size, DeflateFlush flush);
 			DeflateResult Deflate(DeflateFlush flush);
 		public:
 			Deflater(NN<IO::Stream> srcStm, Optional<Crypto::Hash::HashAlgorithm> hash, CompLevel level, Bool hasHeader);

@@ -25,7 +25,7 @@ namespace Data
 		
 		TimeType timeType;
 		UInt32 ns;
-		Int8 tzQhr; //* 15 minutes
+		Int8 tzQhr; // 15 minutes
 		union
 		{
 			Int64 secs;
