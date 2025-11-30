@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(AnyType userObj)
 		me->rlcDetChartCount->ClearChart();
 		me->rlcDetChartWS->ClearChart();
 		me->rlcDetChartPage->ClearChart();
-		proc.GetTimeInfo(0, &me->lastKernelTime, &me->lastUserTime);
+		proc.GetTimeInfo(0, me->lastKernelTime, me->lastUserTime);
 		me->clk.Start();
 	}
 }
@@ -128,7 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 			UOSInt pagedPool;
 			UOSInt nonPagedPool;
 			UOSInt pageFile;
-			if (proc.GetMemoryInfo(&pageFault, &ws, &pagedPool, &nonPagedPool, &pageFile))
+			if (proc.GetMemoryInfo(pageFault, ws, pagedPool, nonPagedPool, pageFile))
 			{
 				sptr = Text::StrUOSIntS(sbuff, ws, ',', 3);
 				me->lvSummary->SetSubItem(i, 2, CSTRP(sbuff, sptr));
@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(AnyType userObj)
 		Double t;
 		Double v[3];
 		Manage::Process proc(me->currProc, false);
-		if (proc.GetTimeInfo(0, &kernelTime, &userTime))
+		if (proc.GetTimeInfo(0, kernelTime, userTime))
 		{
 			t = me->clk.GetAndRestart();
 			if (t > 0)
@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(AnyType userObj)
 		UOSInt pagePool;
 		UOSInt nonPagePool;
 		UOSInt pageFile;
-		if (proc.GetMemoryInfo(0, &workingSet, &pagePool, &nonPagePool, &pageFile))
+		if (proc.GetMemoryInfo(0, workingSet, pagePool, nonPagePool, pageFile))
 		{
 			v[0] = UOSInt2Double(pagePool);
 			v[1] = UOSInt2Double(nonPagePool);
