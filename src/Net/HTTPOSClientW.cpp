@@ -87,7 +87,7 @@ void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, D
 
 Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(clif, kaConn)
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->hSession = 0;
 	data->hConnect = 0;
@@ -98,12 +98,11 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 	data->cliKey = 0;
 	this->cliHost = 0;
 	this->writing = false;
-	this->dataBuff = 0;
 	this->buffSize = 0;
 	this->contRead = 0;
 //	this->timeOutMS = 5000;
-	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024));
+	this->dataBuff = MemAllocArr(UInt8, BUFFSIZE);
+	NEW_CLASSNN(this->reqMstm, IO::MemoryStream(1024));
 	Text::CStringNN nnuserAgent;
 	if (!userAgent.SetTo(nnuserAgent))
 	{
@@ -131,12 +130,8 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 Net::HTTPOSClient::~HTTPOSClient()
 {
 	SDEL_TEXT(this->cliHost);
-	if (this->dataBuff)
-	{
-		MemFree(this->dataBuff);
-		this->dataBuff = 0;
-	}
-	ClassData *data = this->clsData;
+	MemFreeArr(this->dataBuff);
+	NN<ClassData> data = this->clsData;
 	if (data->hRequest)
 		WinHttpCloseHandle(data->hRequest);
 	if (data->hConnect)
@@ -155,19 +150,18 @@ Net::HTTPOSClient::~HTTPOSClient()
 	}
 	SDEL_CLASS(data->cliCert);
 	SDEL_CLASS(data->cliKey);
-	MemFree(data);
-	DEL_CLASS(this->reqMstm);
+	MemFreeNN(data);
+	this->reqMstm.Delete();
 }
 
 Bool Net::HTTPOSClient::IsError() const
 {
-	ClassData *data = this->clsData;
-	return data->hRequest == 0;
+	return this->clsData->hRequest == 0;
 }
 
 UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	this->EndRequest(0, 0);
 	if (data->hRequest == 0)
 	{
@@ -192,7 +186,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	if (this->buffSize == 0)
 	{
 		DWORD bytesRead;
-		BOOL succ = WinHttpReadData(data->hRequest, this->dataBuff, (DWORD)myBuff.GetSize(), &bytesRead);
+		BOOL succ = WinHttpReadData(data->hRequest, this->dataBuff.Ptr(), (DWORD)myBuff.GetSize(), &bytesRead);
 		if (succ)
 		{
 			this->buffSize = bytesRead;
@@ -201,7 +195,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	if (this->buffSize >= myBuff.GetSize())
 	{
 		myBuff.CopyFrom(Data::ByteArrayR(this->dataBuff, myBuff.GetSize()));
-		MemCopyO(this->dataBuff, &this->dataBuff[myBuff.GetSize()], this->buffSize - myBuff.GetSize());
+		MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[myBuff.GetSize()], this->buffSize - myBuff.GetSize());
 		this->buffSize -= myBuff.GetSize();
 		this->contRead += myBuff.GetSize();
 		return myBuff.GetSize();
@@ -262,7 +256,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	UInt16 port;
 	UInt16 defPort;
 	Double t1;
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->hSession == 0)
 	{
 		timeDNS.Set(-1);
@@ -474,7 +468,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 
 void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->hRequest && !writing)
 	{
 		if (name.Equals(UTF8STRC("User-Agent")))
@@ -496,7 +490,7 @@ void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 
 void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeResp)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->hRequest == 0 || (this->writing && !this->canWrite))
 	{
 		timeReq.Set(-1);

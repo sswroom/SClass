@@ -23,7 +23,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userOb
 	IO::GSMModemController::BER ber;
 	NN<IO::ATCommandChannel> channel;
 	NN<IO::GSMModemController> modem;
-	NN<IO::HuaweiGSMModemController> huawei;
+	NN<IO::Device::HuaweiGSMModemController> huawei;
 	NN<Text::String> s;
 
 	nextSignalTime = Data::Timestamp::UtcNow();
@@ -47,7 +47,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userOb
 					if (s->StartsWith(UTF8STRC("Huawei")) && me->cellularChannel.SetTo(channel))
 					{
 						NN<IO::GSMModemController> oldModem;
-						NEW_CLASSNN(huawei, IO::HuaweiGSMModemController(channel, false));
+						NEW_CLASSNN(huawei, IO::Device::HuaweiGSMModemController(channel, false));
 						me->cellularHuawei = huawei;
 						oldModem = modem;
 						me->cellularModem = huawei;

@@ -12,14 +12,10 @@
 
 Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(clif, kaConn)
 {
-	this->clsData = 0;
 	this->cliHost = 0;
 	this->writing = false;
-	this->dataBuff = 0;
 	this->buffSize = 0;
 //	this->timeOutMS = 5000;
-	this->dataBuff = 0;
-	this->reqMstm = 0;
 }
 
 Net::HTTPOSClient::~HTTPOSClient()

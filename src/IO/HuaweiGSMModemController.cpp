@@ -1,16 +1,16 @@
 #include "Stdafx.h"
-#include "IO/HuaweiGSMModemController.h"
+#include "IO/Device/HuaweiGSMModemController.h"
 
-IO::HuaweiGSMModemController::HuaweiGSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
+IO::Device::HuaweiGSMModemController::HuaweiGSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
 }
 
-IO::HuaweiGSMModemController::~HuaweiGSMModemController()
+IO::Device::HuaweiGSMModemController::~HuaweiGSMModemController()
 {
 
 }
 
-UnsafeArrayOpt<UTF8Char> IO::HuaweiGSMModemController::HuaweiGetICCID(UnsafeArray<UTF8Char> iccid)
+UnsafeArrayOpt<UTF8Char> IO::Device::HuaweiGSMModemController::HuaweiGetICCID(UnsafeArray<UTF8Char> iccid)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -25,7 +25,7 @@ UnsafeArrayOpt<UTF8Char> IO::HuaweiGSMModemController::HuaweiGetICCID(UnsafeArra
 	return 0;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetCardMode(OutParam<SIMCardType> simType)
+Bool IO::Device::HuaweiGSMModemController::HuaweiGetCardMode(OutParam<SIMCardType> simType)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -46,7 +46,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetCardMode(OutParam<SIMCardType> simTy
 	return false;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetSysInfoEx(OutParam<ServiceStatus> srvStatus, OutParam<ServiceDomain> srvDomain, OutParam<Bool> roamStatus, OutParam<SIMState> simState, OutParam<Bool> lockState, OutParam<SysMode> sysMode, OutParam<SubMode> subMode)
+Bool IO::Device::HuaweiGSMModemController::HuaweiGetSysInfoEx(OutParam<ServiceStatus> srvStatus, OutParam<ServiceDomain> srvDomain, OutParam<Bool> roamStatus, OutParam<SIMState> simState, OutParam<Bool> lockState, OutParam<SysMode> sysMode, OutParam<SubMode> subMode)
 {
 	Text::PString sarr[9];
 	UTF8Char sbuff[256];
@@ -79,7 +79,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetSysInfoEx(OutParam<ServiceStatus> sr
 	return false;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetSignalStrength(NN<SignalStrengthInfo> csq)
+Bool IO::Device::HuaweiGSMModemController::HuaweiGetSignalStrength(NN<SignalStrengthInfo> csq)
 {
 	Text::PString sarr[9];
 	UOSInt sarrCnt;
@@ -160,7 +160,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetSignalStrength(NN<SignalStrengthInfo
 	return false;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> clientIP, OutParam<UInt32> netmask, OutParam<UInt32> gateway, OutParam<UInt32> dhcp, OutParam<UInt32> priDNS, OutParam<UInt32> secDNS, OutParam<UInt64> maxRXbps, OutParam<UInt64> maxTXbps)
+Bool IO::Device::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> clientIP, OutParam<UInt32> netmask, OutParam<UInt32> gateway, OutParam<UInt32> dhcp, OutParam<UInt32> priDNS, OutParam<UInt32> secDNS, OutParam<UInt64> maxRXbps, OutParam<UInt64> maxTXbps)
 {
 	Text::PString sarr[9];
 	UTF8Char sbuff[256];
@@ -211,7 +211,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> clientIP, OutP
 	return false;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetVersion(NN<VersionInfo> version)
+Bool IO::Device::HuaweiGSMModemController::HuaweiGetVersion(NN<VersionInfo> version)
 {
 	Data::ArrayListStringNN retStrs;
 	if (!this->SendStringCommand(retStrs, UTF8STRC("AT^VERSION?"), 3000))
@@ -277,7 +277,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetVersion(NN<VersionInfo> version)
 	return true;
 }
 
-UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSSIGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rssi)
+UnsafeArray<UTF8Char> IO::Device::HuaweiGSMModemController::RSSIGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rssi)
 {
 	if (rssi == 0)
 	{
@@ -290,7 +290,7 @@ UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSSIGetName(UnsafeArray<UTF8
 	return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 }
 
-Double IO::HuaweiGSMModemController::RSSIGetdBm(UInt32 rssi)
+Double IO::Device::HuaweiGSMModemController::RSSIGetdBm(UInt32 rssi)
 {
 	if (rssi <= 96)
 	{
@@ -299,7 +299,7 @@ Double IO::HuaweiGSMModemController::RSSIGetdBm(UInt32 rssi)
 	return 0;
 }
 
-UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSCPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rscp)
+UnsafeArray<UTF8Char> IO::Device::HuaweiGSMModemController::RSCPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rscp)
 {
 	if (rscp == 0)
 	{
@@ -312,7 +312,7 @@ UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSCPGetName(UnsafeArray<UTF8
 	return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 }
 
-Double IO::HuaweiGSMModemController::RSCPGetdBm(UInt32 rscp)
+Double IO::Device::HuaweiGSMModemController::RSCPGetdBm(UInt32 rscp)
 {
 	if (rscp <= 96)
 	{
@@ -321,7 +321,7 @@ Double IO::HuaweiGSMModemController::RSCPGetdBm(UInt32 rscp)
 	return 0;
 }
 
-UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::ECIOGetName(UnsafeArray<UTF8Char> sbuff, UInt32 ecio)
+UnsafeArray<UTF8Char> IO::Device::HuaweiGSMModemController::ECIOGetName(UnsafeArray<UTF8Char> sbuff, UInt32 ecio)
 {
 	if (ecio == 0)
 	{
@@ -341,7 +341,7 @@ UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::ECIOGetName(UnsafeArray<UTF8
 	return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 }
 
-Double IO::HuaweiGSMModemController::ECIOGetdBm(UInt32 ecio)
+Double IO::Device::HuaweiGSMModemController::ECIOGetdBm(UInt32 ecio)
 {
 	if (ecio <= 65)
 	{
@@ -350,7 +350,7 @@ Double IO::HuaweiGSMModemController::ECIOGetdBm(UInt32 ecio)
 	return 0;
 }
 
-UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSRPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rsrp)
+UnsafeArray<UTF8Char> IO::Device::HuaweiGSMModemController::RSRPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rsrp)
 {
 	if (rsrp == 0)
 	{
@@ -363,7 +363,7 @@ UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSRPGetName(UnsafeArray<UTF8
 	return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 }
 
-Double IO::HuaweiGSMModemController::RSRPGetdBm(UInt32 rsrp)
+Double IO::Device::HuaweiGSMModemController::RSRPGetdBm(UInt32 rsrp)
 {
 	if (rsrp <= 97)
 	{
@@ -372,7 +372,7 @@ Double IO::HuaweiGSMModemController::RSRPGetdBm(UInt32 rsrp)
 	return 0;
 }
 
-UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::SINRGetName(UnsafeArray<UTF8Char> sbuff, UInt32 sinr)
+UnsafeArray<UTF8Char> IO::Device::HuaweiGSMModemController::SINRGetName(UnsafeArray<UTF8Char> sbuff, UInt32 sinr)
 {
 	if (sinr == 0)
 	{
@@ -385,7 +385,7 @@ UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::SINRGetName(UnsafeArray<UTF8
 	return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 }
 
-Double IO::HuaweiGSMModemController::SINRGetdBm(UInt32 sinr)
+Double IO::Device::HuaweiGSMModemController::SINRGetdBm(UInt32 sinr)
 {
 	if (sinr <= 251)
 	{
@@ -394,7 +394,7 @@ Double IO::HuaweiGSMModemController::SINRGetdBm(UInt32 sinr)
 	return 0;
 }
 
-UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSRQGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rsrq)
+UnsafeArray<UTF8Char> IO::Device::HuaweiGSMModemController::RSRQGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rsrq)
 {
 	if (rsrq == 0)
 	{
@@ -414,7 +414,7 @@ UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSRQGetName(UnsafeArray<UTF8
 	return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 }
 
-Double IO::HuaweiGSMModemController::RSRQGetdBm(UInt32 rsrq)
+Double IO::Device::HuaweiGSMModemController::RSRQGetdBm(UInt32 rsrq)
 {
 	if (rsrq <= 34)
 	{
@@ -423,7 +423,7 @@ Double IO::HuaweiGSMModemController::RSRQGetdBm(UInt32 rsrq)
 	return 0;
 }
 
-Text::CStringNN IO::HuaweiGSMModemController::SIMCardTypeGetName(SIMCardType simType)
+Text::CStringNN IO::Device::HuaweiGSMModemController::SIMCardTypeGetName(SIMCardType simType)
 {
 	switch (simType)
 	{
@@ -442,7 +442,7 @@ Text::CStringNN IO::HuaweiGSMModemController::SIMCardTypeGetName(SIMCardType sim
 	}
 }
 
-Text::CStringNN IO::HuaweiGSMModemController::ServiceStatusGetName(ServiceStatus srvStatus)
+Text::CStringNN IO::Device::HuaweiGSMModemController::ServiceStatusGetName(ServiceStatus srvStatus)
 {
 	switch (srvStatus)
 	{
@@ -461,7 +461,7 @@ Text::CStringNN IO::HuaweiGSMModemController::ServiceStatusGetName(ServiceStatus
 	}
 }
 
-Text::CStringNN IO::HuaweiGSMModemController::ServiceDomainGetName(ServiceDomain srvDomain)
+Text::CStringNN IO::Device::HuaweiGSMModemController::ServiceDomainGetName(ServiceDomain srvDomain)
 {
 	switch (srvDomain)
 	{
@@ -482,7 +482,7 @@ Text::CStringNN IO::HuaweiGSMModemController::ServiceDomainGetName(ServiceDomain
 	}
 }
 
-Text::CStringNN IO::HuaweiGSMModemController::SIMStateGetName(SIMState simState)
+Text::CStringNN IO::Device::HuaweiGSMModemController::SIMStateGetName(SIMState simState)
 {
 	switch (simState)
 	{
@@ -505,7 +505,7 @@ Text::CStringNN IO::HuaweiGSMModemController::SIMStateGetName(SIMState simState)
 	}
 }
 
-Text::CStringNN IO::HuaweiGSMModemController::SysModeGetName(SysMode sysMode)
+Text::CStringNN IO::Device::HuaweiGSMModemController::SysModeGetName(SysMode sysMode)
 {
 	switch (sysMode)
 	{
@@ -528,7 +528,7 @@ Text::CStringNN IO::HuaweiGSMModemController::SysModeGetName(SysMode sysMode)
 	}
 }
 
-Text::CStringNN IO::HuaweiGSMModemController::SubModeGetName(SubMode submode)
+Text::CStringNN IO::Device::HuaweiGSMModemController::SubModeGetName(SubMode submode)
 {
 	switch (submode)
 	{
@@ -603,7 +603,7 @@ Text::CStringNN IO::HuaweiGSMModemController::SubModeGetName(SubMode submode)
 	}
 }
 
-void IO::HuaweiGSMModemController::FreeVersionInfo(NN<VersionInfo> version)
+void IO::Device::HuaweiGSMModemController::FreeVersionInfo(NN<VersionInfo> version)
 {
 	OPTSTR_DEL(version->biosDateTime);
 	OPTSTR_DEL(version->exts);

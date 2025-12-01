@@ -15,10 +15,11 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 
 	NN<Net::HTTPClient> cli;
 	NN<HTTPDATAHANDLE> fdh = userObj.GetNN<HTTPDATAHANDLE>();
-	if (fdh->queue)
+	NN<HTTPQueue> queue;
+	if (fdh->queue.SetTo(queue))
 	{
 		Sync::MutexUsage mutUsage(fdh->mut);
-		fdh->cli = cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		fdh->cli = cli = queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		mutUsage.EndUse();
 	}
 	else
@@ -42,11 +43,11 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 		cli->GetRespHeader(CSTR("Location"), sb);
 		if (sb.GetLength() > 0 && (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://"))))
 		{
-			if (fdh->queue)
+			if (fdh->queue.SetTo(queue))
 			{
 				Sync::MutexUsage mutUsage(fdh->mut);
-				fdh->queue->EndRequest(cli);
-				fdh->cli = cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				queue->EndRequest(cli);
+				fdh->cli = cli = queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				mutUsage.EndUse();
 			}
 			else
@@ -151,9 +152,9 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 		}
 	}
 	Sync::MutexUsage mutUsage(fdh->mut);
-	if (fdh->queue)
+	if (fdh->queue.SetTo(queue))
 	{
-		fdh->queue->EndRequest(cli);
+		queue->EndRequest(cli);
 	}
 	else
 	{
@@ -165,10 +166,10 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	return 0;
 }
 
-Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
+Net::HTTPData::HTTPData(NN<const Net::HTTPData> fd, UInt64 offset, UInt64 length)
 {
 	dataOffset = offset + fd->dataOffset;
-	UInt64 endOffset = fd->dataOffset + ((Net::HTTPData*)fd)->GetDataSize();
+	UInt64 endOffset = fd->dataOffset + fd->GetDataSize();
 	dataLength = length;
 	if (dataOffset > endOffset)
 	{
@@ -179,16 +180,21 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 	{
 		dataLength = endOffset - dataOffset;
 	}
-	fdh = fd->fdh;
-	fdh->objectCnt++;
+	NN<HTTPDATAHANDLE> fdh;
+	this->fdh = fd->fdh;
+	if (fd->fdh.SetTo(fdh))
+	{
+		fdh->objectCnt++;
+	}
 }
 
-Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload)
+Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Net::HTTPQueue> queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload)
 {
 	UOSInt i;
 	Bool needReload = forceReload;
+	NN<HTTPDATAHANDLE> fdh;
 	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
-	fdh = 0;
+	this->fdh = 0;
 	if (pt == IO::Path::PathType::Directory)
 	{
 		this->dataLength = 0;
@@ -211,7 +217,8 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 		}
 		else
 		{
-			NEW_CLASS(fdh, Net::HTTPData::HTTPDATAHANDLE());
+			NEW_CLASSNN(fdh, Net::HTTPData::HTTPDATAHANDLE());
+			this->fdh = fdh;
 			fdh->file = fs;
 			dataOffset = 0;
 			dataLength = fdh->fileLength = fs->GetLength();
@@ -239,7 +246,8 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 	{
 		dataOffset = 0;
 		dataLength = (UOSInt)-1;
-		NEW_CLASS(fdh, Net::HTTPData::HTTPDATAHANDLE());
+		NEW_CLASSNN(fdh, Net::HTTPData::HTTPDATAHANDLE());
+		this->fdh = fdh;
 		fdh->file = 0;
 		fdh->fileLength = 0;
 		fdh->currentOffset = 0;
@@ -280,7 +288,8 @@ Net::HTTPData::~HTTPData()
 
 UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
 {
-	if (fdh == 0)
+	NN<HTTPDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return 0;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	while (fdh->isLoading && (dataOffset + offset + length > fdh->loadSize))
@@ -315,7 +324,8 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray 
 
 UInt64 Net::HTTPData::GetDataSize() const
 {
-	if (dataLength == (UOSInt)-1)
+	NN<HTTPDATAHANDLE> fdh;
+	if (dataLength == (UOSInt)-1 && this->fdh.SetTo(fdh))
 	{
 		while (true)
 		{
@@ -332,21 +342,24 @@ UInt64 Net::HTTPData::GetDataSize() const
 
 NN<Text::String> Net::HTTPData::GetFullName() const
 {
-	if (fdh == 0)
+	NN<HTTPDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return Text::String::NewEmpty();
 	return fdh->url;
 }
 
 Text::CString Net::HTTPData::GetShortName() const
 {
-	if (fdh == 0)
+	NN<HTTPDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return nullptr;
 	return fdh->fileName;
 }
 
 void Net::HTTPData::SetFullName(Text::CStringNN fullName)
 {
-	if (fdh == 0 || fullName.leng == 0)
+	NN<HTTPDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh) || fullName.leng == 0)
 		return;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(fdh->mut);
@@ -373,7 +386,7 @@ UnsafeArrayOpt<const UInt8> Net::HTTPData::GetPointer() const
 NN<IO::StreamData> Net::HTTPData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	NN<Net::HTTPData> data;
-	NEW_CLASSNN(data, Net::HTTPData(this, offset, length));
+	NEW_CLASSNN(data, Net::HTTPData(*this, offset, length));
 	return data;
 }
 
@@ -384,21 +397,24 @@ Bool Net::HTTPData::IsFullFile() const
 
 Bool Net::HTTPData::IsLoading() const
 {
-	if (fdh == 0)
+	NN<HTTPDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return false;
 	return fdh->isLoading;
 }
 
 UOSInt Net::HTTPData::GetSeekCount() const
 {
-	if (fdh == 0)
+	NN<HTTPDATAHANDLE> fdh;
+	if (!this->fdh.SetTo(fdh))
 		return 0;
 	return fdh->seekCnt;
 }
 
 void Net::HTTPData::Close()
 {
-	if (fdh)
+	NN<HTTPDATAHANDLE> fdh;
+	if (this->fdh.SetTo(fdh))
 	{
 		if (--(fdh->objectCnt) == 0)
 		{
@@ -414,9 +430,9 @@ void Net::HTTPData::Close()
 			DEL_CLASS(fdh->file);
 			fdh->url->Release();
 			fdh->localFile->Release();
-			DEL_CLASS(fdh);
+			fdh.Delete();
 		}
 	}
-	fdh = 0;
+	this->fdh = 0;
 }
 

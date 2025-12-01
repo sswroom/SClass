@@ -26,7 +26,7 @@ namespace Net
 			Optional<Net::HTTPClient> cli;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
-			Net::HTTPQueue *queue;
+			Optional<Net::HTTPQueue> queue;
 			UInt64 loadSize;
 			Bool isLoading;
 			Sync::Mutex mut;
@@ -36,14 +36,14 @@ namespace Net
 
 
 	private:
-		HTTPDATAHANDLE *fdh;
+		Optional<HTTPDATAHANDLE> fdh;
 		UInt64 dataOffset;
 		UInt64 dataLength;
 
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
-		HTTPData(const HTTPData *fd, UInt64 offset, UInt64 length);
-		HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload);
+		HTTPData(NN<const HTTPData> fd, UInt64 offset, UInt64 length);
+		HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Net::HTTPQueue> queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload);
 		virtual ~HTTPData();
 
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);

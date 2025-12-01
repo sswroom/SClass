@@ -17,15 +17,15 @@ namespace Net
 	public:
 		struct ClassData;
 	private:
-		ClassData *clsData;
+		NN<ClassData> clsData;
 		UnsafeArrayOpt<const UTF8Char> cliHost;
-		IO::MemoryStream *reqMstm;
+		NN<IO::MemoryStream> reqMstm;
 
 		Bool writing;
 
 		UInt64 contRead;
 
-		UInt8 *dataBuff;
+		UnsafeArray<UInt8> dataBuff;
 		UOSInt buffSize;
 
 	public:

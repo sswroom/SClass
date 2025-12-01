@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGSMMODEMFORM
 #define _SM_SSWR_AVIREAD_AVIRGSMMODEMFORM
-#include "IO/HuaweiGSMModemController.h"
+#include "IO/Device/HuaweiGSMModemController.h"
 #include "IO/LogTool.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
@@ -26,7 +26,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<IO::GSMModemController> modem;
-			Optional<IO::HuaweiGSMModemController> huawei;
+			Optional<IO::Device::HuaweiGSMModemController> huawei;
 			Optional<IO::ATCommandChannel> channel;
 			Optional<IO::Stream> port;
 			IO::LogTool log;
@@ -186,16 +186,16 @@ namespace SSWR
 			Optional<Text::String> initIMEI;
 			Optional<Text::String> huaweiICCID;
 			Bool huaweiSysInfoUpdated;
-			IO::HuaweiGSMModemController::ServiceStatus huaweiSysInfoSrvStatus;
-			IO::HuaweiGSMModemController::ServiceDomain huaweiSysInfoSrvDomain;
+			IO::Device::HuaweiGSMModemController::ServiceStatus huaweiSysInfoSrvStatus;
+			IO::Device::HuaweiGSMModemController::ServiceDomain huaweiSysInfoSrvDomain;
 			Bool huaweiSysInfoRoamStatus;
-			IO::HuaweiGSMModemController::SIMState huaweiSysInfoSIMState;
+			IO::Device::HuaweiGSMModemController::SIMState huaweiSysInfoSIMState;
 			Bool huaweiSysInfoLockState;
-			IO::HuaweiGSMModemController::SysMode huaweiSysInfoSysMode;
-			IO::HuaweiGSMModemController::SubMode huaweiSysInfoSubMode;
-			IO::HuaweiGSMModemController::SIMCardType huaweiSIMType;
+			IO::Device::HuaweiGSMModemController::SysMode huaweiSysInfoSysMode;
+			IO::Device::HuaweiGSMModemController::SubMode huaweiSysInfoSubMode;
+			IO::Device::HuaweiGSMModemController::SIMCardType huaweiSIMType;
 			Bool huaweiCSQUpdated;
-			IO::HuaweiGSMModemController::SignalStrengthInfo huaweiCSQ;
+			IO::Device::HuaweiGSMModemController::SignalStrengthInfo huaweiCSQ;
 			Bool simChanged;
 			Bool simInfoUpdated;
 			Optional<Text::String> simIMSI;
@@ -208,7 +208,7 @@ namespace SSWR
 			UInt32 regNetCI;
 			IO::GSMModemController::AccessTech regNetACT;
 			Data::ArrayListNN<IO::GSMModemController::SMSMessage> msgList;
-			IO::HuaweiGSMModemController::VersionInfo huaweiVersion;
+			IO::Device::HuaweiGSMModemController::VersionInfo huaweiVersion;
 			Bool huaweiVersionUpdated;
 
 			Bool signalUpdated;

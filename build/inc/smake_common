@@ -1925,8 +1925,6 @@ IO/GPSNMEA.h:
 IO/GPUControl.h:
 IO/GSMModemController.h:
 @GSMModemController.o
-IO/HuaweiGSMModemController.h:
-@HuaweiGSMModemController.o
 IO/I2C.h:
 @I2C.o
 IO/I2CChannel.h:
@@ -2145,6 +2143,8 @@ IO/Device/ED588.h:
 @ED588.o
 IO/Device/GoProCameraControl.h:
 @GoProCameraControl.o
+IO/Device/HuaweiGSMModemController.h:
+@HuaweiGSMModemController.o
 IO/Device/IBuddy.h:
 @IBuddy.o
 IO/Device/MTKGPSNMEA.h:

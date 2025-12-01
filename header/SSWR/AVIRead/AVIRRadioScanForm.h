@@ -3,7 +3,7 @@
 #include "IO/ATCommandChannel.h"
 #include "IO/BTScanner.h"
 #include "IO/GSMModemController.h"
-#include "IO/HuaweiGSMModemController.h"
+#include "IO/Device/HuaweiGSMModemController.h"
 #include "Map/LocationService.h"
 #include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -151,7 +151,7 @@ namespace SSWR
 			Optional<IO::Stream> cellularPort;
 			Optional<IO::ATCommandChannel> cellularChannel;
 			Optional<IO::GSMModemController> cellularModem;
-			Optional<IO::HuaweiGSMModemController> cellularHuawei;
+			Optional<IO::Device::HuaweiGSMModemController> cellularHuawei;
 			Bool cellularToStop;
 			Bool cellularRunning;
 			Bool cellularInitStrs;

@@ -69,7 +69,7 @@ size_t HTTPOSClient_WriteFunc(char *ptr, size_t size, size_t nmemb, void *userda
 
 Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(clif, kaConn)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->curl = curl_easy_init();
 #if defined(VERBOSE)
 	curl_easy_setopt(this->clsData->curl, CURLOPT_VERBOSE, 1);
@@ -81,11 +81,10 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 	this->clsData->certs = 0;
 	this->cliHost = 0;
 	this->writing = false;
-	this->dataBuff = 0;
 	this->buffSize = 0;
 //	this->timeOutMS = 5000;
-	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024));
+	this->dataBuff = MemAllocArr(UInt8, BUFFSIZE);
+	NEW_CLASSNN(this->reqMstm, IO::MemoryStream(1024));
 	Text::CStringNN nnuserAgent;
 	if (!userAgent.SetTo(nnuserAgent))
 	{
@@ -97,11 +96,7 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 Net::HTTPOSClient::~HTTPOSClient()
 {
 	SDEL_TEXT(this->cliHost);
-	if (this->dataBuff)
-	{
-		MemFree(this->dataBuff);
-		this->dataBuff = 0;
-	}
+	MemFreeArr(this->dataBuff);
 	if (this->clsData->headers)
 	{
 		curl_slist_free_all(this->clsData->headers);
@@ -123,8 +118,8 @@ Net::HTTPOSClient::~HTTPOSClient()
 		certList.Delete();
 	}
 	DEL_CLASS(this->clsData->respData);
-	MemFree(this->clsData);
-	DEL_CLASS(this->reqMstm);
+	MemFreeNN(this->clsData);
+	this->reqMstm.Delete();
 }
 
 Bool Net::HTTPOSClient::IsError() const
@@ -162,7 +157,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	if (this->buffSize >= myBuff.GetSize())
 	{
 		myBuff.CopyFrom(Data::ByteArray(this->dataBuff, myBuff.GetSize()));
-		MemCopyO(this->dataBuff, &this->dataBuff[myBuff.GetSize()], this->buffSize - myBuff.GetSize());
+		MemCopyO(&this->dataBuff[0], &this->dataBuff[myBuff.GetSize()], this->buffSize - myBuff.GetSize());
 		this->buffSize -= myBuff.GetSize();
 		this->contRead += myBuff.GetSize();
 		return myBuff.GetSize();
@@ -431,7 +426,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 
 void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
-	ClassData *data = this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->curl && !writing)
 	{
 /*		if (Text::StrEquals(name, (const UTF8Char*)"User-Agent"))

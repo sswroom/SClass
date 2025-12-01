@@ -25,7 +25,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 	NN<IO::ATCommandChannel> channel;
 	NN<Text::String> s;
 	NN<IO::GSMModemController> modem;
-	NN<IO::HuaweiGSMModemController> huawei;
+	NN<IO::Device::HuaweiGSMModemController> huawei;
 
 	nextSignalTime = Data::Timestamp::UtcNow();
 	me->running = true;
@@ -48,9 +48,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 					me->initModemManu = s;
 					if (s->StartsWith(UTF8STRC("Huawei")) && me->channel.SetTo(channel))
 					{
-						NN<IO::HuaweiGSMModemController> huawei;
+						NN<IO::Device::HuaweiGSMModemController> huawei;
 						NN<IO::GSMModemController> oldModem;
-						NEW_CLASSNN(huawei, IO::HuaweiGSMModemController(channel, false));
+						NEW_CLASSNN(huawei, IO::Device::HuaweiGSMModemController(channel, false));
 						me->huawei = huawei;
 						oldModem = modem;
 						me->modem = huawei;
@@ -110,7 +110,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 						me->huaweiSysInfoLockState,
 						me->huaweiSysInfoSysMode,
 						me->huaweiSysInfoSubMode);
-					IO::HuaweiGSMModemController::FreeVersionInfo(me->huaweiVersion);
+					IO::Device::HuaweiGSMModemController::FreeVersionInfo(me->huaweiVersion);
 					me->huaweiVersionUpdated = huawei->HuaweiGetVersion(me->huaweiVersion);
 				}
 			}
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 			{
 				me->txtHuaweiICCID->SetText(s->ToCString());
 			}
-			me->txtHuaweiSIMType->SetText(IO::HuaweiGSMModemController::SIMCardTypeGetName(me->huaweiSIMType));
+			me->txtHuaweiSIMType->SetText(IO::Device::HuaweiGSMModemController::SIMCardTypeGetName(me->huaweiSIMType));
 		}
 	}
 	if (me->simInfoUpdated)
@@ -200,13 +200,13 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 	if (me->huaweiSysInfoUpdated)
 	{
 		me->huaweiSysInfoUpdated = false;
-		me->txtHuaweiSrvStatus->SetText(IO::HuaweiGSMModemController::ServiceStatusGetName(me->huaweiSysInfoSrvStatus));
-		me->txtHuaweiSrvDomain->SetText(IO::HuaweiGSMModemController::ServiceDomainGetName(me->huaweiSysInfoSrvDomain));
+		me->txtHuaweiSrvStatus->SetText(IO::Device::HuaweiGSMModemController::ServiceStatusGetName(me->huaweiSysInfoSrvStatus));
+		me->txtHuaweiSrvDomain->SetText(IO::Device::HuaweiGSMModemController::ServiceDomainGetName(me->huaweiSysInfoSrvDomain));
 		me->txtHuaweiRoamStatus->SetText(me->huaweiSysInfoRoamStatus?CSTR("Roaming"):CSTR("Not Roaming"));
-		me->txtHuaweiSIMState->SetText(IO::HuaweiGSMModemController::SIMStateGetName(me->huaweiSysInfoSIMState));
+		me->txtHuaweiSIMState->SetText(IO::Device::HuaweiGSMModemController::SIMStateGetName(me->huaweiSysInfoSIMState));
 		me->txtHuaweiLockState->SetText(me->huaweiSysInfoLockState?CSTR("Locked"):CSTR("Not locked"));
-		me->txtHuaweiSysMode->SetText(IO::HuaweiGSMModemController::SysModeGetName(me->huaweiSysInfoSysMode));
-		me->txtHuaweiSubMode->SetText(IO::HuaweiGSMModemController::SubModeGetName(me->huaweiSysInfoSubMode));
+		me->txtHuaweiSysMode->SetText(IO::Device::HuaweiGSMModemController::SysModeGetName(me->huaweiSysInfoSysMode));
+		me->txtHuaweiSubMode->SetText(IO::Device::HuaweiGSMModemController::SubModeGetName(me->huaweiSysInfoSubMode));
 	}
 	if (me->signalUpdated)
 	{
@@ -220,28 +220,28 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 		values[4] = 0;
 		if (me->huawei.NotNull())
 		{
-			if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::LTE)
+			if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::LTE)
 			{
-				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.lteRSSI);
-				values[2] = IO::HuaweiGSMModemController::RSRPGetdBm(me->huaweiCSQ.lteRSRP);
-				values[3] = IO::HuaweiGSMModemController::SINRGetdBm(me->huaweiCSQ.lteSINR);
-				values[4] = IO::HuaweiGSMModemController::RSRQGetdBm(me->huaweiCSQ.lteRSRQ);
+				values[1] = IO::Device::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.lteRSSI);
+				values[2] = IO::Device::HuaweiGSMModemController::RSRPGetdBm(me->huaweiCSQ.lteRSRP);
+				values[3] = IO::Device::HuaweiGSMModemController::SINRGetdBm(me->huaweiCSQ.lteSINR);
+				values[4] = IO::Device::HuaweiGSMModemController::RSRQGetdBm(me->huaweiCSQ.lteRSRQ);
 			}
-			else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::TD_SCDMA)
+			else if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::TD_SCDMA)
 			{
-				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.tdscdmaRSSI);
-				values[2] = IO::HuaweiGSMModemController::RSCPGetdBm(me->huaweiCSQ.tdscdmaRSCP);
-				values[3] = IO::HuaweiGSMModemController::ECIOGetdBm(me->huaweiCSQ.tdscdmaECIO);
+				values[1] = IO::Device::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.tdscdmaRSSI);
+				values[2] = IO::Device::HuaweiGSMModemController::RSCPGetdBm(me->huaweiCSQ.tdscdmaRSCP);
+				values[3] = IO::Device::HuaweiGSMModemController::ECIOGetdBm(me->huaweiCSQ.tdscdmaECIO);
 			}
-			else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::WCDMA)
+			else if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::WCDMA)
 			{
-				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.wcdmaRSSI);
-				values[2] = IO::HuaweiGSMModemController::RSCPGetdBm(me->huaweiCSQ.wcdmaRSCP);
-				values[3] = IO::HuaweiGSMModemController::ECIOGetdBm(me->huaweiCSQ.wcdmaECIO);
+				values[1] = IO::Device::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.wcdmaRSSI);
+				values[2] = IO::Device::HuaweiGSMModemController::RSCPGetdBm(me->huaweiCSQ.wcdmaRSCP);
+				values[3] = IO::Device::HuaweiGSMModemController::ECIOGetdBm(me->huaweiCSQ.wcdmaECIO);
 			}
-			else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::GSM)
+			else if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::GSM)
 			{
-				values[1] = IO::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.gsmRSSI);
+				values[1] = IO::Device::HuaweiGSMModemController::RSSIGetdBm(me->huaweiCSQ.gsmRSSI);
 			}
 		}
 		me->rlcRSSI->AddSample(values);
@@ -250,53 +250,53 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 	if (me->huaweiCSQUpdated)
 	{
 		me->huaweiCSQUpdated = false;
-		if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::LTE)
+		if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::LTE)
 		{
 			me->lblHuaweiCSQ1->SetText(CSTR("LTE RSSI"));
-			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.lteRSSI);
+			sptr = IO::Device::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.lteRSSI);
 			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ2->SetText(CSTR("LTE RSRP"));
-			sptr = IO::HuaweiGSMModemController::RSRPGetName(sbuff, me->huaweiCSQ.lteRSRP);
+			sptr = IO::Device::HuaweiGSMModemController::RSRPGetName(sbuff, me->huaweiCSQ.lteRSRP);
 			me->txtHuaweiCSQ2->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ3->SetText(CSTR("LTE SINR"));
-			sptr = IO::HuaweiGSMModemController::SINRGetName(sbuff, me->huaweiCSQ.lteSINR);
+			sptr = IO::Device::HuaweiGSMModemController::SINRGetName(sbuff, me->huaweiCSQ.lteSINR);
 			me->txtHuaweiCSQ3->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ4->SetText(CSTR("LTE RSRQ"));
-			sptr = IO::HuaweiGSMModemController::RSRQGetName(sbuff, me->huaweiCSQ.lteRSRQ);
+			sptr = IO::Device::HuaweiGSMModemController::RSRQGetName(sbuff, me->huaweiCSQ.lteRSRQ);
 			me->txtHuaweiCSQ4->SetText(CSTRP(sbuff, sptr));
 		}
-		else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::TD_SCDMA)
+		else if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::TD_SCDMA)
 		{
 			me->lblHuaweiCSQ1->SetText(CSTR("TD-SCDMA RSSI"));
-			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.tdscdmaRSSI);
+			sptr = IO::Device::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.tdscdmaRSSI);
 			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ2->SetText(CSTR("TD-SCDMA RSCP"));
-			sptr = IO::HuaweiGSMModemController::RSCPGetName(sbuff, me->huaweiCSQ.tdscdmaRSCP);
+			sptr = IO::Device::HuaweiGSMModemController::RSCPGetName(sbuff, me->huaweiCSQ.tdscdmaRSCP);
 			me->txtHuaweiCSQ2->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ3->SetText(CSTR("TD-SCDMA ECIO"));
-			sptr = IO::HuaweiGSMModemController::ECIOGetName(sbuff, me->huaweiCSQ.tdscdmaECIO);
+			sptr = IO::Device::HuaweiGSMModemController::ECIOGetName(sbuff, me->huaweiCSQ.tdscdmaECIO);
 			me->txtHuaweiCSQ3->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ4->SetText(CSTR("-"));
 			me->txtHuaweiCSQ4->SetText(CSTR(""));
 		}
-		else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::WCDMA)
+		else if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::WCDMA)
 		{
 			me->lblHuaweiCSQ1->SetText(CSTR("WCDMA RSSI"));
-			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.wcdmaRSSI);
+			sptr = IO::Device::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.wcdmaRSSI);
 			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ2->SetText(CSTR("WCDMA RSCP"));
-			sptr = IO::HuaweiGSMModemController::RSCPGetName(sbuff, me->huaweiCSQ.wcdmaRSCP);
+			sptr = IO::Device::HuaweiGSMModemController::RSCPGetName(sbuff, me->huaweiCSQ.wcdmaRSCP);
 			me->txtHuaweiCSQ2->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ3->SetText(CSTR("WCDMA ECIO"));
-			sptr = IO::HuaweiGSMModemController::ECIOGetName(sbuff, me->huaweiCSQ.wcdmaECIO);
+			sptr = IO::Device::HuaweiGSMModemController::ECIOGetName(sbuff, me->huaweiCSQ.wcdmaECIO);
 			me->txtHuaweiCSQ3->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ4->SetText(CSTR("-"));
 			me->txtHuaweiCSQ4->SetText(CSTR(""));
 		}
-		else if (me->huaweiCSQ.sysmode == IO::HuaweiGSMModemController::SysMode::GSM)
+		else if (me->huaweiCSQ.sysmode == IO::Device::HuaweiGSMModemController::SysMode::GSM)
 		{
 			me->lblHuaweiCSQ1->SetText(CSTR("GSM RSSI"));
-			sptr = IO::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.gsmRSSI);
+			sptr = IO::Device::HuaweiGSMModemController::RSSIGetName(sbuff, me->huaweiCSQ.gsmRSSI);
 			me->txtHuaweiCSQ1->SetText(CSTRP(sbuff, sptr));
 			me->lblHuaweiCSQ2->SetText(CSTR("-"));
 			me->txtHuaweiCSQ2->SetText(CSTR(""));
@@ -737,7 +737,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextDeactiveSelectedClic
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	NN<IO::HuaweiGSMModemController> huawei;
+	NN<IO::Device::HuaweiGSMModemController> huawei;
 	if (me->huawei.SetTo(huawei))
 	{
 		UTF8Char sbuff[256];
@@ -1064,14 +1064,14 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->initIMEI = 0;
 	this->huaweiICCID = 0;
 	this->huaweiSysInfoUpdated = false;;
-	this->huaweiSysInfoSrvStatus = IO::HuaweiGSMModemController::ServiceStatus::NoServices;
-	this->huaweiSysInfoSrvDomain = IO::HuaweiGSMModemController::ServiceDomain::NoServices;
+	this->huaweiSysInfoSrvStatus = IO::Device::HuaweiGSMModemController::ServiceStatus::NoServices;
+	this->huaweiSysInfoSrvDomain = IO::Device::HuaweiGSMModemController::ServiceDomain::NoServices;
 	this->huaweiSysInfoRoamStatus = false;
-	this->huaweiSysInfoSIMState = IO::HuaweiGSMModemController::SIMState::InvalidSIM;
+	this->huaweiSysInfoSIMState = IO::Device::HuaweiGSMModemController::SIMState::InvalidSIM;
 	this->huaweiSysInfoLockState = false;
-	this->huaweiSysInfoSysMode = IO::HuaweiGSMModemController::SysMode::NoService;
-	this->huaweiSysInfoSubMode = IO::HuaweiGSMModemController::SubMode::NoService;
-	this->huaweiSIMType = IO::HuaweiGSMModemController::SIMCardType::NoCard;
+	this->huaweiSysInfoSysMode = IO::Device::HuaweiGSMModemController::SysMode::NoService;
+	this->huaweiSysInfoSubMode = IO::Device::HuaweiGSMModemController::SubMode::NoService;
+	this->huaweiSIMType = IO::Device::HuaweiGSMModemController::SIMCardType::NoCard;
 	this->huaweiCSQUpdated = false;
 	this->cfgTECharset = 0;
 	this->cfgTECharsetUpd = false;
@@ -1526,7 +1526,7 @@ SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 	OPTSTR_DEL(this->huaweiICCID);
 	OPTSTR_DEL(this->simIMSI);
 	OPTSTR_DEL(this->cfgTECharset);
-	IO::HuaweiGSMModemController::FreeVersionInfo(this->huaweiVersion);
+	IO::Device::HuaweiGSMModemController::FreeVersionInfo(this->huaweiVersion);
 }
 
 void SSWR::AVIRead::AVIRGSMModemForm::OnMonitorChanged()
