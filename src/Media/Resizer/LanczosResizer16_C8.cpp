@@ -369,18 +369,19 @@ void Media::Resizer::LanczosResizer16_C8::UpdateRGBTable()
 
 void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(AnyType obj)
 {
+	UnsafeArray<UInt8> tmpbuff;
 	NN<TaskParam> ts = obj.GetNN<TaskParam>();
 
 	if (ts->funcType == 3)
 	{
-		if (ts->swidth != ts->tmpbuffSize)
+		if (ts->swidth != ts->tmpbuffSize || !ts->tmpbuff.SetTo(tmpbuff))
 		{
-			if (ts->tmpbuff)
-				MemFreeA(ts->tmpbuff);
+			if (ts->tmpbuff.SetTo(tmpbuff))
+				MemFreeAArr(tmpbuff);
 			ts->tmpbuffSize = ts->swidth;
-			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
+			ts->tmpbuff = tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
-		LanczosResizer16_C8_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, ts->tmpbuff);
+		LanczosResizer16_C8_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, tmpbuff.Ptr());
 	}
 	else if (ts->funcType == 5)
 	{
@@ -400,14 +401,14 @@ void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(AnyType obj)
 	}
 	else if (ts->funcType == 12)
 	{
-		if (ts->swidth != ts->tmpbuffSize)
+		if (ts->swidth != ts->tmpbuffSize || !ts->tmpbuff.SetTo(tmpbuff))
 		{
-			if (ts->tmpbuff)
-				MemFreeA(ts->tmpbuff);
+			if (ts->tmpbuff.SetTo(tmpbuff))
+				MemFreeAArr(tmpbuff);
 			ts->tmpbuffSize = ts->swidth;
-			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
+			ts->tmpbuff = tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
-		LanczosResizer16_C8_horizontal_filter_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, ts->tmpbuff);
+		LanczosResizer16_C8_horizontal_filter_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, tmpbuff.Ptr());
 	}
 	else if (ts->funcType == 13)
 	{
@@ -521,7 +522,7 @@ Media::Resizer::LanczosResizer16_C8::~LanczosResizer16_C8()
 	i = nThread;
 	while (i-- > 0)
 	{
-		if (this->params[i].tmpbuff.Set(tmpbuff))
+		if (this->params[i].tmpbuff.SetTo(tmpbuff))
 		{
 			MemFreeAArr(tmpbuff);
 			this->params[i].tmpbuff = 0;

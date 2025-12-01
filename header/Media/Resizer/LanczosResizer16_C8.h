@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_RESIZER_LANCZOSRESIZER16_C8
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZER16_C8
 #include "AnyType.h"
+#include "UnsafeArray.h"
 #include "Media/ImageResizer.h"
 #include "Media/ColorManager.h"
 #include "Sync/Event.h"
