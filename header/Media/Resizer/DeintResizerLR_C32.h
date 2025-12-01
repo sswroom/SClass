@@ -13,16 +13,16 @@ namespace Media
 			Double osSize;
 			UOSInt odSize;
 			OSInt osStep;
-			OSInt *oIndex;
-			Int64 *oWeight;
+			UnsafeArrayOpt<OSInt> oIndex;
+			UnsafeArrayOpt<Int64> oWeight;
 			UOSInt oTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> oFilter;
 
 			Double esSize;
 			UOSInt edSize;
 			OSInt esStep;
-			OSInt *eIndex;
-			Int64 *eWeight;
+			UnsafeArrayOpt<OSInt> eIndex;
+			UnsafeArrayOpt<Int64> eWeight;
 			UOSInt eTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> eFilter;
 

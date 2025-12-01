@@ -21,31 +21,35 @@ Media::Resizer::NearestNeighbourResizer32_32::NearestNeighbourResizer32_32() : M
 
 Media::Resizer::NearestNeighbourResizer32_32::~NearestNeighbourResizer32_32()
 {
-	if (this->xindex)
+	UnsafeArray<OSInt> xindex;
+	UnsafeArray<OSInt> yindex;
+	if (this->xindex.SetTo(xindex))
 	{
-		MemFree(this->xindex);
+		MemFreeArr(xindex);
 		this->xindex = 0;
 	}
-	if (this->yindex)
+	if (this->yindex.SetTo(yindex))
 	{
-		MemFree(this->yindex);
+		MemFreeArr(yindex);
 		this->yindex = 0;
 	}
 }
 
 void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
+	UnsafeArray<OSInt> xindex;
+	UnsafeArray<OSInt> yindex;
 	UOSInt i;
 	UOSInt j;
 	Double v;
 	Double currV;
-	if (this->lastswidth != swidth || this->lastdwidth != dwidth)
+	if (this->lastswidth != swidth || this->lastdwidth != dwidth || !this->xindex.SetTo(xindex))
 	{
-		if (this->xindex)
+		if (this->xindex.SetTo(xindex))
 		{
-			MemFree(this->xindex);
+			MemFreeArr(xindex);
 		}
-		this->xindex = MemAlloc(OSInt, dwidth);
+		this->xindex = xindex = MemAlloc(OSInt, dwidth);
 		this->lastswidth = swidth;
 		this->lastdwidth = dwidth;
 		v = swidth / (Double)dwidth;
@@ -59,17 +63,17 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 			{
 				j = (UOSInt)swidth - 1;
 			}
-			this->xindex[i] = (OSInt)j << 2;
+			xindex[i] = (OSInt)j << 2;
 			i++;
 		}
 	}
-	if (this->lastsheight != sheight || this->lastdheight != dheight || this->lastsbpl != sbpl)
+	if (this->lastsheight != sheight || this->lastdheight != dheight || this->lastsbpl != sbpl || !this->yindex.SetTo(yindex))
 	{
-		if (this->yindex)
+		if (this->yindex.SetTo(yindex))
 		{
-			MemFree(this->yindex);
+			MemFreeArr(yindex);
 		}
-		this->yindex = MemAlloc(OSInt, dheight);
+		this->yindex = yindex = MemAlloc(OSInt, dheight);
 		this->lastsheight = sheight;
 		this->lastdheight = dheight;
 		this->lastsbpl = sbpl;
@@ -84,11 +88,11 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt
 			{
 				j = (UOSInt)sheight - 1;
 			}
-			this->yindex[i] = (OSInt)j * sbpl;
+			yindex[i] = (OSInt)j * sbpl;
 			i++;
 		}
 	}
-	NearestNeighbourResizer32_32_Resize(src.Ptr(), dest.Ptr(), dwidth, dheight, dbpl, this->xindex, this->yindex);
+	NearestNeighbourResizer32_32_Resize(src.Ptr(), dest.Ptr(), dwidth, dheight, dbpl, xindex.Ptr(), yindex.Ptr());
 }
 
 Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg)

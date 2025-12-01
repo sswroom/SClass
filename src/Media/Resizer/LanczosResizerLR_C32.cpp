@@ -15,7 +15,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::SetupInterpolationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -130,7 +130,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter(UOSInt 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::SetupDecimationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -259,7 +259,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter(UOSInt nTa
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::SetupInterpolationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -588,7 +588,7 @@ void Media::Resizer::LanczosResizerLR_C32::setup_interpolation_parameter_h(UOSIn
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C32::SetupDecimationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1012,34 +1012,38 @@ void Media::Resizer::LanczosResizerLR_C32::setup_decimation_parameter_h(UOSInt n
 	MemFree(work);
 }
  
-void Media::Resizer::LanczosResizerLR_C32::UpdateRGBTable()
+UnsafeArray<UInt8> Media::Resizer::LanczosResizerLR_C32::UpdateRGBTable()
 {
-	if (this->rgbTable == 0)
+	UnsafeArray<UInt8> rgbTable;
+	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = MemAlloc(UInt8, 65536 * 16);
+		this->rgbTable = rgbTable = MemAllocArr(UInt8, 65536 * 16);
 	}
 	Media::RGBLUTGen lutGen(this->colorSess);
 	if (this->pf == Media::PF_LE_A2B10G10R10)
 	{
-		lutGen.GenLARGB_A2B10G10R10(this->rgbTable, this->destColor, 14, this->srcRefLuminance);
+		lutGen.GenLARGB_A2B10G10R10(rgbTable, this->destColor, 14, this->srcRefLuminance);
 	}
 	else
 	{
-		lutGen.GenLARGB_B8G8R8A8(this->rgbTable, this->destColor, 14, this->srcRefLuminance);
+		lutGen.GenLARGB_B8G8R8A8(rgbTable, this->destColor, 14, this->srcRefLuminance);
 	}
+	return rgbTable;
 }
 
 void Media::Resizer::LanczosResizerLR_C32::DestoryHori()
 {
-	if (hIndex)
+	UnsafeArray<OSInt> hIndex;
+	UnsafeArray<Int64> hWeight;
+	if (this->hIndex.SetTo(hIndex))
 	{
-		MemFreeA(hIndex);
-		hIndex = 0;
+		MemFreeAArr(hIndex);
+		this->hIndex = 0;
 	}
-	if (hWeight)
+	if (this->hWeight.SetTo(hWeight))
 	{
-		MemFreeA(hWeight);
-		hWeight = 0;
+		MemFreeAArr(hWeight);
+		this->hWeight = 0;
 	}
 	NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> hFilter;
 	if (this->hFilter.SetTo(hFilter))
@@ -1052,15 +1056,17 @@ void Media::Resizer::LanczosResizerLR_C32::DestoryHori()
 
 void Media::Resizer::LanczosResizerLR_C32::DestoryVert()
 {
-	if (vIndex)
+	UnsafeArray<OSInt> vIndex;
+	UnsafeArray<Int64> vWeight;
+	if (this->vIndex.SetTo(vIndex))
 	{
-		MemFreeA(vIndex);
-		vIndex = 0;
+		MemFreeAArr(vIndex);
+		this->vIndex = 0;
 	}
-	if (vWeight)
+	if (this->vWeight.SetTo(vWeight))
 	{
-		MemFreeA(vWeight);
-		vWeight = 0;
+		MemFreeAArr(vWeight);
+		this->vWeight = 0;
 	}
 	NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> vFilter;
 	if (this->vFilter.SetTo(vFilter))
@@ -1091,9 +1097,9 @@ Media::Resizer::LanczosResizerLR_C32::LanczosResizerLR_C32(UOSInt hnTap, UOSInt 
 	}
 	this->rgbTable = 0;
 #ifdef USE_OPENCL
-	NEW_CLASS(this->action, Media::Resizer::LanczosResizerLR_C32_OCL());
+	NEW_CLASSNN(this->action, Media::Resizer::LanczosResizerLR_C32_OCL());
 #else
-	NEW_CLASS(this->action, Media::Resizer::LanczosResizerLR_C32_CPU());
+	NEW_CLASSNN(this->action, Media::Resizer::LanczosResizerLR_C32_CPU());
 #endif
 
 	hsSize = 0;
@@ -1116,6 +1122,7 @@ Media::Resizer::LanczosResizerLR_C32::LanczosResizerLR_C32(UOSInt hnTap, UOSInt 
 
 Media::Resizer::LanczosResizerLR_C32::~LanczosResizerLR_C32()
 {
+	UnsafeArray<UInt8> rgbTable;
 	NN<Media::ColorManagerSess> colorSess;
 	if (this->colorSess.SetTo(colorSess))
 	{
@@ -1124,15 +1131,19 @@ Media::Resizer::LanczosResizerLR_C32::~LanczosResizerLR_C32()
 
 	DestoryHori();
 	DestoryVert();
-	DEL_CLASS(this->action);
-	if (this->rgbTable)
+	this->action.Delete();
+	if (this->rgbTable.SetTo(rgbTable))
 	{
-		MemFree(this->rgbTable);
+		MemFreeArr(rgbTable);
 	}
 }
 
 void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
+	UnsafeArray<OSInt> hIndex;
+	UnsafeArray<Int64> hWeight;
+	UnsafeArray<OSInt> vIndex;
+	UnsafeArray<Int64> vWeight;
 	LRHPARAMETER prm;
 	Double w;
 	Double h;
@@ -1156,8 +1167,8 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 	if (this->rgbChanged)
 	{
 		this->rgbChanged = false;
-		UpdateRGBTable();
-		this->action->UpdateRGBTable(this->rgbTable);
+		UnsafeArray<UInt8> rgbTable = UpdateRGBTable();
+		this->action->UpdateRGBTable(rgbTable);
 	}
 
 	NN<LanczosResizerLR_C32Action::HoriFilter> hFilter;
@@ -1167,46 +1178,46 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 		if (dwidth < this->hnTap || dheight < this->vnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst || !this->hFilter.SetTo(hFilter))
+		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst || !this->hFilter.SetTo(hFilter) || !this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight))
 		{
 			DestoryHori();
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
+				SetupDecimationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth,&prm, 8, xOfst);
+				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
 			hsOfst = xOfst;
-			hIndex = prm.index;
-			hWeight = prm.weight;
+			this->hIndex = hIndex = prm.index;
+			this->hWeight = hWeight = prm.weight;
 			hTap = prm.tap;
 			hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->hFilter = hFilter;
 		}
 
-		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)(dwidth << 3) || this->vsOfst != yOfst || !this->vFilter.SetTo(vFilter))
+		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)(dwidth << 3) || this->vsOfst != yOfst || !this->vFilter.SetTo(vFilter) || !this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight))
 		{
 			DestoryVert();
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, yOfst);
+				SetupDecimationParameterV(this->vnTap, sheight, siHeight, dheight, prm, (OSInt)dwidth << 3, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, yOfst);
+				SetupInterpolationParameterV(this->vnTap, sheight, siHeight, dheight, prm, (OSInt)dwidth << 3, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
 			vsOfst = yOfst;
 			vsStep = (OSInt)dwidth << 3;
-			vIndex = prm.index;
-			vWeight = prm.weight;
+			this->vIndex = vIndex = prm.index;
+			this->vWeight = vWeight = prm.weight;
 			vTap = prm.tap;
 			vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->vFilter = vFilter;
@@ -1220,23 +1231,23 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 		if (dwidth < this->hnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst || !this->hFilter.SetTo(hFilter))
+		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst || !this->hFilter.SetTo(hFilter) || !this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight))
 		{
 			DestoryHori();
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
+				SetupDecimationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
+				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
 			hsOfst = xOfst;
-			hIndex = prm.index;
-			hWeight = prm.weight;
+			this->hIndex = hIndex = prm.index;
+			this->hWeight = hWeight = prm.weight;
 			hTap = prm.tap;
 			hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->hFilter = hFilter;
@@ -1249,24 +1260,24 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 		if (dheight < this->vnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst || !this->vFilter.SetTo(vFilter))
+		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst || !this->vFilter.SetTo(vFilter) || !this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight))
 		{
 			DestoryVert();
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sbpl, yOfst);
+				SetupDecimationParameterV(this->vnTap, sheight, siHeight, dheight, prm, sbpl, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sbpl, yOfst);
+				SetupInterpolationParameterV(this->vnTap, sheight, siHeight, dheight, prm, sbpl, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
 			vsOfst = yOfst;
 			vsStep = sbpl;
-			vIndex = prm.index;
-			vWeight = prm.weight;
+			this->vIndex = vIndex = prm.index;
+			this->vWeight = vWeight = prm.weight;
 			vTap = prm.tap;
 			vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->vFilter = vFilter;

@@ -24,10 +24,10 @@ namespace Media
 			virtual void DoVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType) = 0;
 			virtual void DoCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType) = 0;
 
-			virtual void UpdateRGBTable(UInt8 *rgbTable) = 0;
-			virtual NN<HoriFilter> CreateHoriFilter(UOSInt htap, OSInt *hIndex, Int64 *hWeight, UOSInt length) = 0;
+			virtual void UpdateRGBTable(UnsafeArray<UInt8> rgbTable) = 0;
+			virtual NN<HoriFilter> CreateHoriFilter(UOSInt htap, UnsafeArray<OSInt> hIndex, UnsafeArray<Int64> hWeight, UOSInt length) = 0;
 			virtual void DestroyHoriFilter(NN<HoriFilter> hfilter) = 0;
-			virtual NN<VertFilter> CreateVertFilter(UOSInt vtap, OSInt *vIndex, Int64 *vWeight, UOSInt length) = 0;
+			virtual NN<VertFilter> CreateVertFilter(UOSInt vtap, UnsafeArray<OSInt> vIndex, UnsafeArray<Int64> vWeight, UOSInt length) = 0;
 			virtual void DestroyVertFilter(NN<VertFilter> vfilter) = 0;
 
 			virtual Double GetHAvgTime() = 0;

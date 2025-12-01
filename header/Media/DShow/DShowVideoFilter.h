@@ -132,27 +132,27 @@ namespace Media
 					}
 					return S_FALSE;
 				}
-				else if (format->bmiHeader.biCompression == *(UInt32*)"YUY2")
+				else if (format->bmiHeader.biCompression == ReadNUInt32("YUY2"))
 				{
 					this->frameMul = 16;
 					return S_OK;
 				}
-				else if (format->bmiHeader.biCompression == *(UInt32*)"UYVY")
+				else if (format->bmiHeader.biCompression == ReadNUInt32("UYVY"))
 				{
 					this->frameMul = 16;
 					return S_OK;
 				}
-				else if (format->bmiHeader.biCompression == *(UInt32*)"I420")
+				else if (format->bmiHeader.biCompression == ReadNUInt32("I420"))
 				{
 					this->frameMul = 12;
 					return S_OK;
 				}
-				else if (format->bmiHeader.biCompression == *(UInt32*)"MJPG")
+				else if (format->bmiHeader.biCompression == ReadNUInt32("MJPG"))
 				{
 					this->frameMul = 32;
 					return S_OK;
 				}
-				else if (format->bmiHeader.biCompression == *(UInt32*)"H264")
+				else if (format->bmiHeader.biCompression == ReadNUInt32("H264"))
 				{
 					this->frameMul = 32;
 					return S_OK;
@@ -210,7 +210,7 @@ namespace Media
 						}
 						FreeMediaType(*mediaType);
 					}
-					else if (this->frameFCC == *(UInt32*)"H264")
+					else if (this->frameFCC == ReadNUInt32("H264"))
 					{
 						OSInt i = 0;
 						OSInt j = frameSize - 4;

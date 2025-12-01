@@ -12,15 +12,17 @@
 
 void Media::Resizer::DeintResizerLR_C32::DestoryVertO()
 {
-	if (oIndex)
+	UnsafeArray<OSInt> oIndex;
+	UnsafeArray<Int64> oWeight;
+	if (this->oIndex.SetTo(oIndex))
 	{
-		MemFreeA(oIndex);
-		oIndex = 0;
+		MemFreeAArr(oIndex);
+		this->oIndex = 0;
 	}
-	if (oWeight)
+	if (this->oWeight.SetTo(oWeight))
 	{
-		MemFreeA(oWeight);
-		oWeight = 0;
+		MemFreeAArr(oWeight);
+		this->oWeight = 0;
 	}
 	NN<LanczosResizerLR_C32Action::VertFilter> vFilter;
 	if (this->oFilter.SetTo(vFilter))
@@ -34,15 +36,17 @@ void Media::Resizer::DeintResizerLR_C32::DestoryVertO()
 
 void Media::Resizer::DeintResizerLR_C32::DestoryVertE()
 {
-	if (eIndex)
+	UnsafeArray<OSInt> eIndex;
+	UnsafeArray<Int64> eWeight;
+	if (this->eIndex.SetTo(eIndex))
 	{
-		MemFreeA(eIndex);
-		eIndex = 0;
+		MemFreeAArr(eIndex);
+		this->eIndex = 0;
 	}
-	if (eWeight)
+	if (this->eWeight.SetTo(eWeight))
 	{
-		MemFreeA(eWeight);
-		eWeight = 0;
+		MemFreeAArr(eWeight);
+		this->eWeight = 0;
 	}
 	NN<LanczosResizerLR_C32Action::VertFilter> vFilter;
 	if (this->eFilter.SetTo(vFilter))
@@ -109,8 +113,8 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 	if (this->rgbChanged)
 	{
 		this->rgbChanged = false;
-		UpdateRGBTable();
-		this->action->UpdateRGBTable(this->rgbTable);
+		UnsafeArray<UInt8> rgbTable = UpdateRGBTable();
+		this->action->UpdateRGBTable(rgbTable);
 	}
 
 	OSInt sstep = (OSInt)sbpl;
@@ -136,11 +140,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (swidth > UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
+					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth,&prm, 8, 0);
+					SetupInterpolationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -157,11 +161,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (sheight > UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0.25);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0.25);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0.25);
 				}
 				osSize = sheight;
 				odSize = dheight;
@@ -185,11 +189,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (sheight > UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0.25);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, 0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0.25);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, 0.25);
 				}
 				osSize = sheight;
 				odSize = dheight;
@@ -215,11 +219,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (swidth > UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
+					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth,&prm, 8, 0);
+					SetupInterpolationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth,prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -236,11 +240,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (sheight > UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, -0.25);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, -0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, -0.25);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, -0.25);
 				}
 				esSize = sheight;
 				edSize = dheight;
@@ -264,11 +268,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (sheight > UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, -0.25);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, -0.25);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, -0.25);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, -0.25);
 				}
 				esSize = sheight;
 				edSize = dheight;
@@ -294,11 +298,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (swidth > UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
+					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth,&prm, 8, 0);
+					SetupInterpolationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -315,11 +319,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (sheight > UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, (OSInt)dwidth << 3, 0);
 				}
 				vsSize = sheight;
 				vdSize = dheight;
@@ -343,11 +347,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (swidth > UOSInt2Double(dwidth))
 				{
-					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
+					SetupDecimationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
+					SetupInterpolationParameterH(this->hnTap, swidth, (UInt32)siWidth, dwidth, prm, 8, 0);
 				}
 				hsSize = swidth;
 				hdSize = dwidth;
@@ -370,11 +374,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer
 
 				if (sheight > UOSInt2Double(dheight))
 				{
-					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0);
+					SetupDecimationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, 0);
 				}
 				else
 				{
-					setup_interpolation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0);
+					SetupInterpolationParameterV(this->vnTap, sheight, (UInt32)siHeight, dheight, prm, sstep, 0);
 				}
 				vsSize = sheight;
 				vdSize = dheight;

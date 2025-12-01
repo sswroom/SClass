@@ -238,8 +238,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		capture->GetInfo(sb);
 		console->WriteLine(sb.ToCString());
 
-		Media::OpenCV::OCVObjectDetector *objDetect;
-		NEW_CLASS(objDetect, Media::OpenCV::OCVObjectDetector((const UTF8Char*)"haarcascades", (const UTF8Char*)"haarcascade_frontalface_alt.xml"));
+		NN<Media::OpenCV::OCVObjectDetector> objDetect;
+		NEW_CLASSNN(objDetect, Media::OpenCV::OCVObjectDetector((const UTF8Char*)"haarcascades", (const UTF8Char*)"haarcascade_frontalface_alt.xml"));
 		if (objDetect->IsError())
 		{
 			console->WriteLine(CSTR("Error in initializing object detector"));
@@ -263,7 +263,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			DEL_CLASS(feeder);
 		}
-		DEL_CLASS(objDetect);
+		objDetect.Delete();
 		capture.Delete();
 	}
 	else

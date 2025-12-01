@@ -917,7 +917,7 @@ Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 
 }
 
-Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(OptOut<UOSInt> pageFault, OptOut<UOSInt> workingSetSize, OptOut<UOSInt> pagedPoolUsage, OptOut<UOSInt> nonPagedPoolUsage, OptOut<UOSInt> pageFileUsage)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -928,16 +928,11 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	ret = GetProcessMemoryInfo(this->handle, &memInfo, sizeof(memInfo));
 	if (ret)
 	{
-		if (pageFault)
-			*pageFault = memInfo.PageFaultCount;
-		if (workingSetSize)
-			*workingSetSize = memInfo.WorkingSetSize;
-		if (pagedPoolUsage)
-			*pagedPoolUsage = memInfo.QuotaPagedPoolUsage;
-		if (nonPagedPoolUsage)
-			*nonPagedPoolUsage = memInfo.QuotaNonPagedPoolUsage;
-		if (pageFileUsage)
-			*pageFileUsage = memInfo.PagefileUsage;
+		pageFault.Set(memInfo.PageFaultCount);
+		workingSetSize.Set(memInfo.WorkingSetSize);
+		pagedPoolUsage.Set(memInfo.QuotaPagedPoolUsage);
+		nonPagedPoolUsage.Set(memInfo.QuotaNonPagedPoolUsage);
+		pageFileUsage.Set(memInfo.PagefileUsage);
 		return true;
 	}
 //	UInt32 err = GetLastError();
@@ -945,7 +940,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 #endif
 }
 
-Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *kernelTime, Data::Timestamp *userTime)
+Bool Manage::Process::GetTimeInfo(OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> kernelTime, OptOut<Data::Timestamp> userTime)
 {
 #ifdef _WIN32_WCE
 	FILETIME ttime1 = {0, 0};
@@ -1003,17 +998,17 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 	}
 	if (found)
 	{
-		if (createTime)
+		if (createTime.IsNotNull())
 		{
-			*createTime = Data::Timestamp::FromFILETIME(&time1, Data::DateTimeUtil::GetLocalTzQhr());
+			createTime.SetNoCheck(Data::Timestamp::FromFILETIME(&time1, Data::DateTimeUtil::GetLocalTzQhr()));
 		}
-		if (kernelTime)
+		if (kernelTime.IsNotNull())
 		{
-			*kernelTime = Data::Timestamp::FromFILETIME(&time3, Data::DateTimeUtil::GetLocalTzQhr());
+			kernelTime.SetNoCheck(Data::Timestamp::FromFILETIME(&time3, Data::DateTimeUtil::GetLocalTzQhr()));
 		}
-		if (userTime)
+		if (userTime.IsNotNull())
 		{
-			*userTime = Data::Timestamp::FromFILETIME(&time4, Data::DateTimeUtil::GetLocalTzQhr());
+			userTime.SetNoCheck(Data::Timestamp::FromFILETIME(&time4, Data::DateTimeUtil::GetLocalTzQhr()));
 		}
 	}
 	return found;
@@ -1026,17 +1021,17 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 	ret = GetProcessTimes(this->handle, &time1, &time2, &time3, &time4);
 	if (ret)
 	{
-		if (createTime)
+		if (createTime.IsNotNull())
 		{
-			*createTime = Data::Timestamp::FromFILETIME(&time1, Data::DateTimeUtil::GetLocalTzQhr());
+			createTime.SetNoCheck(Data::Timestamp::FromFILETIME(&time1, Data::DateTimeUtil::GetLocalTzQhr()));
 		}
-		if (kernelTime)
+		if (kernelTime.IsNotNull())
 		{
-			*kernelTime = Data::Timestamp::FromFILETIME(&time3, Data::DateTimeUtil::GetLocalTzQhr());
+			kernelTime.SetNoCheck(Data::Timestamp::FromFILETIME(&time3, Data::DateTimeUtil::GetLocalTzQhr()));
 		}
-		if (userTime)
+		if (userTime.IsNotNull())
 		{
-			*userTime = Data::Timestamp::FromFILETIME(&time4, Data::DateTimeUtil::GetLocalTzQhr());
+			userTime.SetNoCheck(Data::Timestamp::FromFILETIME(&time4, Data::DateTimeUtil::GetLocalTzQhr()));
 		}
 		return true;
 	}

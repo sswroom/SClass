@@ -16,8 +16,8 @@ namespace Media
 			typedef struct
 			{
 				UOSInt length;
-				Int64 *weight;
-				OSInt *index;
+				UnsafeArray<Int64> weight;
+				UnsafeArray<OSInt> index;
 				UOSInt tap;
 			} LRHPARAMETER;
 
@@ -26,13 +26,13 @@ namespace Media
 			UOSInt hnTap;
 			UOSInt vnTap;
 			Sync::Mutex mut;
-			Media::Resizer::LanczosResizerLR_C32Action *action;
+			NN<Media::Resizer::LanczosResizerLR_C32Action> action;
 
 			Double hsSize;
 			Double hsOfst;
 			UOSInt hdSize;
-			OSInt *hIndex;
-			Int64 *hWeight;
+			UnsafeArrayOpt<OSInt> hIndex;
+			UnsafeArrayOpt<Int64> hWeight;
 			UOSInt hTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> hFilter;
 
@@ -40,8 +40,8 @@ namespace Media
 			Double vsOfst;
 			UOSInt vdSize;
 			OSInt vsStep;
-			OSInt *vIndex;
-			Int64 *vWeight;
+			UnsafeArrayOpt<OSInt> vIndex;
+			UnsafeArrayOpt<Int64> vWeight;
 			UOSInt vTap;
 			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> vFilter;
 
@@ -49,15 +49,15 @@ namespace Media
 			Optional<Media::ColorManagerSess> colorSess;
 			Double srcRefLuminance;
 			Bool rgbChanged;
-			UInt8 *rgbTable;
+			UnsafeArrayOpt<UInt8> rgbTable;
 			Media::PixelFormat pf;
 
-			static void setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			static void setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			static void setup_interpolation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			static void setup_decimation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			static void SetupInterpolationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			static void SetupDecimationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			static void SetupInterpolationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			static void SetupDecimationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
 
-			virtual void UpdateRGBTable();
+			virtual UnsafeArray<UInt8> UpdateRGBTable();
 
 			void DestoryHori();
 			void DestoryVert();

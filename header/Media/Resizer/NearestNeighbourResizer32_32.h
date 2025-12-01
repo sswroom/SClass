@@ -16,8 +16,8 @@ namespace Media
 			Double lastsheight;
 			UOSInt lastdwidth;
 			UOSInt lastdheight;
-			OSInt *xindex;
-			OSInt *yindex;
+			UnsafeArrayOpt<OSInt> xindex;
+			UnsafeArrayOpt<OSInt> yindex;
 		public:
 			NearestNeighbourResizer32_32();
 			virtual ~NearestNeighbourResizer32_32();

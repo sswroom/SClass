@@ -23,12 +23,12 @@ namespace Media
 				UOSInt height;
 				UOSInt width0;
 				UOSInt tap;
-				OSInt *index;
-				Int64 *weight;
+				UnsafeArray<OSInt> index;
+				UnsafeArray<Int64> weight;
 				UOSInt tap2;
-				OSInt *index2;
-				Int64 *weight2;
-				UInt8 *buffPt;
+				UnsafeArray<OSInt> index2;
+				UnsafeArray<Int64> weight2;
+				UnsafeArray<UInt8> buffPt;
 				OSInt sstep;
 				OSInt dstep;
 			} TaskParam;
@@ -36,8 +36,8 @@ namespace Media
 			typedef struct
 			{
 				UOSInt length;
-				Int64 *weight;
-				OSInt *index;
+				UnsafeArray<Int64> weight;
+				UnsafeArray<OSInt> index;
 				OSInt tap;
 			} LRHPARAMETER;
 
@@ -46,18 +46,18 @@ namespace Media
 			NN<Sync::ParallelTask> ptask;
 			UOSInt nThread;
 
-			UInt8 *rgbTable;
+			UnsafeArrayOpt<UInt8> rgbTable;
 			UOSInt buffSize;
-			UInt8 *buffPtr;
+			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Double hTotTime;
 			UOSInt hTotCount;
 			Double vTotTime;
 			UOSInt vTotCount;
 
-			void mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
-			void mt_hv_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType);
+			void mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
+			void mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			void mt_hv_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, UnsafeArray<OSInt> hindex, UnsafeArray<Int64> hweight, UOSInt vtap, UnsafeArray<OSInt> vindex, UnsafeArray<Int64> vweight, OSInt sstep, OSInt dstep, UnsafeArray<UInt8> buffPt, Media::AlphaType srcAlphaType);
 			void mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 
 			static void __stdcall DoTask(AnyType obj);
@@ -70,10 +70,10 @@ namespace Media
 			virtual void DoVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 			virtual void DoCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 
-			virtual void UpdateRGBTable(UInt8 *rgbTable);
-			virtual NN<HoriFilter> CreateHoriFilter(UOSInt htap, OSInt *hIndex, Int64 *hWeight, UOSInt length);
+			virtual void UpdateRGBTable(UnsafeArray<UInt8> rgbTable);
+			virtual NN<HoriFilter> CreateHoriFilter(UOSInt htap, UnsafeArray<OSInt> hIndex, UnsafeArray<Int64> hWeight, UOSInt length);
 			virtual void DestroyHoriFilter(NN<HoriFilter> hfilter);
-			virtual NN<VertFilter> CreateVertFilter(UOSInt vtap, OSInt *vIndex, Int64 *vWeight, UOSInt length);
+			virtual NN<VertFilter> CreateVertFilter(UOSInt vtap, UnsafeArray<OSInt> vIndex, UnsafeArray<Int64> vWeight, UOSInt length);
 			virtual void DestroyVertFilter(NN<VertFilter> vfilter);
 
 			virtual Double GetHAvgTime();

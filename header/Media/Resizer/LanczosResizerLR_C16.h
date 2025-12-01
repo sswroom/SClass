@@ -24,8 +24,8 @@ namespace Media
 				UOSInt width;
 				UOSInt height;
 				UOSInt tap;
-				OSInt *index;
-				Int64 *weight;
+				UnsafeArray<OSInt> index;
+				UnsafeArray<Int64> weight;
 				OSInt sstep;
 				OSInt dstep;
 			} TaskParam;
@@ -33,8 +33,8 @@ namespace Media
 			typedef struct
 			{
 				UOSInt length;
-				Int64 *weight;
-				OSInt *index;
+				UnsafeArray<Int64> weight;
+				UnsafeArray<OSInt> index;
 				UOSInt tap;
 			} LRHPARAMETER;
 
@@ -49,34 +49,34 @@ namespace Media
 			Double hsSize;
 			Double hsOfst;
 			UOSInt hdSize;
-			OSInt *hIndex;
-			Int64 *hWeight;
+			UnsafeArrayOpt<OSInt> hIndex;
+			UnsafeArrayOpt<Int64> hWeight;
 			UOSInt hTap;
 
 			Double vsSize;
 			Double vsOfst;
 			UOSInt vdSize;
 			OSInt vsStep;
-			OSInt *vIndex;
-			Int64 *vWeight;
+			UnsafeArrayOpt<OSInt> vIndex;
+			UnsafeArrayOpt<Int64> vWeight;
 			UOSInt vTap;
 
 			UOSInt buffW;
 			UOSInt buffH;
-			UInt8 *buffPtr;
+			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Media::ColorProfile destColor;
 			Optional<Media::ColorManagerSess> colorSess;
 			Double srcRefLuminance;
 			Bool rgbChanged;
-			UInt8 *rgbTable;
+			UnsafeArrayOpt<UInt8> rgbTable;
 
-			void setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupInterpolationParameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupDecimationParameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
 
-			void mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
+			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
+			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
 			void UpdateRGBTable();
 

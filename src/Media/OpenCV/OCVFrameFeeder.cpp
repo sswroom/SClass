@@ -34,7 +34,7 @@ void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrameChange(Media::VideoSource::
 //	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 }
 
-Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NN<Media::VideoSource> src)
+Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(NN<Media::OpenCV::OCVObjectDetector> frameInput, NN<Media::VideoSource> src)
 {
 	this->frameInput = frameInput;
 	this->src = src;

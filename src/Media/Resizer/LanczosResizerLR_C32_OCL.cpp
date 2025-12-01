@@ -348,7 +348,7 @@ typedef struct
 	cl_mem weight;
 } FilterParam;
 
-typedef struct
+struct Media::Resizer::LanczosResizerLR_C32_OCL::ClassData
 {
 	OSInt hTotCount;
 	Double hTotTime;
@@ -369,11 +369,11 @@ typedef struct
 	cl_mem rgbTable;
 	cl_mem buffObj;
 	OSInt buffSize;
-} ClassData;
+};
 
 Media::Resizer::LanczosResizerLR_C32_OCL::LanczosResizerLR_C32_OCL()
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	this->clsData = data;
 	data->hTotCount = 0;
 	data->hTotTime = 0;
@@ -462,7 +462,7 @@ Media::Resizer::LanczosResizerLR_C32_OCL::LanczosResizerLR_C32_OCL()
 
 Media::Resizer::LanczosResizerLR_C32_OCL::~LanczosResizerLR_C32_OCL()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->inited)
 	{
 		cl_int status;
@@ -484,9 +484,9 @@ Media::Resizer::LanczosResizerLR_C32_OCL::~LanczosResizerLR_C32_OCL()
 	MemFree(data);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_OCL::DoHorizontalVerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt sheight, OSInt dheight, NN<HoriFilter> hFilter, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_OCL::DoHorizontalVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, NN<HoriFilter> hFilter, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
 	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
 
@@ -583,9 +583,9 @@ void Media::Resizer::LanczosResizerLR_C32_OCL::DoHorizontalVerticalFilter(UInt8 
 	data->vTotCount = 1;
 }
 
-void Media::Resizer::LanczosResizerLR_C32_OCL::DoHorizontalFilterCollapse(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt sheight, NN<HoriFilter> hFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_OCL::DoHorizontalFilterCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, NN<HoriFilter> hFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
 
 	if (data->buffSize < (sheight * dwidth << 3))
@@ -655,9 +655,9 @@ void Media::Resizer::LanczosResizerLR_C32_OCL::DoHorizontalFilterCollapse(UInt8 
 	clReleaseMemObject(input);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_OCL::DoVerticalFilter(UInt8 *inPt, UInt8 *outPt, OSInt swidth, OSInt sheight, OSInt dheight, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_OCL::DoVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
 	Manage::HiResClock clk;
 	cl_mem input;
@@ -714,9 +714,9 @@ void Media::Resizer::LanczosResizerLR_C32_OCL::DoVerticalFilter(UInt8 *inPt, UIn
 	data->vTotCount = 1;
 }
 
-void Media::Resizer::LanczosResizerLR_C32_OCL::DoCollapse(UInt8 *inPt, UInt8 *outPt, OSInt swidth, OSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_OCL::DoCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	cl_mem input;
 	cl_mem output;
 	OSInt inputSize = sheight * sstep;
@@ -749,16 +749,16 @@ void Media::Resizer::LanczosResizerLR_C32_OCL::DoCollapse(UInt8 *inPt, UInt8 *ou
 	clReleaseMemObject(input);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_OCL::UpdateRGBTable(UInt8 *rgbTable)
+void Media::Resizer::LanczosResizerLR_C32_OCL::UpdateRGBTable(UnsafeArray<UInt8> rgbTable)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	cl_int status;
 	status = clEnqueueWriteBuffer(data->commandQueue, data->rgbTable, CL_TRUE, 0, RGBTABLESIZE, rgbTable, 0, 0, 0);
 }
 
-NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> Media::Resizer::LanczosResizerLR_C32_OCL::CreateHoriFilter(OSInt htap, OSInt *hIndex, Int64 *hWeight, OSInt length)
+NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> Media::Resizer::LanczosResizerLR_C32_OCL::CreateHoriFilter(OSInt htap, UnsafeArray<OSInt> hIndex, UnsafeArray<Int64> hWeight, OSInt length)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<FilterParam> param = MemAllocNN(FilterParam);
 	param->tap = htap;
 	if ((length & 1) == 0 && (htap == 8 || htap == 16))
@@ -788,9 +788,9 @@ void Media::Resizer::LanczosResizerLR_C32_OCL::DestroyHoriFilter(NN<Media::Resiz
 	MemFreeNN(param);
 }
 
-NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> Media::Resizer::LanczosResizerLR_C32_OCL::CreateVertFilter(OSInt vtap, OSInt *vIndex, Int64 *vWeight, OSInt length)
+NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> Media::Resizer::LanczosResizerLR_C32_OCL::CreateVertFilter(OSInt vtap, UnsafeArray<OSInt> vIndex, UnsafeArray<Int64> vWeight, UOSInt length)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	NN<FilterParam> param = MemAllocNN(FilterParam);
 	param->tap = vtap;
 	if (vtap == 6)
@@ -822,7 +822,7 @@ void Media::Resizer::LanczosResizerLR_C32_OCL::DestroyVertFilter(NN<Media::Resiz
 
 Double Media::Resizer::LanczosResizerLR_C32_OCL::GetHAvgTime()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->hTotCount <= 0)
 		return 0;
 	else
@@ -831,7 +831,7 @@ Double Media::Resizer::LanczosResizerLR_C32_OCL::GetHAvgTime()
 
 Double Media::Resizer::LanczosResizerLR_C32_OCL::GetVAvgTime()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	NN<ClassData> data = this->clsData;
 	if (data->vTotCount <= 0)
 		return 0;
 	else

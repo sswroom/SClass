@@ -38,15 +38,15 @@ namespace Media
 				UnsafeArray<Int16> weight;
 				OSInt sstep;
 				OSInt dstep;
-				UInt8 *tmpbuff;
+				UnsafeArrayOpt<UInt8> tmpbuff;
 				UOSInt tmpbuffSize;
 			} TaskParam;
 
 			typedef struct
 			{
 				UOSInt length;
-				Int16 *weight;
-				OSInt *index;
+				UnsafeArray<Int16> weight;
+				UnsafeArray<OSInt> index;
 				UOSInt tap;
 			} LRHPARAMETER;
 
@@ -54,28 +54,28 @@ namespace Media
 			UOSInt hnTap;
 			UOSInt vnTap;
 			Sync::Mutex mut;
-			TaskParam *params;
+			UnsafeArray<TaskParam> params;
 			UOSInt nThread;
-			Sync::ParallelTask *ptask;
+			NN<Sync::ParallelTask> ptask;
 
 			Double hsSize;
 			Double hsOfst;
 			UOSInt hdSize;
-			OSInt *hIndex;
-			Int16 *hWeight;
+			UnsafeArrayOpt<OSInt> hIndex;
+			UnsafeArrayOpt<Int16> hWeight;
 			UOSInt hTap;
 
 			Double vsSize;
 			Double vsOfst;
 			UOSInt vdSize;
 			OSInt vsStep;
-			OSInt *vIndex;
-			Int16 *vWeight;
+			UnsafeArrayOpt<OSInt> vIndex;
+			UnsafeArrayOpt<Int16> vWeight;
 			UOSInt vTap;
 
 			UOSInt buffW;
 			OSInt buffH;
-			UInt8 *buffPtr;
+			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Media::PixelFormat srcPF;
 			UnsafeArrayOpt<const UInt8> srcPal;
@@ -85,16 +85,16 @@ namespace Media
 			Bool rgbChanged;
 			UnsafeArrayOpt<UInt8> rgbTable;
 
-			void setup_interpolation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void setup_interpolation_parameter_h(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter_h(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupInterpolationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupDecimationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupInterpolationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupDecimationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
 
-			void mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int16 *weight, OSInt sstep, OSInt dstep, UOSInt swidth);
-			void mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int16 *weight, OSInt sstep, OSInt dstep);
-			void mt_expand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
-			void mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
-			void mt_copy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int16> weight, OSInt sstep, OSInt dstep, UOSInt swidth);
+			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int16> weight, OSInt sstep, OSInt dstep);
+			void MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
 			void UpdateRGBTable();
 

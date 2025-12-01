@@ -14,8 +14,8 @@ namespace Media
 			typedef struct
 			{
 				Int32 length;
-				Int64 *weight;
-				Int32 *index;
+				UnsafeArrayOpt<Int64> weight;
+				UnsafeArrayOpt<Int32> index;
 				Int32 tap;
 			} YVPARAMETER;
 
@@ -37,38 +37,42 @@ namespace Media
 				Media::YCOffset ycOfst;
 				Int32 dbpl;
 				Int32 csLineSize;
-				UInt8 *csLineBuff;
-				UInt8 *csLineBuff2;
+				UnsafeArrayOpt<UInt8> csLineBuff;
+				UnsafeArrayOpt<UInt8> csLineBuff2;
 			} THREADSTAT;
 
 			YVPARAMETER yvParamO;
 			Int32 yvStepO;
 			YVPARAMETER yvParamE;
 			Int32 yvStepE;
-			UInt8 *uBuff;
-			UInt8 *vBuff;
+			UnsafeArrayOpt<UInt8> uBuff;
+			UnsafeArrayOpt<UInt8> vBuff;
 			OSInt yvBuffSize;
 
 			Int32 currId;
-			Int32 nThread;
+			UOSInt nThread;
 			Sync::Event evtMain;
 			UnsafeArray<THREADSTAT> stats;
 
-			static Double lanczos3_weight(Double phase);
+			static Double Lanczos3Weight(Double phase);
 			static void SetupInterpolationParameter(Int32 source_length, Int32 result_length, NN<YVPARAMETER> out, Int32 indexSep, Double offsetCorr);
-			static void VerticalFilter(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep);
-			static void VerticalFilter16(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep);
+			static void VerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, Int32 width, Int32 height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
+			static void VerticalFilter16(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, Int32 width, Int32 height, Int32 tap, UnsafeArray<Int32> index, UnsafeArray<Int64> weight, UInt32 sstep, UInt32 dstep);
 
-			void do_yv12rgb8(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int32 yBpl, Int32 uvBpl);
-			void do_yv12rgb2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int32 yBpl, Int32 uvBpl);
-			void do_yv12rgb8vc2(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int32 yBpl, Int32 uvBpl);
-			void do_yv12rgb8vc16(UInt8 *yPtr, UInt8 *uPtr, UInt8 *vPtr, UInt8 *dest, Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UInt8 *csLineBuff, UInt8 *csLineBuff2, Int32 yBpl, Int32 uvBpl);
+			void DoYV12RGB8(UnsafeArray<const UInt8> yPtr, UnsafeArray<const UInt8> uPtr, UnsafeArray<const UInt8> vPtr, UnsafeArray<UInt8> dest,
+				Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UnsafeArray<UInt8> csLineBuff, UnsafeArray<UInt8> csLineBuff2, Int32 yBpl, Int32 uvBpl);
+			void DoYV12RGB2(UnsafeArray<const UInt8> yPtr, UnsafeArray<const UInt8> uPtr, UnsafeArray<const UInt8> vPtr, UnsafeArray<UInt8> dest,
+				Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UnsafeArray<UInt8> csLineBuff, UnsafeArray<UInt8> csLineBuff2, Int32 yBpl, Int32 uvBpl);
+			void DoYV12RGB8vc2(UnsafeArray<const UInt8> yPtr, UnsafeArray<const UInt8> uPtr, UnsafeArray<const UInt8> vPtr, UnsafeArray<UInt8> dest,
+				Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UnsafeArray<UInt8> csLineBuff, UnsafeArray<UInt8> csLineBuff2, Int32 yBpl, Int32 uvBpl);
+			void DoYV12RGB8vc16(UnsafeArray<const UInt8> yPtr, UnsafeArray<const UInt8> uPtr, UnsafeArray<const UInt8> vPtr, UnsafeArray<UInt8> dest,
+				Int32 width, Int32 height, Int32 dbpl, Int32 isFirst, Int32 isLast, UnsafeArray<UInt8> csLineBuff, UnsafeArray<UInt8> csLineBuff2, Int32 yBpl, Int32 uvBpl);
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
 			CSYV12_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYV12_LRGB();
-			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, Int32 width, Int32 height, Int32 srcRGBBpl, Int32 destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destLineAdd, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
 	}

@@ -15,15 +15,15 @@ namespace Media
 		private:
 			typedef struct
 			{
-				LanczosResizerH8_8 *me;
+				NN<LanczosResizerH8_8> me;
 				Int32 funcType; // 3 = h filter, 5 = v filter, 7 = expand, 9 = collapse, 11 = copying, 13 = h filter
-				const UInt8 *inPt;
-				UInt8 *outPt;
+				UnsafeArray<const UInt8> inPt;
+				UnsafeArray<UInt8> outPt;
 				UOSInt width;
 				UOSInt height;
 				UOSInt tap;
-				OSInt *index;
-				Int64 *weight;
+				UnsafeArray<OSInt> index;
+				UnsafeArray<Int64> weight;
 				OSInt sstep;
 				OSInt dstep;
 			} TaskParam;
@@ -31,8 +31,8 @@ namespace Media
 			typedef struct
 			{
 				UOSInt length;
-				Int64 *weight;
-				OSInt *index;
+				UnsafeArray<Int64> weight;
+				UnsafeArray<OSInt> index;
 				UOSInt tap;
 			} LRHPARAMETER;
 
@@ -41,42 +41,42 @@ namespace Media
 			UOSInt vnTap;
 			UOSInt nThread;
 			Sync::Mutex mut;
-			TaskParam *params;
-			Sync::ParallelTask *ptask;
+			UnsafeArray<TaskParam> params;
+			NN<Sync::ParallelTask> ptask;
 
 			Double hsSize;
 			Double hsOfst;
 			UOSInt hdSize;
-			OSInt *hIndex;
-			Int64 *hWeight;
+			UnsafeArrayOpt<OSInt> hIndex;
+			UnsafeArrayOpt<Int64> hWeight;
 			UOSInt hTap;
 
 			Double vsSize;
 			Double vsOfst;
 			UOSInt vdSize;
 			OSInt vsStep;
-			OSInt *vIndex;
-			Int64 *vWeight;
+			UnsafeArrayOpt<OSInt> vIndex;
+			UnsafeArrayOpt<Int64> vWeight;
 			UOSInt vTap;
 
 			UOSInt buffW;
 			UOSInt buffH;
-			UInt8 *buffPtr;
+			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Double hTime;
 			Double vTime;
 
-			void setup_interpolation_parameter_v(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter_v(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_interpolation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter_h(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void SetupInterpolationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupDecimationParameterV(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupInterpolationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void SetupDecimationParameterH(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
 
-			void mt_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_horizontal_filter8(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_expand(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
-			void mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
-			void mt_copy(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
+			void MTHorizontalFilter8(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
+			void MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep);
+			void MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
 			static void __stdcall DoTask(AnyType obj);
 			void DestoryHori();

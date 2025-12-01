@@ -10,7 +10,7 @@ namespace Media
 		class OCVFrameFeeder
 		{
 		private:
-			Media::OpenCV::OCVObjectDetector *frameInput;
+			NN<OCVObjectDetector> frameInput;
 			NN<Media::VideoSource> src;
 			Optional<Media::VideoSource> decoder;
 			Media::FrameInfo info;
@@ -23,7 +23,7 @@ namespace Media
 			static void __stdcall OnFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnFrameChange(Media::VideoSource::FrameChange frChg, AnyType userData);
 		public:
-			OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NN<Media::VideoSource> src);
+			OCVFrameFeeder(NN<OCVObjectDetector> frameInput, NN<Media::VideoSource> src);
 			~OCVFrameFeeder();
 
 			Bool Start();

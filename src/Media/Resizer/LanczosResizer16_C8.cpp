@@ -25,7 +25,7 @@ extern "C"
 	void LanczosResizer16_C8_imgcopy_pa(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
 }
 
-void Media::Resizer::LanczosResizer16_C8::setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer16_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizer16_C8::SetupInterpolationParameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer16_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -89,7 +89,7 @@ void Media::Resizer::LanczosResizer16_C8::setup_interpolation_parameter(UOSInt n
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizer16_C8::setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer16_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizer16_C8::SetupDecimationParameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer16_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -162,7 +162,7 @@ void Media::Resizer::LanczosResizer16_C8::setup_decimation_parameter(UOSInt nTap
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_horizontal_filter_pa(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
+void Media::Resizer::LanczosResizer16_C8::MTHorizontalFilterPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -191,7 +191,7 @@ void Media::Resizer::LanczosResizer16_C8::mt_horizontal_filter_pa(UnsafeArray<co
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UOSInt swidth)
+void Media::Resizer::LanczosResizer16_C8::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -220,7 +220,7 @@ void Media::Resizer::LanczosResizer16_C8::mt_horizontal_filter(UnsafeArray<const
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer16_C8::MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -245,7 +245,7 @@ void Media::Resizer::LanczosResizer16_C8::mt_vertical_filter(UnsafeArray<const U
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_expand_pa(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer16_C8::MTExpandPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -267,7 +267,7 @@ void Media::Resizer::LanczosResizer16_C8::mt_expand_pa(UnsafeArray<const UInt8> 
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_expand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer16_C8::MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -289,7 +289,7 @@ void Media::Resizer::LanczosResizer16_C8::mt_expand(UnsafeArray<const UInt8> inP
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer16_C8::MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -311,7 +311,7 @@ void Media::Resizer::LanczosResizer16_C8::mt_collapse(UnsafeArray<const UInt8> i
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_copy_pa(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer16_C8::MTCopyPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -333,7 +333,7 @@ void Media::Resizer::LanczosResizer16_C8::mt_copy_pa(UnsafeArray<const UInt8> in
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizer16_C8::mt_copy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizer16_C8::MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -357,13 +357,14 @@ void Media::Resizer::LanczosResizer16_C8::mt_copy(UnsafeArray<const UInt8> inPt,
 
 void Media::Resizer::LanczosResizer16_C8::UpdateRGBTable()
 {
-	if (this->rgbTable == 0)
+	UnsafeArray<UInt8> rgbTable;
+	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = MemAlloc(UInt8, 65536 * 4 + 65536 * 4 * 8);
+		this->rgbTable = rgbTable = MemAlloc(UInt8, 65536 * 4 + 65536 * 4 * 8);
 	}
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_BGRA8(this->rgbTable, this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile.rtransfer));
-	lutGen.GenRGB16_LRGBC((Int64*)&this->rgbTable[262144], this->srcProfile, this->destProfile.GetPrimaries(), 14);
+	lutGen.GenLRGB_BGRA8(rgbTable, this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile.rtransfer));
+	lutGen.GenRGB16_LRGBC((Int64*)&rgbTable[262144], this->srcProfile, this->destProfile.GetPrimaries(), 14);
 }
 
 void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(AnyType obj)
@@ -379,23 +380,23 @@ void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(AnyType obj)
 			ts->tmpbuffSize = ts->swidth;
 			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
-		LanczosResizer16_C8_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable, ts->swidth, ts->tmpbuff);
+		LanczosResizer16_C8_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, ts->tmpbuff);
 	}
 	else if (ts->funcType == 5)
 	{
-		LanczosResizer16_C8_vertical_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer16_C8_vertical_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 	}
 	else if (ts->funcType == 7)
 	{
-		LanczosResizer16_C8_expand(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer16_C8_expand(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 	}
 	else if (ts->funcType == 9)
 	{
-		LanczosResizer16_C8_collapse(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer16_C8_collapse(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 	}
 	else if (ts->funcType == 11)
 	{
-		LanczosResizer16_C8_imgcopy(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer16_C8_imgcopy(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 	}
 	else if (ts->funcType == 12)
 	{
@@ -406,50 +407,54 @@ void __stdcall Media::Resizer::LanczosResizer16_C8::DoTask(AnyType obj)
 			ts->tmpbuffSize = ts->swidth;
 			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
-		LanczosResizer16_C8_horizontal_filter_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable, ts->swidth, ts->tmpbuff);
+		LanczosResizer16_C8_horizontal_filter_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, ts->tmpbuff);
 	}
 	else if (ts->funcType == 13)
 	{
-		LanczosResizer16_C8_expand_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer16_C8_expand_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 	}
 	else if (ts->funcType == 14)
 	{
-		LanczosResizer16_C8_imgcopy_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer16_C8_imgcopy_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 	}
 }
 
 void Media::Resizer::LanczosResizer16_C8::DestoryHori()
 {
-	if (hIndex)
+	UnsafeArray<OSInt> hIndex;
+	UnsafeArray<Int64> hWeight;
+	if (this->hIndex.SetTo(hIndex))
 	{
-		MemFreeA(hIndex);
-		hIndex = 0;
+		MemFreeAArr(hIndex);
+		this->hIndex = 0;
 	}
-	if (hWeight)
+	if (this->hWeight.SetTo(hWeight))
 	{
-		MemFreeA(hWeight);
-		hWeight = 0;
+		MemFreeAArr(hWeight);
+		this->hWeight = 0;
 	}
 	hsSize = 0;
 }
 
 void Media::Resizer::LanczosResizer16_C8::DestoryVert()
 {
-	if (vIndex)
+	UnsafeArray<OSInt> vIndex;
+	UnsafeArray<Int64> vWeight;
+	if (this->vIndex.SetTo(vIndex))
 	{
-		MemFreeA(vIndex);
-		vIndex = 0;
+		MemFreeAArr(vIndex);
+		this->vIndex = 0;
 	}
-	if (vWeight)
+	if (this->vWeight.SetTo(vWeight))
 	{
-		MemFreeA(vWeight);
-		vWeight = 0;
+		MemFreeAArr(vWeight);
+		this->vWeight = 0;
 	}
 	vsSize = 0;
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
+Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 6)
@@ -461,10 +466,11 @@ Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vn
 	this->vnTap = vnTap << 1;
 	this->rgbChanged = true;
 	this->rgbTable = 0;
-	if (colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
 	{
 		this->colorSess = colorSess;
-		this->colorSess->AddHandler(*this);
+		nncolorSess->AddHandler(*this);
 	}
 	else
 	{
@@ -503,17 +509,21 @@ Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vn
 Media::Resizer::LanczosResizer16_C8::~LanczosResizer16_C8()
 {
 	UOSInt i;
-	if (this->colorSess)
+	UnsafeArray<UInt8> tmpbuff;
+	NN<Media::ColorManagerSess> colorSess;
+	UnsafeArray<UInt8> buffPtr;
+	UnsafeArray<UInt8> rgbTable;
+	if (this->colorSess.SetTo(colorSess))
 	{
-		this->colorSess->RemoveHandler(*this);
+		colorSess->RemoveHandler(*this);
 	}
 	this->ptask.Delete();
 	i = nThread;
 	while (i-- > 0)
 	{
-		if (this->params[i].tmpbuff)
+		if (this->params[i].tmpbuff.Set(tmpbuff))
 		{
-			MemFreeA(this->params[i].tmpbuff);
+			MemFreeAArr(tmpbuff);
 			this->params[i].tmpbuff = 0;
 			this->params[i].tmpbuffSize = 0;
 		}
@@ -522,19 +532,24 @@ Media::Resizer::LanczosResizer16_C8::~LanczosResizer16_C8()
 
 	DestoryHori();
 	DestoryVert();
-	if (buffPtr)
+	if (this->buffPtr.SetTo(buffPtr))
 	{
-		MemFreeA(buffPtr);
-		buffPtr = 0;
+		MemFreeAArr(buffPtr);
+		this->buffPtr = 0;
 	}
-	if (this->rgbTable)
+	if (this->rgbTable.SetTo(rgbTable))
 	{
-		MemFree(this->rgbTable);
+		MemFreeArr(rgbTable);
 	}
 }
 
 void Media::Resizer::LanczosResizer16_C8::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
+	UnsafeArray<OSInt> hIndex;
+	UnsafeArray<Int64> hWeight;
+	UnsafeArray<OSInt> vIndex;
+	UnsafeArray<Int64> vWeight;
+	UnsafeArray<UInt8> buffPtr;
 	Media::Resizer::LanczosResizer16_C8::LRHPARAMETER prm;
 	Double w;
 	Double h;
@@ -563,86 +578,85 @@ void Media::Resizer::LanczosResizer16_C8::Resize(UnsafeArray<const UInt8> src, O
 	if (siWidth != dwidth && siHeight != dheight)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
+		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst || !this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight))
 		{
 			DestoryHori();
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupDecimationParameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupInterpolationParameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
 			hsOfst = xOfst;
-			hIndex = prm.index;
-			hWeight = prm.weight;
+			this->hIndex = hIndex = prm.index;
+			this->hWeight = hWeight = prm.weight;
 			hTap = prm.tap;
 		}
 
-		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)hdSize * 8 || this->vsOfst != yOfst)
+		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)hdSize * 8 || this->vsOfst != yOfst || !this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight))
 		{
 			DestoryVert();
 			vsStep = (OSInt)hdSize * 8;
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupDecimationParameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupInterpolationParameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
 			vsOfst = yOfst;
-			vIndex = prm.index;
-			vWeight = prm.weight;
+			this->vIndex = vIndex = prm.index;
+			this->vWeight = vWeight = prm.weight;
 			vTap = prm.tap;
 		}
 		
-		if ((UOSInt)siHeight != buffH || (dwidth != buffW))
+		if ((UOSInt)siHeight != buffH || (dwidth != buffW) || !this->buffPtr.SetTo(buffPtr))
 		{
-			if (buffPtr)
+			if (this->buffPtr.SetTo(buffPtr))
 			{
-				MemFreeA(buffPtr);
-				buffPtr = 0;
+				MemFreeAArr(buffPtr);
+				this->buffPtr = 0;
 			}
 			buffW = dwidth;
 			buffH = siHeight;
-			buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
+			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			mt_horizontal_filter_pa(src, buffPtr, dwidth, siHeight, hTap,hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
+			MTHorizontalFilterPA(src, buffPtr, dwidth, siHeight, hTap,hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
 //			horizontal_filter_pa(src, buffPtr, dwidth, sheight, hTap,hIndex, hWeight, sbpl, (OSInt)dwidth << 3, this->rgbTable, swidth, );
 		}
 		else
 		{
-			mt_horizontal_filter(src, buffPtr, dwidth, siHeight, hTap,hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
+			MTHorizontalFilter(src, buffPtr, dwidth, siHeight, hTap,hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
 //			horizontal_filter(src, buffPtr, dwidth, sheight, hTap,hIndex, hWeight, sbpl, (OSInt)dwidth << 3, this->rgbTable, swidth, );
 		}
-		mt_vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (OSInt)dwidth << 3, dbpl);
+		MTVerticalFilter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (OSInt)dwidth << 3, dbpl);
 //		vertical_filter(buffPtr, dest, dwidth, dheight, vTap, vIndex, vWeight, (OSInt)dwidth << 3, dbpl, this->rgbTable);
-		mutUsage.EndUse();
 	}
 	else if ((UOSInt)siWidth != dwidth)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
+		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst || !this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight))
 		{
 			DestoryHori();
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupDecimationParameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupInterpolationParameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
@@ -651,71 +665,70 @@ void Media::Resizer::LanczosResizer16_C8::Resize(UnsafeArray<const UInt8> src, O
 			hWeight = prm.weight;
 			hTap = prm.tap;
 		}
-		if ((UOSInt)siHeight != buffH || (dwidth != buffW))
+		if ((UOSInt)siHeight != buffH || (dwidth != buffW) || !this->buffPtr.SetTo(buffPtr))
 		{
-			if (buffPtr)
+			if (this->buffPtr.SetTo(buffPtr))
 			{
-				MemFreeA(buffPtr);
-				buffPtr = 0;
+				MemFreeAArr(buffPtr);
+				this->buffPtr = 0;
 			}
 			buffW = dwidth;
 			buffH = siHeight;
-			buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
+			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			mt_horizontal_filter_pa(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
+			MTHorizontalFilterPA(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
 		}
 		else
 		{
-			mt_horizontal_filter(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
+			MTHorizontalFilter(src, buffPtr, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, (OSInt)dwidth << 3, siWidth);
 		}
-		mt_collapse(buffPtr, dest, dwidth, dheight, (OSInt)dwidth << 3, dbpl);
-		mutUsage.EndUse();
+		MTCollapse(buffPtr, dest, dwidth, dheight, (OSInt)dwidth << 3, dbpl);
 	}
 	else if (siHeight != dheight)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		if (vsSize != sheight || vdSize != dheight || vsStep != (OSInt)siWidth * 8 || vsOfst != yOfst)
+		if (vsSize != sheight || vdSize != dheight || vsStep != (OSInt)siWidth * 8 || vsOfst != yOfst || !this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight))
 		{
 			DestoryVert();
 			vsStep = (OSInt)siWidth * 8;
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupDecimationParameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupDecimationParameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
 			vsOfst = yOfst;
-			vIndex = prm.index;
-			vWeight = prm.weight;
+			this->vIndex = vIndex = prm.index;
+			this->vWeight = vWeight = prm.weight;
 			vTap = prm.tap;
 		}
-		if ((UOSInt)siHeight != buffH || ((UOSInt)siWidth != buffW))
+		if ((UOSInt)siHeight != buffH || ((UOSInt)siWidth != buffW) || !this->buffPtr.SetTo(buffPtr))
 		{
-			if (buffPtr)
+			if (this->buffPtr.SetTo(buffPtr))
 			{
-				MemFreeA(buffPtr);
-				buffPtr = 0;
+				MemFreeAArr(buffPtr);
+				this->buffPtr = 0;
 			}
 			buffW = siWidth;
 			buffH = siHeight;
-			buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
+			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			mt_expand_pa(src, buffPtr, siWidth, siHeight, sbpl, (OSInt)siWidth << 3);
+			MTExpandPA(src, buffPtr, siWidth, siHeight, sbpl, (OSInt)siWidth << 3);
 		}
 		else
 		{
-			mt_expand(src, buffPtr, siWidth, siHeight, sbpl, (OSInt)siWidth << 3);
+			MTExpand(src, buffPtr, siWidth, siHeight, sbpl, (OSInt)siWidth << 3);
 		}
-		mt_vertical_filter(buffPtr, dest, siWidth, dheight, vTap, vIndex, vWeight, (OSInt)siWidth << 3, dbpl);
+		MTVerticalFilter(buffPtr, dest, siWidth, dheight, vTap, vIndex, vWeight, (OSInt)siWidth << 3, dbpl);
 		mutUsage.EndUse();
 	}
 	else
@@ -723,11 +736,11 @@ void Media::Resizer::LanczosResizer16_C8::Resize(UnsafeArray<const UInt8> src, O
 		Sync::MutexUsage mutUsage(this->mut);
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
-			mt_copy_pa(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl);
+			MTCopyPA(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl);
 		}
 		else
 		{
-			mt_copy(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl);
+			MTCopy(src, dest, (UOSInt)siWidth, dheight, sbpl, dbpl);
 		}
 		mutUsage.EndUse();
 	}
