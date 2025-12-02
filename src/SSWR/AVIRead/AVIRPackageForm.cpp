@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/HashCreator.h"
+#include "IO/CSVTableWriter.h"
 #include "IO/Path.h"
 #include "IO/VirtualPackageFile.h"
 #include "SSWR/AVIRead/AVIRPackageForm.h"
@@ -30,7 +31,8 @@ typedef enum
 	MNU_APPEND_ZIP,
 	MNU_TEST,
 	MNU_GO_UP_LEVEL,
-	MNU_OPEN_SELECTED
+	MNU_OPEN_SELECTED,
+	MNU_EXPORT_CSV
 } MenuItem;
 
 void __stdcall AVIRPackageForm_TestHandler(Data::ByteArrayR buff, AnyType userData)
@@ -855,7 +857,67 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NN<Data::ArrayListStringNN> file
 			this->statusChg = true;
 		}
 	}
+}
 
+void SSWR::AVIRead::AVIRPackageForm::WriteFileList(NN<IO::TableWriter> writer)
+{
+	UTF8Char sbuff[512];
+	writer->NextColStr(CSTR("Name"));
+	writer->NextColStr(CSTR("FileType"));
+	writer->NextColStr(CSTR("StoreSize"));
+	writer->NextColStr(CSTR("FileSize"));
+	writer->NextColStr(CSTR("ModifyTime"));
+	writer->NextRow();
+	WriteFileListInner(writer, this->packFile, sbuff, sbuff);
+}
+
+void SSWR::AVIRead::AVIRPackageForm::WriteFileListInner(NN<IO::TableWriter> writer, NN<IO::PackageFile> packFile, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sptr)
+{
+	UnsafeArray<UTF8Char> sptr2;
+	IO::PackageFile::PackObjectType pot;
+	NN<IO::PackageFile> innerPack;
+	Bool needRelease;
+	UOSInt i = 0;
+	UOSInt j = packFile->GetCount();
+	while (i < j)
+	{
+		if (!packFile->GetItemName(sptr, i).SetTo(sptr2))
+		{
+			sptr2 = Text::StrConcatC(sptr, UTF8STRC("?"));
+		}
+		writer->NextColStr(CSTRP(sbuff, sptr2));
+		pot = packFile->GetItemType(i);
+		if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+		{
+			writer->NextColStr(CSTR("Folder"));
+			writer->NextColNull();
+			writer->NextColNull();
+		}
+		else if (pot == IO::PackageFile::PackObjectType::StreamData)
+		{
+			writer->NextColStr(CSTR("File"));
+			writer->NextColU64(packFile->GetItemStoreSize(i));
+			writer->NextColU64(packFile->GetItemSize(i));
+		}
+		else
+		{
+			writer->NextColStr(CSTR("Other"));
+			writer->NextColU64(packFile->GetItemStoreSize(i));
+			writer->NextColU64(packFile->GetItemSize(i));
+		}
+		writer->NextColTS(packFile->GetItemModTime(i));
+		writer->NextRow();
+		if (pot == IO::PackageFile::PackObjectType::PackageFileType && packFile->GetItemPack(i, needRelease).SetTo(innerPack))
+		{
+			*sptr2++ = IO::Path::PATH_SEPERATOR;
+			WriteFileListInner(writer, innerPack, sbuff, sptr2);
+			if (needRelease)
+			{
+				innerPack.Delete();
+			}
+		}
+		i++;
+	}
 }
 
 SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::PackageFile> packFile) : UI::GUIForm(parent, 960, 768, ui)
@@ -927,12 +989,14 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 
 	NN<UI::GUIMainMenu> mnuMain;
 	NN<UI::GUIMenu> mnu;
-//	UI::GUIMenu *mnu2;
+	NN<UI::GUIMenu> mnu2;
 	NEW_CLASSNN(mnuMain, UI::GUIMainMenu());
 	mnu = mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("Save &As..."), MNU_SAVEAS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
 	mnu->AddItem(CSTR("Append Zip Content"), MNU_APPEND_ZIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Test from this folder"), MNU_TEST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Export File List"));
+	mnu2->AddItem(CSTR("CSV"), MNU_EXPORT_CSV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = mnuMain->AddSubMenu(CSTR("&Edit"));
 	mnu->AddItem(CSTR("&Paste"), MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
 	mnu->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1314,6 +1378,19 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			{
 				this->OpenItem(i);
 			}
+		}
+		break;
+	case MNU_EXPORT_CSV:
+		{
+			NN<UI::GUIFileDialog> dlg = ui->NewFileDialog(L"SSWR", L"AVIRead", L"PackageExportCSV", true);
+			dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
+			if (dlg->ShowDialog(this->GetHandle()))
+			{
+				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::CSVTableWriter writer(fs);
+				this->WriteFileList(writer);
+			}
+			dlg.Delete();
 		}
 		break;
 	}

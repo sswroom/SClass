@@ -1402,6 +1402,16 @@ void IO::GSMModemController::PBFreeEntries(NN<Data::ArrayListNN<PBEntry>> phoneL
 	phoneList->FreeAll(PBFreeEntry);
 }
 
+UnsafeArrayOpt<UTF8Char> IO::GSMModemController::GetICCID(UnsafeArray<UTF8Char> sbuff)
+{
+	return 0;
+}
+
+UOSInt IO::GSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
+{
+	return 0;
+}
+
 Int32 IO::GSMModemController::RSSIGetdBm(RSSI rssi)
 {
 	switch (rssi)
@@ -1664,5 +1674,31 @@ Text::CStringNN IO::GSMModemController::AccessTechGetName(AccessTech act)
 		return CSTR("E-UTRAN");
 	default:
 		return CSTR("Unknown");
+	}
+}
+
+Text::CStringNN IO::GSMModemController::SysModeGetName(SysMode sysMode)
+{
+	switch (sysMode)
+	{
+	default:
+	case SysMode::NoService:
+		return CSTR("NoService");
+	case SysMode::GSM:
+		return CSTR("GSM");
+	case SysMode::WCDMA:
+		return CSTR("WCDMA");
+	case SysMode::TD_SCDMA:
+		return CSTR("TD-SCDMA");
+	case SysMode::LTE:
+		return CSTR("LTE");
+	case SysMode::CDMA:
+		return CSTR("CDMA");
+	case SysMode::EVDO:
+		return CSTR("EVDO");
+	case SysMode::CDMA_EVDO:
+		return CSTR("CDMA-EVDO");
+	case SysMode::WIMAX:
+		return CSTR("WiMAX");
 	}
 }

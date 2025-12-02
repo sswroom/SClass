@@ -48,17 +48,6 @@ namespace IO
 				NoSIM = 255
 			};
 
-			enum class SysMode
-			{
-				NoService,
-				GSM,
-				CDMA,
-				WCDMA,
-				TD_SCDMA,
-				WIMAX,
-				LTE
-			};
-
 			enum class SubMode
 			{
 				NoService,
@@ -126,6 +115,10 @@ namespace IO
 					UInt32 value4;
 					UInt32 lteRSRQ;
 				};
+				union
+				{
+					UInt32 value5;
+				};
 			};
 
 			struct VersionInfo
@@ -141,6 +134,9 @@ namespace IO
 		public:
 			HuaweiGSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~HuaweiGSMModemController();
+
+			virtual UnsafeArrayOpt<UTF8Char> GetICCID(UnsafeArray<UTF8Char> sbuff);
+			virtual UOSInt QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
 
 			//Huawei Proprietary: Mobile Termination Control and Status Interface
 			UnsafeArrayOpt<UTF8Char> HuaweiGetICCID(UnsafeArray<UTF8Char> iccid); //AT^ICCID
@@ -162,11 +158,11 @@ namespace IO
 			static Double SINRGetdBm(UInt32 sinr);
 			static UnsafeArray<UTF8Char> RSRQGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rscq);
 			static Double RSRQGetdBm(UInt32 rscq);
+			static Double EVDOSINRGetdB(UInt32 sinr);
 			static Text::CStringNN SIMCardTypeGetName(SIMCardType simType);
 			static Text::CStringNN ServiceStatusGetName(ServiceStatus srvStatus);
 			static Text::CStringNN ServiceDomainGetName(ServiceDomain srvDomain);
 			static Text::CStringNN SIMStateGetName(SIMState simState);
-			static Text::CStringNN SysModeGetName(SysMode sysMode);
 			static Text::CStringNN SubModeGetName(SubMode submode);
 			static void FreeVersionInfo(NN<VersionInfo> version);
 		};

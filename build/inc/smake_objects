@@ -402,6 +402,7 @@ ConsoleL.o: ../../src/IO/ConsoleL.cpp
 ConsoleW.o: ../../src/IO/ConsoleW.cpp
 ConsoleWriterL.o: ../../src/IO/ConsoleWriterL.cpp
 ConsoleWriterW.o: ../../src/IO/ConsoleWriterW.cpp
+CSVTableWriter.o: ../../src/IO/CSVTableWriter.cpp
 CyclicLogBuffer.o: ../../src/IO/CyclicLogBuffer.cpp
 DataCaptureStream.o: ../../src/IO/DataCaptureStream.cpp
 DBusManager.o: ../../src/IO/DBusManager.cpp
@@ -606,6 +607,7 @@ SystemInfoRPi.o: ../../src/IO/SystemInfoRPi.cpp
 SystemInfoSolaris.o: ../../src/IO/SystemInfoSolaris.cpp
 SystemInfoSynology.o: ../../src/IO/SystemInfoSynology.cpp
 SystemInfoW.o: ../../src/IO/SystemInfoW.cpp
+TableWriter.o: ../../src/IO/TableWriter.cpp
 TextFileLoader.o: ../../src/IO/TextFileLoader.cpp
 TVControl.o: ../../src/IO/TVControl.cpp
 UDPFileLog.o: ../../src/IO/UDPFileLog.cpp

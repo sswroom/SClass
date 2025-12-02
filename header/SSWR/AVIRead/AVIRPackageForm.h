@@ -3,6 +3,7 @@
 #include "AnyType.h"
 #include "Data/ArrayListNN.hpp"
 #include "IO/PackageFile.h"
+#include "IO/TableWriter.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/String.h"
 #include "UI/GUIForm.h"
@@ -143,6 +144,8 @@ namespace SSWR
 			UOSInt PackFileIndex(UOSInt lvIndex);
 			void UpdatePackFile(NN<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel);
 			void PasteFiles(NN<Data::ArrayListStringNN> files, Bool move);
+			void WriteFileList(NN<IO::TableWriter> writer);
+			static void WriteFileListInner(NN<IO::TableWriter> writer, NN<IO::PackageFile> packFile, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sptr);
 		public:
 			AVIRPackageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();

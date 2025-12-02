@@ -1882,6 +1882,8 @@ IO/ConsoleLogHandler.h:
 @ConsoleLogHandler.o
 IO/CortexControl.h:
 @CortexControl.o
+IO/CSVTableWriter.h:
+@CSVTableWriter.o
 IO/CyclicLogBuffer.h:
 @CyclicLogBuffer.o
 IO/DataCaptureStream.h:
@@ -2074,6 +2076,8 @@ IO/StringLogger.h:
 @StringLogger.o
 IO/SystemInfoLog.h:
 @SystemInfoLog.o
+IO/TableWriter.h:
+@TableWriter.o
 IO/TextFileLoader.h:
 @TextFileLoader.o
 IO/TVControl.h:

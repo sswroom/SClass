@@ -113,9 +113,12 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCellularIMEI;
 			NN<UI::GUILabel> lblCellularIMSI;
 			NN<UI::GUITextBox> txtCellularIMSI;
+			NN<UI::GUILabel> lblCellularICCID;
+			NN<UI::GUITextBox> txtCellularICCID;
 			NN<UI::GUILabel> lblCellularTECharset;
 			NN<UI::GUITextBox> txtCellularTECharset;
-			NN<UI::GUILabel> lblCellularOperator;
+			NN<UI::GUILabel> lblCellularPLMN;
+			NN<UI::GUITextBox> txtCellularPLMN;
 			NN<UI::GUITextBox> txtCellularOperator;
 			NN<UI::GUILabel> lblCellularRegStatus;
 			NN<UI::GUITextBox> txtCellularRegStatus;
@@ -127,6 +130,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCellularACT;
 			NN<UI::GUILabel> lblCellularSignalQuality;
 			NN<UI::GUITextBox> txtCellularSignalQuality;
+			NN<UI::GUITabPage> tpCellularCells;
+			NN<UI::GUIListView> lvCellularCells;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN wlan;
@@ -159,7 +164,7 @@ namespace SSWR
 			Optional<Text::String> cellularModemModel;
 			Optional<Text::String> cellularModemVer;
 			Optional<Text::String> cellularIMEI;
-			Optional<Text::String> cellularHuaweiICCID;
+			Optional<Text::String> cellularICCID;
 			Bool cellularTECharsetUpd;
 			Optional<Text::String> cellularTECharset;
 			Bool cellularSIMChanged;
@@ -174,8 +179,12 @@ namespace SSWR
 			Bool cellularSignalUpdated;
 			IO::GSMModemController::RSSI cellularSignalQuality;
 			Bool cellularOperUpdated;
+			Optional<Text::String> cellularPLMN;
 			Optional<Text::String> cellularOperName;
 			Data::Timestamp cellularOperNextTime;
+			Sync::Mutex cellularCellsMut;
+			Data::ArrayListNN<IO::GSMModemController::CellSignal> cellularCells;
+			Bool cellularCellsUpdated;
 
 			static UInt32 __stdcall CellularThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);

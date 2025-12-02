@@ -129,6 +129,19 @@ namespace IO
 			EUTRAN = 7
 		};
 
+		enum class SysMode
+		{
+			NoService,
+			GSM,
+			WCDMA,
+			TD_SCDMA,
+			LTE,
+			CDMA,
+			EVDO,
+			CDMA_EVDO,
+			WIMAX
+		};
+
 		typedef enum
 		{
 			PBSTORE_UNKNOWN,
@@ -180,6 +193,25 @@ namespace IO
 			UInt32 cid;
 			NN<Text::String> type;
 			NN<Text::String> apn;
+		};
+
+		struct CellSignal
+		{
+			UTF8Char mcc[4];
+			UTF8Char mnc[4];
+			UInt16 lac;
+			UInt32 ci;
+			Bool servingCell;
+			SysMode sysMode;
+			NInt32 rssi;
+			NInt32 rscp;
+			Double ecio;
+			NInt32 rsrp;
+			Double sinr;
+			Double rsrq;
+			NInt32 rssi2;
+			Double ecio2;
+			Double sinr2;
 		};
 
 		struct ActiveState
@@ -272,6 +304,8 @@ namespace IO
 		static void __stdcall PBFreeEntry(NN<PBEntry> entry);
 		void PBFreeEntries(NN<Data::ArrayListNN<PBEntry>> phoneList);
 
+		virtual UnsafeArrayOpt<UTF8Char> GetICCID(UnsafeArray<UTF8Char> sbuff);
+		virtual UOSInt QueryCells(NN<Data::ArrayListNN<CellSignal>> cells);
 	public:
 		static Int32 RSSIGetdBm(RSSI rssi);
 		static UnsafeArray<UTF8Char> RSSIGetName(UnsafeArray<UTF8Char> buff, RSSI rssi);
@@ -281,6 +315,7 @@ namespace IO
 		static Text::CStringNN NetworkResultGetName(NetworkResult n);
 		static Text::CStringNN RegisterStatusGetName(RegisterStatus stat);
 		static Text::CStringNN AccessTechGetName(AccessTech act);
+		static Text::CStringNN SysModeGetName(SysMode sysMode);
 	};
 }
 #endif

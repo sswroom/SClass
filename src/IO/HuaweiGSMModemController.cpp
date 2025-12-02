@@ -10,6 +10,120 @@ IO::Device::HuaweiGSMModemController::~HuaweiGSMModemController()
 
 }
 
+UnsafeArrayOpt<UTF8Char> IO::Device::HuaweiGSMModemController::GetICCID(UnsafeArray<UTF8Char> sbuff)
+{
+	return HuaweiGetICCID(sbuff);
+}
+
+UOSInt IO::Device::HuaweiGSMModemController::QueryCells(NN<Data::ArrayListNN<CellSignal>> cells)
+{
+	UTF8Char sbuff[10];
+	UnsafeArray<UTF8Char> sptr;
+	NetworkResult netResult;
+	RegisterStatus regStat;
+	UInt16 lac;
+	UInt32 ci;
+	AccessTech act;
+	SignalStrengthInfo csq;
+	if (this->GSMGetRegisterNetwork(netResult, regStat, lac, ci, act) && this->GSMGetCurrPLMN(sbuff).SetTo(sptr) && this->HuaweiGetSignalStrength(csq) && csq.sysmode != SysMode::NoService)
+	{
+		NN<CellSignal> cell = MemAllocNN(CellSignal);
+		Text::StrConcatC(cell->mcc, sbuff, 3);
+		Text::StrConcat(cell->mnc, &sbuff[3]);
+		cell->lac = lac;
+		cell->ci = ci;
+		cell->servingCell = true;
+		cell->sysMode = csq.sysmode;
+		if (csq.sysmode == SysMode::GSM)
+		{
+			cell->rssi = (csq.value1 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value1);
+			cell->rscp = nullptr;
+			cell->ecio = NAN;
+			cell->rsrp = nullptr;
+			cell->sinr = NAN;
+			cell->rsrq = NAN;
+			cell->rssi2 = nullptr;
+			cell->ecio2 = NAN;
+			cell->sinr2 = NAN;
+		}
+		else if (csq.sysmode == SysMode::WCDMA)
+		{
+			cell->rssi = (csq.value1 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value1);
+			cell->rscp = (csq.value2 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value2);
+			cell->ecio = (csq.value3 > 65)?NAN:(-32.5 + csq.value3 * 0.5);
+			cell->rsrp = nullptr;
+			cell->sinr = NAN;
+			cell->rsrq = NAN;
+			cell->rssi2 = nullptr;
+			cell->ecio2 = NAN;
+			cell->sinr2 = NAN;
+		}
+		else if (csq.sysmode == SysMode::LTE)
+		{
+			cell->rssi = (csq.value1 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value1);
+			cell->rscp = nullptr;
+			cell->ecio = NAN;
+			cell->rsrp = (csq.value2 > 97)?NInt32(nullptr):(-141 + (Int32)csq.value2);
+			cell->sinr = (csq.value3 > 251)?NAN:(-20.2 + csq.value3 * 0.2);
+			cell->rsrq = (csq.value4 > 34)?NAN:(-20 + csq.value4 * 0.5);
+			cell->rssi2 = nullptr;
+			cell->ecio2 = NAN;
+			cell->sinr2 = NAN;
+		}
+		else if (csq.sysmode == SysMode::CDMA)
+		{
+			cell->rssi = (csq.value1 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value1);
+			cell->rscp = nullptr;
+			cell->ecio = (csq.value2 > 65)?NAN:(-32.5 + csq.value2 * 0.5);
+			cell->rsrp = nullptr;
+			cell->sinr = NAN;
+			cell->rsrq = NAN;
+			cell->rssi2 = nullptr;
+			cell->ecio2 = NAN;
+			cell->sinr2 = NAN;
+		}
+		else if (csq.sysmode == SysMode::EVDO)
+		{
+			cell->rssi = (csq.value1 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value1);
+			cell->rscp = nullptr;
+			cell->ecio = (csq.value2 > 65)?NAN:(-32.5 + csq.value2 * 0.5);
+			cell->rsrp = nullptr;
+			cell->sinr = EVDOSINRGetdB(csq.value3);
+			cell->rsrq = NAN;
+			cell->rssi2 = nullptr;
+			cell->ecio2 = NAN;
+			cell->sinr2 = NAN;
+		}
+		else if (csq.sysmode == SysMode::CDMA_EVDO)
+		{
+			cell->rssi = (csq.value1 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value1);
+			cell->rscp = nullptr;
+			cell->ecio = (csq.value2 > 65)?NAN:(-32.5 + csq.value2 * 0.5);
+			cell->rsrp = nullptr;
+			cell->sinr = NAN;
+			cell->rsrq = NAN;
+			cell->rssi2 = (csq.value3 > 96)?NInt32(nullptr):(-121 + (Int32)csq.value3);;
+			cell->ecio2 = (csq.value4 > 65)?NAN:(-32.5 + csq.value4 * 0.5);
+			cell->sinr2 = EVDOSINRGetdB(csq.value5);
+		}
+		else
+		{
+			cell->rssi = nullptr;
+			cell->rscp = nullptr;
+			cell->ecio = NAN;
+			cell->rsrp = nullptr;
+			cell->sinr = NAN;
+			cell->rsrq = NAN;
+			cell->rssi2 = nullptr;
+			cell->ecio2 = NAN;
+			cell->sinr2 = NAN;
+		}
+		cells->Add(cell);
+		return 1;
+	}
+	return 0;
+}
+
 UnsafeArrayOpt<UTF8Char> IO::Device::HuaweiGSMModemController::HuaweiGetICCID(UnsafeArray<UTF8Char> iccid)
 {
 	UTF8Char sbuff[256];
@@ -119,6 +233,14 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetSignalStrength(NN<SignalStre
 		{
 			csq->sysmode = SysMode::CDMA;
 		}
+		else if (sarr[0].Equals(UTF8STRC("\"EVDO\"")))
+		{
+			csq->sysmode = SysMode::EVDO;
+		}
+		else if (sarr[0].Equals(UTF8STRC("\"CDMA-EVDO\"")))
+		{
+			csq->sysmode = SysMode::CDMA_EVDO;
+		}
 		else
 		{
 			csq->sysmode = SysMode::NoService;
@@ -154,6 +276,14 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetSignalStrength(NN<SignalStre
 		else
 		{
 			csq->value4 = 0;
+		}
+		if (sarrCnt >= 6)
+		{
+			csq->value5 = sarr[5].ToUInt32();
+		}
+		else
+		{
+			csq->value5 = 0;
 		}
 		return true;
 	}
@@ -423,6 +553,33 @@ Double IO::Device::HuaweiGSMModemController::RSRQGetdBm(UInt32 rsrq)
 	return 0;
 }
 
+Double IO::Device::HuaweiGSMModemController::EVDOSINRGetdB(UInt32 sinr)
+{
+	switch (sinr)
+	{
+	case 0:
+		return -10;
+	case 1:
+		return -9;
+	case 2:
+		return -6;
+	case 3:
+		return -4.5;
+	case 4:
+		return -3;
+	case 5:
+		return -2;
+	case 6:
+		return 1;
+	case 7:
+		return 3;
+	case 8:
+		return 6;
+	default:
+		return NAN;
+	}
+}
+
 Text::CStringNN IO::Device::HuaweiGSMModemController::SIMCardTypeGetName(SIMCardType simType)
 {
 	switch (simType)
@@ -500,29 +657,6 @@ Text::CStringNN IO::Device::HuaweiGSMModemController::SIMStateGetName(SIMState s
 		return CSTR("ROMSIM version");
 	case SIMState::NoSIM:
 		return CSTR("No SIM card is found");
-	default:
-		return CSTR("Unknown");
-	}
-}
-
-Text::CStringNN IO::Device::HuaweiGSMModemController::SysModeGetName(SysMode sysMode)
-{
-	switch (sysMode)
-	{
-	case SysMode::NoService:
-		return CSTR("NO SERVICE");
-	case SysMode::GSM:
-		return CSTR("GSM");
-	case SysMode::CDMA:
-		return CSTR("CDMA");
-	case SysMode::WCDMA:
-		return CSTR("WCDMA");
-	case SysMode::TD_SCDMA:
-		return CSTR("TD-SCDMA");
-	case SysMode::WIMAX:
-		return CSTR("WiMAX");
-	case SysMode::LTE:
-		return CSTR("LTE");
 	default:
 		return CSTR("Unknown");
 	}

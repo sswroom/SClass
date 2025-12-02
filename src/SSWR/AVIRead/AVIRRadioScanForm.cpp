@@ -25,6 +25,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userOb
 	NN<IO::GSMModemController> modem;
 	NN<IO::Device::HuaweiGSMModemController> huawei;
 	NN<Text::String> s;
+	Data::ArrayListNN<IO::GSMModemController::CellSignal> cells;
 
 	nextSignalTime = Data::Timestamp::UtcNow();
 	me->cellularRunning = true;
@@ -39,7 +40,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userOb
 				OPTSTR_DEL(me->cellularModemModel);
 				OPTSTR_DEL(me->cellularModemVer);
 				OPTSTR_DEL(me->cellularIMEI);
-				OPTSTR_DEL(me->cellularHuaweiICCID);
+				OPTSTR_DEL(me->cellularICCID);
 				if (modem->GSMGetManufacturer(sbuff).SetTo(sptr))
 				{
 					s = Text::String::NewP(sbuff, sptr);
@@ -51,6 +52,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userOb
 						me->cellularHuawei = huawei;
 						oldModem = modem;
 						me->cellularModem = huawei;
+						modem = huawei;
 						oldModem.Delete();
 //						huawei->HuaweiGetCardMode(&me->huaweiSIMType);
 					}
@@ -62,7 +64,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userOb
 				if (modem->GSMGetIMEI(sbuff).SetTo(sptr))
 					me->cellularIMEI = Text::String::NewP(sbuff, sptr);
 				if (me->cellularHuawei.SetTo(huawei) && huawei->HuaweiGetICCID(sbuff).SetTo(sptr))
-					me->cellularHuaweiICCID = Text::String::NewP(sbuff, sptr);
+					me->cellularICCID = Text::String::NewP(sbuff, sptr);
 				me->cellularInitStrs = true;
 
 				if (modem->GSMGetTECharset(sbuff).SetTo(sptr))
@@ -89,34 +91,43 @@ UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userOb
 				me->cellularOperNextTime = me->cellularOperNextTime.AddSecond(30);
 				if (modem->GSMGetCurrPLMN(sbuff).SetTo(sptr))
 				{
+					OPTSTR_DEL(me->cellularPLMN);
+					me->cellularPLMN = Text::String::NewP(sbuff, sptr);
 					OPTSTR_DEL(me->cellularOperName);
-					me->cellularOperName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+					if (modem->GSMGetCurrOperator(sbuff).SetTo(sptr))
+					{
+						me->cellularOperName = Text::String::NewP(sbuff, sptr);
+					}
 					me->cellularOperUpdated = true;
 				}
 				if (modem->GSMGetRegisterNetwork(me->cellularRegNetN, me->cellularRegNetStat, me->cellularRegNetLAC, me->cellularRegNetCI, me->cellularRegNetACT))
 				{
 					me->cellularRegNetUpdated = true;
 				}
-/*				if (me->huawei)
-				{
-					me->huaweiSysInfoUpdated = me->huawei->HuaweiGetSysInfoEx(&me->huaweiSysInfoSrvStatus,
-						&me->huaweiSysInfoSrvDomain,
-						&me->huaweiSysInfoRoamStatus,
-						&me->huaweiSysInfoSIMState,
-						&me->huaweiSysInfoLockState,
-						&me->huaweiSysInfoSysMode,
-						&me->huaweiSysInfoSubMode);
-				}*/
 			}
 			if (currTime >= nextSignalTime)
 			{
 				nextSignalTime = nextSignalTime.AddSecond(10);
 				modem->GSMGetSignalQuality(me->cellularSignalQuality, ber);
-/*				if (me->huawei)
-				{
-					me->huaweiCSQUpdated = me->huawei->HuaweiGetSignalStrength(&me->huaweiCSQ);
-				}*/
 				me->cellularSignalUpdated = true;
+
+				cells.Clear();
+				if (modem->QueryCells(cells) == 0)
+				{
+					if (me->cellularCells.GetCount() != 0)
+					{
+						Sync::MutexUsage mutUsage(me->cellularCellsMut);
+						me->cellularCells.MemFreeAll();
+						me->cellularCellsUpdated = true;
+					}
+				}
+				else
+				{
+					Sync::MutexUsage mutUsage(me->cellularCellsMut);
+					me->cellularCells.MemFreeAll();
+					me->cellularCells.AddAll(cells);
+					me->cellularCellsUpdated = true;
+				}
 			}
 			me->cellularEvt.Wait(1000);
 		}
@@ -317,12 +328,12 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 		{
 			me->txtCellularIMEI->SetText(s->ToCString());
 		}
+		if (me->cellularICCID.SetTo(s))
+		{
+			me->txtCellularICCID->SetText(s->ToCString());
+		}
 /*		if (me->cellularHuawei.NotNull())
 		{
-			if (me->cellularHuaweiICCID.SetTo(s))
-			{
-				me->txtCellularHuaweiICCID->SetText(s->ToCString());
-			}
 			me->txtCellularHuaweiSIMType->SetText(IO::HuaweiGSMModemController::SIMCardTypeGetName(me->cellularHuaweiSIMType));
 		}*/
 	}
@@ -337,10 +348,14 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 		me->txtCellularTECharset->SetText(s->ToCString());
 	}
 
-	if (me->cellularOperUpdated && me->cellularOperName.SetTo(s))
+	if (me->cellularOperUpdated && me->cellularPLMN.SetTo(s))
 	{
 		me->cellularOperUpdated = false;
-		me->txtCellularOperator->SetText(s->ToCString());
+		me->txtCellularPLMN->SetText(s->ToCString());
+		if (me->cellularOperName.SetTo(s))
+		{
+			me->txtCellularOperator->SetText(s->ToCString());
+		}
 	}
 
 	if (me->cellularRegNetUpdated)
@@ -356,22 +371,47 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			me->txtCellularACT->SetText(IO::GSMModemController::AccessTechGetName(me->cellularRegNetACT));
 		}
 	}
-/*	if (me->huaweiSysInfoUpdated)
-	{
-		me->huaweiSysInfoUpdated = false;
-		me->txtHuaweiSrvStatus->SetText(IO::HuaweiGSMModemController::ServiceStatusGetName(me->huaweiSysInfoSrvStatus));
-		me->txtHuaweiSrvDomain->SetText(IO::HuaweiGSMModemController::ServiceDomainGetName(me->huaweiSysInfoSrvDomain));
-		me->txtHuaweiRoamStatus->SetText(me->huaweiSysInfoRoamStatus?CSTR("Roaming"):CSTR("Not Roaming"));
-		me->txtHuaweiSIMState->SetText(IO::HuaweiGSMModemController::SIMStateGetName(me->huaweiSysInfoSIMState));
-		me->txtHuaweiLockState->SetText(me->huaweiSysInfoLockState?CSTR("Locked"):CSTR("Not locked"));
-		me->txtHuaweiSysMode->SetText(IO::HuaweiGSMModemController::SysModeGetName(me->huaweiSysInfoSysMode));
-		me->txtHuaweiSubMode->SetText(IO::HuaweiGSMModemController::SubModeGetName(me->huaweiSysInfoSubMode));
-	}*/
 	if (me->cellularSignalUpdated)
 	{
 		me->cellularSignalUpdated = false;
 		sptr = IO::GSMModemController::RSSIGetName(sbuff, me->cellularSignalQuality);
 		me->txtCellularSignalQuality->SetText(CSTRP(sbuff, sptr));
+	}
+	if (me->cellularCellsUpdated)
+	{
+		me->lvCellularCells->ClearItems();
+		NN<IO::GSMModemController::CellSignal> cell;
+		Sync::MutexUsage mut(me->cellularCellsMut);
+		me->cellularCellsUpdated = false;
+		i = 0;
+		j = me->cellularCells.GetCount();
+		while (i < j)
+		{
+			cell = me->cellularCells.GetItemNoCheck(i);
+			if (cell->servingCell)
+				me->lvCellularCells->AddItem(CSTR("*"), cell);
+			else
+				me->lvCellularCells->AddItem(CSTR(" "), cell);
+			me->lvCellularCells->SetSubItem(i, 1, Text::CStringNN(cell->mcc, 3));
+			me->lvCellularCells->SetSubItem(i, 2, Text::CStringNN::FromPtr(cell->mnc));
+			sptr = Text::StrUInt16(sbuff, cell->lac);
+			me->lvCellularCells->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, cell->ci);
+			me->lvCellularCells->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+			me->lvCellularCells->SetSubItem(i, 5, IO::GSMModemController::SysModeGetName(cell->sysMode));
+			if (!cell->rssi.IsNull()) { sptr = Text::StrInt32(sbuff, cell->rssi.val); me->lvCellularCells->SetSubItem(i, 6, CSTRP(sbuff, sptr)); }
+			if (!cell->rscp.IsNull()) { sptr = Text::StrInt32(sbuff, cell->rscp.val); me->lvCellularCells->SetSubItem(i, 7, CSTRP(sbuff, sptr)); }
+			if (!Math::IsNAN(cell->ecio)) { sptr = Text::StrDouble(sbuff, cell->ecio); me->lvCellularCells->SetSubItem(i, 8, CSTRP(sbuff, sptr)); }
+			if (!cell->rsrp.IsNull()) { sptr = Text::StrInt32(sbuff, cell->rsrp.val); me->lvCellularCells->SetSubItem(i, 9, CSTRP(sbuff, sptr)); }
+			if (!Math::IsNAN(cell->sinr)) { sptr = Text::StrDouble(sbuff, cell->sinr); me->lvCellularCells->SetSubItem(i, 10, CSTRP(sbuff, sptr)); }
+			if (!Math::IsNAN(cell->rsrq)) { sptr = Text::StrDouble(sbuff, cell->rsrq); me->lvCellularCells->SetSubItem(i, 11, CSTRP(sbuff, sptr)); }
+			if (!cell->rssi2.IsNull()) { sptr = Text::StrInt32(sbuff, cell->rssi2.val); me->lvCellularCells->SetSubItem(i, 12, CSTRP(sbuff, sptr)); }
+			if (!Math::IsNAN(cell->ecio2)) { sptr = Text::StrDouble(sbuff, cell->ecio2); me->lvCellularCells->SetSubItem(i, 13, CSTRP(sbuff, sptr)); }
+			if (!Math::IsNAN(cell->sinr2)) { sptr = Text::StrDouble(sbuff, cell->sinr2); me->lvCellularCells->SetSubItem(i, 14, CSTRP(sbuff, sptr)); }
+			i++;
+		}
+		sptr = Text::StrUOSInt(sbuff, j);
+		me->lvDashboard->SetSubItem(3, 2, CSTRP(sbuff, sptr));
 	}
 }
 
@@ -1001,41 +1041,69 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->txtCellularIMSI = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularIMSI->SetReadOnly(true);
 	this->txtCellularIMSI->SetRect(104, 100, 150, 23, false);
+	this->lblCellularICCID = ui->NewLabel(this->tpCellularInfo, CSTR("ICCID"));
+	this->lblCellularICCID->SetRect(4, 124, 100, 23, false);
+	this->txtCellularICCID = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
+	this->txtCellularICCID->SetReadOnly(true);
+	this->txtCellularICCID->SetRect(104, 124, 150, 23, false);
 	this->lblCellularTECharset = ui->NewLabel(this->tpCellularInfo, CSTR("TE Charset"));
-	this->lblCellularTECharset->SetRect(4, 124, 100, 23, false);
+	this->lblCellularTECharset->SetRect(4, 148, 100, 23, false);
 	this->txtCellularTECharset = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularTECharset->SetReadOnly(true);
-	this->txtCellularTECharset->SetRect(104, 124, 150, 23, false);
-	this->lblCellularOperator = ui->NewLabel(this->tpCellularInfo, CSTR("Operator"));
-	this->lblCellularOperator->SetRect(4, 148, 100, 23, false);
+	this->txtCellularTECharset->SetRect(104, 148, 150, 23, false);
+	this->lblCellularPLMN = ui->NewLabel(this->tpCellularInfo, CSTR("Operator"));
+	this->lblCellularPLMN->SetRect(4, 172, 100, 23, false);
+	this->txtCellularPLMN = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
+	this->txtCellularPLMN->SetReadOnly(true);
+	this->txtCellularPLMN->SetRect(104, 172, 100, 23, false);
 	this->txtCellularOperator = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularOperator->SetReadOnly(true);
-	this->txtCellularOperator->SetRect(104, 148, 150, 23, false);
+	this->txtCellularOperator->SetRect(204, 172, 150, 23, false);
 	this->lblCellularRegStatus = ui->NewLabel(this->tpCellularInfo, CSTR("Register Status"));
-	this->lblCellularRegStatus->SetRect(4, 172, 100, 23, false);
+	this->lblCellularRegStatus->SetRect(4, 196, 100, 23, false);
 	this->txtCellularRegStatus = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularRegStatus->SetReadOnly(true);
-	this->txtCellularRegStatus->SetRect(104, 172, 150, 23, false);
+	this->txtCellularRegStatus->SetRect(104, 196, 150, 23, false);
 	this->lblCellularLAC = ui->NewLabel(this->tpCellularInfo, CSTR("LAC"));
-	this->lblCellularLAC->SetRect(4, 196, 100, 23, false);
+	this->lblCellularLAC->SetRect(4, 220, 100, 23, false);
 	this->txtCellularLAC = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularLAC->SetReadOnly(true);
-	this->txtCellularLAC->SetRect(104, 196, 150, 23, false);
+	this->txtCellularLAC->SetRect(104, 220, 150, 23, false);
 	this->lblCellularCI = ui->NewLabel(this->tpCellularInfo, CSTR("CI"));
-	this->lblCellularCI->SetRect(4, 220, 100, 23, false);
+	this->lblCellularCI->SetRect(4, 244, 100, 23, false);
 	this->txtCellularCI = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularCI->SetReadOnly(true);
-	this->txtCellularCI->SetRect(104, 220, 150, 23, false);
+	this->txtCellularCI->SetRect(104, 244, 150, 23, false);
 	this->lblCellularACT = ui->NewLabel(this->tpCellularInfo, CSTR("Access Tech"));
-	this->lblCellularACT->SetRect(4, 244, 100, 23, false);
+	this->lblCellularACT->SetRect(4, 268, 100, 23, false);
 	this->txtCellularACT = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularACT->SetReadOnly(true);
-	this->txtCellularACT->SetRect(104, 244, 150, 23, false);
+	this->txtCellularACT->SetRect(104, 268, 150, 23, false);
 	this->lblCellularSignalQuality = ui->NewLabel(this->tpCellularInfo, CSTR("Signal Quality"));
-	this->lblCellularSignalQuality->SetRect(4, 268, 100, 23, false);
+	this->lblCellularSignalQuality->SetRect(4, 292, 100, 23, false);
 	this->txtCellularSignalQuality = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularSignalQuality->SetReadOnly(true);
-	this->txtCellularSignalQuality->SetRect(104, 268, 150, 23, false);
+	this->txtCellularSignalQuality->SetRect(104, 292, 150, 23, false);
+	this->tpCellularCells = this->tcCellular->AddTabPage(CSTR("Cells"));
+	this->lvCellularCells = ui->NewListView(this->tpCellularCells, UI::ListViewStyle::Table, 15);
+	this->lvCellularCells->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvCellularCells->SetFullRowSelect(true);
+	this->lvCellularCells->SetShowGrid(true);
+	this->lvCellularCells->AddColumn(CSTR(" "), 10);
+	this->lvCellularCells->AddColumn(CSTR("MCC"), 40);
+	this->lvCellularCells->AddColumn(CSTR("MNC"), 40);
+	this->lvCellularCells->AddColumn(CSTR("LAC"), 50);
+	this->lvCellularCells->AddColumn(CSTR("CID"), 80);
+	this->lvCellularCells->AddColumn(CSTR("SysMode"), 70);
+	this->lvCellularCells->AddColumn(CSTR("RSSI"), 50);
+	this->lvCellularCells->AddColumn(CSTR("RSCP"), 50);
+	this->lvCellularCells->AddColumn(CSTR("ECIO"), 50);
+	this->lvCellularCells->AddColumn(CSTR("RSRP"), 50);
+	this->lvCellularCells->AddColumn(CSTR("SINR"), 50);
+	this->lvCellularCells->AddColumn(CSTR("RSRQ"), 50);
+	this->lvCellularCells->AddColumn(CSTR("RSSI2"), 50);
+	this->lvCellularCells->AddColumn(CSTR("ECIO2"), 50);
+	this->lvCellularCells->AddColumn(CSTR("SINR2"), 50);
 	this->lvDashboard->AddItem(CSTR("Cellular"), 0);
 	this->lvDashboard->SetSubItem(3, 1, CSTR("Idle"));
 	this->lvDashboard->SetSubItem(3, 2, CSTR("0"));
@@ -1060,7 +1128,7 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->cellularModemModel = 0;
 	this->cellularModemVer = 0;
 	this->cellularIMEI = 0;
-	this->cellularHuaweiICCID = 0;
+	this->cellularICCID = 0;
 	this->cellularTECharsetUpd = false;
 	this->cellularTECharset = 0;
 	this->cellularSIMChanged = false;
@@ -1075,8 +1143,10 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->cellularSignalUpdated = false;
 	this->cellularSignalQuality = IO::GSMModemController::RSSI::RSSI_UNKNOWN;
 	this->cellularOperUpdated = false;
+	this->cellularPLMN = 0;
 	this->cellularOperName = 0;
 	this->cellularOperNextTime = Data::Timestamp::UtcNow();
+	this->cellularCellsUpdated = false;
 
 	this->AddTimer(500, OnTimerTick, this);
 }
@@ -1095,14 +1165,16 @@ SSWR::AVIRead::AVIRRadioScanForm::~AVIRRadioScanForm()
 
 	this->locSvc.Delete();
 	this->CloseCellular();
+	OPTSTR_DEL(this->cellularPLMN);
 	OPTSTR_DEL(this->cellularOperName);
 	OPTSTR_DEL(this->cellularModemManu);
 	OPTSTR_DEL(this->cellularModemModel);
 	OPTSTR_DEL(this->cellularModemVer);
 	OPTSTR_DEL(this->cellularIMEI);
-	OPTSTR_DEL(this->cellularHuaweiICCID);
+	OPTSTR_DEL(this->cellularICCID);
 	OPTSTR_DEL(this->cellularIMSI);
 	OPTSTR_DEL(this->cellularTECharset);
+	this->cellularCells.MemFreeAll();
 }
 
 void SSWR::AVIRead::AVIRRadioScanForm::OnMonitorChanged()
