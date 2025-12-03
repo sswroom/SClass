@@ -73,13 +73,62 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> 
 	}
 }
 
+void __stdcall IO::RadioSignalLogger::OnGSMUpdate(NN<Data::ArrayListNN<IO::GSMModemController::CellSignal>> cells, AnyType userObj)
+{
+	NN<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	NN<IO::FileStream> fs;
+	if (me->fs.SetTo(fs))
+	{
+		NN<IO::GSMModemController::CellSignal> cell;
+		UOSInt i = 0;
+		UOSInt j = cells->GetCount();
+		if (j > 0)
+		{
+			Data::Timestamp currTime = Data::Timestamp::Now();
+			Text::StringBuilderUTF8 sb;
+			Sync::MutexUsage mutUsage(me->fsMut);
+			while (i < j)
+			{
+				cell = cells->GetItemNoCheck(i);
+				sb.ClearStr();
+				sptr = currTime.ToStringNoZone(sbuff);
+				sb.AppendP(sbuff, sptr);
+				sb.AppendUTF8Char('\t');
+				sb.AppendC(UTF8STRC("gsm"));
+				sb.AppendUTF8Char('\t');
+				sb.Append(IO::GSMModemController::SysModeGetName(cell->sysMode));
+				sb.AppendUTF8Char(':');
+				sb.AppendSlow(cell->mcc);
+				sb.AppendSlow(cell->mnc);
+				sb.AppendUTF8Char(':');
+				sb.AppendU16(cell->lac);
+				sb.AppendUTF8Char(':');
+				sb.AppendU32(cell->ci);
+				sb.AppendUTF8Char('\t');
+				if (cell->rssi.IsNull())
+					sb.AppendUTF8Char('-');
+				else
+					sb.AppendI32(cell->rssi.val);
+				sb.AppendC(UTF8STRC("\r\n"));
+				fs->Write(sb.ToByteArray());
+				i++;
+			}
+			me->gsmCnt += cells->GetCount();
+		}
+	}
+}
+
 IO::RadioSignalLogger::RadioSignalLogger()
 {
 	this->fs = 0;
 	this->wifiCapture = 0;
 	this->btCapture = 0;
+	this->gsmCapturer = 0;
 	this->wifiCnt = 0;
 	this->btCnt = 0;
+	this->gsmCnt = 0;
 
 	UTF8Char sbuff[512];
 	NN<IO::FileStream> fs;
@@ -133,10 +182,25 @@ void IO::RadioSignalLogger::CaptureBT(NN<IO::BTCapturer> btCapture)
 	}
 }
 
+void IO::RadioSignalLogger::CaptureGSM(NN<IO::GSMCellCapturer> gsmCapturer)
+{
+	NN<IO::GSMCellCapturer> nngsmCapturer;
+	if (this->fs.NotNull())
+	{
+		if (this->gsmCapturer.SetTo(nngsmCapturer))
+		{
+			nngsmCapturer->SetUpdateHandler(0, 0);
+		}
+		this->gsmCapturer = gsmCapturer;
+		gsmCapturer->SetUpdateHandler(OnGSMUpdate, this);
+	}
+}
+
 void IO::RadioSignalLogger::Stop()
 {
 	NN<Net::WiFiCapturer> wifiCapture;
 	NN<IO::BTCapturer> btCapture;
+	NN<IO::GSMCellCapturer> gsmCapturer;
 	if (this->fs.NotNull())
 	{
 		if (this->btCapture.SetTo(btCapture))
@@ -148,6 +212,11 @@ void IO::RadioSignalLogger::Stop()
 		{
 			wifiCapture->SetUpdateHandler(0, 0);
 			this->wifiCapture = 0;
+		}
+		if (this->gsmCapturer.SetTo(gsmCapturer))
+		{
+			gsmCapturer->SetUpdateHandler(0, 0);
+			this->gsmCapturer = 0;
 		}
 		this->fs.Delete();
 	}

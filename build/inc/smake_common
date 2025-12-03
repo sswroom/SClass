@@ -1925,6 +1925,8 @@ IO/GPSDevType.h:
 IO/GPSNMEA.h:
 @GPSNMEA.o
 IO/GPUControl.h:
+IO/GSMCellCapturer.h:
+@GSMCellCapturer.o
 IO/GSMModemController.h:
 @GSMModemController.o
 IO/I2C.h:

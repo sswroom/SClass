@@ -455,6 +455,7 @@ GPIOPin.o: ../../src/IO/GPIOPin.cpp
 GPSNMEA.o: ../../src/IO/GPSNMEA.cpp
 GPUManagerNull.o: ../../src/IO/GPUManagerNull.cpp
 GPUManagerW.o: ../../src/IO/GPUManagerW.cpp
+GSMCellCapturer.o: ../../src/IO/GSMCellCapturer.cpp
 GSMModemController.o: ../../src/IO/GSMModemController.cpp
 HIDInfoL.o: ../../src/IO/HIDInfoL.cpp
 HIDInfoNull.o: ../../src/IO/HIDInfoNull.cpp

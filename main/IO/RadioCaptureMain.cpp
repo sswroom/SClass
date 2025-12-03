@@ -1,9 +1,12 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
+#include "IO/ATCommandChannel.h"
 #include "IO/BTCapturer.h"
 #include "IO/ConsoleWriter.h"
+#include "IO/GSMCellCapturer.h"
 #include "IO/Path.h"
 #include "IO/RadioSignalLogger.h"
+#include "IO/SerialPort.h"
 #include "Manage/ExceptionRecorder.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/WiFiCapturer.h"
@@ -27,26 +30,93 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Error.txt"));
 	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART);
 	{
-		Net::WiFiCapturer wifiCapturer;
-		IO::BTCapturer btCapturer(true);
-		if (wifiCapturer.IsError())
+		Bool failed = false;
+		Bool enableWiFi = true;
+		Bool enableBT = true;
+		UOSInt gsmPort = 0;
+
+		Optional<Net::WiFiCapturer> wifiCapturer = 0;
+		Optional<IO::BTCapturer> btCapturer = 0;
+		Optional<IO::GSMCellCapturer> gsmCapturer = 0;
+		NN<Net::WiFiCapturer> nnwifiCapturer;
+		NN<IO::BTCapturer> nnbtCapturer;
+		NN<IO::GSMCellCapturer> nngsmCapturer;
+		if (enableWiFi)
 		{
-			console.WriteLine(CSTR("Error in initializing WiFi"));
+			NEW_CLASSNN(nnwifiCapturer, Net::WiFiCapturer());
+			if (nnwifiCapturer->IsError())
+			{
+				console.WriteLine(CSTR("Error in initializing WiFi"));
+				nnwifiCapturer.Delete();
+				failed = true;
+			}
+			else
+			{
+				wifiCapturer = nnwifiCapturer;
+			}
 		}
-		else if (btCapturer.IsError())
+		if (enableBT)
 		{
-			console.WriteLine(CSTR("Error in initializing Bluetooth"));
+			NEW_CLASSNN(nnbtCapturer, IO::BTCapturer(true));
+			if (nnbtCapturer->IsError())
+			{
+				console.WriteLine(CSTR("Error in initializing Bluetooth"));
+				nnbtCapturer.Delete();
+				failed = true;
+			}
+			else
+			{
+				btCapturer = nnbtCapturer;
+			}
 		}
-		else
+		if (gsmPort != 0)
+		{
+			NN<IO::ATCommandChannel> channel;
+			NN<IO::SerialPort> port;
+			NEW_CLASSNN(port, IO::SerialPort(gsmPort, 115200, IO::SerialPort::PARITY_NONE, false));
+			if (port->IsError())
+			{
+				console.WriteLine(CSTR("Error in opening gsm serial port"));
+				port.Delete();
+				failed = true;
+			}
+			else
+			{
+				NEW_CLASSNN(channel, IO::ATCommandChannel(port, true));
+				NEW_CLASSNN(nngsmCapturer, IO::GSMCellCapturer(channel, true));
+				if (nngsmCapturer->IsError())
+				{
+					console.WriteLine(CSTR("Error in opening gsm serial port"));
+					nngsmCapturer.Delete();
+					failed = true;
+				}
+				else
+				{
+					gsmCapturer = nngsmCapturer;
+				}
+			}
+		}
+		if (!failed)
 		{
 			Text::StringBuilderUTF8 sb;
 			IO::RadioSignalLogger radioLogger;
-			radioLogger.CaptureBT(btCapturer);
-			radioLogger.CaptureWiFi(wifiCapturer);
+			if (btCapturer.SetTo(nnbtCapturer))
+			{
+				radioLogger.CaptureBT(nnbtCapturer);
+			}
+			if (wifiCapturer.SetTo(nnwifiCapturer))
+			{
+				radioLogger.CaptureWiFi(nnwifiCapturer);
+			}
+			if (gsmCapturer.SetTo(nngsmCapturer))
+			{
+				radioLogger.CaptureGSM(nngsmCapturer);
+			}
 			Net::OSSocketFactory sockf(true);
 			Net::TCPClientFactory clif(sockf);
 			{
-				Net::WebServer::CapturerWebHandler webHdlr(&wifiCapturer, &btCapturer, &radioLogger);
+				Net::WebServer::CapturerWebHandler webHdlr(wifiCapturer, btCapturer, radioLogger);
+				//webHdlr.SetGSMCapturer(gsmCapturer);
 				Net::WebServer::WebListener listener(clif, 0, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 				if (listener.IsError())
 				{
@@ -56,26 +126,43 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				}
 				else
 				{
-					if (!wifiCapturer.Start())
+					if (wifiCapturer.SetTo(nnwifiCapturer) && !nnwifiCapturer->Start())
 					{
 						console.WriteLine(CSTR("No WiFi interface found"));
 					}
-					else if (!btCapturer.Start())
+					else if (btCapturer.SetTo(nnbtCapturer) && !nnbtCapturer->Start())
 					{
 						console.WriteLine(CSTR("No bluetooth interface found"));
+					}
+					else if (gsmCapturer.SetTo(nngsmCapturer) && nngsmCapturer->Start())
+					{
+						console.WriteLine(CSTR("Error in starting GSM Capturer"));
 					}
 					else
 					{
 						console.WriteLine(CSTR("RadioCapture started"));
 						progCtrl->WaitForExit(progCtrl);
-						wifiCapturer.StoreStatus();
-						btCapturer.StoreStatus();
-						wifiCapturer.Stop();
-						btCapturer.Stop();
+						if (wifiCapturer.SetTo(nnwifiCapturer))
+						{
+							nnwifiCapturer->StoreStatus();
+							nnwifiCapturer->Stop();
+						}
+						if (btCapturer.SetTo(nnbtCapturer))
+						{
+							nnbtCapturer->StoreStatus();
+							nnbtCapturer->Stop();
+						}
+						if (gsmCapturer.SetTo(nngsmCapturer))
+						{
+							nngsmCapturer->Stop();
+						}
 					}
 				}
 			}
 		}
+		wifiCapturer.Delete();
+		btCapturer.Delete();
+		gsmCapturer.Delete();
 	}
 	return 0;
 }
