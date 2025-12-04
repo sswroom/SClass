@@ -105,7 +105,11 @@ void __stdcall IO::RadioSignalLogger::OnGSMUpdate(NN<Data::ArrayListNN<IO::GSMMo
 				sb.AppendUTF8Char(':');
 				sb.AppendU16(cell->lac);
 				sb.AppendUTF8Char(':');
-				sb.AppendU32(cell->ci);
+				sb.AppendU64(cell->cellid);
+				sb.AppendUTF8Char(':');
+				sb.AppendU32(cell->channelNum);
+				sb.AppendUTF8Char(':');
+				sb.AppendU32(cell->pcid);
 				sb.AppendUTF8Char('\t');
 				if (cell->rssi.IsNull())
 					sb.AppendUTF8Char('-');

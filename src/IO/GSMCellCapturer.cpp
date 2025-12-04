@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/GSMCellCapturer.h"
 #include "IO/Device/HuaweiGSMModemController.h"
+#include "IO/Device/QuectelGSMModemController.h"
 
 void __stdcall IO::GSMCellCapturer::CheckThread(NN<Sync::Thread> thread)
 {
@@ -85,6 +86,11 @@ void IO::GSMCellCapturer::Reload()
 		{
 			modem.Delete();
 			NEW_CLASSNN(modem, IO::Device::HuaweiGSMModemController(this->channel, false));
+		}
+		else if (s->StartsWith(CSTR("Quectel")))
+		{
+			modem.Delete();
+			NEW_CLASSNN(modem, IO::Device::QuectelGSMModemController(this->channel, false));
 		}
 	}
 	this->modem = modem;

@@ -654,6 +654,7 @@ HuaweiGSMModemController.o: ../../src/IO/Device/HuaweiGSMModemController.cpp
 IBuddy.o: ../../src/IO/Device/IBuddy.cpp
 MTKGPSNMEA.o: ../../src/IO/Device/MTKGPSNMEA.cpp
 OlympusCameraControl.o: ../../src/IO/Device/OlympusCameraControl.cpp
+QuectelGSMModemController.o: ../../src/IO/Device/QuectelGSMModemController.cpp
 QQZMSerialCamera.o: ../../src/IO/Device/QQZMSerialCamera.cpp
 RockwellModemController.o: ../../src/IO/Device/RockwellModemController.cpp
 SDM120M.o: ../../src/IO/Device/SDM120M.cpp

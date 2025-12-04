@@ -1700,5 +1700,9 @@ Text::CStringNN IO::GSMModemController::SysModeGetName(SysMode sysMode)
 		return CSTR("CDMA-EVDO");
 	case SysMode::WIMAX:
 		return CSTR("WiMAX");
+	case SysMode::NR5G_SA:
+		return CSTR("NR5G-SA");
+	case SysMode::NR5G_NSA:
+		return CSTR("NR5G-NSA");
 	}
 }

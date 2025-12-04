@@ -139,7 +139,9 @@ namespace IO
 			CDMA,
 			EVDO,
 			CDMA_EVDO,
-			WIMAX
+			WIMAX,
+			NR5G_SA,
+			NR5G_NSA
 		};
 
 		typedef enum
@@ -200,7 +202,9 @@ namespace IO
 			UTF8Char mcc[4];
 			UTF8Char mnc[4];
 			UInt16 lac;
-			UInt32 ci;
+			UInt64 cellid;
+			UInt32 channelNum;
+			UInt32 pcid;
 			Bool servingCell;
 			SysMode sysMode;
 			NInt32 rssi;

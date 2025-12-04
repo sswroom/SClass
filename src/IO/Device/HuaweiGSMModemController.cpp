@@ -31,7 +31,9 @@ UOSInt IO::Device::HuaweiGSMModemController::QueryCells(NN<Data::ArrayListNN<Cel
 		Text::StrConcatC(cell->mcc, sbuff, 3);
 		Text::StrConcat(cell->mnc, &sbuff[3]);
 		cell->lac = lac;
-		cell->ci = ci;
+		cell->cellid = ci;
+		cell->channelNum = 0;
+		cell->pcid = 0;
 		cell->servingCell = true;
 		cell->sysMode = csq.sysmode;
 		if (csq.sysmode == SysMode::GSM)

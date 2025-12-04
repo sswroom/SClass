@@ -587,7 +587,7 @@ void Net::WebServer::CapturerWebHandler::AppendGSMTable(NN<Text::StringBuilderUT
 	NN<IO::GSMModemController::CellSignal> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
-	sb->AppendC(UTF8STRC("<tr><td>MCC</td><td>MNC</td><td>LAC</td><td>CI</td><td>SysMode</td><td>RSSI</td><td>RSCP</td><td>ECIO</td><td>RSRP</td><td>SINR</td><td>RSRQ</td><td>RSSI2</td><td>ECIO2</td><td>SINR2</td></tr>\r\n"));
+	sb->AppendC(UTF8STRC("<tr><td>MCC</td><td>MNC</td><td>LAC</td><td>CellId</td><td>ChannelNum</td><td>PCI</td><td>SysMode</td><td>RSSI</td><td>RSCP</td><td>ECIO</td><td>RSRP</td><td>SINR</td><td>RSRQ</td><td>RSSI2</td><td>ECIO2</td><td>SINR2</td></tr>\r\n"));
 
 	i = 0;
 	j = entryList->GetCount();
@@ -601,7 +601,11 @@ void Net::WebServer::CapturerWebHandler::AppendGSMTable(NN<Text::StringBuilderUT
 		sb->AppendC(UTF8STRC("</td><td>"));
 		sb->AppendU16(entry->lac);
 		sb->AppendC(UTF8STRC("</td><td>"));
-		sb->AppendU32(entry->ci);
+		sb->AppendU64(entry->cellid);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		sb->AppendU32(entry->channelNum);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		sb->AppendU32(entry->pcid);
 		sb->AppendC(UTF8STRC("</td><td>"));
 		sb->Append(IO::GSMModemController::SysModeGetName(entry->sysMode));
 		sb->AppendC(UTF8STRC("</td><td>"));

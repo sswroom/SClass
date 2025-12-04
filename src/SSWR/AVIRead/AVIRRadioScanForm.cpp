@@ -396,7 +396,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			me->lvCellularCells->SetSubItem(i, 2, Text::CStringNN::FromPtr(cell->mnc));
 			sptr = Text::StrUInt16(sbuff, cell->lac);
 			me->lvCellularCells->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-			sptr = Text::StrUInt32(sbuff, cell->ci);
+			sptr = Text::StrUInt64(sbuff, cell->cellid);
 			me->lvCellularCells->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 			me->lvCellularCells->SetSubItem(i, 5, IO::GSMModemController::SysModeGetName(cell->sysMode));
 			if (!cell->rssi.IsNull()) { sptr = Text::StrInt32(sbuff, cell->rssi.val); me->lvCellularCells->SetSubItem(i, 6, CSTRP(sbuff, sptr)); }

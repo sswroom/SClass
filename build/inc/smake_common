@@ -2159,6 +2159,8 @@ IO/Device/OlympusCameraControl.h:
 @OlympusCameraControl.o
 IO/Device/QQZMSerialCamera.h:
 @QQZMSerialCamera.o
+IO/Device/QuectelGSMModemController.h:
+@QuectelGSMModemController.o
 IO/Device/RockwellModemController.h:
 @RockwellModemController.o
 IO/Device/SDM120M.h:
