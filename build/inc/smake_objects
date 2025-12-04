@@ -460,7 +460,6 @@ GSMModemController.o: ../../src/IO/GSMModemController.cpp
 HIDInfoL.o: ../../src/IO/HIDInfoL.cpp
 HIDInfoNull.o: ../../src/IO/HIDInfoNull.cpp
 HIDInfoW.o: ../../src/IO/HIDInfoW.cpp
-HuaweiGSMModemController.o: ../../src/IO/HuaweiGSMModemController.cpp
 I2C.o: ../../src/IO/I2C.cpp
 I2CChannelOSL.o: ../../src/IO/I2CChannelOSL.cpp
 I2CChannelOSNull.o: ../../src/IO/I2CChannelOSNull.cpp
@@ -651,6 +650,7 @@ ED538.o: ../../src/IO/Device/ED538.cpp
 ED588.o: ../../src/IO/Device/ED588.cpp
 GoProCameraControl.o: ../../src/IO/Device/GoProCameraControl.cpp
 HCSR04.o: ../../src/IO/Device/HCSR04.cpp
+HuaweiGSMModemController.o: ../../src/IO/Device/HuaweiGSMModemController.cpp
 IBuddy.o: ../../src/IO/Device/IBuddy.cpp
 MTKGPSNMEA.o: ../../src/IO/Device/MTKGPSNMEA.cpp
 OlympusCameraControl.o: ../../src/IO/Device/OlympusCameraControl.cpp
