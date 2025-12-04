@@ -24,6 +24,11 @@ struct NInt32
 		return this->val == NINT32_NULL;
 	}
 
+	Bool NotNull() const
+	{
+		return this->val != NINT32_NULL;
+	}
+
 	Int32 IntVal() const
 	{
 		return this->val;

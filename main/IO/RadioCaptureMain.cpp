@@ -4,6 +4,7 @@
 #include "IO/BTCapturer.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/GSMCellCapturer.h"
+#include "IO/IniFile.h"
 #include "IO/Path.h"
 #include "IO/RadioSignalLogger.h"
 #include "IO/SerialPort.h"
@@ -34,7 +35,24 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Bool enableWiFi = true;
 		Bool enableBT = true;
 		UOSInt gsmPort = 0;
-
+		NN<IO::ConfigFile> cfg;
+		NN<Text::String> s;
+		if (IO::IniFile::ParseProgConfig(65001).SetTo(cfg))
+		{
+			if (cfg->GetValue(CSTR("EnableWiFi")).SetTo(s))
+			{
+				enableWiFi = s->ToInt32() != 0;
+			}
+			if (cfg->GetValue(CSTR("EnableBT")).SetTo(s))
+			{
+				enableBT = s->ToInt32() != 0;
+			}
+			if (cfg->GetValue(CSTR("GSMPort")).SetTo(s))
+			{
+				gsmPort = s->ToUOSInt();
+			}
+			cfg.Delete();
+		}
 		Optional<Net::WiFiCapturer> wifiCapturer = 0;
 		Optional<IO::BTCapturer> btCapturer = 0;
 		Optional<IO::GSMCellCapturer> gsmCapturer = 0;
@@ -116,7 +134,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Net::TCPClientFactory clif(sockf);
 			{
 				Net::WebServer::CapturerWebHandler webHdlr(wifiCapturer, btCapturer, radioLogger);
-				//webHdlr.SetGSMCapturer(gsmCapturer);
+				webHdlr.SetGSMCapturer(gsmCapturer);
 				Net::WebServer::WebListener listener(clif, 0, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 				if (listener.IsError())
 				{
@@ -134,7 +152,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					{
 						console.WriteLine(CSTR("No bluetooth interface found"));
 					}
-					else if (gsmCapturer.SetTo(nngsmCapturer) && nngsmCapturer->Start())
+					else if (gsmCapturer.SetTo(nngsmCapturer) && !nngsmCapturer->Start())
 					{
 						console.WriteLine(CSTR("Error in starting GSM Capturer"));
 					}

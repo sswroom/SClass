@@ -147,6 +147,10 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	{
 		fs.Delete();
 	}
+	else
+	{
+		this->fs = fs;
+	}
 }
 
 IO::RadioSignalLogger::~RadioSignalLogger()
@@ -230,4 +234,9 @@ UInt64 IO::RadioSignalLogger::GetWiFiCount() const
 UInt64 IO::RadioSignalLogger::GetBTCount() const
 {
 	return this->btCnt;
+}
+
+UInt64 IO::RadioSignalLogger::GetGSMCount() const
+{
+	return this->gsmCnt;
 }

@@ -18,6 +18,9 @@ namespace IO
 		UpdateHandler hdlr;
 		AnyType hdlrObj;
 		Sync::Thread thread;
+		Sync::Mutex cellMut;
+		Data::ArrayListNN<IO::GSMModemController::CellSignal> cells;
+		Data::Timestamp lastScanTime;
 
 		static void __stdcall CheckThread(NN<Sync::Thread> thread);
 	public:
@@ -29,6 +32,8 @@ namespace IO
 		void Stop();
 		void SetUpdateHandler(UpdateHandler hdlr, AnyType userObj);
 		Bool IsError() const;
+		NN<Data::ArrayListNN<IO::GSMModemController::CellSignal>> GetCells(NN<Sync::MutexUsage> mutUsage);
+		Data::Timestamp GetLastScanTime() const;
 	};
 }
 #endif

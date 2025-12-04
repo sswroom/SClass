@@ -76,6 +76,21 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		sb.AppendUOSInt(j);
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
 	}
+	NN<IO::GSMCellCapturer> gsmCapturer;
+	if (me->gsmCapturer.SetTo(gsmCapturer))
+	{
+		Sync::MutexUsage mutUsage;
+		NN<Data::ArrayListNN<IO::GSMModemController::CellSignal>> cells;
+		Data::Timestamp lastScanTime = gsmCapturer->GetLastScanTime().ToLocalTime();
+		sb.AppendC(UTF8STRC("GSM Last Scan Time = "));
+		sb.AppendTSNoZone(lastScanTime);
+		sb.AppendC(UTF8STRC("<br/>\r\n"));
+		cells = gsmCapturer->GetCells(mutUsage);
+		sb.AppendC(UTF8STRC("<a href=\"gsmdet.html\">"));
+		sb.AppendC(UTF8STRC("GSM Cell count = "));
+		sb.AppendUOSInt(cells->GetCount());
+		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
+	}
 	NN<IO::RadioSignalLogger> radioLogger;
 	if (me->radioLogger.SetTo(radioLogger))
 	{
@@ -85,7 +100,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		sb.AppendC(UTF8STRC("Log BT count = "));
 		sb.AppendU64(radioLogger->GetBTCount());
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
-
+		sb.AppendC(UTF8STRC("Log GSM count = "));
+		sb.AppendU64(radioLogger->GetGSMCount());
+		sb.AppendC(UTF8STRC("<br/>\r\n"));
 	}
 	sb.AppendC(UTF8STRC("</table></body><html>"));
 
@@ -344,6 +361,38 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 	return true;
 }
 
+Bool __stdcall Net::WebServer::CapturerWebHandler::GSMDetailFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+{
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<IO::GSMCellCapturer> gsmCapturer;
+	if (!me->gsmCapturer.SetTo(gsmCapturer))
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
+		return true;
+	}
+	Text::StringBuilderUTF8 sb;
+	NN<Data::ArrayListNN<IO::GSMModemController::CellSignal>> cells;
+
+	Sync::MutexUsage mutUsage;
+	cells = gsmCapturer->GetCells(mutUsage);
+	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
+	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
+	sb.AppendC(UTF8STRC("</head><body>\r\n"));
+	sb.AppendC(UTF8STRC("GSM Cell Count = "));
+	sb.AppendUOSInt(cells->GetCount());
+	sb.AppendC(UTF8STRC("<br/>\r\n"));
+	AppendGSMTable(sb, req, cells, false);
+	mutUsage.EndUse();
+	sb.AppendC(UTF8STRC("</body><html>"));
+
+	me->AddResponseHeaders(req, resp);
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/html"));
+	resp->AddContentLength(sb.GetLength());
+	resp->Write(sb.ToByteArray());
+	return true;
+}
+
 void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::WebRequest> req, NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
@@ -529,6 +578,56 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
+void Net::WebServer::CapturerWebHandler::AppendGSMTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::WebRequest> req, NN<Data::ArrayListNN<IO::GSMModemController::CellSignal>> entryList, Bool inRangeOnly)
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	UOSInt i;
+	UOSInt j;
+	NN<IO::GSMModemController::CellSignal> entry;
+	sptr = req->GetRequestPath(sbuff, 512);
+	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
+	sb->AppendC(UTF8STRC("<tr><td>MCC</td><td>MNC</td><td>LAC</td><td>CI</td><td>SysMode</td><td>RSSI</td><td>RSCP</td><td>ECIO</td><td>RSRP</td><td>SINR</td><td>RSRQ</td><td>RSSI2</td><td>ECIO2</td><td>SINR2</td></tr>\r\n"));
+
+	i = 0;
+	j = entryList->GetCount();
+	while (i < j)
+	{
+		entry = entryList->GetItemNoCheck(i);
+		sb->AppendC(UTF8STRC("<tr><td>"));
+		sb->AppendSlow(entry->mcc);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		sb->AppendSlow(entry->mnc);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		sb->AppendU16(entry->lac);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		sb->AppendU32(entry->ci);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		sb->Append(IO::GSMModemController::SysModeGetName(entry->sysMode));
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (entry->rssi.NotNull()) sb->AppendI32(entry->rssi.val);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (entry->rscp.NotNull()) sb->AppendI32(entry->rscp.val);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (!Math::IsNAN(entry->ecio)) sb->AppendDouble(entry->ecio);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (entry->rsrp.NotNull()) sb->AppendI32(entry->rsrp.val);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (!Math::IsNAN(entry->sinr)) sb->AppendDouble(entry->sinr);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (!Math::IsNAN(entry->rsrq)) sb->AppendDouble(entry->rsrq);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (entry->rssi2.NotNull()) sb->AppendI32(entry->rssi2.val);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (!Math::IsNAN(entry->ecio2)) sb->AppendDouble(entry->ecio2);
+		sb->AppendC(UTF8STRC("</td><td>"));
+		if (!Math::IsNAN(entry->sinr2)) sb->AppendDouble(entry->sinr2);
+		sb->AppendC(UTF8STRC("</td></tr>\r\n"));
+		i++;
+	}
+	sb->AppendC(UTF8STRC("</table>"));
+}
+
 OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NN<Net::WiFiLogFile::LogFileEntry> obj1, NN<Net::WiFiLogFile::LogFileEntry> obj2)
 {
 	if (obj1->lastRSSI == obj2->lastRSSI)
@@ -622,8 +721,14 @@ Net::WebServer::CapturerWebHandler::CapturerWebHandler(Optional<Net::WiFiCapture
 	this->AddService(CSTR("/wificurr.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiCurrentFunc);
 	this->AddService(CSTR("/wifidet.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiDetailFunc);
 	this->AddService(CSTR("/wifidown.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiDownloadFunc);
+	this->AddService(CSTR("/gsmdet.html"), Net::WebUtil::RequestMethod::HTTP_GET, GSMDetailFunc);
 }
 
 Net::WebServer::CapturerWebHandler::~CapturerWebHandler()
 {
+}
+
+void Net::WebServer::CapturerWebHandler::SetGSMCapturer(Optional<IO::GSMCellCapturer> gsmCapturer)
+{
+	this->gsmCapturer = gsmCapturer;
 }
