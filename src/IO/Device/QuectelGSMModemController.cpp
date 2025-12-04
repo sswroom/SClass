@@ -36,10 +36,10 @@ UOSInt IO::Device::QuectelGSMModemController::QueryCells(NN<Data::ArrayListNN<Ce
 		cell->sysMode = scells[i].sysMode;
 		cell->rssi = scells[i].rssi;
 		cell->rscp = scells[i].rscp;
-		cell->ecio = scells[i].ecio.IsNull()?NAN:scells[i].ecio.val;
+		cell->ecio = scells[i].ecio.IsNull()?NAN:(Double)scells[i].ecio.val;
 		cell->rsrp = scells[i].rsrp;
 		cell->sinr = scells[i].sinr;
-		cell->rsrq = scells[i].rsrq.IsNull()?NAN:scells[i].rsrq.val;
+		cell->rsrq = scells[i].rsrq.IsNull()?NAN:(Double)scells[i].rsrq.val;
 		cell->rssi2 = nullptr;
 		cell->ecio2 = NAN;
 		cell->sinr2 = NAN;
@@ -101,10 +101,10 @@ UOSInt IO::Device::QuectelGSMModemController::QueryCells(NN<Data::ArrayListNN<Ce
 			cell->sysMode = ncell->sysMode;
 			cell->rssi = ncell->rssi;
 			cell->rscp = ncell->rscp;
-			cell->ecio = ncell->ecio.IsNull()?NAN:ncell->ecio.val;
+			cell->ecio = ncell->ecio.IsNull()?NAN:(Double)ncell->ecio.val;
 			cell->rsrp = ncell->rsrp;
 			cell->sinr = ncell->sinr;
-			cell->rsrq = ncell->rsrq.IsNull()?NAN:ncell->rsrq.val;
+			cell->rsrq = ncell->rsrq.IsNull()?NAN:(Double)ncell->rsrq.val;
 			cell->rssi2 = nullptr;
 			cell->ecio2 = NAN;
 			cell->sinr2 = NAN;
@@ -144,7 +144,8 @@ UOSInt IO::Device::QuectelGSMModemController::QuectelQueryServingCell(UnsafeArra
 	Text::PString strs[2];
 	Text::PString cols[25];
 	strs[1] = sb;
-	UOSInt lineCnt = Text::StrSplitLineP(strs, 2, strs[1]);
+	//UOSInt lineCnt = 
+	Text::StrSplitLineP(strs, 2, strs[1]);
 	UOSInt colCnt = Text::StrSplitP(cols, 25, strs[0], ',');
 	State state;
 	if (colCnt < 2)

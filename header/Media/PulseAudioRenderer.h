@@ -17,11 +17,13 @@ namespace Media
 			UOSInt devNo;
 		};
 	private:
+		struct ClassData;
+		NN<ClassData> clsData;
 		Optional<Media::AudioSource> audsrc;
 		Optional<Media::AudioSource> resampler;
 		UInt32 resampleFreq;
 		Optional<Text::String> devName;
-		void *hand;
+
 		Optional<Media::RefClock> clk;
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;
@@ -33,9 +35,8 @@ namespace Media
 
 		UInt32 buffTime;
 
-		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
 		static void __stdcall PlayThread(NN<Sync::Thread> thread);
-		static UInt32 GetCurrTime(void *hand);
+		static UInt32 GetCurrTime(void *stream);
 		static Bool GetDeviceInfo(NN<DeviceInfo> devInfo);
 	public:
 		static UOSInt GetDeviceCount();

@@ -16,12 +16,18 @@
 #include <stdio.h>
 
 #define BUFFLENG 16384
-//http://fossies.org/dox/alsa-util-1.0.28/aplay_8c_source.html
+// https://gist.github.com/toroidal-code/8798775
 
+struct Media::PulseAudioRenderer::ClassData
+{
+	pa_mainloop *mainloop;
+	pa_context *context;
+	pa_sample_spec sampleSpec;
+};
 
 void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 {
-	//Media::PulseAudioRenderer *me = (Media::PulseAudioRenderer *)thread->GetUserObj();
+//	NN<Media::PulseAudioRenderer> me = thread->GetUserObj().GetNN<Media::PulseAudioRenderer>();
 /*	Media::AudioFormat af;
 	Int32 i;
 	UInt32 refStart;
@@ -303,26 +309,15 @@ void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 	me->playing = false;*/
 }
 
-UInt32 Media::PulseAudioRenderer::GetCurrTime(void *hand)
+UInt32 Media::PulseAudioRenderer::GetCurrTime(void *stream)
 {
-/*	UInt32 ret = 0;
-	Int32 err;
-	snd_pcm_status_t *status;
-	snd_pcm_status_alloca(&status);
-	err = snd_pcm_status((snd_pcm_t*)hand, status);
-	if (err < 0)
+	pa_usec_t t;
+	int err = pa_stream_get_time((pa_stream*)stream, &t);
+	if (err == 0)
 	{
-		printf("Error: snd_pcm_status, %d\r\n", err);
+		return (UInt32)(t / 1000);
 	}
-	else
-	{
-		snd_timestamp_t tscurr;
-		snd_timestamp_t tsstart;
-		snd_pcm_status_get_tstamp(status, &tscurr);
-		snd_pcm_status_get_trigger_tstamp(status, &tsstart);
-		ret = (UInt32)(tscurr.tv_sec * 1000LL + (tscurr.tv_usec / 1000LL));
-	}
-	return ret;*/
+	printf("PulseAudioRenderer: pa_stream_get_time failed, return %d\r\n", err);
 	return 0;
 }
 
@@ -440,7 +435,7 @@ Media::PulseAudioRenderer::PulseAudioRenderer(const UTF8Char *devName) : thread(
 	this->resampler = 0;
 	this->endHdlr = 0;
 	this->buffTime = 500;
-	this->hand = 0;
+	this->clsData = MemAllocNN(ClassData);
 	this->nonBlock = false;
 	this->dataConv = false;
 	this->dataBits = 0;
@@ -454,6 +449,7 @@ Media::PulseAudioRenderer::~PulseAudioRenderer()
 		BindAudio(0);
 	}
 	OPTSTR_DEL(this->devName);
+	MemFreeNN(this->clsData);
 }
 
 Bool Media::PulseAudioRenderer::IsError()
@@ -472,7 +468,6 @@ Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	{
 		this->audsrc = 0;
 		this->resampler.Delete();
-		this->hand = 0;
 	}
 	NN<Media::AudioSource> nnaudsrc;
 	if (!audsrc.SetTo(nnaudsrc))
