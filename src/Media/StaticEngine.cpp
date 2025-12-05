@@ -51,7 +51,7 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileNa
 	{
 		if (nnimgList->GetImage(0, 0).SetTo(img))
 		{
-			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img));
+			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, 0));
 		}
 		imgList.Delete();
 	}
@@ -79,7 +79,7 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(UnsafeArray<const WCh
 		NN<Media::RasterImage> img;
 		if (nnimgList->GetImage(0, 0).SetTo(img))
 		{
-			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img));
+			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img, 0));
 		}
 		nnimgList.Delete();
 	}
@@ -91,7 +91,7 @@ Optional<Media::DrawImage> Media::StaticEngine::LoadImageStream(NN<IO::SeekableS
 	return 0;
 }
 
-Optional<Media::DrawImage> Media::StaticEngine::ConvImage(NN<Media::RasterImage> img)
+Optional<Media::DrawImage> Media::StaticEngine::ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess)
 {
 //	Media::StaticImage *simg = img->CreateStaticImage();
 //	simg->SetEngine(this);
@@ -101,7 +101,7 @@ Optional<Media::DrawImage> Media::StaticEngine::ConvImage(NN<Media::RasterImage>
 
 Optional<Media::DrawImage> Media::StaticEngine::CloneImage(NN<DrawImage> img)
 {
-	return this->ConvImage(NN<Media::StaticDrawImage>::ConvertFrom(img));
+	return this->ConvImage(NN<Media::StaticDrawImage>::ConvertFrom(img), 0);
 }
 
 Bool Media::StaticEngine::DeleteImage(NN<DrawImage> img)
@@ -109,6 +109,11 @@ Bool Media::StaticEngine::DeleteImage(NN<DrawImage> img)
 	NN<Media::StaticDrawImage> simg = NN<Media::StaticDrawImage>::ConvertFrom(img);
 	simg.Delete();
 	return true;
+}
+
+void Media::StaticEngine::EndColorSess(NN<Media::ColorSess> colorSess)
+{
+
 }
 
 Media::StaticBrush::StaticBrush(UInt32 color)

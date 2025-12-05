@@ -15,13 +15,13 @@ void DB::ODBCConn::UpdateConnInfo()
 {
 }
 
-Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema)
+Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema)
 {
 	this->sqlType = DB::SQLType::Unknown;
 	return false;
 }
 
-Bool DB::ODBCConn::Connect(Text::CString connStr)
+Bool DB::ODBCConn::Connect(Text::CStringNN connStr)
 {
 	if (this->connStr)
 	{
@@ -32,7 +32,7 @@ Bool DB::ODBCConn::Connect(Text::CString connStr)
 	return false;
 }
 
-DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -53,7 +53,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, IO::LogTool *log) : DB::DBCon
 	this->axisAware = false;
 }
 
-DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DBConn(sourceName)
 {
 	this->connHand = 0;
 	this->envHand = 0;
@@ -70,7 +70,7 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, IO::Lo
 	this->Connect(connStr);
 }
 
-DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -86,17 +86,17 @@ DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
-DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
 	this->tzQhr = 0;
 	this->lastStmtHand = 0;
 	this->connErr = DB::ODBCConn::CE_NOT_CONNECT;
-	this->dsn = dsn->Clone().Ptr();
-	this->uid = uid->Clone().Ptr();
-	this->pwd = pwd->Clone().Ptr();
-	this->schema = schema->Clone().Ptr();
+	this->dsn = dsn->Clone();
+	this->uid = Text::String::CopyOrNull(uid);
+	this->pwd = Text::String::CopyOrNull(pwd);
+	this->schema = Text::String::CopyOrNull(schema);
 	this->forceTz = false;
 	this->axisAware = false;
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
@@ -132,9 +132,9 @@ DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Text::String *uid, Text::String *pw
 DB::ODBCConn::~ODBCConn()
 {
 	Close();
-	SDEL_STRING(this->dsn);
-	SDEL_STRING(this->uid);
-	SDEL_STRING(this->pwd);
+	OPTSTR_DEL(this->dsn);
+	OPTSTR_DEL(this->uid);
+	OPTSTR_DEL(this->pwd);
 	SDEL_STRING(this->connStr);
 }
 
@@ -166,18 +166,19 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 
 void DB::ODBCConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
+	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
 	{
 		sb->Append(this->connStr);
 	}
-	else if (this->dsn)
+	else if (this->dsn.SetTo(s))
 	{
-		sb->Append(this->dsn);
-		if (this->schema)
+		sb->Append(s);
+		if (this->schema.SetTo(s))
 		{
 			sb->AppendUTF8Char('/');
-			sb->Append(this->schema);
+			sb->Append(s);
 		}
 	}
 }
@@ -191,7 +192,7 @@ void DB::ODBCConn::Dispose()
 	delete this;
 }
 
-OSInt DB::ODBCConn::ExecuteNonQuery(Text::CString sql)
+OSInt DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return -2;
@@ -203,7 +204,7 @@ OSInt DB::ODBCConn::ExecuteNonQuery(Text::CString sql)
 	return -2;
 }*/
 
-DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CString sql)
+Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
@@ -215,7 +216,7 @@ DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CString sql)
 	return 0;
 }*/
 
-void DB::ODBCConn::CloseReader(DB::DBReader *r)
+void DB::ODBCConn::CloseReader(NN<DB::DBReader> r)
 {
 }
 
@@ -232,16 +233,16 @@ void DB::ODBCConn::Reconnect()
 {
 }
 
-void *DB::ODBCConn::BeginTransaction()
+Optional<DB::DBTransaction> DB::ODBCConn::BeginTransaction()
 {
 	return 0;
 }
 
-void DB::ODBCConn::Commit(void *tran)
+void DB::ODBCConn::Commit(NN<DB::DBTransaction> tran)
 {
 }
 
-void DB::ODBCConn::Rollback(void *tran)
+void DB::ODBCConn::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 
@@ -259,23 +260,24 @@ void DB::ODBCConn::SetTraceFile(const WChar *fileName)
 {
 }
 
-UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
+UnsafeArray<UTF8Char> DB::ODBCConn::ShowTablesCmd(UnsafeArray<UTF8Char> sbuff)
 {
-	return 0;
+	sbuff[0] = 0;
+	return sbuff;
 }
 
-DB::DBReader *DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
+Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, Data::ArrayListStringNN *names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return 0;
 }
@@ -303,42 +305,42 @@ Text::String *DB::ODBCConn::GetConnStr()
 	return this->connStr;
 }
 
-Text::String *DB::ODBCConn::GetConnDSN()
+Optional<Text::String> DB::ODBCConn::GetConnDSN()
 {
 	return this->dsn;
 }
 
-Text::String *DB::ODBCConn::GetConnUID()
+Optional<Text::String> DB::ODBCConn::GetConnUID()
 {
 	return this->uid;
 }
 
-Text::String *DB::ODBCConn::GetConnPWD()
+Optional<Text::String> DB::ODBCConn::GetConnPWD()
 {
 	return this->pwd;
 }
 
-Text::String *DB::ODBCConn::GetConnSchema()
+Optional<Text::String> DB::ODBCConn::GetConnSchema()
 {
 	return this->schema;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(Data::ArrayListStringNN *driverList)
+UOSInt DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 {
 	return 0;
 }
 
-IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
+Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 {
 	return 0;
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	return 0;
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	return 0;
 }

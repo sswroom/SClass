@@ -21,9 +21,10 @@ namespace Media
 		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
 		virtual Optional<DrawImage> LoadImageW(UnsafeArray<const WChar> fileName);
 		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm); /////////////////////////
-		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img);
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess);
 		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img);
 		virtual Bool DeleteImage(NN<DrawImage> img);
+		virtual void EndColorSess(NN<Media::ColorSess> colorSess);
 	};
 
 	class StaticBrush : public DrawBrush

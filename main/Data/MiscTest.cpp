@@ -1325,9 +1325,17 @@ Int32 OUICSVConv()
 	return 0;
 }
 
+Int32 NANTest()
+{
+	Double nan = NAN;
+	printf("Hex: %llx\r\n", *(UInt64*)&nan);
+	printf("IsNAN: %d\r\n", Math::IsNAN(nan));
+	return 0;
+}
+
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-	UOSInt testType = 34;
+	UOSInt testType = 35;
 	switch (testType)
 	{
 	case 0:
@@ -1400,6 +1408,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		return FGDBTest2();
 	case 34:
 		return OUICSVConv();
+	case 35:
+		return NANTest();
 	default:
 		return 0;
 	}

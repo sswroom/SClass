@@ -134,7 +134,7 @@ namespace Math
 	FORCEINLINE Bool IsNAN(Double val)
 	{
 		UInt64 iVal = *(UInt64*)&val;
-		return (iVal & 0x7ff8000000000000LL) == 0x7ff8000000000000LL;
+		return (iVal & 0x7ff0000000000000LL) == 0x7ff0000000000000LL && (iVal & 0xFFFFFFFFFFFFFLL) != 0;
 		// 0x7ff8000000000001LL = qNaN
 		// 0x7ff0000000000001LL = sNaN
 		// 0x7fffffffffffffffLL = NaN

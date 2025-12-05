@@ -5,7 +5,7 @@
 #include "Media/MonitorInfo.h"
 #include "Text/MyString.h"
 
-Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
+Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 {
 	this->isPrimary = true;
 	this->left = 0;
@@ -20,8 +20,8 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 Media::MonitorInfo::~MonitorInfo()
 {
 	this->name->Release();
-	SDEL_STRING(this->desc);
-	SDEL_STRING(this->monId);
+	OPTSTR_DEL(this->desc);
+	OPTSTR_DEL(this->monId);
 }
 
 NN<Text::String> Media::MonitorInfo::GetName() const
@@ -29,12 +29,12 @@ NN<Text::String> Media::MonitorInfo::GetName() const
 	return this->name;
 }
 
-Text::String *Media::MonitorInfo::GetDesc() const
+Optional<Text::String> Media::MonitorInfo::GetDesc() const
 {
 	return this->desc;
 }
 
-Text::String *Media::MonitorInfo::GetMonitorID() const
+Optional<Text::String> Media::MonitorInfo::GetMonitorID() const
 {
 	return this->monId;
 }
