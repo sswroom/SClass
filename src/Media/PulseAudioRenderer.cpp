@@ -23,11 +23,20 @@ struct Media::PulseAudioRenderer::ClassData
 	pa_mainloop *mainloop;
 	pa_context *context;
 	pa_sample_spec sampleSpec;
+	pa_stream *stream;
 };
+
+void PulseAudioRenderer_WriteFunc(pa_stream *s, size_t length, void *userdata) {
+	Media::PulseAudioRenderer *me = (Media::PulseAudioRenderer*)userdata;
+
+    me->WriteStream(length);
+}
 
 void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 {
-//	NN<Media::PulseAudioRenderer> me = thread->GetUserObj().GetNN<Media::PulseAudioRenderer>();
+	NN<Media::PulseAudioRenderer> me = thread->GetUserObj().GetNN<Media::PulseAudioRenderer>();
+	int ret;
+	pa_mainloop_run(me->clsData->mainloop, &ret);
 /*	Media::AudioFormat af;
 	Int32 i;
 	UInt32 refStart;
@@ -428,7 +437,7 @@ void Media::PulseAudioRenderer::OnEvent()
 	this->thread.Notify();
 }
 
-Media::PulseAudioRenderer::PulseAudioRenderer(const UTF8Char *devName) : thread(PlayThread, this, CSTR("PulseAudio"))
+Media::PulseAudioRenderer::PulseAudioRenderer(UnsafeArrayOpt<const UTF8Char> devName, Text::CStringNN appName) : thread(PlayThread, this, CSTR("PulseAudio"))
 {
 	this->devName = Text::String::NewOrNullSlow(devName);
 	this->audsrc = 0;
@@ -440,6 +449,10 @@ Media::PulseAudioRenderer::PulseAudioRenderer(const UTF8Char *devName) : thread(
 	this->dataConv = false;
 	this->dataBits = 0;
 	this->dataNChannel = 0;
+	this->clsData->mainloop = pa_mainloop_new();
+	this->clsData->context = pa_context_new(pa_mainloop_get_api(this->clsData->mainloop), (const Char*)appName.v.Ptr());
+	this->clsData->stream = 0;
+	pa_context_connect(this->clsData->context, NULL, PA_CONTEXT_NOFLAGS, NULL);
 }
 
 Media::PulseAudioRenderer::~PulseAudioRenderer()
@@ -449,6 +462,9 @@ Media::PulseAudioRenderer::~PulseAudioRenderer()
 		BindAudio(0);
 	}
 	OPTSTR_DEL(this->devName);
+	pa_context_disconnect(this->clsData->context);
+	pa_context_unref(this->clsData->context);
+	pa_mainloop_free(this->clsData->mainloop);
 	MemFreeNN(this->clsData);
 }
 
@@ -469,21 +485,93 @@ Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 		this->audsrc = 0;
 		this->resampler.Delete();
 	}
+	if (this->clsData->stream)
+	{
+		pa_stream_disconnect(this->clsData->stream);
+		pa_stream_unref(this->clsData->stream);
+		this->clsData->stream = 0;
+	}
 	NN<Media::AudioSource> nnaudsrc;
 	if (!audsrc.SetTo(nnaudsrc))
 		return false;
 
 	nnaudsrc->GetFormat(fmt);
-	if (fmt.formatId != 1 && fmt.formatId != 3)
+	if (fmt.formatId == 1)
+	{
+		if (fmt.bitpersample == 8)
+		{
+			this->clsData->sampleSpec.format = PA_SAMPLE_U8;
+		}
+		else if (fmt.bitpersample == 16)
+		{
+			if (fmt.intType == Media::AudioFormat::IT_BIGENDIAN)
+			{
+				this->clsData->sampleSpec.format = PA_SAMPLE_S16BE;
+			}
+			else
+			{
+				this->clsData->sampleSpec.format = PA_SAMPLE_S16LE;
+			}
+		}
+		else if (fmt.bitpersample == 24)
+		{
+			if (fmt.intType == Media::AudioFormat::IT_BIGENDIAN)
+			{
+				this->clsData->sampleSpec.format = PA_SAMPLE_S24BE;
+			}
+			else
+			{
+				this->clsData->sampleSpec.format = PA_SAMPLE_S24LE;
+			}
+		}
+		else if (fmt.bitpersample == 32)
+		{
+			if (fmt.intType == Media::AudioFormat::IT_BIGENDIAN)
+			{
+				this->clsData->sampleSpec.format = PA_SAMPLE_S32BE;
+			}
+			else
+			{
+				this->clsData->sampleSpec.format = PA_SAMPLE_S32LE;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (fmt.formatId == 3)
+	{
+		if (fmt.intType == Media::AudioFormat::IT_BIGENDIAN)
+		{
+			this->clsData->sampleSpec.format = PA_SAMPLE_FLOAT32BE;
+		}
+		else
+		{
+			this->clsData->sampleSpec.format = PA_SAMPLE_FLOAT32LE;
+		}
+	}
+	else
 	{
 		return false;
 	}
+	this->clsData->sampleSpec.rate = fmt.frequency;
+	this->clsData->sampleSpec.channels = fmt.nChannels;
+	if (!pa_sample_spec_valid(&this->clsData->sampleSpec))
+	{
+		return false;
+	}
+	this->clsData->stream = pa_stream_new(this->clsData->context, "Stream", &this->clsData->sampleSpec, 0);
+	if (this->clsData->stream == 0)
+	{
+		return false;
+	}
+	pa_stream_set_write_callback(this->clsData->stream, PulseAudioRenderer_WriteFunc, this);
 
 	this->resampleFreq = 0;
 	this->dataConv = false;
-	this->dataBits = 16;
-	this->dataNChannel = 2;
-	
+	this->dataBits = fmt.bitpersample;
+	this->dataNChannel = fmt.nChannels;
 	return true;
 }
 
@@ -502,7 +590,12 @@ void Media::PulseAudioRenderer::Start()
 		return;
 	if (this->audsrc.IsNull())
 		return;
-	this->thread.Start();
+	if (this->clsData->stream == 0)
+		return;
+	if (pa_stream_connect_playback(this->clsData->stream, (const Char*)OPTSTR_CSTR(this->devName).v.Ptr(), 0, PA_STREAM_NOFLAGS, 0, 0) == 0)
+	{
+		this->thread.Start();
+	}
 }
 
 void Media::PulseAudioRenderer::Stop()
@@ -514,6 +607,10 @@ void Media::PulseAudioRenderer::Stop()
 	if (this->audsrc.SetTo(audsrc))
 	{
 		audsrc->Stop();
+	}
+	if (this->clsData->stream)
+	{
+		pa_stream_disconnect(this->clsData->stream);
 	}
 	this->thread.WaitForEnd();
 }
@@ -546,4 +643,9 @@ void Media::PulseAudioRenderer::SetBufferTime(UInt32 ms)
 	{
 		this->SetHWParams(this->audsrc, this->hand);
 	}*/
+}
+
+void Media::PulseAudioRenderer::WriteStream(UOSInt length)
+{
+	//////////////////////////////////////
 }

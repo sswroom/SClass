@@ -44,7 +44,7 @@ namespace Media
 		
 		void OnEvent();
 
-		PulseAudioRenderer(const UTF8Char *devName);
+		PulseAudioRenderer(UnsafeArrayOpt<const UTF8Char> devName, Text::CStringNN appName);
 		virtual ~PulseAudioRenderer();
 
 		virtual Bool IsError();
@@ -58,6 +58,8 @@ namespace Media
 
 		virtual Int32 GetDeviceVolume();
 		virtual void SetDeviceVolume(Int32 volume);
+
+		void WriteStream(UOSInt length);
 	};
 }
 #endif

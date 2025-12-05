@@ -144,7 +144,18 @@ Int64 Data::DateTimeUtil::Date2TotalDays(Int32 year, Int32 month, Int32 day)
 	Int32 currYear = year;
 	Int32 currMonth = month;
 	Int32 currDay = day;
-
+	if (currMonth < 1)
+	{
+		yearDiff = (-currMonth + 12) / 12;
+		currMonth += yearDiff * 12;
+		currYear -= yearDiff;
+	}
+	else if (currMonth > 12)
+	{
+		yearDiff = (currMonth - 1) / 12;
+		currMonth -= yearDiff * 12;
+		currYear += yearDiff;
+	}
 	if (currYear <= 2000)
 	{
 		yearDiff = 2000 - currYear;
