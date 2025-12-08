@@ -433,7 +433,7 @@ void __stdcall Media::Resizer::LanczosResizerW8_8::DoTask(AnyType obj)
 	switch (ts->funcType)
 	{
 	case FuncType::HFilter:
-		if (ts->swidth != ts->tmpbuffSize)
+		if (ts->swidth != ts->tmpbuffSize || !ts->tmpbuff.SetTo(tmpbuff))
 		{
 			if (ts->tmpbuff.SetTo(tmpbuff))
 				MemFreeAArr(tmpbuff);

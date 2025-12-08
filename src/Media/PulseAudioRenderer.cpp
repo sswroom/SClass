@@ -556,7 +556,7 @@ Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 		return false;
 	}
 	this->clsData->sampleSpec.rate = fmt.frequency;
-	this->clsData->sampleSpec.channels = fmt.nChannels;
+	this->clsData->sampleSpec.channels = (UInt8)fmt.nChannels;
 	if (!pa_sample_spec_valid(&this->clsData->sampleSpec))
 	{
 		return false;
