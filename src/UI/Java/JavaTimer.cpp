@@ -4,6 +4,11 @@
 #include "UI/Java/JavaTimer.h"
 #include <jni.h>
 
+extern "C"
+{
+	extern JNIEnv *jniEnv;
+}
+
 JNIEXPORT void JNICALL Java_TimerListener_actionPerformed(JNIEnv *env, jobject obj, jobject e)
 {
 	jclass cls = env->GetObjectClass(obj);
@@ -12,10 +17,10 @@ JNIEXPORT void JNICALL Java_TimerListener_actionPerformed(JNIEnv *env, jobject o
 	me->EventTick();
 }
 
-UI::Java::JavaTimer::JavaTimer(JNIEnv *env, UInt32 interval, UI::UIEvent handler, void *userObj) : UI::GUITimer(handler, userObj)
+UI::Java::JavaTimer::JavaTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj) : UI::GUITimer(handler, userObj)
 {
 	this->interval = interval;
-	this->env = env;
+	JNIEnv *env = jniEnv;
 	jclass cls = env->FindClass("TimerListener");
 	jmethodID mid = env->GetMethodID(cls, "<init>", "(J)V");
 	jobject tmr = env->NewObject(cls, mid, (Int64)this);
@@ -26,6 +31,7 @@ UI::Java::JavaTimer::JavaTimer(JNIEnv *env, UInt32 interval, UI::UIEvent handler
 
 UI::Java::JavaTimer::~JavaTimer()
 {
+	JNIEnv *env = jniEnv;
 	jclass cls = env->GetObjectClass(this->tmr);
 	jmethodID mid = env->GetMethodID(cls, "stop", "()V");
 	env->CallVoidMethod(this->tmr, mid);

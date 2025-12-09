@@ -14,7 +14,7 @@ namespace UI
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 			virtual void SetImage(Optional<Media::StaticImage> currImage);
-			virtual void SetImageDImg(Media::DrawImage *img);
+			virtual void SetImageDImg(Optional<Media::DrawImage> img);
 		};
 	}
 }

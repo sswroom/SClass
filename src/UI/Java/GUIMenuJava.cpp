@@ -24,7 +24,7 @@ void GUIMenu_Clicked(GtkMenuItem *widget, gpointer data)
 	menuItem->mnu->EventMenuClick(menuItem->cmdId);
 }*/
 
-UTF8Char *UI::GUIMenu::ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UnsafeArray<UTF8Char> UI::GUIMenu::ToKeyDisplay(UnsafeArray<UTF8Char> sbuff, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
 /*	if (keyModifier & KM_CONTROL)
 	{
@@ -474,7 +474,7 @@ UI::GUIMenu::~GUIMenu()
 	DEL_CLASS(this->items);*/
 }
 
-UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UOSInt UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
 /*	UOSInt id = this->itemCnt++;
 	Char buff[128];
@@ -533,7 +533,7 @@ void UI::GUIMenu::AddSeperator()
 	gtk_widget_show(menuItem);*/
 }
 
-NN<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CString name)
+NN<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CStringNN name)
 {
 	NN<UI::GUIMenu> subMenu;
 	NEW_CLASSNN(subMenu, UI::GUIMenu(true));
@@ -575,7 +575,7 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayList<ShortcutKey*>> keys)
+UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);

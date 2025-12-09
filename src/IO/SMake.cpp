@@ -10,7 +10,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/UTF8Reader.h"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -611,6 +611,13 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 		latestTime.Set(t.ToTicks());
 		return true;
 	}
+	if (this->messageWriter.SetTo(messageWriter))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("ParseSource "));
+		sb.Append(sourceFile);
+		messageWriter->WriteLine(sb.ToCString());
+	}
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 //		printf("Opening %s\r\n", fileName.v);
 	if (fs.IsError())
@@ -623,7 +630,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 		return false;
 	}
 #if defined(VERBOSE)
-	printf("Parsing source %s\r\n", fileName.v);
+	printf("Parsing source %s\r\n", fileName.v.Ptr());
 #endif
 	Int64 lastTime;
 	Int64 thisTime;
@@ -709,7 +716,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 								messageWriter->WriteLine(sb2.ToCString());
 							}
 #if defined(VERBOSE)
-							printf("Parsing header \"%s\" in source %s\r\n", prog->name->v, sourceFile.v);
+							printf("Parsing header \"%s\" in source %s\r\n", prog->name->v.Ptr(), sourceFile.v.Ptr());
 #endif
 							if (!this->ParseHeader(objList, libList, procList, headerList, thisTime, prog->name, sourceFile, objParsedProgs, tmpSb))
 							{
@@ -718,7 +725,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 #if defined(VERBOSE)
 							tmpSb->ClearStr();
 							tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
-							printf("Found new header \"%s\" with time = %s\r\n", prog->name->v, tmpSb->v);
+							printf("Found new header \"%s\" with time = %s\r\n", prog->name->v.Ptr(), tmpSb->v.Ptr());
 #endif
 							if (thisTime > lastTime)
 							{
@@ -740,7 +747,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 								if (objList->PutNN(subItem, 1) != 1)
 								{
 #if defined(VERBOSE)
-									printf("Parsing object \"%s\"\r\n", prog->name->v);
+									printf("Parsing object \"%s\"\r\n", prog->name->v.Ptr());
 #endif
 									if (!this->ParseObject(objList, libList, procList, headerList, thisTime, subItem, prog->name->ToCString(), tmpSb))
 									{
@@ -820,7 +827,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 #if defined(VERBOSE)
 				tmpSb->ClearStr();
 				tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
-				printf("Header %s found time = %s\r\n", headerFile->v, tmpSb->v);
+				printf("Header %s found time = %s\r\n", headerFile->v.Ptr(), tmpSb->v.Ptr());
 #endif
 				this->fileTimeMap.PutNN(headerFile, thisTime);
 				latestTime.Set(thisTime);
@@ -859,7 +866,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 #if defined(VERBOSE)
 			tmpSb->ClearStr();
 			tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
-			printf("Header %s found time = %s\r\n", headerFile->v, tmpSb->v);
+			printf("Header %s found time = %s\r\n", headerFile->v.Ptr(), tmpSb->v.Ptr());
 #endif
 			this->fileTimeMap.PutNN(headerFile, thisTime);
 			latestTime.Set(thisTime);
@@ -959,7 +966,7 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 #if defined(VERBOSE)
 			tmpSb->ClearStr();
 			tmpSb->AppendTSNoZone(Data::Timestamp(thisTime, Data::DateTimeUtil::GetLocalTzQhr()));
-			printf("Source file \"%s\" Time = %s\r\n", s->v, tmpSb->v);
+			printf("Source file \"%s\" Time = %s\r\n", s->v.Ptr(), tmpSb->v.Ptr());
 #endif
 			this->fileTimeMap.PutNN(s, thisTime);
 			latestTime.Set(thisTime);

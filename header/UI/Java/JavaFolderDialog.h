@@ -12,7 +12,7 @@ namespace UI
 			JavaFolderDialog();
 			virtual ~JavaFolderDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

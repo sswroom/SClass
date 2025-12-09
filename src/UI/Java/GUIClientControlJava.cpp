@@ -33,7 +33,7 @@ void UI::GUIClientControl::UpdateFont()
 	j = this->children.GetCount();
 	while (i < j)
 	{
-		this->children.GetItem(i)->UpdateFont();
+		this->children.GetItemNoCheck(i)->UpdateFont();
 		i++;
 	}
 }
@@ -43,9 +43,12 @@ void UI::GUIClientControl::ClearChildren()
 	OSInt i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		GUIControl *ctrl = this->children.RemoveAt(i);
-		ctrl->DestroyObject();
-		DEL_CLASS(ctrl);
+		NN<GUIControl> ctrl;
+		if (this->children.RemoveAt(i).SetTo(ctrl))
+		{
+			ctrl->DestroyObject();
+			ctrl.Delete();
+		}
 	}
 }
 
@@ -76,7 +79,7 @@ Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 //	printf("ClientControl Client Size: %lf, %lf\r\n", *w, *h);
 }
 
-void UI::GUIClientControl::AddChild(GUIControl *child)
+void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 {
 /*	if (this->container == 0) InitContainer();
 	this->selfResize = true;
@@ -87,12 +90,12 @@ void UI::GUIClientControl::AddChild(GUIControl *child)
 	child->SetDPI(this->hdpi, this->ddpi);*/
 }
 
-UOSInt UI::GUIClientControl::GetChildCount()
+UOSInt UI::GUIClientControl::GetChildCount() const
 {
 	return this->children.GetCount();
 }
 
-UI::GUIControl *UI::GUIClientControl::GetChild(UOSInt index)
+Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UOSInt index) const
 {
 	return this->children.GetItem(index);
 }
@@ -119,7 +122,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	Math::Coord2DDbl br;
 	Math::Size2DDbl ctrlSize;
 	Bool hasFill = false;
-	GUIControl *ctrl;
+	NN<GUIControl> ctrl;
 	DockType dt;
 
 	this->selfResize = true;
@@ -129,7 +132,7 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	j = this->children.GetCount();
 	while (i < j)
 	{
-		ctrl = this->children.GetItem(i);
+		ctrl = this->children.GetItemNoCheck(i);
 		dt = ctrl->GetDockType();
 		if (dt == UI::GUIControl::DOCK_NONE)
 		{
@@ -227,7 +230,8 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UIEvent> evt = this->resizeHandlers.GetItem(i);
+		evt.func(evt.userObj);
 	}
 }
 
@@ -245,10 +249,10 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	OSInt i = this->children.GetCount();
+	UOSInt i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		this->children.GetItem(i)->SetDPI(hdpi, ddpi);
+		this->children.GetItemNoCheck(i)->SetDPI(hdpi, ddpi);
 	}
 	this->UpdateChildrenSize(true);
 }

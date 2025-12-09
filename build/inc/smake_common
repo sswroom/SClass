@@ -5202,7 +5202,7 @@ UI/GTK/GTKTrackBar.h:
 UI/GTK/GTKVSplitter.h:
 @GTKVSplitter.o
 UI/Java/JavaButton.h:
-JavaButton.o
+@JavaButton.o
 UI/Java/JavaCheckBox.h:
 @JavaCheckBox.o
 UI/Java/JavaCheckedListBox.h:

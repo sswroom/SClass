@@ -30,7 +30,7 @@ namespace UI
 
 		virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj) = 0;
 		virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
-		virtual UOSInt InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj) = 0;
+		virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj) = 0;
 		virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj) = 0;
 		virtual AnyType RemoveItem(UOSInt index) = 0;
 		virtual AnyType GetItem(UOSInt index) = 0;
@@ -38,7 +38,7 @@ namespace UI
 		virtual UOSInt GetCount() = 0;
 		virtual void SetSelectedIndex(UOSInt index) = 0;
 		virtual UOSInt GetSelectedIndex() = 0;
-		virtual Bool GetSelectedIndices(Data::ArrayList<UInt32> *indices) = 0;
+		virtual Bool GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices) = 0;
 		virtual AnyType GetSelectedItem() = 0;
 		virtual UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Optional<Text::String> GetSelectedItemTextNew() = 0;

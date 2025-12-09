@@ -34,7 +34,7 @@
 
 extern "C"
 {
-	extern void *jniEnv;
+	extern JNIEnv *jniEnv;
 }
 
 UI::Java::JavaCore::JavaCore()
@@ -49,7 +49,7 @@ UI::Java::JavaCore::~JavaCore()
 
 void UI::Java::JavaCore::Run()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
+	JNIEnv *env = jniEnv;
 	jclass eqCls = env->FindClass("java/awt/EventQueue");
 	jmethodID mid = env->GetStaticMethodID(eqCls, "isDispatchThread", "()Z");
 	if (env->CallStaticBooleanMethod(eqCls, mid))
@@ -105,7 +105,7 @@ NN<Media::DrawEngine> UI::Java::JavaCore::CreateDrawEngine()
 	return Media::DrawEngineFactory::CreateDrawEngine();
 }
 
-Double UI::Java::JavaCore::GetMagnifyRatio(MonitorHandle *hMonitor)
+Double UI::Java::JavaCore::GetMagnifyRatio(Optional<MonitorHandle> hMonitor)
 {
 /*	Double v = gdk_screen_get_resolution(gdk_screen_get_default());
 	if (v <= 0)
@@ -132,7 +132,7 @@ void UI::Java::JavaCore::Suspend()
 
 Math::Size2D<UOSInt> UI::Java::JavaCore::GetDesktopSize()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
+	JNIEnv *env = jniEnv;
 	jclass cls;
 	jmethodID mid;
 	cls = env->FindClass("java/awt/Toolkit");
@@ -152,7 +152,7 @@ Math::Size2D<UOSInt> UI::Java::JavaCore::GetDesktopSize()
 
 Math::Coord2D<OSInt> UI::Java::JavaCore::GetCursorPos()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
+	JNIEnv *env = jniEnv;
 	jclass cls;
 	jmethodID mid;
 	cls = env->FindClass("java/awt/MouseInfo");
@@ -171,34 +171,31 @@ Math::Coord2D<OSInt> UI::Java::JavaCore::GetCursorPos()
 	return Math::Coord2D<OSInt>(x, y);
 }
 
-void UI::Java::JavaCore::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
+void UI::Java::JavaCore::SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot)
 {
 }
 
-void UI::Java::JavaCore::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
+void UI::Java::JavaCore::GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi)
 {
-	if (this->monMgr)
+	NN<Media::MonitorMgr> monMgr;
+	if (this->monMgr.SetTo(monMgr))
 	{
-		if (hdpi)
-			*hdpi = this->monMgr->GetMonitorHDPI(hMonitor);
-		if (ddpi)
-			*ddpi = this->monMgr->GetMonitorDDPI(hMonitor);
+		hdpi.Set(monMgr->GetMonitorHDPI(hMonitor));
+		ddpi.Set(monMgr->GetMonitorDDPI(hMonitor));
 	}
 	else
 	{
-		if (hdpi)
-			*hdpi = 96.0;
-		if (ddpi)
-			*ddpi = 96.0;
+		hdpi.Set(96.0);
+		ddpi.Set(96.0);
 	}
 }
 
-void UI::Java::JavaCore::SetMonitorMgr(Media::MonitorMgr *monMgr)
+void UI::Java::JavaCore::SetMonitorMgr(Optional<Media::MonitorMgr> monMgr)
 {
 	this->monMgr = monMgr;
 }
 
-Media::MonitorMgr *UI::Java::JavaCore::GetMonitorMgr()
+Optional<Media::MonitorMgr> UI::Java::JavaCore::GetMonitorMgr()
 {
 	return this->monMgr;
 }
@@ -215,12 +212,12 @@ Int32 UI::Java::JavaCore::GetScrollBarSize()
 
 void UI::Java::JavaCore::ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
-	UI::Java::JavaMessageDialog::ShowOK((JNIEnv*)jniEnv, message, title, ctrl);
+	UI::Java::JavaMessageDialog::ShowOK(jniEnv, message, title, ctrl);
 }
 
 Bool UI::Java::JavaCore::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
-	return UI::Java::JavaMessageDialog::ShowYesNo((JNIEnv*)jniEnv, message, title, ctrl);
+	return UI::Java::JavaMessageDialog::ShowYesNo(jniEnv, message, title, ctrl);
 }
 
 NN<UI::GUIButton> UI::Java::JavaCore::NewButton(NN<GUIClientControl> parent, Text::CStringNN text)
@@ -314,7 +311,7 @@ NN<UI::GUIRadioButton> UI::Java::JavaCore::NewRadioButton(NN<GUIClientControl> p
 	return ctrl;
 }
 
-NN<UI::GUIRealtimeLineChart> UI::Java::JavaCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+NN<UI::GUIRealtimeLineChart> UI::Java::JavaCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
 {
 	NN<UI::Java::JavaRealtimeLineChart> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
@@ -363,7 +360,7 @@ NN<UI::GUIVSplitter> UI::Java::JavaCore::NewVSplitter(NN<GUIClientControl> paren
 	return ctrl;
 }
 
-NN<UI::GUIFileDialog> UI::Java::JavaCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+NN<UI::GUIFileDialog> UI::Java::JavaCore::NewFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave)
 {
 	NN<UI::Java::JavaFileDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaFileDialog(compName, appName, dialogName, isSave));
@@ -391,7 +388,7 @@ NN<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Text::CString fontName, 
 	return ctrl;
 }
 
-NN<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd)
+NN<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NN<UI::GUIPanel> master, Optional<ControlHandle> parentHWnd)
 {
 	NN<UI::Java::JavaPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaPanelBase(master, *this, parentHWnd));

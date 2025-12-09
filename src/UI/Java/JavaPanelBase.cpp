@@ -3,7 +3,7 @@
 #include "UI/GUIPanel.h"
 #include "UI/Java/JavaPanelBase.h"
 
-UI::Java::JavaPanelBase::JavaPanelBase(NN<UI::GUIPanel> master, NN<UI::GUICore> ui, ControlHandle *parentHWnd)
+UI::Java::JavaPanelBase::JavaPanelBase(NN<UI::GUIPanel> master, NN<UI::GUICore> ui, Optional<ControlHandle> parentHWnd)
 {
 	this->master = master;
 }

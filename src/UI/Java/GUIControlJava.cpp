@@ -8,7 +8,7 @@
 
 extern "C"
 {
-	extern void *jniEnv;
+	extern JNIEnv *jniEnv;
 }
 
 UI::GUIControl::GUIControl(NN<UI::GUICore> ui, Optional<GUIClientControl> parent)
@@ -44,10 +44,10 @@ void *UI::GUIControl::GetFont()
 
 void UI::GUIControl::Show()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid = env->GetMethodID(cls, "setVisible", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, true);
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, true);
 /*
 	if (!this->inited)
 	{
@@ -210,7 +210,7 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	this->SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double size, Bool isBold)
+void UI::GUIControl::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double size, Bool isBold)
 {
 /*	PangoFontDescription *font = pango_font_description_new();
 	if (name)
@@ -404,7 +404,7 @@ Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 	return this->parent;
 }
 
-UI::GUIForm *UI::GUIControl::GetRootForm()
+Optional<UI::GUIForm> UI::GUIControl::GetRootForm()
 {
 	NN<UI::GUIControl> ctrl = *this;
 	Text::CStringNN objCls;
@@ -414,24 +414,24 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 		if (objCls.Equals(UTF8STRC("WinForm")))
 		{
 			if (ctrl->GetParent().IsNull())
-				return (UI::GUIForm*)ctrl.Ptr();
+				return NN<UI::GUIForm>::ConvertFrom(ctrl);
 		}
 		if (!Optional<GUIControl>::ConvertFrom(ctrl->GetParent()).SetTo(ctrl))
 			return 0;
 	}
 }
 
-ControlHandle *UI::GUIControl::GetHandle()
+Optional<ControlHandle> UI::GUIControl::GetHandle()
 {
 	return this->hwnd;
 }
 
-ControlHandle *UI::GUIControl::GetDisplayHandle()
+Optional<ControlHandle> UI::GUIControl::GetDisplayHandle()
 {
 	return this->hwnd;
 }
 
-MonitorHandle *UI::GUIControl::GetHMonitor()
+Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 {
 	return 0;
 /*
@@ -514,15 +514,16 @@ Double UI::GUIControl::GetDDPI()
 Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
 {
 	NN<Media::DrawFont> fnt;
+	NN<Text::String> fontName;
 	if (!fnt.Set((Media::DrawFont*)this->GetFont()))
 		return 0;
-	if (this->fontName == 0)
+	if (!this->fontName.SetTo(fontName))
 	{
 		return img->CloneFont(fnt);
 	}
 	else
 	{
-		fnt = img->NewFontPt(this->fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		fnt = img->NewFontPt(fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 	}
 	return fnt;
 }
@@ -1020,7 +1021,7 @@ UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 	return UI::GUIControl::GK_NONE;
 }
 
-UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(UI::GUIDropHandler *hdlr)
+UI::GUIControl::DragErrorType UI::GUIControl::HandleDropEvents(NN<UI::GUIDropHandler> hdlr)
 {
 /*	if (this->dropHdlr)
 	{

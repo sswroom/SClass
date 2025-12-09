@@ -13,7 +13,7 @@ namespace UI
 			NN<GUIPanel> master;
 
 		public:
-			JavaPanelBase(NN<GUIPanel> master, NN<GUICore> ui, ControlHandle *parentHWnd);
+			JavaPanelBase(NN<GUIPanel> master, NN<GUICore> ui, Optional<ControlHandle> parentHWnd);
 			JavaPanelBase(NN<GUIPanel> master, NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~JavaPanelBase();
 

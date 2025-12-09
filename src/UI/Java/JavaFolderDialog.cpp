@@ -13,7 +13,7 @@ UI::Java::JavaFolderDialog::~JavaFolderDialog()
 {
 }
 
-Bool UI::Java::JavaFolderDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::Java::JavaFolderDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
 	return false;
 }

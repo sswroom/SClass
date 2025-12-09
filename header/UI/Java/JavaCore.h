@@ -12,7 +12,7 @@ namespace UI
 		private:
 			Bool toExit;
 			Sync::Event waitEvt;
-			Media::MonitorMgr *monMgr;
+			Optional<Media::MonitorMgr> monMgr;
 		public:
 			JavaCore();
 			virtual ~JavaCore();
@@ -22,17 +22,17 @@ namespace UI
 			virtual void WaitForMessages();
 			virtual void Exit();
 			virtual NN<Media::DrawEngine> CreateDrawEngine();
-			virtual Double GetMagnifyRatio(MonitorHandle *hMonitor);
+			virtual Double GetMagnifyRatio(Optional<MonitorHandle> hMonitor);
 			virtual void UseDevice(Bool useSystem, Bool useDisplay);
 			virtual void SetNoDisplayOff(Bool noDispOff);
 			virtual void DisplayOff();
 			virtual void Suspend();
 			virtual Math::Size2D<UOSInt> GetDesktopSize();
 			virtual Math::Coord2D<OSInt> GetCursorPos();
-			virtual void SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot);
-			virtual void GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi);
-			virtual void SetMonitorMgr(Media::MonitorMgr *monMgr);
-			virtual Media::MonitorMgr *GetMonitorMgr();
+			virtual void SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot);
+			virtual void GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi);
+			virtual void SetMonitorMgr(Optional<Media::MonitorMgr> monMgr);
+			virtual Optional<Media::MonitorMgr> GetMonitorMgr();
 			virtual Bool IsForwarded();
 			virtual Int32 GetScrollBarSize();
 
@@ -51,19 +51,19 @@ namespace UI
 			virtual NN<GUIPictureBoxSimple> NewPictureBoxSimple(NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 			virtual NN<GUIProgressBar> NewProgressBar(NN<UI::GUIClientControl> parent, UInt64 totalCnt);
 			virtual NN<GUIRadioButton> NewRadioButton(NN<GUIClientControl> parent, Text::CStringNN initText, Bool selected);
-			virtual NN<GUIRealtimeLineChart> NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
+			virtual NN<GUIRealtimeLineChart> NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess);
 			virtual NN<GUITabControl> NewTabControl(NN<GUIClientControl> parent);
 			virtual NN<GUITextBox> NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText);
 			virtual NN<GUITextBox> NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine);
 			virtual NN<GUITrackBar> NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 			virtual NN<GUIHSplitter> NewHSplitter(NN<UI::GUIClientControl> parent, Int32 width, Bool isRight);
 			virtual NN<GUIVSplitter> NewVSplitter(NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom);
-			virtual NN<GUIFileDialog> NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
+			virtual NN<GUIFileDialog> NewFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave);
 			virtual NN<GUIFolderDialog> NewFolderDialog();
 			virtual NN<GUIFontDialog> NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 			virtual NN<GUIFontDialog> NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 
-			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd);
+			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, Optional<ControlHandle> parentHWnd);
 			virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent);
 		};
 	}

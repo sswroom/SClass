@@ -13,7 +13,7 @@ void UI::Java::JavaMessageDialog::ShowOK(JNIEnv *env, Text::CStringNN message, T
 	jfieldID fid = env->GetStaticFieldID(cls, "PLAIN_MESSAGE", "I");
 	if (meth == 0 || fid == 0)
 		return;
-	env->CallStaticVoidMethod(cls, meth, 0, env->NewStringUTF((const Char*)message.v), env->NewStringUTF((const Char*)title.v), env->GetStaticIntField(cls, fid));
+	env->CallStaticVoidMethod(cls, meth, 0, env->NewStringUTF((const Char*)message.v.Ptr()), env->NewStringUTF((const Char*)title.v.Ptr()), env->GetStaticIntField(cls, fid));
 }
 
 Bool UI::Java::JavaMessageDialog::ShowYesNo(JNIEnv *env, Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
@@ -27,5 +27,5 @@ Bool UI::Java::JavaMessageDialog::ShowYesNo(JNIEnv *env, Text::CStringNN message
 	jfieldID fid3 = env->GetStaticFieldID(cls, "YES_OPTION", "I");
 	if (meth == 0 || fid == 0 || fid2 == 0 || fid3 == 0)
 		return false;
-	return env->CallStaticIntMethod(cls, meth, 0, env->NewStringUTF((const Char*)message.v), env->NewStringUTF((const Char*)title.v), env->GetStaticIntField(cls, fid2), env->GetStaticIntField(cls, fid)) == env->GetStaticIntField(cls, fid3);
+	return env->CallStaticIntMethod(cls, meth, 0, env->NewStringUTF((const Char*)message.v.Ptr()), env->NewStringUTF((const Char*)title.v.Ptr()), env->GetStaticIntField(cls, fid2), env->GetStaticIntField(cls, fid)) == env->GetStaticIntField(cls, fid3);
 }

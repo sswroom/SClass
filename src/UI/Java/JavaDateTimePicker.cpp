@@ -30,6 +30,7 @@ void UI::Java::JavaDateTimePicker::GetSelectedTime(NN<Data::DateTime> dt)
 
 Data::Timestamp UI::Java::JavaDateTimePicker::GetSelectedTime()
 {
+	return nullptr;
 }
 
 void UI::Java::JavaDateTimePicker::SetFormat(const Char *format)

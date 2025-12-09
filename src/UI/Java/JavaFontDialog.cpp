@@ -15,7 +15,7 @@ UI::Java::JavaFontDialog::~JavaFontDialog()
 {
 }
 
-Bool UI::Java::JavaFontDialog::ShowDialog(ControlHandle *ownerHandle)
+Bool UI::Java::JavaFontDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 {
 	return false;
 }

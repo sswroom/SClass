@@ -11,32 +11,11 @@ namespace UI
 	{
 		class JavaFileDialog : public UI::GUIFileDialog
 		{
-		private:
-			IO::Registry *reg;
-			WChar *dialogName;
-			const WChar *lastName;
-			Optional<Text::String> fileName;
-			Bool isSave;
-			Bool allowMulti;
-			Data::ArrayListStringNN patterns;
-			Data::ArrayListStringNN names;
-			Data::ArrayListStringNN fileNames;
-			UOSInt filterIndex;
-
-			void ClearFileNames();
 		public:
-			JavaFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave);
+			JavaFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName, UnsafeArray<const WChar> dialogName, Bool isSave);
 			virtual ~JavaFileDialog();
 
-			virtual void AddFilter(Text::CStringNN pattern, Text::CStringNN name);
-			virtual UOSInt GetFilterIndex();
-			virtual void SetFileName(Text::CString fileName);
-			virtual NN<Text::String> GetFileName() const;
-			virtual UOSInt GetFileNameCount();
-			virtual Optional<Text::String> GetFileNames(UOSInt index);
-			virtual void SetAllowMultiSel(Bool allowMulti);
-
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

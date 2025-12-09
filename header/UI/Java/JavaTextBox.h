@@ -18,11 +18,8 @@ namespace UI
 			virtual void SetText(Text::CStringNN text);
 			virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff);
 			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
-			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-			virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);
-			virtual void HandleKeyDown(UI::KeyEvent hdlr, void *userObj);
 			void SetWordWrap(Bool wordWrap);
 			void SelectAll();
 		};

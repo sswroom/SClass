@@ -69,7 +69,7 @@ void UI::Java::JavaTabControl::SetTabPageName(UOSInt index, Text::CStringNN name
 		return;
 }
 
-UTF8Char *UI::Java::JavaTabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Java::JavaTabControl::GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
@@ -92,7 +92,8 @@ void UI::Java::JavaTabControl::OnSizeChanged(Bool updateScn)
 	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+		Data::CallbackStorage<UIEvent> evt = this->resizeHandlers.GetItem(i);
+		evt.func(evt.userObj);
 	}
 }
 

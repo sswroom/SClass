@@ -22,10 +22,10 @@ namespace UI
 
 			virtual void BeginUpdate();
 			virtual void EndUpdate();
-			virtual UOSInt AddItem(NN<Text::String> itemText, void *itemObj);
-			virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
-			virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, void *itemObj);
-			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
+			virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
+			virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
 			virtual AnyType RemoveItem(UOSInt index);
 			virtual void ClearItems();
 			virtual UOSInt GetCount();

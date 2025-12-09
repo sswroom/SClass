@@ -12,7 +12,7 @@
 
 extern "C"
 {
-	extern void *jniEnv;
+	extern JNIEnv *jniEnv;
 }
 
 
@@ -80,9 +80,9 @@ JNIEXPORT void JNICALL Java_JFrameWindowListener_windowClosing(JNIEnv *env, jobj
 	jmethodID mid = env->GetMethodID(cls, "getMe", "()J");
 	UI::GUIForm *me = (UI::GUIForm*)env->CallLongMethod(obj, mid);
 	me->EventClosed();
-	cls = env->GetObjectClass((jobject)me->GetHandle());
+	cls = env->GetObjectClass((jobject)me->GetHandle().OrNull());
 	mid = env->GetMethodID(cls, "removeWindowListener", "(Ljava/awt/event/WindowListener;)V");
-	env->CallVoidMethod((jobject)me->GetHandle(), mid, obj);
+	env->CallVoidMethod((jobject)me->GetHandle().OrNull(), mid, obj);
 }
 
 //public native void windowDeactivated(java.awt.event.WindowEvent e);
@@ -156,12 +156,11 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	this->okBtn = 0;
 	this->cancelBtn = 0;
 	this->closingHdlr = 0;
-	this->closingHdlrObj = 0;
 	this->menu = 0;
 	this->hAcc = 0;
 	this->hwnd = 0;
 
-	JNIEnv *env = (JNIEnv*)jniEnv;
+	JNIEnv *env = jniEnv;
 	jclass cls = env->FindClass("javax/swing/JFrame");
 	if (cls == 0)
 	{
@@ -177,14 +176,14 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	mid = env->GetMethodID(cls, "getContentPane", "()Ljava/awt/Container;");
 	if (mid)
 	{
-		this->container = env->CallObjectMethod((jobject)this->hwnd, mid);
+		this->container = env->CallObjectMethod((jobject)this->hwnd.OrNull(), mid);
 	}
 	cls = env->FindClass("JFrameWindowListener");
 	mid = env->GetMethodID(cls, "<init>", "(J)V");
 	jobject listener = env->NewObject(cls, mid, this);
-	cls = env->GetObjectClass((jobject)this->hwnd);
+	cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	mid = env->GetMethodID(cls, "addWindowListener", "(Ljava/awt/event/WindowListener;)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, listener);
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, listener);
 
 	this->selfResize = true;
 	Double w;
@@ -218,11 +217,11 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 		initX = ((w - initW) * 0.5);
 		initY = ((h - initH) * 0.5);
 	}
-	cls = env->GetObjectClass((jobject)this->hwnd);
+	cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	mid = env->GetMethodID(cls, "setBounds", "(IIII)V");
 	if (mid)
 	{
-		env->CallVoidMethod((jobject)this->hwnd, mid, Double2Int32(initX), Double2Int32(initY), Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
+		env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, Double2Int32(initX), Double2Int32(initY), Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
 	}
 	//	g_signal_connect((GtkWindow*)this->hwnd, "draw", G_CALLBACK(GUIForm_Draw), this);
 	this->lxPos = initX;
@@ -235,7 +234,7 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 UI::GUIForm::~GUIForm()
 {
 	this->timers.DeleteAll();
-	SDEL_CLASS(this->menu);
+	this->menu.Delete();
 }
 
 /*void UI::GUIForm::SetText(const WChar *text)
@@ -247,8 +246,8 @@ UI::GUIForm::~GUIForm()
 
 void UI::GUIForm::SetFormState(FormState fs)
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jfieldID fid;
 	switch (fs)
 	{
@@ -265,14 +264,15 @@ void UI::GUIForm::SetFormState(FormState fs)
 		return;
 	}
 	jmethodID mid = env->GetMethodID(cls, "setExtendedState", "(I)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, env->GetStaticIntField(cls, fid));
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, env->GetStaticIntField(cls, fid));
 }
 
-UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
+UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
 {
-	if (owner)
+	NN<UI::GUIForm> nnowner;
+	if (owner.SetTo(nnowner))
 	{
-		owner->SetEnabled(false);
+		nnowner->SetEnabled(false);
 	}
 	this->isDialog = true;
 	this->Show();
@@ -281,10 +281,10 @@ UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(UI::GUIForm *owner)
 		Sync::SimpleThread::Sleep(100);
 		//gtk_main_iteration();
 	}
-	if (owner)
+	if (owner.SetTo(nnowner))
 	{
-		owner->SetEnabled(true);
-		owner->MakeForeground();
+		nnowner->SetEnabled(true);
+		nnowner->MakeForeground();
 	}
 	return this->dialogResult;
 }
@@ -300,45 +300,45 @@ void UI::GUIForm::SetDialogResult(DialogResult dr)
 
 void UI::GUIForm::SetAlwaysOnTop(Bool alwaysOnTop)
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid = env->GetMethodID(cls, "setAlwaysOnTop", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, alwaysOnTop);
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, alwaysOnTop);
 }
 
 void UI::GUIForm::MakeForeground()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid = env->GetMethodID(cls, "requestFocus", "()V");
-	env->CallVoidMethod((jobject)this->hwnd, mid);
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid);
 }
 
 void UI::GUIForm::Close()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid = env->GetMethodID(cls, "setVisible", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, false);
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, false);
 }
 
 void UI::GUIForm::SetText(Text::CStringNN text)
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid = env->GetMethodID(cls, "setTitle", "(Ljava/lang/String;)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, env->NewStringUTF((const Char*)text.v));
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, env->NewStringUTF((const Char*)text.v.Ptr()));
 }
 
 Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid;
 	mid = env->GetMethodID(cls, "getWidth", "()I");
-	Int32 width = env->CallIntMethod((jobject)this->hwnd, mid) * this->ddpi / this->hdpi;
+	Int32 width = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid) * this->ddpi / this->hdpi;
 	mid = env->GetMethodID(cls, "getHeight", "()I");
-	Int32 height = env->CallIntMethod((jobject)this->hwnd, mid) * this->ddpi / this->hdpi;
+	Int32 height = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid) * this->ddpi / this->hdpi;
 	return Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height);
 //	printf("Form GetSizeP: %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
@@ -350,20 +350,20 @@ void UI::GUIForm::SetExitOnClose(Bool exitOnClose)
 
 void UI::GUIForm::SetNoResize(Bool noResize)
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid = env->GetMethodID(cls, "setResizable", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd, mid, !noResize);
+	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, !noResize);
 	if (noResize)
 	{
 	//	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((this->lxPos2 - this->lxPos)* this->hdpi / 96.0), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
 	}
 }
 
-NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
+NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
 {
 	NN<UI::Java::JavaTimer> tmr;
-	NEW_CLASSNN(tmr, UI::Java::JavaTimer((JNIEnv*)jniEnv, interval, handler, userObj));
+	NEW_CLASSNN(tmr, UI::Java::JavaTimer(interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
@@ -383,12 +383,9 @@ void UI::GUIForm::RemoveTimer(NN<UI::GUITimer> tmr)
 	}
 }
 
-void UI::GUIForm::SetMenu(UI::GUIMainMenu *menu)
+void UI::GUIForm::SetMenu(NN<UI::GUIMainMenu> menu)
 {
-	if (this->menu)
-	{
-		DEL_CLASS(this->menu);
-	}
+	this->menu.Delete();
 /*	if (this->container == 0) this->InitContainer();
 	ClientControlData *data = (ClientControlData*)this->container;
 	GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
@@ -404,7 +401,7 @@ void UI::GUIForm::SetMenu(UI::GUIMainMenu *menu)
 	this->UpdateHAcc();*/
 }
 
-UI::GUIMainMenu *UI::GUIForm::GetMenu()
+Optional<UI::GUIMainMenu> UI::GUIForm::GetMenu()
 {
 	return this->menu;
 }
@@ -414,20 +411,20 @@ void UI::GUIForm::UpdateMenu()
 	this->UpdateHAcc();
 }
 
-void UI::GUIForm::SetDefaultButton(UI::GUIButton *btn)
+void UI::GUIForm::SetDefaultButton(NN<UI::GUIButton> btn)
 {
 	this->okBtn = btn;
 //	btn->SetDefaultBtnLook();
 }
 
-void UI::GUIForm::SetCancelButton(UI::GUIButton *btn)
+void UI::GUIForm::SetCancelButton(NN<UI::GUIButton> btn)
 {
 	this->cancelBtn = btn;
 }
 
 Math::Size2DDbl UI::GUIForm::GetClientSize()
 {
-	JNIEnv *env = (JNIEnv*)jniEnv;
+	JNIEnv *env = jniEnv;
 	jclass cls = env->GetObjectClass((jobject)this->container);
 	jmethodID mid;
 	mid = env->GetMethodID(cls, "getWidth", "()I");
@@ -463,12 +460,12 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 	Double newSize;
 	int outW;
 	int outH;
-	JNIEnv *env = (JNIEnv*)jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd);
+	JNIEnv *env = jniEnv;
+	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
 	jmethodID mid = env->GetMethodID(cls, "getWidth", "()I");
-	outW = env->CallIntMethod((jobject)this->hwnd, mid);
+	outW = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid);
 	mid = env->GetMethodID(cls, "getHeight", "()I");
-	outH = env->CallIntMethod((jobject)this->hwnd, mid);
+	outH = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid);
 	if (outW != -1)
 	{
 		newSize = this->lxPos + outW * this->ddpi / this->hdpi;
@@ -494,7 +491,8 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		OSInt i = this->resizeHandlers.GetCount();
 		while (i-- > 0)
 		{
-			this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
+			Data::CallbackStorage<UI::UIEvent> evt = this->resizeHandlers.GetItem(i);
+			evt.func(evt.userObj);
 		}
 		this->selfResize = false;
 	}
@@ -511,7 +509,8 @@ void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 	i = this->menuClickedHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->menuClickedHandlers.GetItem(i)(this->menuClickedHandlersObj.GetItem(i), cmdId);
+		Data::CallbackStorage<UI::MenuEvent> evt = this->menuClickedHandlers.GetItem(i);
+		evt.func(evt.userObj, cmdId);
 	}
 }
 
@@ -521,16 +520,14 @@ void UI::GUIForm::ShowMouseCursor(Bool toShow)
 //	gdk_window_set_cursor(gtk_widget_get_window((GtkWidget*)this->hwnd), cursor);
 }
 
-void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, void *userObj)
+void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, AnyType userObj)
 {
-	this->closeHandlers.Add(handler);
-	this->closeHandlersObj.Add(userObj);
+	this->closeHandlers.Add(Data::CallbackStorage<FormClosedEvent>(handler, userObj));
 }
 
-void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
+void UI::GUIForm::HandleDropFiles(FileEvent handler, AnyType userObj)
 {
-	this->dropFileHandlers.Add(handler);
-	this->dropFileHandlersObj.Add(userObj);
+	this->dropFileHandlers.Add({handler, userObj});
 /*	static GtkTargetEntry target_table[] = {
 	{ (gchar*)"text/uri-list", 0, 0 }
 	};
@@ -539,28 +536,24 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
 	g_signal_connect((GtkWindow*)this->hwnd, "drag-data-received", G_CALLBACK(GUIForm_OnFileDrop), this);*/
 }
 
-void UI::GUIForm::HandleMenuClicked(MenuEvent handler, void *userObj)
+void UI::GUIForm::HandleMenuClicked(MenuEvent handler, AnyType userObj)
 {
-	this->menuClickedHandlers.Add(handler);
-	this->menuClickedHandlersObj.Add(userObj);
+	this->menuClickedHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleKeyDown(KeyEvent handler, void *userObj)
+void UI::GUIForm::HandleKeyDown(KeyEvent handler, AnyType userObj)
 {
-	this->keyDownHandlers.Add(handler);
-	this->keyDownHandlersObj.Add(userObj);
+	this->keyDownHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::HandleKeyUp(KeyEvent handler, void *userObj)
+void UI::GUIForm::HandleKeyUp(KeyEvent handler, AnyType userObj)
 {
-	this->keyUpHandlers.Add(handler);
-	this->keyUpHandlersObj.Add(userObj);
+	this->keyUpHandlers.Add({handler, userObj});
 }
 
-void UI::GUIForm::SetClosingHandler(FormClosingEvent handler, void *userObj)
+void UI::GUIForm::SetClosingHandler(FormClosingEvent handler, AnyType userObj)
 {
-	this->closingHdlr = handler;
-	this->closingHdlrObj = userObj;
+	this->closingHdlr = {handler, userObj};
 }
 
 void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
@@ -584,18 +577,19 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	UOSInt i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		this->children.GetItem(i)->SetDPI(hdpi, ddpi);
+		this->children.GetItemNoCheck(i)->SetDPI(hdpi, ddpi);
 	}
 	this->UpdateChildrenSize(true);
 }
 
 void UI::GUIForm::EventClosed()
 {
-	OSInt i;
+	UOSInt i;
 	i = this->closeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->closeHandlers.GetItem(i)(this->closeHandlersObj.GetItem(i), this);
+		Data::CallbackStorage<FormClosedEvent> evt = this->closeHandlers.GetItem(i);
+		evt.func(evt.userObj, *this);
 	}
 	if (this->exitOnClose)
 	{
@@ -624,13 +618,14 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 
-void UI::GUIForm::OnFileDrop(NN<Text::String> *files, UOSInt nFiles)
+void UI::GUIForm::OnFileDrop(Data::DataArray<NN<Text::String>> files)
 {
 	OSInt i;
 	i = this->dropFileHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->dropFileHandlers.GetItem(i)(this->dropFileHandlersObj.GetItem(i), files, nFiles);
+		Data::CallbackStorage<FileEvent> evt = this->dropFileHandlers.GetItem(i);
+		evt.func(evt.userObj, files);
 	}
 }
 

@@ -10,7 +10,7 @@
 
 extern "C"
 {
-	extern void *jniEnv;
+	extern JNIEnv *jniEnv;
 }
 
 struct UI::Clipboard::ClassData
@@ -19,13 +19,13 @@ struct UI::Clipboard::ClassData
 };
 
 
-UI::Clipboard::Clipboard(void *hwnd)
+UI::Clipboard::Clipboard(Optional<ControlHandle> hwnd)
 {
-	ClassData *data = MemAlloc(ClassData, 1);
+	NN<ClassData> data = MemAllocNN(ClassData);
 	data->clipboard = 0;
 	this->clsData = data;
 
-	JNIEnv *env = (JNIEnv*)jniEnv;
+	JNIEnv *env = jniEnv;
 	jclass cls = env->FindClass("java/awt/Toolkit");
 	if (cls == 0)
 	{
@@ -41,11 +41,11 @@ UI::Clipboard::Clipboard(void *hwnd)
 
 UI::Clipboard::~Clipboard()
 {
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 
-UOSInt UI::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
+UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
 {
 	if (this->clsData->clipboard == 0)
 		return 0;
@@ -100,7 +100,7 @@ Bool UI::Clipboard::GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayList<Text::String *> *fileNames)
+UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStringNN> fileNames)
 {
 /*	if (!this->succ)
 		return Win32::Clipboard::FPT_NONE;
@@ -187,13 +187,9 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayList<Text::S
 	return UI::Clipboard::FPT_NONE;
 }
 
-void UI::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
+void UI::Clipboard::FreeDataFiles(NN<Data::ArrayListStringNN> fileNames)
 {
-	OSInt i = fileNames->GetCount();;
-	while (i-- > 0)
-	{
-		fileNames->GetItem(i)->Release();
-	}
+	fileNames->FreeAll();
 }
 
 Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilderUTF8> sb, UInt32 tymed)
@@ -298,7 +294,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	return false;
 }
 
-Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
+Bool UI::Clipboard::SetString(Optional<ControlHandle> hWndOwner, Text::CStringNN s)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -309,7 +305,7 @@ Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
 	return false;
 }
 
-Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb)
+Bool UI::Clipboard::GetString(Optional<ControlHandle> hWndOwner, NN<Text::StringBuilderUTF8> sb)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -328,7 +324,7 @@ Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUT
 	return false;
 }
 
-UTF8Char *UI::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize)
+UnsafeArray<UTF8Char> UI::Clipboard::GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UOSInt buffSize)
 {
 /*	if (fmtId >= 128)
 	{

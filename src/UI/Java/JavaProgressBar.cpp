@@ -18,7 +18,7 @@ OSInt UI::Java::JavaProgressBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::Java::JavaProgressBar::ProgressStart(Text::CString name, UInt64 count)
+void UI::Java::JavaProgressBar::ProgressStart(Text::CStringNN name, UInt64 count)
 {
 	this->totalCnt = count;
 }

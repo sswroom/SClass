@@ -13,32 +13,32 @@ UI::Java::JavaListBox::~JavaListBox()
 {
 }
 
-UOSInt UI::Java::JavaListBox::AddItem(NN<Text::String> itemText, void *itemObj)
+UOSInt UI::Java::JavaListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-UOSInt UI::Java::JavaListBox::AddItem(Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Java::JavaListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-UOSInt UI::Java::JavaListBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+UOSInt UI::Java::JavaListBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-UOSInt UI::Java::JavaListBox::InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj)
+UOSInt UI::Java::JavaListBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
 	return 0;
 }
 
-void *UI::Java::JavaListBox::RemoveItem(UOSInt index)
+AnyType UI::Java::JavaListBox::RemoveItem(UOSInt index)
 {
 	return 0;
 }
 
-void *UI::Java::JavaListBox::GetItem(UOSInt index)
+AnyType UI::Java::JavaListBox::GetItem(UOSInt index)
 {
 	return 0;
 }
@@ -61,17 +61,17 @@ UOSInt UI::Java::JavaListBox::GetSelectedIndex()
 	return INVALID_INDEX;
 }
 
-Bool UI::Java::JavaListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
+Bool UI::Java::JavaListBox::GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices)
 {
 	return false;
 }
 
-void *UI::Java::JavaListBox::GetSelectedItem()
+AnyType UI::Java::JavaListBox::GetSelectedItem()
 {
 	return 0;
 }
 
-UTF8Char *UI::Java::JavaListBox::GetSelectedItemText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Java::JavaListBox::GetSelectedItemText(UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }
@@ -81,7 +81,7 @@ Optional<Text::String> UI::Java::JavaListBox::GetSelectedItemTextNew()
 	return 0;
 }
 
-UTF8Char *UI::Java::JavaListBox::GetItemText(UTF8Char *buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::Java::JavaListBox::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
 {
 	return 0;
 }

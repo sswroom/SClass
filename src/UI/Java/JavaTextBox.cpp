@@ -19,7 +19,7 @@ void UI::Java::JavaTextBox::SetReadOnly(Bool isReadOnly)
 {
 }
 
-void UI::Java::JavaTextBox::SetPasswordChar(WChar c)
+void UI::Java::JavaTextBox::SetPasswordChar(UTF32Char c)
 {
 }
 

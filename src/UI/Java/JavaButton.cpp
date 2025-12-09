@@ -19,7 +19,7 @@ void UI::Java::JavaButton::SetText(Text::CStringNN text)
 {
 }
 
-void UI::Java::JavaButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
+void UI::Java::JavaButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
 {
 }
 

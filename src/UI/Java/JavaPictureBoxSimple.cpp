@@ -23,6 +23,6 @@ void UI::Java::JavaPictureBoxSimple::SetImage(Optional<Media::StaticImage> currI
 {
 }
 
-void UI::Java::JavaPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
+void UI::Java::JavaPictureBoxSimple::SetImageDImg(Optional<Media::DrawImage> img)
 {
 }

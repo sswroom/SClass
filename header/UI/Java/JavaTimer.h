@@ -10,12 +10,11 @@ namespace UI
 		class JavaTimer : public GUITimer
 		{
 		private:
-			JNIEnv *env;
 			jobject tmr;
 			UInt32 interval;
 
 		public:
-			JavaTimer(JNIEnv *env, UInt32 interval, UI::UIEvent handler, void *userObj);
+			JavaTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj);
 			virtual ~JavaTimer();
 		};
 	}

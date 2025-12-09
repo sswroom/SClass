@@ -13,7 +13,7 @@ namespace UI
 			JavaFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic);
 			virtual ~JavaFontDialog();
 
-			virtual Bool ShowDialog(ControlHandle *ownerHandle);
+			virtual Bool ShowDialog(Optional<ControlHandle> ownerHandle);
 		};
 	}
 }

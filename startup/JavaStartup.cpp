@@ -11,12 +11,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl);
 
 extern "C"
 {
-	void *jniEnv;
+	JNIEnv *jniEnv;
 }
 
 struct LinuxProgControl : public Core::ProgControl
 {
-	UTF8Char **argv;
+	UnsafeArray<UnsafeArray<UTF8Char>> argv;
 	OSInt argc;
 };
 
@@ -40,7 +40,7 @@ Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgCo
 	return ui;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UnsafeArray<UnsafeArray<UTF8Char>> __stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	NN<LinuxProgControl> ctrl = NN<LinuxProgControl>::ConvertFrom(progCtrl);
 	cmdCnt.Set((UOSInt)ctrl->argc);
@@ -73,14 +73,14 @@ extern "C"
 		jniEnv = env;
 
 		conCtrl.argc = env->GetArrayLength(args) + 1;
-		conCtrl.argv = MemAlloc(UTF8Char*, conCtrl.argc);
-		conCtrl.argv[0] = (UTF8Char*)Text::StrCopyNew("java");
+		conCtrl.argv = MemAllocArr(UnsafeArray<UTF8Char>, conCtrl.argc);
+		conCtrl.argv[0] = UnsafeArray<UTF8Char>::ConvertFrom(Text::StrCopyNew(U8STR("java")));
 		i = 1;
 		while (i < conCtrl.argc)
 		{
 			sobj = env->GetObjectArrayElement(args, i - 1);
 			strArr = env->GetStringChars((jstring)sobj, &isCopy);
-			conCtrl.argv[i] = (UTF8Char*)Text::StrToUTF8New((const UTF16Char*)strArr);
+			conCtrl.argv[i] = UnsafeArray<UTF8Char>::ConvertFrom(Text::StrToUTF8New((const UTF16Char*)strArr));
 			i++;
 		}
 
@@ -90,9 +90,9 @@ extern "C"
 		i = conCtrl.argc;
 		while (i-- > 0)
 		{
-			Text::StrDelNew(conCtrl.argv[i]);
+			Text::StrDelNew(UnsafeArray<const UTF8Char>(conCtrl.argv[i]));
 		}
-		MemFree(conCtrl.argv);
+		MemFreeArr(conCtrl.argv);
 		Core::CoreEnd();
 		return ret;
 	}

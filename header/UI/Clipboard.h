@@ -21,15 +21,15 @@ namespace UI
 		struct ClassData;
 		
 		Bool succ;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
 		Clipboard(Optional<ControlHandle> hwnd);
 		~Clipboard();
 
-		UOSInt GetDataFormats(Data::ArrayList<UInt32> *dataTypes);
+		UOSInt GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes);
 		Bool GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb);
-		FilePasteType GetDataFiles(Data::ArrayListStringNN *fileNames);
-		void FreeDataFiles(Data::ArrayListStringNN *fileNames);
+		FilePasteType GetDataFiles(NN<Data::ArrayListStringNN> fileNames);
+		void FreeDataFiles(NN<Data::ArrayListStringNN> fileNames);
 
 	public:
 		static Bool GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilderUTF8> sb, UInt32 tymed);
