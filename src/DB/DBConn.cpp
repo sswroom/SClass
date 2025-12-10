@@ -295,6 +295,10 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			}
 			cmd.Delete();
 		}
+		else
+		{
+			printf("DBConn: Error in parsing create sql: %s\r\n", sb.v.Ptr());
+		}
 		if (tab)
 		{
 			sql.Clear();

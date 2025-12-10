@@ -144,7 +144,7 @@ UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	return ret;
 }
 
-UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj)
+UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
 {
 	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
@@ -296,7 +296,7 @@ UOSInt UI::GTK::GTKListBox::GetSelectedIndex()
 	return (UInt32)gtk_list_box_row_get_index(row);
 }
 
-Bool UI::GTK::GTKListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
+Bool UI::GTK::GTKListBox::GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices)
 {
 	GList *list = gtk_list_box_get_selected_rows((GtkListBox*)this->listbox);
 	GList *curr = list;

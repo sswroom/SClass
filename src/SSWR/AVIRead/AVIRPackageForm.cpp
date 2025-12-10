@@ -1108,9 +1108,9 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			UI::Clipboard clipboard(this->hwnd);
 			Data::ArrayListStringNN fileNames;
 			UI::Clipboard::FilePasteType fpt;
-			fpt = clipboard.GetDataFiles(&fileNames);
+			fpt = clipboard.GetDataFiles(fileNames);
 			this->PasteFiles(fileNames, fpt == UI::Clipboard::FPT_MOVE);
-			clipboard.FreeDataFiles(&fileNames);
+			clipboard.FreeDataFiles(fileNames);
 		}
 		break;
 	case MNU_COPYTO:

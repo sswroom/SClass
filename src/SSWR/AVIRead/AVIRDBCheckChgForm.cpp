@@ -2344,11 +2344,14 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->cboDBType->AddItem(CSTR("MySQL"), (void*)DB::SQLType::MySQL);
 	this->cboDBType->AddItem(CSTR("SQL Server"), (void*)DB::SQLType::MSSQL);
 	this->cboDBType->AddItem(CSTR("PostgreSQL"), (void*)DB::SQLType::PostgreSQL);
+	this->cboDBType->AddItem(CSTR("SQLite"), (void*)DB::SQLType::SQLite);
 	DB::SQLType sqlType = this->GetDBSQLType();
 	if (sqlType == DB::SQLType::MSSQL)
 		this->cboDBType->SetSelectedIndex(1);
 	else if (sqlType == DB::SQLType::PostgreSQL)
 		this->cboDBType->SetSelectedIndex(2);
+	else if (sqlType == DB::SQLType::SQLite)
+		this->cboDBType->SetSelectedIndex(3);
 	else
 		this->cboDBType->SetSelectedIndex(0);
 	this->chkAxisAware = ui->NewCheckBox(*this, CSTR("Axis-Aware (MySQL >=8)"), false);

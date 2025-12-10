@@ -163,7 +163,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 	Data::ArrayList<UOSInt> urlLenList;
 	Data::ArrayList<const UTF8Char *> descList;
 	UI::Clipboard clipboard(me->GetHandle());
-	clipboard.GetDataFormats(&formats);
+	clipboard.GetDataFormats(formats);
 	i = formats.GetCount();
 	while (i-- > 0)
 	{

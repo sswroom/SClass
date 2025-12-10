@@ -13,10 +13,10 @@ namespace DB
 	{
 	private:
 		NN<Text::String> fileName;
-		void *db;
+		AnyType db;
 //		Data::ArrayList<Text::CString> tableNames;
 		Bool delOnClose;
-		Text::String *lastErrMsg;
+		Optional<Text::String> lastErrMsg;
 
 		void Init();
 	public:
@@ -48,7 +48,7 @@ namespace DB
 		Bool IsError();
 		NN<Text::String> GetFileName();
 
-		static Optional<Math::Geometry::Vector2D> GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
+		static Optional<Math::Geometry::Vector2D> GPGeometryParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		
 		static Optional<DBTool> CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix);
 		static Optional<DBTool> CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix);
@@ -60,13 +60,13 @@ namespace DB
 		typedef struct
 		{
 			DB::DBUtil::ColType colType;
-			void *colData;
+			AnyType colData;
 			Int64 dataVal;
 			Bool isNull;
 		} ColumnData;
 	private:
 		NN<SQLiteFile> conn;
-		void *hStmt;
+		AnyType hStmt;
 		UOSInt colCnt;
 		UnsafeArray<DB::DBUtil::ColType> colTypes;
 		Bool isFirst;
@@ -74,7 +74,7 @@ namespace DB
 		
 		void UpdateColTypes();
 	public:
-		SQLiteReader(NN<SQLiteFile> conn, void *hStmt);
+		SQLiteReader(NN<SQLiteFile> conn, AnyType hStmt);
 		~SQLiteReader();
 
 		virtual Bool ReadNext();

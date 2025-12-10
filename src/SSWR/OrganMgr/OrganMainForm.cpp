@@ -811,7 +811,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 				Data::ArrayList<UInt32> formats;
 				UInt32 filePathFmt = (UInt32)-1;
 				UInt32 urlFmt = (UInt32)-1;
-				clipboard.GetDataFormats(&formats);
+				clipboard.GetDataFormats(formats);
 				i = 0;
 				j = formats.GetCount();
 				while (i < j)
@@ -1256,7 +1256,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickClicked(AnyType userObj
 	UOSInt i;
 	UOSInt j;
 	NN<OrganImages> imgs;
-	me->lbImage->GetSelectedIndices(&sels);
+	me->lbImage->GetSelectedIndices(sels);
 	if (sels.GetCount() <= 0)
 		return;
 	if (me->inputMode == IM_SPECIES)
@@ -1298,7 +1298,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImagePickAddClicked(AnyType user
 	UOSInt i;
 	UOSInt j;
 	NN<OrganImages> imgs;
-	me->lbImage->GetSelectedIndices(&sels);
+	me->lbImage->GetSelectedIndices(sels);
 	if (sels.GetCount() <= 0)
 		return;
 	if (me->pickObjs.GetCount() > 0)
@@ -1380,7 +1380,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPickClicked(AnyType userObj)
 	NN<OrganGroupItem> gi;
 	Data::ArrayListUInt32 sels;
 	Data::ArrayListNN<OrganGroupItem> newList;
-	me->lbObj->GetSelectedIndices(&sels);
+	me->lbObj->GetSelectedIndices(sels);
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -1414,7 +1414,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(AnyType userObj)
 	{
 		Data::ArrayListUInt32 sels;
 		Data::ArrayListNN<OrganImages> imgList;
-		me->lbObj->GetSelectedIndices(&sels);
+		me->lbObj->GetSelectedIndices(sels);
 		if (sels.GetCount() != 1 && me->inputMode != IM_GROUP)
 		{
 			me->ui->ShowMsgOK(me->env->GetLang(CSTR("MainFormObjPlaceErrorNonSp")), me->env->GetLang(CSTR("MainFormObjPlaceErrorTitle")), me);

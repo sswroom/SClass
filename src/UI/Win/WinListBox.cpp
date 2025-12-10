@@ -100,7 +100,7 @@ UOSInt UI::Win::WinListBox::AddItem(const WChar *itemText, AnyType itemObj)
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj)
+UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
 {
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd.OrNull(), LB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
@@ -173,7 +173,7 @@ UOSInt UI::Win::WinListBox::GetSelectedIndex()
 	return (UOSInt)(OSInt)SendMessage((HWND)hwnd.OrNull(), LB_GETCURSEL, 0, 0);
 }
 
-Bool UI::Win::WinListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
+Bool UI::Win::WinListBox::GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices)
 {
 	if (this->mulSel)
 	{

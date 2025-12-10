@@ -11,7 +11,6 @@
 
 UI::Clipboard::Clipboard(Optional<ControlHandle> hwnd)
 {
-	this->clsData = 0;
 	if (OpenClipboard((HWND)hwnd.OrNull()))
 	{
 		this->succ = true;
@@ -31,7 +30,7 @@ UI::Clipboard::~Clipboard()
 	}
 }
 
-UOSInt UI::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
+UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
 {
 	if (!this->succ)
 		return 0;
@@ -55,7 +54,7 @@ Bool UI::Clipboard::GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb)
 	return GetDataTextH(hand, fmtId, sb, 1);
 }
 
-UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayListStringNN *fileNames)
+UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStringNN> fileNames)
 {
 	if (!this->succ)
 		return UI::Clipboard::FPT_NONE;
@@ -118,7 +117,7 @@ UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(Data::ArrayListStringNN
 	return ret;
 }
 
-void UI::Clipboard::FreeDataFiles(Data::ArrayListStringNN *fileNames)
+void UI::Clipboard::FreeDataFiles(NN<Data::ArrayListStringNN> fileNames)
 {
 	fileNames->FreeAll();
 }

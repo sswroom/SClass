@@ -94,7 +94,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(AnyType userObj)
 	Data::ArrayList<UInt32> indices;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	me->lstRecords->GetSelectedIndices(&indices);
+	me->lstRecords->GetSelectedIndices(indices);
 	UOSInt i;
 	UOSInt j;
 	if (indices.GetCount() <= 0)

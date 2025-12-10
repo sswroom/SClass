@@ -148,10 +148,6 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 							while (true)
 							{
 								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
-								if (*sql == 0)
-								{
-									break;
-								}
 								if (sb.Equals(UTF8STRC(",")) && brkCnt == 0)
 								{
 									break;
@@ -169,6 +165,10 @@ Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8C
 										break;
 									}
 									brkCnt--;
+								}
+								if (*sql == 0)
+								{
+									break;
 								}
 							}
 							if (tab == 0)
