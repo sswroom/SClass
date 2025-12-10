@@ -468,7 +468,7 @@ Int64 DB::SQLiteReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 #if _WCHAR_SIZE == 2
-	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
+	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 	if (outp == 0)
 		return 0;
 	else
