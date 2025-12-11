@@ -2,8 +2,6 @@
 #include "Net/LoRaGWMonitor.h"
 #include "Net/PacketExtractorEthernet.h"
 
-#include <stdio.h>
-
 void __stdcall Net::LoRaGWMonitor::OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize)
 {
 	NN<Net::LoRaGWMonitor> me = userData.GetNN<Net::LoRaGWMonitor>();
@@ -36,7 +34,7 @@ Net::LoRaGWMonitor::LoRaGWMonitor(NN<Net::SocketFactory> sockf, UInt16 port, GWM
 	NN<Socket> s;
 	if (this->s.SetTo(s))
 	{
-		NEW_CLASS(this->socMon, Net::SocketMonitor(this->sockf, s, OnRAWPacket, this, 4));
+		NEW_CLASSOPT(this->socMon, Net::SocketMonitor(this->sockf, s, OnRAWPacket, this, 4));
 	}
 	else
 	{
@@ -46,10 +44,10 @@ Net::LoRaGWMonitor::LoRaGWMonitor(NN<Net::SocketFactory> sockf, UInt16 port, GWM
 
 Net::LoRaGWMonitor::~LoRaGWMonitor()
 {
-	SDEL_CLASS(this->socMon);
+	this->socMon.Delete();
 }
 
 Bool Net::LoRaGWMonitor::IsError()
 {
-	return this->socMon == 0;
+	return this->socMon.IsNull();
 };

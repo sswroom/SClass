@@ -12,7 +12,7 @@ namespace Net
 		NN<Net::SocketFactory> sockf;
 		Optional<Socket> s;
 		UInt16 port;
-		Net::SocketMonitor *socMon;
+		Optional<Net::SocketMonitor> socMon;
 		GWMPMessage msgHdlr;
 		AnyType msgHdlrObj;
 

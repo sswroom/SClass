@@ -1,10 +1,10 @@
 #ifndef _SM_JAVA_JAVACOMPONENT
 #define _SM_JAVA_JAVACOMPONENT
-#include <jni.h>
+#include "Java/JavaObject.h"
 
 namespace Java
 {
-	class JavaComponent
+	class JavaComponent : public JavaObject
 	{
 	public:
 		enum class HorizontalAlignment

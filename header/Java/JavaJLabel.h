@@ -9,11 +9,11 @@ namespace Java
 	{
 	private:
 		jobject me;
+		jclass cls;
 	public:
 		JavaJLabel();
 		JavaJLabel(Text::CStringNN text);
-		JavaJLabel(Text::CStringNN text);
-		JavaJLabel(Text::CStringNN text);
+		virtual ~JavaJLabel();
 
 		static jclass GetClass();
 	};

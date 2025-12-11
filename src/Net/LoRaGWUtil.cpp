@@ -86,7 +86,7 @@ void Net::LoRaGWUtil::ParseUDPMessage(NN<Text::StringBuilderUTF8> sb, Bool toSer
 	ParseGWMPMessage(sb, toServer, msg[0], ReadMUInt16(&msg[1]), msg[3], msg.SubArray(4));
 }
 
-UOSInt Net::LoRaGWUtil::GenUpPayload(UInt8 *buff, Bool needConfirm, UInt32 devAddr, UInt32 fCnt, UInt8 fPort, const UInt8 *nwkSKey, const UInt8 *appSKey, const UInt8 *payload, UOSInt payloadLen)
+UOSInt Net::LoRaGWUtil::GenUpPayload(UnsafeArray<UInt8> buff, Bool needConfirm, UInt32 devAddr, UInt32 fCnt, UInt8 fPort, UnsafeArray<const UInt8> nwkSKey, UnsafeArray<const UInt8> appSKey, UnsafeArray<const UInt8> payload, UOSInt payloadLen)
 {
 	UOSInt index;
 	// MHDR
@@ -125,7 +125,7 @@ UOSInt Net::LoRaGWUtil::GenUpPayload(UInt8 *buff, Bool needConfirm, UInt32 devAd
 			aes.EncryptBlock(ablock, sblock);
 			if (payloadLen >= 16)
 			{
-				WriteNUInt64(&buff[index], ReadNUInt64(sblock) ^ ReadNUInt64(payload));
+				WriteNUInt64(&buff[index], ReadNUInt64(&sblock[0]) ^ ReadNUInt64(&payload[0]));
 				WriteNUInt64(&buff[index + 8], ReadNUInt64(&sblock[8]) ^ ReadNUInt64(&payload[8]));
 				index += 16;
 				payloadLen -= 16;
@@ -165,7 +165,7 @@ UOSInt Net::LoRaGWUtil::GenUpPayload(UInt8 *buff, Bool needConfirm, UInt32 devAd
 	return index + 4;
 }
 
-void Net::LoRaGWUtil::GenRxpkJSON(NN<Text::StringBuilderUTF8> sb, UInt32 freq, UInt32 chan, UInt32 rfch, UInt32 codrk, Int32 rssi, Int32 lsnr, const UInt8 *data, UOSInt dataSize)
+void Net::LoRaGWUtil::GenRxpkJSON(NN<Text::StringBuilderUTF8> sb, UInt32 freq, UInt32 chan, UInt32 rfch, UInt32 codrk, Int32 rssi, Int32 lsnr, UnsafeArray<const UInt8> data, UOSInt dataSize)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
