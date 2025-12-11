@@ -88,6 +88,11 @@ namespace Data
 			}
 		}
 
+		TimeInstant TrimToSeconds() const
+		{
+			return TimeInstant(this->sec, 0);
+		}
+
 		Int64 GetMSPassedDate() const
 		{
 			return (this->sec % 86400LL) * 1000 + this->nanosec / 1000000;

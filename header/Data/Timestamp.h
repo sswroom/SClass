@@ -153,6 +153,11 @@ namespace Data
 			return Data::Timestamp::FromTimeValue(tval, 0, this->tzQhr);
 		}
 
+		Timestamp TrimToSeconds() const
+		{
+			return Data::Timestamp(this->inst.TrimToSeconds(), this->tzQhr);
+		}
+
 		Int64 GetMSPassedUTCDate() const
 		{
 			return this->inst.GetMSPassedDate();
