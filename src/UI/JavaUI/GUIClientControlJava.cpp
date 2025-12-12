@@ -257,7 +257,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 	this->UpdateChildrenSize(true);
 }
 
-void *UI::GUIClientControl::GetContainer()
+AnyType UI::GUIClientControl::GetContainer()
 {
 	return 0;
 /*	if (this->container == 0) this->InitContainer();

@@ -60,8 +60,8 @@ void UI::GTK::GTKHScrollBar::SetArea(Double left, Double top, Double right, Doub
 
 	if (this->parent.SetTo(nnparent))
 	{
-		void *container = nnparent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd.OrNull(), Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
+		AnyType container = nnparent->GetContainer();
+		gtk_fixed_move(container.GetOpt<GtkFixed>().OrNull(), (GtkWidget*)this->hwnd.OrNull(), Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
 	}
 	if (right < left)
 	{
@@ -112,8 +112,8 @@ void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 
 	if (this->parent.SetTo(nnparent))
 	{
-		void *container = nnparent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
+		AnyType container = nnparent->GetContainer();
+		gtk_fixed_move(container.GetOpt<GtkFixed>().OrNull(), (GtkWidget*)this->hwnd.OrNull(), Double2Int32(OSInt2Double(left) + ofst.x * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + ofst.y * this->hdpi / this->ddpi));
 	}
 	if (right < left)
 	{

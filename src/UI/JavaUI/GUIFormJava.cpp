@@ -1,13 +1,16 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Java/JavaDisplayMode.h"
+#include "Java/JavaJFrame.h"
+#include "Java/JavaMouseInfo.h"
+#include "Java/JavaWindowListener.h"
 #include "Math/Math_C.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 #include "UI/GUIForm.h"
-#include "UI/JavaUI/JavaTimer.h"
-#include <jni.h>
+#include "UI/JavaUI/JUITimer.h"
 #include <stdio.h>
 
 extern "C"
@@ -160,30 +163,20 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	this->hAcc = 0;
 	this->hwnd = 0;
 
-	JNIEnv *env = jniEnv;
-	jclass cls = env->FindClass("javax/swing/JFrame");
-	if (cls == 0)
+	NN<Java::JavaJFrame> frame;
+	NEW_CLASSNN(frame, Java::JavaJFrame());
+	this->hwnd = (ControlHandle*)frame.Ptr();
+	Java::JavaContainer container = frame->GetContentPane();
+	if (!container.IsNull())
 	{
-		return;
+		NN<Java::JavaContainer> nncontainer;
+		NEW_CLASSNN(nncontainer, Java::JavaContainer(container));
+		this->container = nncontainer;
 	}
-	jmethodID mid = env->GetMethodID(cls, "<init>", "()V");
-	jmethodID mid2;
-	if (mid == 0)
-	{
-		return;
-	}
-	this->hwnd = (ControlHandle*)env->NewObject(cls, mid);
-	mid = env->GetMethodID(cls, "getContentPane", "()Ljava/awt/Container;");
-	if (mid)
-	{
-		this->container = env->CallObjectMethod((jobject)this->hwnd.OrNull(), mid);
-	}
-	cls = env->FindClass("JFrameWindowListener");
-	mid = env->GetMethodID(cls, "<init>", "(J)V");
-	jobject listener = env->NewObject(cls, mid, this);
-	cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	mid = env->GetMethodID(cls, "addWindowListener", "(Ljava/awt/event/WindowListener;)V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, listener);
+	jclass cls = jniEnv->FindClass("JFrameWindowListener");
+	jmethodID mid = jniEnv->GetMethodID(cls, "<init>", "(J)V");
+	Java::JavaWindowListener listener(jniEnv->NewObject(cls, mid, this));
+	frame->AddWindowListener(listener);
 
 	this->selfResize = true;
 	Double w;
@@ -199,30 +192,14 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	}
 	else
 	{
-		cls = env->FindClass("java/awt/MouseInfo");
-		mid = env->GetStaticMethodID(cls, "getPointerInfo", "()Ljava/awt/PointerInfo;");
-		jobject pointer = env->CallStaticObjectMethod(cls, mid); //PointerInfo
-		cls = env->GetObjectClass(pointer);
-		mid = env->GetMethodID(cls, "getDevice", "()Ljava/awt/GraphicsDevice;");
-		jobject gd = env->CallObjectMethod(pointer, mid);
-		cls = env->GetObjectClass(gd);
-		mid = env->GetMethodID(cls, "getDisplayMode", "()Ljava/awt/DisplayMode;");
-		jobject dm = env->CallObjectMethod(gd, mid);
-		cls = env->GetObjectClass(dm);
-		mid = env->GetMethodID(cls, "getWidth", "()I");
-		mid2 = env->GetMethodID(cls, "getHeight", "()I");
-
-		w = env->CallIntMethod(dm, mid) * 96.0 / this->hdpi;
-		h = env->CallIntMethod(dm, mid2) * 96.0 / this->hdpi;
+		
+		Java::JavaDisplayMode dm = Java::JavaMouseInfo::GetPointerInfo().GetDevice().GetDisplayMode();
+		w = dm.GetWidth() * 96.0 / this->hdpi;
+		h = dm.GetHeight() * 96.0 / this->hdpi;
 		initX = ((w - initW) * 0.5);
 		initY = ((h - initH) * 0.5);
 	}
-	cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	mid = env->GetMethodID(cls, "setBounds", "(IIII)V");
-	if (mid)
-	{
-		env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, Double2Int32(initX), Double2Int32(initY), Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
-	}
+	frame->SetBounds(Double2Int32(initX), Double2Int32(initY), Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
 	//	g_signal_connect((GtkWindow*)this->hwnd, "draw", G_CALLBACK(GUIForm_Draw), this);
 	this->lxPos = initX;
 	this->lyPos = initY;
@@ -235,6 +212,18 @@ UI::GUIForm::~GUIForm()
 {
 	this->timers.DeleteAll();
 	this->menu.Delete();
+	NN<Java::JavaContainer> container;
+	if (this->container.GetOpt<Java::JavaContainer>().SetTo(container))
+	{
+		container.Delete();
+		this->container = 0;
+	}
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
+	{
+		frame.Delete();
+		this->hwnd = 0;
+	}
 }
 
 /*void UI::GUIForm::SetText(const WChar *text)
@@ -246,25 +235,26 @@ UI::GUIForm::~GUIForm()
 
 void UI::GUIForm::SetFormState(FormState fs)
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jfieldID fid;
-	switch (fs)
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
 	{
-	case FS_MAXIMIZED:
-		fid = env->GetStaticFieldID(cls, "MAXIMIZED_BOTH", "I");
-		break;
-	case FS_NORMAL:
-		fid = env->GetStaticFieldID(cls, "NORMAL", "I");
-		break;
-	case FS_MINIMIZED:
-		fid = env->GetStaticFieldID(cls, "ICONIFIED", "I");
-		break;
-	default:
-		return;
+		Java::JavaJFrame::ExtendedState state;
+		switch (fs)
+		{
+		case FS_MAXIMIZED:
+			state = Java::JavaJFrame::MAXIMIZED_BOTH;
+			break;
+		case FS_NORMAL:
+			state = Java::JavaJFrame::NORMAL;
+			break;
+		case FS_MINIMIZED:
+			state = Java::JavaJFrame::ICONIFIED;
+			break;
+		default:
+			return;
+		}
+		frame->SetExtendedState(state);
 	}
-	jmethodID mid = env->GetMethodID(cls, "setExtendedState", "(I)V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, env->GetStaticIntField(cls, fid));
 }
 
 UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
@@ -300,46 +290,48 @@ void UI::GUIForm::SetDialogResult(DialogResult dr)
 
 void UI::GUIForm::SetAlwaysOnTop(Bool alwaysOnTop)
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid = env->GetMethodID(cls, "setAlwaysOnTop", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, alwaysOnTop);
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
+	{
+		frame->SetAlwaysOnTop(alwaysOnTop);
+	}
 }
 
 void UI::GUIForm::MakeForeground()
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid = env->GetMethodID(cls, "requestFocus", "()V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid);
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
+	{
+		frame->RequestFocus();
+	}
 }
 
 void UI::GUIForm::Close()
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid = env->GetMethodID(cls, "setVisible", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, false);
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
+	{
+		frame->SetVisible(false);
+	}
 }
 
 void UI::GUIForm::SetText(Text::CStringNN text)
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid = env->GetMethodID(cls, "setTitle", "(Ljava/lang/String;)V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, env->NewStringUTF((const Char*)text.v.Ptr()));
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
+	{
+		frame->SetTitle(text);
+	}
 }
 
 Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid;
-	mid = env->GetMethodID(cls, "getWidth", "()I");
-	Int32 width = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid) * this->ddpi / this->hdpi;
-	mid = env->GetMethodID(cls, "getHeight", "()I");
-	Int32 height = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid) * this->ddpi / this->hdpi;
-	return Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height);
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
+	{
+		return Math::Size2D<UOSInt>((UOSInt)frame->GetWidth(), (UOSInt)frame->GetHeight());
+	}
+	return Math::Size2D<UOSInt>(0, 0);
 //	printf("Form GetSizeP: %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
 
@@ -350,10 +342,11 @@ void UI::GUIForm::SetExitOnClose(Bool exitOnClose)
 
 void UI::GUIForm::SetNoResize(Bool noResize)
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid = env->GetMethodID(cls, "setResizable", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, !noResize);
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
+	{
+		frame->SetResizable(!noResize);
+	}
 	if (noResize)
 	{
 	//	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((this->lxPos2 - this->lxPos)* this->hdpi / 96.0), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
@@ -362,8 +355,8 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 
 NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
 {
-	NN<UI::JavaUI::JavaTimer> tmr;
-	NEW_CLASSNN(tmr, UI::JavaUI::JavaTimer(interval, handler, userObj));
+	NN<UI::JavaUI::JUITimer> tmr;
+	NEW_CLASSNN(tmr, UI::JavaUI::JUITimer(interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
@@ -424,14 +417,15 @@ void UI::GUIForm::SetCancelButton(NN<UI::GUIButton> btn)
 
 Math::Size2DDbl UI::GUIForm::GetClientSize()
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->container);
-	jmethodID mid;
-	mid = env->GetMethodID(cls, "getWidth", "()I");
-	Int32 width = env->CallIntMethod((jobject)this->container, mid) * this->ddpi / this->hdpi;
-	mid = env->GetMethodID(cls, "getHeight", "()I");
-	Int32 height = env->CallIntMethod((jobject)this->container, mid) * this->ddpi / this->hdpi;
-	return Math::Size2DDbl(width, height);
+	NN<Java::JavaContainer> container;
+	if (this->container.GetOpt<Java::JavaContainer>().SetTo(container))
+	{
+		return Math::Size2DDbl(container->GetWidth(), container->GetHeight());
+	}
+	else
+	{
+		return Math::Size2DDbl(0, 0);
+	}
 }
 
 Bool UI::GUIForm::IsChildVisible()
@@ -451,21 +445,17 @@ OSInt UI::GUIForm::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIForm::OnSizeChanged(Bool updateScn)
 {
-	if (this->selfResize)
+	NN<Java::JavaJFrame> frame;
+	if (this->selfResize || !Optional<Java::JavaJFrame>::ConvertFrom(this->hwnd).SetTo(frame))
 	{
 		return;
 	}
 	Bool sizeChg = false;
 
 	Double newSize;
-	int outW;
-	int outH;
+	Int32 outW = frame->GetWidth();
+	Int32 outH = frame->GetHeight();
 	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid = env->GetMethodID(cls, "getWidth", "()I");
-	outW = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid);
-	mid = env->GetMethodID(cls, "getHeight", "()I");
-	outH = env->CallIntMethod((jobject)this->hwnd.OrNull(), mid);
 	if (outW != -1)
 	{
 		newSize = this->lxPos + outW * this->ddpi / this->hdpi;

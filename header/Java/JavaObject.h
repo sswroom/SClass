@@ -9,10 +9,12 @@ namespace Java
 	protected:
 		jobject me;
 	public:
+		JavaObject(const JavaObject& o);
 		JavaObject(jobject me);
 		virtual ~JavaObject();
 
 		jobject GetJObject() const;
+		Bool IsNull() const;
 		
 		static jclass GetClass();
 	};

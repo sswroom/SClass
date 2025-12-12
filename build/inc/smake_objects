@@ -728,13 +728,43 @@ NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 JavaComponent.o: ../../src/Java/JavaComponent.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaContainer.o: ../../src/Java/JavaContainer.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaDisplayMode.o: ../../src/Java/JavaDisplayMode.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaEventListener.o: ../../src/Java/JavaEventListener.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaFrame.o: ../../src/Java/JavaFrame.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaGraphicsDevice.o: ../../src/Java/JavaGraphicsDevice.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaJFrame.o: ../../src/Java/JavaJFrame.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaJLabel.o: ../../src/Java/JavaJLabel.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaJOptionPane.o: ../../src/Java/JavaJOptionPane.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaMouseInfo.o: ../../src/Java/JavaMouseInfo.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaObject.o: ../../src/Java/JavaObject.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaPointerInfo.o: ../../src/Java/JavaPointerInfo.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaWindow.o: ../../src/Java/JavaWindow.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaWindowListener.o: ../../src/Java/JavaWindowListener.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 
@@ -2489,79 +2519,82 @@ $-I$(JAVA_HOME)/include/linux
 GUIMenuJava.o: ../../src/UI/JavaUI/GUIMenuJava.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaButton.o: ../../src/UI/JavaUI/JavaButton.cpp
+JUIButton.o: ../../src/UI/JavaUI/JUIButton.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaCheckBox.o: ../../src/UI/JavaUI/JavaCheckBox.cpp
+JUICheckBox.o: ../../src/UI/JavaUI/JUICheckBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaCheckedListBox.o: ../../src/UI/JavaUI/JavaCheckedListBox.cpp
+JUICheckedListBox.o: ../../src/UI/JavaUI/JUICheckedListBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaComboBox.o: ../../src/UI/JavaUI/JavaComboBox.cpp
+JUIComboBox.o: ../../src/UI/JavaUI/JUIComboBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaCore.o: ../../src/UI/JavaUI/JavaCore.cpp
+JUICore.o: ../../src/UI/JavaUI/JUICore.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaDateTimePicker.o: ../../src/UI/JavaUI/JavaDateTimePicker.cpp
+JUIDateTimePicker.o: ../../src/UI/JavaUI/JUIDateTimePicker.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaFileDialog.o: ../../src/UI/JavaUI/JavaFileDialog.cpp
+JUIFileDialog.o: ../../src/UI/JavaUI/JUIFileDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaFolderDialog.o: ../../src/UI/JavaUI/JavaFolderDialog.cpp
+JUIFolderDialog.o: ../../src/UI/JavaUI/JUIFolderDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaFontDialog.o: ../../src/UI/JavaUI/JavaFontDialog.cpp
+JUIFontDialog.o: ../../src/UI/JavaUI/JUIFontDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaHScrollBar.o: ../../src/UI/JavaUI/JavaHScrollBar.cpp
+JUIGroupBox.o: ../../src/UI/JavaUI/JUIGroupBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaHSplitter.o: ../../src/UI/JavaUI/JavaHSplitter.cpp
+JUIHScrollBar.o: ../../src/UI/JavaUI/JUIHScrollBar.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaLabel.o: ../../src/UI/JavaUI/JavaLabel.cpp
+JUIHSplitter.o: ../../src/UI/JavaUI/JUIHSplitter.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaListBox.o: ../../src/UI/JavaUI/JavaListBox.cpp
+JUILabel.o: ../../src/UI/JavaUI/JUILabel.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaMessageDialog.o: ../../src/UI/JavaUI/JavaMessageDialog.cpp
+JUIListBox.o: ../../src/UI/JavaUI/JUIListBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaPanelBase.o: ../../src/UI/JavaUI/JavaPanelBase.cpp
+JUIMessageDialog.o: ../../src/UI/JavaUI/JUIMessageDialog.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaPictureBox.o: ../../src/UI/JavaUI/JavaPictureBox.cpp
+JUIPanelBase.o: ../../src/UI/JavaUI/JUIPanelBase.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaPictureBoxSimple.o: ../../src/UI/JavaUI/JavaPictureBoxSimple.cpp
+JUIPictureBox.o: ../../src/UI/JavaUI/JUIPictureBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaProgressBar.o: ../../src/UI/JavaUI/JavaProgressBar.cpp
+JUIPictureBoxSimple.o: ../../src/UI/JavaUI/JUIPictureBoxSimple.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaRadioButton.o: ../../src/UI/JavaUI/JavaRadioButton.cpp
+JUIProgressBar.o: ../../src/UI/JavaUI/JUIProgressBar.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaRealtimeLineChart.o: ../../src/UI/JavaUI/JavaRealtimeLineChart.cpp
+JUIRadioButton.o: ../../src/UI/JavaUI/JUIRadioButton.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaTabControl.o: ../../src/UI/JavaUI/JavaTabControl.cpp
+JUIRealtimeLineChart.o: ../../src/UI/JavaUI/JUIRealtimeLineChart.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaTextBox.o: ../../src/UI/JavaUI/JavaTextBox.cpp
+JUITabControl.o: ../../src/UI/JavaUI/JUITabControl.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaTimer.o: ../../src/UI/JavaUI/JavaTimer.cpp
+JUITextBox.o: ../../src/UI/JavaUI/JUITextBox.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaTrackBar.o: ../../src/UI/JavaUI/JavaTrackBar.cpp
+JUITimer.o: ../../src/UI/JavaUI/JUITimer.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
-JavaVSplitter.o: ../../src/UI/JavaUI/JavaVSplitter.cpp
+JUITrackBar.o: ../../src/UI/JavaUI/JUITrackBar.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JUIVSplitter.o: ../../src/UI/JavaUI/JUIVSplitter.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 ClipboardW.o: ../../src/UI/Win/ClipboardW.cpp

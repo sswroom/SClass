@@ -14,7 +14,7 @@ namespace UI
 		Double undockRight;
 		Double undockBottom;
 		Bool hasFillCtrl;
-		void *container;
+		AnyType container;
 
 		void InitContainer();
 	protected:
@@ -40,7 +40,7 @@ namespace UI
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
-		void *GetContainer();
+		AnyType GetContainer();
 
 		virtual void DestroyObject();
 	};

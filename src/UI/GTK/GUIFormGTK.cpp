@@ -366,7 +366,7 @@ void UI::GUIForm::SetMenu(NN<UI::GUIMainMenu> menu)
 {
 	this->menu.Delete();
 	if (this->container == 0) this->InitContainer();
-	ClientControlData *data = (ClientControlData*)this->container;
+	NN<ClientControlData> data = this->container.GetNN<ClientControlData>();
 	GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
 //	gtk_container_add(GTK_CONTAINER((GtkWidget*)this->hwnd), menuBar);
 	g_object_ref(data->scrolledWin);
@@ -479,9 +479,9 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 	}
 	if (sizeChg)
 	{
-		if (this->container)
+		NN<ClientControlData> data;
+		if (this->container.GetOpt<ClientControlData>().SetTo(data))
 		{
-			ClientControlData *data = (ClientControlData*)this->container;
 			this->selfResize = true;
 			if (outW < 3)
 			{

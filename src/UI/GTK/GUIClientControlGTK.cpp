@@ -14,7 +14,7 @@ typedef struct
 
 void UI::GUIClientControl::InitContainer()
 {
-	ClientControlData *data = MemAlloc(ClientControlData, 1);
+	NN<ClientControlData> data = MemAllocNN(ClientControlData);
 	data->container = gtk_fixed_new();
 	data->scrolledWin = gtk_scrolled_window_new(0, 0);
 	data->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -51,10 +51,10 @@ UI::GUIClientControl::GUIClientControl(NN<UI::GUICore> ui, Optional<UI::GUIClien
 UI::GUIClientControl::~GUIClientControl()
 {
 	this->ClearChildren();
-	if (this->container)
+	NN<ClientControlData> data;
+	if (this->container.GetOpt<ClientControlData>().SetTo(data))
 	{
-		ClientControlData *data = (ClientControlData*)this->container;
-		MemFree(data);
+		MemFreeNN(data);
 	}
 }
 
@@ -99,7 +99,7 @@ void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 {
 	if (this->container == 0) InitContainer();
 	this->selfResize = true;
-	ClientControlData *data = (ClientControlData*)this->container;
+	NN<ClientControlData> data = this->container.GetNN<ClientControlData>();
 	gtk_fixed_put((GtkFixed*)data->container, (GtkWidget*)child->GetHandle().OrNull(), 0, 0);
 	this->children.Add(child);
 	this->selfResize = false;
@@ -230,8 +230,8 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 			outW = 0;
 			outH = 0;
 		}
-		ClientControlData *data = (ClientControlData*)this->container;
-		if (data)
+		NN<ClientControlData> data;
+		if (this->container.GetOpt<ClientControlData>().SetTo(data))
 		{
 			gtk_widget_set_size_request(data->scrolledWin, outW, outH);
 			gtk_widget_set_size_request(data->container, outW, outH);
@@ -277,10 +277,10 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 	this->UpdateChildrenSize(true);
 }
 
-void *UI::GUIClientControl::GetContainer()
+AnyType UI::GUIClientControl::GetContainer()
 {
 	if (this->container == 0) this->InitContainer();
-	ClientControlData *data = (ClientControlData*)this->container;
+	NN<ClientControlData> data = this->container.GetNN<ClientControlData>();
 	return data->container;
 }
 
