@@ -1,13 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Java/JavaContainer.h"
 #include "Math/Math_C.h"
 #include "UI/GUIClientControl.h"
-#include <jni.h>
-
 
 void UI::GUIClientControl::InitContainer()
 {
-	this->container = 0;
 }
 
 UI::GUIClientControl::GUIClientControl(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
@@ -81,13 +79,14 @@ Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 
 void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 {
-/*	if (this->container == 0) InitContainer();
-	this->selfResize = true;
-	ClientControlData *data = (ClientControlData*)this->container;
-	gtk_fixed_put((GtkFixed*)data->container, (GtkWidget*)child->GetHandle(), 0, 0);
-	this->children->Add(child);
-	this->selfResize = false;
-	child->SetDPI(this->hdpi, this->ddpi);*/
+	NN<Java::JavaContainer> container;
+	NN<Java::JavaComponent> component;
+	if (Optional<Java::JavaComponent>::ConvertFrom(child->GetHandle()).SetTo(component) && this->container.GetOpt<Java::JavaContainer>().SetTo(container))
+	{
+		container->Add(component);
+		this->selfResize = false;
+		child->SetDPI(this->hdpi, this->ddpi);
+	}
 }
 
 UOSInt UI::GUIClientControl::GetChildCount() const

@@ -8,7 +8,11 @@ extern "C"
 
 jmethodID Java::JavaComponent::getHeight = 0;
 jmethodID Java::JavaComponent::getWidth = 0;
+jmethodID Java::JavaComponent::isVisible = 0;
 jmethodID Java::JavaComponent::requestFocus = 0;
+jmethodID Java::JavaComponent::setLocation = 0;
+jmethodID Java::JavaComponent::setSize = 0;
+jmethodID Java::JavaComponent::setVisible = 0;
 
 Java::JavaComponent::JavaComponent(jobject me) : JavaObject(me)
 {
@@ -32,11 +36,39 @@ Int32 Java::JavaComponent::GetWidth()
 	return jniEnv->CallIntMethod(this->me, getWidth);
 }
 
+Bool Java::JavaComponent::IsVisible()
+{
+	if (isVisible == 0)
+		isVisible = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "isVisible", "()Z");
+	return jniEnv->CallBooleanMethod(this->me, isVisible);
+}
+
 void Java::JavaComponent::RequestFocus()
 {
 	if (requestFocus == 0)
 		requestFocus = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "requestFocus", "()V");
 	jniEnv->CallVoidMethod(this->me, requestFocus);
+}
+
+void Java::JavaComponent::SetLocation(Int32 x, Int32 y)
+{
+	if (setLocation == 0)
+		setLocation = jniEnv->GetMethodID(GetClass(), "setLocation", "(II)V");
+	jniEnv->CallVoidMethod(this->me, setLocation, x, y);
+}
+
+void Java::JavaComponent::SetSize(Int32 width, Int32 height)
+{
+	if (setSize == 0)
+		setSize = jniEnv->GetMethodID(GetClass(), "setSize", "(II)V");
+	jniEnv->CallVoidMethod(this->me, setSize, width, height);
+}
+
+void Java::JavaComponent::SetVisible(Bool b)
+{
+	if (setVisible == 0)
+		setVisible = jniEnv->GetMethodID(GetClass(), "setVisible", "(Z)V");
+	jniEnv->CallVoidMethod(this->me, setVisible, b);
 }
 
 jclass Java::JavaComponent::GetClass()

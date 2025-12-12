@@ -10,7 +10,6 @@ namespace UI
 		class JUILabel : public UI::GUILabel
 		{
 		private:
-			NN<Java::JavaJLabel> lbl;
 			Bool hasTextColor;
 			UInt32 textColor;
 		public:

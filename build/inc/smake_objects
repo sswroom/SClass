@@ -725,6 +725,9 @@ MemoryDataRef.o: ../../src/IO/StmData/MemoryDataRef.cpp
 MDT701STVControl.o: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 
+JavaColor.o: ../../src/Java/JavaColor.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaComponent.o: ../../src/Java/JavaComponent.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -741,6 +744,9 @@ JavaFrame.o: ../../src/Java/JavaFrame.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaGraphicsDevice.o: ../../src/Java/JavaGraphicsDevice.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaJComponent.o: ../../src/Java/JavaJComponent.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaJFrame.o: ../../src/Java/JavaJFrame.cpp

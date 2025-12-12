@@ -6,9 +6,13 @@ namespace Java
 {
 	class JavaContainer : public JavaComponent
 	{
+	private:
+		static jmethodID add;
 	public:
 		JavaContainer(jobject me);
 		virtual ~JavaContainer();
+
+		JavaComponent Add(NN<JavaComponent> comp);
 
 		static jclass GetClass();
 	};

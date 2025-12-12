@@ -7,16 +7,24 @@
 
 UI::JavaUI::JUILabel::JUILabel(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
 {
-	NEW_CLASSNN(this->lbl, Java::JavaJLabel(label));
+	NN<Java::JavaJLabel> lbl;
+	NEW_CLASSNN(lbl, Java::JavaJLabel(label));
+	this->hwnd = NN<ControlHandle>::ConvertFrom(lbl);
+	parent->AddChild(*this);
 }
 
 UI::JavaUI::JUILabel::~JUILabel()
 {
-	this->lbl.Delete();
+	Optional<Java::JavaJLabel>::ConvertFrom(this->hwnd).Delete();
 }
 
 void UI::JavaUI::JUILabel::SetText(Text::CStringNN text)
 {
+	NN<Java::JavaJLabel> lbl;
+	if (Optional<Java::JavaJLabel>::ConvertFrom(this->hwnd).SetTo(lbl))
+	{
+		lbl->SetText(text);
+	}
 }
 
 OSInt UI::JavaUI::JUILabel::OnNotify(UInt32 code, void *lParam)
@@ -38,5 +46,11 @@ void UI::JavaUI::JUILabel::SetTextColor(UInt32 textColor)
 {
 	this->textColor = textColor;
 	this->hasTextColor = true;
+	NN<Java::JavaJLabel> lbl;
+	if (Optional<Java::JavaJLabel>::ConvertFrom(this->hwnd).SetTo(lbl))
+	{
+		Java::JavaColor color((Int32)textColor, (textColor & 0xff000000) != 0xff000000);
+		lbl->SetForeground(color);
+	}
 }
 

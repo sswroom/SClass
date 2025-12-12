@@ -9,6 +9,7 @@ namespace Java
 	{
 	private:
 		static jmethodID addWindowListener;
+		static jmethodID removeWindowListener;
 		static jmethodID setAlwaysOnTop;
 		static jmethodID setBounds;
 		static jmethodID setVisible;
@@ -16,7 +17,8 @@ namespace Java
 		JavaWindow(jobject me);
 		virtual ~JavaWindow();
 
-		void AddWindowListener(NN<JavaWindowListener> listener);
+		void AddWindowListener(NN<JavaWindowListener> l);
+		void RemoveWindowListener(NN<JavaWindowListener> l);
 		void SetAlwaysOnTop(Bool alwaysOnTop);
 		void SetBounds(Int32 x, Int32 y, Int32 width, Int32 height);
 		void SetVisible(Bool b);

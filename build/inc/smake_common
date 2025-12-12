@@ -2299,6 +2299,8 @@ IO/TVCtrl/MDT701STVControl.h:
 IO/TVCtrl/NECTVControl.h:
 @NECTVControl.o
 
+Java/JavaColor.h:
+@JavaColor.o
 Java/JavaComponent.h:
 @JavaComponent.o
 Java/JavaContainer.h:
@@ -2311,6 +2313,8 @@ Java/JavaFrame.h:
 @JavaFrame.o
 Java/JavaGraphicsDevice.h:
 @JavaGraphicsDevice.o
+Java/JavaJComponent.h:
+@JavaJComponent.o
 Java/JavaJFrame.h:
 @JavaJFrame.o
 Java/JavaJLabel.h:

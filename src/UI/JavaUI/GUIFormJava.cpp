@@ -83,9 +83,12 @@ JNIEXPORT void JNICALL Java_JFrameWindowListener_windowClosing(JNIEnv *env, jobj
 	jmethodID mid = env->GetMethodID(cls, "getMe", "()J");
 	UI::GUIForm *me = (UI::GUIForm*)env->CallLongMethod(obj, mid);
 	me->EventClosed();
-	cls = env->GetObjectClass((jobject)me->GetHandle().OrNull());
-	mid = env->GetMethodID(cls, "removeWindowListener", "(Ljava/awt/event/WindowListener;)V");
-	env->CallVoidMethod((jobject)me->GetHandle().OrNull(), mid, obj);
+	NN<Java::JavaJFrame> frame;
+	if (Optional<Java::JavaJFrame>::ConvertFrom(me->GetHandle()).SetTo(frame))
+	{
+		Java::JavaWindowListener l(obj);
+		frame->RemoveWindowListener(l);
+	}
 }
 
 //public native void windowDeactivated(java.awt.event.WindowEvent e);
@@ -455,7 +458,6 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 	Double newSize;
 	Int32 outW = frame->GetWidth();
 	Int32 outH = frame->GetHeight();
-	JNIEnv *env = jniEnv;
 	if (outW != -1)
 	{
 		newSize = this->lxPos + outW * this->ddpi / this->hdpi;

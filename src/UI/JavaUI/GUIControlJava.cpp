@@ -1,15 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Java/JavaComponent.h"
 #include "Math/Math_C.h"
 #include "Text/MyString.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIControl.h"
-#include <jni.h>
-
-extern "C"
-{
-	extern JNIEnv *jniEnv;
-}
 
 UI::GUIControl::GUIControl(NN<UI::GUICore> ui, Optional<GUIClientControl> parent)
 {
@@ -17,6 +12,7 @@ UI::GUIControl::GUIControl(NN<UI::GUICore> ui, Optional<GUIClientControl> parent
 	this->parent = parent;
 	this->selfResize = false;
 	this->dockType = UI::GUIControl::DOCK_NONE;
+	this->hFont = 0;
 	this->hdpi = 96.0;
 	this->ddpi = 96.0;
 	this->lxPos = 0;
@@ -44,10 +40,11 @@ void *UI::GUIControl::GetFont()
 
 void UI::GUIControl::Show()
 {
-	JNIEnv *env = jniEnv;
-	jclass cls = env->GetObjectClass((jobject)this->hwnd.OrNull());
-	jmethodID mid = env->GetMethodID(cls, "setVisible", "(Z)V");
-	env->CallVoidMethod((jobject)this->hwnd.OrNull(), mid, true);
+	NN<Java::JavaComponent> comp;
+	if (Optional<Java::JavaComponent>::ConvertFrom(this->hwnd).SetTo(comp))
+	{
+		comp->SetVisible(true);
+	}
 /*
 	if (!this->inited)
 	{
@@ -131,13 +128,13 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	this->lyPos = top;
 	this->selfResize = true;
 
-/*	if (this->parent)
+	NN<Java::JavaComponent> comp;
+	if (Optional<Java::JavaComponent>::ConvertFrom(this->hwnd).SetTo(comp))
 	{
-		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
+		comp->SetLocation(Double2Int32((left + ofst.x) * this->hdpi / this->ddpi), Double2Int32((top + ofst.y) * this->hdpi / this->ddpi));
+		comp->SetSize(Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
-
+/*
 	gint outW;
 	gint outH;
 	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
@@ -249,16 +246,21 @@ UI::GUIControl::DockType UI::GUIControl::GetDockType()
 
 void UI::GUIControl::SetVisible(Bool isVisible)
 {
-//	if (isVisible)
-//		gtk_widget_show((GtkWidget*)this->hwnd);
-//	else
-//		gtk_widget_hide((GtkWidget*)this->hwnd);
+	NN<Java::JavaComponent> comp;
+	if (Optional<Java::JavaComponent>::ConvertFrom(this->hwnd).SetTo(comp))
+	{
+		comp->SetVisible(isVisible);
+	}
 }
 
 Bool UI::GUIControl::GetVisible()
 {
-	//////////////////////////////////////////
-	return true;//gtk_widget_is_visible((GtkWidget*)this->window);
+	NN<Java::JavaComponent> comp;
+	if (Optional<Java::JavaComponent>::ConvertFrom(this->hwnd).SetTo(comp))
+	{
+		return comp->IsVisible();
+	}
+	return false;
 }
 
 void UI::GUIControl::SetEnabled(Bool isEnable)

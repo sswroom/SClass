@@ -7,6 +7,7 @@ extern "C"
 }
 
 jmethodID Java::JavaWindow::addWindowListener = 0;
+jmethodID Java::JavaWindow::removeWindowListener = 0;
 jmethodID Java::JavaWindow::setAlwaysOnTop = 0;
 jmethodID Java::JavaWindow::setBounds = 0;
 jmethodID Java::JavaWindow::setVisible = 0;
@@ -19,11 +20,18 @@ Java::JavaWindow::~JavaWindow()
 {
 }
 
-void Java::JavaWindow::AddWindowListener(NN<JavaWindowListener> listener)
+void Java::JavaWindow::AddWindowListener(NN<JavaWindowListener> l)
 {
 	if (addWindowListener == 0)
 		addWindowListener = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "addWindowListener", "(Ljava/awt/event/WindowListener;)V");
-	jniEnv->CallVoidMethod(this->me, addWindowListener, listener->GetJObject());
+	jniEnv->CallVoidMethod(this->me, addWindowListener, l->GetJObject());
+}
+
+void Java::JavaWindow::RemoveWindowListener(NN<JavaWindowListener> l)
+{
+	if (removeWindowListener == 0)
+		removeWindowListener = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "removeWindowListener", "(Ljava/awt/event/WindowListener;)V");
+	jniEnv->CallVoidMethod(this->me, removeWindowListener, l->GetJObject());
 }
 
 void Java::JavaWindow::SetAlwaysOnTop(Bool alwaysOnTop)
