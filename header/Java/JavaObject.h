@@ -13,7 +13,7 @@ namespace Java
 		JavaObject(jobject me);
 		virtual ~JavaObject();
 
-		jobject GetJObject() const;
+		virtual jobject GetJObject() const;
 		Bool IsNull() const;
 		
 		static jclass GetClass();

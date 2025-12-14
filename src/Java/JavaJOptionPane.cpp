@@ -16,7 +16,11 @@ void Java::JavaJOptionPane::ShowMessageDialog(Optional<JavaComponent> parentComp
 	{
 		component = nnparentComponent->GetJObject();
 	}
-	jniEnv->CallStaticVoidMethod(cls, meth, component, jniEnv->NewStringUTF((const Char*)message.v.Ptr()), jniEnv->NewStringUTF((const Char*)title.v.Ptr()), MessageTypeGetInt(messageType));
+	jstring s;
+	jstring s2;
+	jniEnv->CallStaticVoidMethod(cls, meth, component, s = jniEnv->NewStringUTF((const Char*)message.v.Ptr()), s2 = jniEnv->NewStringUTF((const Char*)title.v.Ptr()), MessageTypeGetInt(messageType));
+	jniEnv->DeleteLocalRef(s);
+	jniEnv->DeleteLocalRef(s2);
 }
 
 Java::JavaJOptionPane::SelectedOption Java::JavaJOptionPane::ShowConfirmDialog(Optional<JavaComponent> parentComponent, Text::CStringNN message, Text::CStringNN title, OptionType optionType, MessageType messageType)
@@ -29,7 +33,12 @@ Java::JavaJOptionPane::SelectedOption Java::JavaJOptionPane::ShowConfirmDialog(O
 	{
 		component = nnparentComponent->GetJObject();
 	}
-	return (SelectedOption)jniEnv->CallStaticIntMethod(cls, meth, component, jniEnv->NewStringUTF((const Char*)message.v.Ptr()), jniEnv->NewStringUTF((const Char*)title.v.Ptr()), OptionTypeGetInt(optionType), MessageTypeGetInt(messageType));
+	jstring s;
+	jstring s2;
+	SelectedOption opt = (SelectedOption)jniEnv->CallStaticIntMethod(cls, meth, component, s = jniEnv->NewStringUTF((const Char*)message.v.Ptr()), s2 = jniEnv->NewStringUTF((const Char*)title.v.Ptr()), OptionTypeGetInt(optionType), MessageTypeGetInt(messageType));
+	jniEnv->DeleteLocalRef(s);
+	jniEnv->DeleteLocalRef(s2);
+	return opt;
 }
 
 jclass Java::JavaJOptionPane::GetClass()

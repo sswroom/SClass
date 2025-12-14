@@ -725,6 +725,9 @@ MemoryDataRef.o: ../../src/IO/StmData/MemoryDataRef.cpp
 MDT701STVControl.o: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 
+JavaAbstractButton.o: ../../src/Java/JavaAbstractButton.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaColor.o: ../../src/Java/JavaColor.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -740,10 +743,16 @@ $-I$(JAVA_HOME)/include/linux
 JavaEventListener.o: ../../src/Java/JavaEventListener.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaFont.o: ../../src/Java/JavaFont.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaFrame.o: ../../src/Java/JavaFrame.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaGraphicsDevice.o: ../../src/Java/JavaGraphicsDevice.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaJButton.o: ../../src/Java/JavaJButton.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaJComponent.o: ../../src/Java/JavaJComponent.cpp
@@ -758,6 +767,21 @@ $-I$(JAVA_HOME)/include/linux
 JavaJOptionPane.o: ../../src/Java/JavaJOptionPane.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaJPasswordField.o: ../../src/Java/JavaJPasswordField.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaJTextArea.o: ../../src/Java/JavaJTextArea.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaJTextComponent.o: ../../src/Java/JavaJTextComponent.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaJTextField.o: ../../src/Java/JavaJTextField.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaLayoutManager.o: ../../src/Java/JavaLayoutManager.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaMouseInfo.o: ../../src/Java/JavaMouseInfo.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -765,6 +789,9 @@ JavaObject.o: ../../src/Java/JavaObject.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaPointerInfo.o: ../../src/Java/JavaPointerInfo.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaString.o: ../../src/Java/JavaString.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaWindow.o: ../../src/Java/JavaWindow.cpp

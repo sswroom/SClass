@@ -8,6 +8,8 @@ namespace UI
 	{
 		class JUITextBox : public GUITextBox
 		{
+		private:
+			Bool multiline;
 		public:
 			JUITextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
 			virtual ~JUITextBox();

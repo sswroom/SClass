@@ -18,7 +18,7 @@ Java::JavaObject::JavaObject(jobject me)
 
 Java::JavaObject::~JavaObject()
 {
-
+//	jniEnv->DeleteLocalRef(this->me);
 }
 
 jobject Java::JavaObject::GetJObject() const

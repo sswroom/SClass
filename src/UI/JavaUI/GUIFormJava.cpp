@@ -175,6 +175,7 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 		NN<Java::JavaContainer> nncontainer;
 		NEW_CLASSNN(nncontainer, Java::JavaContainer(container));
 		this->container = nncontainer;
+		nncontainer->SetLayout(0);
 	}
 	jclass cls = jniEnv->FindClass("JFrameWindowListener");
 	jmethodID mid = jniEnv->GetMethodID(cls, "<init>", "(J)V");

@@ -10,6 +10,7 @@ jmethodID Java::JavaComponent::getHeight = 0;
 jmethodID Java::JavaComponent::getWidth = 0;
 jmethodID Java::JavaComponent::isVisible = 0;
 jmethodID Java::JavaComponent::requestFocus = 0;
+jmethodID Java::JavaComponent::setFont = 0;
 jmethodID Java::JavaComponent::setLocation = 0;
 jmethodID Java::JavaComponent::setSize = 0;
 jmethodID Java::JavaComponent::setVisible = 0;

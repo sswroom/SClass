@@ -36,7 +36,9 @@ void Java::JavaFrame::SetTitle(Text::CStringNN title)
 {
 	if (setTitle == 0)
 		setTitle = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "setTitle", "(Ljava/lang/String;)V");
-	jniEnv->CallVoidMethod(this->me, setTitle, jniEnv->NewStringUTF((const Char*)title.v.Ptr()));
+	jstring s;
+	jniEnv->CallVoidMethod(this->me, setTitle, s = jniEnv->NewStringUTF((const Char*)title.v.Ptr()));
+	jniEnv->DeleteLocalRef(s);
 }
 
 jclass Java::JavaFrame::GetClass()

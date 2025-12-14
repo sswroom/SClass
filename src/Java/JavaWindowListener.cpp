@@ -6,7 +6,7 @@ extern "C"
 	extern JNIEnv *jniEnv;
 }
 
-Java::JavaWindowListener::JavaWindowListener(jobject me) : JavaEventListener(me)
+Java::JavaWindowListener::JavaWindowListener(jobject me) : JavaObject(me)
 {
 }
 

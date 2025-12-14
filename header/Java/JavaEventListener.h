@@ -1,15 +1,12 @@
 #ifndef _SM_JAVA_JAVAEVENTLISTENER
 #define _SM_JAVA_JAVAEVENTLISTENER
-#include "Java/JavaObject.h"
+#include "Java/JavaInterface.h"
 
 namespace Java
 {
-	class JavaEventListener : public JavaObject
+	class JavaEventListener : public JavaInterface
 	{
 	public:
-		JavaEventListener(jobject me);
-		virtual ~JavaEventListener();
-
 		static jclass GetClass();
 	};
 }

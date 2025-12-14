@@ -25,7 +25,9 @@ void Java::JavaJLabel::SetText(Text::CStringNN text)
 {
 	if (setText == 0)
 		setText = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "setText", "(Ljava/lang/String;)V");
-	jniEnv->CallVoidMethod(this->me, setText, jniEnv->NewStringUTF((const Char*)text.v.Ptr()));
+	jstring s;
+	jniEnv->CallVoidMethod(this->me, setText, s = jniEnv->NewStringUTF((const Char*)text.v.Ptr()));
+	jniEnv->DeleteLocalRef(s);
 }
 
 jclass Java::JavaJLabel::GetClass()
@@ -44,5 +46,8 @@ jobject Java::JavaJLabel::NewObject(Text::CStringNN text)
 {
 	jclass cls = GetClass();
 	jmethodID mid = jniEnv->GetMethodID(cls, "<init>", "(Ljava/lang/String;)V");
-	return jniEnv->NewObject(cls, mid, jniEnv->NewStringUTF((const Char*)text.v.Ptr()));
+	jstring s;
+	jobject o = jniEnv->NewObject(cls, mid, s = jniEnv->NewStringUTF((const Char*)text.v.Ptr()));
+	jniEnv->DeleteLocalRef(s);
+	return o;
 }

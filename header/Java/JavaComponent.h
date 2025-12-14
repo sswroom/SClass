@@ -1,5 +1,6 @@
 #ifndef _SM_JAVA_JAVACOMPONENT
 #define _SM_JAVA_JAVACOMPONENT
+#include "Java/JavaFont.h"
 #include "Java/JavaObject.h"
 
 namespace Java
@@ -25,6 +26,7 @@ namespace Java
 		static jmethodID getWidth;
 		static jmethodID isVisible;
 		static jmethodID requestFocus;
+		static jmethodID setFont;
 		static jmethodID setLocation;
 		static jmethodID setSize;
 		static jmethodID setVisible;
@@ -36,6 +38,7 @@ namespace Java
 		Int32 GetWidth();
 		Bool IsVisible();
 		void RequestFocus();
+		void SetFont(NN<JavaFont> font);
 		void SetLocation(Int32 x, Int32 y);
 		void SetSize(Int32 width, Int32 height);
 		void SetVisible(Bool b);
