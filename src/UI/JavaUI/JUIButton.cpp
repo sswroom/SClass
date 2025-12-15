@@ -1,6 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Java/JavaJButton.h"
+#include "Java/JavaMyActionListener.h"
+#include "Java/JavaMyFocusListener.h"
+#include "Java/JavaMyMouseListener.h"
 #include "Math/Math_C.h"
 #include "Text/CSSBuilder.h"
 #include "Text/MyString.h"
@@ -23,21 +26,38 @@ void __stdcall JUIButton_ButtonClick(AnyType userObj)
 	userObj.GetNN<UI::JavaUI::JUIButton>()->EventButtonClick();
 }
 
-void __stdcall JUIButton_ButtonDown(AnyType userObj, Math::Coord2D<OSInt> scnCoord, UI::GUIControl::MouseButton btn)
+Bool __stdcall JUIButton_ButtonDown(AnyType userObj, Math::Coord2D<OSInt> scnCoord, UI::GUIControl::MouseButton btn)
 {
 	userObj.GetNN<UI::JavaUI::JUIButton>()->EventButtonDown();
+	return false;
 }
 
-void __stdcall JUIButton_ButtonUp(AnyType userObj, Math::Coord2D<OSInt> scnCoord, UI::GUIControl::MouseButton btn)
+Bool __stdcall JUIButton_ButtonUp(AnyType userObj, Math::Coord2D<OSInt> scnCoord, UI::GUIControl::MouseButton btn)
 {
 	userObj.GetNN<UI::JavaUI::JUIButton>()->EventButtonUp();
+	return false;
 }
 
 UI::JavaUI::JUIButton::JUIButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUIButton(ui, parent)
 {
 	NN<Java::JavaJButton> btn;
 	NEW_CLASSNN(btn, Java::JavaJButton(label));
-	//btn->AddActionListener()
+	{
+		Java::JavaMyActionListener l(JUIButton_ButtonClick, this);
+		btn->AddActionListener(l);
+	}
+	{
+		Java::JavaMyFocusListener l(this);
+		l.HandleFocusGain(JUIButton_Focus);
+		l.HandleFocusLost(JUIButton_FocusLost);
+		btn->AddFocusListener(l);
+	}
+	{
+		Java::JavaMyMouseListener l(this);
+		l.HandleMousePressed(JUIButton_ButtonDown);
+		l.HandleMouseReleased(JUIButton_ButtonUp);
+		btn->AddMouseListener(l);
+	}
 	//btn->AddMouseListener()
 	//btn->AddFocusListener()
 	this->hwnd = NN<ControlHandle>::ConvertFrom(btn);

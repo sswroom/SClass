@@ -1,6 +1,8 @@
 #ifndef _SM_JAVA_JAVACOMPONENT
 #define _SM_JAVA_JAVACOMPONENT
+#include "Java/JavaFocusListener.h"
 #include "Java/JavaFont.h"
+#include "Java/JavaMouseListener.h"
 #include "Java/JavaObject.h"
 
 namespace Java
@@ -22,6 +24,8 @@ namespace Java
 			Bottom
 		};
 	private:
+		static jmethodID addFocusListener;
+		static jmethodID addMouseListener;
 		static jmethodID getHeight;
 		static jmethodID getWidth;
 		static jmethodID isVisible;
@@ -34,6 +38,8 @@ namespace Java
 		JavaComponent(jobject me);
 		virtual ~JavaComponent();
 
+		void AddFocusListener(NN<JavaFocusListener> l);
+		void AddMouseListener(NN<JavaMouseListener> l);
 		Int32 GetHeight();
 		Int32 GetWidth();
 		Bool IsVisible();

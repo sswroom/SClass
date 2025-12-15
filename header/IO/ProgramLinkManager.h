@@ -8,15 +8,15 @@ namespace IO
 	class ProgramLinkManager
 	{
 	private:
-		UOSInt GetLinkNamesDir(Data::ArrayListStringNN *nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd);
+		UOSInt GetLinkNamesDir(NN<Data::ArrayListStringNN> nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd);
 
 	public:
 		ProgramLinkManager();
 		~ProgramLinkManager();
 
 		UnsafeArray<UTF8Char> GetLinkPath(UnsafeArray<UTF8Char> buff, Bool thisUser);
-		UOSInt GetLinkNames(Data::ArrayListStringNN *nameList, Bool allUser, Bool thisUser);
-		Bool GetLinkDetail(Text::CStringNN linkName, ProgramLink *link);
+		UOSInt GetLinkNames(NN<Data::ArrayListStringNN> nameList, Bool allUser, Bool thisUser);
+		Bool GetLinkDetail(Text::CStringNN linkName, NN<ProgramLink> link);
 
 		Bool CreateLink(Bool thisUser, Text::CStringNN shortName, Text::CStringNN linkName, Text::CString comment, Text::CString categories, Text::CStringNN cmdLine);
 		Bool DeleteLink(Text::CStringNN linkName);

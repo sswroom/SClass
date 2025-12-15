@@ -8,7 +8,7 @@
 void PrintSvcDetail(IO::ServiceManager *svcMgr, Text::CStringNN svcName)
 {
 	IO::ServiceManager::ServiceDetail svc;
-	if (svcMgr->ServiceGetDetail(svcName, &svc))
+	if (svcMgr->ServiceGetDetail(svcName, svc))
 	{
 		Data::DateTime dt;
 		UTF8Char sbuff[64];

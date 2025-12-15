@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(AnyType use
 		return;
 	}
 	IO::ServiceManager::ServiceDetail sd;
-	if (me->svcMgr.ServiceGetDetail(sbName.ToCString(), &sd))
+	if (me->svcMgr.ServiceGetDetail(sbName.ToCString(), sd))
 	{
 		me->ui->ShowMsgOK(CSTR("Service Name already exist"), CSTR("Create Service"), me);
 		return;

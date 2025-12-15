@@ -4,7 +4,6 @@
 extern "C"
 {
 	extern JNIEnv *jniEnv;
-}
 
 JNIEXPORT void JNICALL Java_MyActionListener_actionPerformed(JNIEnv *env, jobject obj, jobject e)
 {
@@ -14,6 +13,7 @@ JNIEXPORT void JNICALL Java_MyActionListener_actionPerformed(JNIEnv *env, jobjec
 	UI::UIEvent hdlr = (UI::UIEvent)env->CallLongMethod(obj, mid);
 	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
 	hdlr(userObj);
+}
 }
 
 Java::JavaMyActionListener::JavaMyActionListener(UI::UIEvent hdlr, AnyType userObj) : JavaObject(NewObject(hdlr, userObj))

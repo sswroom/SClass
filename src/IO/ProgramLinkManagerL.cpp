@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
+UOSInt IO::ProgramLinkManager::GetLinkNamesDir(NN<Data::ArrayListStringNN> nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
 {
 	UOSInt ret = 0;
 	UnsafeArray<UTF8Char> sptr;
@@ -66,7 +66,7 @@ UnsafeArray<UTF8Char> IO::ProgramLinkManager::GetLinkPath(UnsafeArray<UTF8Char> 
 	return sptr;
 }
 
-UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, Bool allUser, Bool thisUser)
+UOSInt IO::ProgramLinkManager::GetLinkNames(NN<Data::ArrayListStringNN> nameList, Bool allUser, Bool thisUser)
 {
 	UTF8Char linkPath[512];
 	UnsafeArray<UTF8Char> linkPathEnd;
@@ -86,7 +86,7 @@ UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, B
 	return ret;
 }
 
-Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, IO::ProgramLink *link)
+Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, NN<IO::ProgramLink> link)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

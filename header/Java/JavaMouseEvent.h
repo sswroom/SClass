@@ -1,6 +1,7 @@
 #ifndef _SM_JAVA_JAVAMOUSEEVENT
 #define _SM_JAVA_JAVAMOUSEEVENT
 #include "Java/JavaInputEvent.h"
+#include "UI/GUIControl.h"
 
 namespace Java
 {
@@ -31,6 +32,7 @@ namespace Java
 		Int32 GetYOnScreen();
 		
 		static jclass GetClass();
+		static UI::GUIControl::MouseButton Button2MouseButton(Button btn);
 	};
 }
 #endif

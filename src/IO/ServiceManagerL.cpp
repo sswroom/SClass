@@ -13,7 +13,6 @@ OSInt IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<Servi
 
 IO::ServiceManager::ServiceManager()
 {
-	this->clsData = 0;
 }
 
 IO::ServiceManager::~ServiceManager()
@@ -28,7 +27,7 @@ Bool IO::ServiceManager::ServiceCreate(Text::CStringNN svcName, Text::CString sv
 		return false;
 	}
 	ServiceDetail svcDetail;
-	if (this->ServiceGetDetail(svcName, &svcDetail))
+	if (this->ServiceGetDetail(svcName, svcDetail))
 	{
 		return false;
 	}
@@ -220,7 +219,7 @@ Bool IO::ServiceManager::ServiceDisable(Text::CStringNN svcName)
 	return true;
 }
 
-Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, ServiceDetail *svcDetail)
+Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDetail> svcDetail)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCmd;

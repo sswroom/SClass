@@ -39,6 +39,8 @@ IO/PCIInfo.h:
 @PCIInfoL.o
 IO/PowerInfo.h:
 @PowerInfoL.o
+IO/ProgramLinkManager.h:
+@ProgramLinkManagerNull.o
 IO/RAWBTMonitor.h:
 @RAWBTMonitorLite.o
 IO/RAWBTScanner.h:

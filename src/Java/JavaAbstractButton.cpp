@@ -6,6 +6,7 @@ extern "C"
 	extern JNIEnv *jniEnv;
 }
 
+jmethodID Java::JavaAbstractButton::addActionListener = 0;
 jmethodID Java::JavaAbstractButton::setText = 0;
 
 Java::JavaAbstractButton::JavaAbstractButton(jobject me) : JavaJComponent(me)
@@ -14,6 +15,13 @@ Java::JavaAbstractButton::JavaAbstractButton(jobject me) : JavaJComponent(me)
 
 Java::JavaAbstractButton::~JavaAbstractButton()
 {
+}
+
+void Java::JavaAbstractButton::AddActionListener(NN<JavaActionListener> l)
+{
+	if (addActionListener == 0)
+		addActionListener = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "addActionListener", "(Ljava/awt/event/ActionListener;)V");
+	jniEnv->CallVoidMethod(this->me, addActionListener, l->ToObject()->GetJObject());
 }
 
 void Java::JavaAbstractButton::SetText(Text::CStringNN text)

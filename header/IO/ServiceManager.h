@@ -33,7 +33,7 @@ namespace IO
 		};
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 	public:
 		ServiceManager();
@@ -46,7 +46,7 @@ namespace IO
 		Bool ServiceStop(Text::CStringNN svcName);
 		Bool ServiceEnable(Text::CStringNN svcName);
 		Bool ServiceDisable(Text::CStringNN svcName);
-		Bool ServiceGetDetail(Text::CStringNN svcName, ServiceDetail *svcDetail);
+		Bool ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDetail> svcDetail);
 
 		UOSInt QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);
 		void FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);

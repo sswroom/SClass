@@ -41,6 +41,8 @@ IO/PCIInfo.h:
 @PCIInfoL.o
 IO/PowerInfo.h:
 @PowerInfoL.o
+IO/ProgramLinkManager.h:
+@ProgramLinkManagerNull.o
 IO/RAWBTMonitor.h:
 @RAWBTMonitor.o
 IO/RAWBTScanner.h:
@@ -49,6 +51,8 @@ IO/SDCardMgr.h:
 @SDCardMgrL.o
 IO/SensorManager.h:
 @SensorManagerNull.o
+IO/ServiceManager.h:
+@ServiceManagerNull.o
 IO/USBInfo.h:
 @USBInfoL.o
 IO/Watchdog.h:

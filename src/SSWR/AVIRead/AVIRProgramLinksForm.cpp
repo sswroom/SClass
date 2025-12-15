@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(AnyType userOb
 	{
 		IO::ProgramLink link;
 		me->txtLinkName->SetText(s->ToCString());
-		if (!me->progMgr.GetLinkDetail(s->ToCString(), &link))
+		if (!me->progMgr.GetLinkDetail(s->ToCString(), link))
 		{
 			me->txtType->SetText(CSTR(""));
 			me->txtName->SetText(CSTR(""));
@@ -109,7 +109,7 @@ void SSWR::AVIRead::AVIRProgramLinksForm::UpdateLinkList()
 	this->lbItems->ClearItems();
 	Data::ArrayListStringNN nameList;
 	Text::StringComparatorFastNN comparator;
-	this->progMgr.GetLinkNames(&nameList, true, true);
+	this->progMgr.GetLinkNames(nameList, true, true);
 	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(nameList, comparator);
 	NN<Text::String> s;
 	UOSInt i = 0;

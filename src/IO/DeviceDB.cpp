@@ -1518,6 +1518,7 @@ IO::DeviceDB::USBDeviceInfo IO::DeviceDB::usbList[] = {
 	{0x1058, 0x2621, 0x1034, "Western Digital Elements 2621",                     "WD Elements HDD"},
 	{0x1058, 0x2627, 0x4010, "Western Digital My Passport 2627",                  "WD My Passport HDD"},
 	{0x10C4, 0xEA60, 0x0000, "Silicon Labs CP210x USB to UART Bridge Controller", "Silicon Labs CP210x USB to UART Bridge Controller"},
+	{0x10C4, 0xEA60, 0x0100, "Silicon Labs CP210x USB to UART Bridge Controller", "Silicon Labs CP210x USB to UART Bridge Controller"},
 	{0x1130, 0x0006, 0x0100, "i-Buddy",                                           "i-Buddy"},
 	{0x1199, 0x68A3, 0x0006, "Sierra Wireless, Incorporated MC8704",              "Sierra Wireless MC8704"},
 	{0x120E, 0x0565, 0x0203, "Fujitsu  HDD Fujitsu  HDD",                         "Fujitsu"},

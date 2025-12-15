@@ -4,7 +4,6 @@
 extern "C"
 {
 	extern JNIEnv *jniEnv;
-}
 
 JNIEXPORT void JNICALL Java_MyFocusListener_focusGained(JNIEnv *env, jobject obj, jobject e)
 {
@@ -25,6 +24,7 @@ JNIEXPORT void JNICALL Java_MyFocusListener_focusLost(JNIEnv *env, jobject obj, 
 	AnyType userObj = (void*)(OSInt)env->CallLongMethod(obj, mid2);
 	if (hdlr) hdlr(userObj);
 }
+}
 
 Java::JavaMyFocusListener::JavaMyFocusListener(AnyType userObj) : JavaObject(NewObject(userObj))
 {
@@ -37,7 +37,7 @@ Java::JavaMyFocusListener::~JavaMyFocusListener()
 void Java::JavaMyFocusListener::HandleFocusGain(UI::UIEvent hdlr)
 {
 	jclass cls = jniEnv->GetObjectClass(this->me);
-	jmethodID mid = jniEnv->GetMethodID(cls, "setFocusGainHdlr", "(J)V");
+	jmethodID mid = jniEnv->GetMethodID(cls, "setFocusGainedHdlr", "(J)V");
 	jniEnv->CallVoidMethod(this->me, mid, (Int64)hdlr);
 }
 

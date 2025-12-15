@@ -728,10 +728,19 @@ NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 JavaAbstractButton.o: ../../src/Java/JavaAbstractButton.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaActionListener.o: ../../src/Java/JavaActionListener.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaAWTEvent.o: ../../src/Java/JavaAWTEvent.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaColor.o: ../../src/Java/JavaColor.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaComponent.o: ../../src/Java/JavaComponent.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaComponentEvent.o: ../../src/Java/JavaComponentEvent.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaContainer.o: ../../src/Java/JavaContainer.cpp
@@ -743,6 +752,12 @@ $-I$(JAVA_HOME)/include/linux
 JavaEventListener.o: ../../src/Java/JavaEventListener.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaEventObject.o: ../../src/Java/JavaEventObject.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaFocusListener.o: ../../src/Java/JavaFocusListener.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaFont.o: ../../src/Java/JavaFont.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
@@ -750,6 +765,9 @@ JavaFrame.o: ../../src/Java/JavaFrame.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaGraphicsDevice.o: ../../src/Java/JavaGraphicsDevice.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaInputEvent.o: ../../src/Java/JavaInputEvent.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaJButton.o: ../../src/Java/JavaJButton.cpp
@@ -782,7 +800,22 @@ $-I$(JAVA_HOME)/include/linux
 JavaLayoutManager.o: ../../src/Java/JavaLayoutManager.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
+JavaMouseEvent.o: ../../src/Java/JavaMouseEvent.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
 JavaMouseInfo.o: ../../src/Java/JavaMouseInfo.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaMouseListener.o: ../../src/Java/JavaMouseListener.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaMyActionListener.o: ../../src/Java/JavaMyActionListener.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaMyFocusListener.o: ../../src/Java/JavaMyFocusListener.cpp
+$-I$(JAVA_HOME)/include
+$-I$(JAVA_HOME)/include/linux
+JavaMyMouseListener.o: ../../src/Java/JavaMyMouseListener.cpp
 $-I$(JAVA_HOME)/include
 $-I$(JAVA_HOME)/include/linux
 JavaObject.o: ../../src/Java/JavaObject.cpp

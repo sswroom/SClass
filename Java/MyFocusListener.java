@@ -1,23 +1,23 @@
 public class MyFocusListener implements java.awt.event.FocusListener
 {
-	private long focusGainHdlr;
+	private long focusGainedHdlr;
 	private long focusLostHdlr;
 	private long userObj;
 	public MyFocusListener(long userObj)
 	{
-		this.focusGainHdlr = 0;
+		this.focusGainedHdlr = 0;
 		this.focusLostHdlr = 0;
 		this.userObj = userObj;
 	}
 
-	public long getFocusGainHdlr()
+	public long getFocusGainedHdlr()
 	{
-		return this.focusGainHdlr;
+		return this.focusGainedHdlr;
 	}
 	
-	public void setFocusGainHdlr(long hdlr)
+	public void setFocusGainedHdlr(long hdlr)
 	{
-		this.focusGainHdlr = hdlr;
+		this.focusGainedHdlr = hdlr;
 	}
 
 	public long getFocusLostHdlr()

@@ -6,6 +6,8 @@ extern "C"
 	extern JNIEnv *jniEnv;
 }
 
+jmethodID Java::JavaComponent::addFocusListener = 0;
+jmethodID Java::JavaComponent::addMouseListener = 0;
 jmethodID Java::JavaComponent::getHeight = 0;
 jmethodID Java::JavaComponent::getWidth = 0;
 jmethodID Java::JavaComponent::isVisible = 0;
@@ -14,6 +16,20 @@ jmethodID Java::JavaComponent::setFont = 0;
 jmethodID Java::JavaComponent::setLocation = 0;
 jmethodID Java::JavaComponent::setSize = 0;
 jmethodID Java::JavaComponent::setVisible = 0;
+
+void Java::JavaComponent::AddFocusListener(NN<JavaFocusListener> l)
+{
+	if (addFocusListener == 0)
+		addFocusListener = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "addFocusListener", "(Ljava/awt/event/FocusListener;)V");
+	jniEnv->CallVoidMethod(this->me, addFocusListener, l->ToObject()->GetJObject());
+}
+
+void Java::JavaComponent::AddMouseListener(NN<JavaMouseListener> l)
+{
+	if (addMouseListener == 0)
+		addMouseListener = jniEnv->GetMethodID(jniEnv->GetObjectClass(this->me), "addMouseListener", "(Ljava/awt/event/MouseListener;)V");
+	jniEnv->CallVoidMethod(this->me, addMouseListener, l->ToObject()->GetJObject());
+}
 
 Java::JavaComponent::JavaComponent(jobject me) : JavaObject(me)
 {

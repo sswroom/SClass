@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnServiceSelChg(AnyType userObj)
 	{
 		me->txtName->SetText(s->ToCString());
 		IO::ServiceManager::ServiceDetail svc;
-		if (me->svcMgr.ServiceGetDetail(s->ToCString(), &svc))
+		if (me->svcMgr.ServiceGetDetail(s->ToCString(), svc))
 		{
 			UTF8Char sbuff[64];
 			UnsafeArray<UTF8Char> sptr;

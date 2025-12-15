@@ -1,5 +1,5 @@
 #ifndef _SM_JAVA_JAVAMYMOUSELISTENER
-#define _SM_JAVA_JAVAMYMOUELISTENER
+#define _SM_JAVA_JAVAMYMOUSELISTENER
 #include "Java/JavaMouseListener.h"
 #include "Java/JavaObject.h"
 #include "UI/GUIControl.h"
