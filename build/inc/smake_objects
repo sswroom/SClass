@@ -616,6 +616,7 @@ UnixConfigFile.o: ../../src/IO/UnixConfigFile.cpp
 USBInfoL.o: ../../src/IO/USBInfoL.cpp
 USBInfoMac.o: ../../src/IO/USBInfoMac.cpp
 USBInfoW.o: ../../src/IO/USBInfoW.cpp
+ValgrindLog.o: ../../src/IO/ValgrindLog.cpp
 VBoxManager.o: ../../src/IO/VBoxManager.cpp
 VBoxVMInfo.o: ../../src/IO/VBoxVMInfo.cpp
 ViewFileBufferL.o: ../../src/IO/ViewFileBufferL.cpp
@@ -2211,6 +2212,7 @@ AVIRUSBDeviceForm.o: ../../src/SSWR/AVIRead/AVIRUSBDeviceForm.cpp
 AVIRUserAgentBatchForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentBatchForm.cpp
 AVIRUserAgentParseForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentParseForm.cpp
 AVIRUserAgentSelForm.o: ../../src/SSWR/AVIRead/AVIRUserAgentSelForm.cpp
+AVIRValgrindLogForm.o: ../../src/SSWR/AVIRead/AVIRValgrindLogForm.cpp
 AVIRVBoxManagerForm.o: ../../src/SSWR/AVIRead/AVIRVBoxManagerForm.cpp
 AVIRVideoCheckerForm.o: ../../src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
 AVIRVideoInfoForm.o: ../../src/SSWR/AVIRead/AVIRVideoInfoForm.cpp

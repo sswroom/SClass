@@ -250,6 +250,7 @@
 #include "SSWR/AVIRead/AVIRUSBDeviceForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentBatchForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentParseForm.h"
+#include "SSWR/AVIRead/AVIRValgrindLogForm.h"
 #include "SSWR/AVIRead/AVIRVBoxManagerForm.h"
 #include "SSWR/AVIRead/AVIRVideoCheckerForm.h"
 #include "SSWR/AVIRead/AVIRVideoInfoForm.h"
@@ -552,7 +553,8 @@ typedef enum
 	MNU_LB_UDP,
 	MNU_LB_TCP,
 	MNU_INVESTMENT,
-	MNU_GISSERVER
+	MNU_GISSERVER,
+	MNU_VALGRINDLOG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -764,6 +766,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("SIDERunner Log"), MNU_SIDERUNNER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JMeter Results"), MNU_JMETER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Bandwidth Log Analyst"), MNU_BANDWIDTH_LOG_ANALYST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Valgrind Log"), MNU_VALGRINDLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &CodePage"), MNU_SET_CODEPAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3216,6 +3219,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRGISServerForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISServerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_VALGRINDLOG:
+		{
+			NN<SSWR::AVIRead::AVIRValgrindLogForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRValgrindLogForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

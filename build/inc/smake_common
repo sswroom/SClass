@@ -2090,6 +2090,8 @@ IO/UDPLog.h:
 @UDPLog.o
 IO/UnixConfigFile.h:
 @UnixConfigFile.o
+IO/ValgrindLog.h:
+@ValgrindLog.o
 IO/VBoxManager.h:
 @VBoxManager.o
 IO/VBoxVMInfo.h:
@@ -4649,6 +4651,8 @@ SSWR/AVIRead/AVIRUserAgentParseForm.h:
 @AVIRUserAgentParseForm.o
 SSWR/AVIRead/AVIRUserAgentSelForm.h:
 @AVIRUserAgentSelForm.o
+SSWR/AVIRead/AVIRValgrindLogForm.h:
+@AVIRValgrindLogForm.o
 SSWR/AVIRead/AVIRVBoxManagerForm.h:
 @AVIRVBoxManagerForm.o
 SSWR/AVIRead/AVIRVideoCheckerForm.h:
