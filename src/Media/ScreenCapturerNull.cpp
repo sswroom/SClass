@@ -12,7 +12,7 @@ Media::ScreenCapturer::~ScreenCapturer()
 {
 }
 
-Media::StaticImage *Media::ScreenCapturer::CaptureScreen(void *hMon)
+Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(Optional<MonitorHandle> hMon)
 {
 	return 0;
 }
