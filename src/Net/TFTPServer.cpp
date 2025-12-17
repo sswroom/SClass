@@ -24,7 +24,9 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 	UOSInt len;
 	UInt8 repBuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	if (data.GetSize() < 4)
+	NN<Net::UDPServer> svr;
+	NN<Net::UDPServer> dataSvr;
+	if (data.GetSize() < 4 || !me->svr.SetTo(svr) || !me->dataSvr.SetTo(dataSvr))
 		return;
 	opcode = ReadMUInt16(&data[0]);
 	if (opcode != 1 && opcode != 2)
@@ -44,7 +46,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 0);
 		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Mode not supported")) - repBuff + 1);
-		me->svr->SendTo(addr, port, repBuff, i);
+		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
 	if (Text::StrIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
@@ -52,7 +54,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 2);
 		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Access violation")) - repBuff + 1);
-		me->svr->SendTo(addr, port, repBuff, i);
+		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
@@ -64,7 +66,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
 		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Already started")) - repBuff + 1);
-		me->svr->SendTo(addr, port, repBuff, i);
+		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
 	mutUsage.EndUse();
@@ -73,20 +75,20 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 	sb.Append(me->path);
 	sb.AppendC(fileName, fileNameLen);
 	IO::Path::PathType pt;
-	IO::FileStream *fs;
+	NN<IO::FileStream> fs;
 	pt = IO::Path::GetPathType(sb.ToCString());
 	if (opcode == 1)
 	{
 		if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
 			{
-				DEL_CLASS(fs);
+				fs.Delete();
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
 				i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
-				me->svr->SendTo(addr, port, repBuff, i);
+				svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
 			Data::DateTime dt;
@@ -112,7 +114,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 				sess->isLast = true;
 			}
 			mutUsage.EndUse();
-			me->dataSvr->SendTo(addr, port, packet, len + 4);
+			dataSvr->SendTo(addr, port, packet, len + 4);
 			MemFree(packet);
 			if (me->log->HasHandler())
 			{
@@ -130,7 +132,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 1);
 			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("File not found")) - repBuff + 1);
-			me->svr->SendTo(addr, port, repBuff, i);
+			svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
 	}
@@ -141,7 +143,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
 			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("File already exists")) - repBuff + 1);
-			me->svr->SendTo(addr, port, repBuff, i);
+			svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
 		else if (pt == IO::Path::PathType::Directory)
@@ -149,19 +151,19 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
 			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Directory already exists")) - repBuff + 1);
-			me->svr->SendTo(addr, port, repBuff, i);
+			svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
 		else
 		{
-			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASSNN(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
 			{
-				DEL_CLASS(fs);
+				fs.Delete();
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
 				i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
-				me->svr->SendTo(addr, port, repBuff, i);
+				svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
 			Data::DateTime dt;
@@ -181,7 +183,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 
 			WriteMInt16(&repBuff[0], 4);
 			WriteMInt16(&repBuff[2], 0);
-			me->dataSvr->SendTo(addr, port, repBuff, 4);
+			dataSvr->SendTo(addr, port, repBuff, 4);
 
 			if (me->log->HasHandler())
 			{
@@ -200,7 +202,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
 		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Unknown opcode")) - repBuff + 1);
-		me->svr->SendTo(addr, port, repBuff, i);
+		svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
 	
@@ -213,6 +215,12 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 	NN<SessionInfo> sess;
 	UInt8 repBuff[32];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Net::UDPServer> svr;
+	NN<Net::UDPServer> dataSvr;
+	if (!me->svr.SetTo(svr) || !me->dataSvr.SetTo(dataSvr))
+	{
+		return;
+	}
 	Sync::MutexUsage mutUsage(me->mut);
 	if (!me->sessMap.Get(sessId).SetTo(sess))
 	{
@@ -221,7 +229,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 		{
 			WriteMInt16(&repBuff[0], 4);
 			WriteMInt16(&repBuff[2], ReadMUInt16(&data[2]));
-			me->dataSvr->SendTo(addr, port, repBuff, 4);
+			dataSvr->SendTo(addr, port, repBuff, 4);
 		}
 		return;
 	}
@@ -236,7 +244,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 			{
 				WriteMInt16(&repBuff[0], 4);
 				WriteMInt16(&repBuff[2], blkNum);
-				me->svr->SendTo(addr, port, repBuff, 4);
+				svr->SendTo(addr, port, repBuff, 4);
 				sess->lastSignalTime = dt.ToTicks();
 			}
 			else if (blkNum == sess->currBlock + 1)
@@ -262,7 +270,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 				}
 				WriteMInt16(&repBuff[0], 4);
 				WriteMInt16(&repBuff[2], blkNum);
-				me->dataSvr->SendTo(addr, port, repBuff, 4);
+				dataSvr->SendTo(addr, port, repBuff, 4);
 				sess->lastSignalTime = dt.ToTicks();
 			}
 		}
@@ -303,7 +311,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 					{
 						sess->isLast = true;
 					}
-					me->dataSvr->SendTo(addr, port, packet, len + 4);
+					dataSvr->SendTo(addr, port, packet, len + 4);
 					MemFree(packet);
 					sess->lastSignalTime = dt.ToTicks();
 				}
@@ -350,7 +358,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(AnyType userObj)
 void Net::TFTPServer::ReleaseSess(NN<SessionInfo> sess)
 {
 	sess->fileName->Release();
-	DEL_CLASS(sess->stm);
+	sess->stm.Delete();
 	MemFreeNN(sess);
 }
 
@@ -368,19 +376,22 @@ Net::TFTPServer::TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::Lo
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}
 	this->path = Text::String::New(sb.ToString(), sb.GetLength());
-	NEW_CLASS(this->dataSvr, Net::UDPServer(sockf, 0, 0, nullptr, OnDataPacket, this, log, CSTR("TFTP: "), 2, false));
-	if (this->dataSvr->IsError())
+	NN<Net::UDPServer> svr;
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, 0, 0, nullptr, OnDataPacket, this, log, CSTR("TFTP: "), 2, false));
+	if (svr->IsError())
 	{
-		DEL_CLASS(this->dataSvr);
+		svr.Delete();
 		this->dataSvr = 0;
 	}
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, nullptr, OnCommandPacket, this, log, CSTR("TFTP: "), 2, false));
-	if (this->svr->IsError())
+	this->dataSvr = svr;
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, 0, port, nullptr, OnCommandPacket, this, log, CSTR("TFTP: "), 2, false));
+	if (svr->IsError())
 	{
-		DEL_CLASS(this->svr);
+		svr.Delete();
 		this->svr = 0;
 	}
-	if (this->dataSvr && this->svr)
+	this->svr = svr;
+	if (this->dataSvr.NotNull() && this->svr.NotNull())
 	{
 		Sync::ThreadUtil::Create(CheckThread, this);
 	}
@@ -388,8 +399,8 @@ Net::TFTPServer::TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::Lo
 
 Net::TFTPServer::~TFTPServer()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->dataSvr);
+	this->svr.Delete();
+	this->dataSvr.Delete();
 	if (this->threadRunning)
 	{
 		this->threadToStop = true;
@@ -410,5 +421,5 @@ Net::TFTPServer::~TFTPServer()
 
 Bool Net::TFTPServer::IsError()
 {
-	return this->svr == 0 || this->dataSvr == 0;
+	return this->svr.IsNull() || this->dataSvr.IsNull();
 }

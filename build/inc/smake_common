@@ -181,6 +181,7 @@ console:
 @HTTPThroughputTest
 @LogServer
 @LoRaGWLogger
+@LoRaMonitor
 @MQTTFailover
 @NetRAWCapture
 @NetRAWLogger
@@ -617,6 +618,9 @@ LogServer:
 @ConsoleStartup.o
 LoRaGWLogger:
 @LoRaGWLoggerMain.o
+@ConsoleStartup.o
+LoRaMonitor:
+@LoRaMonitorMain.o
 @ConsoleStartup.o
 MQTTFailover:
 @MQTTFailoverTest.o
@@ -1148,6 +1152,7 @@ HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp
 HTTPThroughputTest.o: ../../main/NetTest/HTTPThroughputTest.cpp
 LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
 LoRaGWLoggerMain.o: ../../main/NetTest/LoRaGWLoggerMain.cpp
+LoRaMonitorMain.o: ../../main/NetTest/LoRaMonitorMain.cpp
 MQTTFailoverTest.o: ../../main/NetTest/MQTTFailoverTest.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
 NetRAWLogger.o: ../../main/NetTest/NetRAWLogger.cpp
@@ -3407,6 +3412,8 @@ Net/LoRaGWMonitor.h:
 @LoRaGWMonitor.o
 Net/LoRaGWUtil.h:
 @LoRaGWUtil.o
+Net/LoRaMonitorCore.h:
+@LoRaMonitorCore.o
 Net/MACInfo.h:
 @MACInfo.o
 Net/MACInfoList.h:

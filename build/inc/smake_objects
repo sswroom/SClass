@@ -1535,6 +1535,7 @@ LogServer.o: ../../src/Net/LogServer.cpp
 LoRaGateway.o: ../../src/Net/LoRaGateway.cpp
 LoRaGWMonitor.o: ../../src/Net/LoRaGWMonitor.cpp
 LoRaGWUtil.o: ../../src/Net/LoRaGWUtil.cpp
+LoRaMonitorCore.o: ../../src/Net/LoRaMonitorCore.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MDNSClient.o: ../../src/Net/MDNSClient.cpp

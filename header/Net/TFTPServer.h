@@ -16,7 +16,7 @@ namespace Net
 		{
 			UInt64 sessId;
 			Int64 lastSignalTime;
-			IO::Stream *stm;
+			NN<IO::Stream> stm;
 			UOSInt blockSize;
 			Bool isWrite;
 			Bool isLast;
@@ -26,8 +26,8 @@ namespace Net
 		
 	private:
 		NN<IO::LogTool> log;
-		Net::UDPServer *svr;
-		Net::UDPServer *dataSvr;
+		Optional<Net::UDPServer> svr;
+		Optional<Net::UDPServer> dataSvr;
 		NN<Text::String> path;
 		Sync::Mutex mut;
 		Data::FastMapNN<UInt64, SessionInfo> sessMap;
