@@ -40,6 +40,7 @@ void IO::ValgrindLog::BeginException(UOSInt threadId, Text::CStringNN message)
 	ex->message = Text::String::New(message);
 	ex->accessAddress = 0;
 	ex->addrType = AddressType::NoAddress;
+	ex->blockOfst = 0;
 	ex->stackSize = 0;
 	this->exceptions.Add(ex);
 	this->currException = ex;
@@ -79,6 +80,19 @@ void IO::ValgrindLog::SetExceptionStackSize(UInt32 size)
 	}
 }
 
+void IO::ValgrindLog::ExceptionBeginAlloc(UInt64 address, UInt32 blockOfst, UInt32 blockSize)
+{
+	NN<ExceptionInfo> ex;
+	if (this->currException.SetTo(ex))
+	{
+		ex->accessAddress = address;
+		ex->addrType = AddressType::Alloc;
+		ex->blockOfst = blockOfst;
+		ex->stackSize = blockSize;
+		this->currStack = ex->allocStacks;
+	}
+}
+
 void IO::ValgrindLog::SetHeapInUse(UInt64 bytesInUse, UInt32 blocksInUse)
 {
 	this->bytesInUse = bytesInUse;
@@ -110,6 +124,7 @@ void __stdcall IO::ValgrindLog::FreeException(NN<ExceptionInfo> ex)
 {
 	ex->message->Release();
 	ex->stacks.FreeAll(FreeStack);
+	ex->allocStacks.FreeAll(FreeStack);
 	ex.Delete();
 }
 
@@ -180,6 +195,16 @@ UInt32 IO::ValgrindLog::GetBlocksFrees() const
 UInt64 IO::ValgrindLog::GetBytesAllocs() const
 {
 	return this->bytesAllocs;
+}
+
+NN<const Data::ArrayListNN<IO::ValgrindLog::ExceptionInfo>> IO::ValgrindLog::GetErrorList() const
+{
+	return this->exceptions;
+}
+
+NN<const Data::ArrayListNN<IO::ValgrindLog::LeakInfo>> IO::ValgrindLog::GetLeakList() const
+{
+	return this->leaks;
 }
 
 Optional<IO::ValgrindLog> IO::ValgrindLog::LoadFile(Text::CStringNN filePath)
@@ -343,10 +368,38 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 				if (cont.EndsWith(CSTR("'s stack")))
 				{
 					addrType = AddressType::Stack;
+					i = cont.IndexOf(' ', 9);
+					if (i != INVALID_INDEX)
+					{
+						Text::StrConcatC(sbuff, &cont.v[9], i - 9);
+						log->SetExceptionAccessAddress(Text::StrToUInt64(sbuff), addrType);
+					}
 				}
 				else if (cont.EndsWith(CSTR(" is not stack'd, malloc'd or (recently) free'd")))
 				{
 					addrType = AddressType::Unknown;
+					i = cont.IndexOf(' ', 9);
+					if (i != INVALID_INDEX)
+					{
+						Text::StrConcatC(sbuff, &cont.v[9], i - 9);
+						log->SetExceptionAccessAddress(Text::StrToUInt64(sbuff), addrType);
+					}
+				}
+				else if (cont.EndsWith(CSTR(" alloc'd")) && (i = cont.IndexOf(UTF8STRC(" is "), 9)) != INVALID_INDEX && (j = cont.IndexOf(UTF8STRC(" bytes inside a block of size "), i + 4)) != INVALID_INDEX)
+				{
+					UInt64 addr;
+					UInt32 blockOfst;
+					UInt32 blockSize;
+					Text::StrConcatC(sbuff, &cont.v[9], i - 9);
+					addr = Text::StrToUInt64(sbuff);
+					Text::StrConcatC(sbuff, &cont.v[i + 4], j - i - 4);
+					Text::StrRemoveChar(sbuff, ',');
+					blockOfst = Text::StrToUInt32(sbuff);
+					Text::StrConcatC(sbuff, &cont.v[j + 30], cont.leng - j - 38);
+					Text::StrRemoveChar(sbuff, ',');
+					blockSize = Text::StrToUInt32(sbuff);
+					log->ExceptionBeginAlloc(addr, blockOfst, blockSize);
+					beginStack = true;
 				}
 				else
 				{
@@ -356,12 +409,6 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 						hasError = true;
 					}
 					continue;
-				}
-				i = cont.IndexOf(' ', 9);
-				if (i != INVALID_INDEX)
-				{
-					Text::StrConcatC(sbuff, &cont.v[9], i - 9);
-					log->SetExceptionAccessAddress(Text::StrToUInt64(sbuff), addrType);
 				}
 			}
 			else if (!beginLeak && cont.StartsWith(' ') && cont.EndsWith(CSTR(" bytes below stack pointer")))
@@ -396,7 +443,7 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 				i = cont.IndexOf(' ', 6);
 				if (i != INVALID_INDEX)
 				{
-					Text::StrConcatC(sbuff, &cont.v[6], i - 6);
+					Text::StrConcatC(sbuff, &cont.v[6], i - 7);
 					j = cont.IndexOf(UTF8STRC(" ("), i + 1);
 					if (j == INVALID_INDEX)
 					{

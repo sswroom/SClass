@@ -4,9 +4,9 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
-#include "UI/GUIHSplitter.h"
+#include "UI/GUIVSplitter.h"
 #include "UI/GUILabel.h"
-#include "UI/GUIListBox.h"
+#include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
@@ -48,9 +48,22 @@ namespace SSWR
 			NN<UI::GUILabel> lblBytesAllocs;
 			NN<UI::GUITextBox> txtBytesAllocs;
 
+			NN<UI::GUITabPage> tpError;
+			NN<UI::GUIListView> lvErrorDetail;
+			NN<UI::GUIVSplitter> vspError;
+			NN<UI::GUIListView> lvError;
+
+			NN<UI::GUITabPage> tpLeak;
+			NN<UI::GUIListView> lvLeakDetail;
+			NN<UI::GUIVSplitter> vspLeak;
+			NN<UI::GUIListView> lvLeak;
+
 			static void __stdcall OnFileClicked(AnyType userObj);
 			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
+			static void __stdcall OnLeakSelChg(AnyType userObj);
+			static void __stdcall OnErrorSelChg(AnyType userObj);
 			Bool LoadFile(NN<Text::String> file);
+			static Optional<IO::ValgrindLog::StackEntry> GetOptimalStack(NN<Data::ArrayListNN<IO::ValgrindLog::StackEntry>> stacks);
 		public:
 			AVIRValgrindLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRValgrindLogForm();

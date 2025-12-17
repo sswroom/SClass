@@ -60,13 +60,13 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 	}
 
 
-	Media::ChapterInfo *chap = file->GetChapterInfo();
+	NN<Media::ChapterInfo> chap;
 	NN<Text::String> artist;
 	UOSInt i;
 	UOSInt j;
 	Data::Duration nextTime;
 	NN<PlaylistEntry> ent;
-	if (chap)
+	if (file->GetChapterInfo().SetTo(chap))
 	{
 		i = 0;
 		j = chap->GetChapterCnt();

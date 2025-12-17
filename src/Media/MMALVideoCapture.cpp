@@ -14,7 +14,7 @@
 #include <mmal/util/mmal_util_params.h>
 #include <mmal/util/mmal_default_components.h>
 
-typedef struct
+struct Media::MMALVideoCapture::ClassData
 {
 	MMAL_COMPONENT_T *camera;
 	MMAL_PORT_T *port;
@@ -27,52 +27,54 @@ typedef struct
 
 	Media::VideoSource::FrameCallback cb;
 	Media::VideoSource::FrameChangeCallback fcCb;
-	void *userData;
+	AnyType userData;
 
 	Int32 currFourcc;
 	OSInt currWidth;
 	OSInt currHeight;
 	Int32 currRateNumer;
 	Int32 currRateDenom;
-} MMALInfo;
+};
 
 void MMALVideoCapture_FrameCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
 	MMAL_BUFFER_HEADER_T *new_buffer;
-	MMALInfo *info = (MMALInfo *) port->userdata;
-
-	if (info->cb)
+	NN<Media::MMALVideoCapture::ClassData> info;
+	if (info.Set((Media::MMALVideoCapture::ClassData *) port->userdata))
 	{
-		UInt32 t = Double2Int32(info->clk->GetTimeDiff() * 1000);
-		mmal_buffer_header_mem_lock(buffer);
-		info->cb(t, info->frameNum, &buffer->data, buffer->length, Media::VideoSource::FS_I, info->userData, Media::FT_NON_INTERLACE, Media::VideoSource::FF_REALTIME, Media::YCOFST_C_CENTER_LEFT);
-		mmal_buffer_header_mem_unlock(buffer);
-	}
-	mmal_buffer_header_release (buffer);
-	info->frameNum++;
-
-	if (port->is_enabled)
-	{
-		MMAL_STATUS_T status;
-		new_buffer = mmal_queue_get(info->buffPool->queue);
-		if (new_buffer)
+		if (info->cb)
 		{
-			status = mmal_port_send_buffer(port, new_buffer);
-			if (status != MMAL_SUCCESS)
-			{
-				printf("MMALVideoCapture_FrameCB: cannot send buffer\r\n");
-			}
+			UInt32 t = Double2Int32(info->clk->GetTimeDiff() * 1000);
+			mmal_buffer_header_mem_lock(buffer);
+			info->cb(t, info->frameNum, &buffer->data, buffer->length, Media::VideoSource::FS_I, info->userData, Media::FT_NON_INTERLACE, Media::VideoSource::FF_REALTIME, Media::YCOFST_C_CENTER_LEFT);
+			mmal_buffer_header_mem_unlock(buffer);
 		}
-		else
+		mmal_buffer_header_release (buffer);
+		info->frameNum++;
+
+		if (port->is_enabled)
 		{
-			printf("MMALVideoCapture_FrameCB: cannot get buffer\r\n");
+			MMAL_STATUS_T status;
+			new_buffer = mmal_queue_get(info->buffPool->queue);
+			if (new_buffer)
+			{
+				status = mmal_port_send_buffer(port, new_buffer);
+				if (status != MMAL_SUCCESS)
+				{
+					printf("MMALVideoCapture_FrameCB: cannot send buffer\r\n");
+				}
+			}
+			else
+			{
+				printf("MMALVideoCapture_FrameCB: cannot get buffer\r\n");
+			}
 		}
 	}
 }
 
 Media::MMALVideoCapture::MMALVideoCapture(Bool photoMode)
 {
-	MMALInfo *info = MemAlloc(MMALInfo, 1);
+	NN<ClassData> info = MemAllocNN(ClassData);
 	MMAL_STATUS_T status;
 	this->classData = info;
 	NEW_CLASS(info->clk, Manage::HiResClock());
@@ -147,7 +149,7 @@ Media::MMALVideoCapture::MMALVideoCapture(Bool photoMode)
 
 Media::MMALVideoCapture::~MMALVideoCapture()
 {
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	if (info->isRunning)
 	{
 		this->Stop();
@@ -185,9 +187,9 @@ Text::CString Media::MMALVideoCapture::GetFilterName()
 	return CSTR("MMALVideoCapture");
 }
 
-Bool Media::MMALVideoCapture::GetVideoInfo(Media::FrameInfo *finfo, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::MMALVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	finfo->dispSize.x = info->currWidth;
 	finfo->dispHeight = info->currHeight;
 	if (info->currWidth & 31)
@@ -218,15 +220,15 @@ Bool Media::MMALVideoCapture::GetVideoInfo(Media::FrameInfo *finfo, UInt32 *fram
 	finfo->color->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 	finfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	finfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	*frameRateNorm = info->currRateNumer;
-	*frameRateDenorm = info->currRateDenom;
-	*maxFrameSize = (info->currWidth * info->currHeight * 3) >> 1;
+	frameRateNorm.Set(info->currRateNumer);
+	frameRateDenorm.Set(info->currRateDenom);
+	maxFrameSize.Set((info->currWidth * info->currHeight * 3) >> 1);
 	return true;
 }
 
-Bool Media::MMALVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData)
+Bool Media::MMALVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	info->cb = cb;
 	info->fcCb = fcCb;
 	info->userData = userData;
@@ -235,7 +237,7 @@ Bool Media::MMALVideoCapture::Init(FrameCallback cb, FrameChangeCallback fcCb, v
 
 Bool Media::MMALVideoCapture::Start()
 {
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	if (info->isRunning)
 		return true;
 
@@ -279,7 +281,7 @@ Bool Media::MMALVideoCapture::Start()
 
 void Media::MMALVideoCapture::Stop()
 {
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	if (!info->isRunning)
 		return;
 	mmal_port_parameter_set_boolean(info->port, MMAL_PARAMETER_CAPTURE, 0);
@@ -288,7 +290,7 @@ void Media::MMALVideoCapture::Stop()
 
 Bool Media::MMALVideoCapture::IsRunning()
 {
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	return info->isRunning;
 }
 
@@ -296,7 +298,7 @@ void Media::MMALVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 
 {
 	MMAL_ES_FORMAT_T *format;
 	MMAL_STATUS_T status;
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	UInt32 inpfcc = fourcc;
 	if (fourcc == *(UInt32*)"I420")
 	{
@@ -327,9 +329,9 @@ void Media::MMALVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 
 	}
 }
 
-UOSInt Media::MMALVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt)
+UOSInt Media::MMALVideoCapture::GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt)
 {
-	MMALInfo *info = (MMALInfo*)this->classData;
+	NN<ClassData> info = this->classData;
 	OSInt ret = 0;
 	if (info->photoMode)
 	{

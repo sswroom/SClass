@@ -1,7 +1,8 @@
-#include "stdafx.h"
+#include "Stdafx.h"
+#include "Core/ByteTool_C.h"
 #include "Media/MPEG4V.h"
 
-Bool Media::MPEG4V::GetPAR(UInt8 *frame, Int32 frameSize, Int32 *arh, Int32 *arv)
+Bool Media::MPEG4V::GetPAR(UnsafeArray<UInt8> frame, Int32 frameSize, OutParam<Int32> arh, OutParam<Int32> arv)
 {
 	Int32 i = frameSize - 3;
 	if (i > 64)
@@ -10,7 +11,7 @@ Bool Media::MPEG4V::GetPAR(UInt8 *frame, Int32 frameSize, Int32 *arh, Int32 *arv
 	}
 	while (i-- > 0)
 	{
-		if (*(Int32*)frame == 0x20010000)
+		if (ReadInt32(&frame[0]) == 0x20010000)
 		{
 			Int32 pw;
 			Int32 ph;
@@ -31,38 +32,38 @@ Bool Media::MPEG4V::GetPAR(UInt8 *frame, Int32 frameSize, Int32 *arh, Int32 *arv
 
 			if (ar == 0xf)
 			{
-				*arh = pw;
-				*arv = ph;
+				arh.Set(pw);
+				arv.Set(ph);
 				return true;
 			}
 			else if (ar == 1)
 			{
-				*arh = 1;
-				*arv = 1;
+				arh.Set(1);
+				arv.Set(1);
 				return true;
 			}
 			else if (ar == 2)
 			{
-				*arh = 12;
-				*arv = 11;
+				arh.Set(12);
+				arv.Set(11);
 				return true;
 			}
 			else if (ar == 3)
 			{
-				*arh = 10;
-				*arv = 11;
+				arh.Set(10);
+				arv.Set(11);
 				return true;
 			}
 			else if (ar == 4)
 			{
-				*arh = 16;
-				*arv = 11;
+				arh.Set(16);
+				arv.Set(11);
 				return true;
 			}
 			else if (ar == 5)
 			{
-				*arh = 40;
-				*arv = 33;
+				arh.Set(40);
+				arv.Set(33);
 				return true;
 			}
 			return false;

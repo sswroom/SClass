@@ -8,24 +8,26 @@ namespace Media
 {
 	class MMALVideoCapture : public Media::VideoCapturer
 	{
+	public:
+		struct ClassData;
 	private:
-		void *classData;
+		NN<ClassData> classData;
 
 	public:
 		MMALVideoCapture(Bool photoMode);
 		virtual ~MMALVideoCapture();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CString GetFilterName();
 
-		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
-		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start();
 		virtual void Stop();
 		virtual Bool IsRunning();
 
 		virtual void SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom);
-		virtual UOSInt GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt);
+		virtual UOSInt GetSupportedFormats(UnsafeArray<VideoFormat> fmtArr, UOSInt maxCnt);
 		virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
 
 		virtual UOSInt GetDataSeekCount();

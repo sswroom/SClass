@@ -18,7 +18,7 @@ namespace Media
 		UInt64 readOfst;
 		UInt64 fleng;
 		Data::Duration startTime;
-		Media::M2VStreamSource *vstm;
+		Optional<Media::M2VStreamSource> vstm;
 		Data::FastMapNN<Int32, Media::MediaStream> dataStms;
 		Data::ArrayListNN<Media::AudioSource> audStms;
 

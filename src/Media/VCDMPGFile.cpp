@@ -21,13 +21,16 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 //	Int32 muxRate;
 	Int64 initScr = -1;
 	Int64 last_scr_base = -1;
+	NN<Media::M2VStreamSource> vstm;
 	NN<Media::MediaStream> mstm;
 	Int32 lastFrameTime = 0;
+	if (!me->vstm.SetTo(vstm))
+		return 0;
 
 	me->playStarted = true;
 	me->playing = 2;
-	me->vstm->ClearFrameBuff();
-	me->vstm->SetStreamTime(me->startTime);
+	vstm->ClearFrameBuff();
+	vstm->SetStreamTime(me->startTime);
 	Bool firstAudio = true;
 	Bool firstVideo = false;
 	while (!me->playToStop)
@@ -35,7 +38,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 		succ = me->data->ReadSector(me->readOfst, me->readBuff);
 		if (!succ)
 		{
-			me->vstm->EndFrameStream();
+			vstm->EndFrameStream();
 			break;
 		}
 		/////////////////////////////////////////////////
@@ -180,13 +183,13 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 							frameTime = 0;
 						if (firstVideo || frameTime > lastFrameTime)
 						{
-							me->vstm->SetStreamTime((UInt32)frameTime);
+							vstm->SetStreamTime((UInt32)frameTime);
 							firstVideo = false;
 							lastFrameTime = frameTime;
 						}
 					}
 
-					me->vstm->WriteFrameStream(&me->readBuff[j], 2348 - j);
+					vstm->WriteFrameStream(&me->readBuff[j], 2348 - j);
 				}
 				else if (me->readBuff[currOfst + 3] == 0xbc) // program_stream_map
 				{
@@ -249,7 +252,7 @@ Media::VCDMPGFile::VCDMPGFile(NN<IO::SectorData> data, UInt64 startSector, UInt6
 //	Int32 muxRate;
 	while (true)
 	{
-		if (currSector >= 75 && this->vstm && this->dataStms.GetCount() > 0)
+		if (currSector >= 75 && this->vstm.NotNull() && this->dataStms.GetCount() > 0)
 		{
 			break;
 		}
@@ -383,10 +386,12 @@ Media::VCDMPGFile::VCDMPGFile(NN<IO::SectorData> data, UInt64 startSector, UInt6
 					Media::FrameInfo frameInfo;
 					UInt32 frameRateNorm;
 					UInt32 frameRateDenorm;
-					if (isFrame && vstm == 0 && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j], 2348 - j, frameInfo, frameRateNorm, frameRateDenorm, 0, true))
+					if (isFrame && this->vstm.IsNull() && Media::MPEGVideoParser::GetFrameInfo(&this->readBuff[j], 2348 - j, frameInfo, frameRateNorm, frameRateDenorm, 0, true))
 					{
-						NEW_CLASS(vstm, Media::M2VStreamSource(*this));
-						this->vstm->DetectStreamInfo(&this->readBuff[j], 2348 - j);
+						NN<Media::M2VStreamSource> vstm;
+						NEW_CLASSNN(vstm, Media::M2VStreamSource(*this));
+						this->vstm = vstm;
+						vstm->DetectStreamInfo(&this->readBuff[j], 2348 - j);
 					}
 
 					break;
@@ -422,7 +427,7 @@ Media::VCDMPGFile::~VCDMPGFile()
 		stm = this->dataStms.GetItemNoCheck(i);
 		stm.Delete();
 	}
-	SDEL_CLASS(this->vstm);
+	this->vstm.Delete();
 	this->data.Delete();
 }
 

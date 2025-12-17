@@ -32,9 +32,9 @@ Media::MediaFile::~MediaFile()
 			src.Delete();
 		}
 	}
-	if (this->chapters && this->releaseChapter)
+	if (this->chapters.NotNull() && this->releaseChapter)
 	{
-		DEL_CLASS(this->chapters);
+		this->chapters.Delete();
 	}
 }
 
@@ -65,16 +65,16 @@ void Media::MediaFile::KeepStream(UOSInt index, Bool toKeep)
 	this->keepSources.SetItem(index, toKeep?1:0);
 }
 
-Media::ChapterInfo *Media::MediaFile::GetChapterInfo() const
+Optional<Media::ChapterInfo> Media::MediaFile::GetChapterInfo() const
 {
 	return this->chapters;
 }
 
-void Media::MediaFile::SetChapterInfo(Media::ChapterInfo *chapters, Bool releaseChapter)
+void Media::MediaFile::SetChapterInfo(Optional<Media::ChapterInfo> chapters, Bool releaseChapter)
 {
-	if (this->chapters && this->releaseChapter)
+	if (this->chapters.NotNull() && this->releaseChapter)
 	{
-		DEL_CLASS(this->chapters);
+		this->chapters.Delete();
 	}
 	this->chapters = chapters;
 	this->releaseChapter = releaseChapter;

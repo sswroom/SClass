@@ -27,7 +27,8 @@ namespace IO
 		{
 			NoAddress,
 			Unknown,
-			Stack
+			Stack,
+			Alloc
 		};
 		struct ExceptionInfo
 		{
@@ -35,8 +36,10 @@ namespace IO
 			NN<Text::String> message;
 			UInt64 accessAddress;
 			AddressType addrType;
+			UInt32 blockOfst;
 			UInt32 stackSize;
 			Data::ArrayListNN<StackEntry> stacks;
+			Data::ArrayListNN<StackEntry> allocStacks;
 		};
 	private:
 		UOSInt ppid;
@@ -61,8 +64,9 @@ namespace IO
 		void BeginLeak(UOSInt threadId, Text::CStringNN message);
 		void BeginException(UOSInt threadId, Text::CStringNN message);
 		void NewStack(UInt64 address, Text::CStringNN funcName, Text::CString source);
-		void SetExceptionAccessAddress(UInt64 address, AddressType);
+		void SetExceptionAccessAddress(UInt64 address, AddressType addrType);
 		void SetExceptionStackSize(UInt32 size);
+		void ExceptionBeginAlloc(UInt64 address, UInt32 blockOfst, UInt32 blockSize);
 		void SetHeapInUse(UInt64 bytesInUse, UInt32 blocksInUse);
 		void SetTotalHeaps(UInt32 blocksAllocs, UInt32 blocksFrees, UInt64 bytesAllocs);
 
@@ -82,6 +86,8 @@ namespace IO
 		UInt32 GetBlocksAllocs() const;
 		UInt32 GetBlocksFrees() const;
 		UInt64 GetBytesAllocs() const;
+		NN<const Data::ArrayListNN<ExceptionInfo>> GetErrorList() const;
+		NN<const Data::ArrayListNN<LeakInfo>> GetLeakList() const;
 
 		static Optional<ValgrindLog> LoadFile(Text::CStringNN filePath);
 		static Optional<ValgrindLog> LoadStream(NN<IO::Stream> stream);

@@ -15,7 +15,7 @@ namespace Media
 		Data::ArrayListInt32 keepSources;
 		Data::ArrayListInt32 syncTime;
 		Bool releaseChapter;
-		Media::ChapterInfo *chapters;
+		Optional<Media::ChapterInfo> chapters;
 
 	public:
 		MediaFile(NN<Text::String> name);
@@ -28,8 +28,8 @@ namespace Media
 		virtual Optional<Media::MediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
-		Media::ChapterInfo *GetChapterInfo() const;
-		void SetChapterInfo(Media::ChapterInfo *chapters, Bool releaseChapter);
+		Optional<Media::ChapterInfo> GetChapterInfo() const;
+		void SetChapterInfo(Optional<Media::ChapterInfo> chapters, Bool releaseChapter);
 
 		Bool TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd);
 	};

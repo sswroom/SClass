@@ -16,22 +16,24 @@ void Media::MediaPlayer::PlayTime(Data::Duration time)
 {
 	NN<Media::VideoSource> vdecoder;
 	NN<Media::AudioSource> adecoder;
+	NN<Media::VideoSource> currVStm;
+	NN<Media::AudioSource> currAStm;
 	if (this->currVDecoder.SetTo(vdecoder))
 	{
 		vdecoder->SeekToTime(time);
 	}
-	else if (this->currVStm)
+	else if (this->currVStm.SetTo(currVStm))
 	{
-		this->currVStm->SeekToTime(time);
+		currVStm->SeekToTime(time);
 	}
 
 	if (this->currADecoder.SetTo(adecoder))
 	{
 		time = adecoder->SeekToTime(time);
 	}
-	else if (this->currAStm)
+	else if (this->currAStm.SetTo(currAStm))
 	{
-		time = this->currAStm->SeekToTime(time);
+		time = currAStm->SeekToTime(time);
 	}
 	else
 	{
@@ -361,13 +363,14 @@ Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 Bool Media::MediaPlayer::IsPlaying()
 {
 	NN<Media::AudioRenderer> arenderer;
+	NN<Media::VideoSource> currVStm;
 	if (this->arenderer.SetTo(arenderer) && arenderer->IsPlaying())
 	{
 		return true;
 	}
-	if (this->currVStm)
+	if (this->currVStm.SetTo(currVStm))
 	{
-		if (this->currVStm->IsRunning())
+		if (currVStm->IsRunning())
 			return true;
 	}
 	return false;
@@ -375,11 +378,12 @@ Bool Media::MediaPlayer::IsPlaying()
 
 Bool Media::MediaPlayer::PrevChapter()
 {
+	NN<Media::ChapterInfo> currChapInfo;
 	UOSInt i;
-	if (this->IsPlaying() && this->currChapInfo)
+	if (this->IsPlaying() && this->currChapInfo.SetTo(currChapInfo))
 	{
 		currTime = this->clk.GetCurrTime();
-		i = this->currChapInfo->GetChapterIndex(currTime);
+		i = currChapInfo->GetChapterIndex(currTime);
 		if (i + 1 == this->pbLastChapter)
 		{
 			i++;
@@ -389,7 +393,7 @@ Bool Media::MediaPlayer::PrevChapter()
 		{
 			i = 0;
 		}
-		this->SeekTo(this->currChapInfo->GetChapterTime(i));
+		this->SeekTo(currChapInfo->GetChapterTime(i));
 		this->pbLastChapter = i;
 		return true;
 	}
@@ -401,18 +405,19 @@ Bool Media::MediaPlayer::PrevChapter()
 
 Bool Media::MediaPlayer::NextChapter()
 {
+	NN<Media::ChapterInfo> currChapInfo;
 	UOSInt i;
-	if (this->currChapInfo && this->IsPlaying())
+	if (this->currChapInfo.SetTo(currChapInfo) && this->IsPlaying())
 	{
 		currTime = this->clk.GetCurrTime();
-		i = this->currChapInfo->GetChapterIndex(currTime);
+		i = currChapInfo->GetChapterIndex(currTime);
 		if (i + 1 == this->pbLastChapter)
 		{
 			i++;
 		}
-		if (i < this->currChapInfo->GetChapterCnt() - 1)
+		if (i < currChapInfo->GetChapterCnt() - 1)
 		{
-			this->SeekTo(this->currChapInfo->GetChapterTime(i + 1));
+			this->SeekTo(currChapInfo->GetChapterTime(i + 1));
 			this->pbLastChapter = i + 1;
 		}
 		return true;
@@ -422,9 +427,10 @@ Bool Media::MediaPlayer::NextChapter()
 
 Bool Media::MediaPlayer::GotoChapter(UOSInt chapter)
 {
-	if (this->currChapInfo)
+	NN<Media::ChapterInfo> currChapInfo;
+	if (this->currChapInfo.SetTo(currChapInfo))
 	{
-		this->SeekTo(this->currChapInfo->GetChapterTime(chapter));
+		this->SeekTo(currChapInfo->GetChapterTime(chapter));
 		this->pbLastChapter = chapter;
 		return true;
 	}
@@ -450,7 +456,8 @@ Bool Media::MediaPlayer::GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h)
 	UOSInt vh;
 	UInt32 tmpV;
 	NN<Media::VideoSource> vdecoder;
-	if (this->currVStm)
+	NN<Media::VideoSource> currVStm;
+	if (this->currVStm.SetTo(currVStm))
 	{
 		if (this->currVDecoder.SetTo(vdecoder))
 		{
@@ -458,9 +465,9 @@ Bool Media::MediaPlayer::GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h)
 		}
 		else
 		{
-			this->currVStm->GetVideoInfo(info, tmpV, tmpV, vw);
+			currVStm->GetVideoInfo(info, tmpV, tmpV, vw);
 		}
-		this->currVStm->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+		currVStm->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 		vw = info.dispSize.x - cropLeft - cropRight;
 		vh = info.dispSize.y - cropTop - cropBottom;
 		if (info.ftype == Media::FT_FIELD_BF || info.ftype == Media::FT_FIELD_TF)

@@ -23,10 +23,10 @@ namespace Media
 		Optional<Media::AudioRenderer> arenderer;
 		Optional<Media::AudioSource> currADecoder;
 		Optional<Media::MediaFile> currFile;
-		Media::AudioSource *currAStm;
+		Optional<Media::AudioSource> currAStm;
 		Optional<Media::VideoSource> currVDecoder;
-		Media::VideoSource *currVStm;
-		Media::ChapterInfo *currChapInfo;
+		Optional<Media::VideoSource> currVStm;
+		Optional<Media::ChapterInfo> currChapInfo;
 
 		Bool playing;
 		Bool videoPlaying;
