@@ -96,13 +96,13 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 					lineCurr = 0;
 					while (lineCurr < me->readBuffSize)
 					{
-						c = *(WChar*)&me->readBuff[lineCurr];
+						c = ReadUInt16(&me->readBuff[lineCurr]);
 						if (lastC == 0xd)
 						{
 							if (c == 0xa)
 							{
 								c = 0;
-								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 2);
 							}
 							else
 							{
@@ -114,7 +114,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 							if (c == 0xd)
 							{
 								c = 0;
-								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 2);
 							}
 							else
 							{
@@ -142,13 +142,13 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 					Sync::MutexUsage mutUsage(me->mut);
 					while (lineCurr < me->readBuffSize)
 					{
-						c = (WChar)((me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1]);
+						c = ReadMUInt16(&me->readBuff[lineCurr]);
 						if (lastC == 0xd)
 						{
 							if (c == 0xa)
 							{
 								c = 0;
-								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 2);
 							}
 							else
 							{
@@ -160,7 +160,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 							if (c == 0xd)
 							{
 								c = 0;
-								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 1);
+								me->lineOfsts.Add(me->readBuffOfst + lineCurr + 2);
 							}
 							else
 							{
@@ -309,7 +309,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 						Sync::MutexUsage mutUsage(me->mut);
 						while (lineCurr < me->readBuffSize)
 						{
-							c = (WChar)((me->readBuff[lineCurr] << 8) | me->readBuff[lineCurr + 1]);
+							c = ReadMUInt16(&me->readBuff[lineCurr]);
 							if (lastC == 0xd)
 							{
 								if (c == 0xa)

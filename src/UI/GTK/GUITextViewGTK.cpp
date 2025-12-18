@@ -360,7 +360,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt s
 	NN<Media::DrawImage> drawBuff;
 	if (this->drawBuff.SetTo(drawBuff))
 	{
-		Double pxLeft = UOSInt2Double(pxWidth);
+		UOSInt pxLeft = pxWidth;
 		UTF8Char sbuff[7];
 		UTF32Char u32c;
 		UnsafeArray<const UTF8Char> currPtr;
@@ -403,16 +403,32 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(UnsafeArray<const WChar> str, UOSInt s
 				Text::StrWriteChar(sbuff, u32c)[0] = 0;
 				
 				cairo_text_extents(cr, (const Char*)sbuff, &extents);
-				if (extents.width > pxLeft)
+				//printf("%s: %lf, %lld\r\n", sbuff, extents.width, pxLeft);
+				UInt32 txtWidth = (UInt32)extents.width;
+				if (extents.width > txtWidth)
+					txtWidth++;
+				txtWidth += 2;
+				if (txtWidth >= pxLeft)
 				{
+					UTF8Char tmpC;
+					while (true)
+					{
+						tmpC = currPtr[0];
+						if (tmpC == 0)
+							break;
+						UnsafeArray<UTF8Char>::ConvertFrom(currPtr)[0] = 0;
+						cairo_text_extents(cr, (const Char*)csptr.Ptr(), &extents);
+						if ((UInt32)extents.width >= pxWidth)
+						{
+							break;
+						}
+						UnsafeArray<UTF8Char>::ConvertFrom(currPtr)[0] = tmpC;
+						currPtr = Text::StrReadChar(currPtr, u32c);
+					}
 					break;
 				}
-				pxLeft -= extents.width;
+				pxLeft -= txtWidth;
 				currPtr = nextPtr;
-				if (pxLeft <= 0)
-				{
-					break;
-				}
 			}
 			ret = Text::StrUTF8_WCharCntC(csptr, (UOSInt)(currPtr - csptr));
 			Text::StrDelNew(csptr);
