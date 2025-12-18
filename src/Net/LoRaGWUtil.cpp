@@ -31,9 +31,9 @@ void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toSe
 		{
 			sb->AppendHexBuff(msg.Arr(), 8, 0, Text::LineBreakType::None);
 		}
-		sb->AppendC(UTF8STRC(", Payload="));
 		if (msg.GetSize() > 8)
 		{
+			sb->AppendC(UTF8STRC(", Payload="));
 			sb->AppendC(msg.Arr() + 8, msg.GetSize() - 8);
 		}
 		break;
@@ -47,6 +47,11 @@ void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toSe
 		{
 			sb->AppendHexBuff(msg.Arr(), 8, 0, Text::LineBreakType::None);
 		}
+		if (msg.GetSize() > 8)
+		{
+			sb->AppendC(UTF8STRC(", Payload="));
+			sb->AppendC(msg.Arr() + 8, msg.GetSize() - 8);
+		}
 		break;
 	case 3:
 		sb->AppendC(UTF8STRC("PULL_RESP"));
@@ -59,6 +64,11 @@ void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toSe
 		{
 			sb->AppendC(UTF8STRC(", GWEUI="));
 			sb->AppendHexBuff(msg.Arr(), 8, 0, Text::LineBreakType::None);
+		}
+		if (msg.GetSize() > 8)
+		{
+			sb->AppendC(UTF8STRC(", Payload="));
+			sb->AppendC(msg.Arr() + 8, msg.GetSize() - 8);
 		}
 		break;
 	case 5:
