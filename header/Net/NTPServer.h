@@ -15,6 +15,7 @@ namespace Net
 		Net::UDPServer *svr;
 		NN<IO::LogTool> log;
 		NN<Text::String> timeServerHost;
+		Int64 serverReqInterval;
 		Int64 refTime;
 		Int64 timeDiff;
 		Sync::Thread thread;
@@ -28,6 +29,7 @@ namespace Net
 		~NTPServer();
 
 		Bool IsError();
+		void SetServerReqInterval(Int64 serverReqInterval);
 
 		static void ReadTime(const UInt8 *buff, Data::DateTime *time);
 		static Data::Timestamp ReadTime(const UInt8 *buff);

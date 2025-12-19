@@ -33,7 +33,7 @@ namespace IO
 		};
 	private:
 		struct ClassData;
-		NN<ClassData> clsData;
+		Optional<ClassData> clsData;
 
 	public:
 		ServiceManager();

@@ -36,7 +36,7 @@ OSInt IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<Servi
 IO::ServiceManager::ServiceManager()
 {
 	this->clsData = (ClassData*)OpenSCManager(0, 0, SC_MANAGER_ALL_ACCESS);
-	if (this->clsData == 0)
+	if (this->clsData.IsNull())
 	{
 		this->clsData = (ClassData*)OpenSCManager(0, 0, SC_MANAGER_ENUMERATE_SERVICE);
 	}
@@ -44,15 +44,15 @@ IO::ServiceManager::ServiceManager()
 
 IO::ServiceManager::~ServiceManager()
 {
-	if (this->clsData)
+	if (this->clsData.NotNull())
 	{
-		CloseServiceHandle((SC_HANDLE)this->clsData);
+		CloseServiceHandle((SC_HANDLE)this->clsData.OrNull());
 	}
 }
 
 Bool IO::ServiceManager::ServiceCreate(Text::CStringNN svcName, Text::CString svcDesc, Text::CStringNN cmdLine, IO::ServiceInfo::ServiceState stype)
 {
-	if (this->clsData == 0)
+	if (this->clsData.IsNull())
 		return false;
 
 	WChar szPath[512];
@@ -75,7 +75,7 @@ Bool IO::ServiceManager::ServiceCreate(Text::CStringNN svcName, Text::CString sv
 	Text::StrUTF8_WChar(szPath, cmdLine.v, 0);
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
 
-	SC_HANDLE schService = CreateServiceW((SC_HANDLE)this->clsData, wname, wname, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, startType, SERVICE_ERROR_NORMAL, szPath, 0, 0, 0, 0, 0); 
+	SC_HANDLE schService = CreateServiceW((SC_HANDLE)this->clsData.OrNull(), wname, wname, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, startType, SERVICE_ERROR_NORMAL, szPath, 0, 0, 0, 0, 0); 
     if (schService == 0) 
     {
 		return false;
@@ -94,12 +94,12 @@ Bool IO::ServiceManager::ServiceCreate(Text::CStringNN svcName, Text::CString sv
 
 Bool IO::ServiceManager::ServiceDelete(Text::CStringNN svcName)
 {
-	if (this->clsData == 0)
+	if (this->clsData.IsNull())
 		return false;
 
 	WChar wname[512];
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
-	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData, wname, DELETE);
+	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData.OrNull(), wname, DELETE);
     if (schService == 0)
     { 
 		return false;
@@ -112,12 +112,12 @@ Bool IO::ServiceManager::ServiceDelete(Text::CStringNN svcName)
 
 Bool IO::ServiceManager::ServiceSetDesc(Text::CStringNN svcName, Text::CStringNN svcDesc)
 {
-	if (this->clsData == 0)
+	if (this->clsData.IsNull())
 		return false;
 
 	WChar wname[512];
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
-	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData, wname, SERVICE_CHANGE_CONFIG);
+	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData.OrNull(), wname, SERVICE_CHANGE_CONFIG);
 	if (schService == 0)
 	{
 		return false;
@@ -132,12 +132,12 @@ Bool IO::ServiceManager::ServiceSetDesc(Text::CStringNN svcName, Text::CStringNN
 
 Bool IO::ServiceManager::ServiceStart(Text::CStringNN svcName)
 {
-	if (this->clsData == 0)
+	if (this->clsData.IsNull())
 		return false;
 
 	WChar wname[512];
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
-	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData, wname, SERVICE_START);
+	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData.OrNull(), wname, SERVICE_START);
 	if (schService == 0)
 	{
 		return false;
@@ -149,12 +149,12 @@ Bool IO::ServiceManager::ServiceStart(Text::CStringNN svcName)
 
 Bool IO::ServiceManager::ServiceStop(Text::CStringNN svcName)
 {
-	if (this->clsData == 0)
+	if (this->clsData.IsNull())
 		return false;
 
 	WChar wname[512];
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
-	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData, wname, SERVICE_STOP);
+	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData.OrNull(), wname, SERVICE_STOP);
 	if (schService == 0)
 	{
 		return false;
@@ -175,14 +175,14 @@ Bool IO::ServiceManager::ServiceDisable(Text::CStringNN svcName)
 	return false;
 }
 
-Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, ServiceDetail* svcDetail)
+Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDetail> svcDetail)
 {
-	if (this->clsData == 0)
+	if (this->clsData.IsNull())
 		return false;
 
 	WChar wname[512];
 	Text::StrUTF8_WChar(wname, svcName.v, 0);
-	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData, wname, SERVICE_QUERY_STATUS | SERVICE_QUERY_CONFIG);
+	SC_HANDLE schService = OpenServiceW((SC_HANDLE)this->clsData.OrNull(), wname, SERVICE_QUERY_STATUS | SERVICE_QUERY_CONFIG);
 	if (schService == 0)
 	{
 		return false;
@@ -232,7 +232,7 @@ UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> s
 {
 	DWORD bytesNeeded;
 	DWORD nServices;
-	if (EnumServicesStatusW((SC_HANDLE)this->clsData, SERVICE_WIN32, SERVICE_STATE_ALL, 0, 0, &bytesNeeded, &nServices, 0))
+	if (EnumServicesStatusW((SC_HANDLE)this->clsData.OrNull(), SERVICE_WIN32, SERVICE_STATE_ALL, 0, 0, &bytesNeeded, &nServices, 0))
 	{
 		return 0;
 	}
@@ -244,7 +244,7 @@ UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> s
 	UOSInt ret = 0;
 	NN<ServiceItem> svc;
 	ENUM_SERVICE_STATUSW* services = (ENUM_SERVICE_STATUSW*)MAlloc(bytesNeeded);
-	if (EnumServicesStatusW((SC_HANDLE)this->clsData, SERVICE_WIN32, SERVICE_STATE_ALL, services, bytesNeeded, &bytesNeeded, &nServices, 0))
+	if (EnumServicesStatusW((SC_HANDLE)this->clsData.OrNull(), SERVICE_WIN32, SERVICE_STATE_ALL, services, bytesNeeded, &bytesNeeded, &nServices, 0))
 	{
 		UOSInt i = 0;
 		while (i < nServices)
