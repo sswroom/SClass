@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "IO/Path.h"
 #include "Media/OCREngine.h"
 
 #include <tesseract/baseapi.h>
@@ -15,15 +16,26 @@ Media::OCREngine::OCREngine(Language lang)
 {
 	this->hdlr = 0;
 	this->hdlrObj = 0;
-	NEW_CLASS(this->clsData, ClassData());
+	NEW_CLASSNN(this->clsData, ClassData());
 	this->clsData->currImg = 0;
 	switch (lang)
 	{
 	default:
 	case Language::English:
-		this->clsData->api.Init(0, "eng");
+		this->lang = Text::String::New(CSTR("eng"));
 		break;
 	}
+	this->clsData->api.Init(0, (const Char*)this->lang->v.Ptr());
+}
+
+Media::OCREngine::OCREngine(Text::CStringNN lang)
+{
+	this->hdlr = 0;
+	this->hdlrObj = 0;
+	this->lang = Text::String::New(lang);
+	NEW_CLASSNN(this->clsData, ClassData());
+	this->clsData->currImg = 0;
+	this->clsData->api.Init(0, (const Char*)this->lang->v.Ptr());
 }
 
 Media::OCREngine::~OCREngine()
@@ -34,12 +46,37 @@ Media::OCREngine::~OCREngine()
 		this->clsData->currImg = 0;
 	}
 	this->clsData->api.End();
-	DEL_CLASS(this->clsData);
+	this->clsData.Delete();
+	this->lang->Release();
 }
 
-void Media::OCREngine::SetCharWhiteList(const Char *whiteList)
+void Media::OCREngine::ChangeLanguage(Text::CStringNN lang)
 {
-	this->clsData->api.SetVariable("tessedit_char_whitelist", whiteList);
+	this->lang->Release();
+	this->lang = Text::String::New(lang);
+	this->clsData->api.Init(0, (const Char*)lang.v.Ptr());
+	if (this->clsData->currImg)
+	{
+		this->clsData->api.SetImage(this->clsData->currImg);
+	}
+}
+
+void Media::OCREngine::SetCharWhiteList(UnsafeArrayOpt<const Char> whiteList)
+{
+	UnsafeArray<const Char> nnlist;
+	if (whiteList.SetTo(nnlist))
+	{
+		this->clsData->api.SetVariable("tessedit_char_whitelist", nnlist.Ptr());
+	}
+	else
+	{
+		this->clsData->api.End();
+		this->clsData->api.Init(0, (const Char*)this->lang->v.Ptr());
+		if (this->clsData->currImg)
+		{
+			this->clsData->api.SetImage(this->clsData->currImg);
+		}
+	}
 }
 
 Bool Media::OCREngine::SetParsingImage(NN<Media::StaticImage> img)
@@ -171,4 +208,26 @@ Bool Media::OCREngine::ParseAllInImage()
 		delete ri;
 	}
 	return true;
+}
+
+void Media::OCREngine::GetAvailableLanguages(NN<Data::ArrayListStringNN> langs) const
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	sptr = Text::StrConcatASCII(sbuff, this->clsData->api.GetDatapath());
+	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+	{
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+	}
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.traineddata"));
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
+	{
+		while (IO::Path::FindNextFile(sptr, sess, 0, 0, 0).SetTo(sptr2))
+		{
+			langs->Add(Text::String::NewP(sptr, UnsafeArray<const UTF8Char>(&sptr2[-12])));
+		}
+		IO::Path::FindFileClose(sess);
+	}
 }

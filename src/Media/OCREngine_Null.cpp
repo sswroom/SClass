@@ -10,7 +10,7 @@ Media::OCREngine::~OCREngine()
 {
 }
 
-void Media::OCREngine::SetCharWhiteList(const Char *whiteList)
+void Media::OCREngine::SetCharWhiteList(UnsafeArrayOpt<const Char> whiteList)
 {
 }
 

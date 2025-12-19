@@ -23,11 +23,8 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 				imgList->RemoveImage(0, false);
 				imgList.Delete();
 				me->pbImg->SetImage(img, false);
-
-				me->lvText->ClearItems();
-				me->ClearResults();
 				me->ocr.SetParsingImage(img);
-				me->ocr.ParseAllInImage();
+				me->PerformOCR();
 				break;
 			}
 			imgList.Delete();
@@ -43,6 +40,27 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnTextSelChg(AnyType userObj)
 	if (me->lvText->GetSelectedItem().GetOpt<ResultInfo>().SetTo(res))
 	{
 		me->pbResult->SetImage(res->resImg);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnLangSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
+	NN<Text::String> lang;
+	if (me->cboLang->GetSelectedItem().GetOpt<Text::String>().SetTo(lang))
+	{
+		me->ocr.ChangeLanguage(lang->ToCString());
+		OnCharSetSelChg(me);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnCharSetSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
+	me->ocr.SetCharWhiteList(me->cboCharSet->GetSelectedItem().GetArrayOpt<const Char>());
+	if (me->currImg.NotNull())
+	{
+		me->PerformOCR();
 	}
 }
 
@@ -84,21 +102,44 @@ void SSWR::AVIRead::AVIROCRForm::ClearResults()
 	this->results.Clear();
 }
 
+void SSWR::AVIRead::AVIROCRForm::PerformOCR()
+{
+	this->lvText->ClearItems();
+	this->ClearResults();
+	this->ocr.ParseAllInImage();
+
+}
+
 SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), ocr(Media::OCREngine::Language::English)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("OCR"));
 
+	UOSInt i;
+	UOSInt j;
+	NN<Text::String> lang;
 	this->core = core;
 	this->currImg = 0;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
-	this->ocr.SetCharWhiteList("0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ");
 	this->ocr.HandleOCRResult(OnOCRResult, this);
+	this->ocr.GetAvailableLanguages(this->langs);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlResult = ui->NewPanel(*this);
 	this->pnlResult->SetRect(0, 0, 250, 100, false);
 	this->pnlResult->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->cboLang = ui->NewComboBox(this->pnlResult, false);
+	this->cboLang->SetRect(0, 0, 100, 23, false);
+	this->cboLang->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboLang->HandleSelectionChange(OnLangSelChg, this);
+	this->cboCharSet = ui->NewComboBox(this->pnlResult, false);
+	this->cboCharSet->SetRect(0, 0, 100, 23, false);
+	this->cboCharSet->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->cboCharSet->HandleSelectionChange(OnCharSetSelChg, this);
+	this->cboCharSet->AddItem(CSTR("All chars"), 0);
+	this->cboCharSet->AddItem(CSTR("License Chars"), (void*)"0123456789ABCDEFGHIJKLMNPQRSTUVWXYZ");
+	this->cboCharSet->AddItem(CSTR("Alpha-numeric"), (void*)"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+	this->cboCharSet->SetSelectedIndex(0);
 	this->pbResult = ui->NewPictureBoxSimple(this->pnlResult, this->core->GetDrawEngine(), false);
 	this->pbResult->SetRect(0, 0, 100, 80, false);
 	this->pbResult->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -114,6 +155,19 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	this->pbImg = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 
+	i = 0;
+	j = this->langs.GetCount();
+	while (i < j)
+	{
+		lang = this->langs.GetItemNoCheck(i);
+		this->cboLang->AddItem(lang, lang);
+		i++;
+	}
+	if (j > 0)
+	{
+		this->cboLang->SetSelectedIndex(0);
+	}
+
 	this->HandleDropFiles(OnFileHandler, this);
 }
 
@@ -123,6 +177,7 @@ SSWR::AVIRead::AVIROCRForm::~AVIROCRForm()
 	this->currImg.Delete();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->langs.FreeAll();
 }
 
 void SSWR::AVIRead::AVIROCRForm::OnMonitorChanged()

@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_OCRENGINE
 #define _SM_MEDIA_OCRENGINE
 #include "AnyType.h"
+#include "Data/ArrayListStringNN.h"
 #include "Math/RectArea.hpp"
 #include "Media/StaticImage.h"
 #include "Media/OpenCV/OCVFrame.h"
@@ -19,15 +20,18 @@ namespace Media
 		typedef void (CALLBACKFUNC OCRResultFunc)(AnyType userObj, NN<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
 	private:
 		class ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
+		NN<Text::String> lang;
 
 		OCRResultFunc hdlr;
 		AnyType hdlrObj;
 	public:
 		OCREngine(Language lang);
+		OCREngine(Text::CStringNN lang);
 		~OCREngine();
 
-		void SetCharWhiteList(const Char *whiteList);
+		void ChangeLanguage(Text::CStringNN lang);
+		void SetCharWhiteList(UnsafeArrayOpt<const Char> whiteList);
 
 		Bool SetParsingImage(NN<Media::StaticImage> img);
 		Bool SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame);
@@ -35,6 +39,8 @@ namespace Media
 		
 		void HandleOCRResult(OCRResultFunc hdlr, AnyType userObj);
 		Bool ParseAllInImage();
+
+		void GetAvailableLanguages(NN<Data::ArrayListStringNN> langs) const; //Need to release
 	};
 }
 #endif

@@ -54,6 +54,11 @@ struct AnyType
 		return UnsafeArray<T>((T*)this->p);
 	}
 
+	template<typename T> UnsafeArrayOpt<T> GetArrayOpt() const
+	{
+		return UnsafeArrayOpt<T>((T*)this->p);
+	}
+
 	OSInt GetOSInt() const
 	{
 		return (OSInt)this->p;
