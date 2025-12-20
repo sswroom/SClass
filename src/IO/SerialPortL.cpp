@@ -12,7 +12,7 @@
 #include "Text/UTF8Reader.h"
 #include <errno.h>
 #include <fcntl.h>
-#if defined(__linux__) && (defined(__GLIBC__) || defined(__UCLIBC__))
+#if 0 && defined(__linux__) && (defined(__GLIBC__) || defined(__UCLIBC__))
 #include <termio.h>
 #else
 #include <termios.h>
