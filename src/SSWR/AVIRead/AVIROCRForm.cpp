@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIROCRForm.h"
 
@@ -123,6 +124,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->ocr.HandleOCRResult(OnOCRResult, this);
 	this->ocr.GetAvailableLanguages(this->langs);
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(this->langs, this->langs);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlResult = ui->NewPanel(*this);
@@ -155,17 +157,22 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	this->pbImg = ui->NewPictureBoxDD(*this, this->colorSess, true, false);
 	this->pbImg->SetDockType(UI::GUIControl::DOCK_FILL);
 
+	UOSInt k = 0;
 	i = 0;
 	j = this->langs.GetCount();
 	while (i < j)
 	{
 		lang = this->langs.GetItemNoCheck(i);
 		this->cboLang->AddItem(lang, lang);
+		if (lang->Equals(CSTR("eng")))
+		{
+			k = i;
+		}
 		i++;
 	}
 	if (j > 0)
 	{
-		this->cboLang->SetSelectedIndex(0);
+		this->cboLang->SetSelectedIndex(k);
 	}
 
 	this->HandleDropFiles(OnFileHandler, this);
