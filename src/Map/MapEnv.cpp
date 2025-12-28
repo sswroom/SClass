@@ -125,7 +125,7 @@ Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::Coordinat
 	this->defFontStyle = 0;
 	this->defLineStyle = 0;
 	this->maxScale = 200000000;
-	this->minScale = 100;
+	this->minScale = 10;
 
 	this->AddLineStyle();
 	this->AddLineStyleLayer(0, 0xff000000, 1, 0, 0);

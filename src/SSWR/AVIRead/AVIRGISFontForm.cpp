@@ -29,7 +29,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType userObj, M
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->fontColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->eng = eng;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->colorSess->AddHandler(*this);
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
@@ -148,7 +148,7 @@ SSWR::AVIRead::AVIRGISFontForm::~AVIRGISFontForm()
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->eng->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISFontForm::OnMonitorChanged()

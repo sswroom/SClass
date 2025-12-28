@@ -680,7 +680,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	this->core = core;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->imgList = imgList;
 	this->allowEnlarge = false;
 	this->currImg = 0;
@@ -750,7 +750,7 @@ SSWR::AVIRead::AVIRImageForm::~AVIRImageForm()
 	this->imgList.Delete();
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)

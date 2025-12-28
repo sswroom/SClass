@@ -24,8 +24,8 @@ Map::ScaledMapView::~ScaledMapView()
 void Map::ScaledMapView::ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale)
 {
 	this->centMap = centMap;
-	if (scale < 400)
-		scale = 400;
+	if (scale < 10)
+		scale = 10;
 	if (scale > 100000000)
 		scale = 100000000;
 	this->scale = scale;

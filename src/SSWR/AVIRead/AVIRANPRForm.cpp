@@ -162,7 +162,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent,
 	this->core = core;
 	this->currImg = 0;
 	this->selectMode = ActionType::None;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->anpr.SetResultHandler(OnANPRResult, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRANPRForm::~AVIRANPRForm()
 	this->ClearResults();
 	this->currImg.Delete();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRANPRForm::OnMonitorChanged()

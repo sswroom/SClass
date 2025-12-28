@@ -239,7 +239,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	{
 		NEW_CLASSNN(this->gpsTrk, Map::GPSTrack(CSTR("Untitled"), false, 65001, CSTR("Untitled")));
 	}
-	this->colorSess = this->env->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->env->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->dispImg = 0;
 	this->selImgCamera = 0;
 	this->selImgTime = 0;
@@ -413,7 +413,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::~OrganTimeAdjForm()
 	this->gpsTrk.Delete();
 	this->dispImg.Delete();
 	this->env->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->env->GetColorMgr()->DeleteSess(this->colorSess);
+	this->env->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::OrganMgr::OrganTimeAdjForm::OnMonitorChanged()

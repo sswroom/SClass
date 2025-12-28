@@ -13,7 +13,7 @@ Text::StringUtil::~StringUtil()
 {
 }
 
-const WChar *Text::StringUtil::ToString(Data::DateTime *dt, const Char *pattern)
+UnsafeArray<const WChar> Text::StringUtil::ToString(NN<Data::DateTime> dt, UnsafeArray<const Char> pattern)
 {
 	Char tmpbuff[32];
 	dt->ToString(tmpbuff, pattern);
@@ -21,25 +21,25 @@ const WChar *Text::StringUtil::ToString(Data::DateTime *dt, const Char *pattern)
 	return wbuff;
 }
 
-const WChar *Text::StringUtil::ToString(Double val)
+UnsafeArray<const WChar> Text::StringUtil::ToString(Double val)
 {
 	Text::StrDoubleW(wbuff, val);
 	return wbuff;
 }
 
-const WChar *Text::StringUtil::ToString(Double val, const Char *pattern)
+UnsafeArray<const WChar> Text::StringUtil::ToString(Double val, UnsafeArray<const Char> pattern)
 {
 	Text::StrDoubleFmtW(wbuff, val, pattern);
 	return wbuff;
 }
 
-const WChar *Text::StringUtil::ToString(Int32 val)
+UnsafeArray<const WChar> Text::StringUtil::ToString(Int32 val)
 {
 	Text::StrInt32(wbuff, val);
 	return wbuff;
 }
 
-const WChar *Text::StringUtil::ToString(Int64 val)
+UnsafeArray<const WChar> Text::StringUtil::ToString(Int64 val)
 {
 	Text::StrInt64(wbuff, val);
 	return wbuff;

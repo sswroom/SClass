@@ -146,7 +146,7 @@ Bool Media::OCREngine::SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame)
 
 Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence)
 {
-	if (this->clsData->currImg == 0)
+	if (this->clsData->currImg == 0 || area.min.x >= area.max.x || area.min.y >= area.max.y || area.max.x > (UOSInt)pixGetWidth(this->clsData->currImg) || area.max.y > (UOSInt)pixGetHeight(this->clsData->currImg))
 	{
 		return 0;
 	}
@@ -173,6 +173,7 @@ void Media::OCREngine::HandleOCRResult(OCRResultFunc hdlr, AnyType userObj)
 
 Bool Media::OCREngine::ParseAllInImage()
 {
+	this->clsData->api.SetRectangle(0, 0, (int)pixGetWidth(this->clsData->currImg), (int)pixGetHeight(this->clsData->currImg));
 	if (this->clsData->api.Recognize(0) != 0)
 	{
 		return false;

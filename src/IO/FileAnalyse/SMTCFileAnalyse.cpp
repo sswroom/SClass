@@ -226,7 +226,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 	if (hasData)
 	{
 		frame->AddUInt(21, 2, CSTR("Packet Size"), this->packetBuff.ReadU16(21));
-		if (Text::StringTool::IsASCIIText(this->packetBuff.WithSize(data->size).SubArray(23)))
+		if (Text::StringTool::IsTextASCII(this->packetBuff.WithSize(data->size).SubArray(23)))
 		{
 			frame->AddStrC(23, data->size - 23, CSTR("Packet Data"), &this->packetBuff[23]);
 		}

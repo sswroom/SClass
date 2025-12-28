@@ -250,7 +250,7 @@ void Parser::FileParser::PDFParser::ParseStartxref(NN<PDFParseEnv> env, NN<Text:
 	}
 }
 
-Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFDocument> doc, PDFXRef *xref)
+Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFDocument> doc, Optional<PDFXRef> xref)
 {
 	UInt32 id;
 	sb->RemoveChars(6);
@@ -373,8 +373,9 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 	return false;
 }
 
-Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFObject> obj, PDFXRef *xref)
+Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFObject> obj, Optional<PDFXRef> xref)
 {
+	NN<PDFXRef> nnxref;
 	NN<Media::PDFParameter> param;
 	if (!obj->GetParameter().SetTo(param))
 	{
@@ -418,7 +419,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 		UInt64 dataOfst = 0;
 		while (true)
 		{
-			if (xref == 0)
+			if (!xref.SetTo(nnxref))
 			{
 #if defined(VERBOSE)
 				printf("PDFParser: Stream Length Filter xref entry not found: %d\r\n", id);
@@ -426,22 +427,22 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 				env->normalEnd = true;
 				return false;
 			}
-			else if (id >= xref->startId && id < xref->startId + xref->count)
+			else if (id >= nnxref->startId && id < nnxref->startId + nnxref->count)
 			{
-				if (xref->items[id - xref->startId].type != 'n')
+				if (nnxref->items[id - nnxref->startId].type != 'n')
 				{
 #if defined(VERBOSE)
-					printf("PDFParser: Stream Length Filter xref item type not valid: %c\r\n", xref->items[id - xref->startId].type);
+					printf("PDFParser: Stream Length Filter xref item type not valid: %c\r\n", nnxref->items[id - nnxref->startId].type);
 #endif
 					env->normalEnd = true;
 					return false;
 				}
-				dataOfst = xref->items[id - xref->startId].ofst;
+				dataOfst = nnxref->items[id - nnxref->startId].ofst;
 				break;
 			}
 			else
 			{
-				xref = xref->nextRef;
+				xref = nnxref->nextRef;
 			}
 		}
 
@@ -544,7 +545,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(NN<PDFParseEnv> env, NN<Te
 	return true;
 }
 
-Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb)
+Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::ParseXRef(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb)
 {
 	if (!NextLine(env, sb, true))
 	{
@@ -561,8 +562,9 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 		return 0;
 	}
 	PDFXRef *thisRef = 0;
-	PDFXRef *firstRef = 0;
+	Optional<PDFXRef> firstRef = 0;
 	PDFXRef *lastRef;
+	NN<PDFXRef> nnxref;
 	while (true)
 	{
 		sb->ClearStr();
@@ -713,7 +715,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 			{
 				sb->ClearStr();
 				thisRef->nextRef = ParseXRef(env, sb);
-				if (thisRef->nextRef == 0)
+				if (thisRef->nextRef.IsNull())
 				{
 					env->normalEnd = true;
 					break;
@@ -761,7 +763,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 				lastRef->nextRef = thisRef;
 			thisRef->trailer = 0;
 			thisRef->items = MemAlloc(PDFXRefItem, j);
-			if (firstRef == 0)
+			if (firstRef.IsNull())
 				firstRef = thisRef;
 			i = 0;
 			while (i < j)
@@ -800,20 +802,21 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 				break;
 		}
 	}
-	if (firstRef)
+	if (firstRef.SetTo(nnxref))
 	{
-		FreeXRef(firstRef);
+		FreeXRef(nnxref);
 	}
 	return 0;
 }
 
-void Parser::FileParser::PDFParser::FreeXRef(PDFXRef *xref)
+void Parser::FileParser::PDFParser::FreeXRef(NN<PDFXRef> xref)
 {
-	if (xref->nextRef)
-		FreeXRef(xref->nextRef);
+	NN<PDFXRef> nextRef;
+	if (xref->nextRef.SetTo(nextRef))
+		FreeXRef(nextRef);
 	xref->trailer.Delete();
 	MemFree(xref->items);
-	MemFree(xref);
+	MemFreeNN(xref);
 }
 
 Parser::FileParser::PDFParser::PDFParser()
@@ -862,7 +865,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 	env.normalEnd = false;
 	env.succ = false;
 	Text::StringBuilderUTF8 sb;
-	PDFXRef *xref = 0;
+	Optional<PDFXRef> xref = 0;
+	NN<PDFXRef> nnxref;
 
 	UInt8 tmpBuff[32];
 	env.fd->GetRealData(env.fileSize - 32, 32, BYTEARR(tmpBuff));
@@ -898,8 +902,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 	sb.ClearStr();
 	if (!NextLine(env, sb, true))
 	{
-		if (xref)
-			FreeXRef(xref);
+		if (xref.SetTo(nnxref))
+			FreeXRef(nnxref);
 		return 0;
 	}
 	NEW_CLASSNN(doc, Media::PDFDocument(fd->GetFullFileName(), sb.ToCString().Substring(5)));
@@ -1099,8 +1103,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 		printf("PDFParser: Error in parsing next line\r\n");
 	}
 #endif
-	if (xref)
-		FreeXRef(xref);
+	if (xref.SetTo(nnxref))
+		FreeXRef(nnxref);
 	if (env.succ)
 		return doc;
 	doc.Delete();

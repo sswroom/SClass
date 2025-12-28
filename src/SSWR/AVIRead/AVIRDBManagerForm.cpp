@@ -1402,7 +1402,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->mapEnv->GetLayerProp(settings, 0, i);
 	settings.fillStyle = 0xc0ff905b;
 	this->mapEnv->SetLayerProp(settings, 0, i);
-	this->colorSess = core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lbConn = ui->NewListBox(*this, false);
@@ -1678,7 +1678,7 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	this->mnuConn.Delete();
 	this->mapEnv.Delete();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);

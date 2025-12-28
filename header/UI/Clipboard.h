@@ -3,6 +3,7 @@
 #include "Handles.h"
 #include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
+#include "Data/ByteBuffer.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -28,6 +29,7 @@ namespace UI
 
 		UOSInt GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes);
 		Bool GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb);
+		Optional<Data::ByteBuffer> GetDataRAW(UInt32 fmtId);
 		FilePasteType GetDataFiles(NN<Data::ArrayListStringNN> fileNames);
 		void FreeDataFiles(NN<Data::ArrayListStringNN> fileNames);
 

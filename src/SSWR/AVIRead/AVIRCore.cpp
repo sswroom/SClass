@@ -249,7 +249,7 @@ NN<Map::MapManager> SSWR::AVIRead::AVIRCore::GetMapManager()
 	return this->mapMgr;
 }
 
-NN<Media::ColorManager> SSWR::AVIRead::AVIRCore::GetColorMgr()
+NN<Media::ColorManager> SSWR::AVIRead::AVIRCore::GetColorManager()
 {
 	return this->colorMgr;
 }

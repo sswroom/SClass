@@ -464,7 +464,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
-	this->colorMgr = this->core->GetColorMgr();
+	this->colorMgr = this->core->GetColorManager();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->hMon = hMon;
 	this->monFileName = 0;

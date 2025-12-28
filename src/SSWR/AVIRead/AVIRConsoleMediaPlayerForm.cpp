@@ -201,7 +201,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<U
 	this->core = core;
 	this->listener = 0;
 	this->videoOpening = false;
-	NEW_CLASSNN(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
+	NEW_CLASSNN(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorManager(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Control Port"));

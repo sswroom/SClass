@@ -222,7 +222,7 @@ namespace SSWR
 			NN<Net::SocketFactory> GetSocketFactory();
 			NN<Net::TCPClientFactory> GetTCPClientFactory();
 			Optional<Net::SSLEngine> GetSSLEngine();
-			NN<Media::ColorManager> GetColorMgr();
+			NN<Media::ColorManager> GetColorManager();
 			NN<Media::MonitorMgr> GetMonitorMgr();
 			ErrorType GetErrorType();
 			Text::CStringNN GetLang(Text::CStringNN name);

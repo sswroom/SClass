@@ -1,12 +1,14 @@
 #include "Stdafx.h"
 #include "Text/MyString.h"
 #include "SSWR/AVIRead/AVIRSudokuForm.h"
+#include "SSWR/AVIRead/AVIRSudokuImportForm.h"
 
 typedef enum
 {
 	MNU_SOLVE = 100,
 	MNU_SOLVE_ONE,
-	MNU_CLEAR
+	MNU_CLEAR,
+	MNU_IMPORT
 } MenuItem;
 
 void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(AnyType userObj, UOSInt selX, UOSInt selY, UInt8 num)
@@ -29,6 +31,7 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Board"));
+	mnu->AddItem(CSTR("&Import"), MNU_IMPORT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Clear"), MNU_CLEAR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Solve"), MNU_SOLVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("S&olve One"), MNU_SOLVE_ONE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -56,6 +59,15 @@ void SSWR::AVIRead::AVIRSudokuForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CLEAR:
 		this->board->Clear();
 		this->svMain->Redraw();
+		break;
+	case MNU_IMPORT:
+		{
+			SSWR::AVIRead::AVIRSudokuImportForm frm(Optional<UI::GUIClientControl>(), this->ui, this->core, this->board);
+			if (frm.ShowDialog(*this) == UI::GUIForm::DR_OK)
+			{
+				this->svMain->Redraw();
+			}
+		}
 		break;
 	}
 }

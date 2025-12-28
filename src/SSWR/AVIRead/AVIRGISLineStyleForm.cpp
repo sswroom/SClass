@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(Optional<UI::GUIClient
 	this->eng = eng;
 	this->lineStyle = lineStyle;
 	this->changed = false;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Line Style"));
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::~AVIRGISLineStyleForm()
 	this->mnuLayer.Delete();
 	this->ClearChildren();
 	this->eng->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISLineStyleForm::EventMenuClicked(UInt16 cmdId)

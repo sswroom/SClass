@@ -1868,7 +1868,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			Optional<Media::StaticImage> img;
 			NN<Media::StaticImage> nnimg;
 			{
-				Media::ScreenCapturer capturer(this->core->GetMonitorMgr(), this->core->GetColorMgr());
+				Media::ScreenCapturer capturer(this->core->GetMonitorMgr(), this->core->GetColorManager());
 				img = capturer.CaptureScreen(this->GetHMonitor());
 			}
 			if (img.SetTo(nnimg))

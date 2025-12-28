@@ -20,7 +20,7 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(Optional<UI::GUIClient
 	this->font = font;
 	this->core = core;
 	this->currImg = 0;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Font Renderer Form"));
 
@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRFontRendererForm::~AVIRFontRendererForm()
 	this->currImg.Delete();
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRFontRendererForm::OnMonitorChanged()

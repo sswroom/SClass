@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClient
 	this->env = env;
 	this->eng = eng;
 	this->fontStyle = fontStyle;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->colorSess->AddHandler(*this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::~AVIRGISFontStyleForm()
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->eng->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISFontStyleForm::OnMonitorChanged()

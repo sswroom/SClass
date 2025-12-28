@@ -19,7 +19,7 @@ namespace Media
 		PDFParameter();
 		~PDFParameter();
 
-		void AddEntry(Text::CStringNN type, Text::CString value);
+		NN<ParamEntry> AddEntry(Text::CStringNN type, Text::CString value);
 		Optional<Text::String> GetEntryValue(Text::CStringNN type) const;
 		Optional<Text::String> GetEntryType(UOSInt index) const;
 		Optional<Text::String> GetEntryValue(UOSInt index) const;

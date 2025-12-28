@@ -4602,6 +4602,8 @@ SSWR/AVIRead/AVIRStringMsgForm.h:
 @AVIRStringMsgForm.o
 SSWR/AVIRead/AVIRSudokuForm.h:
 @AVIRSudokuForm.o
+SSWR/AVIRead/AVIRSudokuImportForm.h:
+@AVIRSudokuImportForm.o
 SSWR/AVIRead/AVIRSyslogServerForm.h:
 @AVIRSyslogServerForm.o
 SSWR/AVIRead/AVIRSystemInfoLogForm.h:
@@ -5124,6 +5126,8 @@ miniz_tinfl.h:
 miniz_zip.h:
 @miniz_zip.o
 
+UI/ClipboardUtil.h:
+@ClipboardUtil.o
 UI/GUIButton.h:
 @GUIButton.o
 UI/GUICheckBox.h:

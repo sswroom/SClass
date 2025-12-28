@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRPDFObjectForm.h"
+#include "Text/StringTool.h"
 #include "UI/GUIFileDialog.h"
 #include "UI/GUIFolderDialog.h"
 
@@ -33,9 +34,43 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 				i++;
 			}
 		}
+		NN<Media::ImageList> imgList;
+		me->dispImage.Delete();
+		if (obj->IsImage() && me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
+		{
+			imgList->ToStaticImage(0);
+			me->pbImage->SetImage(imgList->GetImage(0, 0), false);
+			me->dispImage = imgList;
+		}
+		else
+		{
+			me->pbImage->SetImage(0, false);
+		}
 		Text::StringBuilderUTF8 sb;
 		obj->ToString(sb);
 		me->txtText->SetText(sb.ToCString());
+
+		Bool found = false;
+		NN<IO::StreamData> stmData;
+		if (obj->GetData().SetTo(stmData))
+		{
+			UInt64 size = stmData->GetDataSize();
+			if (size > 0 && size <= 1048576)
+			{
+				Data::ByteBuffer buff((UOSInt)size + 1);
+				stmData->GetRealData(0, (UOSInt)size, buff);
+				if (Text::StringTool::IsTextUTF8(buff.SubArray(0, (UOSInt)size)))
+				{
+					buff[(UOSInt)size] = 0;
+					me->txtStream->SetText(Text::CStringNN(buff.Arr(), (UOSInt)size));
+					found = true;
+				}
+			}
+		}
+		if (!found)
+		{
+			me->txtStream->SetText(CSTR(""));
+		}
 	}
 }
 
@@ -51,6 +86,29 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(AnyType userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnImageOpenClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
+	NN<Media::PDFObject> obj;
+	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->IsImage())
+	{
+		NN<Media::ImageList> imgList;
+		if (me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
+			me->core->OpenObject(imgList);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnStreamHexClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
+	NN<Media::PDFObject> obj;
+	NN<IO::StreamData> stmData;
+	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->GetData().SetTo(stmData))
+	{
+		me->core->OpenHex(stmData, 0);
+	}
+}
+
 SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::PDFDocument> doc) : UI::GUIForm(parent, 640, 480, ui)
 {
 	Text::StringBuilderUTF8 sb;
@@ -61,6 +119,8 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 
 	this->core = core;
 	this->doc = doc;
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
+	this->dispImage = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->lbObject = ui->NewListBox(*this, false);
@@ -85,6 +145,27 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtText->SetReadOnly(true);
 
+	this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
+	this->pnlImage = ui->NewPanel(this->tpImage);
+	this->pnlImage->SetRect(0, 0, 100, 31, false);
+	this->pnlImage->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->btnImageOpen = ui->NewButton(this->pnlImage, CSTR("Open"));
+	this->btnImageOpen->SetRect(4, 4, 75, 23, false);
+	this->btnImageOpen->HandleButtonClick(OnImageOpenClicked, this);
+	this->pbImage = ui->NewPictureBoxDD(this->tpImage, this->colorSess, true, false);
+	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	this->tpStream = this->tcMain->AddTabPage(CSTR("Stream"));
+	this->pnlStream = ui->NewPanel(this->tpStream);
+	this->pnlStream->SetRect(0, 0, 100, 31, false);
+	this->pnlStream->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->btnStreamHex = ui->NewButton(this->pnlStream, CSTR("Show Hex"));
+	this->btnStreamHex->SetRect(4, 4, 75, 23, false);
+	this->btnStreamHex->HandleButtonClick(OnStreamHexClicked, this);
+	this->txtStream = ui->NewTextBox(this->tpStream, CSTR(""), true);
+	this->txtStream->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtStream->SetReadOnly(true);
+
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	NN<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("Objects"));
 	mnu->AddItem(CSTR("Save all images..."), MNU_SAVE_ALL_IMAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -92,7 +173,6 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	this->SetMenu(this->mnuMain);
 	
 	NN<Media::PDFObject> obj;
-	Optional<Text::String> type;
 	NN<Text::String> s;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -102,15 +182,14 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	{
 		obj = this->doc->GetItemNoCheck(i);
 		sptr = Text::StrUInt32(sbuff, obj->GetId());
-		type = obj->GetType();
-		if (type.SetTo(s) && s->Equals(UTF8STRC("XObject")))
-		{
-			type = obj->GetSubtype();
-		}
-		if (type.SetTo(s))
+		if (obj->GetType().SetTo(s))
 		{
 			*sptr++ = ' ';
 			sptr = s->ConcatTo(sptr);
+			if (obj->GetSubtype().SetTo(s))
+			{
+				sptr = s->ConcatTo(sptr);
+			}
 		}
 		this->lbObject->AddItem(CSTRP(sbuff, sptr), obj);
 		i++;
@@ -119,7 +198,10 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRPDFObjectForm::~AVIRPDFObjectForm()
 {
+	this->ClearChildren();
 	this->doc.Delete();
+	this->dispImage.Delete();
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
@@ -148,7 +230,7 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 					NN<Text::String> filter;
 					if (obj->GetFilter().SetTo(filter))
 					{
-						if (filter->Equals(UTF8STRC("DCTDecode")))
+						if (filter->Equals(UTF8STRC("/DCTDecode")))
 						{
 							sb.ClearStr();
 							sb.Append(folder);

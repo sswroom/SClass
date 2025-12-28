@@ -686,7 +686,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->env = env;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->scaleChanging = false;
 	this->ctrlForm = 0;
 	this->ctrlItem = 0;
@@ -890,7 +890,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	this->ssl.Delete();
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)

@@ -1219,7 +1219,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesColorClicked(AnyType user
 	if (me->inputMode == IM_SPECIES && sp.Set(me->lastSpeciesObj))
 	{
 		Media::ColorProfile profile(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->GetUI(), me->env->GetColorMgr(), me->env->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, profile, me->env->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->GetUI(), me->env->GetColorManager(), me->env->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, profile, me->env->GetMonitorMgr());
 		dlg.SetColor32(me->lastSpeciesObj->GetMapColor());
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -2477,7 +2477,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(UTF8STRC("Arial"), 10.5, false);
-	this->colorMgr = env->GetColorMgr();
+	this->colorMgr = env->GetColorManager();
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
 	this->env = env;
 	this->mapUpdated = false;

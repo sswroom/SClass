@@ -2185,6 +2185,7 @@ AVIRStreamLatencyForm.o: ../../src/SSWR/AVIRead/AVIRStreamLatencyForm.cpp
 AVIRStreamTermForm.o: ../../src/SSWR/AVIRead/AVIRStreamTermForm.cpp
 AVIRStringMsgForm.o: ../../src/SSWR/AVIRead/AVIRStringMsgForm.cpp
 AVIRSudokuForm.o: ../../src/SSWR/AVIRead/AVIRSudokuForm.cpp
+AVIRSudokuImportForm.o: ../../src/SSWR/AVIRead/AVIRSudokuImportForm.cpp
 AVIRSyslogServerForm.o: ../../src/SSWR/AVIRead/AVIRSyslogServerForm.cpp
 AVIRSystemInfoLogForm.o: ../../src/SSWR/AVIRead/AVIRSystemInfoLogForm.cpp
 AVIRTableMsgForm.o: ../../src/SSWR/AVIRead/AVIRTableMsgForm.cpp
@@ -2440,6 +2441,7 @@ UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 UTF8UCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
 UTF16BETextBinEnc.o: ../../src/Text/TextBinEnc/UTF16BETextBinEnc.cpp
 
+ClipboardUtil.o: ../../src/UI/ClipboardUtil.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
 GUIButton.o: ../../src/UI/GUIButton.cpp
 GUICheckBox.o: ../../src/UI/GUICheckBox.cpp

@@ -497,7 +497,7 @@ UnsafeArrayOpt<Double> SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CSt
 	return camera->gammaParam;
 }
 
-SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIForm> frm, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine(), colorSess), filter(core->GetColorMgr())
+SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIForm> frm, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine(), colorSess), filter(core->GetColorManager())
 {
 	this->core = core;
 	this->folderPath = 0;

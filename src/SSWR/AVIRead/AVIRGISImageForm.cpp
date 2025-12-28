@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lbl = ui->NewLabel(*this, CSTR("Drag and drop to add icons"));
 	this->lbl->SetRect(0, 0, 100, 23, false);
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRGISImageForm::~AVIRGISImageForm()
 {
 	this->resizer.Delete();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISImageForm::OnMonitorChanged()

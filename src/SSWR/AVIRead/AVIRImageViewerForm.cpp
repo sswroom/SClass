@@ -250,7 +250,7 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(Optional<UI::GUIClientCo
 
 	this->imgTimeoutTick = 0;
 	this->core = core;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->imgList = 0;
 	this->pkgFile = 0;
 	this->allowEnlarge = false;
@@ -300,7 +300,7 @@ SSWR::AVIRead::AVIRImageViewerForm::~AVIRImageViewerForm()
 	this->pkgFile.Delete();
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)

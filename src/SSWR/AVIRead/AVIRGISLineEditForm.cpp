@@ -177,7 +177,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj,
 	if (btn == UI::GUIPictureBox::MBTN_LEFT && me->currLayer.SetTo(currLayer))
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(currLayer->color);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -288,7 +288,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 	this->currLayer = 0;
 	this->prevsImage = 0;
 	this->thickChging = false;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->colorSess->AddHandler(*this);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -433,7 +433,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::~AVIRGISLineEditForm()
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()

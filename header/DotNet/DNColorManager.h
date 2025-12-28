@@ -8,19 +8,19 @@ namespace DotNet
 	public __gc class DNColorManager
 	{
 	private:
-		Media::ColorManager *colorMgr;
-		System::Collections::ArrayList *hdlrs;
+		NN<Media::ColorManager> colorMgr;
+		System::Collections::ArrayList ^hdlrs;
 
 	public:
-		DNColorManager(Media::ColorManager *colorMgr);
+		DNColorManager(NN<Media::ColorManager> colorMgr);
 		~DNColorManager();
 
-		void AddHandler(DNColorHandler *hdlr);
-		void RemoveHandler(DNColorHandler *hdlr);
-		Media::ColorManager *GetColorMgr();
+		void AddHandler(NN<DNColorHandler> hdlr);
+		void RemoveHandler(NN<DNColorHandler> hdlr);
+		NN<Media::ColorManager> GetColorManager();
 
 		void RGBUpdated();
 		void YUVUpdated();
 	};
-};
+}
 #endif

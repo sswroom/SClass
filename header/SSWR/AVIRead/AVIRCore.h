@@ -91,7 +91,7 @@ namespace SSWR
 
 			NN<Parser::ParserList> GetParserList();
 			NN<Map::MapManager> GetMapManager();
-			NN<Media::ColorManager> GetColorMgr();
+			NN<Media::ColorManager> GetColorManager();
 			NN<Net::SocketFactory> GetSocketFactory();
 			NN<Net::TCPClientFactory> GetTCPClientFactory();
 			NN<Media::DrawEngine> GetDrawEngine();

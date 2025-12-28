@@ -537,7 +537,7 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaClosed()
 SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui), Media::MediaPlayerInterface(core->GetParserList())
 {
 	this->core = core;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->qMode = qMode;
@@ -797,7 +797,7 @@ SSWR::AVIRead::AVIRHQMPForm::~AVIRHQMPForm()
 		dbgFrm->Close();
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 	this->ssl.Delete();
 }
 

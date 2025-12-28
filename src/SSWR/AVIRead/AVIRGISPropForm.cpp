@@ -100,7 +100,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Ma
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.ShowAlpha();
 		dlg.SetColor32(me->fillStyle);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -260,7 +260,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->index = index;
 	this->core = core;
 	this->eng = this->core->GetDrawEngine();
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
@@ -587,7 +587,7 @@ SSWR::AVIRead::AVIRGISPropForm::~AVIRGISPropForm()
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->eng->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISPropForm::OnMonitorChanged()

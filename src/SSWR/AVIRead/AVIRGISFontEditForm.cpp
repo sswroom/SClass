@@ -35,7 +35,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType user
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->currColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -61,7 +61,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType us
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorMgr(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->currBuffColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 	this->currFontName = 0;
 	this->currColor = 0xff000000;
 	this->currBuffColor = 0xff000000;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->colorSess->AddHandler(*this);
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::~AVIRGISFontEditForm()
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISFontEditForm::OnMonitorChanged()

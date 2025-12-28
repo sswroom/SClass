@@ -66,9 +66,19 @@ namespace Math
 			return {this->x + v.x, this->y + v.y};
 		}
 
+		Value2D<T> operator+(T v) const
+		{
+			return {this->x + v, this->y + v};
+		}
+
 		Value2D<T> operator-(Value2D<T> v) const
 		{
 			return {this->x - v.x, this->y - v.y};
+		}
+
+		Value2D<T> operator-(T v) const
+		{
+			return {this->x - v, this->y - v};
 		}
 
 		Value2D<T> operator*(Value2D<T> v) const

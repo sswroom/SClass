@@ -370,7 +370,7 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->qMode = qMode;
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
@@ -558,7 +558,7 @@ SSWR::AVIRead::AVIRHQMPDSForm::~AVIRHQMPDSForm()
 	if (this->dbgFrm.SetTo(dbgFrm))
 		dbgFrm->Close();
 	this->ClearChildren();
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 	this->ssl.Delete();
 }
 

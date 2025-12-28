@@ -98,7 +98,7 @@ Bool Text::StringTool::IsNonASCII(UnsafeArray<const UTF8Char> s)
 	return false;
 }
 
-Bool Text::StringTool::IsASCIIText(const Data::ByteArrayR &buff)
+Bool Text::StringTool::IsTextASCII(const Data::ByteArrayR &buff)
 {
 	UInt8 b;
 	UOSInt index = 0;
@@ -108,6 +108,56 @@ Bool Text::StringTool::IsASCIIText(const Data::ByteArrayR &buff)
 		if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10 || b == 9)
 		{
 
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+Bool Text::StringTool::IsTextUTF8(const Data::ByteArrayR &buff)
+{
+	UInt8 b;
+	UOSInt index = 0;
+	while (index < buff.GetSize())
+	{
+		b = buff[index++];
+		if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10 || b == 9)
+		{
+
+		}
+		else if ((b & 0x80) != 0)
+		{
+			if ((b & 0xE0) == 0xC0)
+			{
+				if ((buff[index] & 0xC0) != 0x80)
+					return false;
+				index++;
+			}
+			else if ((b & 0xF0) == 0xE0)
+			{
+				if ((buff[index] & 0xC0) != 0x80)
+					return false;
+				if ((buff[index + 1] & 0xC0) != 0x80)
+					return false;
+				index += 2;
+			}
+			else if ((b & 0xF8) == 0xF0)
+			{
+				if ((buff[index] & 0xC0) != 0x80)
+					return false;
+				if ((buff[index + 1] & 0xC0) != 0x80)
+					return false;
+				if ((buff[index + 2] & 0xC0) != 0x80)
+					return false;
+				index += 3;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{

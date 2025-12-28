@@ -32,11 +32,11 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UO
 	color = me->srcImg->info.color;
 	if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
-		color = me->core->GetColorMgr()->GetDefVProfile();
+		color = me->core->GetColorManager()->GetDefVProfile();
 	}
 	else if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
-		color = me->core->GetColorMgr()->GetDefPProfile();
+		color = me->core->GetColorManager()->GetDefPProfile();
 	}
 	me->currBVal = bvalue * 0.01 - 1.0;
 	me->currCVal = cvalue * 0.01;
@@ -53,11 +53,11 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(AnyType userObj)
 	color = me->srcImg->info.color;
 	if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
-		color = me->core->GetColorMgr()->GetDefVProfile();
+		color = me->core->GetColorManager()->GetDefVProfile();
 	}
 	else if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
-		color = me->core->GetColorMgr()->GetDefPProfile();
+		color = me->core->GetColorManager()->GetDefPProfile();
 	}
 	me->rgbFilter->SetParameter(me->currBVal, me->currCVal, me->currGVal, color, me->srcImg->info.storeBPP, me->srcImg->info.pf, 0);
 	me->rgbFilter->ProcessImage(me->srcImg->data, me->destImg->data, me->srcImg->info.dispSize.x, me->srcImg->info.dispSize.y, (me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), (me->srcImg->info.storeSize.x * (me->srcImg->info.storeBPP >> 3)), false);
@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientCont
 	this->srcImg = srcImg;
 	this->destImg = destImg;
 	this->previewCtrl = previewCtrl;
-	NEW_CLASSNN(this->rgbFilter, Media::RGBColorFilter(this->core->GetColorMgr()));
+	NEW_CLASSNN(this->rgbFilter, Media::RGBColorFilter(this->core->GetColorManager()));
 	this->srcPrevImg = this->previewCtrl->CreatePreviewImage(this->srcImg);
 	NN<Media::StaticImage> img;
 	if (this->srcPrevImg.SetTo(img))

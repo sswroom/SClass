@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "DotNet/DNColorManager.h"
 
-DotNet::DNColorManager::DNColorManager(Media::ColorManager *colorMgr)
+DotNet::DNColorManager::DNColorManager(NN<Media::ColorManager> colorMgr)
 {
 	this->colorMgr = colorMgr;
-	this->hdlrs = new System::Collections::ArrayList();
+	this->hdlrs = gcnew System::Collections::ArrayList();
 }
 
 DotNet::DNColorManager::~DNColorManager()
@@ -13,17 +13,17 @@ DotNet::DNColorManager::~DNColorManager()
 	this->hdlrs = 0;
 }
 
-void DotNet::DNColorManager::AddHandler(DNColorHandler *hdlr)
+void DotNet::DNColorManager::AddHandler(NN<DNColorHandler> hdlr)
 {
 	this->hdlrs->Add(hdlr);
 }
 
-void DotNet::DNColorManager::RemoveHandler(DNColorHandler *hdlr)
+void DotNet::DNColorManager::RemoveHandler(NN<DNColorHandler> hdlr)
 {
 	this->hdlrs->Remove(hdlr);
 }
 
-Media::ColorManager *DotNet::DNColorManager::GetColorMgr()
+NN<Media::ColorManager> DotNet::DNColorManager::GetColorManager()
 {
 	return this->colorMgr;
 }

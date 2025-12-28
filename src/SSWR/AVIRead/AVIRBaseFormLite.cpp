@@ -1395,7 +1395,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Media::ScreenCapturer *capturer;
 			Media::StaticImage *img;
-			NEW_CLASS(capturer, Media::ScreenCapturer(this->core->GetMonitorMgr(), this->core->GetColorMgr()));
+			NEW_CLASS(capturer, Media::ScreenCapturer(this->core->GetMonitorMgr(), this->core->GetColorManager()));
 			img = capturer->CaptureScreen(this->GetHMonitor());
 			DEL_CLASS(capturer);
 			if (img)

@@ -50,7 +50,13 @@ UInt32 Media::PDFObject::GetId() const
 Bool Media::PDFObject::IsImage() const
 {
 	NN<Media::PDFParameter> parameter;
-	return this->parameter.SetTo(parameter) && parameter->ContainsEntry(CSTR("Image"));
+	NN<Text::String> s;
+	if (this->parameter.SetTo(parameter) && parameter->GetEntryValue(CSTR("Subtype")).SetTo(s))
+	{
+		printf("PDFObject.IsImage.Subtype: \"%s\", %b\r\n", s->v.Ptr(), s->Equals(UTF8STRC("/Image")));
+		return s->Equals(UTF8STRC("/Image"));
+	}
+	return  false;
 }
 
 Optional<Text::String> Media::PDFObject::GetType() const
@@ -60,7 +66,7 @@ Optional<Text::String> Media::PDFObject::GetType() const
 		return 0;
 	UOSInt i = parameter->GetEntryIndex(CSTR("Type"));
 	if (i != INVALID_INDEX)
-		return parameter->GetEntryType(i + 1);
+		return parameter->GetEntryValue(i);
 	return 0;
 }
 
@@ -71,7 +77,7 @@ Optional<Text::String> Media::PDFObject::GetSubtype() const
 		return 0;
 	UOSInt i = parameter->GetEntryIndex(CSTR("Subtype"));
 	if (i != INVALID_INDEX)
-		return parameter->GetEntryType(i + 1);
+		return parameter->GetEntryValue(i);
 	return 0;
 }
 
@@ -87,7 +93,7 @@ Optional<Text::String> Media::PDFObject::GetFilter() const
 		NN<Media::PDFParameter::ParamEntry> entry = parameter->GetItemNoCheck(i);
 		if (entry->value.SetTo(s))
 			return s;
-		return parameter->GetEntryType(i + 1);
+		return parameter->GetEntryValue(i);
 	}
 	return 0;
 }
@@ -97,14 +103,10 @@ Optional<Text::String> Media::PDFObject::GetColorSpace() const
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
 		return 0;
-	NN<Text::String> s;
 	UOSInt i = parameter->GetEntryIndex(CSTR("ColorSpace"));
 	if (i != INVALID_INDEX)
 	{
-		NN<Media::PDFParameter::ParamEntry> entry = parameter->GetItemNoCheck(i);
-		if (entry->value.SetTo(s))
-			return s;
-		return parameter->GetEntryType(i + 1);
+		return parameter->GetEntryValue(i);
 	}
 	return 0;
 }
@@ -161,7 +163,7 @@ Bool Media::PDFObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->Append(ent->type);
 			if (ent->value.SetTo(s) && s->leng > 0)
 			{
-				if (!s->StartsWith('[') && !s->StartsWith('<'))
+				if (!s->StartsWith('[') && !s->StartsWith('<') && !s->StartsWith('/'))
 				{
 					sb->AppendUTF8Char(' ');
 				}

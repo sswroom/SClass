@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	this->core = core;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->dispImage = 0;
 	this->previewImage = 0;
 	this->filteredImage = 0;
@@ -359,7 +359,7 @@ SSWR::AVIRead::AVIRImageBatchForm::~AVIRImageBatchForm()
 	this->resizer.Delete();
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRImageBatchForm::EventMenuClicked(UInt16 cmdId)

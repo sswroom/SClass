@@ -560,7 +560,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 				else
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&pdu[ofst], len)))
+					if (Text::StringTool::IsTextASCII(Data::ByteArrayR(&pdu[ofst], len)))
 					{
 						sb->AppendC(&pdu[ofst], len);
 					}
@@ -671,7 +671,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 				else
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&pdu[ofst], len)))
+					if (Text::StringTool::IsTextASCII(Data::ByteArrayR(&pdu[ofst], len)))
 					{
 						sb->AppendC(&pdu[ofst], len);
 					}
@@ -1226,7 +1226,7 @@ void Net::ASN1Util::PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::Byt
 					PDUAnalyse(frame, buff, pduOfst, pduOfst + len, names);
 				}
 			}
-			else if (Text::StringTool::IsASCIIText(Data::ByteArrayR(&buff[pduOfst], len)))
+			else if (Text::StringTool::IsTextASCII(Data::ByteArrayR(&buff[pduOfst], len)))
 			{
 				frame->AddStrC(pduOfst, len, itemName, &buff[pduOfst]);
 			}

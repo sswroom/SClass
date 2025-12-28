@@ -209,7 +209,7 @@ Optional<Net::SSLEngine> SSWR::OrganMgr::OrganEnv::GetSSLEngine()
 	return this->ssl;
 }
 
-NN<Media::ColorManager> SSWR::OrganMgr::OrganEnv::GetColorMgr()
+NN<Media::ColorManager> SSWR::OrganMgr::OrganEnv::GetColorManager()
 {
 	return this->colorMgr;
 }

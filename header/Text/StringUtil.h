@@ -12,11 +12,11 @@ namespace Text
 		StringUtil();
 		~StringUtil();
 
-		const WChar *ToString(Data::DateTime *dt, const Char *pattern);
-		const WChar *ToString(Double val);
-		const WChar *ToString(Double val, const Char *pattern);
-		const WChar *ToString(Int32 val);
-		const WChar *ToString(Int64 val);
+		UnsafeArray<const WChar> ToString(NN<Data::DateTime> dt, UnsafeArray<const Char> pattern);
+		UnsafeArray<const WChar> ToString(Double val);
+		UnsafeArray<const WChar> ToString(Double val, UnsafeArray<const Char> pattern);
+		UnsafeArray<const WChar> ToString(Int32 val);
+		UnsafeArray<const WChar> ToString(Int64 val);
 	};
-};
+}
 #endif

@@ -62,6 +62,87 @@ Bool UI::Clipboard::GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb)
 	return GetDataTextH(0, fmtId, sb, 0);
 }
 
+Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
+{
+	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+	if (clipboard == 0)
+	{
+		return 0;
+	}
+
+	Optional<Data::ByteBuffer> ret = 0;
+	if (fmtId >= 128)
+	{
+		GdkAtom *targets;
+		gint nTargets;
+		if (gtk_clipboard_wait_for_targets(clipboard, &targets, &nTargets))
+		{
+			if (fmtId < (UInt32)nTargets + 128)
+			{
+				GtkSelectionData *data = gtk_clipboard_wait_for_contents(clipboard, targets[fmtId - 128]);
+				if (data)
+				{
+					gint leng;
+					const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
+					NEW_CLASSOPT(ret, Data::ByteBuffer(Data::ByteArrayR(rawdata, (UOSInt)leng)));
+					gtk_selection_data_free(data);
+				}
+			}
+			g_free(targets);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (fmtId == 1)
+	{
+		gchar *s = gtk_clipboard_wait_for_text(clipboard);
+		if (s)
+		{
+			NN<Data::ByteBuffer> ret;
+			UOSInt leng = Text::StrCharCnt((const UTF8Char*)s);
+			NEW_CLASSNN(ret, Data::ByteBuffer(Data::ByteArrayR((const UTF8Char*)s, leng)));
+			g_free(s);
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	else if (fmtId == 2)
+	{
+		gchar **s = gtk_clipboard_wait_for_uris(clipboard);
+		if (s)
+		{
+			Text::StringBuilderUTF8 sb;
+			OSInt i = 0;
+			while (true)
+			{
+				if (s[i] == 0)
+					break;
+				if (i > 0)
+				{
+					sb.AppendC(UTF8STRC("\r\n"));
+				}
+				sb.AppendSlow((const UTF8Char*)s[i]);
+				i++;
+			}
+			g_strfreev(s);
+			NN<Data::ByteBuffer> ret;
+			NEW_CLASSNN(ret, Data::ByteBuffer(sb.ToByteArray()));
+			return ret;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	return 0;
+}
+
 UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStringNN> fileNames)
 {
 	if (!this->succ)

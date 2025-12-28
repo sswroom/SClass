@@ -333,7 +333,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 	this->SetText(CSTRP(sbuff, sptr));
 
 	this->core = core;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->activeVideo = 0;
 	this->activeAudio = 0;
 	this->audRenderer = 0;
@@ -421,7 +421,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 	}
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 }
 
 

@@ -9,7 +9,7 @@ SSWR::AVIRead::AVIRMIMEViewerForm::AVIRMIMEViewerForm(Optional<UI::GUIClientCont
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->obj = obj;
-	this->sess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->sess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(core, ui, *this, this->sess, obj);
 }
 
@@ -20,7 +20,7 @@ SSWR::AVIRead::AVIRMIMEViewerForm::~AVIRMIMEViewerForm()
 	this->viewer.Delete();
 	this->obj.Delete();
 	this->core->GetDrawEngine()->EndColorSess(this->sess);
-	this->core->GetColorMgr()->DeleteSess(this->sess);
+	this->core->GetColorManager()->DeleteSess(this->sess);
 }
 
 void SSWR::AVIRead::AVIRMIMEViewerForm::OnMonitorChanged()

@@ -1,11 +1,15 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRPDFOBJECTFORM
 #define _SM_SSWR_AVIREAD_AVIRPDFOBJECTFORM
+#include "Media/ImageList.h"
 #include "Media/PDFDocument.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
+#include "UI/GUIPanel.h"
+#include "UI/GUIPictureBoxDD.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -19,6 +23,8 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::PDFDocument> doc;
+			NN<Media::ColorManagerSess> colorSess;
+			Optional<Media::ImageList> dispImage;
 
 			NN<UI::GUIListBox> lbObject;
 			NN<UI::GUIHSplitter> hspMain;
@@ -30,10 +36,22 @@ namespace SSWR
 			NN<UI::GUITabPage> tpText;
 			NN<UI::GUITextBox> txtText;
 
+			NN<UI::GUITabPage> tpImage;
+			NN<UI::GUIPanel> pnlImage;
+			NN<UI::GUIButton> btnImageOpen;
+			NN<UI::GUIPictureBoxDD> pbImage;
+
+			NN<UI::GUITabPage> tpStream;
+			NN<UI::GUIPanel> pnlStream;
+			NN<UI::GUIButton> btnStreamHex;
+			NN<UI::GUITextBox> txtStream;
+
 			NN<UI::GUIMainMenu> mnuMain;
 
 			static void __stdcall OnObjectSelChg(AnyType userObj);
 			static void __stdcall OnObjectDblClk(AnyType userObj);
+			static void __stdcall OnImageOpenClicked(AnyType userObj);
+			static void __stdcall OnStreamHexClicked(AnyType userObj);
 		public:
 			AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::PDFDocument> doc);
 			virtual ~AVIRPDFObjectForm();

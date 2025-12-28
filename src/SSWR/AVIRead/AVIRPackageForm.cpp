@@ -1230,7 +1230,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 							fd.Delete();
 							return;
 						}
-						if (!Text::StringTool::IsASCIIText(Data::ByteArrayR(buff, buffSize)))
+						if (!Text::StringTool::IsTextASCII(Data::ByteArrayR(buff, buffSize)))
 						{
 							this->ui->ShowMsgOK(CSTR("The file seems not a text file"), CSTR("Package"), this);
 							fd.Delete();

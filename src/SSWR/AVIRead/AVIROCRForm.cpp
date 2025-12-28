@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	NN<Text::String> lang;
 	this->core = core;
 	this->currImg = 0;
-	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
+	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->ocr.HandleOCRResult(OnOCRResult, this);
 	this->ocr.GetAvailableLanguages(this->langs);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -176,7 +176,7 @@ SSWR::AVIRead::AVIROCRForm::~AVIROCRForm()
 	this->ClearResults();
 	this->currImg.Delete();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
-	this->core->GetColorMgr()->DeleteSess(this->colorSess);
+	this->core->GetColorManager()->DeleteSess(this->colorSess);
 	this->langs.FreeAll();
 }
 
