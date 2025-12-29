@@ -167,27 +167,27 @@ typedef struct
 	UInt64 fileSize;
 } CopySess;
 
-Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+Bool IO::FileUtil::CopyFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	IO::FileStream *fs2;
 	IO::ActiveStreamReader *asr;
 	if (fea == FileExistAction::Fail)
 	{
-		if (IO::Path::GetPathType(file2) != IO::Path::PathType::Unknown)
+		if (IO::Path::GetPathType(destFile) != IO::Path::PathType::Unknown)
 			return false;
 	}
-	IO::FileStream fs1(file1, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	IO::FileStream fs1(srcFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs1.IsError())
 	{
 		return false;
 	}
 	if (fea == FileExistAction::Continue)
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+		NEW_CLASS(fs2, IO::FileStream(destFile, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	else
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+		NEW_CLASS(fs2, IO::FileStream(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	if (fs2->IsError())
 	{
@@ -198,7 +198,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 	UInt64 ramSize = 104857600;//MemGetRAMSize();
 	UInt64 writeSize = 0;
 	UInt64 writenSize;
-	Bool samePart = IsSamePartition(file1.v, file2.v);
+	Bool samePart = IsSamePartition(srcFile.v, destFile.v);
 	UInt8 *buff;
 	if (fea == FileExistAction::Continue)
 	{
@@ -223,7 +223,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 	NN<IO::ProgressHandler> nnprogHdlr;
 	if (progHdlr.SetTo(nnprogHdlr))
 	{
-		nnprogHdlr->ProgressStart(file1, fileSize);
+		nnprogHdlr->ProgressStart(srcFile, fileSize);
 	}
 	if (fileSize < 1048576)
 	{

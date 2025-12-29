@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Data/Compress/Inflater.h"
 #include "IO/FileStream.h"
+#include "IO/MemoryStream.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Media/PDFObject.h"
 
 Media::PDFObject::PDFObject(UInt32 id)
@@ -8,12 +10,14 @@ Media::PDFObject::PDFObject(UInt32 id)
 	this->id = id;
 	this->streamData = false;
 	this->fd = 0;
+	this->decFd = 0;
 	this->parameter = 0;
 }
 
 Media::PDFObject::~PDFObject()
 {
 	this->fd.Delete();
+	this->decFd.Delete();
 	this->parameter.Delete();
 }
 
@@ -53,10 +57,20 @@ Bool Media::PDFObject::IsImage() const
 	NN<Text::String> s;
 	if (this->parameter.SetTo(parameter) && parameter->GetEntryValue(CSTR("Subtype")).SetTo(s))
 	{
-		printf("PDFObject.IsImage.Subtype: \"%s\", %b\r\n", s->v.Ptr(), s->Equals(UTF8STRC("/Image")));
 		return s->Equals(UTF8STRC("/Image"));
 	}
 	return  false;
+}
+
+Bool Media::PDFObject::IsFlateDecode() const
+{
+	NN<Media::PDFParameter> parameter;
+	NN<Text::String> s;
+	if (this->parameter.SetTo(parameter) && parameter->GetEntryValue(CSTR("Filter")).SetTo(s))
+	{
+		return s->IndexOf(UTF8STRC("/FlateDecode")) != INVALID_INDEX;
+	}
+	return false;
 }
 
 Optional<Text::String> Media::PDFObject::GetType() const
@@ -209,8 +223,32 @@ Bool Media::PDFObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 	return true;
 }
 
-Optional<IO::StreamData> Media::PDFObject::GetData() const
+Optional<IO::StreamData> Media::PDFObject::GetRAWData() const
 {
+	return this->fd;
+}
+
+Optional<IO::StreamData> Media::PDFObject::GetData()
+{
+	NN<IO::StreamData> fd;
+	if (this->fd.SetTo(fd) && this->IsFlateDecode())
+	{
+		if (this->decFd.IsNull())
+		{
+			IO::MemoryStream memStm;
+			Data::Compress::Inflater infStm(memStm, true);
+			if (infStm.WriteFromData(fd, 1048576))
+			{
+				NEW_CLASSOPT(this->decFd, IO::StmData::MemoryDataCopy(memStm.GetArray()));
+			}
+			else
+			{
+				printf("Error in decompressing PDF object data\r\n");
+				return this->fd;
+			}
+		}
+		return this->decFd;
+	}
 	return this->fd;
 }
 

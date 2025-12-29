@@ -13,6 +13,7 @@ namespace Media
 		UInt32 id;
 		Bool streamData;
 		Optional<IO::StreamData> fd;
+		Optional<IO::StreamData> decFd;
 		Optional<PDFParameter> parameter;
 	public:
 		PDFObject(UInt32 id);
@@ -24,6 +25,7 @@ namespace Media
 		Optional<PDFParameter> GetParameter() const;
 		UInt32 GetId() const;
 		Bool IsImage() const;
+		Bool IsFlateDecode() const;
 		Optional<Text::String> GetType() const;
 		Optional<Text::String> GetSubtype() const;
 		Optional<Text::String> GetFilter() const;
@@ -32,7 +34,8 @@ namespace Media
 		UOSInt GetWidth() const;
 		UOSInt GetHeight() const;
 		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
-		Optional<IO::StreamData> GetData() const;
+		Optional<IO::StreamData> GetRAWData() const;
+		Optional<IO::StreamData> GetData();
 		Bool SaveFile(Text::CStringNN fileName);
 		Bool SaveStream(NN<IO::Stream> stm);
 	};

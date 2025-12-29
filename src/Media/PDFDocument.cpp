@@ -77,15 +77,11 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 	NN<Text::String> filter;
 	if (obj->GetData().SetTo(fd) && obj->GetFilter().SetTo(filter))
 	{
-		if (filter->Equals(UTF8STRC("/DCTDecode")))
+		if (filter->IndexOf(UTF8STRC("/DCTDecode")) != INVALID_INDEX)
 		{
 			return Optional<Media::ImageList>::ConvertFrom(SetPObjName(parsers->ParseFileType(fd, IO::ParserType::ImageList), id, CSTR(".jpg")));
 		}
-		if (filter->Equals(UTF8STRC("[/DCTDecode]")))
-		{
-			return Optional<Media::ImageList>::ConvertFrom(SetPObjName(parsers->ParseFileType(fd, IO::ParserType::ImageList), id, CSTR(".jpg")));
-		}
-		if (filter->Equals(UTF8STRC("/FlateDecode")))
+		else
 		{
 			UOSInt bpc = obj->GetBitPerComponent();
 			UOSInt width = obj->GetWidth();
