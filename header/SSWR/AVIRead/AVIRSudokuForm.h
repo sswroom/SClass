@@ -2,7 +2,12 @@
 #define _SM_SSWR_AVIREAD_AVIRSUDOKUFORM
 #include "Game/Sudoku/SudokuBoard.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
+#include "UI/GUILabel.h"
+#include "UI/GUIMainMenu.h"
+#include "UI/GUIPanel.h"
 #include "UI/GUISudokuViewer.h"
 
 namespace SSWR
@@ -12,6 +17,10 @@ namespace SSWR
 		class AVIRSudokuForm : public UI::GUIForm
 		{
 		private:
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUILabel> lblMode;
+			NN<UI::GUIComboBox> cboMode;
+			NN<UI::GUIButton> btnHints;
 			NN<UI::GUISudokuViewer> svMain;
 			NN<UI::GUIMainMenu> mnuMain;
 
@@ -19,6 +28,7 @@ namespace SSWR
 			NN<Game::Sudoku::SudokuBoard> board;
 
 			static void __stdcall EventNumInput(AnyType userObj, UOSInt selX, UOSInt selY, UInt8 num);
+			static void __stdcall OnHintsClicked(AnyType userObj);
 		public:
 			AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSudokuForm();

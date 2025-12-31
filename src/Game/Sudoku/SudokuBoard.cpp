@@ -575,24 +575,22 @@ Bool Game::Sudoku::SudokuBoard::SolveLev2()
 	return changed;
 }
 
-Bool Game::Sudoku::SudokuBoard::SolveLev3()
+UOSInt Game::Sudoku::SudokuBoard::SolveLev3()
 {
-	Bool changed;
-	Bool modified;
-	Bool fin;
+	UOSInt modified;
 	UInt16 v;
-	changed = this->SolveLev2();
+	this->SolveLev2();
 	if (this->IsFinish())
 	{
-		return changed;
+		return 1;
 	}
+	UOSInt solutionCnt = 0;
 	UOSInt i;
 	UOSInt j;
 	UInt8 k;
 	Game::Sudoku::SudokuBoard tmpBoard;
-	fin = false;
 	i = 9;
-	while (i-- > 0 && !fin)
+	while (i-- > 0)
 	{
 		j = 9;
 		while (j-- > 0)
@@ -611,22 +609,20 @@ Bool Game::Sudoku::SudokuBoard::SolveLev3()
 						if (modified && tmpBoard.IsFinish())
 						{
 							this->CopyFrom(tmpBoard);
-							changed = true;
-							fin = true;
-							break;
+							solutionCnt += modified;
 						}
 					}
 				}
 			}
 		}
 	}
-	return changed;
+	return solutionCnt;
 }
 
 Game::Sudoku::SudokuBoard::SudokuBoard()
 {
 	this->board = MemAlloc(UInt16, 81);
-	Clear();
+	ClearAll();
 }
 
 Game::Sudoku::SudokuBoard::~SudokuBoard()
@@ -644,11 +640,25 @@ void Game::Sudoku::SudokuBoard::SetBoardNum(UOSInt xOfst, UOSInt yOfst, UInt8 nu
 	this->board[yOfst * 9 + xOfst] = v;
 }
 
+void Game::Sudoku::SudokuBoard::ToggleHints(UOSInt xOfst, UOSInt yOfst, UInt8 number)
+{
+	UInt16 v = this->board[yOfst * 9 + xOfst];
+	if ((v & 15) == 0)
+	{
+		this->board[yOfst * 9 + xOfst] = v ^ (16 << number);
+	}	
+}
+
 UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(UOSInt xOfst, UOSInt yOfst, OptOut<Bool> isDefault)
 {
 	UInt16 v = this->board[yOfst * 9 + xOfst];
 	isDefault.Set((v & 16) != 0);
 	return v & 15;
+}
+
+UInt16 Game::Sudoku::SudokuBoard::GetBoardValue(UOSInt xOfst, UOSInt yOfst)
+{
+	return this->board[yOfst * 9 + xOfst];
 }
 
 void Game::Sudoku::SudokuBoard::CopyFrom(NN<const SudokuBoard> board)
@@ -673,11 +683,24 @@ void Game::Sudoku::SudokuBoard::Clear()
 	i = 81;
 	while (i-- > 0)
 	{
+		if ((this->board[i] & 16) == 0)
+		{
+			this->board[i] = 0;
+		}
+	}
+}
+
+void Game::Sudoku::SudokuBoard::ClearAll()
+{
+	UOSInt i;
+	i = 81;
+	while (i-- > 0)
+	{
 		this->board[i] = 0;
 	}
 }
 
-Bool Game::Sudoku::SudokuBoard::Solve()
+UOSInt Game::Sudoku::SudokuBoard::Solve()
 {
 	return SolveLev3();
 }
@@ -685,4 +708,9 @@ Bool Game::Sudoku::SudokuBoard::Solve()
 Bool Game::Sudoku::SudokuBoard::SolveOne()
 {
 	return SolveLev1One();
+}
+
+void Game::Sudoku::SudokuBoard::ShowHints()
+{
+	HintCheckLev1();
 }

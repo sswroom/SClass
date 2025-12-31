@@ -150,10 +150,12 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawBrush> b2;
 	NN<Media::DrawFont> f;
+	NN<Media::DrawFont> fSmall;
 	UOSInt lastPos;
 	UOSInt currPos;
 	UOSInt i;
 	UOSInt j;
+	UInt16 v;
 
 	p = img->NewPenARGB(0xff000000, 1, 0, 0);
 	i = 9;
@@ -179,6 +181,7 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	img->DelPen(p);
 
 	f = img->NewFontPx(CSTR("Arial"), UOSInt2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
+	fSmall = img->NewFontPx(CSTR("Arial"), UOSInt2Double(blockSize) * 0.25, Media::DrawEngine::DFS_NORMAL, 65001);
 	b = img->NewBrushARGB(0xffcccccc);
 	b2 = img->NewBrushARGB(0xff000000);
 	i = 9;
@@ -216,12 +219,69 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 			else
 			{
 				img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b3);
+				v = this->board->GetBoardValue(i, j);
+				Math::Double2D smallSize = ((pt2 - pt).ToDouble()) / 3;
+				if (v & 0x20)
+				{
+					ch[0] = '1';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x40)
+				{
+					ch[0] = '2';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(smallSize.x * 1, 0) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x80)
+				{
+					ch[0] = '3';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(smallSize.x * 2, 0) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x100)
+				{
+					ch[0] = '4';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(0, smallSize.y * 1) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x200)
+				{
+					ch[0] = '5';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(smallSize.x * 1, smallSize.y * 1) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x400)
+				{
+					ch[0] = '6';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(smallSize.x * 2, smallSize.y * 1) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x800)
+				{
+					ch[0] = '7';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(0, smallSize.y * 2) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x1000)
+				{
+					ch[0] = '8';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(smallSize.x * 1, smallSize.y * 2) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
+				if (v & 0x2000)
+				{
+					ch[0] = '9';
+					sz = img->GetTextSize(fSmall, {ch, 1});
+					img->DrawString(pt.ToDouble() + Math::Double2D(smallSize.x * 2, smallSize.y * 2) + (smallSize - sz) * 0.5, {ch, 1}, fSmall, b2);
+				}
 			}
 		}
 	}
 	img->DelBrush(b2);
 	img->DelBrush(b);
 	img->DelBrush(b3);
+	img->DelFont(fSmall);
 	img->DelFont(f);
 }
 

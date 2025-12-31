@@ -10,7 +10,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/UTF8Reader.h"
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif

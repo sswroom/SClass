@@ -170,7 +170,7 @@ extern "C" UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, U
 		return currVal;
 	}
 }
-#elif defined(CPU_X86_64)
+#elif defined(CPU_X86_64) && defined(__SSE4_2__)
 #include <nmmintrin.h>
 extern "C" Int32 UseSSE42;
 
