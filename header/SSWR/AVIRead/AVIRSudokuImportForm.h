@@ -47,6 +47,7 @@ namespace SSWR
 			Bool LoadFile(NN<Text::String> fileName);
 			Bool LoadImage(NN<Media::ImageList> imgList);
 			void DoOCR(NN<Media::StaticImage> img);
+			static Bool CalcTextRect(NN<Media::StaticImage> img, Math::RectArea<UOSInt> boxRect, OutParam<Math::RectArea<UOSInt>> textRect);
 			static Math::RectArea<UOSInt> CalcBoxRect(NN<Media::StaticImage> img, Math::Coord2D<UOSInt> pos);
 			static Math::RectArea<UOSInt> CalcBoardRect(NN<Media::StaticImage> img);
 			static Bool SizeSimilar(Math::Size2D<UOSInt> size1, Math::Size2D<UOSInt> size2);

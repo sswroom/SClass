@@ -6,7 +6,7 @@
 #include "UI/ClipboardUtil.h"
 #include "UI/GUIFileDialog.h"
 
-//#define VERBOSE
+#define VERBOSE
 #define GRAYTHRESHOLD 224
 
 void __stdcall SSWR::AVIRead::AVIRSudokuImportForm::OnCancelClicked(AnyType userObj)
@@ -116,6 +116,7 @@ void SSWR::AVIRead::AVIRSudokuImportForm::DoOCR(NN<Media::StaticImage> img)
 	Math::Coord2D<UOSInt> currPos = rect.min;
 	Math::RectArea<UOSInt> boxRect = CalcBoxRect(img, Math::Coord2D<UOSInt>(currPos.x + 4, currPos.y + 4));
 	Math::Size2D<UOSInt> boxSize = boxRect.GetSize();
+	Math::RectArea<UOSInt> textRect;
 	UOSInt x;
 	UOSInt y = 0;
 	UOSInt minConfidence[] = {80, 60, 60, 60, 50, 60, 60, 60, 60};
@@ -128,21 +129,24 @@ void SSWR::AVIRead::AVIRSudokuImportForm::DoOCR(NN<Media::StaticImage> img)
 		{
 			currPos.x += boxSize.x >> 1;
 			boxRect = CalcBoxRect(img, currPos);
-			NN<Text::String> s;
-			UOSInt confidence;
-			if (ocr.ParseInsideImage(Math::RectArea<UOSInt>(boxRect.min + 2, boxRect.max - 2), confidence).SetTo(s))
+			if (CalcTextRect(img, boxRect, textRect))
 			{
-				if (s->v[0] >= '1' && s->v[0] <= '9')
+				NN<Text::String> s;
+				UOSInt confidence;
+				if (ocr.ParseInsideImage(textRect, confidence).SetTo(s))
 				{
-#ifdef VERBOSE
-					printf("Box %d,%d: %c (Confidence: %d)\r\n", (Int32)x, (Int32)y, s->v[0], (Int32)confidence);
-#endif
-					if (confidence > minConfidence[s->v[0] - '1'])
+					if (s->v[0] >= '1' && s->v[0] <= '9')
 					{
-						this->board.SetBoardNum(x, y, (UInt8)(s->v[0] - '0'), true);
+#ifdef VERBOSE
+						printf("Box %d,%d: %c (Confidence: %d)\r\n", (Int32)x, (Int32)y, s->v[0], (Int32)confidence);
+#endif
+						if (confidence > minConfidence[s->v[0] - '1'])
+						{
+							this->board.SetBoardNum(x, y, (UInt8)(s->v[0] - '0'), true);
+						}
 					}
+					s->Release();
 				}
-				s->Release();
 			}
 			x++;
 			currPos.x = boxRect.max.x;
@@ -151,6 +155,59 @@ void SSWR::AVIRead::AVIRSudokuImportForm::DoOCR(NN<Media::StaticImage> img)
 		currPos.x = rect.min.x;
 		currPos.y = boxRect.max.y;
 	}
+}
+
+Bool SSWR::AVIRead::AVIRSudokuImportForm::CalcTextRect(NN<Media::StaticImage> img, Math::RectArea<UOSInt> boxRect, OutParam<Math::RectArea<UOSInt>> textRect)
+{
+//	textRect.Set(Math::RectArea<UOSInt>(boxRect.min + 2, boxRect.max - 2));
+//	return true;
+	Math::RectArea<UOSInt> retRect = boxRect;
+	Bool found = false;
+	UnsafeArray<UInt8> dataPtr = img->data;
+	UOSInt bpl = img->GetDataBpl();
+	UOSInt currY = boxRect.min.y + 2;
+	UOSInt currX;
+	UOSInt ofst;
+	while (currY < boxRect.max.y - 2)
+	{
+		currX = boxRect.min.x + 2;
+		ofst = currY * bpl + currX * 4;
+		while (currX < boxRect.max.x - 2)
+		{
+			if (dataPtr[ofst] < GRAYTHRESHOLD)
+			{
+				if (!found)
+				{
+					retRect.min = Math::Coord2D<UOSInt>(currX, currY);
+					retRect.max = retRect.min + 1;
+					found = true;
+				}
+				else
+				{
+					if (currX < retRect.min.x)
+						retRect.min.x = currX;
+					if (currY < retRect.min.y)
+						retRect.min.y = currY;
+					if (currX + 1 > retRect.max.x)
+						retRect.max.x = currX + 1;
+					if (currY + 1 > retRect.max.y)
+						retRect.max.y = currY + 1;
+				}
+			}
+			currX++;
+			ofst += 4;
+		}
+		currY++;
+	}
+	if (!found)
+	{
+		return false;
+	}
+#if defined(VERBOSE)
+	printf("Text Rect: %d, %d - %d, %d\r\n", (UInt32)retRect.min.x, (UInt32)retRect.min.y, (UInt32)retRect.max.x, (UInt32)retRect.max.y);
+#endif
+	textRect.Set(retRect);
+	return true;
 }
 
 Math::RectArea<UOSInt> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoxRect(NN<Media::StaticImage> img, Math::Coord2D<UOSInt> pos)
@@ -213,7 +270,7 @@ Math::RectArea<UOSInt> SSWR::AVIRead::AVIRSudokuImportForm::CalcBoxRect(NN<Media
 	}
 	ret.max.y = currY;
 #ifdef VERBOSE
-	printf("Box Rect: %d, %d - %d, %d, Pos: %d, %d\r\n", (Int32)ret.min.x, (Int32)ret.min.y, (Int32)ret.max.x, (Int32)ret.max.y, (Int32)pos.x, (Int32)pos.y);
+	//printf("Box Rect: %d, %d - %d, %d, Pos: %d, %d\r\n", (Int32)ret.min.x, (Int32)ret.min.y, (Int32)ret.max.x, (Int32)ret.max.y, (Int32)pos.x, (Int32)pos.y);
 #endif
 	return ret;
 }

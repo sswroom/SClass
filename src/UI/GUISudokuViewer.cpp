@@ -144,11 +144,12 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(tly)), 0, b3);
 		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(tly + size)), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(sz.y - tly - size)), 0, b3);
 	}
-	blockSize = (size / 9) - 2;
+	blockSize = ((size - 4) / 9) - 2;
 
 	NN<Media::DrawPen> p;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawBrush> b2;
+	NN<Media::DrawBrush> redBrush;
 	NN<Media::DrawFont> f;
 	NN<Media::DrawFont> fSmall;
 	UOSInt lastPos;
@@ -162,21 +163,28 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	lastPos = size;
 	while (i-- > 0)
 	{
-		currPos = MulDivUOS(size, i, 9);
+		currPos = MulDivUOS(size - 4, i, 9) + (i / 3) * 2;
 		img->DrawLine(UOSInt2Double(tlx + lastPos - 1), UOSInt2Double(tly), UOSInt2Double(tlx + lastPos - 1), UOSInt2Double(tly + size), p);
 		img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + lastPos - 1), UOSInt2Double(tlx + size), UOSInt2Double(tly + lastPos - 1), p);
 		img->DrawLine(UOSInt2Double(tlx + currPos), UOSInt2Double(tly), UOSInt2Double(tlx + currPos), UOSInt2Double(tly + size), p);
 		img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + currPos), UOSInt2Double(tlx + size), UOSInt2Double(tly + currPos), p);
-
+		if ((i != 0) && (i % 3) == 0)
+		{
+			currPos -= 2;
+			img->DrawLine(UOSInt2Double(tlx + currPos), UOSInt2Double(tly), UOSInt2Double(tlx + currPos), UOSInt2Double(tly + size), p);
+			img->DrawLine(UOSInt2Double(tlx + currPos + 1), UOSInt2Double(tly), UOSInt2Double(tlx + currPos + 1), UOSInt2Double(tly + size), p);
+			img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + currPos), UOSInt2Double(tlx + size), UOSInt2Double(tly + currPos), p);
+			img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + currPos + 1), UOSInt2Double(tlx + size), UOSInt2Double(tly + currPos + 1), p);
+		}
 		lastPos = currPos;
 	}
 	img->DelPen(p);
 
-	p = img->NewPenARGB(0xffff0000, 1, 0, 0);
-	i = MulDivUOS(size, this->selX, 9);
-	j = MulDivUOS(size, this->selX + 1, 9);
-	currPos = MulDivUOS(size, this->selY, 9);
-	lastPos = MulDivUOS(size, this->selY + 1, 9);
+	p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+	i = MulDivUOS(size - 4, this->selX, 9) + (this->selX / 3) * 2;
+	j = MulDivUOS(size - 4, this->selX + 1, 9) + (this->selX / 3) * 2;
+	currPos = MulDivUOS(size - 4, this->selY, 9) + (this->selY / 3) * 2;
+	lastPos = MulDivUOS(size - 4, this->selY + 1, 9) + (this->selY / 3) * 2;
 	img->DrawRect(Math::Coord2DDbl(UOSInt2Double(tlx + i), UOSInt2Double(tly + currPos)), Math::Size2DDbl(UOSInt2Double(j - i - 1), UOSInt2Double(lastPos - currPos - 1)), p, 0);
 	img->DelPen(p);
 
@@ -184,6 +192,7 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	fSmall = img->NewFontPx(CSTR("Arial"), UOSInt2Double(blockSize) * 0.25, Media::DrawEngine::DFS_NORMAL, 65001);
 	b = img->NewBrushARGB(0xffcccccc);
 	b2 = img->NewBrushARGB(0xff000000);
+	redBrush = img->NewBrushARGB(0xffff0000);
 	i = 9;
 	while (i-- > 0)
 	{
@@ -198,23 +207,29 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 			Math::Coord2D<UOSInt> pt2;
 			Math::Size2DDbl sz;
 			val = this->board->GetBoardNum(i, j, isDefault);
-			pt.x = tlx + 1 + MulDivUOS(size, i, 9);
-			pt.y = tly + 1 + MulDivUOS(size, j, 9);
-			pt2.x = tlx - 1 + MulDivUOS(size, i + 1, 9);
-			pt2.y = tly - 1 + MulDivUOS(size, j + 1, 9);
+			pt.x = tlx + 1 + MulDivUOS(size - 4, i, 9) + (i / 3) * 2;
+			pt.y = tly + 1 + MulDivUOS(size - 4, j, 9) + (j / 3) * 2;
+			pt2.x = tlx - 1 + MulDivUOS(size - 4, i + 1, 9) + (i / 3) * 2;
+			pt2.y = tly - 1 + MulDivUOS(size - 4, j + 1, 9) + (j / 3) * 2;
 			if (val)
 			{
 				ch[0] = (UTF8Char)(val + 0x30);
+				sz = img->GetTextSize(f, {ch, 1});
 				if (isDefault)
 				{
 					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b);
+					img->DrawString(pt.ToDouble() + ((pt2 - pt).ToDouble() - sz) * 0.5, {ch, 1}, f, b2);
+				}
+				else if (this->board->HasError(i, j))
+				{
+					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b3);
+					img->DrawString(pt.ToDouble() + ((pt2 - pt).ToDouble() - sz) * 0.5, {ch, 1}, f, redBrush);
 				}
 				else
 				{
 					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b3);
-				}
-				sz = img->GetTextSize(f, {ch, 1});
-				img->DrawString(pt.ToDouble() + ((pt2 - pt).ToDouble() - sz) * 0.5, {ch, 1}, f, b2);
+					img->DrawString(pt.ToDouble() + ((pt2 - pt).ToDouble() - sz) * 0.5, {ch, 1}, f, b2);
+				}				
 			}
 			else
 			{
@@ -281,6 +296,7 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	img->DelBrush(b2);
 	img->DelBrush(b);
 	img->DelBrush(b3);
+	img->DelBrush(redBrush);
 	img->DelFont(fSmall);
 	img->DelFont(f);
 }

@@ -21,6 +21,8 @@ namespace SSWR
 			NN<UI::GUILabel> lblMode;
 			NN<UI::GUIComboBox> cboMode;
 			NN<UI::GUIButton> btnHints;
+			NN<UI::GUIButton> btnSolve;
+			NN<UI::GUIButton> btnClear;
 			NN<UI::GUISudokuViewer> svMain;
 			NN<UI::GUIMainMenu> mnuMain;
 
@@ -29,6 +31,9 @@ namespace SSWR
 
 			static void __stdcall EventNumInput(AnyType userObj, UOSInt selX, UOSInt selY, UInt8 num);
 			static void __stdcall OnHintsClicked(AnyType userObj);
+			static void __stdcall OnSolveClicked(AnyType userObj);
+			static void __stdcall OnClearClicked(AnyType userObj);
+			static void __stdcall OnFileImport(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames);
 		public:
 			AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSudokuForm();

@@ -740,10 +740,10 @@ void Manage::ThreadContextX86_32::SetFrameAddr(UOSInt frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_EBP] = (Int32)frameAddr;
 }
 
-Manage::ThreadContext *Manage::ThreadContextX86_32::Clone() const
+NN<Manage::ThreadContext> Manage::ThreadContextX86_32::Clone() const
 {
-	Manage::ThreadContextX86_32 *ret;
-	NEW_CLASS(ret, Manage::ThreadContextX86_32(this->procId, this->threadId, this->context));
+	NN<Manage::ThreadContextX86_32> ret;
+	NEW_CLASSNN(ret, Manage::ThreadContextX86_32(this->procId, this->threadId, this->context));
 	return ret;
 }
 
@@ -786,7 +786,7 @@ Bool Manage::ThreadContextX86_32::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) cons
 	return true;
 }
 
-NN<Manage::Dasm> Manage::ThreadContextX86_32::CreateDasm() const
+Optional<Manage::Dasm> Manage::ThreadContextX86_32::CreateDasm() const
 {
 	NN<Manage::DasmX86_32> dasm;
 	NEW_CLASSNN(dasm, Manage::DasmX86_32());
