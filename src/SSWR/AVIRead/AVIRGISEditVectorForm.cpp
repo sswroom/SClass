@@ -21,7 +21,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(AnyType userObj, 
 	{
 		if (me->downPos == scnPos)
 		{
-			Math::Coord2DDbl mapXY = me->navi->ScnXY2MapXY(scnPos);
+			Math::Coord2DDbl mapXY = me->SnapPoint(scnPos);
 			NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
 			NN<Math::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
 			if (!lyrCSys->Equals(envCSys))
@@ -55,9 +55,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyType userObj
 					ptList[i] = me->points.GetItem(i);
 					i++;
 				}
-				Math::Coord2DDbl mapXY = me->navi->ScnXY2MapXY(scnPos);
-				NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+				Math::Coord2DDbl mapXY = me->SnapPoint(scnPos);
 				NN<Math::CoordinateSystem> envCSys = me->navi->GetCoordinateSystem();
+				NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
 				if (!lyrCSys->Equals(envCSys))
 				{
 					mapXY = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
@@ -247,6 +247,129 @@ void SSWR::AVIRead::AVIRGISEditVectorForm::UpdateList()
 	}
 }
 
+void SSWR::AVIRead::AVIRGISEditVectorForm::DisplaySnap()
+{
+	Text::StringBuilderUTF8 sb;
+	sb.AppendDouble(this->snapDist);
+	sb.Append(CSTR(" px, "));
+	if (this->snapLayers.GetCount() == 0)
+	{
+		sb.AppendC(UTF8STRC("No Layers"));
+	}
+	else if (this->snapLayers.GetCount() == 1)
+	{
+		NN<Map::MapDrawLayer> lyr = this->snapLayers.GetItemNoCheck(0);
+		if (lyr == this->lyr)
+		{
+			sb.AppendC(UTF8STRC("Current Layer"));
+		}
+		else
+		{
+			sb.Append(lyr->GetSourceNameObj());
+		}
+	}
+	else
+	{
+		sb.AppendUOSInt(this->snapLayers.GetCount());
+		sb.AppendC(UTF8STRC(" Layers"));
+	}
+	this->txtSnap->SetText(sb.ToCString());
+}
+
+Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<OSInt> scnXY)
+{
+	Math::Coord2DDbl mapXY = this->navi->ScnXY2MapXY(scnXY);
+	Double scnDPI = this->navi->GetScnDPI();
+	Double adjDist = this->snapDist * scnDPI / 96.0;
+	NN<Math::CoordinateSystem> envCSys = this->navi->GetCoordinateSystem();
+	NN<Math::CoordinateSystem> lyrCSys;
+	if (this->snapDist > 0 && this->snapLayers.GetCount() > 0)
+	{
+		Data::ArrayListInt64 objIds;
+		Math::Coord2DDbl mapBoundXY = this->navi->ScnXY2MapXY(scnXY + Double2Int32(adjDist));
+		Math::Coord2DDbl snapPt;
+		Math::Coord2DDbl lyrNearPt = mapXY;
+		Double lyrNearDist;
+		Math::Coord2DDbl lyrDist;
+		Math::Coord2DDbl nearPt = mapXY;
+		Double nearDist = -1;
+		Data::ArrayListA<Math::Coord2DDbl> vecPoints;
+		UOSInt j = this->snapLayers.GetCount();
+		while (j-- > 0)
+		{
+			NN<Map::MapDrawLayer> snapLayer = this->snapLayers.GetItemNoCheck(j);
+			lyrCSys = snapLayer->GetCoordinateSystem();
+			if (!lyrCSys->Equals(envCSys))
+			{
+				snapPt = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
+				lyrDist = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapBoundXY) - snapPt;
+			}
+			else
+			{
+				snapPt = mapXY;
+				lyrDist = mapBoundXY - mapXY;
+			}
+			if (lyrDist.x < 0)
+				lyrDist.x = -lyrDist.x;
+			if (lyrDist.y < 0)
+				lyrDist.y = -lyrDist.y;
+			NN<Map::GetObjectSess> sess = snapLayer->BeginGetObject();
+			objIds.Clear();
+			snapLayer->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(snapPt - lyrDist, snapPt + lyrDist), true);
+			lyrNearDist = -1;
+			UOSInt k = objIds.GetCount();
+			while (k-- > 0)
+			{
+				Int64 objId = objIds.GetItem(k);
+				NN<Math::Geometry::Vector2D> vec;
+				if (snapLayer->GetNewVectorById(sess, objId).SetTo(vec))
+				{
+					vecPoints.Clear();
+					vec->GetCoordinates(vecPoints);
+					UOSInt l = vecPoints.GetCount();
+					while (l-- > 0)
+					{
+						Math::Coord2DDbl vPt = vecPoints.GetItem(l);
+						Double dist = vPt.CalcLengTo(snapPt);
+						if (lyrNearDist < 0 || dist < lyrNearDist)
+						{
+							lyrNearDist = dist;
+							lyrNearPt = vPt;
+						}
+					}
+					vec.Delete();
+				}
+			}
+			snapLayer->EndGetObject(sess);
+			
+			if (lyrNearDist >= 0)
+			{
+				if (!lyrCSys->Equals(envCSys))
+				{
+					lyrNearPt = Math::CoordinateSystem::Convert(lyrCSys, envCSys, lyrNearPt);
+					lyrNearDist = lyrNearPt.CalcLengTo(mapXY);
+				}
+				if (nearDist < 0 || lyrNearDist < nearDist)
+				{
+					nearDist = lyrNearDist;
+					nearPt = lyrNearPt;
+				}
+			}
+		}
+		if (nearDist >= 0)
+		{
+			Math::Coord2D<OSInt> scnNearXY = this->navi->MapXY2ScnXY(nearPt);
+			Math::Coord2D<OSInt> scnDist = scnXY - scnNearXY;
+			Double linearDist = Math_Sqrt(scnDist.x * scnDist.x + scnDist.y * scnDist.y);
+			if (linearDist <= adjDist)
+			{
+				mapXY = nearPt;
+			}
+		}
+	}
+	return mapXY;
+}
+
 SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
@@ -255,6 +378,8 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 	this->lyr = lyr;
 	this->navi = navi;
 	this->status = 0;
+	this->snapDist = 5;
+	this->snapLayers.Add(lyr);
 	sb.AppendC(UTF8STRC("Edit Vector - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToCString());
@@ -278,17 +403,22 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 	this->txtNPoints = ui->NewTextBox(this->pnlObjects, CSTR("0"));
 	this->txtNPoints->SetReadOnly(true);
 	this->txtNPoints->SetRect(104, 28, 150, 23, false);
+	this->lblSnap = ui->NewLabel(this->pnlObjects, CSTR("Snap"));
+	this->lblSnap->SetRect(4, 52, 100, 23, false);
+	this->txtSnap = ui->NewTextBox(this->pnlObjects, CSTR(""));
+	this->txtSnap->SetReadOnly(true);
+	this->txtSnap->SetRect(104, 52, 150, 23, false);
 	this->btnNew = ui->NewButton(this->pnlObjects, CSTR("New"));
-	this->btnNew->SetRect(4, 52, 75, 23, false);
+	this->btnNew->SetRect(4, 76, 75, 23, false);
 	this->btnNew->HandleButtonClick(OnNewClicked, this);
 	this->btnDelete = ui->NewButton(this->pnlObjects, CSTR("Delete"));
-	this->btnDelete->SetRect(84, 52, 75, 23, false);
+	this->btnDelete->SetRect(84, 76, 75, 23, false);
 	this->btnDelete->HandleButtonClick(OnDeleteClicked, this);
 	this->btnEnd = ui->NewButton(this->pnlObjects, CSTR("End"));
-	this->btnEnd->SetRect(4, 76, 75, 23, false);
+	this->btnEnd->SetRect(4, 100, 75, 23, false);
 	this->btnEnd->HandleButtonClick(OnEndClicked, this);
 	this->btnBack = ui->NewButton(this->pnlObjects, CSTR("Back"));
-	this->btnBack->SetRect(84, 76, 75, 23, false);
+	this->btnBack->SetRect(84, 100, 75, 23, false);
 	this->btnBack->HandleButtonClick(OnBackClicked, this);
 
 	UOSInt nameCol = lyr->GetNameCol();
@@ -331,6 +461,7 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 	this->navi->HandleMapMouseLUp(OnMouseUp, this);
 	this->navi->HandleMapMouseMove(OnMouseMove, this);
 	this->UpdateList();
+	this->DisplaySnap();
 }
 
 SSWR::AVIRead::AVIRGISEditVectorForm::~AVIRGISEditVectorForm()

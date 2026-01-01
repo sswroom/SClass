@@ -2080,6 +2080,11 @@ void SSWR::AVIRead::AVIRGISForm::RedrawMap()
 	}
 }
 
+Double SSWR::AVIRead::AVIRGISForm::GetScnDPI() const
+{
+	return this->mapCtrl->GetHDPI() / this->mapCtrl->GetDDPI() * 96.0;
+}
+
 NN<Math::CoordinateSystem> SSWR::AVIRead::AVIRGISForm::GetCoordinateSystem() const
 {
 	return this->env->GetCoordinateSystem();

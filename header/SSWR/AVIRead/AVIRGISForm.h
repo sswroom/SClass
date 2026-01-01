@@ -124,6 +124,7 @@ namespace SSWR
 			virtual void SetSelectedVector(Optional<Math::Geometry::Vector2D> vec);
 			virtual void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 			virtual void RedrawMap();
+			virtual Double GetScnDPI() const;
 			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);

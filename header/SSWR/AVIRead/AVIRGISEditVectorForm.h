@@ -28,6 +28,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtStatus;
 			NN<UI::GUILabel> lblNPoints;
 			NN<UI::GUITextBox> txtNPoints;
+			NN<UI::GUILabel> lblSnap;
+			NN<UI::GUITextBox> txtSnap;
 			NN<UI::GUIButton> btnNew;
 			NN<UI::GUIButton> btnDelete;
 			NN<UI::GUIButton> btnEnd;
@@ -36,6 +38,8 @@ namespace SSWR
 			Math::Coord2D<OSInt> downPos;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 			UOSInt status;
+			Double snapDist;
+			Data::ArrayListNN<Map::MapDrawLayer> snapLayers;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::VectorLayer> lyr;
 			NN<AVIRMapNavigator> navi;
@@ -50,6 +54,8 @@ namespace SSWR
 			static void __stdcall OnEndClicked(AnyType userObj);
 			static void __stdcall OnBackClicked(AnyType userObj);
 			void UpdateList();
+			void DisplaySnap();
+			Math::Coord2DDbl SnapPoint(Math::Coord2D<OSInt> scnXY);
 		public:
 			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISEditVectorForm();
