@@ -635,6 +635,7 @@ Data::ChartPlotter::ChartPlotter(Text::CString title)
 	this->pointType = PointType::Null;
 	this->pointSize = 0;
 	this->yUnit = 0;
+	this->gridType = GridType::Horizontal;
 	Data::DateTime dt;
 	dt.ToLocalTime();
 	this->timeZoneQHR = dt.GetTimeZoneQHR();
@@ -736,6 +737,11 @@ void Data::ChartPlotter::SetPointType(PointType pointType, Double pointSize)
 {
 	this->pointType = pointType;
 	this->pointSize = pointSize;
+}
+
+void Data::ChartPlotter::SetGridType(GridType gridType)
+{
+	this->gridType = gridType;
 }
 
 UInt32 Data::ChartPlotter::GetRndColor()
@@ -1622,6 +1628,10 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	i = 0;
 	while (i < locations.GetCount())
 	{
+		if ((this->gridType == GridType::Vertical || this->gridType == GridType::Both) && locations.GetItem(i))
+		{
+			img->DrawLine(x + y1Leng + this->pointSize + locations.GetItem(i), y, x + y1Leng + this->pointSize + locations.GetItem(i), y + height - xLeng, gridPen);
+		}
 		img->DrawLine((x + y1Leng + this->pointSize + locations.GetItem(i)), (y + height - xLeng), (x + y1Leng + this->pointSize + locations.GetItem(i)), (y + height - xLeng + barLeng), boundPen);
 		i++;
 	}
@@ -1688,7 +1698,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	i = 0;
 	while (i < locations.GetCount())
 	{
-		if (locations.GetItem(i))
+		if ((this->gridType == GridType::Horizontal || this->gridType == GridType::Both) && locations.GetItem(i))
 		{
 			img->DrawLine((Double)(x + y1Leng), (Double)(y + height - this->pointSize - xLeng - locations.GetItem(i)), (Double)(x + width - y2Leng), (Double)(y + height - this->pointSize - xLeng - locations.GetItem(i)), gridPen);
 		}

@@ -42,6 +42,9 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboYearlyYear;
 			NN<UI::GUIListView> lvYearly;
 			NN<UI::GUIVSplitter> vspYearly;
+			NN<UI::GUIPanel> pnlYearlyGraph;
+			NN<UI::GUILabel> lblYearlyGrid;
+			NN<UI::GUIComboBox> cboYearlyGrid;
 			NN<UI::GUIPictureBox> pbYearly;
 
 			NN<UI::GUITabPage> tpMonthly;
@@ -159,6 +162,7 @@ namespace SSWR
 			static void __stdcall OnMonthlySizeChg(AnyType userObj);
 			static void __stdcall OnYearlySelChg(AnyType userObj);
 			static void __stdcall OnYearlySizeChg(AnyType userObj);
+			static void __stdcall OnYearlyGridSelChg(AnyType userObj);
 		
 			void UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr);
 			void UpdateMonthly(NN<Data::Invest::InvestmentManager> mgr);

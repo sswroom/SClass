@@ -43,6 +43,14 @@ namespace Data
 			Scatter
 		};
 
+		enum class GridType
+		{
+			None,
+			Horizontal,
+			Vertical,
+			Both
+		};
+
 		class ChartData
 		{
 		protected:
@@ -286,6 +294,7 @@ namespace Data
 		UInt32 refLineColor;
 		Double lineThick;
 		Double barLength;
+		GridType gridType;
 
 		NN<Text::String> fntName;
 		Double fntSizePt;
@@ -312,6 +321,7 @@ namespace Data
 		void SetTimeZoneQHR(Int8 timeZone);
 		void SetBarLength(Double barLength);
 		void SetPointType(PointType pointType, Double pointSize);
+		void SetGridType(GridType gridType);
 		UInt32 GetRndColor();
 		Bool AddLineChart(NN<Text::String> name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor);
 		Bool AddLineChart(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor);

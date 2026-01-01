@@ -448,6 +448,12 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnYearlySizeChg(AnyType userOb
 	me->DisplayYearlyImg();	
 }
 
+void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnYearlyGridSelChg(AnyType userObj)
+{
+	NN<AVIRInvestmentForm> me = userObj.GetNN<AVIRInvestmentForm>();
+	me->DisplayYearlyImg();
+}
+
 void SSWR::AVIRead::AVIRInvestmentForm::UpdateCurrencyList(NN<Data::Invest::InvestmentManager> mgr)
 {
 	NN<Data::Invest::Currency> curr;
@@ -1335,6 +1341,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayYearlyImg()
 	NN<Media::StaticImage> simg;
 	if (this->yearlyChart.SetTo(chart) && this->deng->CreateImage32(sz, Media::AT_IGNORE_ALPHA).SetTo(dimg))
 	{
+		chart->SetGridType((Data::ChartPlotter::GridType)this->cboYearlyGrid->GetSelectedItem().GetOSInt());
 		dimg->SetHDPI(this->pbYearly->GetHDPI());
 		dimg->SetVDPI(this->pbYearly->GetHDPI());
 		chart->Plot(dimg, 0, 0, (Double)sz.GetWidth(), (Double)sz.GetHeight());
@@ -1610,6 +1617,19 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->lvYearly->AddColumn(CSTR("Gain"), 100);
 	this->lvYearly->AddColumn(CSTR("Total Gain"), 100);
 	this->vspYearly = ui->NewVSplitter(this->tpYearly, 3, false);
+	this->pnlYearlyGraph = ui->NewPanel(this->tpYearly);
+	this->pnlYearlyGraph->SetRect(0, 0, 100, 31, false);
+	this->pnlYearlyGraph->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblYearlyGrid = ui->NewLabel(this->pnlYearlyGraph, CSTR("Grid Lines"));
+	this->lblYearlyGrid->SetRect(4, 4, 100, 23, false);
+	this->cboYearlyGrid = ui->NewComboBox(this->pnlYearlyGraph, false);
+	this->cboYearlyGrid->SetRect(104, 4, 150, 23, false);
+	this->cboYearlyGrid->AddItem(CSTR("None"), (void*)Data::ChartPlotter::GridType::None);
+	this->cboYearlyGrid->AddItem(CSTR("Horizontal"), (void*)Data::ChartPlotter::GridType::Horizontal);
+	this->cboYearlyGrid->AddItem(CSTR("Vertical"), (void*)Data::ChartPlotter::GridType::Vertical);
+	this->cboYearlyGrid->AddItem(CSTR("Both"), (void*)Data::ChartPlotter::GridType::Both);
+	this->cboYearlyGrid->SetSelectedIndex(1);
+	this->cboYearlyGrid->HandleSelectionChange(OnYearlyGridSelChg, this);
 	this->pbYearly = ui->NewPictureBox(this->tpYearly, this->deng, false, false);
 	this->pbYearly->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbYearly->HandleSizeChanged(OnYearlySizeChg, this);
