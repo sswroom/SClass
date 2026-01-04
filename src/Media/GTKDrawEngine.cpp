@@ -53,7 +53,14 @@ NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2
 
 Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 {
-	Optional<Media::ImageList> imgList = 0;
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
+	{
+		return 0;
+	}
+	return LoadImageStream(fs);
+
+/*	Optional<Media::ImageList> imgList = 0;
 	NN<Media::ImageList> nnimgList;
 	{
 		IO::StmData::FileData fd(fileName, false);
@@ -81,11 +88,126 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileN
 		dimg = this->ConvImage(img, 0);
 	}
 	nnimgList.Delete();
-	return dimg;
+	return dimg;*/
+}
+
+struct StreamStatus
+{
+	Data::ByteArray buff;
+	UOSInt currOfst;
+};
+
+cairo_status_t GTKDrawEngine_ArrayStream(void *closure, unsigned char *data, unsigned int length)
+{
+	StreamStatus *status = (StreamStatus*)closure;
+	if (status->currOfst + length > status->buff.GetSize())
+	{
+		return CAIRO_STATUS_READ_ERROR;
+	}
+	MemCopyNO(data, &status->buff[status->currOfst], length);
+	status->currOfst += length;
+	return CAIRO_STATUS_SUCCESS;
+
 }
 
 Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::SeekableStream> stm)
 {
+	UInt8 hdr[128];
+	if (stm->Read(Data::ByteArray(hdr, 128)) != 128)
+	{
+		return 0;
+	}
+	Int32 isImage = 0;
+	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUInt32(&hdr[4]) == 0x0a1a0a0d)
+	{
+		isImage = 1;
+	}
+	else if (hdr[0] == 0xff && hdr[1] == 0xd8)
+	{
+		isImage = 2;
+	}
+	else if (*(Int32*)&hdr[0] == *(Int32*)"GIF8" && (*(Int16*)&hdr[4] == *(Int16*)"7a" || *(Int16*)&hdr[4] == *(Int16*)"9a"))
+	{
+		isImage = 3;
+	}
+	else if (*(Int16*)&hdr[0] == *(Int16*)"MM" || *(Int16*)&hdr[0] == *(Int16*)"II")
+	{
+		isImage = 4;
+	}
+	if (isImage == 0)
+		return 0;
+	UInt64 fileLength = stm->GetLength();
+	Data::ByteBuffer data((UOSInt)fileLength);
+	data.CopyFrom(Data::ByteArrayR(hdr, 128));
+	if (stm->Read(data.SubArray(128)) != fileLength - 128)
+	{
+		return 0;
+	}
+	if (isImage == 1)
+	{
+		StreamStatus status;
+		status.buff = data;
+		status.currOfst = 0;
+		cairo_surface_t *surface = cairo_image_surface_create_from_png_stream(GTKDrawEngine_ArrayStream, &status);
+		if (surface)
+		{
+			cairo_t *cr = cairo_create(surface);
+			NN<Media::GTKDrawImage> dimg;
+			Math::Size2D<UOSInt> size;
+			Media::AlphaType atype = Media::AT_IGNORE_ALPHA;
+			size.x = (UOSInt)cairo_image_surface_get_width(surface);
+			size.y = (UOSInt)cairo_image_surface_get_height(surface);
+			cairo_content_t content = cairo_surface_get_content(surface);
+			if (content == CAIRO_CONTENT_COLOR_ALPHA)
+			{
+				atype = Media::AT_PREMUL_ALPHA;
+			}
+			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, 0));
+			return dimg;
+
+		}
+	}
+	else
+	{
+		GInputStream *inpStream = g_memory_input_stream_new_from_data(data.Arr().Ptr(), (gssize)data.GetSize(), 0);
+		GdkPixbuf *pixBuf = gdk_pixbuf_new_from_stream(inpStream, 0, 0);
+		g_input_stream_close(inpStream, 0, 0);
+		g_object_unref(inpStream);
+		if (pixBuf)
+		{
+			NN<Media::GTKDrawImage> dimg;
+			Math::Size2D<UOSInt> size;
+			Media::AlphaType atype = Media::AT_IGNORE_ALPHA;
+			size.x = (UOSInt)gdk_pixbuf_get_width(pixBuf);
+			size.y = (UOSInt)gdk_pixbuf_get_height(pixBuf);
+			cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (int)size.x, (int)size.y);
+			cairo_t *cr = cairo_create(surface);
+			UInt8 *dptr = cairo_image_surface_get_data(surface);
+			OSInt dbpl = cairo_image_surface_get_stride(surface);
+			UInt8 *sptr = gdk_pixbuf_get_pixels(pixBuf);
+			OSInt sbpl = gdk_pixbuf_get_rowstride(pixBuf);
+			if (gdk_pixbuf_get_has_alpha(pixBuf))
+			{
+				atype = Media::AT_PREMUL_ALPHA;
+				Sync::MutexUsage mutUsage(this->iabMut);
+				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
+				this->iab.SetColorSess(0);
+				this->iab.SetSourceProfile(srgb);
+				this->iab.SetDestProfile(srgb);
+				this->iab.SetOutputProfile(srgb);
+				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, size.x, size.y);
+			}
+			else
+			{
+				ImageUtil_ConvB8G8R8_B8G8R8A8(sptr, dptr, size.x, size.y, sbpl, dbpl);
+			}
+			cairo_surface_mark_dirty(surface);
+			g_object_unref(pixBuf);
+
+			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, 0));
+			return dimg;
+		}
+	}
 	return 0;
 }
 

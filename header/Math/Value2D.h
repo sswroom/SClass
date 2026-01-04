@@ -112,6 +112,11 @@ namespace Math
 		{
 			return Math::Value2D<T>(this->y, this->x);
 		}
+
+		Value2D<T> Abs() const
+		{
+			return Math::Value2D<T>((this->x < 0)?-this->x:this->x, (this->y < 0)?-this->y:this->y);
+		}
 	};
 }
 #endif

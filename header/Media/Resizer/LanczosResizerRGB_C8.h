@@ -30,7 +30,7 @@ namespace Media
 			typedef struct
 			{
 				NN<LanczosResizerRGB_C8> me;
-				FuncType funcType; // 3 = h filter, 5 = v filter, 7 = expand, 9 = collapse, 11 = copying, 12 = h filter pa, 13 = expand pa
+				FuncType funcType;
 				UnsafeArray<const UInt8> inPt;
 				UnsafeArray<UInt8> outPt;
 				UOSInt swidth;

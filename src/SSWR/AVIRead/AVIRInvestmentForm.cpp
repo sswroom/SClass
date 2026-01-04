@@ -1290,7 +1290,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayMonthly(NN<Data::Invest::Investme
 	Data::Date endDate = startDate;
 	endDate.SetMonth(startDate.GetDateValue().month + 1);
 	NN<Data::ChartPlotter> chart;
-	if (GenerateSummary(mgr, startDate, endDate, this->lvMonthly).SetTo(chart))
+	if (GenerateSummary(mgr, startDate, endDate, this->lvMonthly, 0).SetTo(chart))
 	{
 		this->monthlyChart.Delete();
 		this->monthlyChart = chart;
@@ -1304,7 +1304,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayYearly(NN<Data::Invest::Investmen
 	Data::Date endDate = startDate;
 	endDate.SetYear(year + 1);
 	NN<Data::ChartPlotter> chart;
-	if (GenerateSummary(mgr, startDate, endDate, this->lvYearly).SetTo(chart))
+	if (GenerateSummary(mgr, startDate, endDate, this->lvYearly, this->txtYearlyAvgInvestment).SetTo(chart))
 	{
 		this->yearlyChart.Delete();
 		this->yearlyChart = chart;
@@ -1355,7 +1355,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayYearlyImg()
 	}
 }
 
-Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(NN<Data::Invest::InvestmentManager> mgr, Data::Date startDate, Data::Date endDate, NN<UI::GUIListView> listView)
+Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(NN<Data::Invest::InvestmentManager> mgr, Data::Date startDate, Data::Date endDate, NN<UI::GUIListView> listView, Optional<UI::GUITextBox> txtAverage)
 {
 	NN<Data::Invest::Currency> curr;
 	NN<Data::Invest::Asset> ass;
@@ -1430,6 +1430,8 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 	{
 		endDate = now;
 	}
+	Double investTotal = 0;
+	NN<UI::GUITextBox> nntxtAverage;
 	NN<Data::Invest::Currency> localCurr;
 	Double initValue;
 	Double rate;
@@ -1474,15 +1476,16 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 					initTotal += initValue * rate;
 				}
 
+				dp = Data::Currency::GetDecimal(curr->c);
 				i = 0;
 				j = valList.GetCount();
 				while (i < j)
 				{
-					dp = Data::Currency::GetDecimal(curr->c);
 					sptr = Text::StrDoubleGDP(sbuff, valList.GetItem(i), 3, 0, dp);
 					listView->SetSubItem(i, 3 + k, CSTRP(sbuff, sptr));
 					if (localCurr->c == curr->c)
 					{
+						investTotal += valList.GetItem(i);
 						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i));
 					}
 					else if (curr->c == mgr->GetRefCurrency())
@@ -1496,6 +1499,11 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 						totalList.SetItem(i, totalList.GetItem(i) + valList.GetItem(i) * rate);
 					}
 					i++;
+				}
+				if (localCurr->c == curr->c && txtAverage.SetTo(nntxtAverage) && valList.GetCount() > 0)
+				{
+					sptr = Text::StrDoubleGDP(sbuff, -investTotal / (Double)valList.GetCount(), 0, 0, dp);
+					nntxtAverage->SetText(CSTRP(sbuff, sptr));
 				}
 			}
 			k++;
@@ -1608,6 +1616,11 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->cboYearlyYear = ui->NewComboBox(this->pnlYearly, false);
 	this->cboYearlyYear->SetRect(104, 4, 100, 23, false);
 	this->cboYearlyYear->HandleSelectionChange(OnYearlySelChg, this);
+	this->lblYearlyAvgInvestment = ui->NewLabel(this->pnlYearly, CSTR("Avg Invest"));
+	this->lblYearlyAvgInvestment->SetRect(204, 4, 100, 23, false);
+	this->txtYearlyAvgInvestment = ui->NewTextBox(this->pnlYearly, CSTR(""));
+	this->txtYearlyAvgInvestment->SetRect(304, 4, 100, 23, false);
+	this->txtYearlyAvgInvestment->SetReadOnly(true);
 	this->lvYearly = ui->NewListView(this->tpYearly, UI::ListViewStyle::Table, 3);
 	this->lvYearly->SetRect(0, 0, 100, 300, false);
 	this->lvYearly->SetDockType(UI::GUIControl::DOCK_TOP);

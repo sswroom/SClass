@@ -40,6 +40,8 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlYearly;
 			NN<UI::GUILabel> lblYearly;
 			NN<UI::GUIComboBox> cboYearlyYear;
+			NN<UI::GUILabel> lblYearlyAvgInvestment;
+			NN<UI::GUITextBox> txtYearlyAvgInvestment;
 			NN<UI::GUIListView> lvYearly;
 			NN<UI::GUIVSplitter> vspYearly;
 			NN<UI::GUIPanel> pnlYearlyGraph;
@@ -176,7 +178,7 @@ namespace SSWR
 			void DisplayYearly(NN<Data::Invest::InvestmentManager> mgr, Int32 year);
 			void DisplayMonthlyImg();
 			void DisplayYearlyImg();
-			static Optional<Data::ChartPlotter> GenerateSummary(NN<Data::Invest::InvestmentManager> mgr, Data::Date startDate, Data::Date endDate, NN<UI::GUIListView> listView);
+			static Optional<Data::ChartPlotter> GenerateSummary(NN<Data::Invest::InvestmentManager> mgr, Data::Date startDate, Data::Date endDate, NN<UI::GUIListView> listView, Optional<UI::GUITextBox> txtAverage);
 		public:
 			AVIRInvestmentForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRInvestmentForm();

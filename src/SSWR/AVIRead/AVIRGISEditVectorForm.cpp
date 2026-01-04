@@ -302,17 +302,13 @@ Math::Coord2DDbl SSWR::AVIRead::AVIRGISEditVectorForm::SnapPoint(Math::Coord2D<O
 			if (!lyrCSys->Equals(envCSys))
 			{
 				snapPt = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapXY);
-				lyrDist = Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapBoundXY) - snapPt;
+				lyrDist = (Math::CoordinateSystem::Convert(envCSys, lyrCSys, mapBoundXY) - snapPt).Abs();
 			}
 			else
 			{
 				snapPt = mapXY;
-				lyrDist = mapBoundXY - mapXY;
+				lyrDist = (mapBoundXY - mapXY).Abs();
 			}
-			if (lyrDist.x < 0)
-				lyrDist.x = -lyrDist.x;
-			if (lyrDist.y < 0)
-				lyrDist.y = -lyrDist.y;
 			NN<Map::GetObjectSess> sess = snapLayer->BeginGetObject();
 			objIds.Clear();
 			snapLayer->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(snapPt - lyrDist, snapPt + lyrDist), true);

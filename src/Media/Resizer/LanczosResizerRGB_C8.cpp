@@ -164,6 +164,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTExpandPA(UnsafeArray<const UInt8> i
 		}
 		LanczosResizerFunc_ExpandR16G16B16(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, rgbTable.Ptr());
 	}
+	else if (this->srcPF == PF_LE_B16G16R16)
+	{
+		UnsafeArray<UInt8> rgbTable;
+		if (this->rgb16Changed || !this->rgb16Table.SetTo(rgbTable))
+		{
+			rgbTable = this->UpdateRGB16Table();
+		}
+		LanczosResizerFunc_ExpandB16G16R16(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, rgbTable.Ptr());
+	}
 	else
 		LanczosResizerFunc_ExpandB8G8R8A8PA(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr() + 262144);
 }
@@ -185,6 +194,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTExpand(UnsafeArray<const UInt8> inP
 			rgbTable = this->UpdateRGB16Table();
 		}
 		LanczosResizerFunc_ExpandR16G16B16(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, rgbTable.Ptr());
+	}
+	else if (this->srcPF == PF_LE_B16G16R16)
+	{
+		UnsafeArray<UInt8> rgbTable;
+		if (this->rgb16Changed || !this->rgb16Table.SetTo(rgbTable))
+		{
+			rgbTable = this->UpdateRGB16Table();
+		}
+		LanczosResizerFunc_ExpandB16G16R16(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, rgbTable.Ptr());
 	}
 	else
 		LanczosResizerFunc_ExpandB8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr() + 262144);
@@ -225,6 +243,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inP
 			}
 			LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
 		}
+		else if (this->srcPF == PF_LE_B16G16R16)
+		{
+			UnsafeArray<UInt8> rgbTable;
+			if (this->rgb16Changed || !this->rgb16Table.SetTo(rgbTable))
+			{
+				rgbTable = this->UpdateRGB16Table();
+			}
+			LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
+		}
 		else
 			LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
 	}
@@ -242,6 +269,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inP
 				rgbTable = this->UpdateRGB16Table();
 			}
 			LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
+		}
+		else if (this->srcPF == PF_LE_B16G16R16)
+		{
+			UnsafeArray<UInt8> rgbTable;
+			if (this->rgb16Changed || !this->rgb16Table.SetTo(rgbTable))
+			{
+				rgbTable = this->UpdateRGB16Table();
+			}
+			LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
 		}
 		else
 			LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
@@ -271,6 +307,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopy(UnsafeArray<const UInt8> inPt,
 			}
 			LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
 		}
+		else if (this->srcPF == PF_LE_B16G16R16)
+		{
+			UnsafeArray<UInt8> rgbTable;
+			if (this->rgb16Changed || !this->rgb16Table.SetTo(rgbTable))
+			{
+				rgbTable = this->UpdateRGB16Table();
+			}
+			LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
+		}
 		else
 			LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
 	}
@@ -288,6 +333,15 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopy(UnsafeArray<const UInt8> inPt,
 				rgbTable = this->UpdateRGB16Table();
 			}
 			LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
+		}
+		else if (this->srcPF == PF_LE_B16G16R16)
+		{
+			UnsafeArray<UInt8> rgbTable;
+			if (this->rgb16Changed || !this->rgb16Table.SetTo(rgbTable))
+			{
+				rgbTable = this->UpdateRGB16Table();
+			}
+			LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
 		}
 		else
 			LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
@@ -417,6 +471,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 		{
 			LanczosResizerFunc_HorizontalFilterR16G16B16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr(), ts->swidth, ts->tmpbuff.Ptr());
 		}
+		else if (ts->srcPF == Media::PF_LE_B16G16R16)
+		{
+			LanczosResizerFunc_HorizontalFilterB16G16R16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr(), ts->swidth, ts->tmpbuff.Ptr());
+		}
 		else
 		{
 			LanczosResizerFunc_HorizontalFilterB8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgbTable.Ptr() + 262144, ts->swidth, ts->tmpbuff.Ptr());
@@ -441,6 +499,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 		else if (ts->srcPF == Media::PF_LE_R16G16B16)
 		{
 			LanczosResizerFunc_HorizontalFilterR16G16B16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr(), ts->swidth, ts->tmpbuff.Ptr());
+		}
+		else if (ts->srcPF == Media::PF_LE_B16G16R16)
+		{
+			LanczosResizerFunc_HorizontalFilterB16G16R16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index.Ptr(), ts->weight.Ptr(), ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr(), ts->swidth, ts->tmpbuff.Ptr());
 		}
 		else
 		{
@@ -470,6 +532,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 		{
 			LanczosResizerFunc_ExpandR16G16B16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr());
 		}
+		else if (ts->srcPF == Media::PF_LE_B16G16R16)
+		{
+			LanczosResizerFunc_ExpandB16G16R16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr());
+		}
 		else
 		{
 			LanczosResizerFunc_ExpandB8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr() + 262144);
@@ -487,6 +553,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 		else if (ts->srcPF == Media::PF_LE_R16G16B16)
 		{
 			LanczosResizerFunc_ExpandR16G16B16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr());
+		}
+		else if (ts->srcPF == Media::PF_LE_B16G16R16)
+		{
+			LanczosResizerFunc_ExpandB16G16R16(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgb16Table.Ptr());
 		}
 		else
 		{
@@ -518,6 +588,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 			{
 				LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
 			}
+			else if (ts->srcPF == Media::PF_LE_B16G16R16)
+			{
+				LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
+			}
 			else
 			{
 				LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgbTable.Ptr() + 262144);
@@ -536,6 +610,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 			else if (ts->srcPF == Media::PF_LE_R16G16B16)
 			{
 				LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
+			}
+			else if (ts->srcPF == Media::PF_LE_B16G16R16)
+			{
+				LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
 			}
 			else
 			{
@@ -558,6 +636,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 			{
 				LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
 			}
+			else if (ts->srcPF == Media::PF_LE_B16G16R16)
+			{
+				LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
+			}
 			else
 			{
 				LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgbTable.Ptr() + 262144);
@@ -576,6 +658,10 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 			else if (ts->srcPF == Media::PF_LE_R16G16B16)
 			{
 				LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
+			}
+			else if (ts->srcPF == Media::PF_LE_B16G16R16)
+			{
+				LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgb16Table.Ptr());
 			}
 			else
 			{
@@ -1043,7 +1129,8 @@ Bool Media::Resizer::LanczosResizerRGB_C8::IsSupported(NN<const Media::FrameInfo
 		srcInfo->pf != Media::PF_B8G8R8 &&
 		srcInfo->pf != Media::PF_PAL_8 &&
 		srcInfo->pf != Media::PF_PAL_W8 &&
-		srcInfo->pf != Media::PF_LE_R16G16B16)
+		srcInfo->pf != Media::PF_LE_R16G16B16 &&
+		srcInfo->pf != Media::PF_LE_B16G16R16)
 		return false;
 	return true;
 }
