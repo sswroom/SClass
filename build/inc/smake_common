@@ -9,6 +9,7 @@
 # NO_TDS := 1
 # NO_JXL := 1
 # NO_OPENCV := 1
+# NO_LIBPQ := 1
 # USE_FDEEP := 1
 # USE_AWS := 1
 
