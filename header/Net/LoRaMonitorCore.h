@@ -3,9 +3,11 @@
 #include "Data/FastMapNN.hpp"
 #include "DB/SQLiteFile.h"
 #include "Net/SocketMonitor.h"
+#include "Net/WebServer/WebListener.h"
 
 namespace Net
 {
+	class LoRaMonitorHandler;
 	class LoRaMonitorCore
 	{
 	public: 
@@ -32,6 +34,8 @@ namespace Net
 		};
 	private:
 		NN<Net::SocketFactory> sockf;
+		NN<LoRaMonitorHandler> handler;
+		Optional<Net::WebServer::WebListener> listener;
 		Optional<Socket> s;
 		UInt16 loraPort;
 		Optional<Net::SocketMonitor> socMon;
@@ -41,7 +45,7 @@ namespace Net
 
 		static void __stdcall OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
 		void OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize);
-		NN<GWInfo> GetGW(UInt64 gweui);
+		NN<GWInfo> GetGWOrCreate(UInt64 gweui);
 		void GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize);
 		void LoadDB();
 		void SaveGWList();
@@ -52,6 +56,7 @@ namespace Net
 
 		Bool IsError();
 		NN<Data::ReadingListNN<GWInfo>> GetGWList(NN<Sync::MutexUsage> mutUsage);
+		Optional<GWInfo> GetGW(UInt64 gweui, NN<Sync::MutexUsage> mutUsage);
 	};
 }
 #endif

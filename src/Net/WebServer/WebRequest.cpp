@@ -279,6 +279,14 @@ Bool Net::WebServer::WebRequest::GetQueryValueI64(Text::CStringNN name, OutParam
 	return s->ToInt64(val);
 }
 
+Bool Net::WebServer::WebRequest::GetQueryValueU64(Text::CStringNN name, OutParam<UInt64> val)
+{
+	NN<Text::String> s;
+	if (!this->GetQueryValue(name).SetTo(s))
+		return false;
+	return s->ToUInt64(val);
+}
+
 Bool Net::WebServer::WebRequest::GetQueryValueF64(Text::CStringNN name, OutParam<Double> val)
 {
 	NN<Text::String> s;

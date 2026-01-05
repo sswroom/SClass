@@ -3,8 +3,9 @@
 #include "Net/LoRaMonitorHandler.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/JSONBuilder.h"
+#include "Text/StringTool.h"
 
-Bool __stdcall Net::LoRaMonitorHandler::GetGatewaysFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+Bool __stdcall Net::LoRaMonitorHandler::GetGatewayFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
 	NN<Net::LoRaMonitorHandler> me = NN<WebServiceHandler>::ConvertFrom<Net::LoRaMonitorHandler>(svcHdlr);
 	Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
@@ -26,6 +27,38 @@ Bool __stdcall Net::LoRaMonitorHandler::GetGatewaysFunc(NN<Net::WebServer::WebRe
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json.Build());
 }
 
+Bool __stdcall Net::LoRaMonitorHandler::GetGatewayPacketFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
+{
+	NN<Net::LoRaMonitorHandler> me = NN<WebServiceHandler>::ConvertFrom<Net::LoRaMonitorHandler>(svcHdlr);
+	UInt64 gweui;
+	if (!req->GetQueryValueU64(CSTR("gweui"), gweui))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+	}
+	Sync::MutexUsage mutUsage;
+	NN<Net::LoRaMonitorCore::GWInfo> gw;
+	if (!me->core->GetGW(gweui, mutUsage).SetTo(gw))
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+	}
+	Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
+	UOSInt i = gw->lastDataBegin;
+	while (i != gw->lastDataEnd)
+	{
+		NN<Net::LoRaMonitorCore::DataPacket> pkt;
+		if (gw->lastData[i].SetTo(pkt))
+		{
+			json.ArrayBeginObject();
+			AppendPacket(pkt, json);
+			json.ObjectEnd();
+		}
+		i = (i + 1) & 15;
+	}
+	me->AddResponseHeaders(req, resp);
+	resp->AddContentType(CSTR("application/json"));
+	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json.Build());
+}
+
 void Net::LoRaMonitorHandler::AppendGW(NN<LoRaMonitorCore::GWInfo> gw, NN<Text::JSONBuilder> json)
 {
 	json->ObjectAddUInt64(CSTR("gweui"), gw->gweui);
@@ -37,10 +70,26 @@ void Net::LoRaMonitorHandler::AppendGW(NN<LoRaMonitorCore::GWInfo> gw, NN<Text::
 	json->ObjectAddTSStr(CSTR("lastSeenTime"), gw->lastSeenTime);
 }
 
-Net::LoRaMonitorHandler::LoRaMonitorHandler(NN<LoRaMonitorCore> core)
+void Net::LoRaMonitorHandler::AppendPacket(NN<LoRaMonitorCore::DataPacket> pkt, NN<Text::JSONBuilder> json)
+{
+	json->ObjectAddInt32(CSTR("msgType"), pkt->msgType);
+	if (Text::StringTool::IsTextUTF8(Data::ByteArrayR(pkt->msg, pkt->msgSize)))
+	{
+		json->ObjectAddStr(CSTR("payload"), Text::CStringNN(pkt->msg, pkt->msgSize));
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.AppendHexBuff(pkt->msg, pkt->msgSize, ' ', Text::LineBreakType::CRLF);
+		json->ObjectAddStr(CSTR("payload"), sb.ToCString());
+	}
+}
+
+Net::LoRaMonitorHandler::LoRaMonitorHandler(NN<LoRaMonitorCore> core, Text::CStringNN webRoot) : Net::WebServer::WebServiceHandler(webRoot)
 {
 	this->core = core;
-	this->AddService(CSTR("/api/gateways"), Net::WebUtil::RequestMethod::HTTP_GET, GetGatewaysFunc);
+	this->AddService(CSTR("/api/gateway"), Net::WebUtil::RequestMethod::HTTP_GET, GetGatewayFunc);
+	this->AddService(CSTR("/api/gateway/packet"), Net::WebUtil::RequestMethod::HTTP_GET, GetGatewayPacketFunc);
 }
 
 Net::LoRaMonitorHandler::~LoRaMonitorHandler()

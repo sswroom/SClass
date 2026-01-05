@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Path.h"
 #include "Net/LoRaMonitorCore.h"
+#include "Net/LoRaMonitorHandler.h"
 #include "Net/PacketExtractorEthernet.h"
 #include "Sync/MutexUsage.h"
 
@@ -36,7 +37,7 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			gw = GetGW(gweui);
+			gw = GetGWOrCreate(gweui);
 			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
@@ -46,7 +47,7 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			gw = GetGW(gweui);
+			gw = GetGWOrCreate(gweui);
 			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
@@ -56,7 +57,7 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			gw = GetGW(gweui);
+			gw = GetGWOrCreate(gweui);
 			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
@@ -65,7 +66,7 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 	}
 }
 
-NN<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGW(UInt64 gweui)
+NN<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGWOrCreate(UInt64 gweui)
 {
 	Sync::MutexUsage mutUsage(this->gwMut);
 	NN<Net::LoRaMonitorCore::GWInfo> gw;
@@ -210,22 +211,40 @@ Net::LoRaMonitorCore::LoRaMonitorCore(NN<Net::SocketFactory> sockf, UInt16 loraP
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC(".db"));
 	NEW_CLASSNN(this->db, DB::SQLiteFile(CSTRP(sbuff, sptr)));
 	this->LoadDB();
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
+	NEW_CLASSNN(this->handler, LoRaMonitorHandler(*this, CSTRP(sbuff, sptr)));
+	this->listener = 0;
 	this->s = this->sockf->CreateRAWSocket();
-	NN<Socket> s;
-	if (this->s.SetTo(s))
+	NN<Net::WebServer::WebListener> listener;
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->sockf, Optional<Net::SSLEngine>(0), this->handler, uiPort, 120, 1, 4, CSTR("LoRaMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	if (listener->IsError())
 	{
-		NEW_CLASSOPT(this->socMon, Net::SocketMonitor(this->sockf, s, OnRAWPacket, this, 4));
+		listener.Delete();
+		this->listener = 0;
+		this->socMon = 0;
 	}
 	else
 	{
-		this->socMon = 0;
+		NN<Socket> s;
+		this->listener = listener;
+		if (this->s.SetTo(s))
+		{
+			NEW_CLASSOPT(this->socMon, Net::SocketMonitor(this->sockf, s, OnRAWPacket, this, 4));
+		}
+		else
+		{
+			this->socMon = 0;
+		}
 	}
 }
 
 Net::LoRaMonitorCore::~LoRaMonitorCore()
 {
+	this->listener.Delete();
 	this->socMon.Delete();
 	this->db.Delete();
+	this->handler.Delete();
 }
 
 Bool Net::LoRaMonitorCore::IsError()
@@ -237,4 +256,10 @@ NN<Data::ReadingListNN<Net::LoRaMonitorCore::GWInfo>> Net::LoRaMonitorCore::GetG
 {
 	Sync::MutexUsage mutUsage(this->gwMut);
 	return this->gwMap;
+}
+
+Optional<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGW(UInt64 gweui, NN<Sync::MutexUsage> mutUsage)
+{
+	mutUsage->ReplaceMutex(this->gwMut);
+	return this->gwMap.Get(gweui);
 }
