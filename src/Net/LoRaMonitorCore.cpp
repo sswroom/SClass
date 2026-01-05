@@ -207,6 +207,7 @@ Net::LoRaMonitorCore::LoRaMonitorCore(NN<Net::SocketFactory> sockf, UInt16 loraP
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	this->sockf = sockf;
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(sockf));
 	this->loraPort = loraPort;
 	sbuff[0] = 0;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
@@ -219,7 +220,7 @@ Net::LoRaMonitorCore::LoRaMonitorCore(NN<Net::SocketFactory> sockf, UInt16 loraP
 	this->listener = 0;
 	this->s = this->sockf->CreateRAWSocket();
 	NN<Net::WebServer::WebListener> listener;
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->sockf, Optional<Net::SSLEngine>(0), this->handler, uiPort, 120, 1, 4, CSTR("LoRaMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, Optional<Net::SSLEngine>(0), this->handler, uiPort, 120, 1, 4, CSTR("LoRaMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
@@ -247,6 +248,7 @@ Net::LoRaMonitorCore::~LoRaMonitorCore()
 	this->socMon.Delete();
 	this->db.Delete();
 	this->handler.Delete();
+	this->clif.Delete();
 }
 
 Bool Net::LoRaMonitorCore::IsError()
@@ -256,7 +258,7 @@ Bool Net::LoRaMonitorCore::IsError()
 
 NN<Data::ReadingListNN<Net::LoRaMonitorCore::GWInfo>> Net::LoRaMonitorCore::GetGWList(NN<Sync::MutexUsage> mutUsage)
 {
-	Sync::MutexUsage mutUsage(this->gwMut);
+	mutUsage->ReplaceMutex(this->gwMut);
 	return this->gwMap;
 }
 

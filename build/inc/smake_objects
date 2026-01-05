@@ -1536,6 +1536,7 @@ LoRaGateway.o: ../../src/Net/LoRaGateway.cpp
 LoRaGWMonitor.o: ../../src/Net/LoRaGWMonitor.cpp
 LoRaGWUtil.o: ../../src/Net/LoRaGWUtil.cpp
 LoRaMonitorCore.o: ../../src/Net/LoRaMonitorCore.cpp
+LoRaMonitorHandler.o: ../../src/Net/LoRaMonitorHandler.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
 MDNSClient.o: ../../src/Net/MDNSClient.cpp

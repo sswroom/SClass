@@ -7,7 +7,7 @@
 
 Bool __stdcall Net::LoRaMonitorHandler::GetGatewayFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
-	NN<Net::LoRaMonitorHandler> me = NN<WebServiceHandler>::ConvertFrom<Net::LoRaMonitorHandler>(svcHdlr);
+	NN<Net::LoRaMonitorHandler> me = NN<LoRaMonitorHandler>::ConvertFrom(svcHdlr);
 	Text::JSONBuilder json(Text::JSONBuilder::ObjectType::OT_ARRAY);
 	Sync::MutexUsage mutUsage;
 	NN<Data::ReadingListNN<Net::LoRaMonitorCore::GWInfo>> gwList = me->core->GetGWList(mutUsage);
@@ -29,7 +29,7 @@ Bool __stdcall Net::LoRaMonitorHandler::GetGatewayFunc(NN<Net::WebServer::WebReq
 
 Bool __stdcall Net::LoRaMonitorHandler::GetGatewayPacketFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
-	NN<Net::LoRaMonitorHandler> me = NN<WebServiceHandler>::ConvertFrom<Net::LoRaMonitorHandler>(svcHdlr);
+	NN<Net::LoRaMonitorHandler> me = NN<LoRaMonitorHandler>::ConvertFrom(svcHdlr);
 	UInt64 gweui;
 	if (!req->GetQueryValueU64(CSTR("gweui"), gweui))
 	{

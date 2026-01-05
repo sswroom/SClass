@@ -3414,6 +3414,8 @@ Net/LoRaGWUtil.h:
 @LoRaGWUtil.o
 Net/LoRaMonitorCore.h:
 @LoRaMonitorCore.o
+Net/LoRaMonitorHandler.h:
+@LoRaMonitorHandler.o
 Net/MACInfo.h:
 @MACInfo.o
 Net/MACInfoList.h:

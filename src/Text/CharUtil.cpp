@@ -456,7 +456,7 @@ Optional<const Text::CharUtil::UnicodeBlock> Text::CharUtil::GetUnicodeBlock(UTF
 {
 	UnicodeBlock *blk;
 	OSInt i = 0;
-	OSInt j = (sizeof(ublk) / sizeof(ublk[0])) - 1;
+	OSInt j = (OSInt)(sizeof(ublk) / sizeof(ublk[0])) - 1;
 	OSInt k;
 	while (i <= j)
 	{

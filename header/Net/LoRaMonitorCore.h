@@ -35,6 +35,7 @@ namespace Net
 		};
 	private:
 		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		NN<LoRaMonitorHandler> handler;
 		Optional<Net::WebServer::WebListener> listener;
 		Optional<Socket> s;
