@@ -104,6 +104,7 @@ void Net::LoRaMonitorCore::GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<c
 	if (gw->lastDataBegin == gw->lastDataEnd)
 	{
 		data = MemAllocNN(DataPacket);
+		data->recvTime = Data::Timestamp::UtcNow();
 		data->msgType = msgType;
 		data->msgSize = msgSize;
 		data->msg = MemAllocArr(UInt8, msgSize);
@@ -124,6 +125,7 @@ void Net::LoRaMonitorCore::GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<c
 			gw->lastDataBegin = (gw->lastDataBegin + 1) & 15;
 		}
 		data = MemAllocNN(DataPacket);
+		data->recvTime = Data::Timestamp::UtcNow();
 		data->msgType = msgType;
 		data->msgSize = msgSize;
 		data->msg = MemAllocArr(UInt8, msgSize);

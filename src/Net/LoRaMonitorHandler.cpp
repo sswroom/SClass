@@ -61,7 +61,7 @@ Bool __stdcall Net::LoRaMonitorHandler::GetGatewayPacketFunc(NN<Net::WebServer::
 
 void Net::LoRaMonitorHandler::AppendGW(NN<LoRaMonitorCore::GWInfo> gw, NN<Text::JSONBuilder> json)
 {
-	json->ObjectAddUInt64(CSTR("gweui"), gw->gweui);
+	json->ObjectAddUInt64Str(CSTR("gweui"), gw->gweui);
 	json->ObjectAddStrOpt(CSTR("name"), gw->name);
 	json->ObjectAddStrOpt(CSTR("model"), gw->model);
 	json->ObjectAddStrOpt(CSTR("sn"), gw->sn);
@@ -72,6 +72,7 @@ void Net::LoRaMonitorHandler::AppendGW(NN<LoRaMonitorCore::GWInfo> gw, NN<Text::
 
 void Net::LoRaMonitorHandler::AppendPacket(NN<LoRaMonitorCore::DataPacket> pkt, NN<Text::JSONBuilder> json)
 {
+	json->ObjectAddTSStr(CSTR("recvTime"), pkt->recvTime);
 	json->ObjectAddInt32(CSTR("msgType"), pkt->msgType);
 	if (Text::StringTool::IsTextUTF8(Data::ByteArrayR(pkt->msg, pkt->msgSize)))
 	{
@@ -90,6 +91,7 @@ Net::LoRaMonitorHandler::LoRaMonitorHandler(NN<LoRaMonitorCore> core, Text::CStr
 	this->core = core;
 	this->AddService(CSTR("/api/gateway"), Net::WebUtil::RequestMethod::HTTP_GET, GetGatewayFunc);
 	this->AddService(CSTR("/api/gateway/packet"), Net::WebUtil::RequestMethod::HTTP_GET, GetGatewayPacketFunc);
+	this->SetCacheType(Net::WebServer::HTTPDirectoryHandler::CT_NO_CACHE);
 }
 
 Net::LoRaMonitorHandler::~LoRaMonitorHandler()

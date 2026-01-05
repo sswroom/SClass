@@ -13,6 +13,7 @@ namespace Net
 	public: 
 		struct DataPacket
 		{
+			Data::Timestamp recvTime;
 			UInt8 msgType;
 			UnsafeArray<UInt8> msg;
 			UOSInt msgSize;
