@@ -9,6 +9,13 @@ namespace Net
 	class LoRaMonitorCore
 	{
 	public: 
+		struct DataPacket
+		{
+			UInt8 msgType;
+			UnsafeArray<UInt8> msg;
+			UOSInt msgSize;
+		};
+
 		struct GWInfo
 		{
 			UInt64 gweui;
@@ -19,6 +26,9 @@ namespace Net
 			Optional<Text::String> location;
 			Data::Timestamp lastSeenTime;
 			Bool updated;
+			Optional<DataPacket> lastData[16];
+			UOSInt lastDataBegin;
+			UOSInt lastDataEnd;
 		};
 	private:
 		NN<Net::SocketFactory> sockf;
@@ -32,6 +42,7 @@ namespace Net
 		static void __stdcall OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
 		void OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize);
 		NN<GWInfo> GetGW(UInt64 gweui);
+		void GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize);
 		void LoadDB();
 		void SaveGWList();
 		static void __stdcall FreeGW(NN<GWInfo> gw);
@@ -40,6 +51,7 @@ namespace Net
 		~LoRaMonitorCore();
 
 		Bool IsError();
+		NN<Data::ReadingListNN<GWInfo>> GetGWList(NN<Sync::MutexUsage> mutUsage);
 	};
 }
 #endif

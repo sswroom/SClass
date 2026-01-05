@@ -29,13 +29,15 @@ void __stdcall Net::LoRaMonitorCore::OnRAWPacket(AnyType userData, UnsafeArray<c
 void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize)
 {
 	UInt64 gweui;
+	NN<GWInfo> gw;
 	switch (msgType)
 	{
 	case 0: //PUSH_DATA
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			GetGW(gweui);
+			gw = GetGW(gweui);
+			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
 	case 1: //PUSH_ACK
@@ -44,7 +46,8 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			GetGW(gweui);
+			gw = GetGW(gweui);
+			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
 	case 3: //PULL_RESP
@@ -53,7 +56,8 @@ void Net::LoRaMonitorCore::OnLoRaPacket(Bool toServer, UInt8 ver, UInt16 token, 
 		if (msgSize >= 8)
 		{
 			gweui = ReadMUInt64(&msg[0]);
-			GetGW(gweui);
+			gw = GetGW(gweui);
+			GWAddData(gw, msgType, msg + 8, msgSize - 8);
 		}
 		break;
 	case 5: //TX_ACK
@@ -80,6 +84,8 @@ NN<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGW(UInt64 gweui)
 	gw->location = 0;
 	gw->lastSeenTime = Data::Timestamp::UtcNow();
 	gw->updated = false;
+	gw->lastDataBegin = 0;
+	gw->lastDataEnd = 0;
 	DB::SQLBuilder sql(this->db->GetSQLType(), false, this->db->GetTzQhr());
 	sql.AppendCmdC(CSTR("insert into gateway (gweui, last_seen_time) values ("));
 	sql.AppendInt64((Int64)gw->gweui);
@@ -89,6 +95,41 @@ NN<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGW(UInt64 gweui)
 	this->db->ExecuteNonQuery(sql.ToCString());
 	this->gwMap.Put(gw->gweui, gw);
 	return gw;
+}
+
+void Net::LoRaMonitorCore::GWAddData(NN<GWInfo> gw, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize)
+{
+	NN<DataPacket> data;
+	if (gw->lastDataBegin == gw->lastDataEnd)
+	{
+		data = MemAllocNN(DataPacket);
+		data->msgType = msgType;
+		data->msgSize = msgSize;
+		data->msg = MemAllocArr(UInt8, msgSize);
+		data->msg.CopyFromNO(msg, msgSize);
+		gw->lastData[gw->lastDataEnd] = data;
+		gw->lastDataEnd = (gw->lastDataEnd + 1) & 15;
+	}
+	else
+	{
+		UOSInt nextIndex = (gw->lastDataEnd + 1) & 15;
+		if (nextIndex == gw->lastDataBegin)
+		{
+			if (gw->lastData[gw->lastDataBegin].SetTo(data))
+			{
+				MemFreeArr(data->msg);
+				MemFreeNN(data);
+			}
+			gw->lastDataBegin = (gw->lastDataBegin + 1) & 15;
+		}
+		data = MemAllocNN(DataPacket);
+		data->msgType = msgType;
+		data->msgSize = msgSize;
+		data->msg = MemAllocArr(UInt8, msgSize);
+		data->msg.CopyFromNO(msg, msgSize);
+		gw->lastData[gw->lastDataEnd] = data;
+		gw->lastDataEnd = nextIndex;
+	}
 }
 
 void Net::LoRaMonitorCore::LoadDB()
@@ -108,6 +149,8 @@ void Net::LoRaMonitorCore::LoadDB()
 			gw->location = r->GetNewStr(5);
 			gw->lastSeenTime = r->GetTimestamp(6);
 			gw->updated = false;
+			gw->lastDataBegin = 0;
+			gw->lastDataEnd = 0;
 			this->gwMap.Put(gw->gweui, gw);
 		}
 		this->db->CloseReader(r);
@@ -188,4 +231,10 @@ Net::LoRaMonitorCore::~LoRaMonitorCore()
 Bool Net::LoRaMonitorCore::IsError()
 {
 	return this->socMon.IsNull() || this->db->IsError();
+}
+
+NN<Data::ReadingListNN<Net::LoRaMonitorCore::GWInfo>> Net::LoRaMonitorCore::GetGWList(NN<Sync::MutexUsage> mutUsage)
+{
+	Sync::MutexUsage mutUsage(this->gwMut);
+	return this->gwMap;
 }
