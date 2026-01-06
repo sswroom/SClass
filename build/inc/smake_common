@@ -2589,6 +2589,8 @@ Map/GoogleMap/GoogleWSSearcherJSON.h:
 @GoogleWSSearcherJSON.o
 Map/OSM/OSMCacheHandler.h:
 @OSMCacheHandler.o
+Map/OSM/OSMData.h:
+@OSMData.o
 Map/OSM/OSMLocalTileMap.h:
 @OSMLocalTileMap.o
 Map/OSM/OSMParser.h:

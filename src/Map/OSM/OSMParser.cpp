@@ -1384,3 +1384,11 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 	}
 	return layerList;
 }
+
+NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
+{
+	NN<Map::OSM::OSMData> data;
+	NEW_CLASSNN(data, Map::OSM::OSMData(fileName));
+	///////////////////////
+	return data;
+}

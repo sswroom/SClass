@@ -976,6 +976,7 @@ GoogleStaticMap.o: ../../src/Map/GoogleMap/GoogleStaticMap.cpp
 GoogleTileMap.o: ../../src/Map/GoogleMap/GoogleTileMap.cpp
 GoogleWSSearcherJSON.o: ../../src/Map/GoogleMap/GoogleWSSearcherJSON.cpp
 OSMCacheHandler.o: ../../src/Map/OSM/OSMCacheHandler.cpp
+OSMData.o: ../../src/Map/OSM/OSMData.cpp
 OSMLocalTileMap.o: ../../src/Map/OSM/OSMLocalTileMap.cpp
 OSMParser.o: ../../src/Map/OSM/OSMParser.cpp
 OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp

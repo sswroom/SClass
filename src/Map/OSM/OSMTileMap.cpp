@@ -17,7 +17,7 @@ Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UO
 	this->urlNext = 0;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(nullptr, minLevel, maxLevel, clif, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Optional<IO::SPackageFile> spkg, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(nullptr, minLevel, maxLevel, clif, ssl)
 {
 	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;

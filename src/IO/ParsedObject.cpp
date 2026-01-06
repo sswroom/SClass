@@ -66,6 +66,8 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 		return CSTR("SeleniumIDE");
 	case ParserType::CesiumTile:
 		return CSTR("CesiumTile");
+	case ParserType::OSMData:
+		return CSTR("OSMData");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");
