@@ -263,23 +263,18 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	}
 	else if (nodeText->Equals(UTF8STRC("osm")))
 	{
-		Map::MapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
-		if (lyr == 0)
-		{
-			return 0;
-		}
+		Optional<Map::MapDrawLayer> lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
 		while (reader.ReadNext())
 		{
 			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)
 			{
-				DEL_CLASS(lyr)
-				lyr = 0;
+				lyr.Delete();
 				break;
 			}
 		}
 		if (!reader.IsComplete())
 		{
-			SDEL_CLASS(lyr);
+			lyr.Delete();
 		}
 		return lyr;
 	}

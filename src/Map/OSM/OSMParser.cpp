@@ -18,7 +18,7 @@ typedef struct
 	Double lon;
 } OSMNodeInfo;
 
-Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
+NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	Data::FastMap<Int64, OSMNodeInfo*> nodeMap;
 	OSMNodeInfo *node;
@@ -1370,9 +1370,9 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 	{
 		MemFree(nodeMap.GetItem(i));
 	}
-	Map::MapLayerCollection *layerList;
+	NN<Map::MapLayerCollection> layerList;
 	NN<Map::MapDrawLayer> layer;
-	NEW_CLASS(layerList, Map::MapLayerCollection(fileName, CSTR("OSM")));
+	NEW_CLASSNN(layerList, Map::MapLayerCollection(fileName, CSTR("OSM")));
 	i = 0;
 	while (i < OSMTYPECNT)
 	{

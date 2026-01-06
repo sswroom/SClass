@@ -325,7 +325,7 @@ void Manage::ThreadContextARM64::ToString(NN<Text::StringBuilderUTF8> sb) const
 
 	while (i < j)
 	{
-		if (this->GetRegister(i, sbuff, regBuff, &bitCnt).SetTo(sptr))
+		if (this->GetRegister(i, sbuff, regBuff, bitCnt).SetTo(sptr))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
