@@ -66,6 +66,7 @@ namespace Text
 		Bool ObjectAddNInt32(Text::CStringNN name, NInt32 val);
 		Bool ObjectAddInt64(Text::CStringNN name, Int64 val);
 		Bool ObjectAddUInt64(Text::CStringNN name, UInt64 val);
+		Bool ObjectAddUInt64Str(Text::CStringNN name, UInt64 val);
 		Bool ObjectAddBool(Text::CStringNN name, Bool val);
 		Bool ObjectAddStr(Text::CStringNN name, NN<const Text::String> val);
 		Bool ObjectAddStr(Text::CStringNN name, Text::CString val);

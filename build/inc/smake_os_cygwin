@@ -21,7 +21,8 @@ DB/ODBCConn.h:
 DB/OLEDBConn.h:
 @OLEDBConnNull.o
 DB/PostgreSQLConn.h:
-@PostgreSQLConn.o
+@?(NO_LIBPQ == 0)PostgreSQLConn.o
+@?(NO_LIBPQ > 0)PostGreSQLConnNul.o
 DB/TDSConn.h:
 @TDSConn.o
 

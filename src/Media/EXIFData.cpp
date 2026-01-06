@@ -4678,7 +4678,7 @@ Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id)
 Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId)
 {
 	EXIFInfo *infos;
-	OSInt cnt;
+	UOSInt cnt;
 	if (id == 0)
 	{
 		switch (exifMaker)
@@ -4773,7 +4773,7 @@ Text::CStringNN Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, UInt32 id, UIn
 		return CSTR("Unknown");
 	}
 	OSInt i = 0;
-	OSInt j = cnt - 1;
+	OSInt j = (OSInt)cnt - 1;
 	OSInt k;
 	while (i <= j)
 	{

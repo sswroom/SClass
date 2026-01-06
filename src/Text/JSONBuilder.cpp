@@ -734,6 +734,23 @@ Bool Text::JSONBuilder::ObjectAddUInt64(Text::CStringNN name, UInt64 val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ObjectAddUInt64Str(Text::CStringNN name, UInt64 val)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendC(UTF8STRC(":\""));
+	this->sb.AppendU64(val);
+	this->sb.AppendC(UTF8STRC("\""));
+	return true;
+}
+
 Bool Text::JSONBuilder::ObjectAddBool(Text::CStringNN name, Bool val)
 {
 	if (this->currType != OT_OBJECT)

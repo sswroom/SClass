@@ -62,6 +62,7 @@ namespace Net
 			Bool GetQueryValueI32(Text::CStringNN name, OutParam<Int32> val);
 			Bool GetQueryValueU32(Text::CStringNN name, OutParam<UInt32> val);
 			Bool GetQueryValueI64(Text::CStringNN name, OutParam<Int64> val);
+			Bool GetQueryValueU64(Text::CStringNN name, OutParam<UInt64> val);
 			Bool GetQueryValueF64(Text::CStringNN name, OutParam<Double> val);
 			virtual Bool HasQuery(Text::CStringNN name) = 0;
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
