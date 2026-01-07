@@ -1387,8 +1387,350 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 
 NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
+	UOSInt i;
+	NN<Text::String> nodeText;
+	NN<Text::XMLAttrib> attr;
 	NN<Map::OSM::OSMData> data;
+	NN<Text::String> name;
+	NN<Text::String> value;
 	NEW_CLASSNN(data, Map::OSM::OSMData(fileName));
+	while (reader->NextElementName().SetTo(nodeText))
+	{
+		if (nodeText->Equals(UTF8STRC("node")))
+		{
+			Int64 nodeId = 0;
+			Double lat = NAN;
+			Double lon = NAN;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				attr = reader->GetAttribNoCheck(i);
+				if (attr->name.SetTo(name) && attr->value.SetTo(value))
+				{
+					if (name->Equals(UTF8STRC("id")))
+					{
+						nodeId = value->ToInt64();
+					}
+					else if (name->Equals(UTF8STRC("lat")))
+					{
+						value->ToDouble(lat);
+					}
+					else if (name->Equals(UTF8STRC("lon")))
+					{
+						value->ToDouble(lon);
+					}
+				}
+			}
+			if (Math::IsNAN(lat) || Math::IsNAN(lon) || nodeId == 0)
+			{
+
+				printf("OSMParser: Invalid node data\r\n");
+				reader->SkipElement();
+			}
+			else
+			{
+				NN<Map::OSM::NodeInfo> node = data->NewNode(nodeId, lat, lon);
+				if (!reader->IsElementEmpty())
+				{
+					while (reader->NextElementName().SetTo(nodeText))
+					{
+						if (nodeText->Equals(UTF8STRC("tag")))
+						{
+							Optional<Text::String> k = 0;
+							Optional<Text::String> v = 0;
+							i = reader->GetAttribCount();
+							while (i-- > 0)
+							{
+								attr = reader->GetAttribNoCheck(i);
+								if (attr->name.SetTo(name) && attr->value.SetTo(value))
+								{
+									if (name->Equals(UTF8STRC("k")))
+									{
+										k = value;
+									}
+									else if (name->Equals(UTF8STRC("v")))
+									{
+										v = value;
+									}
+								}
+							}
+							if (k.SetTo(name) && v.SetTo(value))
+							{
+								data->ElementAddTag(node, name, value);
+							}
+							reader->SkipElement();
+						}
+						else
+						{
+							printf("OSMParser: Unknown node element in node %lld: %s\r\n", nodeId, nodeText->v.Ptr());
+							reader->SkipElement();
+						}
+					}
+				}
+			}
+		}
+		else if (nodeText->Equals(UTF8STRC("way")))
+		{
+			Int64 wayId = 0;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				attr = reader->GetAttribNoCheck(i);
+				if (attr->name.SetTo(name) && attr->value.SetTo(value))
+				{
+					if (name->Equals(UTF8STRC("id")))
+					{
+						wayId = value->ToInt64();
+					}
+				}
+			}
+			if (wayId == 0)
+			{
+				printf("OSMParser: Invalid way data\r\n");
+				reader->SkipElement();
+			}
+			else
+			{
+				NN<Map::OSM::NodeInfo> node;
+				NN<Map::OSM::WayInfo> way = data->NewWay(wayId);
+				if (!reader->IsElementEmpty())
+				{
+					while (reader->NextElementName().SetTo(nodeText))
+					{
+						if (nodeText->Equals(UTF8STRC("nd")))
+						{
+							Int64 refId = 0;
+							i = reader->GetAttribCount();
+							while (i-- > 0)
+							{
+								attr = reader->GetAttribNoCheck(i);
+								if (attr->name.SetTo(name) && attr->value.SetTo(value))
+								{
+									if (name->Equals(UTF8STRC("ref")))
+									{
+										refId = value->ToInt64();
+									}
+								}
+							}
+							if (refId != 0)
+							{
+								if (!data->GetNodeById(refId).SetTo(node))
+								{
+									printf("OSMParser: Way %lld references unknown node %lld\r\n", wayId, refId);
+								}
+								else
+								{
+									data->WayAddNode(way, node);
+								}
+							}
+							else
+							{
+								printf("OSMParser: Invalid way node reference for way: %lld\r\n", wayId);
+							}
+							reader->SkipElement();
+						}
+						else if (nodeText->Equals(UTF8STRC("tag")))
+						{
+							Optional<Text::String> k = 0;
+							Optional<Text::String> v = 0;
+							i = reader->GetAttribCount();
+							while (i-- > 0)
+							{
+								attr = reader->GetAttribNoCheck(i);
+								if (attr->name.SetTo(name) && attr->value.SetTo(value))
+								{
+									if (name->Equals(UTF8STRC("k")))
+									{
+										k = value;
+									}
+									else if (name->Equals(UTF8STRC("v")))
+									{
+										v = value;
+									}
+								}
+							}
+							if (k.SetTo(name) && v.SetTo(value))
+							{
+								data->ElementAddTag(way, name, value);
+							}
+							else
+							{
+								printf("OSMParser: Invalid way tag in way %lld\r\n", wayId);
+							}
+							reader->SkipElement();
+						}
+						else
+						{
+							printf("OSMParser: Unknown way element in way %lld: %s\r\n", wayId, nodeText->v.Ptr());
+							reader->SkipElement();
+						}
+					}
+				}
+			}
+		}
+		else if (nodeText->Equals(UTF8STRC("relation")))
+		{
+			Int64 relId = 0;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				attr = reader->GetAttribNoCheck(i);
+				if (attr->name.SetTo(name) && attr->value.SetTo(value))
+				{
+					if (name->Equals(UTF8STRC("id")))
+					{
+						relId = value->ToInt64();
+					}
+				}
+			}
+			if (relId == 0)
+			{
+				printf("OSMParser: Invalid relation data\r\n");
+				reader->SkipElement();
+			}
+			else
+			{
+				NN<Map::OSM::RelationInfo> rel = data->NewRelation(relId);
+				if (!reader->IsElementEmpty())
+				{
+					while (reader->NextElementName().SetTo(nodeText))
+					{
+						if (nodeText->Equals(UTF8STRC("member")))
+						{
+							Int64 refId = 0;
+							Optional<Text::String> role = 0;
+							ElementType type = ElementType::Unknown;
+							i = reader->GetAttribCount();
+							while (i-- > 0)
+							{
+								attr = reader->GetAttribNoCheck(i);
+								if (attr->name.SetTo(name) && attr->value.SetTo(value))
+								{
+									if (name->Equals(UTF8STRC("ref")))
+									{
+										refId = value->ToInt64();
+									}
+									else if (name->Equals(UTF8STRC("role")))
+									{
+										role = value->Clone();
+									}
+									else if (name->Equals(UTF8STRC("type")))
+									{
+										type = ElementTypeFromString(value->ToCString());
+									}
+								}
+							}
+							if (refId != 0 && type != ElementType::Unknown)
+							{
+								data->RelationAddMember(rel, type, refId, role);
+							}
+							else
+							{
+								printf("OSMParser: Invalid relation member in relation %lld\r\n", relId);
+							}
+							OPTSTR_DEL(role);
+							reader->SkipElement();
+						}
+						else if (nodeText->Equals(UTF8STRC("tag")))
+						{
+							Optional<Text::String> k = 0;
+							Optional<Text::String> v = 0;
+							i = reader->GetAttribCount();
+							while (i-- > 0)
+							{
+								attr = reader->GetAttribNoCheck(i);
+								if (attr->name.SetTo(name) && attr->value.SetTo(value))
+								{
+									if (name->Equals(UTF8STRC("k")))
+									{
+										k = value;
+									}
+									else if (name->Equals(UTF8STRC("v")))
+									{
+										v = value;
+									}
+								}
+							}
+							if (k.SetTo(name) && v.SetTo(value))
+							{
+								data->ElementAddTag(rel, name, value);
+							}
+							else
+							{
+								printf("OSMParser: Invalid relation tag in relation %lld\r\n", relId);
+							}
+							reader->SkipElement();
+						}
+						else
+						{
+							printf("OSMParser: Unknown element in relation %lld: %s\r\n", relId, nodeText->v.Ptr());
+							reader->SkipElement();
+						}
+					}
+				}
+			}
+		}
+		else if (nodeText->Equals(UTF8STRC("bounds")))
+		{
+			Double minLat = 0;
+			Double minLon = 0;
+			Double maxLat = 0;
+			Double maxLon = 0;
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				attr = reader->GetAttribNoCheck(i);
+				if (attr->name.SetTo(name) && attr->value.SetTo(value))
+				{
+					if (name->Equals(UTF8STRC("minlat")))
+					{
+						value->ToDouble(minLat);
+					}
+					else if (name->Equals(UTF8STRC("minlon")))
+					{
+						value->ToDouble(minLon);
+					}
+					else if (name->Equals(UTF8STRC("maxlat")))
+					{
+						value->ToDouble(maxLat);
+					}
+					else if (name->Equals(UTF8STRC("maxlon")))
+					{
+						value->ToDouble(maxLon);
+					}
+				}
+			}
+			data->SetDataBounds(Math::RectAreaDbl(minLon, minLat, maxLon, maxLat));
+			reader->SkipElement();
+		}
+		else if (nodeText->Equals(UTF8STRC("meta")))
+		{
+			i = reader->GetAttribCount();
+			while (i-- > 0)
+			{
+				attr = reader->GetAttribNoCheck(i);
+				if (attr->name.SetTo(name) && attr->value.SetTo(value))
+				{
+					if (name->Equals(UTF8STRC("osm_base")))
+					{
+						data->SetOSMBase(Data::Timestamp::FromStr(value->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()));
+					}
+				}
+			}
+			reader->SkipElement();
+		}
+		else if (nodeText->Equals(UTF8STRC("note")))
+		{
+			Text::StringBuilderUTF8 sb;
+			reader->ReadNodeText(sb);
+			data->SetNote(sb.ToCString());
+		}
+		else
+		{
+			printf("OSMParser: Unknown element: %s\r\n", nodeText->v.Ptr());
+			reader->SkipElement();
+		}
+	}
 	///////////////////////
 	return data;
 }

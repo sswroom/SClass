@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRHexViewerGoToForm::AVIRHexViewerGoToForm(Optional<UI::GUIClie
 	this->fileLen = fileSize;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Go To"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->lblMessage = ui->NewLabel(*this, CSTR("Input offset to go to: (Start with +/- for relative offset)"));
 	this->lblMessage->SetRect(0, 24, 320, 23, false);

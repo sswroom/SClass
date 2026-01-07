@@ -2227,7 +2227,7 @@ DB::SQLType SSWR::AVIRead::AVIRDBCheckChgForm::GetDBSQLType()
 
 SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, NN<SSWR::AVIRead::AVIRDBManager> dbMgr) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Check Table Changes"));
 	this->core = core;
 	this->dbMgr = dbMgr;

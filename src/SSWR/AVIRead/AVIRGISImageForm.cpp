@@ -62,7 +62,7 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
 {
 	this->SetText(CSTR("Select Image"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());

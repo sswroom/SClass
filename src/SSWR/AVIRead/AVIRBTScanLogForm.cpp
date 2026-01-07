@@ -200,7 +200,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::UpdateStatus()
 
 SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::BTScanLog> btLog) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Bluetooth Scan Log"));
 
 	this->core = core;

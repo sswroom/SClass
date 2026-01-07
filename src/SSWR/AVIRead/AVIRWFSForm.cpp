@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(Optional<UI::GUIClientControl> parent, N
 	this->core = core;
 	this->wfs = 0;
 	this->SetText(CSTR("Web Feature Service"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

@@ -214,7 +214,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(AnyType userObj)
 	NN<Text::String> fontName;
 	if (dlg->ShowDialog(me->GetHandle()) && dlg->GetFontName().SetTo(fontName))
 	{
-		me->SetFont(UnsafeArray<const UTF8Char>(fontName->v), fontName->leng, dlg->GetFontSizePt(), dlg->IsBold());
+		me->SetFont(fontName->ToCString(), dlg->GetFontSizePt(), dlg->IsBold());
 		me->hexView->UpdateFont();
 	}
 	dlg.Delete();
@@ -360,7 +360,7 @@ Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CStringNN fileName, Bool d
 SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("Hex Viewer"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

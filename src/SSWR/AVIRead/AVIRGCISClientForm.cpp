@@ -128,7 +128,7 @@ void SSWR::AVIRead::AVIRGCISClientForm::ClearCliCACerts()
 SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 640, ui)
 {
 	this->SetText(CSTR("GCIS Client"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(core->GetTCPClientFactory(), true);

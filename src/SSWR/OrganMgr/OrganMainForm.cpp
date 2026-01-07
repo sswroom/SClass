@@ -2476,7 +2476,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(UTF8STRC("Arial"), 10.5, false);
+	this->SetFont(CSTR("Arial"), 10.5, false);
 	this->colorMgr = env->GetColorManager();
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
 	this->env = env;

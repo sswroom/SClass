@@ -53,7 +53,7 @@ SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(Optional<UI::GUIClie
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Create Service"));
 
 	this->core = core;

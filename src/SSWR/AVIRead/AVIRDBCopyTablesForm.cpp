@@ -460,7 +460,7 @@ void SSWR::AVIRead::AVIRDBCopyTablesForm::SetAllSelect(Bool selected)
 
 SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ArrayListNN<DB::DBManagerCtrl>> dbList) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Copy Tables"));
 	this->core = core;
 	this->dbList = dbList;

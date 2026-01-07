@@ -260,7 +260,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	this->sess = this->spath.CreateSession();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Shortest Path"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->mode = 0;
 	this->startPos = Math::Coord2DDbl(0, 0);
 	this->endPos = Math::Coord2DDbl(0, 0);

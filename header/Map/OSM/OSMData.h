@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_OSM_OSMDATA
 #define _SM_MAP_OSM_OSMDATA
 #include "Data/ArrayListStringNN.h"
+#include "Data/Comparator.hpp"
 #include "IO/ParsedObject.h"
 #include "Map/MapDrawLayer.h"
 
@@ -10,9 +11,10 @@ namespace Map
 	{
 		enum class ElementType
 		{
-			Node = 0,
-			Way = 1,
-			Relation = 2
+			Unknown = 0,
+			Node = 1,
+			Way = 2,
+			Relation = 3
 		};
 
 		enum class RoleType
@@ -34,6 +36,7 @@ namespace Map
 		{
 			Int64 id;
 			ElementType type;
+			Bool hasParent;
 			Optional<Data::ArrayListNN<TagInfo>> tags;
 		};
 
@@ -52,6 +55,7 @@ namespace Map
 		{
 			ElementType type;
 			Int64 refId;
+			Optional<Text::String> role;
 		};
 
 		struct RelationInfo : public ElementInfo
@@ -59,12 +63,36 @@ namespace Map
 			Data::ArrayListNN<RelationMember> members;
 		};
 
+		struct ElementGroup
+		{
+			Int32 x;
+			Int32 y;
+			Data::Int64FastMapNN<ElementInfo> elements;
+		};
+
+		class ElementComparator : public Data::Comparator<NN<ElementInfo>>
+		{
+		public:
+			virtual OSInt Compare(NN<ElementInfo> a, NN<ElementInfo> b) const;
+		};
+
 		class OSMData : public Map::MapDrawLayer
 		{
 		private:
-			Data::Int64FastMapNN<ElementInfo> elements;
+			Bool nodeSorted;
+			Bool waySorted;
+			Bool relationSorted;
+			Data::ArrayListNN<ElementInfo> elements;
+			Double groupDist;
+			Data::Int64FastMapNN<ElementGroup> eleGroups;
+			Optional<Text::String> lang;
+			Math::RectAreaDbl bounds;
+			Math::RectAreaDbl dataBounds;
+			Data::Timestamp osmBaseTime;
+			Optional<Text::String> note;
 
-			static void FreeElement(NN<ElementInfo> elem);
+			static void __stdcall FreeRelationMember(NN<RelationMember> member);
+			static void __stdcall FreeElement(NN<ElementInfo> elem);
 		public:
 			OSMData(Text::CStringNN sourceName);
 			virtual ~OSMData();
@@ -73,6 +101,20 @@ namespace Map
 			NN<NodeInfo> NewNode(Int64 id, Double lat, Double lon);
 			NN<WayInfo> NewWay(Int64 id);
 			NN<RelationInfo> NewRelation(Int64 id);
+			Optional<ElementInfo> GetElementById(Int64 id, ElementType type);
+			Optional<NodeInfo> GetNodeById(Int64 id);
+			Optional<WayInfo> GetWayById(Int64 id);
+			Optional<RelationInfo> GetRelationById(Int64 id);
+			void WayAddNode(NN<WayInfo> way, NN<NodeInfo> node);
+			void ElementAddTag(NN<ElementInfo> elem, NN<Text::String> k, NN<Text::String> v);
+			void RelationAddMember(NN<RelationInfo> rel, ElementType type, Int64 refId, Optional<Text::String> role);
+			void SetLang(Text::CString lang);
+			void SetDataBounds(Math::RectAreaDbl bounds);
+			void SetGroupDist(Double groupDist);
+			void SetOSMBase(Data::Timestamp baseTime);
+			void SetNote(Text::CStringNN note);
+			NN<Math::Geometry::Vector2D> CreateVector(NN<ElementInfo> elem);
+			void SortElements();
 
 			virtual DrawLayerType GetLayerType() const;
 			virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
@@ -97,6 +139,7 @@ namespace Map
 
 			virtual ObjectClass GetObjectClass() const;
 		};
+		ElementType ElementTypeFromString(Text::CStringNN str);
 	}
 }
 #endif

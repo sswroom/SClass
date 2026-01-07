@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEAboutForm::OKClicked(AnyType userObj)
 SSWR::AVIReadCE::AVIRCEAboutForm::AVIRCEAboutForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui) : UI::GUIForm(parent, 240, 120, ui)
 {
 	this->SetText(CSTR("About"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	
 	UTF8Char sbuff[512];

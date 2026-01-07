@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(Optional<UI::GUIClientContro
 {
 	this->core = core;
 	this->SetText(CSTR("eGauge Server"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
 	this->dirHdlr = 0;

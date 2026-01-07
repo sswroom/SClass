@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(AnyType userObj)
 
 SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Proxy Server"));
 
 	this->core = core;

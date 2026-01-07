@@ -276,7 +276,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClient
 	this->navi = navi;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("GPS Simulator"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->currPos = Math::Coord2DDbl(0, 0);
 	this->speed = 50;

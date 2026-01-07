@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj
 SSWR::AVIRead::AVIRCustomTileMapForm::AVIRCustomTileMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 1024, 120, ui)
 {
 	this->SetText(CSTR("Custom Tile Map"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

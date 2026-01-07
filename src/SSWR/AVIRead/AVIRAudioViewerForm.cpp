@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Audio Viewer - "));
 	sptr = audSrc->GetSourceName(sptr).Or(sptr);
 	this->SetText(CSTRP(sbuff, sptr));

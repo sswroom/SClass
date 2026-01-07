@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(AnyType userObj)
 SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 1024, 120, ui)
 {
 	this->SetText(CSTR("Bing Maps"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

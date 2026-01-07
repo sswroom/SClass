@@ -32,7 +32,7 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnCancelClicked(AnyType us
 SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf) : UI::GUIForm(parent, 256, 152, ui)
 {
 	this->SetText(CSTR("Value Filter"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));

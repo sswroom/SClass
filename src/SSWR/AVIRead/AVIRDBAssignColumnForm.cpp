@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnCancelClicked(AnyType us
 
 SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayList<UOSInt>> colInd, NN<Data::ArrayListStringNN> colStr) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("DB Assign Column"));
 	this->core = core;
 	this->dbTable = dbTable;

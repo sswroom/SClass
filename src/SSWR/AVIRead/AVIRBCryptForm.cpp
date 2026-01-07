@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(AnyType userObj)
 
 SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 320, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("BCrypt"));
 	this->SetNoResize(true);
 	this->core = core;

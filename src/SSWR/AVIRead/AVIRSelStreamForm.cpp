@@ -418,7 +418,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 	UnsafeArray<UTF8Char> sptr;
 
 	this->SetText(CSTR("Select Stream"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

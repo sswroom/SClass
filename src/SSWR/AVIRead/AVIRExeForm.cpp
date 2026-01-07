@@ -315,7 +315,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->exeFile = exeFile;
 	this->parts = 0;
 	this->codesList = 0;

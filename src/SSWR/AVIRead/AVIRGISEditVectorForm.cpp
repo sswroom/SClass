@@ -379,7 +379,7 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 	sb.AppendC(UTF8STRC("Edit Vector - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToCString());
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->lbObjects = ui->NewListBox(*this, false);
 	this->lbObjects->SetRect(0, 0, 150, 23, false);

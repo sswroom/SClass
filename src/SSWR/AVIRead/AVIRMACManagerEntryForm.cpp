@@ -38,7 +38,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(NN<Net::MACIn
 
 SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, UnsafeArray<const UInt8> mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("MAC Entry"));
 	this->SetNoResize(true);
 

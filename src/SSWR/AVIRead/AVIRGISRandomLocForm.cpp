@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->navi = navi;
 	this->SetText(CSTR("Random Location"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->selecting = false;
 	this->isDown = false;

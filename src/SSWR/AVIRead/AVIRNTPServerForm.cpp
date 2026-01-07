@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(Optional<UI::GUIClientContro
 {
 	this->core = core;
 	this->SetText(CSTR("NTP Server"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->svr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

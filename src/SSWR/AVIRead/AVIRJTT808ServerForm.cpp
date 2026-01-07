@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::ServerStop()
 
 SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("JT/T808 Server"));
 
 	this->core = core;

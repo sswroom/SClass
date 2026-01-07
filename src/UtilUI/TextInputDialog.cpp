@@ -21,7 +21,7 @@ void __stdcall UtilUI::TextInputDialog::OnCancelClicked(AnyType userObj)
 
 UtilUI::TextInputDialog::TextInputDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr, Text::CStringNN title, Text::CStringNN message) : UI::GUIForm(parent, 320, 120, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(title);
 	this->SetNoResize(true);
 	this->monMgr = monMgr;

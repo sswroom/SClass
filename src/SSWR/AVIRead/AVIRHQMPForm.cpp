@@ -906,7 +906,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
-			frm->SetFont(0, 0, 8.25, false);
+			frm->SetFont(nullptr, 8.25, false);
 			frm->SetText(CSTR("Info"));
 			frm->Show();
 			frm->HandleFormClosed(OnDebugClosed, this);

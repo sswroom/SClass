@@ -766,7 +766,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	sb.AppendC(UTF8STRC("Query - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToCString());
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->pnlObj = ui->NewPanel(*this);
 	this->pnlObj->SetRect(0, 0, 100, 55, false);

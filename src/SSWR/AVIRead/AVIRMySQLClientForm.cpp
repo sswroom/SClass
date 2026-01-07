@@ -268,7 +268,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientCo
 {
 	this->core = core;
 	this->SetText(CSTR("MySQL Client"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->cli = 0;
 
 	this->tcMain = ui->NewTabControl(*this);

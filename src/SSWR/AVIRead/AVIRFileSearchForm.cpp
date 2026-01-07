@@ -179,7 +179,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, Unsaf
 SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 750, 344, ui)
 {
 	this->SetText(CSTR("File Search"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

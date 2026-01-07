@@ -169,7 +169,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> par
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Set Monitor DPI"));
 
 	this->pimg = 0;

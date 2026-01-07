@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRCodePageForm::CancelClicked(AnyType userObj)
 SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 260, 664, ui)
 {
 	this->SetText(CSTR("Select Code Page"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

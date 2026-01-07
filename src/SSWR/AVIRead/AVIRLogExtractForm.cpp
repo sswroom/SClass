@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 184, ui)
 {
 	this->SetText(CSTR("Log Extract"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

@@ -275,7 +275,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnCancelClicked(AnyType userOb
 
 SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, SelectMode selMode, Int32 initId) : UI::GUIForm(parent, 420, 440, ui)
 {
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 
 	this->env = env;
 	this->selMode = selMode;

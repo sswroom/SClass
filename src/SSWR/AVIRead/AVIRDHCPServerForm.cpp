@@ -210,7 +210,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 	this->sockf = this->core->GetSocketFactory();
 	this->svr = 0;
 	this->SetText(CSTR("DHCP Server"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlControl = ui->NewPanel(*this);

@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(Optional<UI::GUIClientContro
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->pin = pin;
 	this->core = core;
 	this->isOutput = false;

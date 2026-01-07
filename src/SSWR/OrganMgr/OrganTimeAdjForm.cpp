@@ -231,7 +231,7 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(UnsafeArray<const UTF8Char>
 SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, NN<DataFileInfo> dataFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 
 	this->env = env;
 	this->dataFile = dataFile;

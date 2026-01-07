@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(Optional<UI::GUIClientControl> parent, N
 	this->envCsys = envCsys;
 	this->wms = 0;
 	this->SetText(CSTR("Web Map Service"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnCancelClicked(AnyType userObj)
 
 SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 108, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("ODBC String Connection"));
 	this->SetNoResize(true);
 

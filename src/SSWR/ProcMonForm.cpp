@@ -283,7 +283,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Process Monitor"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);

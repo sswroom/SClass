@@ -299,7 +299,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType u
 SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Line Chart"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->core = core;
 	this->chart = 0;
 	this->db = db;

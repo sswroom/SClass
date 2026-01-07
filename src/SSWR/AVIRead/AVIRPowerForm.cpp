@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnDisplayOffClicked(AnyType userObj
 SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 168, ui)
 {
 	this->SetText(CSTR("Power Control"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

@@ -461,7 +461,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVDefSMPTE240MChg(AnyType
 SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<MonitorHandle> hMon) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Monitor Color Setting"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->colorMgr = this->core->GetColorManager();

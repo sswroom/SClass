@@ -46,7 +46,7 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnCancelClicked(AnyType user
 SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 222, 118, ui)
 {
 	this->SetText(CSTR("Add Filter"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));

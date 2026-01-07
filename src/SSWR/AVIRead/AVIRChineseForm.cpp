@@ -503,7 +503,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	this->SetText(CSTR("Chinese"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -569,7 +569,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->lblCurrChar = ui->NewLabel(this->tpBaseInfo, CSTR("Character"));
 	this->lblCurrChar->SetRect(4, 4, 100, 23, false);
 	this->txtCurrChar = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
-	this->txtCurrChar->SetFont(0, 0, 48, false);
+	this->txtCurrChar->SetFont(nullptr, 48, false);
 	this->txtCurrChar->SetRect(104, 4, 90, 71, false);
 	this->txtCurrChar->SetReadOnly(true);
 	this->lblUTF8Code = ui->NewLabel(this->tpBaseInfo, CSTR("UTF-8"));

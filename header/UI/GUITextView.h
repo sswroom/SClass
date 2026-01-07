@@ -79,6 +79,10 @@ namespace UI
 		void OnMouseWheel(Bool isDown);
 		void OnDraw(void *cr);
 		void SetShiftState(Bool isDown);
+		void FontUpdated()
+		{
+			this->UpdateScrollBar();
+		}
 	};
 }
 #endif

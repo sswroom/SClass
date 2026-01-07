@@ -196,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(AnyType u
 SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("UDP Capture"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->svr = 0;

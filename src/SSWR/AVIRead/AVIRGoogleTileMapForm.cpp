@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(AnyType userObj
 SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 400, 120, ui)
 {
 	this->SetText(CSTR("Google Tile Map"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

@@ -236,7 +236,7 @@ Optional<IO::ValgrindLog::StackEntry> SSWR::AVIRead::AVIRValgrindLogForm::GetOpt
 
 SSWR::AVIRead::AVIRValgrindLogForm::AVIRValgrindLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Valgrind Log"));
 	
 	this->core = core;

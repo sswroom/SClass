@@ -160,6 +160,11 @@ namespace Math
 			return Math::Quadrilateral(tl, tr, br, bl);
 		}
 
+		Bool IsZero() const
+		{
+			return this->min.IsZero() && this->max.IsZero();
+		}
+
 		static RectAreaDbl GetRectArea(Coord2DDbl *points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;

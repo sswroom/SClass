@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(AnyType userObj)
 SSWR::AVIRead::AVIRSSHInfoForm::AVIRSSHInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("SSH Info"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();

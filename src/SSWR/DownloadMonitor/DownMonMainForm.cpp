@@ -597,7 +597,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(Optional<UI::GUIClientCo
 {
 	this->core = core;
 	this->SetText(CSTR("Download Monitor"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->alarmSet = false;
 	this->alarmTime = 0;
 	this->core->SetFileEndHandler(OnFileEnd, this);

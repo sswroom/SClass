@@ -15,7 +15,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> p
 	UInt8 *hash;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	sptr = fileChk->GetSourceName(Text::StrConcatC(sbuff, UTF8STRC("File Check - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 	

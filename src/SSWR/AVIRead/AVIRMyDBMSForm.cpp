@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 {
 	this->core = core;
 	this->SetText(CSTR("My DBMS"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->svr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRFunctionInfoForm::OnMyStackDblClk(AnyType user
 
 SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Manage::Process> proc, Optional<Manage::SymbolResolver> symbol, Int64 funcAddr) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Function Info"));
 
 	this->core = core;

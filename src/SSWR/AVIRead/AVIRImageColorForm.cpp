@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(AnyType userO
 
 SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<UI::GUIPictureBoxDD> previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Image Color"));
 	this->SetNoResize(true);
 

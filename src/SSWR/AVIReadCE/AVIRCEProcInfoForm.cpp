@@ -419,7 +419,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 
 SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 240, 320, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Process Info"));
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 

@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::SNBDongle::HandleType handType) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SnB Handle Type"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->simg = 0;

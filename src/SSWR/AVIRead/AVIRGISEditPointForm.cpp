@@ -277,7 +277,7 @@ SSWR::AVIRead::AVIRGISEditPointForm::AVIRGISEditPointForm(Optional<UI::GUIClient
 	sb.AppendC(UTF8STRC("Edit Point - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToCString());
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->lbObjects = ui->NewListBox(*this, false);
 	this->lbObjects->SetRect(0, 0, 150, 23, false);

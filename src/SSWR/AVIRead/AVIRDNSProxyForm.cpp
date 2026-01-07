@@ -756,7 +756,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(Optional<UI::GUIClientControl>
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("DNS Proxy"));
 
 	this->core = core;

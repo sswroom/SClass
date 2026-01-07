@@ -86,7 +86,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Font Style"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->pnlBtn = ui->NewPanel(*this);
 	this->pnlBtn->SetRect(0, 0, 100, 48, false);

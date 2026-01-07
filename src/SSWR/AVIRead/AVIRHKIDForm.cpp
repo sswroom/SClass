@@ -23,7 +23,7 @@ SSWR::AVIRead::AVIRHKIDForm::AVIRHKIDForm(Optional<UI::GUIClientControl> parent,
 {
 	this->core = core;
 	this->SetText(CSTR("HKID Validate"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->lblHKID = ui->NewLabel(*this, CSTR("HKID"));

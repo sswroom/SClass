@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 240, ui)
 {
 	this->SetText(CSTR("Brute Force"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	
 	this->core = core;

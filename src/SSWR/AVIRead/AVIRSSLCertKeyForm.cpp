@@ -197,7 +197,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::ClearCACerts()
 SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, Optional<Crypto::Cert::X509Cert> cert, Optional<Crypto::Cert::X509File> key, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("SSL Cert/Key"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	
 	this->core = core;

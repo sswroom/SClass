@@ -18,10 +18,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		frm->SetText(CSTR("Test 7 - Font and Color"));
 		btn = core->NewButton(frm, CSTR("Button"));
 		btn->SetRect(4, 4, 75, 23, false);
-		btn->SetFont(UTF8STRC("Arial"), 5, true);
+		btn->SetFont(CSTR("Arial"), 5, true);
 		lbl = core->NewLabel(frm, CSTR("Big Text"));
 		lbl->SetRect(4, 32, 100, 23, false);
-		frm->SetFont(UTF8STRC("Arial"), 32, false);
+		frm->SetFont(CSTR("Arial"), 32, false);
 		frm->SetBGColor(0xff80ffc0);
 		frm->SetExitOnClose(true);
 		frm->Show();

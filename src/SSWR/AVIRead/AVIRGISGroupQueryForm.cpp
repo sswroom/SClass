@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClie
 		sb.Append(name);
 	}
 	this->SetText(sb.ToCString());
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->cboItem = ui->NewComboBox(*this, false);
 	this->cboItem->SetRect(0, 0, 100, 23, false);

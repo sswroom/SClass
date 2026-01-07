@@ -1301,7 +1301,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceDblClk(AnyType userObj
 
 SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::EthernetAnalyzer> analyzer) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("RAW Monitor"));
 
 	this->core = core;

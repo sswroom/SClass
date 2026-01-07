@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRStringMsgForm::OnOKClicked(AnyType userObj)
 SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, Text::CStringNN msg) : UI::GUIForm(parent, 480, 144, ui)
 {
 	this->SetText(title);
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

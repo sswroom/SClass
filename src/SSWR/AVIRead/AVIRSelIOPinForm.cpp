@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 	Data::ArrayListInt32 *ports;
 
 	this->SetText(CSTR("Select IOPin"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

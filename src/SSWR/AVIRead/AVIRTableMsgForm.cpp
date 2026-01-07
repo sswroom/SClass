@@ -4,7 +4,7 @@
 SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(title);
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
 	this->colCnt = colCnt;

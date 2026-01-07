@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnNoResourceChg(AnyType userObj, 
 SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 640, 144, ui)
 {
 	this->SetText(CSTR("Add ESRI Map"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

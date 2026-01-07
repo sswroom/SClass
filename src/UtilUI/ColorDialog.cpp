@@ -1394,7 +1394,7 @@ void UtilUI::ColorDialog::UpdateColor()
 
 UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::ColorManager> colorMgr, NN<Media::DrawEngine> eng, ColorCorrType colorCorr, NN<const Media::ColorProfile> colorProfile, Optional<Media::MonitorMgr> monMgr) : UI::GUIForm(parent, 756, 640, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Color Setting"));
 	this->SetNoResize(true);
 	this->aVal = 1.0;

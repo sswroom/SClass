@@ -200,7 +200,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Edit Font Style"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->pbFontPreview = ui->NewPictureBox(*this, eng, false, false);
 	this->pbFontPreview->SetRect(0, 0, 288, 64, false);

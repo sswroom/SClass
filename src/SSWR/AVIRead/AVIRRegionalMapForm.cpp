@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj,
 SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCSys) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Regional Map Source"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->ssl = ssl;

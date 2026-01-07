@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("EasyWay EW-DTU01"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->cli = 0;

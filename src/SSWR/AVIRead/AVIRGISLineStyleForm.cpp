@@ -82,7 +82,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Line Style"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->pnlButtons = ui->NewPanel(*this);

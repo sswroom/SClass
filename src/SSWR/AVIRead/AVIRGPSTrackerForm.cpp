@@ -273,7 +273,7 @@ NN<UI::GUIButton> SSWR::AVIRead::AVIRGPSTrackerForm::NewDisplayOffButton(NN<UI::
 
 SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::LocationService> locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("GPS Tracker"));
 
 	this->core = core;

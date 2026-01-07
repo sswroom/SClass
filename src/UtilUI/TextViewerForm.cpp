@@ -1,13 +1,18 @@
 #include "Stdafx.h"
 #include "Text/MyString.h"
 #include "UI/GUIFileDialog.h"
+#include "UI/GUIFontDialog.h"
 #include "UtilUI/TextGotoDialog.h"
 #include "UtilUI/TextSearchForm.h"
 #include "UtilUI/TextViewerForm.h"
 
-#define MNU_FILE_OPEN 101
-#define MNU_EDIT_GOTO 102
-#define MNU_EDIT_SEARCH 103
+typedef enum
+{
+	MNU_FILE_OPEN = 101,
+	MNU_EDIT_GOTO = 102,
+	MNU_EDIT_SEARCH = 103,
+	MNU_VIEW_FONT
+} MenuItems;
 
 void __stdcall UtilUI::TextViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
@@ -33,7 +38,7 @@ void __stdcall UtilUI::TextViewerForm::OnSearchClosed(AnyType userObj, NN<UI::GU
 UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr, NN<Media::DrawEngine> deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	NN<UI::GUIMenu> mnu;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Text Viewer"));
 
 	this->monMgr = monMgr;
@@ -56,6 +61,8 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Edit"));
 	mnu->AddItem(CSTR("&GoTo..."), MNU_EDIT_GOTO, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_G);
 	mnu->AddItem(CSTR("&Search"), MNU_EDIT_SEARCH, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&View"));
+	mnu->AddItem(CSTR("&Font..."), MNU_VIEW_FONT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
@@ -112,6 +119,18 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_EDIT_SEARCH:
 		this->OpenSearch(nullptr);
+		break;
+	case MNU_VIEW_FONT:
+		{
+			NN<UI::GUIFontDialog> dlg = this->ui->NewFontDialog(this->fontName, this->fontHeightPt, this->fontIsBold, false);
+			NN<Text::String> fontName;
+			if (dlg->ShowDialog(this->GetHandle()) && dlg->GetFontName().SetTo(fontName))
+			{
+				this->txtView->SetFont(fontName->ToCString(), dlg->GetFontSizePt(), dlg->IsBold());
+				this->txtView->FontUpdated();
+			}
+			dlg.Delete();
+		}
 		break;
 	}
 }

@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 		if (pobj.SetTo(nnpobj))
 		{
 			IO::ParserType pt = nnpobj->GetParserType();
-			if (pt == IO::ParserType::MapLayer)
+			if (pt == IO::ParserType::MapLayer || pt == IO::ParserType::OSMData)
 			{
 				layers->Add(NN<Map::MapDrawLayer>::ConvertFrom(nnpobj));
 			}
@@ -703,7 +703,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 
 	this->wgs84CSys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->UpdateTitle();
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetArea(0, 0, 100, 24, false);

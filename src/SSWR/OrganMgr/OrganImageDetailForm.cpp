@@ -22,7 +22,7 @@ void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnCancelClicked(AnyType use
 SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, NN<UserFileInfo> userFile) : UI::GUIForm(parent, 420, 224, ui)
 {
 	this->SetNoResize(true);
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 
 	this->env = env;
 	this->descript = 0;

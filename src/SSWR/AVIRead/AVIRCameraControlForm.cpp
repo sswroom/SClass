@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 
 SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::CameraControl> camera) : UI::GUIForm(parent, 640, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Camera Control"));
 
 	this->core = core;

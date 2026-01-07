@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(AnyType userObj
 SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::JavaClass> clsFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->clsFile = clsFile;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

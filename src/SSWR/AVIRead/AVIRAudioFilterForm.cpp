@@ -1008,7 +1008,7 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Bool showMenu) : UI::GUIForm(parent, 1024, 768, ui), fft(FFTSAMPLE, Math::FFTCalc::WT_BLACKMANN_HARRIS)
 {
 	this->SetText(CSTR("Audio Filter"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

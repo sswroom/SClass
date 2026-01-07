@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	sptr = logFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LogFile Viewer - ")));
 	this->SetText(CSTRP(sbuff, sptr));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->lvLogs = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
 	this->lvLogs->SetDockType(UI::GUIControl::DOCK_FILL);

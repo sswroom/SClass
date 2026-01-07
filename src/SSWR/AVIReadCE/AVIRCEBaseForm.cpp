@@ -151,7 +151,7 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(Optional<UI::GUIClientControl> p
 {
 	this->core = core;
 	this->SetText(CSTR("AVIRead"));
-	this->SetFont(0, 0, 8.75, false);
+	this->SetFont(nullptr, 8.75, false);
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	NN<Data::ArrayListNN<MenuInfo>> menu;

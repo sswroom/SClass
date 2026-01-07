@@ -74,7 +74,7 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnCancelClicked(AnyType us
 SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 350, 232, ui)
 {
 	this->SetText(CSTR("Range Filter"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));

@@ -209,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 
 SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000), analyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Ping Monitor"));
 
 	this->core = core;

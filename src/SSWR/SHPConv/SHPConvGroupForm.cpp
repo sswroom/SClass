@@ -16,7 +16,7 @@ void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnCancelClicked(AnyType userObj)
 SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui) : UI::GUIForm(parent, 300, 216, ui)
 {
 	this->SetText(CSTR("Group"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));

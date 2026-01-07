@@ -1322,7 +1322,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnAllFileClicked(AnyType userO
 SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 632, 483, ui)
 {
 	this->SetText(CSTR("Burnt Disc"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 	this->selectedFile = 0;

@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> p
 	this->previewImage = 0;
 
 	this->SetText(CSTR("Font Modify"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->pbPreview = ui->NewPictureBox(*this, eng, true, false);

@@ -188,7 +188,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(Optional<UI::GUIClientCont
 {
 	this->core = core;
 	this->SetText(CSTR("EDID Viewer"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->edid = 0;
 	this->edidSize = 0;

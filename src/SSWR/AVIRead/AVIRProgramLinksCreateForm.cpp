@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCancelClicked(AnyTyp
 SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::ProgramLinkManager> progMgr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Program Links Create"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

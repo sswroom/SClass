@@ -282,13 +282,13 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	this->SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double ptSize, Bool isBold)
+void UI::GUIControl::SetFont(Text::CString fontName, Double ptSize, Bool isBold)
 {
 	OPTSTR_DEL(this->fontName);
-	UnsafeArray<const UTF8Char> nnname;
-	if (name.SetTo(nnname))
+	Text::CStringNN nnname;
+	if (fontName.SetTo(nnname))
 	{
-		this->fontName = Text::String::New(nnname, nameLen);
+		this->fontName = Text::String::New(nnname);
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;

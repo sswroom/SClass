@@ -244,7 +244,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(Optional<UI::GUIClientCo
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Line Counter"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->pnlConfig = ui->NewPanel(*this);
 	this->pnlConfig->SetRect(0, 0, 100, 268, false);

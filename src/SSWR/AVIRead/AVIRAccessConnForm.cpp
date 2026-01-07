@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnCancelClicked(AnyType userOb
 
 SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 100, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Access Connection"));
 	this->SetNoResize(true);
 

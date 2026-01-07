@@ -13,7 +13,7 @@ namespace UI
 			virtual ~JUIButton();
 
 			virtual void SetText(Text::CStringNN text);
-			virtual void SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
+			virtual void SetFont(Text::CString fontName, Double fontHeightPt, Bool isBold);
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 		};

@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnGPSClick(AnyType userObj
 SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 272, ui)
 {
 	this->SetText(CSTR("Set Location Service"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

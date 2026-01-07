@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(AnyType 
 SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Crypto::Cert::CertStore> store) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	NN<Crypto::Cert::CertStore> trusts;
 	if (store.SetTo(trusts))
 	{

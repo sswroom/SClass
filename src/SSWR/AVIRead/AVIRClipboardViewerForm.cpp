@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(AnyType user
 SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Clipboard Viewer"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

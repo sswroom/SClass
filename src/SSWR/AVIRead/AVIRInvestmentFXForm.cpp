@@ -180,7 +180,7 @@ SSWR::AVIRead::AVIRInvestmentFXForm::AVIRInvestmentFXForm(Optional<UI::GUIClient
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(TITLE);
 	this->SetNoResize(true);
 

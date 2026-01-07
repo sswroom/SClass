@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType
 SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("755"));
-	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
+	this->SetFont(CSTR("MingLiu"), 8.25, false);
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);

@@ -74,13 +74,13 @@ void UI::Win::WinButton::SetText(Text::CStringNN text)
 	Text::StrDelNew(wptr);
 }
 
-void UI::Win::WinButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
+void UI::Win::WinButton::SetFont(Text::CString fontName, Double fontHeightPt, Bool isBold)
 {
 	OPTSTR_DEL(this->fontName);
-	UnsafeArray<const UTF8Char> nnname;
-	if (name.SetTo(nnname))
+	Text::CStringNN nnname;
+	if (fontName.SetTo(nnname))
 	{
-		this->fontName = Text::String::New(nnname, nameLen).Ptr();
+		this->fontName = Text::String::New(nnname);
 	}
 	this->fontHeightPt = fontHeightPt;
 	this->fontIsBold = isBold;

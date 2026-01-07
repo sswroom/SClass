@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(AnyType userObj, Data::
 
 SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("File Extractor"));
 	this->SetNoResize(true);
 

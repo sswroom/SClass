@@ -78,12 +78,12 @@ void UI::JavaUI::JUIButton::SetText(Text::CStringNN text)
 	}
 }
 
-void UI::JavaUI::JUIButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
+void UI::JavaUI::JUIButton::SetFont(Text::CString fontName, Double fontHeightPt, Bool isBold)
 {
 	NN<Java::JavaJButton> btn;
 	if (Optional<Java::JavaJButton>::ConvertFrom(this->hwnd).SetTo(btn))
 	{
-		Java::JavaFont font(Text::CString(name, nameLen), isBold?Java::JavaFont::Style::BOLD:Java::JavaFont::Style::PLAIN, Double2Int32(fontHeightPt));
+		Java::JavaFont font(fontName, isBold?Java::JavaFont::Style::BOLD:Java::JavaFont::Style::PLAIN, Double2Int32(fontHeightPt));
 		btn->SetFont(font);
 	}
 }

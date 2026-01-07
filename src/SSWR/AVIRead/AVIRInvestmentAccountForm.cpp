@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentAccountForm::OnCancelClicked(AnyType
 
 SSWR::AVIRead::AVIRInvestmentAccountForm::AVIRInvestmentAccountForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 120, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(TITLE);
 	this->SetNoResize(true);
 

@@ -222,7 +222,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(NN<IO::ZIPMTBuilder> zip, U
 SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 180, ui)
 {
 	this->SetText(this->GetFormName());
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

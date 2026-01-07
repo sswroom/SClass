@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	sb.Append(CSTR("PDF Objects - "));
 	sb.Append(doc->GetSourceNameObj());
 	this->SetText(sb.ToCString());
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->doc = doc;

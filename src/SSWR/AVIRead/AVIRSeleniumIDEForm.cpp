@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	this->SetText(CSTR("Selenium IDE"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->side = side;

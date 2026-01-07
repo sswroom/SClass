@@ -10,7 +10,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("SNMP Walk"));
 
 	this->core = core;

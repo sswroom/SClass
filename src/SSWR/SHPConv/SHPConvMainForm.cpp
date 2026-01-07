@@ -1370,7 +1370,7 @@ NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf,
 SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, NN<Media::MonitorMgr> monMgr) : UI::GUIForm(parent, 576, 464, ui)
 {
 	this->SetText(CSTR("SHPConv"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->monMgr = monMgr;
 	this->deng = deng;

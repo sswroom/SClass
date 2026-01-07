@@ -284,7 +284,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(Optional<UI::GUIClientControl> pare
 	this->changed = false;
 
 	this->SetText(this->env->GetLang(CSTR("BookFormTitle")));
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 
 	this->pnlBook = ui->NewPanel(*this);
 	this->pnlBook->SetRect(0, 0, 168, 500, false);

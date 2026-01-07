@@ -82,7 +82,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> p
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Line Modify"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
 	this->pbPreview = ui->NewPictureBox(*this, this->eng, true, false);

@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnCancelClicked(AnyType userObj
 
 SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 340, 188, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("MySQL Connection"));
 
 	this->core = core;

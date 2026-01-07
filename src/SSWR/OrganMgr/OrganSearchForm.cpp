@@ -33,7 +33,7 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnCancelClicked(AnyType userObj)
 
 SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(0, 340, 90, ui)
 {
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 	this->SetNoResize(true);
 	this->env = env;
 	this->foundStr = 0;

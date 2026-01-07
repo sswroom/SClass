@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientContro
 	this->flags = flags;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("GIS Search"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->txtSearchStr = ui->NewTextBox(*this, CSTR(""));
 	this->txtSearchStr->SetRect(0, 0, 100, 21, false);

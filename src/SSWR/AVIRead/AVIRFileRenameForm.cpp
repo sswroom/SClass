@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnCancelClicked(AnyType userOb
 
 SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Text::String> fileName) : UI::GUIForm(parent, 532, 120, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->fileName = fileName->Clone();
 	UOSInt i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	Text::StringBuilderUTF8 sb;

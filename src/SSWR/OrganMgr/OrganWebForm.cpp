@@ -14,7 +14,7 @@ void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(AnyType userObj)
 
 SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> eng) : UI::GUIForm(parent, 160, 100, ui)
 {
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 	this->SetText(CSTR("OrganWeb"));
 	this->SetNoResize(true);
 

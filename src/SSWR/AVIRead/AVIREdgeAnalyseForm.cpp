@@ -229,7 +229,7 @@ SSWR::AVIRead::AVIREdgeAnalyseForm::AVIREdgeAnalyseForm(Optional<UI::GUIClientCo
 	this->webHookListener = 0;
 	NEW_CLASSNN(this->webHookHdlr, EdgeAnalyseHandler(*this));
 	this->SetText(TITLE);
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->OnMonitorChanged();
 
 	this->tcMain = ui->NewTabControl(*this);

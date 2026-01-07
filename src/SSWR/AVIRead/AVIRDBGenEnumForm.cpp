@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRDBGenEnumForm::OnUpdate(AnyType userObj)
 
 SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table, UOSInt colIndex) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Database Generate Enum"));
 	this->core = core;
 	this->db = db;

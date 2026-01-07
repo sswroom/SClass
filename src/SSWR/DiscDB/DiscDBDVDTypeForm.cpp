@@ -83,7 +83,7 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 358, 223, ui)
 {
 	this->SetText(CSTR("Maintain DVD Types"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));

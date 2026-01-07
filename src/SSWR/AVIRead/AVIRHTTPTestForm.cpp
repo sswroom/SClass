@@ -245,7 +245,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearSteps()
 
 SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), cookieManager(CSTR("HTTP Cookie Manager"))
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("HTTP Test"));
 
 	this->core = core;

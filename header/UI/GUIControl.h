@@ -266,7 +266,7 @@ namespace UI
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
 		void SetRect(Double left, Double top, Double width, Double height, Bool updateScn);
-		virtual void SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double ptSize, Bool isBold);
+		virtual void SetFont(Text::CString fontName, Double ptSize, Bool isBold);
 		void InitFont();
 		virtual void SetDockType(DockType dockType);
 		virtual DockType GetDockType();

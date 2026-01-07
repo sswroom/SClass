@@ -336,7 +336,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(NN<Data::ArrayListNN<SSWR::A
 SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 432, 344, ui)
 {
 	this->SetText(CSTR("File Size Pack"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

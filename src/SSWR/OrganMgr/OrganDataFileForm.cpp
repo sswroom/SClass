@@ -96,7 +96,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Data File Form"));
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 
 	this->env = env;
 

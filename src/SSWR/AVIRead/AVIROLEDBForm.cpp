@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnCancelClicked(AnyType userObj)
 
 SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 92, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("OLEDB Connection"));
 	this->SetNoResize(true);
 

@@ -221,7 +221,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(AnyType userObj)
 
 SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 384, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("UDP Test"));
 	this->SetNoResize(true);
 

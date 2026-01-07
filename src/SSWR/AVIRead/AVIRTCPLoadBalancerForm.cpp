@@ -292,7 +292,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPLoadBalancerForm::FreeSession(NN<TCPSession
 
 SSWR::AVIRead::AVIRTCPLoadBalancerForm::AVIRTCPLoadBalancerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(TITLE);
 
 	this->core = core;

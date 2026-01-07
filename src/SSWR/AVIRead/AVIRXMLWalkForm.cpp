@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CStringNN fileName)
 SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("XML Walk"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

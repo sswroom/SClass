@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRTimestampForm::AVIRTimestampForm(Optional<UI::GUIClientContro
 {
 	this->core = core;
 	this->SetText(CSTR("Timestamp"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

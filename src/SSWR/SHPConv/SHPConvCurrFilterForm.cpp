@@ -38,7 +38,7 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnOkClicked(AnyType userObj
 SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<Data::ArrayListNN<MapFilter>> filters, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 414, 298, ui)
 {
 	this->SetText(CSTR("Current Filters"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));

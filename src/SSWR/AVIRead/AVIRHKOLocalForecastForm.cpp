@@ -44,7 +44,7 @@ void SSWR::AVIRead::AVIRHKOLocalForecastForm::Reload(Net::HKOWeather::Language l
 SSWR::AVIRead::AVIRHKOLocalForecastForm::AVIRHKOLocalForecastForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("HK Observatory Local Weather Forecast"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);

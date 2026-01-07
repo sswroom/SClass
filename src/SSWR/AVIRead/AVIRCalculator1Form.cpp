@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIRCalculator1Form::AVIRCalculator1Form(Optional<UI::GUIClientCo
 	UTF8Char sbuff[32];
 	this->core = core;
 
-	this->SetFont(0, 0, 22, false);
+	this->SetFont(nullptr, 22, false);
 	this->SetText(CSTR("Simple Calculator"));
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

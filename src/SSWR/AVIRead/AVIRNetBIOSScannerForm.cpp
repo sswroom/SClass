@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerUpdated(AnyType us
 
 SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("NetBIOS Scanner"));
 
 	this->core = core;

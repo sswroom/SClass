@@ -219,7 +219,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(Optional<UI::GUI
 	NN<UI::GUILabel> lbl;
 	this->SetText(CSTR("Profiled Resizer"));
 	this->SetNoResize(true);
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());

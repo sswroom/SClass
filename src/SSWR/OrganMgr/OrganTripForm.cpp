@@ -190,7 +190,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationLastClicked(AnyType user
 
 SSWR::OrganMgr::OrganTripForm::OrganTripForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(parent, 640, 300, ui)
 {
-	this->SetFont(0, 0, 10.5, false);
+	this->SetFont(nullptr, 10.5, false);
 	this->env = env;
 	this->locId = 0;
 	this->updating = false;

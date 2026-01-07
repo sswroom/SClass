@@ -225,7 +225,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(Optional<UI::GUIClientCo
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	this->SetText(CSTR("Monitor Custom Color"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->monColor = monColor;

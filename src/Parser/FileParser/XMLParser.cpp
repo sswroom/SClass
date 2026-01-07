@@ -263,7 +263,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	}
 	else if (nodeText->Equals(UTF8STRC("osm")))
 	{
-		Optional<Map::MapDrawLayer> lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
+		//Optional<Map::MapDrawLayer> lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
+		Optional<Map::MapDrawLayer> lyr = Map::OSM::OSMParser::ParseOSMNode(reader, fileName);
 		while (reader.ReadNext())
 		{
 			if (reader.GetNodeType() == Text::XMLNode::NodeType::Element)

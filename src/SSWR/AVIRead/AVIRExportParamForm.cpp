@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 	this->exporter = exporter;
 	this->param = param;
 	this->SetText(CSTR("Export Parameters"));
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

@@ -543,7 +543,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	this->SetFont(0, 0, 8.25, false);
+	this->SetFont(nullptr, 8.25, false);
 	sptr = db->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Database - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 	this->core = core;
