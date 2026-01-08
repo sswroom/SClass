@@ -50,9 +50,9 @@ namespace SSWR
 
 			static void __stdcall OnImageChg(AnyType userObj);
 			void UpdateImgStat();
-			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnAlphaScrolled(AnyType userObj, UOSInt scrollPos);
 			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
 		public:

@@ -61,6 +61,7 @@ namespace Map
 		void DrawVector(NN<Math::Geometry::Vector2D> vec);
 		void DrawPoint(NN<Math::Geometry::Point> pt);
 		void DrawLineString(NN<Math::Geometry::LineString> pl);
+		void DrawLinearRing(NN<Math::Geometry::LinearRing> lr);
 		void DrawPolyline(NN<Math::Geometry::Polyline> pl);
 		void DrawPolygon(NN<Math::Geometry::Polygon> pg);
 		void DrawCompoundCurve(NN<Math::Geometry::CompoundCurve> cc);

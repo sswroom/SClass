@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 	dlg.Delete();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
@@ -45,7 +45,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType user
 			me->UpdateFontPreview();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(AnyType userObj, UOSInt scrollPos)
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(AnyType use
 	me->UpdateFontPreview();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
@@ -71,7 +71,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType us
 			me->UpdateFontPreview();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontsDoubleClicked(AnyType userObj)

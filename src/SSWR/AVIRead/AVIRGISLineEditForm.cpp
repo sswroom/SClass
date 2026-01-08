@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userO
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	NN<LineLayer> currLayer;
@@ -190,7 +190,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj,
 			me->UpdatePreview();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userObj)

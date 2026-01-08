@@ -52,7 +52,6 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 		NEW_CLASSNN(frm, AVIRead::AVIRGISForm(0, this->ui, *this, NN<Map::MapEnv>::ConvertFrom(pobj), ((Map::MapEnv*)pobj.Ptr())->CreateMapView(Math::Size2DDbl(320, 240))));
 		InitForm(frm);
 		break;
-	case IO::ParserType::OSMData:
 	case IO::ParserType::MapLayer:
 		if (this->batchLoad)
 		{

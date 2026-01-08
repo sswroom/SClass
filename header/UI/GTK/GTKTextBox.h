@@ -24,7 +24,7 @@ namespace UI
 			GTKTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
 			virtual ~GTKTextBox();
 
-			virtual Bool EventKeyDown(UInt32 osKey);
+			virtual UI::EventState EventKeyDown(UInt32 osKey);
 
 			virtual void SetReadOnly(Bool isReadOnly);
 			virtual void SetPasswordChar(UTF32Char c);

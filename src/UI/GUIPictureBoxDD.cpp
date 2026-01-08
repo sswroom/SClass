@@ -765,7 +765,7 @@ void UI::GUIPictureBoxDD::OnMouseMove(Math::Coord2D<OSInt> pos)
 	while (i < j)
 	{
 		Data::CallbackStorage<MouseEventHandler> cb = this->mouseMoveHdlrs.GetItem(i);
-		if (cb.func(cb.userObj, pos, UI::GUIControl::MBTN_LEFT))
+		if (cb.func(cb.userObj, pos, UI::GUIControl::MBTN_LEFT) == EventState::StopEvent)
 		{
 			return;
 		}
@@ -789,7 +789,7 @@ void UI::GUIPictureBoxDD::OnMouseDown(Math::Coord2D<OSInt> pos, MouseButton butt
 	while (i < j)
 	{
 		Data::CallbackStorage<MouseEventHandler> cb = this->mouseDownHdlrs.GetItem(i);
-		if (cb.func(cb.userObj, pos, button))
+		if (cb.func(cb.userObj, pos, button) == EventState::StopEvent)
 		{
 			return;
 		}
@@ -811,7 +811,7 @@ void UI::GUIPictureBoxDD::OnMouseUp(Math::Coord2D<OSInt> pos, MouseButton button
 	while (i < j)
 	{
 		Data::CallbackStorage<MouseEventHandler> cb = this->mouseUpHdlrs.GetItem(i);
-		if (cb.func(cb.userObj, pos, button))
+		if (cb.func(cb.userObj, pos, button) == EventState::StopEvent)
 		{
 			return;
 		}

@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, U
 	me->UpdatePreview();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	if (btn == UI::GUIControl::MBTN_LEFT)
@@ -33,7 +33,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math
 			me->UpdatePreview();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnOKClicked(AnyType userObj)

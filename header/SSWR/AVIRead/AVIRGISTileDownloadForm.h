@@ -61,9 +61,9 @@ namespace SSWR
 			NN<Map::TileMapLayer> lyr;
 			NN<AVIRMapNavigator> navi;
 
-			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 
 			static void __stdcall OnAreaClicked(AnyType userObj);
 			static void __stdcall OnSaveDirClicked(AnyType userObj);

@@ -128,7 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
 	UTF8Char sbuff[256];
@@ -139,7 +139,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userO
 		sptr = me->Coord2DDblToString(sbuff, me->startPos);
 		me->txtStartPos->SetText(CSTRP(sbuff, sptr));
 		me->mode = 0;
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else if (me->mode == 2)
 	{
@@ -147,9 +147,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userO
 		sptr = me->Coord2DDblToString(sbuff, me->endPos);
 		me->txtEndPos->SetText(CSTRP(sbuff, sptr));
 		me->mode = 0;
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnPathsSelChg(AnyType userObj)

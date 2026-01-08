@@ -27,7 +27,7 @@ void UI::GTK::GTKTextBox::SignalInsText(GtkEntryBuffer *buffer, guint position, 
 gboolean UI::GTK::GTKTextBox::SignalKeyDown(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	UI::GTK::GTKTextBox *me = (UI::GTK::GTKTextBox*)user_data;
-	return me->EventKeyDown(event->key.keyval);
+	return me->EventKeyDown(event->key.keyval) == UI::EventState::StopEvent;
 }
 
 void UI::GTK::GTKTextBox::InitTextBox(Text::CStringNN lbl, Bool multiLine)
@@ -86,11 +86,11 @@ UI::GTK::GTKTextBox::~GTKTextBox()
 //	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
-Bool UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
+UI::EventState UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 {
-	Bool ret = this->GUITextBox::EventKeyDown(osKey);
+	UI::EventState ret = this->GUITextBox::EventKeyDown(osKey);
 	NN<UI::GUIForm> rootForm;
-	if (!ret)
+	if (ret == UI::EventState::ContinueEvent)
 	{
 		UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
 		if (key == UI::GUIControl::GK_ESCAPE)
@@ -99,7 +99,7 @@ Bool UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 			if (this->GetRootForm().SetTo(rootForm) && rootForm->GetCancelButton().SetTo(btn))
 			{
 				btn->EventButtonClick();
-				ret = true;
+				ret = UI::EventState::StopEvent;
 			}
 		}
 		else if (key == UI::GUIControl::GK_ENTER)
@@ -110,7 +110,7 @@ Bool UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 				if (this->GetRootForm().SetTo(rootForm) && rootForm->GetDefaultButton().SetTo(btn))
 				{
 					btn->EventButtonClick();
-					ret = true;
+					ret = UI::EventState::StopEvent;
 				}
 			}
 		}

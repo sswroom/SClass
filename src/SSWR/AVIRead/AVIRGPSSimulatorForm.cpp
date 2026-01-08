@@ -8,11 +8,11 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	if (!me->chkAddPoints->IsChecked())
-		return false;
+		return UI::EventState::ContinueEvent;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
@@ -40,7 +40,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj,
 		me->lbPoints->AddItem(CSTRP(sbuff, sptr), 0);
 		me->points.Add(pos);
 	}
-	return true;
+	return UI::EventState::StopEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(AnyType userObj)

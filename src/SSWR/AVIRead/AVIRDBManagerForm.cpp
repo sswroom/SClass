@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(AnyType userObj)
 	me->UpdateSchemaList();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UOSInt i = me->lbConn->GetSelectedIndex();
@@ -98,7 +98,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(AnyType userObj,
 	{
 		me->mnuConn->ShowMenu(me->lbConn, scnPos);
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnDblClicked(AnyType userObj)
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaSelChg(AnyType userObj)
 	me->UpdateTableList();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UOSInt i = me->lbSchema->GetSelectedIndex();
@@ -132,7 +132,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSchemaRClicked(AnyType userOb
 	{
 		me->mnuSchema->ShowMenu(me->lbSchema, scnPos);
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(AnyType userObj)
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(AnyType userObj)
 	OPTSTR_DEL(tableName);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UOSInt i = me->lbTable->GetSelectedIndex();
@@ -153,7 +153,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj
 	{
 		me->mnuTable->ShowMenu(me->lbTable, scnPos);
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableFilterClicked(AnyType userObj)
@@ -162,16 +162,16 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableFilterClicked(AnyType us
 	me->UpdateFilter();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableFilterKeyDown(AnyType userObj, UInt32 osKey)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableFilterKeyDown(AnyType userObj, UInt32 osKey)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	UI::GUIControl::GUIKey key = OSKey2GUIKey(osKey);
 	if (key == UI::GUIControl::GK_ENTER)
 	{
 		me->UpdateFilter();
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableResultDblClk(AnyType userObj, UOSInt index)
@@ -240,17 +240,17 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(AnyType userOb
 	OPTSTR_DEL(tableName);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (button == MBTN_LEFT)
 	{
 		me->mapDownPos = scnPos;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
 	if (button == MBTN_LEFT)
@@ -296,10 +296,10 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, M
 				me->dbLayer->ReleaseNameArr(nameArr);
 			}
 			me->dbLayer->EndGetObject(sess);
-			return false;
+			return UI::EventState::ContinueEvent;
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseChangeClicked(AnyType userObj)

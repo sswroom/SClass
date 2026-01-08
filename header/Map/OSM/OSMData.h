@@ -26,6 +26,98 @@ namespace Map
 			AdminCentre
 		};
 
+		enum class LayerType
+		{
+			Unknown = 0,
+			Aeroway,
+			Amenity,
+			AmenityCafe,
+			AmenityFastFood,
+			AmenityKindergarten,
+			AmenityMarketplace,
+			AmenityPolice,
+			AmenityPostBox,
+			AmenityRestaurant,
+			AmenityTaxi,
+			AmenityTelephone,
+			Boundary,
+			Building,
+			Golf,
+			GolfBunker,
+			GolfFairway,
+			GolfHole,
+			GolfRough,
+			Highway,
+			HighwayBusStop,
+			HighwayConstruction,
+			HighwayCorridor,
+			HighwayCrossing,
+			HighwayCycleway,
+			HighwayElevator,
+			HighwayEmergencyAccessPoint,
+			HighwayFootway,
+			HighwayGiveWay,
+			HighwayMilestone,
+			HighwayMotorway,
+			HighwayMotorwayLink,
+			HighwayPath,
+			HighwayPedestrian,
+			HighwayPlatform,
+			HighwayPrimary,
+			HighwayPrimaryLink,
+			HighwayResidential,
+			HighwayRestArea,
+			HighwaySecondary,
+			HighwaySecondaryLink,
+			HighwayService,
+			HighwaySpeedCamera,
+			HighwaySteps,
+			HighwayStreetLamp,
+			HighwayTertiary,
+			HighwayTrafficSignals,
+			HighwayTrunk,
+			HighwayTrunkLink,
+			HighwayUnclassified,
+			Landuse,
+			LanduseIndustrial,
+			LanduseResidential,
+			Leisure,
+			LeisurePark,
+			LeisurePitch,
+			Natural,
+			NaturalBay,
+			NaturalCape,
+			NaturalGrassland,
+			NaturalPeak,
+			NaturalRidge,
+			NaturalRock,
+			NaturalSaddle,
+			NaturalScrub,
+			NaturalValley,
+			NaturalWood,
+			Place,
+			PlaceHamlet,
+			PlaceLocality,
+			Power,
+			PowerLine,
+			PowerSubstation,
+			Railway,
+			Road,
+			Transport,
+			Waterway,
+			WaterwayStream,
+
+			Count
+		};
+
+		struct LayerSpec
+		{
+			Double minScale;
+			Double maxScale;
+			Bool hide;
+			Bool isArea;
+		};
+
 		struct TagInfo
 		{
 			NN<Text::String> k;
@@ -34,20 +126,28 @@ namespace Map
 		
 		struct ElementInfo
 		{
+			virtual ~ElementInfo() {}
+
 			Int64 id;
 			ElementType type;
 			Bool hasParent;
+			LayerType layerType;
 			Optional<Data::ArrayListNN<TagInfo>> tags;
 		};
 
 		struct NodeInfo : public ElementInfo
 		{
+			virtual ~NodeInfo() {}
+
 			Double lat;
 			Double lon;
 		};
 
 		struct WayInfo : public ElementInfo
 		{
+			virtual ~WayInfo() {}
+			
+			Math::RectAreaDbl bounds;
 			Data::ArrayListNN<NodeInfo> nodes;
 		};
 
@@ -60,6 +160,8 @@ namespace Map
 
 		struct RelationInfo : public ElementInfo
 		{
+			virtual ~RelationInfo() {}
+
 			Data::ArrayListNN<RelationMember> members;
 		};
 
@@ -67,7 +169,7 @@ namespace Map
 		{
 			Int32 x;
 			Int32 y;
-			Data::Int64FastMapNN<ElementInfo> elements;
+			Data::ArrayListNN<ElementInfo> elements;
 		};
 
 		class ElementComparator : public Data::Comparator<NN<ElementInfo>>
@@ -82,6 +184,7 @@ namespace Map
 			Bool nodeSorted;
 			Bool waySorted;
 			Bool relationSorted;
+			Bool showUnknown;
 			Data::ArrayListNN<ElementInfo> elements;
 			Double groupDist;
 			Data::Int64FastMapNN<ElementGroup> eleGroups;
@@ -90,14 +193,19 @@ namespace Map
 			Math::RectAreaDbl dataBounds;
 			Data::Timestamp osmBaseTime;
 			Optional<Text::String> note;
+			Double currScale;
+			MixedData mixedData;
+			LayerSpec layerSpecs[(UOSInt)LayerType::Count];
 
 			static void __stdcall FreeRelationMember(NN<RelationMember> member);
 			static void __stdcall FreeElement(NN<ElementInfo> elem);
+			void SortElements();
+			LayerType CalcElementLayerType(NN<ElementInfo> elem) const;
 		public:
 			OSMData(Text::CStringNN sourceName);
 			virtual ~OSMData();
 
-			virtual IO::ParserType GetParserType() const;
+			virtual void SetCurrScale(Double scale);
 			NN<NodeInfo> NewNode(Int64 id, Double lat, Double lon);
 			NN<WayInfo> NewWay(Int64 id);
 			NN<RelationInfo> NewRelation(Int64 id);
@@ -113,10 +221,16 @@ namespace Map
 			void SetGroupDist(Double groupDist);
 			void SetOSMBase(Data::Timestamp baseTime);
 			void SetNote(Text::CStringNN note);
+			void SetShowUnknown(Bool showUnknown);
+			Bool IsShowUnknown() const;
+			void BuildIndex();
+			void SetStyleDefault();
+			void SetStyleCenterline();
 			NN<Math::Geometry::Vector2D> CreateVector(NN<ElementInfo> elem);
-			void SortElements();
+			UOSInt GetRelations(NN<Data::ArrayListNN<RelationInfo>> outArr) const;
 
 			virtual DrawLayerType GetLayerType() const;
+			virtual void SetMixedData(MixedData MixedData);
 			virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr);
 			virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
 			virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
@@ -139,7 +253,9 @@ namespace Map
 
 			virtual ObjectClass GetObjectClass() const;
 		};
+		Text::CStringNN ElementTypeGetName(ElementType type);
 		ElementType ElementTypeFromString(Text::CStringNN str);
+		Text::CStringNN LayerTypeGetName(LayerType layerType);
 	}
 }
 #endif

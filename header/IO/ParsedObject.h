@@ -39,9 +39,8 @@ namespace IO
 		PDFDocument,
 		SeleniumIDE,
 		CesiumTile,
-		OSMData,
 
-		LastType = OSMData
+		LastType = CesiumTile
 	};
 
 	Text::CStringNN ParserTypeGetName(ParserType pt);

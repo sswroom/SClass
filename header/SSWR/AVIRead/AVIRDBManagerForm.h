@@ -113,19 +113,19 @@ namespace SSWR
 			Bool sqlFileMode;
 
 			static void __stdcall OnConnSelChg(AnyType userObj);
-			static Bool __stdcall OnConnRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnConnRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnConnDblClicked(AnyType userObj);
 			static void __stdcall OnSchemaSelChg(AnyType userObj);
-			static Bool __stdcall OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(AnyType userObj);
-			static Bool __stdcall OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableFilterClicked(AnyType userObj);
-			static Bool __stdcall OnTableFilterKeyDown(AnyType userObj, UInt32 osKey);
+			static UI::EventState __stdcall OnTableFilterKeyDown(AnyType userObj, UInt32 osKey);
 			static void __stdcall OnTableResultDblClk(AnyType userObj, UOSInt index);
 			static void __stdcall OnMapSchemaSelChg(AnyType userObj);
 			static void __stdcall OnMapTableSelChg(AnyType userObj);
-			static Bool __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
-			static Bool __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static UI::EventState __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
 			static void __stdcall OnDatabaseChangeClicked(AnyType userObj);
 			static void __stdcall OnDatabaseDeleteClicked(AnyType userObj);
 			static void __stdcall OnDatabaseNewClicked(AnyType userObj);

@@ -29,17 +29,17 @@ void __stdcall UI::GUIMapControl::ImageUpdated(AnyType userObj)
 	}
 }
 
-Bool UI::GUIMapControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUIMapControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		this->SetCapture();
 		if (this->mouseDownHdlr.func)
 		{
-			Bool done = this->mouseDownHdlr.func(this->mouseDownHdlr.userObj, scnPos, btn);
-			if (done)
+			UI::EventState eventState = this->mouseDownHdlr.func(this->mouseDownHdlr.userObj, scnPos, btn);
+			if (eventState == UI::EventState::StopEvent)
 			{
-				return true;
+				return UI::EventState::StopEvent;
 			}
 		}
 		Data::DateTime dt;
@@ -49,7 +49,7 @@ Bool UI::GUIMapControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn
 		{
 			this->OnMouseWheel(scnPos, 1);
 			this->mouseLDownTime = 0;
-			return true;
+			return UI::EventState::StopEvent;
 		}
 		else
 		{
@@ -64,10 +64,10 @@ Bool UI::GUIMapControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn
 		this->SetCapture();
 		if (this->mouseDownHdlr.func)
 		{
-			Bool done = this->mouseDownHdlr.func(this->mouseDownHdlr.userObj, scnPos, btn);
-			if (done)
+			UI::EventState eventState = this->mouseDownHdlr.func(this->mouseDownHdlr.userObj, scnPos, btn);
+			if (eventState == UI::EventState::StopEvent)
 			{
-				return true;
+				return UI::EventState::StopEvent;
 			}
 		}
 		Data::DateTime dt;
@@ -77,27 +77,27 @@ Bool UI::GUIMapControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn
 		{
 			this->OnMouseWheel(scnPos, -1);
 			this->mouseRDownTime = 0;
-			return true;
+			return UI::EventState::StopEvent;
 		}
 		else
 		{
 			this->mouseRDownTime = currTime;
 		}	
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool UI::GUIMapControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUIMapControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		this->ReleaseCapture();
 		if (this->mouseUpHdlr.func)
 		{
-			Bool done = this->mouseUpHdlr.func(this->mouseUpHdlr.userObj, scnPos, btn);
-			if (done)
+			UI::EventState eventState = this->mouseUpHdlr.func(this->mouseUpHdlr.userObj, scnPos, btn);
+			if (eventState == UI::EventState::StopEvent)
 			{
-				return true;
+				return UI::EventState::StopEvent;
 			}
 		}
 		if (this->mouseDown)
@@ -116,14 +116,14 @@ Bool UI::GUIMapControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 		this->ReleaseCapture();
 		if (this->mouseUpHdlr.func)
 		{
-			Bool done = this->mouseUpHdlr.func(this->mouseUpHdlr.userObj, scnPos, btn);
-			if (done)
+			UI::EventState eventState = this->mouseUpHdlr.func(this->mouseUpHdlr.userObj, scnPos, btn);
+			if (eventState == UI::EventState::StopEvent)
 			{
-				return true;
+				return UI::EventState::StopEvent;
 			}
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUIMapControl::OnMouseMove(Math::Coord2D<OSInt> scnPos)
@@ -148,7 +148,7 @@ void UI::GUIMapControl::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 	}*/
 }
 
-Bool UI::GUIMapControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
+UI::EventState UI::GUIMapControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
 {
 	Math::Coord2DDbl newPt;
 	Math::Coord2DDbl pt = this->view->ScnXYToMapXY(scnPos.ToDouble());
@@ -175,7 +175,7 @@ Bool UI::GUIMapControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
 	this->EventScaleChanged(this->view->GetMapScale());
 	this->UpdateMap();
 	this->Redraw();
-	return true;
+	return UI::EventState::StopEvent;
 }
 
 void UI::GUIMapControl::OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist)

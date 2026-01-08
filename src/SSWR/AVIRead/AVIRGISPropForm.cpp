@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnCancelClicked(AnyType userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -110,17 +110,17 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Ma
 			me->pbFillStyle->Redraw();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		OnLineModifyClicked(userObj);
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userObj)
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -184,17 +184,17 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Ma
 			me->pbIcon->SetImage(me->env->GetImage(me->imgIndex, 0));
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 //	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		OnFontModifyClicked(userObj);
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userObj)

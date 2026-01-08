@@ -111,14 +111,14 @@ gboolean GUICustomDraw_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpointer
 {
 	UI::GUICustomDraw *me = (UI::GUICustomDraw*)data;
 	GdkEventScroll *evt = (GdkEventScroll*)event;
-	return me->OnMouseWheel(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), Double2Int32(-evt->delta_y));
+	return me->OnMouseWheel(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), Double2Int32(-evt->delta_y)) == UI::EventState::StopEvent;
 }
 
 gboolean GUICustomDraw_OnKeyDown(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	UI::GUICustomDraw *me = (UI::GUICustomDraw*)user_data;
 	GdkEventKey *evt = (GdkEventKey*)event;
-	if (me->OnKeyDown(me->OSKey2GUIKey(evt->keyval)))
+	if (me->OnKeyDown(me->OSKey2GUIKey(evt->keyval)) == UI::EventState::StopEvent)
 	{
 		return true;
 	}
@@ -348,23 +348,23 @@ OSInt UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-Bool UI::GUICustomDraw::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUICustomDraw::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool UI::GUICustomDraw::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUICustomDraw::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUICustomDraw::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 {
 }
 
-Bool UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
+UI::EventState UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUICustomDraw::OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist)
@@ -391,9 +391,9 @@ void UI::GUICustomDraw::OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt ax
 {
 }
 
-Bool UI::GUICustomDraw::OnKeyDown(UI::GUIControl::GUIKey key)
+UI::EventState UI::GUICustomDraw::OnKeyDown(UI::GUIControl::GUIKey key)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUICustomDraw::OnTimerTick()

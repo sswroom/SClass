@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userOb
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->hideCursor)
@@ -224,7 +224,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, 
 		me->hideCursor = false;
 	}
 	me->noMoveCount = 0;
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(Text::CStringNN fileName)

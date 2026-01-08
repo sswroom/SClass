@@ -181,7 +181,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::AudioSource> audio, 
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	me->popMedia = (Media::MediaSource*)me->lbFiles->GetSelectedItem().p;
@@ -201,7 +201,7 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Mat
 			me->mnuAudio->ShowMenu(me->lbFiles, scnPos);
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(AnyType userObj)

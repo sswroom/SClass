@@ -79,8 +79,8 @@ namespace SSWR
 		private:
 			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
-			static Bool __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static UI::EventState __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
+			static UI::EventState __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
 			static void __stdcall OnMapScaleChanged(AnyType userObj, Double newScale);
 			static void __stdcall OnMapUpdated(AnyType userObj, Math::Coord2DDbl center, Double timeUsed);
 			static void __stdcall OnScaleScrolled(AnyType userObj, UOSInt newVal);

@@ -552,16 +552,16 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(AnyType userO
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandKeyDown(AnyType userObj, UInt32 osKey)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandKeyDown(AnyType userObj, UInt32 osKey)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
 	if (key == UI::GUIControl::GK_ENTER)
 	{
 		OnATCommandClicked(me);
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextLoadClicked(AnyType userObj)

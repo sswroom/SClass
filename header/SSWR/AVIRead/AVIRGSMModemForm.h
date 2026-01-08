@@ -232,7 +232,7 @@ namespace SSWR
 			static void __stdcall OnDeviceOtherClk(AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnATCommandClicked(AnyType userObj);
-			static Bool __stdcall OnATCommandKeyDown(AnyType userObj, UInt32 osKey);
+			static UI::EventState __stdcall OnATCommandKeyDown(AnyType userObj, UInt32 osKey);
 			static void __stdcall OnPDPContextLoadClicked(AnyType userObj);
 			static void __stdcall OnPDPAttachClicked(AnyType userObj);
 			static void __stdcall OnPDPDetachClicked(AnyType userObj);

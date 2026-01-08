@@ -4,18 +4,18 @@
 #include "SSWR/AVIRead/AVIRGISRandomLocForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (!me->selecting)
-		return false;
+		return UI::EventState::ContinueEvent;
 	me->isDown = true;
 	me->selecting = false;
 	me->downPt = scnPos;
-	return true;
+	return UI::EventState::StopEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
@@ -56,12 +56,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, M
 		ptList[4] = me->selPt1;
 		pg->AddGeometry(lr);
 		me->navi->SetSelectedVector(pg);
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
@@ -99,9 +99,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj,
 		ptList[4] = mapPt1;
 		pg->AddGeometry(lr);
 		me->navi->SetSelectedVector(pg);
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnAreaClicked(AnyType userObj)

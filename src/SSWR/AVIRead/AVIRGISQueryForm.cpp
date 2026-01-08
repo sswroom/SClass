@@ -14,14 +14,14 @@
 #include "UI/Clipboard.h"
 #include "UI/GUIFileDialog.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	me->downPos = scnPos;
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->downPos == scnPos)
@@ -70,7 +70,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType userObj, Math
 				}
 
 				me->navi->SetSelectedVectors(me->queryVecList);
-				return false;
+				return UI::EventState::ContinueEvent;
 			}
 		}
 		scnPos.x += 5;
@@ -153,18 +153,18 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType userObj, Math
 		}
 		me->lyr->EndGetObject(sess);
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	me->rdownPos = scnPos;
 	me->rdown = true;
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	NN<Map::GetObjectSess> sess;
@@ -253,10 +253,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType userObj, Math
 	}
 	me->lyr->EndGetObject(sess);
 	me->rdown = false;
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	NN<Math::Geometry::Vector2D> currVec;
@@ -295,7 +295,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Mat
 		ptList[4] = pt1;
 		me->navi->SetSelectedVector(lr);
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 

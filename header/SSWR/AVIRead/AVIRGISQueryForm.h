@@ -93,11 +93,11 @@ namespace SSWR
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayListNN<Text::String> queryValueList;
 
-			static Bool __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnShapeFmtChanged(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
 			static void __stdcall OnObjNameSelChg(AnyType userObj);

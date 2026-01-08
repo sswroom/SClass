@@ -53,7 +53,7 @@ namespace SSWR
 			void SetActiveVideo(NN<Media::VideoSource> video);
 			void SetActiveAudio(NN<Media::AudioSource> audio, Int32 timeDelay);
 		private:
-			static Bool __stdcall OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static UI::EventState __stdcall OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall OnFileDblClicked(AnyType userObj);
 			static void __stdcall VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img);
 			static Bool __stdcall OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst);

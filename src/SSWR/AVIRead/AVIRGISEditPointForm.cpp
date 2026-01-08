@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditPointForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditPointForm>();
 	if (me->status == 1)
@@ -31,7 +31,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseDown(AnyType userObj,
 		}
 		else
 		{
-			return false;
+			return UI::EventState::ContinueEvent;
 		}
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs;
 		UOSInt cnt = me->lyr->GetColumnCnt();
@@ -64,10 +64,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseDown(AnyType userObj,
 	{
 		me->downPos = scnPos;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditPointForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditPointForm>();
 	if (me->status == 0)
@@ -102,7 +102,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseUp(AnyType userObj, M
 			}
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnObjectsDblClk(AnyType userObj)

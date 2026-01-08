@@ -1,9 +1,11 @@
-#ifndef _SM_SSWR_AVIREAD_AVIRGISFORM
-#define _SM_SSWR_AVIREAD_AVIRGISFORM
+#ifndef _SM_SSWR_AVIREAD_AVIRGISOSMDATAFORM
+#define _SM_SSWR_AVIREAD_AVIRGISOSMDATAFORM
 #include "Map/OSM/OSMData.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRMapNavigator.h"
+#include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
@@ -31,14 +33,39 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::OSM::OSMData> osmData;
 			NN<SSWR::AVIRead::AVIRMapNavigator> nav;
+			Bool mouseDown;
+			Math::Coord2D<OSInt> mouseDownPos;
 
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUICheckBox> chkShowUnknown;
+			NN<UI::GUIButton> btnDefaultStyle;
+			NN<UI::GUIButton> btnCenterline;
 			NN<UI::GUITabControl> tcMain;
 
 			NN<UI::GUITabPage> tpRelation;
+			NN<UI::GUIPanel> pnlRelation;
+			NN<UI::GUILabel> lblRelationType;
+			NN<UI::GUIComboBox> cboRelationType;
 			NN<UI::GUIListBox> lbRelation;
-			NN<UI::GUIListView> lvRelation;
+			NN<UI::GUIListView> lvRelationMember;
+			NN<UI::GUIListView> lvRelationTags;
 
+			NN<UI::GUITabPage> tpQuery;
+			NN<UI::GUIListBox> lbQueryResult;
+			NN<UI::GUIPanel> pnlQuery;
+			NN<UI::GUILabel> lblQueryType;
+			NN<UI::GUITextBox> txtQueryType;
+			NN<UI::GUIListView> lvQueryTags;
 		private:
+			static void __stdcall OnRelationSelChg(AnyType userObj);
+			static void __stdcall OnRelationTypeSelChg(AnyType userObj);
+			static void __stdcall OnQueryResultSelChg(AnyType userObj);
+			static UI::EventState __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static UI::EventState __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static void __stdcall OnShowUnknownChg(AnyType userObj, Bool newState);
+			static void __stdcall OnDefaultStyleClicked(AnyType userObj);
+			static void __stdcall OnCenterlineClicked(AnyType userObj);
+			void UpdateRelationList();
 		public:
 			AVIRGISOSMDataForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::OSM::OSMData> osmData, NN<SSWR::AVIRead::AVIRMapNavigator> nav);
 			virtual ~AVIRGISOSMDataForm();

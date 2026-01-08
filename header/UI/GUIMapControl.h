@@ -61,10 +61,10 @@ namespace UI
 	private:
 		static void __stdcall ImageUpdated(AnyType userObj);
 
-		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
-		virtual Bool OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn);
+		virtual UI::EventState OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
+		virtual UI::EventState OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn);
 		virtual void OnMouseMove(Math::Coord2D<OSInt> scnPos) ;
-		virtual Bool OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta);
+		virtual UI::EventState OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta);
 		virtual void OnGestureBegin(Math::Coord2D<OSInt> scnPos, UInt64 dist);
 		virtual void OnGestureStep(Math::Coord2D<OSInt> scnPos, UInt64 dist);
 		virtual void OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist);

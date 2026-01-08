@@ -25,14 +25,14 @@ void UI::GUITextBox::EventTextChange()
 }
 
 
-Bool UI::GUITextBox::EventKeyDown(UInt32 osKey)
+UI::EventState UI::GUITextBox::EventKeyDown(UInt32 osKey)
 {
-	Bool ret = false;
+	UI::EventState ret = UI::EventState::ContinueEvent;
 	UOSInt i = this->keyDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
 		Data::CallbackStorage<UI::KeyEvent> cb = this->keyDownHdlrs.GetItem(i);
-		if ((ret = cb.func(cb.userObj, osKey)))
+		if ((ret = cb.func(cb.userObj, osKey)) == UI::EventState::StopEvent)
 		{
 			break;
 		}

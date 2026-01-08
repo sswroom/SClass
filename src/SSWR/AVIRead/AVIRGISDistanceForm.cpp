@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnDistanceUnitChg(AnyType use
 	me->UpdateDistDisp();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	if (me->radActionMeasure->IsSelected())
@@ -64,12 +64,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyType userOb
 				me->UpdateDistDisp();
 			}
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
 	if ((me->lastMapPos.x != 0 || me->lastMapPos.y != 0) && me->radActionMeasure->IsSelected())
@@ -109,7 +109,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userOb
 			me->navi->SetSelectedVector(pl);
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void SSWR::AVIRead::AVIRGISDistanceForm::UpdateDistDisp()

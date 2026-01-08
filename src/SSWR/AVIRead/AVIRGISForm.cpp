@@ -15,6 +15,7 @@
 #include "Map/HKParkingVacancy.h"
 #include "Map/VectorLayer.h"
 #include "Map/ESRI/ESRITileMap.h"
+#include "Map/OSM/OSMData.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "Math/Math_C.h"
 #include "Math/CoordinateSystemManager.h"
@@ -36,6 +37,7 @@
 #include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
 #include "SSWR/AVIRead/AVIRGISHKTrafficForm.h"
+#include "SSWR/AVIRead/AVIRGISOSMDataForm.h"
 #include "SSWR/AVIRead/AVIRGISPropForm.h"
 #include "SSWR/AVIRead/AVIRGISQueryForm.h"
 #include "SSWR/AVIRead/AVIRGISRandomLocForm.h"
@@ -98,6 +100,7 @@ typedef enum
 	MNU_LAYER_OPTIMIZE_FILE,
 	MNU_LAYER_QUERY,
 	MNU_LAYER_MUL_COORD,
+	MNU_LAYER_OSM_DATA,
 	MNU_MTK_GPS,
 	MNU_MTK_FILE,
 	MNU_GPS_TRACKER,
@@ -175,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 		if (pobj.SetTo(nnpobj))
 		{
 			IO::ParserType pt = nnpobj->GetParserType();
-			if (pt == IO::ParserType::MapLayer || pt == IO::ParserType::OSMData)
+			if (pt == IO::ParserType::MapLayer)
 			{
 				layers->Add(NN<Map::MapDrawLayer>::ConvertFrom(nnpobj));
 			}
@@ -294,10 +297,10 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math:
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
-	Bool ret = false;
+	UI::EventState ret = UI::EventState::ContinueEvent;
 	UOSInt i;
 	if (button == MouseButton::MBTN_LEFT)
 	{
@@ -306,8 +309,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math:
 		{
 			Data::CallbackStorage<MouseEvent> cb = me->mouseLDownHdlrs.GetItem(i);
 			ret = cb.func(cb.userObj, scnPos);
-			if (ret)
-				return true;
+			if (ret != UI::EventState::ContinueEvent)
+				return ret;
 		}
 	}
 	else if (button == MouseButton::MBTN_RIGHT)
@@ -317,17 +320,17 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math:
 		{
 			Data::CallbackStorage<MouseEvent> cb = me->mouseRDownHdlrs.GetItem(i);
 			ret = cb.func(cb.userObj, scnPos);
-			if (ret)
-				return true;
+			if (ret != UI::EventState::ContinueEvent)
+				return ret;
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
-	Bool ret = false;
+	UI::EventState ret = UI::EventState::ContinueEvent;
 	UOSInt i;
 	if (button == MouseButton::MBTN_LEFT)
 	{
@@ -336,8 +339,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::C
 		{
 			Data::CallbackStorage<MouseEvent> cb = me->mouseLUpHdlrs.GetItem(i);
 			ret = cb.func(cb.userObj, scnPos);
-			if (ret)
-				return true;
+			if (ret != UI::EventState::ContinueEvent)
+				return ret;
 		}
 	}
 	else if (button == MouseButton::MBTN_RIGHT)
@@ -347,11 +350,11 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::C
 		{
 			Data::CallbackStorage<MouseEvent> cb = me->mouseRUpHdlrs.GetItem(i);
 			ret = cb.func(cb.userObj, scnPos);
-			if (ret)
-				return true;
+			if (ret != UI::EventState::ContinueEvent)
+				return ret;
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(AnyType userObj, Double newScale)
@@ -422,6 +425,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(AnyType userObj)
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_TILEDOWN, lyr->layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER);
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_IMPORT_TILES, canImport);
 			me->mnuLayer->SetItemEnabled(MNU_LAYER_OPTIMIZE_FILE, canImport);
+			me->mnuLayer->SetItemEnabled(MNU_LAYER_OSM_DATA, lyr->layer->GetObjectClass() == Map::MapDrawLayer::OC_OSMDATA);
 			me->mnuLayer->ShowMenu(me, cursorPos);
 		}
 		else if (ind->itemType == Map::MapEnv::IT_GROUP)
@@ -842,6 +846,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->mnuLayer->AddItem(CSTR("Import Tiles"), MNU_LAYER_IMPORT_TILES, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Optimize File"), MNU_LAYER_OPTIMIZE_FILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuLayer->AddItem(CSTR("Query"), MNU_LAYER_QUERY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuLayer->AddItem(CSTR("OSM Data"), MNU_LAYER_OSM_DATA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	NEW_CLASSNN(this->mnuGroup, UI::GUIPopupMenu());
 	this->mnuGroup->AddItem(CSTR("&Add Group"), MNU_GROUP_ADD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1438,6 +1443,22 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<Map::MapDrawLayer> lyr = litem->layer;
 				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISQueryForm(0, this->ui, this->core, lyr, *this));
 				this->SetCtrlForm(frm, item);
+			}
+		}
+		break;
+	case MNU_LAYER_OSM_DATA:
+		if (this->popNode.SetTo(item))
+		{
+			NN<Map::MapEnv::LayerItem> litem;
+			if (Optional<Map::MapEnv::LayerItem>::ConvertFrom(item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>()->item).SetTo(litem))
+			{
+				NN<Map::MapDrawLayer> lyr = litem->layer;
+				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_OSMDATA)
+				{
+					NN<UI::GUIForm> frm;
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISOSMDataForm(0, this->ui, this->core, NN<Map::OSM::OSMData>::ConvertFrom(lyr), *this));
+					this->SetCtrlForm(frm, item);
+				}
 			}
 		}
 		break;

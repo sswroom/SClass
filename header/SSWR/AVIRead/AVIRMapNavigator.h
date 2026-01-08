@@ -12,7 +12,7 @@ namespace SSWR
 		class AVIRMapNavigator
 		{
 		public:
-			typedef Bool (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			typedef UI::EventState (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 
 			virtual UInt32 GetSRID() = 0;
 			virtual Bool InMap(Math::Coord2DDbl pos) = 0;

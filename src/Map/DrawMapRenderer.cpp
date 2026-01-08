@@ -1340,6 +1340,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 					{
 						Map::DrawLayerType layerType = layer.layer->GetLayerType();
 						layer.layer->SetDispSize(denv->dispSize, denv->img->GetHDPI());
+						layer.layer->SetCurrScale(denv->view->GetMapScale());
 						if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
 						{
 							if ((layer.flags & Map::MapEnv::SFLG_HIDESHAPE) == 0)
@@ -2110,10 +2111,6 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 	geoConv = !denv->env->GetCoordinateSystem()->Equals(coord);
 
 	Data::ArrayListInt64 arri;
-	if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
-	{
-		layer->SetCurrScale(denv->view->GetMapScale());
-	}
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
 	Math::RectAreaDbl rect = denv->view->GetBounds().GetExterior();

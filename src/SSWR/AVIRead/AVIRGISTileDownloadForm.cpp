@@ -14,18 +14,18 @@
 #include "UI/GUIFileDialog.h"
 #include "UI/GUIFolderDialog.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (!me->selecting)
-		return false;
+		return UI::EventState::ContinueEvent;
 	me->isDown = true;
 	me->selecting = false;
 	me->downPos = scnPos;
-	return true;
+	return UI::EventState::StopEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
@@ -82,12 +82,12 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj
 		sptr = Text::StrUOSInt(sbuff, cnt);
 		me->txtTotalImages->SetText(CSTRP(sbuff, sptr));
 
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
@@ -123,9 +123,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userO
 		ptList[4].x = mapPt1.x;
 		ptList[4].y = mapPt1.y;
 		me->navi->SetSelectedVector(lr);
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnAreaClicked(AnyType userObj)

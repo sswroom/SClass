@@ -16,7 +16,7 @@ UI::GUISudokuViewer::~GUISudokuViewer()
 {
 }
 
-Bool UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
@@ -51,10 +51,10 @@ Bool UI::GUISudokuViewer::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton b
 			}
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
+UI::EventState UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 {
 	UOSInt i;
 	if (key >= UI::GUIControl::GK_0 && key <= UI::GUIControl::GK_9)
@@ -66,7 +66,7 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 			hdlr = this->numInputHdlr.GetItem(i);
 			hdlr(this->numInputObj.GetItem(i), this->selX, this->selY, (UInt8)(key - UI::GUIControl::GK_0));
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else if (key >= UI::GUIControl::GK_NUMPAD0 && key <= UI::GUIControl::GK_NUMPAD9)
 	{
@@ -77,7 +77,7 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 			hdlr = this->numInputHdlr.GetItem(i);
 			hdlr(this->numInputObj.GetItem(i), this->selX, this->selY, (UInt8)(key - UI::GUIControl::GK_NUMPAD0));
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else if (key == UI::GUIControl::GK_LEFT || key == UI::GUIControl::GK_A)
 	{
@@ -86,7 +86,7 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 			this->selX -= 1;
 			this->Redraw();
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else if (key == UI::GUIControl::GK_RIGHT || key == UI::GUIControl::GK_D)
 	{
@@ -95,7 +95,7 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 			this->selX += 1;
 			this->Redraw();
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else if (key == UI::GUIControl::GK_UP || key == UI::GUIControl::GK_W)
 	{
@@ -104,7 +104,7 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 			this->selY -= 1;
 			this->Redraw();
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else if (key == UI::GUIControl::GK_DOWN || key == UI::GUIControl::GK_S || key == UI::GUIControl::GK_X)
 	{
@@ -113,9 +113,9 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 			this->selY += 1;
 			this->Redraw();
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)

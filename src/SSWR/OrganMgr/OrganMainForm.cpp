@@ -391,7 +391,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(AnyType userObj)
 	}
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	NN<OrganSpecies> species;
@@ -399,7 +399,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType userObj, Mat
 	{
 		UOSInt index = me->lbImage->GetSelectedIndex();
 		if (index == INVALID_INDEX)
-			return false;
+			return UI::EventState::ContinueEvent;
 		Bool showDef = false;
 		if (me->lbObj->GetSelectedIndex() == INVALID_INDEX)
 		{
@@ -413,7 +413,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType userObj, Mat
 		{
 			NN<OrganImageItem> imgItem = me->lbImage->GetItem(index).GetNN<OrganImageItem>();
 			if (imgItem->GetIsCoverPhoto())
-				return false;
+				return UI::EventState::ContinueEvent;
 			NN<OrganGroup> go = me->lbDir->GetSelectedItem().GetNN<OrganGroup>();
 			me->env->SetGroupDefSp(go, imgItem);
 			SDEL_STRING(me->initSelImg);
@@ -424,7 +424,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType userObj, Mat
 		{
 			NN<OrganImageItem> imgItem = me->lbImage->GetItem(index).GetNN<OrganImageItem>();
 			if (imgItem->GetIsCoverPhoto())
-				return false;
+				return UI::EventState::ContinueEvent;
 			me->env->SetSpeciesImg(species, imgItem);
 			SDEL_STRING(me->initSelImg);
 			me->initSelImg = imgItem->GetDispName()->Clone().Ptr();
@@ -471,24 +471,24 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(AnyType userObj, Mat
 		o->isDefault = true;
 		lbImage->Items->Item[index] = o;*/
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if ((me->dispImageUF.IsNull() && me->dispImageWF.IsNull()) || !me->dispImageToCrop)
 	{
-		return false;
+		return UI::EventState::ContinueEvent;
 	}
 
 	me->dispImageDown = true;
 	me->dispImageDownPos = scnPos;
 	me->dispImageCurrPos = scnPos;
-	return true;
+	return UI::EventState::StopEvent;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->dispImageToCrop && me->dispImageDown)
@@ -520,12 +520,12 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(AnyType userObj, Math
 		me->dispImageToCrop = false;
 		me->dispImageDown = false;
 		me->pbImg->UpdateBufferImage();
-		return true;
+		return UI::EventState::StopEvent;
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	if (me->dispImageDown)
@@ -533,7 +533,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(AnyType userObj, Ma
 		me->dispImageCurrPos = scnPos;
 		me->pbImg->UpdateBufferImage();
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h, UOSInt bpl)

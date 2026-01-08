@@ -1731,6 +1731,6 @@ NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> read
 			reader->SkipElement();
 		}
 	}
-	///////////////////////
+	data->BuildIndex();
 	return data;
 }

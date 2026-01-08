@@ -75,7 +75,7 @@ namespace SSWR
 			static void __stdcall LayerSelChanged(AnyType userObj);
 			static void __stdcall ThickChanged(AnyType userObj);
 			static void __stdcall OnThickScrolled(AnyType userObj, UOSInt newPos);
-			static Bool __stdcall ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static UI::EventState __stdcall ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall PatternChanged(AnyType userObj);
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);

@@ -4260,6 +4260,8 @@ SSWR/AVIRead/AVIRGISLineForm.h:
 @AVIRGISLineForm.o
 SSWR/AVIRead/AVIRGISLineStyleForm.h:
 @AVIRGISLineStyleForm.o
+SSWR/AVIRead/AVIRGISOSMDataForm.h:
+@AVIRGISOSMDataForm.o
 SSWR/AVIRead/AVIRGISPropForm.h:
 @AVIRGISPropForm.o
 SSWR/AVIRead/AVIRGISQueryForm.h:

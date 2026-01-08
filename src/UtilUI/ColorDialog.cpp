@@ -20,7 +20,7 @@ void __stdcall UtilUI::ColorDialog::OnCancelClicked(AnyType userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -46,10 +46,10 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<OSI
 			me->UpdateColor();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
@@ -73,10 +73,10 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<OSI
 			me->UpdateColor();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -105,10 +105,10 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<OSInt
 			}
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -146,10 +146,10 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<OS
 			me->UpdateColor();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
@@ -184,10 +184,10 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<OS
 			me->UpdateColor();
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
+UI::EventState __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
@@ -227,7 +227,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<OSIn
 			}
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall UtilUI::ColorDialog::OnRedChange(AnyType userObj, Bool newState)

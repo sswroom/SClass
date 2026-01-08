@@ -2013,6 +2013,7 @@ AVIRGISImageForm.o: ../../src/SSWR/AVIRead/AVIRGISImageForm.cpp
 AVIRGISLineEditForm.o: ../../src/SSWR/AVIRead/AVIRGISLineEditForm.cpp
 AVIRGISLineForm.o: ../../src/SSWR/AVIRead/AVIRGISLineForm.cpp
 AVIRGISLineStyleForm.o: ../../src/SSWR/AVIRead/AVIRGISLineStyleForm.cpp
+AVIRGISOSMDataForm.o: ../../src/SSWR/AVIRead/AVIRGISOSMDataForm.cpp
 AVIRGISPropForm.o: ../../src/SSWR/AVIRead/AVIRGISPropForm.cpp
 AVIRGISQueryForm.o: ../../src/SSWR/AVIRead/AVIRGISQueryForm.cpp
 AVIRGISRandomLocForm.o: ../../src/SSWR/AVIRead/AVIRGISRandomLocForm.cpp

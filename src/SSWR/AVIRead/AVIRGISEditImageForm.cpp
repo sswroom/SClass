@@ -75,13 +75,13 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	this->lyr->EndGetObject(sess);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
-		return false;
+		return UI::EventState::ContinueEvent;
 	if (!me->chkEdit->IsChecked())
-		return false;
+		return UI::EventState::ContinueEvent;
 	me->downType = me->CalcDownType(scnPos);
 	if (me->downType != 0)
 	{
@@ -119,20 +119,20 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj,
 
 		me->navi->SetSelectedVector(pg);
 		me->downPos = scnPos;
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else
 	{
-		return false;
+		return UI::EventState::ContinueEvent;
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 	{
-		return false;
+		return UI::EventState::ContinueEvent;
 	}
 	NN<Math::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
 	NN<Math::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
@@ -488,14 +488,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 	}
 	me->navi->SetSelectedVector(0);
 	me->downType = 0;
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
-		return false;
+		return UI::EventState::ContinueEvent;
 	NN<Math::CoordinateSystem> lyrCsys = me->lyr->GetCoordinateSystem();
 	NN<Math::CoordinateSystem> envCsys = me->navi->GetCoordinateSystem();
 	if (me->downType == 1)
@@ -891,7 +891,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 			me->navi->SetMapCursor(UI::GUIControl::CT_ARROW);
 		}
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnAlphaScrolled(AnyType userObj, UOSInt scrollPos)

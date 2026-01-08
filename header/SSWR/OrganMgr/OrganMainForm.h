@@ -171,10 +171,10 @@ namespace SSWR
 			static void __stdcall OnObjDblClicked(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
 			static void __stdcall OnImgSelChg(AnyType userObj);
-			static Bool __stdcall OnImgRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static Bool __stdcall OnImgMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static Bool __stdcall OnImgMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static Bool __stdcall OnImgMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnImgRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnImgMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnImgMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static UI::EventState __stdcall OnImgMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnImgDraw(AnyType userObj, UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 			static void __stdcall OnImgDblClicked(AnyType userObj);
 			static void __stdcall OnImgDirClicked(AnyType userObj);

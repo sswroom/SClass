@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(AnyType userObj)
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	NN<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->currFont, 12, false, false);
@@ -45,7 +45,7 @@ Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, 
 		me->UpdateImg();
 	}
 	dlg.Delete();
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnPasteCharCodeClicked(AnyType userObj)

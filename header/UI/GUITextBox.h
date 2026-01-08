@@ -16,7 +16,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual void EventTextChange();
-		virtual Bool EventKeyDown(UInt32 osKey);
+		virtual UI::EventState EventKeyDown(UInt32 osKey);
 		virtual void HandleTextChanged(UI::UIEvent hdlr, AnyType userObj);
 		virtual void HandleKeyDown(UI::KeyEvent hdlr, AnyType userObj);
 

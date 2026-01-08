@@ -82,12 +82,12 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelCornersClicked(AnyType userObj)
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
+UI::EventState __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
 	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	NN<Media::StaticImage> img;
 	if (!me->currImg.SetTo(img))
-		return false;
+		return UI::EventState::ContinueEvent;
 	if (me->selectMode == ActionType::Corners)
 	{
 		UTF8Char sbuff[128];
@@ -104,7 +104,7 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coo
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Select point ")), me->points.GetCount() + 1);
 			me->lblSelStatus->SetText(CSTRP(sbuff, sptr));
 		}
-		return true;
+		return UI::EventState::StopEvent;
 	}
 	else if (me->selectMode == ActionType::Plate)
 	{
@@ -113,7 +113,7 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coo
 		me->selectMode = ActionType::None;
 		me->lblSelStatus->SetText(CSTR(""));
 	}
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg)
