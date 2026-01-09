@@ -550,6 +550,32 @@ Optional<Map::OSM::NodeInfo> Map::OSM::OSMData::GetNodeById(Int64 id)
 	return nullptr;
 }
 
+Optional<Map::OSM::NodeInfo> Map::OSM::OSMData::GetNodeByPos(Double lat, Double lon)
+{
+	Int32 x = (Int32)(lon / this->groupDist);
+	Int32 y = (Int32)(lat / this->groupDist);
+	NN<ElementGroup> grp;
+	if (this->eleGroups.Get(x << 16 | y).SetTo(grp))
+	{
+		UOSInt i = 0;
+		UOSInt j = grp->elements.GetCount();
+		while (i < j)
+		{
+			NN<ElementInfo> elem = grp->elements.GetItemNoCheck(i);
+			if (elem->type == ElementType::Node)
+			{
+				NN<NodeInfo> node = NN<NodeInfo>::ConvertFrom(elem);
+				if (node->lat == lat && node->lon == lon)
+				{
+					return node;
+				}
+			}
+			i++;
+		}
+	}
+	return nullptr;
+}
+
 Optional<Map::OSM::WayInfo> Map::OSM::OSMData::GetWayById(Int64 id)
 {
 	NN<ElementInfo> elem;
@@ -640,6 +666,11 @@ void Map::OSM::OSMData::SetLang(Text::CString lang)
 void Map::OSM::OSMData::SetDataBounds(Math::RectAreaDbl bounds)
 {
 	this->dataBounds = bounds;
+}
+
+Math::RectAreaDbl Map::OSM::OSMData::GetDataBounds() const
+{
+	return this->dataBounds;
 }
 
 void Map::OSM::OSMData::SetGroupDist(Double groupDist)
@@ -904,7 +935,27 @@ UOSInt Map::OSM::OSMData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 	while (i < j)
 	{
 		elem = this->elements.GetItemNoCheck(i);
-		outArr->Add(elem->id << 2 | (UInt8)elem->type);
+		if (this->mixedData == MixedData::PointOnly && elem->type != ElementType::Node)
+		{
+		}
+		else if (this->mixedData == MixedData::NonPointOnly && elem->type == ElementType::Node)
+		{
+		}
+		else
+		{
+			if (this->showUnknown)
+			{
+				outArr->Add(elem->id << 2 | (UInt8)elem->type);
+			}
+			else if (!elem->hasParent)
+			{
+				LayerType layerType = elem->layerType;
+				if (!this->layerSpecs[(UOSInt)layerType].hide)
+				{
+					outArr->Add(elem->id << 2 | (UInt8)elem->type);
+				}
+			}
+		}		
 		i++;
 	}
 	return j;

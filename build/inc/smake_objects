@@ -932,6 +932,7 @@ MapScheduler.o: ../../src/Map/MapScheduler.cpp
 MapSearch.o: ../../src/Map/MapSearch.cpp
 MapSearchManager.o: ../../src/Map/MapSearchManager.cpp
 MapServerHandler.o: ../../src/Map/MapServerHandler.cpp
+MapsforgeUtil.o: ../../src/Map/MapsforgeUtil.cpp
 MapView.o: ../../src/Map/MapView.cpp
 MercatorMapView.o: ../../src/Map/MercatorMapView.cpp
 MercatorTileMap.o: ../../src/Map/MercatorTileMap.cpp
@@ -1821,6 +1822,7 @@ LUTParser.o: ../../src/Parser/FileParser/LUTParser.cpp
 M2VStmParser.o: ../../src/Parser/FileParser/M2VStmParser.cpp
 MAIPackParser.o: ../../src/Parser/FileParser/MAIPackParser.cpp
 MajiroArcParser.o: ../../src/Parser/FileParser/MajiroArcParser.cpp
+MapsforgeParser.o: ../../src/Parser/FileParser/MapsforgeParser.cpp
 MD5Parser.o: ../../src/Parser/FileParser/MD5Parser.cpp
 MDBParser.o: ../../src/Parser/FileParser/MDBParser.cpp
 MEDParser.o: ../../src/Parser/FileParser/MEDParser.cpp

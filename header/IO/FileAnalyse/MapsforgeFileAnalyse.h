@@ -47,8 +47,6 @@ namespace IO
 			Bool pauseParsing;
 			Sync::Thread thread;
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			static UOSInt ReadVBEU(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<UInt64> v);
-			static UOSInt ReadVBES(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<Int64> v);
 		public:
 			MapsforgeFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~MapsforgeFileAnalyse();

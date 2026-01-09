@@ -2495,6 +2495,8 @@ Map/MapSearchManager.h:
 @MapSearchManager.o
 Map/MapServerHandler.h:
 @MapServerHandler.o
+Map/MapsforgeUtil.h:
+@MapsforgeUtil.o
 Map/MapView.h:
 @MapView.o
 Map/MercatorMapView.h:
@@ -3888,6 +3890,8 @@ Parser/FileParser/MAIPackParser.h:
 @MAIPackParser.o
 Parser/FileParser/MajiroArcParser.h:
 @MajiroArcParser.o
+Parser/FileParser/MapsforgeParser.h:
+@MapsforgeParser.o
 Parser/FileParser/MD5Parser.h:
 @MD5Parser.o
 Parser/FileParser/MDBParser.h:

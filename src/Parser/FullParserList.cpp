@@ -55,6 +55,7 @@
 #include "Parser/FileParser/M2VStmParser.h"
 #include "Parser/FileParser/MAIPackParser.h"
 #include "Parser/FileParser/MajiroArcParser.h"
+#include "Parser/FileParser/MapsforgeParser.h"
 #include "Parser/FileParser/MD5Parser.h"
 #include "Parser/FileParser/MDBParser.h"
 #include "Parser/FileParser/MEDParser.h"
@@ -265,6 +266,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(parser, Parser::FileParser::JXLParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::EVTXParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::MapsforgeParser());	
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);

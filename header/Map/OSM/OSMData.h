@@ -211,6 +211,7 @@ namespace Map
 			NN<RelationInfo> NewRelation(Int64 id);
 			Optional<ElementInfo> GetElementById(Int64 id, ElementType type);
 			Optional<NodeInfo> GetNodeById(Int64 id);
+			Optional<NodeInfo> GetNodeByPos(Double lat, Double lon);
 			Optional<WayInfo> GetWayById(Int64 id);
 			Optional<RelationInfo> GetRelationById(Int64 id);
 			void WayAddNode(NN<WayInfo> way, NN<NodeInfo> node);
@@ -218,6 +219,7 @@ namespace Map
 			void RelationAddMember(NN<RelationInfo> rel, ElementType type, Int64 refId, Optional<Text::String> role);
 			void SetLang(Text::CString lang);
 			void SetDataBounds(Math::RectAreaDbl bounds);
+			Math::RectAreaDbl GetDataBounds() const;
 			void SetGroupDist(Double groupDist);
 			void SetOSMBase(Data::Timestamp baseTime);
 			void SetNote(Text::CStringNN note);

@@ -2,6 +2,7 @@
 #include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/FileAnalyse/MapsforgeFileAnalyse.h"
+#include "Map/MapsforgeUtil.h"
 #include "Map/OSM/OSMTileMap.h"
 #include "Sync/SimpleThread.h"
 #include "Text/MyStringFloat.h"
@@ -56,7 +57,7 @@ void __stdcall IO::FileAnalyse::MapsforgeFileAnalyse::ParseThread(NN<Sync::Threa
 			me->tileSize = ReadMUInt16(&header[60]);
 
 			ofst = 62;
-			nextOfst = ReadVBEU(header, ofst, v);
+			nextOfst = Map::MapsforgeUtil::ReadVBEU(header, ofst, v);
 			ofst = nextOfst + (UOSInt)v;
 			me->flags = header[ofst];
 			ofst++;
@@ -70,17 +71,17 @@ void __stdcall IO::FileAnalyse::MapsforgeFileAnalyse::ParseThread(NN<Sync::Threa
 			}
 			if (me->flags & 0x10)
 			{
-				nextOfst = ReadVBEU(header, ofst, v);
+				nextOfst = Map::MapsforgeUtil::ReadVBEU(header, ofst, v);
 				ofst = nextOfst + (UOSInt)v;
 			}
 			if (me->flags & 0x8)
 			{
-				nextOfst = ReadVBEU(header, ofst, v);
+				nextOfst = Map::MapsforgeUtil::ReadVBEU(header, ofst, v);
 				ofst = nextOfst + (UOSInt)v;
 			}
 			if (me->flags & 0x4)
 			{
-				nextOfst = ReadVBEU(header, ofst, v);
+				nextOfst = Map::MapsforgeUtil::ReadVBEU(header, ofst, v);
 				ofst = nextOfst + (UOSInt)v;
 			}
 			cnt = ReadMUInt16(&header[ofst]);
@@ -88,7 +89,7 @@ void __stdcall IO::FileAnalyse::MapsforgeFileAnalyse::ParseThread(NN<Sync::Threa
 			i = 0;
 			while (i < cnt)
 			{
-				nextOfst = ReadVBEU(header, ofst, v);
+				nextOfst = Map::MapsforgeUtil::ReadVBEU(header, ofst, v);
 				me->poiTags.Add(Text::String::New(&header[nextOfst], (UOSInt)v));
 				ofst = nextOfst + (UOSInt)v;
 				i++;
@@ -99,7 +100,7 @@ void __stdcall IO::FileAnalyse::MapsforgeFileAnalyse::ParseThread(NN<Sync::Threa
 			i = 0;
 			while (i < cnt)
 			{
-				nextOfst = ReadVBEU(header, ofst, v);
+				nextOfst = Map::MapsforgeUtil::ReadVBEU(header, ofst, v);
 				me->wayTags.Add(Text::String::New(&header[nextOfst], (UOSInt)v));
 				ofst = nextOfst + (UOSInt)v;
 				i++;
@@ -197,50 +198,6 @@ void __stdcall IO::FileAnalyse::MapsforgeFileAnalyse::ParseThread(NN<Sync::Threa
 			MemFreeArr(header);
 		}
 	}
-}
-
-UOSInt IO::FileAnalyse::MapsforgeFileAnalyse::ReadVBEU(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<UInt64> v)
-{
-	UInt64 tmpV = 0;
-	UOSInt sh = 0;
-	UInt8 b;
-	while (true)
-	{
-		b = buff[ofst];
-		ofst++;
-		tmpV = tmpV | ((UInt64)(b & 0x7f) << sh);
-		if ((b & 0x80) == 0)
-			break;
-		sh += 7;
-	}
-	v.Set(tmpV);
-	return ofst;
-}
-
-UOSInt IO::FileAnalyse::MapsforgeFileAnalyse::ReadVBES(UnsafeArray<UInt8> buff, UOSInt ofst, OutParam<Int64> v)
-{
-	Int64 tmpV = 0;
-	UOSInt sh = 0;
-	UInt8 b;
-	while (true)
-	{
-		b = buff[ofst];
-		ofst++;
-		if ((b & 0x80) == 0)
-		{
-			tmpV = tmpV | ((Int64)(b & 0x3f) << sh);
-			if (b & 0x40)
-				tmpV = -tmpV;
-			break;
-		}
-		else
-		{
-			tmpV = tmpV | ((Int64)(b & 0x7f) << sh);
-		}
-		sh += 7;
-	}
-	v.Set(tmpV);
-	return ofst;
 }
 
 IO::FileAnalyse::MapsforgeFileAnalyse::MapsforgeFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MapsforgeFileAnalyse"))
@@ -364,7 +321,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 		frame->AddFloat(56, 4, CSTR("Max Lon"), ReadMInt32(&packBuff[56]) * 0.000001);
 		frame->AddUInt(60, 2, CSTR("Tile size"), ReadMUInt16(&packBuff[60]));
 		ofst = 62;
-		nextOfst = ReadVBEU(packBuff, ofst, v);
+		nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 		frame->AddField(ofst, nextOfst + v - ofst, CSTR("Projection"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 		ofst = nextOfst + (UOSInt)v;
 		flags = packBuff[ofst];
@@ -390,19 +347,19 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 		}
 		if (flags & 0x10)
 		{
-			nextOfst = ReadVBEU(packBuff, ofst, v);
+			nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 			frame->AddField(ofst, nextOfst + v - ofst, CSTR("Language(s) preference"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 			ofst = nextOfst + (UOSInt)v;
 		}
 		if (flags & 0x8)
 		{
-			nextOfst = ReadVBEU(packBuff, ofst, v);
+			nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 			frame->AddField(ofst, nextOfst + v - ofst, CSTR("Comment"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 			ofst = nextOfst + (UOSInt)v;
 		}
 		if (flags & 0x4)
 		{
-			nextOfst = ReadVBEU(packBuff, ofst, v);
+			nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 			frame->AddField(ofst, nextOfst + v - ofst, CSTR("Created by"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 			ofst = nextOfst + (UOSInt)v;
 		}
@@ -412,7 +369,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 		i = 0;
 		while (i < cnt)
 		{
-			nextOfst = ReadVBEU(packBuff, ofst, v);
+			nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 			sptr = Text::StrUOSInt(sbuff, i);
 			frame->AddField(ofst, nextOfst + v - ofst, CSTR("POI tag ID"), CSTRP(sbuff, sptr));
 			frame->AddField(ofst, nextOfst + v - ofst, CSTR("POI tag"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
@@ -426,7 +383,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 		i = 0;
 		while (i < cnt)
 		{
-			nextOfst = ReadVBEU(packBuff, ofst, v);
+			nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 			sptr = Text::StrUOSInt(sbuff, i);
 			frame->AddField(ofst, nextOfst + v - ofst, CSTR("Way tag ID"), CSTRP(sbuff, sptr));
 			frame->AddField(ofst, nextOfst + v - ofst, CSTR("Way tag"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
@@ -499,7 +456,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 				sb.Append(CSTR("Level "));
 				sb.AppendU16(z);
 				sb.Append(CSTR(" Number of POIs"));
-				nextOfst = ReadVBEU(packBuff, ofst, v);
+				nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 				frame->AddUInt(ofst, (UOSInt)(nextOfst - ofst), sb.ToCString(), v);
 				ofst = nextOfst;
 				nPOI[z] = (UOSInt)v;
@@ -507,13 +464,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 				sb.Append(CSTR("Level "));
 				sb.AppendU16(z);
 				sb.Append(CSTR(" Number of ways"));
-				nextOfst = ReadVBEU(packBuff, ofst, v);
+				nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 				frame->AddUInt(ofst, (UOSInt)(nextOfst - ofst), sb.ToCString(), v);
 				ofst = nextOfst;
 				nWay[z] = (UOSInt)v;
 				z++;
 			}
-			nextOfst = ReadVBEU(packBuff, ofst, v);
+			nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 			frame->AddUInt(ofst, (UOSInt)(nextOfst - ofst), CSTR("First way offset"), v);
 			ofst = nextOfst;
 
@@ -528,11 +485,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 						frame->AddStrC(ofst, 32, CSTR("POI Signature"), packBuff);
 						ofst += 32;
 					}
-					nextOfst = ReadVBES(packBuff, ofst, iv);
+					nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 					frame->AddInt(ofst, (UOSInt)(nextOfst - ofst), CSTR("Lat Diff"), iv);
 					frame->AddFloat(ofst, (UOSInt)(nextOfst - ofst), CSTR("Latitude"), Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, pack->baseZoomLevel) + (Double)iv * 0.000001);
 					ofst = nextOfst;
-					nextOfst = ReadVBES(packBuff, ofst, iv);
+					nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 					frame->AddInt(ofst, (UOSInt)(nextOfst - ofst), CSTR("Lon Diff"), iv);
 					frame->AddFloat(ofst, (UOSInt)(nextOfst - ofst), CSTR("Longitude"), Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel) + (Double)iv * 0.000001);
 					ofst = nextOfst;
@@ -543,7 +500,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					i = 0;
 					while (i < cnt)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddUIntName(ofst, (UOSInt)(nextOfst - ofst), CSTR("POI Tag"), v, OPTSTR_CSTR(this->poiTags.GetItem((UOSInt)v)));
 						ofst = nextOfst;
 						i++;
@@ -555,19 +512,19 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					ofst++;
 					if (flags & 0x80)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddField(ofst, nextOfst + v - ofst, CSTR("Name"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 						ofst = nextOfst + (UOSInt)v;
 					}
 					if (flags & 0x40)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddField(ofst, nextOfst + v - ofst, CSTR("House number"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 						ofst = nextOfst + (UOSInt)v;
 					}
 					if (flags & 0x20)
 					{
-						nextOfst = ReadVBES(packBuff, ofst, iv);
+						nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 						frame->AddInt(ofst, nextOfst - ofst, CSTR("Elevation"), iv);
 						ofst = nextOfst;
 					}
@@ -589,7 +546,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 						frame->AddStrC(ofst, 32, CSTR("Way Signature"), &packBuff[ofst]);
 						ofst += 32;
 					}
-					nextOfst = ReadVBEU(packBuff, ofst, v);
+					nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 					frame->AddUInt(ofst, nextOfst - ofst, CSTR("Way data size"), v);
 					ofst = nextOfst;
 					UInt64 wayEndOfst = ofst + v;
@@ -601,7 +558,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					i = 0;
 					while (i < cnt)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddUIntName(ofst, (UOSInt)(nextOfst - ofst), CSTR("Way Tag"), v, OPTSTR_CSTR(this->wayTags.GetItem((UOSInt)v)));
 						ofst = nextOfst;
 						i++;
@@ -616,29 +573,29 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					ofst++;
 					if (wayFlags & 0x80)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddField(ofst, nextOfst + v - ofst, CSTR("Name"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 						ofst = nextOfst + (UOSInt)v;
 					}
 					if (wayFlags & 0x40)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddField(ofst, nextOfst + v - ofst, CSTR("House number"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 						ofst = nextOfst + (UOSInt)v;
 					}
 					if (wayFlags & 0x20)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddField(ofst, nextOfst + v - ofst, CSTR("Reference"), Text::CStringNN(&packBuff[nextOfst], (UOSInt)v));
 						ofst = nextOfst + (UOSInt)v;
 					}
 					if (wayFlags & 0x10)
 					{
-						nextOfst = ReadVBES(packBuff, ofst, iv);
+						nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 						frame->AddInt(ofst, nextOfst - ofst, CSTR("Label position lat-diff"), iv);
 						frame->AddFloat(ofst, nextOfst - ofst, CSTR("Label position latitude"), Map::OSM::OSMTileMap::TileY2Lat(pack->tileY, pack->baseZoomLevel) + (Double)iv * 0.000001);
 						ofst = nextOfst;
-						nextOfst = ReadVBES(packBuff, ofst, iv);
+						nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 						frame->AddInt(ofst, nextOfst - ofst, CSTR("Label position lon-diff"), iv);
 						frame->AddFloat(ofst, nextOfst - ofst, CSTR("Label position longitude"), Map::OSM::OSMTileMap::TileX2Lon(pack->tileX, pack->baseZoomLevel) + (Double)iv * 0.000001);
 						ofst = nextOfst;
@@ -646,7 +603,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					UOSInt nDataBlk;
 					if (wayFlags & 0x8)
 					{
-						nextOfst = ReadVBEU(packBuff, ofst, v);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, v);
 						frame->AddUInt(ofst, nextOfst - ofst, CSTR("Number of way data blocks"), v);
 						nDataBlk = (UOSInt)v;
 						ofst = nextOfst;
@@ -659,14 +616,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					while (i < nDataBlk)
 					{
 						UInt64 nWayBlocks;
-						nextOfst = ReadVBEU(packBuff, ofst, nWayBlocks);
+						nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, nWayBlocks);
 						frame->AddUInt(ofst, nextOfst - ofst, CSTR("Number of way coordinate blocks"), nWayBlocks);
 						ofst = nextOfst;
 						j = 0;
 						while (j < nWayBlocks)
 						{
 							UInt64 nNodes;
-							nextOfst = ReadVBEU(packBuff, ofst, nNodes);
+							nextOfst = Map::MapsforgeUtil::ReadVBEU(packBuff, ofst, nNodes);
 							frame->AddUInt(ofst, nextOfst - ofst, CSTR("Amount of way nodes of this way"), nNodes);
 							ofst = nextOfst;
 							if (wayFlags & 4)
@@ -678,7 +635,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 								k = 0;
 								while (k < nNodes)
 								{
-									nextOfst = ReadVBES(packBuff, ofst, iv);
+									nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lat-diff"), iv);
 									if (k > 0)
 									{
@@ -691,7 +648,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 									}
 									frame->AddFloat(ofst, nextOfst - ofst, CSTR("Way node latitude"), lastLat);
 									ofst = nextOfst;
-									nextOfst = ReadVBES(packBuff, ofst, iv);
+									nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lon-diff"), iv);
 									if (k > 0)
 									{
@@ -721,12 +678,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 								k = 0;
 								while (k < nNodes)
 								{
-									nextOfst = ReadVBES(packBuff, ofst, iv);
+									nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lat-diff"), iv);
 									lastLat += (Double)iv * 0.000001;
 									frame->AddFloat(ofst, nextOfst - ofst, CSTR("Way node latitude"), lastLat);
 									ofst = nextOfst;
-									nextOfst = ReadVBES(packBuff, ofst, iv);
+									nextOfst = Map::MapsforgeUtil::ReadVBES(packBuff, ofst, iv);
 									frame->AddInt(ofst, nextOfst - ofst, CSTR("Way node lon-diff"), iv);
 									lastLon += (Double)iv * 0.000001;
 									frame->AddFloat(ofst, nextOfst - ofst, CSTR("Way node longitude"), lastLon);
