@@ -16,6 +16,7 @@
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "IO/FileAnalyse/NFDumpFileAnalyse.h"
+#include "IO/FileAnalyse/OSMPBFFileAnalyse.h"
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "IO/FileAnalyse/PNGFileAnalyse.h"
@@ -165,6 +166,10 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	else if (buffSize >= 25 && *(Int32*)&buff[0] == *(Int32*)"SmTC" && buff[24] == 0)
 	{
 		NEW_CLASSNN(analyse, IO::FileAnalyse::SMTCFileAnalyse(fd));
+	}
+	else if (buffSize >= 15 && buff[4] == 0x0a && buff[5] == 9 && Text::StrEqualsC(&buff[6], 9, UTF8STRC("OSMHeader")))
+	{
+		NEW_CLASSNN(analyse, IO::FileAnalyse::OSMPBFFileAnalyse(fd));
 	}
 	else if (buffSize >= 256 && buff[0] == '!' && buff[1] == 'B' && buff[2] == 'D' && buff[3] == 'N' && buff[8] == 0x53 && buff[9] == 0x4d)
 	{

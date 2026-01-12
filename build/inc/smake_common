@@ -2016,6 +2016,12 @@ IO/PrintMODBUSDevSim.h:
 IO/ProgramLink.h:
 @ProgramLink.o
 IO/ProgressHandler.h:
+IO/ProtocolBuffersMessage.h:
+@ProtocolBuffersMessage.o
+IO/ProtocolBuffersMessageFast.h:
+@ProtocolBuffersMessageFast.o
+IO/ProtocolBuffersUtil.h:
+@ProtocolBuffersUtil.o
 IO/ProtocolHandler.h:
 IO/ProtocolParser.h:
 IO/RadioSignalLogger.h:
@@ -2201,6 +2207,7 @@ IO/FileAnalyse/FGDBFileAnalyse.h:
 @FGDBFileAnalyse.o
 IO/FileAnalyse/FileAnalyser.h:
 @FileAnalyser.o
+IO/FileAnalyse/FileAnalyserCreator.h:
 IO/FileAnalyse/FLVFileAnalyse.h:
 @FLVFileAnalyse.o
 IO/FileAnalyse/FrameDetail.h:
@@ -2221,12 +2228,16 @@ IO/FileAnalyse/MPEGFileAnalyse.h:
 @MPEGFileAnalyse.o
 IO/FileAnalyse/NFDumpFileAnalyse.h:
 @NFDumpFileAnalyse.o
+IO/FileAnalyse/OSMPBFFileAnalyse.h:
+@OSMPBFFileAnalyse.o
 IO/FileAnalyse/PCapFileAnalyse.h:
 @PCapFileAnalyse.o
 IO/FileAnalyse/PCapngFileAnalyse.h:
 @PCapngFileAnalyse.o
 IO/FileAnalyse/PNGFileAnalyse.h:
 @PNGFileAnalyse.o
+IO/FileAnalyse/ProtocolBuffersFileAnalyse.h:
+@ProtocolBuffersFileAnalyse.o
 IO/FileAnalyse/PSTFileAnalyse.h:
 @PSTFileAnalyse.o
 IO/FileAnalyse/QTFileAnalyse.h:

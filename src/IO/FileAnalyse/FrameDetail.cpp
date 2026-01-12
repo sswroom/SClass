@@ -1,5 +1,7 @@
 #include "Stdafx.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "IO/FileAnalyse/FrameDetail.h"
+#include "IO/FileAnalyse/FileAnalyserCreator.h"
 
 void __stdcall IO::FileAnalyse::FrameDetail::FreeFieldInfo(NN<FieldInfo> field)
 {
@@ -23,12 +25,16 @@ IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt64 size)
 {
 	this->ofst = ofst;
 	this->size = size;
+	this->devrivedBuff = 0;
+	this->devrivedAnalyse = 0;
 }
 
 IO::FileAnalyse::FrameDetail::~FrameDetail()
 {
 	this->headers.FreeAll();
 	this->fields.FreeAll(FreeFieldInfo);
+	this->devrivedBuff.Delete();
+	this->devrivedAnalyse.Delete();
 }
 
 UInt64 IO::FileAnalyse::FrameDetail::GetOffset() const
@@ -89,6 +95,23 @@ UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NN<Data::ArrayLis
 	return ret;
 }
 
+Optional<Data::ByteBuffer>	IO::FileAnalyse::FrameDetail::GetDevrivedBuff() const
+{
+	return this->devrivedBuff;
+}
+
+Optional<IO::FileAnalyse::FileAnalyser>	IO::FileAnalyse::FrameDetail::CreateDevrivedAnaylse() const
+{
+	NN<Data::ByteBuffer> devrivedBuff;
+	NN<IO::FileAnalyse::FileAnalyserCreator> analyseCreator;
+	if (!this->devrivedAnalyse.SetTo(analyseCreator) || !this->devrivedBuff.SetTo(devrivedBuff))
+	{
+		return 0;
+	}
+	IO::StmData::MemoryDataRef memData(devrivedBuff->AsByteArray());
+	return analyseCreator->Create(memData);
+}
+
 void IO::FileAnalyse::FrameDetail::AddHeader(Text::CStringNN header)
 {
 	this->headers.Add(Text::String::New(header));
@@ -122,6 +145,18 @@ void IO::FileAnalyse::FrameDetail::AddSubframe(UInt64 ofst, UInt64 size)
 void IO::FileAnalyse::FrameDetail::AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name)
 {
 	this->AddFieldInfo(ofst, size, name, nullptr, FT_AREA);
+}
+
+void IO::FileAnalyse::FrameDetail::SetDevrivedBuff(Data::ByteArrayR buff)
+{
+	this->devrivedBuff.Delete();
+	NEW_CLASSOPT(this->devrivedBuff, Data::ByteBuffer(buff));
+}
+
+void IO::FileAnalyse::FrameDetail::SetDevrivedAnaylse(NN<IO::FileAnalyse::FileAnalyserCreator> analyseCreator)
+{
+	this->devrivedAnalyse.Delete();
+	this->devrivedAnalyse = analyseCreator;
 }
 
 void IO::FileAnalyse::FrameDetail::ToString(NN<Text::StringBuilderUTF8> sb) const

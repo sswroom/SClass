@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRHexViewerGoToForm.h"
 #include "Text/CharUtil.h"
@@ -199,11 +200,13 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 			}
 			me->txtFieldDetail->SetText(sb.ToCString());
 		}
+		me->btnDevrivedBuff->SetEnabled(me->hexView->GetDevrivedBuff().NotNull());
 	}
 	else
 	{
 		me->txtFrameName->SetText(CSTR("-"));
 		me->txtFieldDetail->SetText(CSTR("-"));
+		me->btnDevrivedBuff->SetEnabled(false);
 	}
 }
 
@@ -328,6 +331,19 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userOb
 		}
 	}
 	dlg.Delete();
+}
+
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnDevrivedBuffClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
+	NN<Data::ByteBuffer> devBuff;
+	if (!me->hexView->GetDevrivedBuff().SetTo(devBuff))
+	{
+		me->ui->ShowMsgOK(CSTR("No devrived buffer available"), CSTR("Hex Viewer"), me);
+		return;
+	}
+	IO::StmData::MemoryDataCopy memData(devBuff->SubArray(0));
+	me->core->OpenHex(memData, me->hexView->CreateDevrivedAnaylse());
 }
 
 Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
@@ -468,6 +484,10 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(Optional<UI::GUIClientContro
 	this->txtFieldDetail = ui->NewTextBox(this->tpAnalyse, CSTR(""), true);
 	this->txtFieldDetail->SetRect(104, 52, 500, 128, false);
 	this->txtFieldDetail->SetReadOnly(true);
+	this->btnDevrivedBuff = ui->NewButton(this->tpAnalyse, CSTR("Devrived Buff"));
+	this->btnDevrivedBuff->SetRect(4, 76, 100, 23, false);
+	this->btnDevrivedBuff->SetEnabled(false);
+	this->btnDevrivedBuff->HandleButtonClick(OnDevrivedBuffClicked, this);
 
 
 	this->tpExtract = this->tcMain->AddTabPage(CSTR("Extract"));

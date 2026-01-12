@@ -707,3 +707,24 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 	frame.Delete();
 	return false;
 }
+
+Optional<Data::ByteBuffer> UI::GUIHexFileView::GetDevrivedBuff() const
+{
+	NN<IO::FileAnalyse::FrameDetail> frame;
+	if (this->frame.SetTo(frame))
+	{
+		return frame->GetDevrivedBuff();
+	}
+	return 0;
+}
+
+Optional<IO::FileAnalyse::FileAnalyser> UI::GUIHexFileView::CreateDevrivedAnaylse() const
+{
+	NN<Data::ByteBuffer> devrivedBuff;
+	NN<IO::FileAnalyse::FrameDetail> frame;
+	if (!this->frame.SetTo(frame) || !frame->GetDevrivedBuff().SetTo(devrivedBuff))
+	{
+		return 0;
+	}
+	return frame->CreateDevrivedAnaylse();
+}

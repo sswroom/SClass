@@ -523,6 +523,9 @@ PrivilegeManagerW.o: ../../src/IO/PrivilegeManagerW.cpp
 ProgramLink.o: ../../src/IO/ProgramLink.cpp
 ProgramLinkManagerL.o: ../../src/IO/ProgramLinkManagerL.cpp
 ProgramLinkManagerNull.o: ../../src/IO/ProgramLinkManagerNull.cpp
+ProtocolBuffersMessage.o: ../../src/IO/ProtocolBuffersMessage.cpp
+ProtocolBuffersMessageFast.o: ../../src/IO/ProtocolBuffersMessageFast.cpp
+ProtocolBuffersUtil.o: ../../src/IO/ProtocolBuffersUtil.cpp
 RadioSignalLogger.o: ../../src/IO/RadioSignalLogger.cpp
 RAWBTMonitor.o: ../../src/IO/RAWBTMonitor.cpp
 RAWBTMonitorLite.o: ../../src/IO/RAWBTMonitorLite.cpp
@@ -683,9 +686,11 @@ MapsforgeFileAnalyse.o: ../../src/IO/FileAnalyse/MapsforgeFileAnalyse.cpp
 MDBFileAnalyse.o: ../../src/IO/FileAnalyse/MDBFileAnalyse.cpp
 MPEGFileAnalyse.o: ../../src/IO/FileAnalyse/MPEGFileAnalyse.cpp
 NFDumpFileAnalyse.o: ../../src/IO/FileAnalyse/NFDumpFileAnalyse.cpp
+OSMPBFFileAnalyse.o: ../../src/IO/FileAnalyse/OSMPBFFileAnalyse.cpp
 PCapFileAnalyse.o: ../../src/IO/FileAnalyse/PCapFileAnalyse.cpp
 PCapngFileAnalyse.o: ../../src/IO/FileAnalyse/PCapngFileAnalyse.cpp
 PNGFileAnalyse.o: ../../src/IO/FileAnalyse/PNGFileAnalyse.cpp
+ProtocolBuffersFileAnalyse.o: ../../src/IO/FileAnalyse/ProtocolBuffersFileAnalyse.cpp
 PSTFileAnalyse.o: ../../src/IO/FileAnalyse/PSTFileAnalyse.cpp
 QTFileAnalyse.o: ../../src/IO/FileAnalyse/QTFileAnalyse.cpp
 RAR5FileAnalyse.o: ../../src/IO/FileAnalyse/RAR5FileAnalyse.cpp

@@ -66,6 +66,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtFrameName;
 			NN<UI::GUILabel> lblFieldDetail;
 			NN<UI::GUITextBox> txtFieldDetail;
+			NN<UI::GUIButton> btnDevrivedBuff;
 
 			NN<UI::GUITabPage> tpExtract;
 			NN<UI::GUILabel> lblExtractBegin;
@@ -85,6 +86,7 @@ namespace SSWR
 			static void __stdcall OnExtractBeginClicked(AnyType userObj);
 			static void __stdcall OnExtractEndClicked(AnyType userObj);
 			static void __stdcall OnExtractClicked(AnyType userObj);
+			static void __stdcall OnDevrivedBuffClicked(AnyType userObj);
 			Bool LoadFile(Text::CStringNN fileName, Bool dynamicSize);
 		public:
 			AVIRHexViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

@@ -102,6 +102,11 @@ namespace Data
 #endif
 		}
 
+		ByteArrayR AsByteArray() const
+		{
+			return ByteArrayR(this->Arr(), this->GetSize());
+		}
+
 		ByteBuffer &operator=(ByteBuffer &) = delete;
 	};
 }

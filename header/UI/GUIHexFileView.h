@@ -60,6 +60,8 @@ namespace UI
 		UOSInt GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList);
 		UOSInt GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList);
 		Bool GoToNextUnkField();
+		Optional<Data::ByteBuffer> GetDevrivedBuff() const;
+		Optional<IO::FileAnalyse::FileAnalyser> CreateDevrivedAnaylse() const;
 	};
 }
 #endif
