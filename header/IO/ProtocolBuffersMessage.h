@@ -15,6 +15,8 @@ namespace IO
 			UInt8 id;
 			ProtocolBuffersUtil::FieldType fieldType;
 			Bool required;
+			Bool packed;
+			Bool deltaCoded;
 			NN<Text::String> name;
 			UOSInt valCount;
 			union
@@ -40,22 +42,22 @@ namespace IO
 		ProtocolBuffersMessage(Text::CStringNN name);
 		~ProtocolBuffersMessage();
 
-		void AddInt64(Bool required, Text::CStringNN name, UInt8 id);
-		void AddSInt64(Bool required, Text::CStringNN name, UInt8 id);
-		void AddUInt64(Bool required, Text::CStringNN name, UInt8 id);
-		void AddInt32(Bool required, Text::CStringNN name, UInt8 id);
-		void AddSInt32(Bool required, Text::CStringNN name, UInt8 id);
-		void AddUInt32(Bool required, Text::CStringNN name, UInt8 id);
-		void AddBool(Bool required, Text::CStringNN name, UInt8 id);
-		void AddEnum(Bool required, Text::CStringNN name, UInt8 id);
-		void AddFixed64(Bool required, Text::CStringNN name, UInt8 id);
-		void AddSFixed64(Bool required, Text::CStringNN name, UInt8 id);
-		void AddFixed32(Bool required, Text::CStringNN name, UInt8 id);
-		void AddSFixed32(Bool required, Text::CStringNN name, UInt8 id);
-		void AddFloat(Bool required, Text::CStringNN name, UInt8 id);
-		void AddDouble(Bool required, Text::CStringNN name, UInt8 id);
-		void AddString(Bool required, Text::CStringNN name, UInt8 id);
-		void AddBytes(Bool required, Text::CStringNN name, UInt8 id);
+		void AddInt64(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddSInt64(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddUInt64(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddInt32(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddSInt32(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddUInt32(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddBool(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddEnum(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddFixed64(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddSFixed64(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddFixed32(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddSFixed32(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddFloat(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddDouble(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddString(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
+		void AddBytes(Bool required, Text::CStringNN name, UInt8 id, Bool packed, Bool deltaCoded = false);
 		void AddSubMessage(Bool required, Text::CStringNN name, UInt8 id, NN<ProtocolBuffersMessage> subMsg);
 
 		void ClearValues();
@@ -74,6 +76,7 @@ namespace IO
 		Bool GetBool(UInt8 id, OutParam<Bool> val) const;
 		Bool GetEnum(UInt8 id, OutParam<Int32> val) const;
 		NN<ProtocolBuffersMessage> Clone() const;
+		NN<Text::String> GetName() const;
 
 		Bool ParseMsssage(NN<IO::FileAnalyse::FrameDetail> frame, UnsafeArray<const UInt8> buff, UOSInt buffOfst, UOSInt buffSize);
 		void ToString(NN<Text::StringBuilderUTF8> sb, UOSInt level);

@@ -29,7 +29,7 @@ Bool IO::FileAnalyse::ProtocolBuffersFileAnalyse::GetFrameName(UOSInt index, NN<
 	{
 		return false;
 	}
-	this->msg->ToString(sb, 0);
+	sb->Append(this->msg->GetName());
 	return true;
 }
 

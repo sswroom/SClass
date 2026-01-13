@@ -580,9 +580,10 @@ Bool IO::ProtocolBuffersMessageFast::ParseMsssage(UnsafeArray<const UInt8> buff,
 	UOSInt ofst = 0;
 	while (ofst < buffSize)
 	{
-		UInt8 key = buff[ofst++];
-		UInt8 fieldNum = key >> 3;
-		UInt8 wireType = key & 0x07;
+		UInt64 key;
+		ofst = ProtocolBuffersUtil::ReadVarUInt(buff, ofst, key);
+		UInt64 fieldNum = key >> 3;
+		UInt8 wireType = (UInt8)(key & 0x07);
 		if (!this->fieldMap.Get((UInt32)fieldNum).SetTo(fieldInfo))
 		{
 			return false;

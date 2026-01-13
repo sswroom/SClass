@@ -205,22 +205,22 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 	case PackType::BlobHeader:
 		{
 			ProtocolBuffersMessage blobHeader(CSTR("BlobHeader"));
-			blobHeader.AddString(true, CSTR("type"), 1);
-			blobHeader.AddBytes(false, CSTR("indexdata"), 2);
-			blobHeader.AddInt32(true, CSTR("datasize"), 3);
+			blobHeader.AddString(true, CSTR("type"), 1, false);
+			blobHeader.AddBytes(false, CSTR("indexdata"), 2, false);
+			blobHeader.AddInt32(true, CSTR("datasize"), 3, false);
 			blobHeader.ParseMsssage(frame, packetBuff.Arr(), 0, (UOSInt)pack->packSize);
 		}
 		break;
 	case PackType::Blob:
 		{
 			ProtocolBuffersMessage blob(CSTR("Blob"));
-			blob.AddBytes(false, CSTR("raw"), 1);
-			blob.AddInt32(false, CSTR("raw_size"), 2);
-			blob.AddBytes(false, CSTR("zlib_data"), 3);
-			blob.AddBytes(false, CSTR("lzma_data"), 4);
-			blob.AddBytes(false, CSTR("OBSOLUTE_bzip2_data"), 5);
-			blob.AddBytes(false, CSTR("lz4_data"), 6);
-			blob.AddBytes(false, CSTR("zstd_data"), 7);
+			blob.AddBytes(false, CSTR("raw"), 1, false);
+			blob.AddInt32(false, CSTR("raw_size"), 2, false);
+			blob.AddBytes(false, CSTR("zlib_data"), 3, false);
+			blob.AddBytes(false, CSTR("lzma_data"), 4, false);
+			blob.AddBytes(false, CSTR("OBSOLUTE_bzip2_data"), 5, false);
+			blob.AddBytes(false, CSTR("lz4_data"), 6, false);
+			blob.AddBytes(false, CSTR("zstd_data"), 7, false);
 			Int32 rawSize;
 			if (blob.ParseMsssage(frame, packetBuff.Arr(), 0, (UOSInt)pack->packSize) && blob.GetInt32(2, rawSize) && rawSize > 0)
 			{
@@ -246,28 +246,93 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 				{
 					NN<ProtocolBuffersMessage> msg;
 					NN<ProtocolBuffersMessage> subMsg;
+					NN<ProtocolBuffersMessage> subMsg2;
+					NN<ProtocolBuffersMessage> msgInfo;
 					NN<IO::FileAnalyse::ProtocolBuffersFileAnalyseCreator> analyseCreator;
 					if (dataType->Equals(UTF8STRC("OSMData")))
 					{
+						NEW_CLASSNN(msg, ProtocolBuffersMessage(CSTR("OSMData")));
+						NEW_CLASSNN(subMsg, ProtocolBuffersMessage(CSTR("StringTable")));
+						subMsg->AddString(true, CSTR("s"), 1, false);
+						msg->AddSubMessage(true, CSTR("stringtable"), 1, subMsg);
+						NEW_CLASSNN(msgInfo, ProtocolBuffersMessage(CSTR("Info")));
+						msgInfo->AddInt32(false, CSTR("version"), 1, false);
+						msgInfo->AddInt64(false, CSTR("timestamp"), 2, false);
+						msgInfo->AddInt64(false, CSTR("changeset"), 3, false);
+						msgInfo->AddInt32(false, CSTR("uid"), 4, false);
+						msgInfo->AddUInt32(false, CSTR("user_sid"), 5, false);
+						msgInfo->AddBool(false, CSTR("visible"), 6, false);
+						NEW_CLASSNN(subMsg, ProtocolBuffersMessage(CSTR("PrimitiveGroup")));
+						NEW_CLASSNN(subMsg2, ProtocolBuffersMessage(CSTR("Node")));
+						subMsg2->AddSInt64(true, CSTR("id"), 1, false);
+						subMsg2->AddUInt32(false, CSTR("keys"), 2, true);
+						subMsg2->AddUInt32(false, CSTR("vals"), 3, true);
+						subMsg2->AddSubMessage(false, CSTR("info"), 4, msgInfo);
+						subMsg2->AddSInt64(true, CSTR("lat"), 8, false);
+						subMsg2->AddSInt64(true, CSTR("lon"), 9, false);
+						subMsg->AddSubMessage(true, CSTR("nodes"), 1, subMsg2);
+						NEW_CLASSNN(subMsg2, ProtocolBuffersMessage(CSTR("Way")));
+						subMsg2->AddInt64(true, CSTR("id"), 1, false);
+						subMsg2->AddUInt32(false, CSTR("keys"), 2, true);
+						subMsg2->AddUInt32(false, CSTR("vals"), 3, true);
+						subMsg2->AddSubMessage(false, CSTR("info"), 4, msgInfo->Clone());
+						subMsg2->AddSInt64(false, CSTR("refs"), 8, true, true);
+						subMsg2->AddSInt64(false, CSTR("lat"), 9, true, true);
+						subMsg2->AddSInt64(false, CSTR("lon"), 10, true, true);
+						subMsg->AddSubMessage(true, CSTR("ways"), 3, subMsg2);
+						NEW_CLASSNN(subMsg2, ProtocolBuffersMessage(CSTR("Relation")));
+						subMsg2->AddInt64(true, CSTR("id"), 1, false);
+						subMsg2->AddUInt32(false, CSTR("keys"), 2, true);
+						subMsg2->AddUInt32(false, CSTR("vals"), 3, true);
+						subMsg2->AddSubMessage(false, CSTR("info"), 4, msgInfo->Clone());
+						subMsg2->AddInt32(false, CSTR("roles_sid"), 8, true);
+						subMsg2->AddSInt64(false, CSTR("memids"), 9, true, true);
+						subMsg2->AddEnum(false, CSTR("types"), 10, true);
+						subMsg->AddSubMessage(true, CSTR("relations"), 4, subMsg2);
+						NEW_CLASSNN(msgInfo, ProtocolBuffersMessage(CSTR("DenseInfo")));
+						msgInfo->AddInt32(false, CSTR("version"), 1, true);
+						msgInfo->AddSInt64(false, CSTR("timestamp"), 2, true, true);
+						msgInfo->AddSInt64(false, CSTR("changeset"), 3, true, true);
+						msgInfo->AddSInt32(false, CSTR("uid"), 4, true, true);
+						msgInfo->AddSInt32(false, CSTR("user_sid"), 5, true, true);
+						msgInfo->AddBool(false, CSTR("visible"), 6, true);
+						NEW_CLASSNN(subMsg2, ProtocolBuffersMessage(CSTR("DenseNodes")));
+						subMsg2->AddSInt64(true, CSTR("id"), 1, true, true);
+						subMsg2->AddSubMessage(false, CSTR("denseinfo"), 5, msgInfo);
+						subMsg2->AddSInt64(false, CSTR("lat"), 8, true, true);
+						subMsg2->AddSInt64(false, CSTR("lon"), 9, true, true);
+						subMsg2->AddUInt32(false, CSTR("keys_vals"), 10, true);
+						subMsg->AddSubMessage(false, CSTR("dense"), 2, subMsg2);
+						msg->AddSubMessage(true, CSTR("primitivegroup"), 2, subMsg);
+						msg->AddInt32(false, CSTR("granularity"), 17, false);
+						msg->AddInt64(false, CSTR("lat_offset"), 19, false);
+						msg->AddInt64(false, CSTR("lon_offset"), 20, false);
+						msg->AddInt32(false, CSTR("date_granularity"), 18, false);
+						NEW_CLASSNN(analyseCreator, IO::FileAnalyse::ProtocolBuffersFileAnalyseCreator(msg));
+						frame->SetDevrivedAnaylse(analyseCreator);
 					}
 					else if (dataType->Equals(UTF8STRC("OSMHeader")))
 					{
 						NEW_CLASSNN(subMsg, ProtocolBuffersMessage(CSTR("HeaderBBox")));
-						subMsg->AddInt64(true, CSTR("left"), 1);
-						subMsg->AddInt64(true, CSTR("right"), 2);
-						subMsg->AddInt64(true, CSTR("top"), 3);
-						subMsg->AddInt64(true, CSTR("bottom"), 4);
+						subMsg->AddInt64(true, CSTR("left"), 1, false);
+						subMsg->AddInt64(true, CSTR("right"), 2, false);
+						subMsg->AddInt64(true, CSTR("top"), 3, false);
+						subMsg->AddInt64(true, CSTR("bottom"), 4, false);
 						NEW_CLASSNN(msg, ProtocolBuffersMessage(CSTR("HeaderBlock")));
 						msg->AddSubMessage(false, CSTR("bbox"), 1, subMsg);
-						msg->AddString(false, CSTR("required_features"), 4);
-						msg->AddString(false, CSTR("optional_features"), 5);
-						msg->AddString(false, CSTR("writingprogram"), 16);
-						msg->AddString(false, CSTR("source"), 17);
-						msg->AddInt64(false, CSTR("osmosis_replication_timestamp"), 32);
-						msg->AddInt64(false, CSTR("osmosis_replication_sequence_number"), 33);
-						msg->AddString(false, CSTR("osmosis_replication_base_url"), 34);
+						msg->AddString(false, CSTR("required_features"), 4, false);
+						msg->AddString(false, CSTR("optional_features"), 5, false);
+						msg->AddString(false, CSTR("writingprogram"), 16, false);
+						msg->AddString(false, CSTR("source"), 17, false);
+						msg->AddInt64(false, CSTR("osmosis_replication_timestamp"), 32, false);
+						msg->AddInt64(false, CSTR("osmosis_replication_sequence_number"), 33, false);
+						msg->AddString(false, CSTR("osmosis_replication_base_url"), 34, false);
 						NEW_CLASSNN(analyseCreator, IO::FileAnalyse::ProtocolBuffersFileAnalyseCreator(msg));
 						frame->SetDevrivedAnaylse(analyseCreator);
+					}
+					else
+					{
+						printf("OSMPBFFileAnalyse: Unknown OSM PBF Blob Type: %s\r\n", dataType->v.Ptr());
 					}
 				}
 			}
