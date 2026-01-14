@@ -53,7 +53,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStri
 #if defined(VERBOSE)
 			printf("ArcGISPRJParser: Error in opening file\r\n");
 #endif
-			return 0;
+			return nullptr;
 		}
 		buffSize = fs.Read(Data::ByteArray(buff, 1023));
 		buff[buffSize] = 0;
@@ -63,7 +63,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStri
 #if defined(VERBOSE)
 		printf("ArcGISPRJParser: File too large\r\n");
 #endif
-		return 0;
+		return nullptr;
 	}
 
 	return ParsePRJBuff(fileName, UARR(buff), buffSize, buffSize);
@@ -83,7 +83,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 	Double f_1 = 0;
 	Math::CoordinateSystem *csys = 0;
 	Math::EarthEllipsoid::EarthEllipsoidType eet;
-	Optional<Math::GeographicCoordinateSystem> gcs = 0;
+	Optional<Math::GeographicCoordinateSystem> gcs = nullptr;
 	Math::GeographicCoordinateSystem::PrimemType primem = Math::GeographicCoordinateSystem::PT_GREENWICH;
 	Math::GeographicCoordinateSystem::UnitType unit = Math::GeographicCoordinateSystem::UT_DEGREE;
 	UTF8Char c;
@@ -104,7 +104,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 			printf("ArcGISPRJParser: Error in parsing String for GEOGCS: %s\r\n", &prjBuff[i]);
 #endif
-			return 0;
+			return nullptr;
 		}
 		nameOfst = i + 1;
 		prjBuff[i + nameLen - 1] = 0;
@@ -128,7 +128,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 						printf("ArcGISPRJParser: Error in parsing String for DATUM: %s\r\n", &prjBuff[i]);
 #endif
-						return 0;
+						return nullptr;
 					}
 					datumOfst = i + 1;
 					prjBuff[i + datumLen - 1] = 0;
@@ -142,7 +142,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						}
 						else if (c == 0)
 						{
-							return 0;
+							return nullptr;
 						}
 						else if (c == ',')
 						{
@@ -155,7 +155,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 									printf("ArcGISPRJParser: Error in parsing String for SPHEROID: %s\r\n", &prjBuff[i]);
 #endif
-									return 0;
+									return nullptr;
 								}
 								prjBuff[i + j - 1] = 0;
 								i += j;
@@ -189,7 +189,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 										printf("ArcGISPRJParser: Unexpected end of string at %d\r\n", (UInt32)i);
 #endif
-										return 0;
+										return nullptr;
 									}
 									else
 									{
@@ -248,7 +248,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 												printf("ArcGISPRJParser: TOWGS84 expected 7 parameters, now is %d\r\n", (UInt32)(k - 1));
 #endif
-												return 0;
+												return nullptr;
 											}
 											hasToWGS84 = true;
 											break;
@@ -260,7 +260,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 										printf("ArcGISPRJParser: Unexpected end of string at %d\r\n", (UInt32)i);
 #endif
-										return 0;
+										return nullptr;
 									}
 									else
 									{
@@ -273,7 +273,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 								printf("ArcGISPRJParser: Expected to be SPHEROID, current is %s\r\n", &prjBuff[i]);
 #endif
-								return 0;
+								return nullptr;
 							}
 						}
 						else
@@ -281,7 +281,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 							printf("ArcGISPRJParser: Unknown char in DATUM: %s\r\n", &prjBuff[i]);
 #endif
-							return 0;
+							return nullptr;
 						}
 					}
 					i++;
@@ -294,7 +294,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 						printf("ArcGISPRJParser: Error in parsing String for PRIMEM: %s\r\n", &prjBuff[i]);
 #endif
-						return 0;
+						return nullptr;
 					}
 					i += j;
 					while (true)
@@ -303,9 +303,9 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						if (c == ']')
 							break;
 						if (c == 0)
-							return 0;
+							return nullptr;
 						if (c == '[')
-							return 0;
+							return nullptr;
 						i++;
 					}
 					i++;
@@ -318,7 +318,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 						printf("ArcGISPRJParser: Error in parsing String for UNIT: %s\r\n", &prjBuff[i]);
 #endif
-						return 0;
+						return nullptr;
 					}
 					i += j;
 					while (true)
@@ -327,9 +327,9 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						if (c == ']')
 							break;
 						if (c == 0)
-							return 0;
+							return nullptr;
 						if (c == '[')
-							return 0;
+							return nullptr;
 						i++;
 					}
 					i++;
@@ -339,7 +339,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 					printf("ArcGISPRJParser: Unknown value on GEOGCS: %s\r\n", &prjBuff[i]);
 #endif
-					return 0;
+					return nullptr;
 				}
 			}
 			else
@@ -347,7 +347,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 				printf("ArcGISPRJParser: Unknown char in GEOGCS: %s\r\n", &prjBuff[i]);
 #endif
-				return 0;
+				return nullptr;
 			}
 		}
 		if (spIndex != 3)
@@ -355,7 +355,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 			printf("ArcGISPRJParser: SPHEROID not valid, index = %d\r\n", (UInt32)spIndex);
 #endif
-			return 0;
+			return nullptr;
 		}
 		parsedSize.Set(i);
 		eet = Math::EarthEllipsoid::EET_OTHER;
@@ -390,7 +390,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 			Optional<const Math::CoordinateSystemManager::DatumInfo> datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
+			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, nullptr);
 			if (hasToWGS84)
 			{
 				data.cX = cX;
@@ -410,7 +410,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 			Math::EarthEllipsoid ellipsoid(a, f_1, eet);
 			Optional<const Math::CoordinateSystemManager::DatumInfo> datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
+			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, nullptr);
 			if (hasToWGS84)
 			{
 				data.cX = cX;
@@ -445,7 +445,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 #if defined(VERBOSE)
 			printf("ArcGISPRJParser: Error in parsing String for PROJCS: %s\r\n", &prjBuff[i]);
 #endif
-			return 0;
+			return nullptr;
 		}
 		nameOfst = i + 1;
 		prjBuff[i + nameLen - 1] = 0;
@@ -465,7 +465,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 				{
 					gcs = Optional<Math::GeographicCoordinateSystem>::ConvertFrom(ParsePRJBuff(sourceName, &prjBuff[i], buffSize - i, j));
 					if (gcs.IsNull())
-						return 0;
+						return nullptr;
 					i += j;
 				}
 				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("PROJECTION[")))
@@ -491,7 +491,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						printf("ArcGISPRJParser: Unsupported PROJECTION: %s\r\n", &prjBuff[i + 11]);
 #endif
 						gcs.Delete();
-						return 0;
+						return nullptr;
 					}
 				}
 				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("PARAMETER[")))
@@ -503,7 +503,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						printf("ArcGISPRJParser: Error in parsing String for PARAMETER: %s\r\n", &prjBuff[i]);
 #endif
 						gcs.Delete();
-						return 0;
+						return nullptr;
 					}
 					nOfst = i + 1;
 					nLen = j - 2;
@@ -515,7 +515,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						printf("ArcGISPRJParser: PARAMETER comma not found: %s\r\n", &prjBuff[i]);
 #endif
 						gcs.Delete();
-						return 0;
+						return nullptr;
 					}
 					vOfst = i + 1;
 					i++;
@@ -528,7 +528,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 							printf("ArcGISPRJParser: PARAMETER Unexpected end at %d\r\n", (UInt32)i);
 #endif
 							gcs.Delete();
-							return 0;
+							return nullptr;
 						}
 						else if (c == ']')
 						{
@@ -560,7 +560,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 								printf("ArcGISPRJParser: Unknown PARAMETER type: %s\r\n", &prjBuff[nOfst]);
 #endif
 								gcs.Delete();
-								return 0;
+								return nullptr;
 							}
 							break;
 						}
@@ -579,7 +579,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						printf("ArcGISPRJParser: Error in parsing String for UNIT: %s\r\n", &prjBuff[i]);
 #endif
 						gcs.Delete();
-						return 0;
+						return nullptr;
 					}
 					i += j;
 					commaFound = false;
@@ -595,7 +595,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 								printf("ArcGISPRJParser: PARAMETER Unexpected comma at %d\r\n", (UInt32)i);
 #endif
 								gcs.Delete();
-								return 0;
+								return nullptr;
 							}
 							commaFound = true;
 						}
@@ -608,7 +608,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 								printf("ArcGISPRJParser: PARAMETER Unexpected close at %d\r\n", (UInt32)i);
 #endif
 								gcs.Delete();
-								return 0;
+								return nullptr;
 							}
 							break;
 						}
@@ -618,7 +618,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 							printf("ArcGISPRJParser: PARAMETER Unexpected end at %d\r\n", (UInt32)i);
 #endif
 							gcs.Delete();
-							return 0;
+							return nullptr;
 						}
 						else
 						{
@@ -635,7 +635,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						printf("ArcGISPRJParser: Error in parsing String for AUTHORITY: %s\r\n", &prjBuff[i]);
 #endif
 						gcs.Delete();
-						return 0;
+						return nullptr;
 					}
 					i += j;
 					if (prjBuff[i] != ',')
@@ -644,7 +644,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 						printf("ArcGISPRJParser: Comma not found after AUTHORITY name: %s\r\n", &prjBuff[i]);
 #endif
 						gcs.Delete();
-						return 0;
+						return nullptr;
 					}
 					i++;
 					j = i;
@@ -669,7 +669,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 							printf("ArcGISPRJParser: AUTHORITY Unexpected end at %d\r\n", (UInt32)i);
 #endif
 							gcs.Delete();
-							return 0;
+							return nullptr;
 						}
 						else
 						{
@@ -683,7 +683,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 					printf("ArcGISPRJParser: Unsupport type in PROJCS: %s\r\n", &prjBuff[i]);
 #endif
 					gcs.Delete();
-					return 0;
+					return nullptr;
 				}
 			}
 			else
@@ -692,7 +692,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 				printf("ArcGISPRJParser: Error in parsing PROJCS: %s\r\n", &prjBuff[i]);
 #endif
 				gcs.Delete();
-				return 0;
+				return nullptr;
 			}
 		}
 		NN<Math::GeographicCoordinateSystem> nngcs;
@@ -702,7 +702,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 			printf("ArcGISPRJParser: Parameter missing in PROJCS\r\n");
 #endif
 			gcs.Delete();
-			return 0;
+			return nullptr;
 		}
 		parsedSize.Set(i);
 		if (srid == 0)
@@ -725,9 +725,9 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 			printf("ArcGISPRJParser: Unknown ProjectedCoordinateSystem\r\n");
 #endif
 			gcs.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 
-	return 0;
+	return nullptr;
 }

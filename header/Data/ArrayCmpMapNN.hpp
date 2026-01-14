@@ -2,17 +2,17 @@
 #define _SM_DATA_ARRAYCMPMAPNN
 #include "Data/ArrayListNN.hpp"
 #include "Data/ListMapNN.hpp"
-#include "Data/SortableArrayList.hpp"
+#include "Data/SortableArrayListObj.hpp"
 
 namespace Data
 {
 	template <class T, class V> class ArrayCmpMapNN : public ListMapNN<T, V>
 	{
 	protected:
-		NN<Data::SortableArrayList<T>> keys;
+		NN<Data::SortableArrayListObj<T>> keys;
 		Data::ArrayListNN<V> vals;
 
-		ArrayCmpMapNN(NN<Data::SortableArrayList<T>> keys);
+		ArrayCmpMapNN(NN<Data::SortableArrayListObj<T>> keys);
 	public:
 		virtual ~ArrayCmpMapNN();
 
@@ -25,7 +25,7 @@ namespace Data
 
 		void AllocSize(UOSInt cnt);
 		NN<const Data::ArrayListNN<V>> GetValues() const;
-		NN<Data::SortableArrayList<T>> GetKeys() const;
+		NN<Data::SortableArrayListObj<T>> GetKeys() const;
 		virtual UOSInt GetCount() const;
 		virtual Optional<V> GetItem(UOSInt index) const;
 		virtual NN<V> GetItemNoCheck(UOSInt index) const;
@@ -35,7 +35,7 @@ namespace Data
 	};
 
 
-	template <class T, class V> ArrayCmpMapNN<T, V>::ArrayCmpMapNN(NN<Data::SortableArrayList<T>> keys) : ListMapNN<T, V>()
+	template <class T, class V> ArrayCmpMapNN<T, V>::ArrayCmpMapNN(NN<Data::SortableArrayListObj<T>> keys) : ListMapNN<T, V>()
 	{
 		this->keys = keys;
 	}
@@ -58,7 +58,7 @@ namespace Data
 		{
 			this->keys->Insert((UOSInt)~i, key);
 			this->vals.Insert((UOSInt)~i, val);
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -72,7 +72,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -87,7 +87,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -118,7 +118,7 @@ namespace Data
 		return this->vals;
 	}
 
-	template <class T, class V> NN<Data::SortableArrayList<T>> ArrayCmpMapNN<T, V>::GetKeys() const
+	template <class T, class V> NN<Data::SortableArrayListObj<T>> ArrayCmpMapNN<T, V>::GetKeys() const
 	{
 		return this->keys;
 	}

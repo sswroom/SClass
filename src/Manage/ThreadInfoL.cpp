@@ -102,7 +102,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 			return sarr[1].Substring(1).ConcatTo(buff);
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Manage::ThreadInfo::Suspend()

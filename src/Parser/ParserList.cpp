@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "Media/ImageResizer.h"

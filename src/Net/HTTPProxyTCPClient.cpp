@@ -8,7 +8,7 @@
 
 //#define VERBOSE
 
-Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, UnsafeArrayOpt<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, Text::CStringNN destHost, UInt16 destPort) : Net::TCPClient(sockf, 0)
+Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, UnsafeArrayOpt<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, Text::CStringNN destHost, UInt16 destPort) : Net::TCPClient(sockf, nullptr)
 {
 	this->SetSourceName(destHost);
 
@@ -60,7 +60,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		printf("HTTPProxyTCP: Error in connecting to proxy server\r\n");
 #endif
 		sockf->DestroySocket(s);
-		this->s = 0;
+		this->s = nullptr;
 		this->flags |= 12;
 		return;
 	}
@@ -120,7 +120,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		printf("HTTPProxyTCP: Unknown response\r\n");
 #endif
 		sockf->DestroySocket(s);
-		this->s = 0;
+		this->s = nullptr;
 		this->flags |= 12;
 		return;
 	}

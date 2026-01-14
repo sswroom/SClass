@@ -26,7 +26,7 @@ namespace Net
 		~TraceRoute();
 
 		Bool IsError();
-		Bool Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList);
+		Bool Tracev4(UInt32 ip, NN<Data::ArrayListNative<UInt32>> ipList);
 	};
 }
 #endif

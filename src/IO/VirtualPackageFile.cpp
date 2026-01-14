@@ -4,7 +4,7 @@
 #include "Crypto/Hash/HashStream.h"
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
-#include "Data/ICaseStringMap.hpp"
+#include "Data/ICaseStringMapObj.hpp"
 #include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -38,12 +38,12 @@ void IO::VirtualPackageFile::ReusePackFileItem(NN<IO::PackFileItem> item)
 
 IO::VirtualPackageFile::VirtualPackageFile(NN<Text::String> fileName) : IO::PackageFile(fileName)
 {
-	this->parent = 0;
+	this->parent = nullptr;
 }
 
 IO::VirtualPackageFile::VirtualPackageFile(Text::CStringNN fileName) : IO::PackageFile(fileName)
 {
-	this->parent = 0;
+	this->parent = nullptr;
 }
 
 IO::VirtualPackageFile::~VirtualPackageFile()

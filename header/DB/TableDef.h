@@ -2,7 +2,7 @@
 #define _SM_DB_TABLEDEF
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Text/String.h"
 
 namespace DB

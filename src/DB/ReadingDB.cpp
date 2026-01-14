@@ -42,7 +42,7 @@ Bool DB::ReadingDB::ChangeDatabase(Text::CStringNN databaseName)
 
 Optional<Text::String> DB::ReadingDB::GetCurrDBName()
 {
-	return 0;
+	return nullptr;
 }
 
 IO::ParserType DB::ReadingDB::GetParserType() const

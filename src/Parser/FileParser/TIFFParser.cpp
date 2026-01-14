@@ -38,7 +38,7 @@
 
 Parser::FileParser::TIFFParser::TIFFParser()
 {
-	this->parsers = 0;
+	this->parsers = nullptr;
 }
 
 Parser::FileParser::TIFFParser::~TIFFParser()
@@ -87,11 +87,11 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Media::ImageList> imgList;
 	NN<Media::TIFFTileMap> nntileMap;
-	Optional<Media::TIFFTileMap> optTileMap = 0;
+	Optional<Media::TIFFTileMap> optTileMap = nullptr;
 	NN<Media::StaticImage> img;
 	Optional<Media::EXIFData> exif;
 	NN<Media::EXIFData> nnexif;
@@ -109,7 +109,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 	else
 	{
 		bo.Delete();
-		return 0;
+		return nullptr;
 	}
 	
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
@@ -128,7 +128,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			imgList.Delete();
 			optTileMap.Delete();
 			bo.Delete();
-			return 0;
+			return nullptr;
 		}
 
 		Bool valid = true;
@@ -657,7 +657,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						if (exif.SetTo(nnexif))
 						{
 							img->SetEXIFData(nnexif).Delete();
-							exif = 0;
+							exif = nullptr;
 						}
 						imgList->AddImage(img, 1000);
 						if (stripOfsts)
@@ -779,7 +779,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				imgList.Delete();
 				optTileMap.Delete();
 				bo.Delete();
-				return 0;
+				return nullptr;
 			}
 		}
 		else if (processed)
@@ -804,7 +804,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 
 			NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 			Data::ByteArray imgData;
-			UnsafeArrayOpt<UInt8> planarBuff = 0;
+			UnsafeArrayOpt<UInt8> planarBuff = nullptr;
 			UnsafeArray<UInt8> nnplanarBuff;
 			UnsafeArray<UInt8> imgPal;
 			if (sampleFormat == 3)
@@ -1998,7 +1998,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			{
 				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
 			}
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(imgList, prevList));
@@ -2117,7 +2117,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			NN<Media::SharedImage> simg;
 			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(imgList, prevList));

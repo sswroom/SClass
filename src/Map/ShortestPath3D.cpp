@@ -169,7 +169,7 @@ Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetAreaOpt(Math::Co
 			return areaInfo;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Map::ShortestPath3D::AreaSession> Map::ShortestPath3D::GetAreaSess(NN<PathSession> sess, Math::Coord2DDbl pos) const
@@ -243,7 +243,7 @@ Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetExistingArea(OSI
 			return areaInfo;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Map::ShortestPath3D::NodeInfo> Map::ShortestPath3D::GetNode(Math::Coord2DDbl pos, Double z)
@@ -432,7 +432,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Math::CoordinateSystem> csys, Double sear
 {
 	this->csys = csys;
 	this->searchDist = searchDist;
-	this->propDef = 0;
+	this->propDef = nullptr;
 	this->networkCnt = 0;
 	NEW_CLASSNN(this->unknownNode, NodeInfo());
 	this->unknownNode->pos = Math::Coord2DDbl(0, 0);
@@ -444,7 +444,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDi
 {
 	this->csys = layer->GetCoordinateSystem()->Clone();
 	this->searchDist = searchDist;
-	this->propDef = 0;
+	this->propDef = nullptr;
 	this->networkCnt = 0;
 	NEW_CLASSNN(this->unknownNode, NodeInfo());
 	this->unknownNode->pos = Math::Coord2DDbl(0, 0);
@@ -495,7 +495,7 @@ void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 				}
 				else
 				{
-					properties[k] = 0;
+					properties[k] = nullptr;
 				}
 
 			}
@@ -524,7 +524,7 @@ void Map::ShortestPath3D::AddSimpleLayer(NN<Map::MapDrawLayer> layer)
 
 Optional<Map::ShortestPath3D::LineInfo> Map::ShortestPath3D::AddPath(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties, Bool allowReverse, Bool addToNode)
 {
-	Optional<LineInfo> retInfo = 0;
+	Optional<LineInfo> retInfo = nullptr;
 	Math::Geometry::Vector2D::VectorType type = vec->GetVectorType();
 	NN<Math::Geometry::Polyline> pl;
 	NN<Math::Geometry::LineString> ls;
@@ -744,10 +744,10 @@ NN<Map::ShortestPath3D::PathSession> Map::ShortestPath3D::CreateSession() const
 {
 	NN<PathSession> sess;
 	NEW_CLASSNN(sess, PathSession());
-	sess->lastEndHalfLine1 = 0;
-	sess->lastEndHalfLine2 = 0;
-	sess->lastStartHalfLine1 = 0;
-	sess->lastStartHalfLine2 = 0;
+	sess->lastEndHalfLine1 = nullptr;
+	sess->lastEndHalfLine2 = nullptr;
+	sess->lastStartHalfLine1 = nullptr;
+	sess->lastStartHalfLine2 = nullptr;
 	return sess;
 }
 
@@ -869,7 +869,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 		Double z;
 		startHalfLine1->GetNearEnd(posStart, nodePt, z);
 		startHalfLine1.Delete();
-		sess->lastStartHalfLine2 = 0;
+		sess->lastStartHalfLine2 = nullptr;
 		NEW_CLASSNN(startHalfLine1, Math::Geometry::LineString(this->csys->GetSRID(), 2, true, false));
 		sess->lastStartHalfLine1 = startHalfLine1;
 		UOSInt nPoint;
@@ -953,7 +953,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 			}
 			else
 			{
-				optDestNodeSess = 0;
+				optDestNodeSess = nullptr;
 			}
 			if (optDestNodeSess.SetTo(destNodeSess))
 			{
@@ -1007,8 +1007,8 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 	if (!endHalfLine1->SplitByPoint(posEnd).SetTo(endHalfLine2))
 	{
 		endHalfLine1.Delete();
-		sess->lastEndHalfLine1 = 0;
-		sess->lastEndHalfLine2 = 0;
+		sess->lastEndHalfLine1 = nullptr;
+		sess->lastEndHalfLine2 = nullptr;
 		nodeSess = GetNodeSess(sess, path2->line->endPos, path2->line->endZ);
 	}
 	else
@@ -1068,7 +1068,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(NN<Pat
 	Data::ArrayListNN<Math::Geometry::LineString> lineList;
 	Data::ArrayListT<Data::DataArray<Optional<Text::String>>> propList;
 	if (!GetShortestPathDetail(sess, posStart, posEnd, lineList, propList))
-		return 0;
+		return nullptr;
 	return Math::Geometry::LineString::JoinLines(lineList);
 }
 
@@ -1114,7 +1114,7 @@ void Map::ShortestPath3D::ClearData(NN<Math::CoordinateSystem> csys, Double sear
 	this->csys = csys;
 }
 
-void Map::ShortestPath3D::CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayList<Double>> dirList, NN<Data::ArrayList<Bool>> reverseList)
+void Map::ShortestPath3D::CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListNative<Double>> dirList, NN<Data::ArrayListNative<Bool>> reverseList)
 {
 	NN<Math::Geometry::LineString> ls;
 	NN<Math::Geometry::LineString> nextLS;

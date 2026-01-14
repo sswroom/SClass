@@ -2,6 +2,7 @@
 #define _SM_MEDIA_VIDEOSOURCE
 #include "AnyType.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayListUInt32.h"
 #include "Media/FrameInfo.h"
 #include "Media/MediaSource.h"
@@ -17,7 +18,7 @@ namespace Media
 	protected:
 		Data::ArrayListInt32 *propNames;
 		Data::ArrayListUInt32 *propSizes;
-		Data::ArrayList<UInt8*> *propBuffs;
+		Data::ArrayListObj<UInt8*> *propBuffs;
 
 	public:
 		typedef enum

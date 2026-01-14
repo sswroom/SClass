@@ -239,10 +239,10 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opc
 			}
 		}
 		if (!this->cli.SetTo(cli))
-			return 0;
+			return nullptr;
 		UOSInt readSize = cli->Read(Data::ByteArray(&this->recvBuff[this->recvSize], this->recvCapacity - this->recvSize));
 		if (readSize == 0)
-			return 0;
+			return nullptr;
 		this->recvSize += readSize;
 	}
 }
@@ -252,7 +252,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage
 	NN<Net::TCPClient> cli;
 	mutUsage->ReplaceMutex(this->recvMut);
 	if (!this->cli.SetTo(cli))
-		return 0;
+		return nullptr;
 
 	UInt8 opcode;
 	UOSInt pSize;
@@ -260,7 +260,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage
 	while (true)
 	{
 		if (!NextPacket(opcode, pSize).SetTo(buff))
-			return 0;
+			return nullptr;
 		switch (opcode & 15)
 		{
 		case 0: //continuation frame
@@ -280,7 +280,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage
 		case 10: //Pong
 			break;
 		default:
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -304,7 +304,7 @@ Net::WebSocketClient::WebSocketClient(NN<Net::TCPClientFactory> clif, Optional<N
 	}
 	else
 	{
-		this->cli = clif->Create(host, port, timeout);;
+		this->cli = clif->Create(host, port, timeout);
 	}
 	if (!this->cli.SetTo(cli))
 	{
@@ -426,7 +426,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebSocketClient::GetRemoteName(UnsafeArray<UTF8Cha
 		return cli->GetRemoteName(buff);
 	}
 	*buff = 0;
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Net::WebSocketClient::GetLocalName(UnsafeArray<UTF8Char> buff) const
@@ -437,7 +437,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebSocketClient::GetLocalName(UnsafeArray<UTF8Char
 		return cli->GetLocalName(buff);
 	}
 	*buff = 0;
-	return 0;
+	return nullptr;
 }
 
 Bool Net::WebSocketClient::GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const

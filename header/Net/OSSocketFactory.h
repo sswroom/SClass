@@ -1,7 +1,7 @@
 //require ws2_32.lib iphlpapi.lib dnsapi.lib
 #ifndef _SM_NET_OSSOCKETFACTORY
 #define _SM_NET_OSSOCKETFACTORY
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Net/SocketFactory.h"
 
 namespace Net
@@ -76,7 +76,7 @@ namespace Net
 
 		virtual Bool DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr);
 		virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr);
-		virtual UOSInt GetDNSList(NN<Data::ArrayList<UInt32>> dnsList);
+		virtual UOSInt GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList);
 		virtual Bool LoadHosts(NN<Net::DNSHandler> dnsHdlr);
 
 		virtual Bool ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4);
@@ -93,7 +93,7 @@ namespace Net
 		virtual Bool AdapterSetHWAddr(Text::CStringNN adapterName, UnsafeArray<const UInt8> hwAddr);
 		virtual Bool AdapterEnable(Text::CStringNN adapterName, Bool enable);
 
-		UOSInt GetBroadcastAddrs(NN<Data::ArrayList<UInt32>> addrs);
+		UOSInt GetBroadcastAddrs(NN<Data::ArrayListNative<UInt32>> addrs);
 
 		static ErrorType FromSystemError(Int32 sysErr);
 	};

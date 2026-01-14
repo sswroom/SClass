@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_WEBIMAGELAYER
 #define _SM_MAP_WEBIMAGELAYER
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListNN.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/CallbackStorage.h"
 #include "Data/Comparable.h"
 #include "Map/MapDrawLayer.h"
@@ -60,7 +60,7 @@ namespace Map
 		Int64 maxTime;
 		Int64 currTime;
 		Sync::Mutex updMut;
-		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
 		Bool threadRunning;
 		Bool threadToStop;

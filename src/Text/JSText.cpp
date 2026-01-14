@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Text/JSText.h"
 #include "Text/MyStringW.h"
 
@@ -397,14 +397,14 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 	chCnt = 0;
 	startC = *srcPtr++;
 	if (startC != '\'' && startC != '"')
-		return 0;
+		return nullptr;
 	while (true)
 	{
 		c = *srcPtr++;
 		if (c == startC)
 			break;
 		if (c == 0)
-			return 0;
+			return nullptr;
 		if (c == '\\')
 		{
 			c = *srcPtr++;
@@ -427,7 +427,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 
 				c = *srcPtr++;
@@ -445,7 +445,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 
 				c = *srcPtr++;
@@ -463,7 +463,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 
 				c = *srcPtr++;
@@ -481,7 +481,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 
 				if (v < 0x80)
@@ -508,7 +508,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 				chCnt++;
 				break;
 			default:
-				return 0;
+				return nullptr;
 			}
 		}
 		else
@@ -517,7 +517,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 		}
 	}
 	if (*srcPtr != 0)
-		return 0;
+		return nullptr;
 
 	outS = Text::String::New(chCnt);
 	destPtr = outS->v;
@@ -631,7 +631,7 @@ Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s
 				*destPtr++ = '\t';
 				break;
 			default:
-				return 0;
+				return nullptr;
 			}
 		}
 		else
@@ -656,14 +656,14 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 	chCnt = 0;
 	startC = *srcPtr++;
 	if (startC != '\'' && startC != '"')
-		return 0;
+		return nullptr;
 	while (true)
 	{
 		c = *srcPtr++;
 		if (c == startC)
 			break;
 		if (c == 0)
-			return 0;
+			return nullptr;
 		if (c == '\\')
 		{
 			c = *srcPtr++;
@@ -682,7 +682,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 
 				c = *srcPtr++;
@@ -697,7 +697,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 
 				c = *srcPtr++;
@@ -712,7 +712,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 
 				c = *srcPtr++;
@@ -727,7 +727,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 				break;
 			case '\"':
@@ -741,7 +741,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 				chCnt++;
 				break;
 			default:
-				return 0;
+				return nullptr;
 			}
 		}
 		else
@@ -750,8 +750,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 		}
 	}
 	if (*srcPtr != 0)
-		return 0;
-
+		return nullptr;
 	outStr = MemAllocArr(WChar, chCnt + 1);
 	destPtr = outStr;
 	srcPtr = s;
@@ -850,7 +849,7 @@ UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar
 				*destPtr++ = '\t';
 				break;
 			default:
-				return 0;
+				return nullptr;
 			}
 		}
 		else
@@ -968,7 +967,7 @@ Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffS
 
 Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
 {
-	Data::ArrayList<Int32> lastType;
+	Data::ArrayListNative<Int32> lastType;
 	UOSInt lev = initLev;
 	UOSInt i = 0;
 	UOSInt startOfst = 0;

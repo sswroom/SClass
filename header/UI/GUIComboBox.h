@@ -10,8 +10,8 @@ namespace UI
 	class GUIComboBox : public GUIControl, public ItemSelector
 	{
 	protected:
-		Data::ArrayList<UI::UIEvent> selChgHdlrs;
-		Data::ArrayList<AnyType> selChgObjs;
+		Data::ArrayListObj<UI::UIEvent> selChgHdlrs;
+		Data::ArrayListObj<AnyType> selChgObjs;
 		Data::ArrayListStringNN itemTexts;
 		Bool autoComplete;
 		UOSInt lastTextLeng;

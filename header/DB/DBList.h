@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBLIST
 #define _SM_DB_DBLIST
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBTool.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

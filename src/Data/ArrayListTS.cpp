@@ -10,7 +10,7 @@ Data::ArrayListTS::ArrayListTS(UOSInt capacity) : Data::SortableArrayListNative<
 {
 }
 
-NN<Data::ArrayList<Data::Timestamp>> Data::ArrayListTS::Clone() const
+NN<Data::ArrayListNative<Data::Timestamp>> Data::ArrayListTS::Clone() const
 {
 	NN<Data::ArrayListTS> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListTS(this->capacity));

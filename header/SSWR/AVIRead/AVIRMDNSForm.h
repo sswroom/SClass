@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMEDIAFORM
 #define _SM_SSWR_AVIREAD_AVIRMEDIAFORM
+#include "Data/StringMapNative.hpp"
 #include "Net/MDNSClient.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -51,7 +52,7 @@ namespace SSWR
 			Optional<ServiceInfo> currSvc;
 
 			Sync::Mutex ptrMut;
-			Data::StringMap<Int32> ptrMap;
+			Data::StringMapNative<Int32> ptrMap;
 
 			static void __stdcall DNSRecordRecv(AnyType userData, NN<const Net::SocketUtil::AddressInfo> addr, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> answers);
 			static void __stdcall OnDevSelChg(AnyType userData);

@@ -31,12 +31,12 @@ UOSInt Media::CodeImageGen::QRCodeImageGen::GetMaxLength()
 Optional<Media::DrawImage> Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
 {
 	if (code.leng == 0)
-		return 0;
+		return nullptr;
 
 	NN<Media::StaticImage> simg;
 	if (!Media::ZXingWriter::GenQRCode(code, Math::Size2D<UOSInt>(256, 256)).SetTo(simg))
-		return 0;
-	Optional<Media::DrawImage> dimg = eng->ConvImage(simg, 0);
+		return nullptr;
+	Optional<Media::DrawImage> dimg = eng->ConvImage(simg, nullptr);
 	simg.Delete();
 	return dimg;
 }

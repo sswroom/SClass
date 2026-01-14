@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 {
 	if (hdr.ReadMU32(0) != 12 || *(Int32*)&hdr[4] != *(Int32*)"jP  " || ReadMUInt32(&hdr[8]) != 0x0d0a870a)
 	{
-		return 0;
+		return nullptr;
 	}
 	JP2Session sess;
 	sess.fd = fd;
@@ -86,7 +86,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 #endif
 		opj_stream_destroy(stm);
 		opj_destroy_codec(codec);
-		return 0;
+		return nullptr;
 	}
 
 	opj_image_t *imgInfo;
@@ -97,10 +97,10 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 #endif
 		opj_stream_destroy(stm);
 		opj_destroy_codec(codec);
-		return 0;
+		return nullptr;
 	}
 	Bool succ = false;
-	Media::ImageList *imgList = 0;
+	Media::ImageList *imgList = nullptr;
 #if 1
 	NN<Media::StaticImage> img;
 	UOSInt w = (UInt32)(imgInfo->x1 - imgInfo->x0);

@@ -1,6 +1,7 @@
 #ifndef _SM_IO_GSMMODEMCONTROLLER
 #define _SM_IO_GSMMODEMCONTROLLER
 #include "Data/ArrayListNN.hpp"
+#include "Data/ArrayListT.hpp"
 #include "Data/DateTime.h"
 #include "IO/ModemController.h"
 #include "Text/SMSMessage.h"
@@ -285,7 +286,7 @@ namespace IO
 		void GPRSFreePDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList);
 		Bool GPRSSetPDPActive(Bool active); //AT+CGACT
 		Bool GPRSSetPDPActive(Bool active, UInt32 cid); //AT+CGACT
-		Bool GPRSGetPDPActive(NN<Data::ArrayList<ActiveState>> actList); //AT+CGACT
+		Bool GPRSGetPDPActive(NN<Data::ArrayListT<ActiveState>> actList); //AT+CGACT
 
 		// SMS Commands
 		Bool SMSListMessages(NN<Data::ArrayListNN<SMSMessage>> msgList, SMSStatus status);

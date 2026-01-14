@@ -39,7 +39,7 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 	NN<Crypto::Cert::X509File> file;
 	if (!Net::URL::OpenStream(path, 0, clif, ssl, 10000, log).SetTo(stm))
 	{
-		return 0;
+		return nullptr;
 	}
 	{
 		Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
@@ -47,16 +47,16 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 		{
 			if (s->Equals(CSTR("EntityDescriptor")))
 			{
-				Optional<Text::String> serviceDispName = 0;
-				Optional<Text::String> entityId = 0;
-				Optional<Text::String> signOnLocation = 0;
-				Optional<Text::String> logoutLocation = 0;
+				Optional<Text::String> serviceDispName = nullptr;
+				Optional<Text::String> entityId = nullptr;
+				Optional<Text::String> signOnLocation = nullptr;
+				Optional<Text::String> logoutLocation = nullptr;
 				NN<Text::String> nnserviceDispName;
 				NN<Text::String> nnentityId;
 				NN<Text::String> nnsignOnLocation;
 				NN<Text::String> nnlogoutLocation;
-				Optional<Crypto::Cert::X509Cert> encryptionCert = 0;
-				Optional<Crypto::Cert::X509Cert> signingCert = 0;
+				Optional<Crypto::Cert::X509Cert> encryptionCert = nullptr;
+				Optional<Crypto::Cert::X509Cert> signingCert = nullptr;
 				UOSInt type;
 				i = 0;
 				j = reader.GetAttribCount();
@@ -284,5 +284,5 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 		}
 	}
 	stm.Delete();
-	return 0;
+	return nullptr;
 }

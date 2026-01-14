@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 		{
 			name = nullptr;
 		}
-		SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
+		SSWR::AVIRead::AVIRMACManagerEntryForm frm(nullptr, me->ui, me->core, log->mac, name);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			NN<Text::String> name = frm.GetNameNew();
@@ -249,9 +249,9 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			this->lvContent->SetSubItem(l, 4, CSTRP(sbuff, sptr));
 			if (log->ieBuff.SetTo(ieBuff))
 			{
-				Optional<Text::String> manuf = 0;
-				Optional<Text::String> model = 0;
-				Optional<Text::String> serialNum = 0;
+				Optional<Text::String> manuf = nullptr;
+				Optional<Text::String> model = nullptr;
+				Optional<Text::String> serialNum = nullptr;
 				Net::WirelessLANIE::GetWPSInfo(ieBuff, log->ieLen, manuf, model, serialNum);
 				if (manuf.SetTo(s))
 					this->lvContent->SetSubItem(l, 5, s->ToCString());
@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(Optional<UI::GUICl
 	this->core = core;
 	NEW_CLASSNN(this->wifiLogFile, Net::WiFiLogFile());
 	NEW_CLASSNN(this->macList, Net::MACInfoList());
-	this->filterText = 0;
+	this->filterText = nullptr;
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);

@@ -25,7 +25,7 @@ namespace UI
 			FileStream
 		};
 
-		Data::ArrayList<Data::CallbackStorage<TextPosEvent>> textPosUpdHdlr;
+		Data::ArrayListObj<Data::CallbackStorage<TextPosEvent>> textPosUpdHdlr;
 		IO::SeekableStream *fs;
 		UInt32 codePage;
 //		AnyType drawFont;

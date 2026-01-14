@@ -179,9 +179,9 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		status->sampleCnt = 0;
 		status->lastSampleTime = 0;
 		status->isEnd = false;
-		status->adecoder = 0;
-		status->vdecoder = 0;
-		status->renderer = 0;
+		status->adecoder = nullptr;
+		status->vdecoder = nullptr;
+		status->renderer = nullptr;
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 				status->renderer = renderer;
 				renderer->BindAudio(adecoder);
 				renderer->SetEndNotify(OnAudioEnd, status);
-				renderer->AudioInit(0);
+				renderer->AudioInit(nullptr);
 			}
 			else
 			{
@@ -321,7 +321,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(Optional<UI::GUIClientContro
 	this->SetText(CSTR("Video Info"));
 	
 	this->core = core;
-	this->currFile = 0;
+	this->currFile = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlFile = ui->NewPanel(*this);

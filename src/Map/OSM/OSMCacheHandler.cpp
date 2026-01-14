@@ -45,11 +45,11 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 	if (!fs->IsError())
 	{
 		Sync::Interlocked::IncrementI32(this->status.localCnt);
-		fs->GetFileTimes(&dt, 0, 0);
+		fs->GetFileTimes(&dt, nullptr, nullptr);
 		currTime.SetCurrTimeUTC();
 		if (currTime.DiffMS(dt) >= 3600000)
 		{
-			fs->SetFileTimes(&currTime, 0, 0);
+			fs->SetFileTimes(currTime, nullptr, nullptr);
 			//////////////////////////
 			Sync::Interlocked::IncrementI32(this->status.cacheCnt);
 		}
@@ -67,7 +67,7 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 #ifdef VERBOSE
 		printf("OSMCacheHandler: Next url is error, urlNext = %d\r\n", (UInt32)this->urlNext);
 #endif
-		return 0;
+		return nullptr;
 	}
 	this->urlNext = (this->urlNext + 1) % this->urls.GetCount();
 	urlMutUsage.EndUse();
@@ -88,7 +88,7 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 	{
 		IO::FileStream imgFS(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
-		imgFS.SetFileTimes(&dt, 0, 0);
+		imgFS.SetFileTimes(dt, nullptr, nullptr);
 #ifdef VERBOSE
 		printf("OSMCacheHandler: Server response 304: %s\r\n", urlSb.v);
 #endif
@@ -121,12 +121,12 @@ Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, I
 				if (cli->GetLastModified(dt))
 				{
 					currTime.SetCurrTimeUTC();
-					fs->SetFileTimes(&currTime, 0, &dt);
+					fs->SetFileTimes(currTime, nullptr, dt);
 				}
 				else
 				{
 					currTime.SetCurrTimeUTC();
-					fs->SetFileTimes(&currTime, 0, 0);
+					fs->SetFileTimes(currTime, nullptr, nullptr);
 				}
 				fs->SeekFromBeginning(0);
 				Sync::Interlocked::IncrementI32(this->status.remoteSuccCnt);
@@ -159,7 +159,7 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CStringNN ca
 		this->urls.Add(Text::String::New(nnurl));
 	}
 	this->urlNext = 0;
-	this->ioMut = 0;
+	this->ioMut = nullptr;
 	this->cacheDir = Text::String::New(cacheDir);
 	this->maxLevel = maxLevel;
 	this->clif = clif;

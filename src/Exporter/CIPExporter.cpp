@@ -489,7 +489,7 @@ Optional<IO::FileExporter::ParamData> Exporter::CIPExporter::CreateParam(NN<IO::
 		}
 		return (ParamData*)param;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Exporter::CIPExporter::DeleteParam(Optional<ParamData> param)
@@ -558,7 +558,7 @@ Bool Exporter::CIPExporter::SetParamSel(Optional<ParamData> param, UOSInt index,
 
 UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Int32 Exporter::CIPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
@@ -594,5 +594,5 @@ UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamSelItems(Optional<ParamD
 			return p->layer->GetColumnName(buff, itemIndex);
 		}
 	}
-	return 0;
+	return nullptr;
 }

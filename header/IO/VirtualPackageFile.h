@@ -2,9 +2,9 @@
 #define _SM_IO_VIRTUALPACKAGEFILE
 #include "Crypto/Hash/HashAlgorithm.h"
 #include "Data/ArrayListNN.hpp"
-#include "Data/FastMap.hpp"
-#include "Data/FastStringMap.hpp"
-#include "Data/StringMap.hpp"
+#include "Data/FastMapObj.hpp"
+#include "Data/FastStringMapObj.hpp"
+#include "Data/StringMapObj.hpp"
 #include "Data/Timestamp.h"
 #include "Data/Compress/Decompressor.h"
 #include "IO/ActiveStreamReader.h"
@@ -75,8 +75,8 @@ namespace IO
 
 	protected:
 		Data::ArrayListNN<PackFileItem> items;
-		Data::FastStringMap<PackFileItem *> pkgFiles;
-		Data::FastMap<Int32, const UTF8Char *> infoMap;
+		Data::FastStringMapObj<PackFileItem *> pkgFiles;
+		Data::FastMapObj<Int32, const UTF8Char *> infoMap;
 		Optional<PackageFile> parent;
 
 		void ReusePackFileItem(NN<IO::PackFileItem> item);

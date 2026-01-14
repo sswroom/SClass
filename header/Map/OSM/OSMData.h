@@ -201,8 +201,10 @@ namespace Map
 			static void __stdcall FreeElement(NN<ElementInfo> elem);
 			void SortElements();
 			LayerType CalcElementLayerType(NN<ElementInfo> elem) const;
+			void Init();
 		public:
 			OSMData(Text::CStringNN sourceName);
+			OSMData(NN<Text::String> sourceName);
 			virtual ~OSMData();
 
 			virtual void SetCurrScale(Double scale);

@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_ARCGISCSYS
 #define _SM_MATH_ARCGISCSYS
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Text/CString.h"
 
 namespace Math
@@ -21,8 +21,8 @@ namespace Math
 		static CSysInfo geogList[];
 		static CSysInfo projList[];
 
-		Data::FastStringMap<CSysInfo*> geogMap;
-		Data::FastStringMap<CSysInfo*> projMap;
+		Data::FastStringMapNN<CSysInfo> geogMap;
+		Data::FastStringMapNN<CSysInfo> projMap;
 
 	public:
 		ArcGISCSys();

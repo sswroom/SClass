@@ -1,6 +1,5 @@
 #ifndef _SM_MATH_GEOMETRY_POLYGON
 #define _SM_MATH_GEOMETRY_POLYGON
-#include "Data/ArrayList.hpp"
 #include "Math/Geometry/LinearRing.h"
 #include "Math/Geometry/MultiGeometry.hpp"
 

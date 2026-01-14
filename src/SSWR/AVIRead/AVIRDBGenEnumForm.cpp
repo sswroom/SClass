@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/AVIRead/AVIRDBGenEnumForm.h"
 #include "Text/JSText.h"
@@ -110,10 +110,10 @@ SSWR::AVIRead::AVIRDBGenEnumForm::AVIRDBGenEnumForm(Optional<UI::GUIClientContro
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column")), colIndex);
 
 	NN<DB::DBReader> r;
-	if (this->db->QueryTableData(schema, table, 0, 0, 0, 0, 0).SetTo(r))
+	if (this->db->QueryTableData(schema, table, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		NN<Text::String> s;
-		Data::FastStringMap<Int32> nameMap;
+		Data::FastStringMapNative<Int32> nameMap;
 		r->GetName(colIndex, sbuff).SetTo(sptr);
 		while (r->ReadNext())
 		{

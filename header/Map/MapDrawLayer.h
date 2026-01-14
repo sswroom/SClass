@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_MAPDRAWLAYER
 #define _SM_MAP_MAPDRAWLAYER
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt64.h"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListString.h"
 #include "DB/DBReader.h"
@@ -149,10 +149,10 @@ namespace Map
 		virtual Bool GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex);
 		virtual Bool GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex);
 		virtual Bool CanQuery();
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 
 		Int64 GetNearestObjectId(NN<GetObjectSess> session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt);
-		void GetNearestObjectIds(NN<GetObjectSess> session, Math::Coord2DDbl pt, NN<Data::ArrayList<Int64>> ids, OptOut<Math::Coord2DDbl> nearPt);
+		void GetNearestObjectIds(NN<GetObjectSess> session, Math::Coord2DDbl pt, NN<Data::ArrayListNative<Int64>> ids, OptOut<Math::Coord2DDbl> nearPt);
 		OSInt GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
 		void FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList);
 		NN<Map::VectorLayer> CreateEditableLayer();

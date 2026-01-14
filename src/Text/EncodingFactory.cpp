@@ -1,6 +1,8 @@
 #include "Stdafx.h"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ICaseStringUTF8Map.hpp"
 #include "Text/EncodingFactory.h"
+#include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #if defined(_MSC_VER)
 #include <windows.h>
@@ -365,7 +367,7 @@ UInt32 Text::EncodingFactory::GetSystemLCID()
 	return 0x0409;
 }
 
-void Text::EncodingFactory::GetCodePages(NN<Data::ArrayList<UInt32>> codePages)
+void Text::EncodingFactory::GetCodePages(NN<Data::ArrayListNative<UInt32>> codePages)
 {
 	codePages->Add(1200);
 	codePages->Add(1201);

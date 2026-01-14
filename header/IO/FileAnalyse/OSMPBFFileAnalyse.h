@@ -1,6 +1,5 @@
 #ifndef _SM_IO_FILEANALYSE_OSMPBFFILEANALYSE
 #define _SM_IO_FILEANALYSE_OSMPBFFILEANALYSE
-#include "Data/FastMap.hpp"
 #include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"

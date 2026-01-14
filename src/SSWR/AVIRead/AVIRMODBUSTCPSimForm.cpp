@@ -13,11 +13,11 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(AnyType user
 	if (me->listener.SetTo(listener))
 	{
 		listener.Delete();
-		me->listener = 0;
+		me->listener = nullptr;
 		me->btnListen->SetText(CSTR("Listen"));
 		me->txtPort->SetReadOnly(false);
 		me->lbDevice->ClearItems();
-		me->currDev = 0;
+		me->currDev = nullptr;
 	}
 	else
 	{
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevList()
 			i++;
 		}
 	}
-	this->currDev = 0;
+	this->currDev = nullptr;
 	this->lvDeviceValues->ClearItems();
 }
 
@@ -198,8 +198,8 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(Optional<UI::GUIClient
 	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
-	this->listener = 0;
-	this->currDev = 0;
+	this->listener = nullptr;
+	this->currDev = nullptr;
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 120, false);

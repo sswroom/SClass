@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_CIPLAYER2
 #define _SM_MAP_CIPLAYER2
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Sync/Mutex.h"
 #include "Text/String.h"

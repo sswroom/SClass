@@ -74,7 +74,7 @@ UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Cha
 		free(name);
 		return buff;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Manage::SymbolResolver::GetModuleCount()

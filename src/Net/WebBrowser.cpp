@@ -31,7 +31,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char>
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	if (!Text::URLString::GetURIScheme(sptr, url, urlLen).SetTo(sptr2))
-		return 0;
+		return nullptr;
 	if (Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTP")) || Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTPS")))
 	{
 		UnsafeArray<const UTF8Char> urlEnd = &url[urlLen];
@@ -52,7 +52,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char>
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -88,11 +88,11 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 		return fd;
 	}
 	if (!Text::URLString::GetURIScheme(sbuff, url.v, url.leng).SetTo(sptr))
-		return 0;
+		return nullptr;
 	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
 		if (Text::URLString::GetURLFilePath(sbuff, url.v, url.leng).SetTo(sptr))
-			return 0;
+			return nullptr;
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 		if (contentType.SetTo(nncontentType))
@@ -105,7 +105,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTP")))
 	{
 		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
-			return 0;
+			return nullptr;
 		Net::HTTPData *data;
 		NEW_CLASS(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
@@ -113,7 +113,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTPS")))
 	{
 		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
-			return 0;
+			return nullptr;
 		Net::HTTPData *data;
 #if defined(VERBOSE)
 		printf("WebBrowser: Loading HTTPS: %s\r\n", url.v);
@@ -126,9 +126,9 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 /*		IO::Stream *stm = Net::URL::OpenStream(url, this->sockf);
 		IO::StmData::StreamDataStream *data;
 		if (stm == 0)
-			return 0;
+			return nullptr;
 		NEW_CLASS(data, IO::StmData::*/
-		return 0;
+		return nullptr;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DATA")))
 	{
@@ -145,7 +145,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 				if (c == 0)
 				{
 					*nncontentType = 0;
-					return 0;
+					return nullptr;
 				}
 				else if (c == ';')
 				{
@@ -164,7 +164,7 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 				c = *urlPtr++;
 				if (c == 0)
 				{
-					return 0;
+					return nullptr;
 				}
 				else if (c == ';')
 				{
@@ -191,11 +191,11 @@ Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forc
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_JSONRESPONSE
 #define _SM_NET_JSONRESPONSE
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/FastStringMapNN.hpp"
 #include "Net/HTTPJSONReader.h"
@@ -54,13 +55,13 @@ namespace Net
 		template <typename T> class ArrayNativeField : public ArrayField
 		{
 		private:
-			Data::ArrayList<T> vals;
+			Data::ArrayListNative<T> vals;
 		public:
 			ArrayNativeField(Text::CStringNN name, Bool optional, Bool allowNull, Text::JSONType arrType) : ArrayField(name, optional, allowNull, arrType) {};
 			virtual ~ArrayNativeField() {};
 
 			void AddValue(T val) { this->vals.Add(val);}
-			NN<const Data::ArrayList<T>> GetValue() const { return this->vals; }
+			NN<const Data::ArrayListNative<T>> GetValue() const { return this->vals; }
 		};
 
 		template <typename T> class ArrayNNField : public ArrayField
@@ -312,7 +313,7 @@ namespace Net
 		NEW_CLASSNN(ofield, ObjectField(CSTR(name), Text::JSONType::Object, optional, allowNull, Optional<className>(cobj))); \
 		if (this->fieldMap.PutC(CSTR(name), ofield).SetTo(field)) { field.Delete(); } \
 	} else { \
-		NEW_CLASSNN(ofield, ObjectField(CSTR(name), Text::JSONType::Object, optional, allowNull, 0)); \
+		NEW_CLASSNN(ofield, ObjectField(CSTR(name), Text::JSONType::Object, optional, allowNull, nullptr)); \
 		if (this->fieldMap.PutC(CSTR(name), ofield).SetTo(field)) { field.Delete(); } \
 		if (this->json->GetValue(CSTR(name)).SetTo(jobj)) { \
 			if (jobj->GetType() != Text::JSONType::Null) printf("JSONResponse: %s.%s is not object type, type is %s\r\n", this->clsName.v.Ptr(), name, Text::JSONTypeGetName(jobj->GetType()).v.Ptr()); \
@@ -326,18 +327,18 @@ namespace Net
 #define JSONRESP_GETINT32(name, funcName, defVal) Int32 funcName() const { Int32 v; if (!this->json->GetValueAsInt32(CSTR(name), v)) return defVal; return v; }
 #define JSONRESP_GETINT64(name, funcName, defVal) Int64 funcName() const { Int64 v; if (!this->json->GetValueAsInt64(CSTR(name), v)) return defVal; return v; }
 #define JSONRESP_GETBOOL(name, funcName) Bool funcName() const { return this->json->GetValueAsBool(CSTR(name)); }
-#define JSONRESP_GETOBJ(name, funcName, clsName) Optional<clsName> funcName() const { NN<ObjectField> f; if (Optional<ObjectField>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return Optional<clsName>::ConvertFrom(f->GetValue()); return 0; }
-#define JSONRESP_GETARRAY_DOUBLE(name, funcName) Optional<const Data::ArrayList<Double>> funcName() const { NN<ArrayNativeField<Double>> f; if (Optional<ArrayNativeField<Double>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return 0; }
-#define JSONRESP_GETARRAY_STR(name, funcName) Optional<const Data::ArrayListStringNN> funcName() const { NN<ArrayStrField> f; if (Optional<ArrayStrField>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return 0; }
-#define JSONRESP_GETARRAY_OBJ(name, funcName, clsName) Optional<const Data::ArrayListNN<clsName>> funcName() const { NN<ArrayNNField<clsName>> f; if (Optional<ArrayNNField<clsName>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return 0; }
+#define JSONRESP_GETOBJ(name, funcName, clsName) Optional<clsName> funcName() const { NN<ObjectField> f; if (Optional<ObjectField>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return Optional<clsName>::ConvertFrom(f->GetValue()); return nullptr; }
+#define JSONRESP_GETARRAY_DOUBLE(name, funcName) Optional<const Data::ArrayList<Double>> funcName() const { NN<ArrayNativeField<Double>> f; if (Optional<ArrayNativeField<Double>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return nullptr; }
+#define JSONRESP_GETARRAY_STR(name, funcName) Optional<const Data::ArrayListStringNN> funcName() const { NN<ArrayStrField> f; if (Optional<ArrayStrField>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return nullptr; }
+#define JSONRESP_GETARRAY_OBJ(name, funcName, clsName) Optional<const Data::ArrayListNN<clsName>> funcName() const { NN<ArrayNNField<clsName>> f; if (Optional<ArrayNNField<clsName>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return nullptr; }
 
 #define JSONREQ_RET(clif, ssl, url, respType) \
 	NN<Text::JSONBase> json; \
-	if (!Net::HTTPJSONReader::Read(clif, ssl, url).SetTo(json)) return 0; \
+	if (!Net::HTTPJSONReader::Read(clif, ssl, url).SetTo(json)) return nullptr; \
 	NN<respType> ret; \
 	NEW_CLASSNN(ret, respType(json)); \
 	json->EndUse(); \
 	if (ret->IsValid()) return ret; \
 	ret.Delete(); \
-	return 0;
+	return nullptr;
 #endif

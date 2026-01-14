@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "Net/ConnectionInfo.h"
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 			Int64 cliId;
 			UOSInt l;
 			NN<Net::SNMPManager::ReadingInfo> reading;
-			Data::FastMap<UInt32, UInt16> readingMap;
+			Data::FastMapNative<UInt32, UInt16> readingMap;
 			UInt16 currId;
 			me->SendAgentValues(agentList);
 			Sync::SimpleThread::Sleep(100);
@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(AnyType us
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem().p;
 	if (agent)
 	{
-		SSWR::AVIRead::AVIRSNMPWalkForm frm(0, me->ui, me->core, agent->addr, agent->community);
+		SSWR::AVIRead::AVIRSNMPWalkForm frm(nullptr, me->ui, me->core, agent->addr, agent->community);
 		frm.ShowDialog(me);
 	}
 }

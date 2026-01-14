@@ -26,7 +26,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 				{
 					me->portList[i] = 0;
 					mutUsage.EndUse();
-					s = 0;
+					s = nullptr;
 					if (addr.addrType == Net::AddrType::IPv4)
 					{
 						s = me->sockf->CreateTCPSocketv4();
@@ -143,7 +143,7 @@ Bool Net::TCPPortScanner::IsFinished()
 	return ret;
 }
 
-UOSInt Net::TCPPortScanner::GetAvailablePorts(Data::ArrayList<UInt16> *portList)
+UOSInt Net::TCPPortScanner::GetAvailablePorts(NN<Data::ArrayListNative<UInt16>> portList)
 {
 	UOSInt initCnt = portList->GetCount();
 	UInt16 i = 0;

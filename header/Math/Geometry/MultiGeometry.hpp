@@ -345,7 +345,7 @@ namespace Math
 				return this->geometries.GetItemNoCheck(0)->HasArea();
 			}
 
-			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 			{
 				UOSInt initCnt = xList->GetCount();
 				UOSInt i = 0;
@@ -362,7 +362,7 @@ namespace Math
 			{
 				Math::RectAreaDbl bounds = this->GetBounds();
 				Math::Coord2DDbl pt = bounds.GetCenter();
-				Data::ArrayList<Double> xList;
+				Data::ArrayListNative<Double> xList;
 				this->CalcHIntersacts(pt.y, xList);
 				if (xList.GetCount() == 0)
 				{

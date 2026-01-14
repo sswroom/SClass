@@ -55,7 +55,7 @@ namespace IO
 	private:
 		Data::ArrayListNN<IO::LogHandler> fileLogArr;
 		Data::ArrayListNN<IO::LogHandler> hdlrArr;
-		Data::ArrayList<IO::LogHandler::LogLevel> levArr;
+		Data::ArrayListNative<IO::LogHandler::LogLevel> levArr;
 		Sync::Mutex hdlrMut;
 		Bool closed;
 		

@@ -1,6 +1,6 @@
 #ifndef _SM_IO_JAVACLASS
 #define _SM_IO_JAVACLASS
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
@@ -78,7 +78,7 @@ namespace IO
 			Data::ArrayListNN<LocalVariableInfo> lvList;
 			Data::ArrayListNN<LocalVariableTypeInfo> lvtList;
 			Data::ArrayListNN<LineNumberInfo> lineNumList;
-			Data::ArrayList<UInt16> exList;
+			Data::ArrayListNative<UInt16> exList;
 		};
 		
 		struct DecompileEnv

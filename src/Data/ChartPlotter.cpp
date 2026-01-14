@@ -481,7 +481,7 @@ Data::ChartPlotter::ChartParam::ChartParam(NN<Text::String> name, NN<ChartData> 
 	this->lineColor = lineColor;
 	this->fillColor = fillColor;
 	this->chartType = chartType;
-	this->labels = 0;
+	this->labels = nullptr;
 }
 
 Data::ChartPlotter::ChartParam::ChartParam(Text::CStringNN name, NN<ChartData> yData, NN<Axis> yAxis, NN<ChartData> xData, UInt32 lineColor, UInt32 fillColor, ChartType chartType)
@@ -493,7 +493,7 @@ Data::ChartPlotter::ChartParam::ChartParam(Text::CStringNN name, NN<ChartData> y
 	this->lineColor = lineColor;
 	this->fillColor = fillColor;
 	this->chartType = chartType;
-	this->labels = 0;
+	this->labels = nullptr;
 }
 
 Data::ChartPlotter::ChartParam::~ChartParam()
@@ -520,7 +520,7 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis(NN<ChartData> da
 	if (this->xAxis.SetTo(axis))
 	{
 		if (axis->GetType() != data->GetType())
-			return 0;
+			return nullptr;
 		if (axis->GetType() == DataType::Integer)
 		{
 			NN<Int32Axis>::ConvertFrom(axis)->ExtendRange(NN<Int32Data>::ConvertFrom(data));
@@ -541,7 +541,7 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis(NN<ChartData> da
 			NN<TimeAxis>::ConvertFrom(axis)->ExtendRange(NN<TimeData>::ConvertFrom(data));
 			return axis;
 		}
-		return 0;
+		return nullptr;
 	}
 	this->xAxis = NewAxis(data);
 	if (this->xAxis.SetTo(axis))
@@ -581,7 +581,7 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetYAxis(NN<ChartData> da
 			NN<TimeAxis>::ConvertFrom(axis)->ExtendRange(NN<TimeData>::ConvertFrom(data));
 			return axis;
 		}
-		return 0;
+		return nullptr;
 	}
 	else if (!this->y2Axis.SetTo(axis))
 	{
@@ -610,31 +610,31 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetYAxis(NN<ChartData> da
 			NN<TimeAxis>::ConvertFrom(axis)->ExtendRange(NN<TimeData>::ConvertFrom(data));
 			return axis;
 		}
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::ChartPlotter::ChartPlotter(Text::CString title)
 {
-	this->title = 0;
+	this->title = nullptr;
 
 	this->timeFormat = Text::String::New(UTF8STRC("HH:mm"));
 	this->dateFormat = Text::String::New(UTF8STRC("yyyy/MM/dd"));
 	this->dblFormat = Text::String::New(UTF8STRC("0.00"));
 	this->minDblVal = 0.01;
 
-	this->titleBuff = 0;
+	this->titleBuff = nullptr;
 	this->SetTitle(title);
-	this->xAxis = 0;
-	this->y1Axis = 0;
-	this->y2Axis = 0;
+	this->xAxis = nullptr;
+	this->y1Axis = nullptr;
+	this->y2Axis = nullptr;
 	this->refTime = {0, 0};
 	this->timeZoneQHR = 0;
 	this->barLength = 3.0;
 	this->pointType = PointType::Null;
 	this->pointSize = 0;
-	this->yUnit = 0;
+	this->yUnit = nullptr;
 	this->gridType = GridType::Horizontal;
 	Data::DateTime dt;
 	dt.ToLocalTime();
@@ -826,7 +826,7 @@ Bool Data::ChartPlotter::AddFilledLineChart(Text::CStringNN name, NN<ChartData> 
 
 Bool Data::ChartPlotter::AddScatter(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UInt32 lineColor)
 {
-	return AddScatter(name, yData, xData, 0, lineColor);
+	return AddScatter(name, yData, xData, nullptr, lineColor);
 }
 
 Bool Data::ChartPlotter::AddScatter(Text::CStringNN name, NN<ChartData> yData, NN<ChartData> xData, UnsafeArrayOpt<Optional<Text::String>> labels, UInt32 lineColor)
@@ -1059,7 +1059,7 @@ void Data::ChartPlotter::SetTitle(Text::CString title)
 	OPTSTR_DEL(this->titleBuff);
 	if (!this->title.SetTo(s))
 	{
-		this->titleBuff = 0;
+		this->titleBuff = nullptr;
 		this->titleLineCnt = 0;
 	}
 	else
@@ -1131,7 +1131,7 @@ Optional<Text::String> Data::ChartPlotter::GetXAxisName() const
 {
 	NN<Axis> axis;
 	if (this->xAxis.SetTo(axis)) return axis->GetName();
-	return 0;
+	return nullptr;
 }
 
 void Data::ChartPlotter::SetY1AxisName(Text::CString y1AxisName)
@@ -1144,7 +1144,7 @@ Optional<Text::String> Data::ChartPlotter::GetY1AxisName() const
 {
 	NN<Axis> axis;
 	if (this->y1Axis.SetTo(axis)) return axis->GetName();
-	return 0;
+	return nullptr;
 }
 
 void Data::ChartPlotter::SetY2AxisName(Text::CString y2AxisName)
@@ -1157,7 +1157,7 @@ Optional<Text::String> Data::ChartPlotter::GetY2AxisName() const
 {
 	NN<Axis> axis;
 	if (this->y2Axis.SetTo(axis)) return axis->GetName();
-	return 0;
+	return nullptr;
 }
 
 Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::GetXAxis() const
@@ -1218,13 +1218,13 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	Data::DateTime dt2;
 
 	NN<Media::DrawBrush> bgBrush = img->NewBrushARGB(bgColor);
-	NN<Media::DrawPen> boundPen = img->NewPenARGB(boundColor, this->lineThick, 0, 0);
+	NN<Media::DrawPen> boundPen = img->NewPenARGB(boundColor, this->lineThick, nullptr, 0);
 	NN<Media::DrawBrush> fontBrush = img->NewBrushARGB(fontColor);
-	NN<Media::DrawPen> gridPen = img->NewPenARGB(gridColor, this->lineThick, 0, 0);
-	NN<Media::DrawPen> refLinePen = img->NewPenARGB(refLineColor, this->lineThick, 0, 0);
+	NN<Media::DrawPen> gridPen = img->NewPenARGB(gridColor, this->lineThick, nullptr, 0);
+	NN<Media::DrawPen> refLinePen = img->NewPenARGB(refLineColor, this->lineThick, nullptr, 0);
 
 	fnt = img->NewFontPt(fntName->ToCString(), (Double)fntSizePt, Media::DrawEngine::DFS_ANTIALIAS, 0);
-	img->DrawRect(Math::Coord2DDbl(x, y), Math::Size2DDbl(width, height), 0, bgBrush);
+	img->DrawRect(Math::Coord2DDbl(x, y), Math::Size2DDbl(width, height), nullptr, bgBrush);
 
 	Math::Size2DDbl rcSize = img->GetTextSize(fnt, CSTR("AA"));
 	fntH = rcSize.y;
@@ -1600,17 +1600,17 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 	if (xAxis->GetType() == DataType::Integer)
 	{
 		NN<Int32Axis> iAxis = NN<Int32Axis>::ConvertFrom(xAxis);
-		CalScaleMarkInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, 0);
+		CalScaleMarkInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, nullptr);
 	}
 	else if (xAxis->GetType() == DataType::UInteger)
 	{
 		NN<UInt32Axis> iAxis = NN<UInt32Axis>::ConvertFrom(xAxis);
-		CalScaleMarkUInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, 0);
+		CalScaleMarkUInt(locations, labels, iAxis->GetMin(), iAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, nullptr);
 	}
 	else if (xAxis->GetType() == DataType::DOUBLE)
 	{
 		NN<DoubleAxis> dAxis = NN<DoubleAxis>::ConvertFrom(xAxis);
-		CalScaleMarkDbl(locations, labels, dAxis->GetMin(), dAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, 0);
+		CalScaleMarkDbl(locations, labels, dAxis->GetMin(), dAxis->GetMax(), width - y1Leng - y2Leng - this->pointSize * 2, minXInt, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, nullptr);
 	}
 	else if (xAxis->GetType() == DataType::Time)
 	{
@@ -1763,7 +1763,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 				currPos[j - 2].y = (Double)(y + height - xLeng);
 				currPos[j - 1].x = currPos[0].x;
 				currPos[j - 1].y = (Double)(y + height - xLeng);
-				NN<Media::DrawPen> p = img->NewPenARGB(chart->lineColor, 1, 0, 0);
+				NN<Media::DrawPen> p = img->NewPenARGB(chart->lineColor, 1, nullptr, 0);
 				NN<Media::DrawBrush> b = img->NewBrushARGB(chart->fillColor);
 				img->DrawPolygon(currPos, currPosLen, p, b);
 				img->DelBrush(b);
@@ -1774,7 +1774,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		{
 			if (currPosLen >= 2)
 			{
-				NN<Media::DrawPen> pen = img->NewPenARGB(chart->lineColor, this->lineThick, 0, 0);
+				NN<Media::DrawPen> pen = img->NewPenARGB(chart->lineColor, this->lineThick, nullptr, 0);
 				img->DrawPolyline(currPos, currPosLen, pen);
 				img->DelPen(pen);
 
@@ -1784,7 +1784,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 					j = currPosLen;
 					while (j-- > 0)
 					{
-						img->DrawEllipse(currPos[j] - this->pointSize, Math::Size2DDbl(this->pointSize * 2.0, this->pointSize * 2.0), 0, b);
+						img->DrawEllipse(currPos[j] - this->pointSize, Math::Size2DDbl(this->pointSize * 2.0, this->pointSize * 2.0), nullptr, b);
 					}
 					img->DelBrush(b);
 				}
@@ -1794,7 +1794,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 		{
 			if (currPosLen > 0)
 			{
-				NN<Media::DrawPen> p = img->NewPenARGB(chart->lineColor, 1, 0, 0);
+				NN<Media::DrawPen> p = img->NewPenARGB(chart->lineColor, 1, nullptr, 0);
 				NN<Media::DrawBrush> b = img->NewBrushARGB(chart->fillColor);
 				Double lastX;
 				if (currPosLen >= 2)
@@ -1840,7 +1840,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 					j = currPosLen;
 					while (j-- > 0)
 					{
-						img->DrawEllipse(currPos[j] - pointSize, Math::Size2DDbl(pointSize * 2.0, pointSize * 2.0), 0, b);
+						img->DrawEllipse(currPos[j] - pointSize, Math::Size2DDbl(pointSize * 2.0, pointSize * 2.0), nullptr, b);
 						if (labels[j].SetTo(s))
 						{
 							img->DrawString(Math::Coord2DDbl(currPos[j].x + pointSize, currPos[j].y - fntH * 0.5), s, fnt, b);
@@ -1852,7 +1852,7 @@ void Data::ChartPlotter::Plot(NN<Media::DrawImage> img, Double x, Double y, Doub
 					j = currPosLen;
 					while (j-- > 0)
 					{
-						img->DrawEllipse(currPos[j] - pointSize, Math::Size2DDbl(pointSize * 2.0, pointSize * 2.0), 0, b);
+						img->DrawEllipse(currPos[j] - pointSize, Math::Size2DDbl(pointSize * 2.0, pointSize * 2.0), nullptr, b);
 					}
 				}
 				img->DelBrush(b);
@@ -2021,7 +2021,7 @@ UnsafeArrayOpt<UTF8Char> Data::ChartPlotter::GetLegend(UnsafeArray<UTF8Char> sbu
 {
 	NN<ChartParam> cdata;
 	if (!this->charts.GetItem(index).SetTo(cdata))
-		return 0;
+		return nullptr;
 	color.Set(cdata->lineColor);
 	return Text::StrConcatC(sbuff, cdata->name->v, cdata->name->leng);
 }
@@ -2629,5 +2629,5 @@ Optional<Data::ChartPlotter::Axis> Data::ChartPlotter::NewAxis(NN<ChartData> dat
 		NEW_CLASSNN(tAxis, TimeAxis(NN<TimeData>::ConvertFrom(data)));
 		return tAxis;
 	}
-	return 0;
+	return nullptr;
 }

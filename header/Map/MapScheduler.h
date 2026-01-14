@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_MAPSCHEDULER
 #define _SM_MAP_MAPSCHEDULER
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapView.h"
 #include "Math/Geometry/CompoundCurve.h"
@@ -45,7 +45,7 @@ namespace Map
 		UOSInt maxCnt;
 
 		Sync::Mutex taskMut;
-		Data::ArrayList<Optional<Math::Geometry::Vector2D>> tasks;
+		Data::ArrayListObj<Optional<Math::Geometry::Vector2D>> tasks;
 		Bool toStop;
 		Sync::Event taskEvt;
 		Sync::Event finishEvt;

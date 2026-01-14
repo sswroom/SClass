@@ -2,6 +2,8 @@
 #define _SM_NET_DNSPROXY
 #include "AnyType.h"
 #include "Data/ArrayListICaseString.h"
+#include "Data/ArrayListNative.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/CallbackStorage.h"
 #include "Data/ICaseStringMapNN.hpp"
@@ -56,7 +58,7 @@ namespace Net
 		UOSInt currServerIndex;
 		Data::DateTime currIPTime;
 		Sync::Mutex dnsMut;
-		Data::ArrayList<UInt32> dnsList;
+		Data::ArrayListNative<UInt32> dnsList;
 		Bool disableV6;
 
 		Sync::Mutex reqv4Mut;
@@ -82,7 +84,7 @@ namespace Net
 		Data::FastMapNN<UInt32, CliRequestStatus> cliReqMap;
 
 		Sync::Mutex hdlrMut;
-		Data::ArrayList<Data::CallbackStorage<DNSProxyRequest>> hdlrList;
+		Data::ArrayListObj<Data::CallbackStorage<DNSProxyRequest>> hdlrList;
 
 		Sync::Mutex blackListMut;
 		Data::ArrayListStringNN blackList;
@@ -117,7 +119,7 @@ namespace Net
 		Bool GetRequestInfoOth(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
 		UInt32 GetServerIP();
 		void SetServerIP(UInt32 serverIP);
-		void GetDNSList(NN<Data::ArrayList<UInt32>> dnsList);
+		void GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList);
 		void AddDNSIP(UInt32 serverIP);
 		void SwitchDNS();
 		Bool IsDisableV6();

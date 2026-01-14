@@ -290,7 +290,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		if (tms->IsError())
 		{
 			tms.Delete();
-			return 0;
+			return nullptr;
 		}
 		if (map->mapTypeParam != 0)
 		{
@@ -302,7 +302,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	case MapType::File:
 	{
 		NN<IO::StreamData> fd;
-		if (browser->GetData(Text::CStringNN(map->url, map->urlLen), false, 0).SetTo(fd))
+		if (browser->GetData(Text::CStringNN(map->url, map->urlLen), false, nullptr).SetTo(fd))
 		{
 			NN<IO::ParsedObject> pobj;
 			if (parsers->ParseFile(fd).SetTo(pobj))
@@ -319,7 +319,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 				fd.Delete();
 			}
 		}
-		return 0;
+		return nullptr;
 	}
 	case MapType::CustomTile:
 	{
@@ -356,7 +356,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		{
 			printf("RegionalMapSource: Error in loading wms layer\r\n");
 			wms.Delete();
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(layer, Map::DrawMapServiceLayer(wms));
 		return layer;
@@ -367,7 +367,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		return wfs.LoadAsLayer();
 	}
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 

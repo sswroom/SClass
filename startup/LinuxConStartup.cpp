@@ -43,7 +43,7 @@ void __stdcall LinuxProgControl_SignalExit(NN<Core::ProgControl> progCtrl)
 
 Optional<UI::GUICore> __stdcall Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
-	return 0;
+	return nullptr;
 }
 
 UnsafeArray<UnsafeArray<UTF8Char>> __stdcall LinuxProgControl_GetCommandLines(NN<Core::ProgControl> progCtrl, OutParam<UOSInt> cmdCnt)

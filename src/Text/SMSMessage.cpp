@@ -176,13 +176,13 @@ Text::SMSMessage::SMSMessage(UnsafeArray<const UTF16Char> address, UnsafeArrayOp
 		}
 		else
 		{
-			this->smsc = 0;
+			this->smsc = nullptr;
 		}
 	}
 	else
 	{
-		this->address = 0;
-		this->smsc = 0;
+		this->address = nullptr;
+		this->smsc = nullptr;
 	}
 	this->ud = ud;
 	this->mms = false;
@@ -256,7 +256,7 @@ UnsafeArrayOpt<const UTF16Char> Text::SMSMessage::GetContent()
 	NN<SMSUserData> ud;
 	if (this->ud.SetTo(ud))
 		return ud->GetMessage();
-	return 0;
+	return nullptr;
 }
 
 UOSInt Text::SMSMessage::ToSubmitPDU(UnsafeArray<UInt8> buff)
@@ -297,7 +297,7 @@ Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(UnsafeArray<const UIn
 
 	if (pduBytes[0] == 0)
 	{
-		smsc = 0;
+		smsc = nullptr;
 		pduBytes++;
 	}
 	else
@@ -373,11 +373,11 @@ Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(UnsafeArray<const UIn
 	}
 	else if ((pduBytes[0] & 3) == 2) //SMS COMMAND
 	{
-		return 0;
+		return nullptr;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }

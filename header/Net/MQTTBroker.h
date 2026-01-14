@@ -1,7 +1,7 @@
 #ifndef _SM_NET_MQTTBROKER
 #define _SM_NET_MQTTBROKER
 #include "AnyType.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Data/StringUTF8Map.hpp"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
 #include "Net/SocketFactory.h"

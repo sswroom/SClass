@@ -30,7 +30,7 @@ Bool Text::SpreadSheet::CellStyle::BorderStyle::operator==(const BorderStyle &bo
 Text::SpreadSheet::CellStyle::CellStyle(UOSInt index)
 {
 	this->index = index;
-	this->id = 0;
+	this->id = nullptr;
 	this->halign = HAlignment::Unknown;
 	this->valign = VAlignment::Unknown;
 	this->wordWrap = false;
@@ -38,10 +38,10 @@ Text::SpreadSheet::CellStyle::CellStyle(UOSInt index)
 	this->borderLeft.borderType = Text::SpreadSheet::BorderType::None;
 	this->borderRight.borderType = Text::SpreadSheet::BorderType::None;
 	this->borderTop.borderType = Text::SpreadSheet::BorderType::None;
-	this->font = 0;
+	this->font = nullptr;
 	this->fillColor = 0xffffff;
 	this->fillPattern = FP_NO_FILL;
-	this->dataFormat = 0;
+	this->dataFormat = nullptr;
 	this->protection = false;
 }
 

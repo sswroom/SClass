@@ -229,7 +229,7 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 	if (this->mysql == 0)
 	{
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 
 	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v.Ptr(), (UInt32)sql.leng) == 0)
@@ -246,13 +246,13 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 		else
 		{
 			this->lastDataError = DE_NO_ERROR;
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -422,7 +422,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 	else
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -439,7 +439,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 	else
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -544,16 +544,16 @@ Int64 DB::MySQLReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->row == 0)
-		return 0;
+		return nullptr;
 	if (colIndex >= this->colCount)
-		return 0;
+		return nullptr;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		return Text::StrUTF8_WChar(buff, (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex], 0);
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -577,32 +577,32 @@ Bool DB::MySQLReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 Optional<Text::String> DB::MySQLReader::GetNewStr(UOSInt colIndex)
 {
 	if (this->row == 0)
-		return 0;
+		return nullptr;
 	if (colIndex >= this->colCount)
-		return 0;
+		return nullptr;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		return Text::String::NewOrNullSlow((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
 UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->row == 0)
-		return 0;
+		return nullptr;
 	if (colIndex >= this->colCount)
-		return 0;
+		return nullptr;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		return Text::StrConcatS(buff, (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex], buffSize);
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -677,10 +677,10 @@ UOSInt DB::MySQLReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 Optional<Math::Geometry::Vector2D> DB::MySQLReader::GetVector(UOSInt colIndex)
 {
 	if (this->row == 0)
-		return 0;
+		return nullptr;
 	if (colIndex >= this->colCount)
-		return 0;
-	return 0;
+		return nullptr;
+	return nullptr;
 }
 
 Bool DB::MySQLReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -696,9 +696,9 @@ UOSInt DB::MySQLReader::ColCount()
 UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (this->row == 0)
-		return 0;
+		return nullptr;
 	if (colIndex >= this->colCount)
-		return 0;
+		return nullptr;
 	return Text::StrWChar_UTF8(buff, this->names[colIndex]);
 }
 

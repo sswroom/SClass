@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(AnyType userObj)
 	NN<Net::EthernetWebHandler> webHdlr;
 	NN<Net::WebServer::WebListener> listener;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->clif, nullptr, webHdlr, port, 60, 1, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
@@ -764,7 +764,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 					listChg = true;
 					ipTran = MemAllocNN(IPTranInfo);
 					ipTran->ip = status->destIP;
-					ipTran->recvStatus = 0;
+					ipTran->recvStatus = nullptr;
 					ipTran->sendStatus = status;
 					me->ipTranMap.Put(Net::SocketUtil::IPv4ToSortable(ipTran->ip), ipTran);
 				}
@@ -781,7 +781,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 					ipTran = MemAllocNN(IPTranInfo);
 					ipTran->ip = status->srcIP;
 					ipTran->recvStatus = status;
-					ipTran->sendStatus = 0;
+					ipTran->sendStatus = nullptr;
 					me->ipTranMap.Put(Net::SocketUtil::IPv4ToSortable(ipTran->ip), ipTran);
 				}
 			}
@@ -809,7 +809,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 	}
 	if (me->analyzer->TCP4SYNIsDiff(me->tcp4synLastIndex))
 	{
-		Data::ArrayList<Net::EthernetAnalyzer::TCP4SYNInfo> synList;
+		Data::ArrayListT<Net::EthernetAnalyzer::TCP4SYNInfo> synList;
 		Net::EthernetAnalyzer::TCP4SYNInfo syn;
 		UOSInt i = 0;
 		UOSInt j = me->analyzer->TCP4SYNGetList(synList, me->tcp4synLastIndex);
@@ -1307,21 +1307,21 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->core = core;
 	this->clif = core->GetTCPClientFactory();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->listener = 0;
-	this->webHdlr = 0;
+	this->listener = nullptr;
+	this->webHdlr = nullptr;
 	this->adapterIP = 0;
 	this->adapterChanged = false;
 	this->dataUpdated = true;
-	this->plogWriter = 0;
+	this->plogWriter = nullptr;
 	this->linkType = IO::PacketAnalyse::LinkType::Ethernet;
 	if (!analyzer.SetTo(this->analyzer))
 	{
-		NEW_CLASSNN(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, CSTR("RAWMonitor")));
+		NEW_CLASSNN(this->analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, CSTR("RAWMonitor")));
 	}
 	this->ipTranCnt = 0;
 	this->pingIPListUpdated = false;
 	this->pingIPContUpdated = false;
-	this->currPingIP = 0;
+	this->currPingIP = nullptr;
 	this->analyzer->HandlePingv4Request(OnPingPacket, this);
 	this->tcp4synLastIndex = 0;
 
@@ -1711,7 +1711,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 		this->cboIP->SetSelectedIndex(0);
 		this->adapterChanged = true;
 	}
-	this->socMon = 0;
+	this->socMon = nullptr;
 	this->AddTimer(1000, OnTimerTick, this);
 }
 

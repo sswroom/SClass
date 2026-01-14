@@ -1,19 +1,19 @@
-#ifndef _SM_DATA_ARRAYCMPMAP
-#define _SM_DATA_ARRAYCMPMAP
+#ifndef _SM_DATA_ARRAYCMPMAPOBJ
+#define _SM_DATA_ARRAYCMPMAPOBJ
 #include "Data/ListMap.hpp"
-#include "Data/SortableArrayList.hpp"
+#include "Data/SortableArrayListObj.hpp"
 
 namespace Data
 {
-	template <class T, class V> class ArrayCmpMap : public ListMap<T, V>
+	template <class T, class V> class ArrayCmpMapObj : public ListMap<T, V>
 	{
 	protected:
-		NN<Data::SortableArrayList<T>> keys;
-		Data::ArrayList<V> vals;
+		NN<Data::SortableArrayListObj<T>> keys;
+		Data::ArrayListObj<V> vals;
 
-		ArrayCmpMap(NN<Data::SortableArrayList<T>> keys);
+		ArrayCmpMapObj(NN<Data::SortableArrayListObj<T>> keys);
 	public:
-		virtual ~ArrayCmpMap();
+		virtual ~ArrayCmpMapObj();
 
 		virtual V Put(T key, V val);
 		virtual V Get(T key) const;
@@ -23,8 +23,8 @@ namespace Data
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		NN<const Data::ArrayList<V>> GetValues() const;
-		NN<Data::SortableArrayList<T>> GetKeys() const;
+		NN<const Data::ArrayListObj<V>> GetValues() const;
+		NN<Data::SortableArrayListObj<T>> GetKeys() const;
 		virtual UOSInt GetCount() const;
 		virtual V GetItem(UOSInt index) const;
 		virtual Bool IsEmpty() const;
@@ -33,16 +33,16 @@ namespace Data
 	};
 
 
-	template <class T, class V> ArrayCmpMap<T, V>::ArrayCmpMap(NN<Data::SortableArrayList<T>> keys) : ListMap<T, V>()
+	template <class T, class V> ArrayCmpMapObj<T, V>::ArrayCmpMapObj(NN<Data::SortableArrayListObj<T>> keys) : ListMap<T, V>()
 	{
 		this->keys = keys;
 	}
 
-	template <class T, class V> ArrayCmpMap<T, V>::~ArrayCmpMap()
+	template <class T, class V> ArrayCmpMapObj<T, V>::~ArrayCmpMapObj()
 	{
 	}
 
-	template <class T, class V> V ArrayCmpMap<T, V>::Put(T key, V val)
+	template <class T, class V> V ArrayCmpMapObj<T, V>::Put(T key, V val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -56,11 +56,11 @@ namespace Data
 		{
 			this->keys->Insert((UOSInt)~i, key);
 			this->vals.Insert((UOSInt)~i, val);
-			return 0;
+			return nullptr;
 		}
 	}
 
-	template <class T, class V> V ArrayCmpMap<T, V>::Get(T key) const
+	template <class T, class V> V ArrayCmpMapObj<T, V>::Get(T key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -70,11 +70,11 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
-	template <class T, class V> V ArrayCmpMap<T, V>::Remove(T key)
+	template <class T, class V> V ArrayCmpMapObj<T, V>::Remove(T key)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -85,58 +85,58 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
-	template <class T, class V> T ArrayCmpMap<T, V>::GetKey(UOSInt index) const
+	template <class T, class V> T ArrayCmpMapObj<T, V>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
-	template <class T, class V> OSInt ArrayCmpMap<T, V>::GetIndex(T key) const
+	template <class T, class V> OSInt ArrayCmpMapObj<T, V>::GetIndex(T key) const
 	{
 		return this->keys->SortedIndexOf(key);
 	}
 
-	template <class T, class V> Bool ArrayCmpMap<T, V>::ContainsKey(T key) const
+	template <class T, class V> Bool ArrayCmpMapObj<T, V>::ContainsKey(T key) const
 	{
 		return this->keys->SortedIndexOf(key) >= 0;
 	}
 
-	template <class T, class V> void ArrayCmpMap<T, V>::AllocSize(UOSInt cnt)
+	template <class T, class V> void ArrayCmpMapObj<T, V>::AllocSize(UOSInt cnt)
 	{
 		UOSInt newSize = this->keys->GetCount() + cnt;
 		this->keys->EnsureCapacity(newSize);
 		this->vals.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> NN<const Data::ArrayList<V>> ArrayCmpMap<T, V>::GetValues() const
+	template <class T, class V> NN<const Data::ArrayListObj<V>> ArrayCmpMapObj<T, V>::GetValues() const
 	{
 		return this->vals;
 	}
 
-	template <class T, class V> NN<Data::SortableArrayList<T>> ArrayCmpMap<T, V>::GetKeys() const
+	template <class T, class V> NN<Data::SortableArrayListObj<T>> ArrayCmpMapObj<T, V>::GetKeys() const
 	{
 		return this->keys;
 	}
 
-	template <class T, class V> UOSInt ArrayCmpMap<T, V>::GetCount() const
+	template <class T, class V> UOSInt ArrayCmpMapObj<T, V>::GetCount() const
 	{
 		return this->vals.GetCount();
 	}
 
-	template <class T, class V> V ArrayCmpMap<T, V>::GetItem(UOSInt index) const
+	template <class T, class V> V ArrayCmpMapObj<T, V>::GetItem(UOSInt index) const
 	{
 		return this->vals.GetItem(index);
 	}
 
-	template <class T, class V> Bool ArrayCmpMap<T, V>::IsEmpty() const
+	template <class T, class V> Bool ArrayCmpMapObj<T, V>::IsEmpty() const
 	{
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> UnsafeArray<V> ArrayCmpMap<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> UnsafeArray<V> ArrayCmpMapObj<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
 		UnsafeArray<V> arr = this->vals.GetArr(cnt);
@@ -146,7 +146,7 @@ namespace Data
 		return outArr;
 	}
 
-	template <class T, class V> void ArrayCmpMap<T, V>::Clear()
+	template <class T, class V> void ArrayCmpMapObj<T, V>::Clear()
 	{
 		this->keys->Clear();
 		this->vals.Clear();

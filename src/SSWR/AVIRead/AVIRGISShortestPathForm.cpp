@@ -182,8 +182,8 @@ UnsafeArray<UTF8Char> SSWR::AVIRead::AVIRGISShortestPathForm::Coord2DDblToString
 
 void SSWR::AVIRead::AVIRGISShortestPathForm::UpdatePaths(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList)
 {
-	Data::ArrayList<Double> dirList;
-	Data::ArrayList<Bool> reverseList;
+	Data::ArrayListNative<Double> dirList;
+	Data::ArrayListNative<Bool> reverseList;
 	Map::ShortestPath3D::CalcDirReverse(lineList, dirList, reverseList);
 	UOSInt eName = INVALID_INDEX;
 	UOSInt cName = INVALID_INDEX;

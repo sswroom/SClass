@@ -59,7 +59,7 @@ Optional<Text::String> IO::ConfigFile::GetCateValue(NN<Text::String> category, N
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetNN(category).SetTo(cate))
 	{
-		return 0;
+		return nullptr;
 	}
 	return cate->GetNN(name);
 }
@@ -69,7 +69,7 @@ Optional<Text::String> IO::ConfigFile::GetCateValue(Text::CStringNN category, Te
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetC(category).SetTo(cate))
 	{
-		return 0;
+		return nullptr;
 	}
 	return cate->GetC(name);
 }
@@ -200,14 +200,14 @@ Optional<Text::String> IO::ConfigFile::GetKey(Text::CString category, UOSInt ind
 {
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetC(category.OrEmpty()).SetTo(cate))
-		return 0;
+		return nullptr;
 	else
 		return cate->GetKey(index);
 }
 
 Bool IO::ConfigFile::HasCategory(Text::CString category) const
 {
-	return this->cfgVals.GetC(category.OrEmpty()) != 0;
+	return this->cfgVals.GetC(category.OrEmpty()).NotNull();
 }
 
 Optional<IO::ConfigFile> IO::ConfigFile::CloneCate(Text::CString category)
@@ -215,7 +215,7 @@ Optional<IO::ConfigFile> IO::ConfigFile::CloneCate(Text::CString category)
 	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (!this->cfgVals.GetC(category.OrEmpty()).SetTo(cate))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<IO::ConfigFile> cfg;
 	NEW_CLASSNN(cfg, IO::ConfigFile());

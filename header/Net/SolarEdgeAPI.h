@@ -1,5 +1,6 @@
 #ifndef _SM_NET_SOLAREDGEAPI
 #define _SM_NET_SOLAREDGEAPI
+#include "Data/ArrayListT.hpp"
 #include "Net/SSLEngine.h"
 #include "Text/JSON.h"
 #include "Text/StringBuilderUTF8.h"
@@ -93,8 +94,8 @@ namespace Net
 		Bool GetSiteList(NN<Data::ArrayListNN<Site>> versions, UOSInt maxCount, UOSInt startOfst, OptOut<UOSInt> totalCount);
 		void FreeSiteList(NN<Data::ArrayListNN<Site>> versions);
 		Bool GetSiteOverview(Int32 siteId, NN<SiteOverview> overview);
-		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayList<TimedValue>> values);
-		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, NN<Data::ArrayList<TimedValue>> values);
+		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayListT<TimedValue>> values);
+		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, NN<Data::ArrayListT<TimedValue>> values);
 
 		static void AppendFormDate(NN<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime);
 		static Text::CStringNN TimeUnitGetName(TimeUnit timeUnit);

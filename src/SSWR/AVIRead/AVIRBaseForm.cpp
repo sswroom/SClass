@@ -618,7 +618,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 		{
 			NEW_CLASSNN(fd, IO::StmData::FileData(files[i]->ToCString(), false));
 			IO::StmData::BufferedStreamData buffFd(fd);
-			if (!me->core->LoadData(buffFd, 0))
+			if (!me->core->LoadData(buffFd, nullptr))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
@@ -1023,13 +1023,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_ABOUT:
 		{
-			SSWR::AVIRead::AVIRAboutForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRAboutForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_OPEN_ODBC_DSN:
 		{
-			SSWR::AVIRead::AVIRODBCDSNForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRODBCDSNForm dlg(nullptr, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
@@ -1042,7 +1042,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OPEN_ODBC_STR:
 		{
-			SSWR::AVIRead::AVIRODBCStrForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRODBCStrForm dlg(nullptr, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
@@ -1055,25 +1055,25 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_SET_CODEPAGE:
 		{
-			SSWR::AVIRead::AVIRCodePageForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRCodePageForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_SET_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm dlg(0, this->ui, this->core, this->GetHMonitor());
+			SSWR::AVIRead::AVIRColorSettingForm dlg(nullptr, this->ui, this->core, this->GetHMonitor());
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_GEN_IMAGE:
 		{
-			SSWR::AVIRead::AVIRGenImageForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRGenImageForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_CAP_DEV:
 		{
-			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRCaptureDevForm dlg(nullptr, this->ui, this->core);
 			NN<Media::VideoCapturer> capture;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
@@ -1115,9 +1115,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GSM_MODEM:
 		{
 			NN<SSWR::AVIRead::AVIRGSMModemForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, this->core, 0));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGSMModemForm(nullptr, ui, this->core, nullptr));
 			this->core->ShowForm(frm);
-/*			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl);
+/*			SSWR::AVIRead::AVIRSelStreamForm dlg(nullptr, this->ui, this->core, false, this->ssl);
 			dlg.SetText(CSTR("Select GSM Modem"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1127,21 +1127,21 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, true, this->ssl, this->core->GetLog());
+			SSWR::AVIRead::AVIRSelStreamForm dlg(nullptr, this->ui, this->core, true, this->ssl, this->core->GetLog());
 			dlg.SetText(CSTR("Select GPS Tracker"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<SSWR::AVIRead::AVIRGPSTrackerForm> gpsFrm;
 				NN<IO::GPSNMEA> gps;
 				NEW_CLASSNN(gps, IO::GPSNMEA(dlg.GetStream(), true));
-				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
+				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(nullptr, this->ui, this->core, gps, true));
 				this->core->ShowForm(gpsFrm);
 			}
 		}
 		break;
 	case MNU_WIA_DEV:
 		{
-			SSWR::AVIRead::AVIRWIADevForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRWIADevForm dlg(nullptr, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				
@@ -1182,7 +1182,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_ESRI_MAP:
 		{
-			SSWR::AVIRead::AVIRESRIMapForm dlg(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRESRIMapForm dlg(nullptr, this->ui, this->core, this->ssl);
 			NN<Map::ESRI::ESRIMapServer> esriMap;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.GetSelectedMap().SetTo(esriMap))
 			{
@@ -1213,26 +1213,26 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TEXT_VIEWER:
 		{
-			UtilUI::TextViewerForm dlg(0, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), this->core->GetCurrCodePage());
+			UtilUI::TextViewerForm dlg(nullptr, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), this->core->GetCurrCodePage());
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_NET_INFO:
 		{
-			SSWR::AVIRead::AVIRNetInfoForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRNetInfoForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_SUDOKU_SOLVER:
 		{
 			NN<SSWR::AVIRead::AVIRSudokuForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSudokuForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSudokuForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OPEN_FILE:
 		{
-			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::Unknown);
+			SSWR::AVIRead::AVIROpenFileForm dlg(nullptr, this->ui, this->core, IO::ParserType::Unknown);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = dlg.GetFileName();
@@ -1263,7 +1263,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						}
 						else
 						{
-							this->core->LoadDataType(fd, 0, dlg.GetParserType());
+							this->core->LoadDataType(fd, nullptr, dlg.GetParserType());
 						}
 					}
 				}
@@ -1292,75 +1292,75 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_HTTP_SVR:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPSvrForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPSvrForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPSvrForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TV_CONTROL:
 		{
 			NN<SSWR::AVIRead::AVIRTVControlForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTVControlForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTVControlForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STMTERM:
 		{
 			NN<SSWR::AVIRead::AVIRStreamTermForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamTermForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamTermForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NTPCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRNTPClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNTPClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNTPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SET_AUDIO:
 		{
-			SSWR::AVIRead::AVIRSetAudioForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSetAudioForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_FILE_ANALYSE:
 		{
 			NN<SSWR::AVIRead::AVIRFileAnalyseForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileAnalyseForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileAnalyseForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROC_INFO:
 		{
 			NN<SSWR::AVIRead::AVIRProcInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProcInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProcInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SET_DPI:
 		{
-			SSWR::AVIRead::AVIRSetDPIForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSetDPIForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_DNSCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRDNSClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDNSClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDNSClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_FILEEX:
 		{
 			NN<SSWR::AVIRead::AVIRFileExForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileExForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileExForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DNSPROXY:
 		{
 			NN<SSWR::AVIRead::AVIRDNSProxyForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDNSProxyForm(nullptr, this->ui, this->core));
 			if (frm->IsError())
 			{
 				this->ui->ShowMsgOK(CSTR("Error in starting DNS proxy. Port is in use?"), CSTR("Error"), this);
@@ -1375,285 +1375,285 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_EMAILSERVER:
 		{
 			NN<SSWR::AVIRead::AVIREmailServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREmailServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREmailServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_AUDIOFILTER:
 		{
 			NN<SSWR::AVIRead::AVIRAudioFilterForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAudioFilterForm(0, this->ui, this->core, false));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAudioFilterForm(nullptr, this->ui, this->core, false));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NET_PING:
 		{
 			NN<SSWR::AVIRead::AVIRNetPingForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetPingForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetPingForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IMAGE_BATCH:
 		{
 			NN<SSWR::AVIRead::AVIRImageBatchForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageBatchForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageBatchForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_FILE_HASH:
 		{
 			NN<SSWR::AVIRead::AVIRFileHashForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileHashForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileHashForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_UDP_CAPTURE:
 		{
 			NN<SSWR::AVIRead::AVIRUDPCaptureForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPCaptureForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPCaptureForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WHOISCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRWHOISClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWHOISClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWHOISClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TCPTEST:
 		{
 			NN<SSWR::AVIRead::AVIRTCPTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPTEST:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROXYSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRProxyServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProxyServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProxyServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPPROXYCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPProxyClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPProxyClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROTODEC:
 		{
 			NN<SSWR::AVIRead::AVIRProtoDecForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProtoDecForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProtoDecForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROF_RESIZER:
 		{
 			NN<SSWR::AVIRead::AVIRProfiledResizerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProfiledResizerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProfiledResizerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOG_BACKUP:
 		{
 			NN<SSWR::AVIRead::AVIRLogBackupForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogBackupForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogBackupForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TEXT_ENCRYPT:
 		{
 			NN<SSWR::AVIRead::AVIREncryptForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STREAM_CONV:
 		{
 			NN<SSWR::AVIRead::AVIRStreamConvForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamConvForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HQMP3:
 		{
 			NN<SSWR::AVIRead::AVIRHQMPForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(0, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_LQ));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_LQ));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HQMP3HQ:
 		{
 			NN<SSWR::AVIRead::AVIRHQMPForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(0, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HQMP3UQ:
 		{
 			NN<SSWR::AVIRead::AVIRHQMPForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(0, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_UQ));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, this->ui, this->core, SSWR::AVIRead::AVIRHQMPForm::QM_UQ));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CPUINFO:
 		{
 			NN<SSWR::AVIRead::AVIRCPUInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCPUInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCPUInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IBUDDY:
 		{
 			NN<SSWR::AVIRead::AVIRIBuddyForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIBuddyForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIBuddyForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DWQB30:
 		{
 			NN<SSWR::AVIRead::AVIRDWQB30Form> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDWQB30Form(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDWQB30Form(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ICCINFO:
 		{
 			NN<SSWR::AVIRead::AVIRICCInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CLIPBOARD_VIEWER:
 		{
 			NN<SSWR::AVIRead::AVIRClipboardViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRClipboardViewerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRClipboardViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BENCHMARK:
 		{
 			NN<SSWR::AVIRead::AVIRBenchmarkForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBenchmarkForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBenchmarkForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_FILE_SIZE_PACK:
 		{
 			NN<SSWR::AVIRead::AVIRFileSizePackForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileSizePackForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileSizePackForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PAINT_CNT:
 		{
 			NN<SSWR::AVIRead::AVIRPaintCntForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPaintCntForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPaintCntForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ASM_CONV:
 		{
 			NN<SSWR::AVIRead::AVIRAsmConvForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAsmConvForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAsmConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_COORD_CONV:
 		{
 			NN<SSWR::AVIRead::AVIRCoordConvForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordConvForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GPSDEV:
 		{
 			NN<SSWR::AVIRead::AVIRGPSDevForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPSDevForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPSDevForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPDOWNLOADER:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPDownloaderForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPDownloaderForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPDownloaderForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DRAG_DROP:
 		{
 			NN<SSWR::AVIRead::AVIRDragDropViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDragDropViewerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDragDropViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JSTEXT:
 		{
 			NN<SSWR::AVIRead::AVIRJSTextForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJSTextForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJSTextForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_UDPTEST:
 		{
 			NN<SSWR::AVIRead::AVIRUDPTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CODEIMAGEGEN:
 		{
 			NN<SSWR::AVIRead::AVIRCodeImageGenForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeImageGenForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeImageGenForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_EDIDVIEWER:
 		{
 			NN<SSWR::AVIRead::AVIREDIDViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREDIDViewerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREDIDViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GPUINFO:
 		{
 			NN<SSWR::AVIRead::AVIRGPUInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPUInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPUInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WMI:
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
 		{
-			SSWR::AVIRead::AVIRWMIForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRWMIForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 		}
 #endif
 		break;
 	case MNU_SNB_DONGLE:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl, this->core->GetLog());
+			SSWR::AVIRead::AVIRSelStreamForm dlg(nullptr, this->ui, this->core, false, this->ssl, this->core->GetLog());
 			dlg.SetText(CSTR("Select SNB Dongle"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<SSWR::AVIRead::AVIRSNBDongleForm> snbFrm;
-				NEW_CLASSNN(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, this->ui, this->core, dlg.GetStream()));
+				NEW_CLASSNN(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(nullptr, this->ui, this->core, dlg.GetStream()));
 				this->core->ShowForm(snbFrm);
 			}
 		}
@@ -1661,21 +1661,21 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CHINESE:
 		{
 			NN<SSWR::AVIRead::AVIRChineseForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRChineseForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRChineseForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BLUETOOTH:
 		{
 			NN<SSWR::AVIRead::AVIRBluetoothForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OSM_CACHE_SERVER:
 		{
 			NN<SSWR::AVIRead::AVIROSMCacheCfgForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMCacheCfgForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMCacheCfgForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -1689,14 +1689,14 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_IMAGEVIEWER:
 		{
 			NN<SSWR::AVIRead::AVIRImageViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageViewerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LINECOUNTER:
 		{
 			NN<SSWR::AVIRead::AVIRLineCounterForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLineCounterForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLineCounterForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -1740,14 +1740,14 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TCPSPDCLI:
 		{
 			NN<SSWR::AVIRead::AVIRTCPSpdCliForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPSpdCliForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPSpdCliForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TCPSPDSVR:
 		{
 			NN<SSWR::AVIRead::AVIRTCPSpdSvrForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPSpdSvrForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPSpdSvrForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -1761,7 +1761,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				if (sensors.CreateAccelerometer(0).SetTo(acc))
 				{
 					NN<SSWR::AVIRead::AVIRAccelerometerForm> frm;
-					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAccelerometerForm(0, this->ui, this->core, acc));
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRAccelerometerForm(nullptr, this->ui, this->core, acc));
 					this->core->ShowForm(frm);
 				}
 				else
@@ -1778,59 +1778,59 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_WIFICAPTURE:
 		{
 			NN<SSWR::AVIRead::AVIRWifiCaptureForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWifiCaptureForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWifiCaptureForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_POWERCONTROL:
 		{
 			NN<SSWR::AVIRead::AVIRPowerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPowerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPowerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TIMETEST:
 		{
 			NN<SSWR::AVIRead::AVIRTimeTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimeTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimeTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IOPINTEST:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSelIOPinForm dlg(nullptr, this->ui, this->core);
 			dlg.SetText(CSTR("Select IO Pin"));
 			NN<IO::IOPin> ioPin;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.ioPin.SetTo(ioPin))
 			{
 				NN<SSWR::AVIRead::AVIRIOPinTestForm> testFrm;
-				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRIOPinTestForm(0, this->ui, this->core, ioPin));
+				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRIOPinTestForm(nullptr, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}
 		break;
 	case MNU_DHT22:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSelIOPinForm dlg(nullptr, this->ui, this->core);
 			dlg.SetText(CSTR("Select DHT22 IO Pin"));
 			NN<IO::IOPin> ioPin;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.ioPin.SetTo(ioPin))
 			{
 				NN<SSWR::AVIRead::AVIRDHT22Form> testFrm;
-				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRDHT22Form(0, this->ui, this->core, ioPin));
+				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRDHT22Form(nullptr, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}
 		break;
 	case MNU_DS18B20:
 		{
-			SSWR::AVIRead::AVIRSelIOPinForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSelIOPinForm dlg(nullptr, this->ui, this->core);
 			dlg.SetText(CSTR("Select DS18B20 IO Pin"));
 			NN<IO::IOPin> ioPin;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.ioPin.SetTo(ioPin))
 			{
 				NN<SSWR::AVIRead::AVIRDS18B20Form> testFrm;
-				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRDS18B20Form(0, this->ui, this->core, ioPin));
+				NEW_CLASSNN(testFrm, SSWR::AVIRead::AVIRDS18B20Form(nullptr, this->ui, this->core, ioPin));
 				this->core->ShowForm(testFrm);
 			}
 		}
@@ -1838,28 +1838,28 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TIMEDCAPTURE:
 		{
 			NN<SSWR::AVIRead::AVIRTimedCaptureForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimedCaptureForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimedCaptureForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GUIEVENT:
 		{
 			NN<SSWR::AVIRead::AVIRGUIEventForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGUIEventForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGUIEventForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CALCULATOR1:
 		{
 			NN<SSWR::AVIRead::AVIRCalculator1Form> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCalculator1Form(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCalculator1Form(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SETLOCATIONSVC:
 		{
 			NN<SSWR::AVIRead::AVIRSetLocationSvcForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSetLocationSvcForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSetLocationSvcForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -1883,27 +1883,27 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_HASHTEST:
 		{
 			NN<SSWR::AVIRead::AVIRHashTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHashTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHashTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_THREADSPEED:
 		{
 			NN<SSWR::AVIRead::AVIRThreadSpeedForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRThreadSpeedForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRThreadSpeedForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ESCALE:
 		{
 			NN<SSWR::AVIRead::AVIRElectronicScaleForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRElectronicScaleForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRElectronicScaleForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VOICEMODEM:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm dlg(0, this->ui, this->core, false, this->ssl, this->core->GetLog());
+			SSWR::AVIRead::AVIRSelStreamForm dlg(nullptr, this->ui, this->core, false, this->ssl, this->core->GetLog());
 			dlg.SetText(CSTR("Select Voice Modem"));
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1913,7 +1913,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASSNN(channel, IO::ATCommandChannel(dlg.GetStream(), false));
 				NEW_CLASSNN(modem, IO::Device::RockwellModemController(channel, false));
 
-				NEW_CLASSNN(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(0, this->ui, this->core, modem, channel, dlg.GetStream()));
+				NEW_CLASSNN(innerFrm, SSWR::AVIRead::AVIRVoiceModemForm(nullptr, this->ui, this->core, modem, channel, dlg.GetStream()));
 				this->core->ShowForm(innerFrm);
 			}
 		}
@@ -1921,42 +1921,42 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PERFORMANCELOG:
 		{
 			NN<SSWR::AVIRead::AVIRPerformanceLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPerformanceLogForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPerformanceLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JTT808:
 		{
 			NN<SSWR::AVIRead::AVIRJTT808ServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJTT808ServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJTT808ServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_BROKER:
 		{
 			NN<SSWR::AVIRead::AVIRMQTTBrokerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTBrokerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTBrokerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_PUBLISH:
 		{
 			NN<SSWR::AVIRead::AVIRMQTTPublishForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTPublishForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTPublishForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_SUBSCRIBE:
 		{
 			NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTSubscribeForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTSubscribeForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OLEDB:
 		{
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
-			SSWR::AVIRead::AVIROLEDBForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIROLEDBForm dlg(nullptr, this->ui, this->core);
 			if (dlg.ShowDialog(this))
 			{
 				NN<DB::DBConn> db;
@@ -1969,203 +1969,203 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PCIDEVICE:
 		{
 			NN<SSWR::AVIRead::AVIRPCIDeviceForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPCIDeviceForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPCIDeviceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_USBDEVICE:
 		{
 			NN<SSWR::AVIRead::AVIRUSBDeviceForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUSBDeviceForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUSBDeviceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SDCARD:
 		{
 			NN<SSWR::AVIRead::AVIRSDCardForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSDCardForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSDCardForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SHPCONV:
 		{
 			NN<SSWR::SHPConv::SHPConvMainForm> frm;
-			NEW_CLASSNN(frm, SSWR::SHPConv::SHPConvMainForm(0, this->ui, this->core->GetDrawEngine(), this->core->GetMonitorMgr()));
+			NEW_CLASSNN(frm, SSWR::SHPConv::SHPConvMainForm(nullptr, this->ui, this->core->GetDrawEngine(), this->core->GetMonitorMgr()));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOGMERGE:
 		{
 			NN<SSWR::AVIRead::AVIRLogMergeForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogMergeForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogMergeForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOGEXTRACT:
 		{
 			NN<SSWR::AVIRead::AVIRLogExtractForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogExtractForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogExtractForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VIDEOINFO:
 		{
 			NN<SSWR::AVIRead::AVIRVideoInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVideoInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVideoInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VIDEOCHECKER:
 		{
 			NN<SSWR::AVIRead::AVIRVideoCheckerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVideoCheckerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVideoCheckerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HIDDEVICE:
 		{
 			NN<SSWR::AVIRead::AVIRHIDDeviceForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHIDDeviceForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHIDDeviceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IMAGE_PSNR:
 		{
 			NN<SSWR::AVIRead::AVIRImagePSNRForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImagePSNRForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImagePSNRForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IMAGE_BATCH_CONV:
 		{
 			NN<SSWR::AVIRead::AVIRImageBatchConvForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageBatchConvForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRImageBatchConvForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MODBUSMASTER:
 		{
 			NN<SSWR::AVIRead::AVIRMODBUSMasterForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMODBUSMasterForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMODBUSMasterForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STREAMECHO:
 		{
 			NN<SSWR::AVIRead::AVIRStreamEchoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamEchoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamEchoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_STREAMLATENCY:
 		{
 			NN<SSWR::AVIRead::AVIRStreamLatencyForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamLatencyForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRStreamLatencyForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_EGAUGESVR:
 		{
 			NN<SSWR::AVIRead::AVIReGaugeSvrForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIReGaugeSvrForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIReGaugeSvrForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LOGSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRLogServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLogServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PINGMONITOR:
 		{
 			NN<SSWR::AVIRead::AVIRPingMonitorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPingMonitorForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPingMonitorForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MACMANAGER:
 		{
 			NN<SSWR::AVIRead::AVIRMACManagerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMACManagerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMACManagerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IPSCAN:
 		{
 			NN<SSWR::AVIRead::AVIRIPScanForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIPScanForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIPScanForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BLUETOOTHLE:
 		{
 			NN<SSWR::AVIRead::AVIRBluetoothLEForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothLEForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothLEForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BRUTEFORCE:
 		{
 			NN<SSWR::AVIRead::AVIRBruteForceForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBruteForceForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBruteForceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TRACEROUTE:
 		{
 			NN<SSWR::AVIRead::AVIRTraceRouteForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTraceRouteForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTraceRouteForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_RAWMONITOR:
 		{
 			NN<SSWR::AVIRead::AVIRRAWMonitorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRAWMonitorForm(0, this->ui, this->core, 0));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRAWMonitorForm(nullptr, this->ui, this->core, nullptr));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TFTPCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRTFTPClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTFTPClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTFTPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TFTPSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRTFTPServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTFTPServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTFTPServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NTPSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRNTPServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNTPServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNTPServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TCPPORTSCAN:
 		{
 			NN<SSWR::AVIRead::AVIRTCPPortScanForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPPortScanForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPPortScanForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DHCPSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRDHCPServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDHCPServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDHCPServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SNMPCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRSNMPClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNMPClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNMPClientForm(nullptr, this->ui, this->core));
 			if (frm->IsError())
 			{
 				frm.Delete();
@@ -2179,7 +2179,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_SNMPTRAPMON:
 		{
 			NN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNMPTrapMonitorForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNMPTrapMonitorForm(nullptr, this->ui, this->core));
 			if (frm->IsError())
 			{
 				frm.Delete();
@@ -2193,35 +2193,35 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_ASN1MIB:
 		{
 			NN<SSWR::AVIRead::AVIRASN1MIBForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1MIBForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1MIBForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SNMPMANAGER:
 		{
 			NN<SSWR::AVIRead::AVIRSNMPManagerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNMPManagerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNMPManagerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MACGEN:
 		{
 			NN<SSWR::AVIRead::AVIRMACGenForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMACGenForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMACGenForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_XMLWALK:
 		{
 			NN<SSWR::AVIRead::AVIRXMLWalkForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRXMLWalkForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRXMLWalkForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WIFISCAN:
 		{
 			NN<SSWR::AVIRead::AVIRWifiScanForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWifiScanForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWifiScanForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -2231,7 +2231,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NN<IO::Device::OlympusCameraControl> camera;
 			if (IO::Device::OlympusCameraControl::CreateControl(this->core->GetTCPClientFactory(), this->core->GetEncFactory()).SetTo(camera))
 			{
-				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(0, this->ui, this->core, camera));
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(nullptr, this->ui, this->core, camera));
 				this->core->ShowForm(frm);
 			}
 			else
@@ -2243,14 +2243,14 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_WIFICAPTURELITE:
 		{
 			NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWifiCaptureLiteForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWifiCaptureLiteForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SYSLOGSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRSyslogServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSyslogServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSyslogServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -2263,7 +2263,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (camera.IsNull()) camera = IO::Device::GoProCameraControl::CreateControl(this->core->GetTCPClientFactory());
 			if (camera.SetTo(nncamera))
 			{
-				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(0, this->ui, this->core, nncamera));
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(nullptr, this->ui, this->core, nncamera));
 				this->core->ShowForm(frm);
 			}
 			else
@@ -2278,7 +2278,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NN<IO::Device::GoProCameraControl> camera;
 			if (IO::Device::GoProCameraControl::CreateControl(this->core->GetTCPClientFactory()).SetTo(camera))
 			{
-				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(0, this->ui, this->core, camera));
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(nullptr, this->ui, this->core, camera));
 				this->core->ShowForm(frm);
 			}
 			else
@@ -2290,181 +2290,181 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_USERAGENTPARSE:
 		{
 			NN<SSWR::AVIRead::AVIRUserAgentParseForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUserAgentParseForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUserAgentParseForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_USERAGENTBATCH:
 		{
 			NN<SSWR::AVIRead::AVIRUserAgentBatchForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUserAgentBatchForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUserAgentBatchForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WIFILOGMANAGER:
 		{
 			NN<SSWR::AVIRead::AVIRWiFiLogManagerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWiFiLogManagerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWiFiLogManagerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WELLFORMAT:
 		{
 			NN<SSWR::AVIRead::AVIRWellFormatForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWellFormatForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWellFormatForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_RSSREADER:
 		{
 			NN<SSWR::AVIRead::AVIRRSSReaderForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRSSReaderForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRSSReaderForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WEBSITE_48IDOL:
 		{
 			NN<SSWR::AVIRead::AVIRWebSite48IdolForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSite48IdolForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSite48IdolForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WEBSITE_TWITTER:
 		{
 			NN<SSWR::AVIRead::AVIRWebSiteTwitterForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSiteTwitterForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSiteTwitterForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SNSMANAGER:
 		{
 			NN<SSWR::AVIRead::AVIRSNSManagerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNSManagerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSNSManagerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WEBSITE_7GOGO:
 		{
 			NN<SSWR::AVIRead::AVIRWebSite7gogoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSite7gogoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSite7gogoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WEBSITE_INSTAGRAM:
 		{
 			NN<SSWR::AVIRead::AVIRWebSiteInstagramForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSiteInstagramForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebSiteInstagramForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GPIOSTATUS:
 		{
 			NN<SSWR::AVIRead::AVIRGPIOStatusForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPIOStatusForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPIOStatusForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NETRAWCAPTURE:
 		{
 			NN<SSWR::AVIRead::AVIRNetRAWCaptureForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetRAWCaptureForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetRAWCaptureForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ARPSCAN:
 		{
 			NN<SSWR::AVIRead::AVIRARPScanForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRARPScanForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRARPScanForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_IPSCANDETECTOR:
 		{
 			NN<SSWR::AVIRead::AVIRIPScanDetectorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIPScanDetectorForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRIPScanDetectorForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MYSQLSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRMySQLServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMySQLServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMySQLServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TEXTHASH:
 		{
 			NN<SSWR::AVIRead::AVIRTextHashForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTextHashForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTextHashForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MYSQLCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRMySQLClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMySQLClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMySQLClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WOL:
 		{
 			NN<SSWR::AVIRead::AVIRWOLForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWOLForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWOLForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_EXPLORER:
 		{
 			NN<SSWR::AVIRead::AVIRMQTTExplorerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTExplorerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTExplorerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ARPPING:
 		{
 			NN<SSWR::AVIRead::AVIRARPPingForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRARPPingForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRARPPingForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_COVID19:
 		{
 			NN<SSWR::AVIRead::AVIRCOVID19Form> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCOVID19Form(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCOVID19Form(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LDAPCLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRLDAPClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLDAPClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLDAPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LDAPEXPLORER:
 		{
 			NN<SSWR::AVIRead::AVIRLDAPExplorerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLDAPExplorerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLDAPExplorerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_RESTFUL:
 		{
 			NN<SSWR::AVIRead::AVIRRESTfulForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRESTfulForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRESTfulForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_COORD_INFO:
 		{
 			NN<SSWR::AVIRead::AVIRCoordInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MSSQL_CONN:
 		{
-			SSWR::AVIRead::AVIRMSSQLConnForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRMSSQLConnForm dlg(nullptr, this->ui, this->core);
 			if (dlg.IsDriverNotFound())
 			{
 				this->ui->ShowMsgOK(CSTR("No known driver found"), CSTR("MSSQL Conn"), this);
@@ -2482,153 +2482,153 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_DB_MANAGER:
 		{
 			NN<SSWR::AVIRead::AVIRDBManagerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDBManagerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDBManagerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TIMED_FILE_COPY:
 		{
 			NN<SSWR::AVIRead::AVIRTimedFileCopyForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimedFileCopyForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimedFileCopyForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JASYPT:
 		{
 			NN<SSWR::AVIRead::AVIRJasyptForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJasyptForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJasyptForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ASN1OID:
 		{
 			NN<SSWR::AVIRead::AVIRASN1OIDForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1OIDForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1OIDForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OTP:
 		{
 			NN<SSWR::AVIRead::AVIROTPForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROTPForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROTPForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_EW_DTU01:
 		{
 			NN<SSWR::AVIRead::AVIREWDTU01Form> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREWDTU01Form(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREWDTU01Form(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BLUETOOTHCTL:
 		{
 			NN<SSWR::AVIRead::AVIRBluetoothCtlForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothCtlForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothCtlForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BLUETOOTHLOG:
 		{
 			NN<SSWR::AVIRead::AVIRBluetoothLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothLogForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBluetoothLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CPP_ENUM:
 		{
 			NN<SSWR::AVIRead::AVIRCppEnumForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCppEnumForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCppEnumForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CONSOLE_MEDIA_PLAYER:
 		{
 			NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRConsoleMediaPlayerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRConsoleMediaPlayerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BCRYPT:
 		{
 			NN<SSWR::AVIRead::AVIRBCryptForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBCryptForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBCryptForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_EMAIL_ADDR_VALID:
 		{
 			NN<SSWR::AVIRead::AVIREmailAddrValidForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREmailAddrValidForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREmailAddrValidForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SMTP_CLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRSMTPClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSMTPClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSMTPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SMBIOS:
 		{
 			NN<SSWR::AVIRead::AVIRSMBIOSForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSMBIOSForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSMBIOSForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NETBIOS_SCANNER:
 		{
 			NN<SSWR::AVIRead::AVIRNetBIOSScannerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetBIOSScannerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetBIOSScannerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HEX_VIEWER:
 		{
 			NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTP_LOAD_BALANCER:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPLoadBalancerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPLoadBalancerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ACME_CLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRACMEClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRACMEClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRACMEClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CERT_UTIL:
 		{
 			NN<SSWR::AVIRead::AVIRCertUtilForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCertUtilForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCertUtilForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CA_UTIL:
 		{
 			NN<SSWR::AVIRead::AVIRCAUtilForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCAUtilForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCAUtilForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SSDP_CLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRSSDPClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSSDPClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSSDPClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MYSQL_CONN:
 		{
-			SSWR::AVIRead::AVIRMySQLConnForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRMySQLConnForm dlg(nullptr, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
@@ -2640,41 +2640,41 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_ASN1_PARSE:
 		{
 			NN<SSWR::AVIRead::AVIRASN1ParseForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1ParseForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1ParseForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SERVICE:
 		{
 			NN<SSWR::AVIRead::AVIRServiceForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRServiceForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRServiceForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SSLINFO:
 		{
 			NN<SSWR::AVIRead::AVIRSSLInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSSLInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSSLInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ANPR:
 		{
 			NN<SSWR::AVIRead::AVIRANPRForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRANPRForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRANPRForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_OCR:
 		{
 			NN<SSWR::AVIRead::AVIROCRForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROCRForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIROCRForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_POSTGRESQL_CONN:
 		{
-			SSWR::AVIRead::AVIRPostgreSQLForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRPostgreSQLForm dlg(nullptr, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
@@ -2686,62 +2686,62 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_LORA_GW_SIM:
 		{
 			NN<SSWR::AVIRead::AVIRLoraGWSimForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLoraGWSimForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLoraGWSimForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LORA_JSON:
 		{
 			NN<SSWR::AVIRead::AVIRLoRaJSONForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLoRaJSONForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLoRaJSONForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GLBVIEWER:
 		{
 			NN<SSWR::AVIRead::AVIRGLBViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGLBViewerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGLBViewerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TRUSTSTORE:
 		{
 			NN<SSWR::AVIRead::AVIRTrustStoreForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTrustStoreForm(0, this->ui, this->core, 0));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTrustStoreForm(nullptr, this->ui, this->core, nullptr));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JAVACACERTS:
 		{
 			NN<SSWR::AVIRead::AVIRTrustStoreForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTrustStoreForm(0, this->ui, this->core, Crypto::Cert::TrustStore::LoadJavaCA()));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTrustStoreForm(nullptr, this->ui, this->core, Crypto::Cert::TrustStore::LoadJavaCA()));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WINDOWS_ERROR:
 		{
 			NN<SSWR::AVIRead::AVIRWindowsErrorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWindowsErrorForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWindowsErrorForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ADAM:
 		{
 			NN<SSWR::AVIRead::AVIRADAMForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRADAMForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRADAMForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MODBUS_TCPSIM:
 		{
 			NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMODBUSTCPSimForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMODBUSTCPSimForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TMS:
 		{
-			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRTMSForm frm(nullptr, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
@@ -2757,13 +2757,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_BATCH_RENAME:
 		{
 			NN<SSWR::AVIRead::AVIRBatchRenameForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBatchRenameForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBatchRenameForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WMTS:
 		{
-			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRWMTSForm frm(nullptr, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
@@ -2778,7 +2778,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_WMS:
 		{
-			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, Math::CoordinateSystemManager::CreateWGS84Csys());
+			SSWR::AVIRead::AVIRWMSForm frm(nullptr, this->ui, this->core, this->ssl, Math::CoordinateSystemManager::CreateWGS84Csys());
 			NN<Map::DrawMapService> mapService;
 			if (frm.ShowDialog(this) && frm.GetDrawMapService().SetTo(mapService))
 			{
@@ -2790,7 +2790,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GOOGLE_TILE:
 		{
-			SSWR::AVIRead::AVIRGoogleTileMapForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRGoogleTileMapForm frm(nullptr, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
 				if (frm.GetMapLayer().SetTo(mapLyr))
@@ -2800,7 +2800,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_CUSTOM_TILE:
 		{
-			SSWR::AVIRead::AVIRCustomTileMapForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRCustomTileMapForm frm(nullptr, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
@@ -2816,7 +2816,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_REGIONAL_MAP:
 		{
 			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
-			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl, csys);
+			SSWR::AVIRead::AVIRRegionalMapForm frm(nullptr, this->ui, this->core, this->ssl, csys);
 			if (frm.ShowDialog(this))
 			{
 				if (frm.GetMapLayer().SetTo(mapLyr))
@@ -2827,7 +2827,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_BING_MAPS:
 		{
-			SSWR::AVIRead::AVIRBingMapsForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRBingMapsForm frm(nullptr, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
@@ -2843,252 +2843,252 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_TEXT_ENCRYPT:
 		{
 			NN<SSWR::AVIRead::AVIRFileTextEncryptForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileTextEncryptForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileTextEncryptForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_TIMESTAMP:
 		{
 			NN<SSWR::AVIRead::AVIRTimestampForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimestampForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTimestampForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PROGRAM_LINKS:
 		{
 			NN<SSWR::AVIRead::AVIRProgramLinksForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProgramLinksForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRProgramLinksForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WEBAPI_SOLAREDGE:
 		{
 			NN<SSWR::AVIRead::AVIRSolarEdgeForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSolarEdgeForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSolarEdgeForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SAMLTEST:
 		{
 			NN<SSWR::AVIRead::AVIRSAMLTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSAMLTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSAMLTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CERT_TEXT:
 		{
 			NN<SSWR::AVIRead::AVIRCertTextForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCertTextForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCertTextForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ENCRYPT_MSG:
 		{
 			NN<SSWR::AVIRead::AVIREncryptMsgForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptMsgForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptMsgForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SAML_RESP_DECRYPT:
 		{
 			NN<SSWR::AVIRead::AVIRSAMLDecryptForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSAMLDecryptForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSAMLDecryptForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SAML_REQ_DECODE:
 		{
 			NN<SSWR::AVIRead::AVIRSAMLReqDecodeForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSAMLReqDecodeForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSAMLReqDecodeForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTP_FORWARDER:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPForwarderForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPForwarderForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPForwarderForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GOOGLE_FCM:
 		{
 			NN<SSWR::AVIRead::AVIRFCMForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFCMForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFCMForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_PUSHSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRPushServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPushServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPushServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HTTPCLIENTCERTTEST:
 		{
 			NN<SSWR::AVIRead::AVIRHTTPClientCertTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPClientCertTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHTTPClientCertTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HKO_FORECAST:
 		{
 			NN<SSWR::AVIRead::AVIRHKOForecastForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKOForecastForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKOForecastForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HKO_LOCAL_FORECAST:
 		{
 			NN<SSWR::AVIRead::AVIRHKOLocalForecastForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKOLocalForecastForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKOLocalForecastForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HKO_WARNING_SUMMARY:
 		{
 			NN<SSWR::AVIRead::AVIRHKOWarningSummaryForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKOWarningSummaryForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKOWarningSummaryForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_RNCRYPTOR:
 		{
 			NN<SSWR::AVIRead::AVIRRNCryptorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRNCryptorForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRNCryptorForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BYDC9R:
 		{
 			NN<SSWR::AVIRead::AVIRBYDC9RForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBYDC9RForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBYDC9RForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_SUBSCRIBE_TEST:
 		{
 			NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTSubscribeTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTSubscribeTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MQTT_PUBLISH_TEST:
 		{
 			NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTPublishTestForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMQTTPublishTestForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_FILE_SEARCH:
 		{
 			NN<SSWR::AVIRead::AVIRFileSearchForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileSearchForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFileSearchForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VBOX_MANAGER:
 		{
 			NN<SSWR::AVIRead::AVIRVBoxManagerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVBoxManagerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRVBoxManagerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JWT_PARSER:
 		{
 			NN<SSWR::AVIRead::AVIRJWTParserForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJWTParserForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJWTParserForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GCIS_CLIENT:
 		{
 			NN<SSWR::AVIRead::AVIRGCISClientForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGCISClientForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGCISClientForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SET_DNS:
 		{
 			NN<SSWR::AVIRead::AVIRSetDNSForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSetDNSForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSetDNSForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SSH_INFO:
 		{
 			NN<SSWR::AVIRead::AVIRSSHInfoForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSSHInfoForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSSHInfoForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_DATA_MODEL:
 		{
 			NN<SSWR::AVIRead::AVIRDataModelForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDataModelForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRDataModelForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_MSGRAPH_EMAIL:
 		{
 			NN<SSWR::AVIRead::AVIRMSGraphEmailForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMSGraphEmailForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMSGraphEmailForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_HKID:
 		{
 			NN<SSWR::AVIRead::AVIRHKIDForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKIDForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKIDForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_ENCRYPT_FILE:
 		{
 			NN<SSWR::AVIRead::AVIREncryptFileForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptFileForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptFileForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SELENIUM_LOG:
 		{
 			NN<SSWR::AVIRead::AVIRSeleniumLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSeleniumLogForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSeleniumLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_JMETER_LOG:
 		{
 			NN<SSWR::AVIRead::AVIRJMeterLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJMeterLogForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJMeterLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_RADIO_SCAN:
 		{
 			NN<SSWR::AVIRead::AVIRRadioScanForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRadioScanForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRadioScanForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_NETWORK_BANDWIDTH:
 		{
 			NN<SSWR::AVIRead::AVIRNetworkBandwidthForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetworkBandwidthForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetworkBandwidthForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_BANDWIDTH_LOG_ANALYST:
 		{
 			NN<SSWR::AVIRead::AVIRBandwidthLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBandwidthLogForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBandwidthLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_SIDERUNNER_LOG:
 		{
 			NN<SSWR::AVIRead::AVIRSIDERunnerLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSIDERunnerLogForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSIDERunnerLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
@@ -3155,77 +3155,77 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_MDNS:
 		{
 			NN<SSWR::AVIRead::AVIRMDNSForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMDNSForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMDNSForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WSDISCOVERY:
 		{
 			NN<SSWR::AVIRead::AVIRWSDiscoveryForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWSDiscoveryForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWSDiscoveryForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WSDLISTENER:
 		{
 			NN<SSWR::AVIRead::AVIRWSDListenerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWSDListenerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWSDListenerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_WEBPUSH:
 		{
 			NN<SSWR::AVIRead::AVIRWebPushForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebPushForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebPushForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_CHROME_DEVTOOLS:
 		{
 			NN<SSWR::AVIRead::AVIRChromeDevToolsForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRChromeDevToolsForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRChromeDevToolsForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_EDGE_ANALYSE:
 		{
 			NN<SSWR::AVIRead::AVIREdgeAnalyseForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREdgeAnalyseForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREdgeAnalyseForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LB_UDP:
 		{
 			NN<SSWR::AVIRead::AVIRUDPLoadBalancerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPLoadBalancerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRUDPLoadBalancerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_LB_TCP:
 		{
 			NN<SSWR::AVIRead::AVIRTCPLoadBalancerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPLoadBalancerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRTCPLoadBalancerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_INVESTMENT:
 		{
 			NN<SSWR::AVIRead::AVIRInvestmentForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRInvestmentForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRInvestmentForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_GISSERVER:
 		{
 			NN<SSWR::AVIRead::AVIRGISServerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISServerForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISServerForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
 	case MNU_VALGRINDLOG:
 		{
 			NN<SSWR::AVIRead::AVIRValgrindLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRValgrindLogForm(0, this->ui, this->core));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRValgrindLogForm(nullptr, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

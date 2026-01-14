@@ -145,7 +145,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF
 
 void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, NN<Text::CodeContainer> container)
 {
-	Optional<UI::GUITreeView::TreeItem> tviLast = 0;
+	Optional<UI::GUITreeView::TreeItem> tviLast = nullptr;
 	NN<UI::GUITreeView::TreeItem> tvi;
 	NN<Text::CodeObject> obj;
 	UOSInt i;
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientCo
 	this->txtMessage->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NN<UI::GUITreeView::TreeItem> tvi;
-	if (this->tvMain->InsertItem(0, 0, proj->GetContainerName(), proj).SetTo(tvi))
+	if (this->tvMain->InsertItem(nullptr, nullptr, proj->GetContainerName(), proj).SetTo(tvi))
 	{
 		AddTreeObj(tvi, proj);
 		this->tvMain->ExpandItem(tvi);

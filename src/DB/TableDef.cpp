@@ -7,13 +7,13 @@
 
 DB::TableDef::TableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	this->databaseName = 0;
+	this->databaseName = nullptr;
 	this->schemaName = Text::String::NewOrNull(schemaName);
 	this->tableName = Text::String::New(tableName);
-	this->engine = 0;
-	this->charset = 0;
-	this->attr = 0;
-	this->comments = 0;
+	this->engine = nullptr;
+	this->charset = nullptr;
+	this->attr = nullptr;
+	this->comments = nullptr;
 	this->sqlType = DB::SQLType::Unknown;
 }
 
@@ -86,7 +86,7 @@ Optional<DB::ColDef> DB::TableDef::GetCol(UOSInt index) const
 
 Optional<DB::ColDef> DB::TableDef::GetSinglePKCol() const
 {
-	Optional<DB::ColDef> retCol = 0;
+	Optional<DB::ColDef> retCol = nullptr;
 	NN<DB::ColDef> col;
 	Data::ArrayIterator<NN<DB::ColDef>> it = this->cols.Iterator();
 	while (it.HasNext())
@@ -96,7 +96,7 @@ Optional<DB::ColDef> DB::TableDef::GetSinglePKCol() const
 		{
 			if (!retCol.IsNull())
 			{
-				return 0;
+				return nullptr;
 			}
 			retCol = col;
 		}

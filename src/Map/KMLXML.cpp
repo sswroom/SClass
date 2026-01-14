@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListA.hpp"
 #include "Data/ArrayListDbl.h"
-#include "Data/ICaseStringMap.hpp"
 #include "Map/KMLXML.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/NetworkLinkLayer.h"
@@ -45,7 +44,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader
 }
 
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF, Bool rootKml)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMapObj<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF, Bool rootKml)
 {
 	KMLStyle *style;
 	UOSInt i;

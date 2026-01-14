@@ -147,7 +147,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 						resp->EnableWriteBuffer();
 
-						Data::Compress::Deflater dstm(fs, contLeng, 0, compLevel, true);
+						Data::Compress::Deflater dstm(fs, contLeng, nullptr, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
@@ -230,7 +230,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 					crc.Calc(buff.Ptr(), (UOSInt)contLeng);
 
 					IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
-					Data::Compress::Deflater dstm(mstm, 0, compLevel, false);
+					Data::Compress::Deflater dstm(mstm, nullptr, compLevel, false);
 					UOSInt readSize;
 					while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 					{
@@ -250,7 +250,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
 						IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
-						Data::Compress::Deflater dstm(mstm, 0, compLevel, true);
+						Data::Compress::Deflater dstm(mstm, nullptr, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
@@ -287,7 +287,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::WebRequest>
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
-	fs.GetFileTimes(0, 0, &t);
+	fs.GetFileTimes(nullptr, nullptr, t);
 
 	if (req->GetHeaderC(sb2, CSTR("If-Modified-Since")))
 	{

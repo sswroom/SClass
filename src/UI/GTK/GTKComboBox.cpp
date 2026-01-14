@@ -82,7 +82,7 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKComboBox::GetText(UnsafeArray<UTF8Char> buf
 		g_free(lbl);
 		return buff;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool UI::GTK::GTKComboBox::GetText(NN<Text::StringBuilderUTF8> sb)

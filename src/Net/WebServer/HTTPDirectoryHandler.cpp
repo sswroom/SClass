@@ -436,8 +436,8 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(NN<Text::String> root
 	this->expirePeriod = 0;
 	this->fileCacheSize = fileCacheSize;
 	this->fileCacheUsing = 0;
-	this->packageMap = 0;
-	this->packageMut = 0;
+	this->packageMap = nullptr;
+	this->packageMut = nullptr;
 	this->statMap = 0;
 	this->statMut = 0;
 }
@@ -451,8 +451,8 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CStringNN rootD
 	this->expirePeriod = 0;
 	this->fileCacheSize = fileCacheSize;
 	this->fileCacheUsing = 0;
-	this->packageMap = 0;
-	this->packageMut = 0;
+	this->packageMap = nullptr;
+	this->packageMut = nullptr;
 	this->statMap = 0;
 	this->statMut = 0;
 }
@@ -766,7 +766,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 			{
 				Text::StringBuilderUTF8 sb2;
 				Text::StringBuilderUTF8 sbOut;
-				Optional<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat = 0;
+				Optional<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat = nullptr;
 				NN<StatInfo> nnstat;
 				Int32 sort = 0;
 
@@ -959,7 +959,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 						{
 							nnstat = MemAllocNN(Net::WebServer::HTTPDirectoryHandler::StatInfo);
 							nnstat->reqPath = Text::String::New(sb2.ToString(), sb2.GetLength());
-							NEW_CLASS(nnstat->cntMap, Data::FastStringMap<UInt32>());
+							NEW_CLASS(nnstat->cntMap, Data::FastStringMapNative<UInt32>());
 							nnstat->updated = true;
 							sb2.ClearStr();
 							sb2.AppendC2(sb.ToString(), sb.GetLength(), UTF8STRC(".counts"));
@@ -1040,7 +1040,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 					}
 					else
 					{
-						Data::ArrayList<DirectoryEntry *> entList;
+						Data::ArrayListObj<DirectoryEntry *> entList;
 						DirectoryEntry *ent;
 						while (IO::Path::FindNextFile(sptr2, sess, modTime, pt, fileSize).SetTo(sptr3))
 						{
@@ -1208,7 +1208,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				{
 					nnstat->reqPath = Text::String::New(sb2.ToString(), i);
 				}
-				NEW_CLASS(nnstat->cntMap, Data::FastStringMap<UInt32>());
+				NEW_CLASS(nnstat->cntMap, Data::FastStringMapNative<UInt32>());
 				nnstat->updated = true;
 				sptr3 = Text::StrConcatC(sbuff, sptr, sptrLen);
 				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr3 - sbuff), IO::Path::PATH_SEPERATOR);
@@ -1610,7 +1610,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && pkgName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
 					if (!packageFile->GetItemPack(0, thisNeedRelease).SetTo(packageFile))
-						return 0;
+						return nullptr;
 				}
 			}
 			if (subPath.leng > 0)
@@ -1652,7 +1652,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 		return dpkg;
 	}
 	needRelease.Set(false);
-	return 0;
+	return nullptr;
 }
 
 void Net::WebServer::HTTPDirectoryHandler::SetRootDir(NN<Text::String> rootDir)

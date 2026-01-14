@@ -1,6 +1,6 @@
 # SClass
 
-Classes in C++ for building cross-platform applications.
+Classes in C++(>=11) for building cross-platform applications.
 See [SClassDemo](http://github.com/sswroom/SClassDemo) for sample usage
 
 You need to generate ThirdParty files after getting file from git:

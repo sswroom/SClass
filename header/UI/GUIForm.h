@@ -43,11 +43,11 @@ namespace UI
 
 	private:
 		Bool virtualMode;
-		Data::ArrayList<Data::CallbackStorage<FormClosedEvent>> closeHandlers;
-		Data::ArrayList<Data::CallbackStorage<FileEvent>> dropFileHandlers;
-		Data::ArrayList<Data::CallbackStorage<MenuEvent>> menuClickedHandlers;
-		Data::ArrayList<Data::CallbackStorage<KeyEvent>> keyDownHandlers;
-		Data::ArrayList<Data::CallbackStorage<KeyEvent>> keyUpHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<FormClosedEvent>> closeHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<FileEvent>> dropFileHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<MenuEvent>> menuClickedHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<KeyEvent>> keyDownHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<KeyEvent>> keyUpHandlers;
 		Data::ArrayListNN<GUITimer> timers;
 		Data::CallbackStorage<FormClosingEvent> closingHdlr;
 		Bool exitOnClose;

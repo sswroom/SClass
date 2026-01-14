@@ -1,7 +1,6 @@
 #ifndef _SM_IO_BTCONTROLLER
 #define _SM_IO_BTCONTROLLER
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/DateTime.h"
 #include "Data/UUID.h"

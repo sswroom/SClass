@@ -12,12 +12,12 @@
 Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (buffSize < 4)
-		return 0;
+		return nullptr;
 	Int32 shpType = ReadInt32(&buff[0]);
 	switch (shpType)
 	{
 	case 0: //Null
-		return 0;
+		return nullptr;
 	case 1: //Point
 		if (buffSize >= 20)
 		{
@@ -25,7 +25,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12])));
 			return pt;
 		}
-		return 0;
+		return nullptr;
 	case 3: //Polyline
 		if (buffSize >= 44)
 		{
@@ -86,7 +86,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				return pl;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 5: //Polygon
 		if (buffSize >= 44)
 		{
@@ -136,7 +136,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				return pg;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 8: //Multipoint
 		if (false)
 		{
@@ -153,7 +153,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			}
 			*/
 		}
-		return 0;
+		return nullptr;
 	case 9: //PointZ
 		if (buffSize >= 28)
 		{
@@ -161,7 +161,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			NEW_CLASS(pt, Math::Geometry::PointZ(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20])));
 			return pt;
 		}
-		return 0;
+		return nullptr;
 	case 10: //PolylineZ
 		if (buffSize >= 44)
 		{
@@ -238,7 +238,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				return pl;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 11: //PointZM
 		if (buffSize >= 36)
 		{
@@ -246,7 +246,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			NEW_CLASS(pt, Math::Geometry::PointZM(srid, ReadDouble(&buff[4]), ReadDouble(&buff[12]), ReadDouble(&buff[20]), ReadDouble(&buff[28])));
 			return pt;
 		}
-		return 0;
+		return nullptr;
 	case 13: //PolylineZM
 		if (buffSize >= 44)
 		{
@@ -338,7 +338,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				return pl;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 15: //PolygonZM
 		if (buffSize >= 44)
 		{
@@ -399,9 +399,9 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				return pg;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 18: //MultipointZM
-		return 0;
+		return nullptr;
 	case 19: //PolygonZ
 		if (buffSize >= 44)
 		{
@@ -446,16 +446,16 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					buff += 8;
 					i++;
 				}
-				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, zArr, 0);
+				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, zArr, nullptr);
 				MemFree(zArr);
 				MemFreeA(points);
 				MemFree(ptOfsts);
 				return pg;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 20: //MultipointZ
-		return 0;
+		return nullptr;
 	case 21: //PointM
 		if (buffSize >= 28)
 		{
@@ -464,7 +464,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 			// measure = ReadDouble(&buff[20]);
 			return pt;
 		}
-		return 0;
+		return nullptr;
 	case 23: //PolylineM
 		if (buffSize >= 44)
 		{
@@ -541,7 +541,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 				return pl;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 25: //PolygonM
 		if (buffSize >= 44)
 		{
@@ -586,14 +586,14 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 					buff += 8;
 					i++;
 				}
-				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, 0, mArr);
+				pg->AddFromPtOfst(ptOfsts, nPtOfst, points, nPoint, nullptr, mArr);
 				MemFree(mArr);
 				MemFreeA(points);
 				MemFree(ptOfsts);
 				return pg;
 			}
 		}
-		return 0;
+		return nullptr;
 	case 28: //MultipointM
 	case 31: //MultiPatchM
 	case 32: //MultiPatch
@@ -603,6 +603,6 @@ Optional<Math::Geometry::Vector2D> Map::SHPUtil::ParseShpRecord(UInt32 srid, Uns
 	case 53: //GeneralMultipoint
 	case 54: //GeneralMultiPatch
 	default:
-		return 0;
+		return nullptr;
 	}
 }

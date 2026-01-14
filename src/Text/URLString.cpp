@@ -9,7 +9,7 @@
 UnsafeArrayOpt<UTF8Char> Text::URLString::GetURLFilePath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen)
 {
 	if (!Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("FILE:///")))
-		return 0;
+		return nullptr;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
 		UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[8]);
@@ -104,7 +104,7 @@ UnsafeArrayOpt<UTF8Char> Text::URLString::GetURIScheme(UnsafeArray<UTF8Char> sbu
 	UOSInt i = Text::StrIndexOfCharC(url, urlLen, ':');
 	if (i == INVALID_INDEX)
 	{
-		return 0;
+		return nullptr;
 	}
 	return Text::StrToUpperC(sbuff, url, i);
 }
@@ -246,7 +246,7 @@ UnsafeArrayOpt<UTF8Char> Text::URLString::AppendURLPath(UnsafeArray<UTF8Char> sb
 	}
 	i = Text::StrIndexOfC(sbuff, (UOSInt)(sbuffEnd - sbuff), UTF8STRC("://"));
 	if (i == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	sbuff = &sbuff[3];
 	if (path.v[0] == '/')
 	{

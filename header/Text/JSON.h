@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_JSON
 #define _SM_TEXT_JSON
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListNN.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/FastStringMapNN.hpp"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -225,7 +225,7 @@ namespace Text
 	class JSONArray : public JSONBase
 	{
 	private:
-		Data::ArrayList<Optional<Text::JSONBase>> arrVals;
+		Data::ArrayListObj<Optional<Text::JSONBase>> arrVals;
 	public:
 		JSONArray();
 	private:

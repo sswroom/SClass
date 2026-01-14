@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_GEOPACKAGE
 #define _SM_MAP_GEOPACKAGE
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "DB/DBConn.h"
 #include "Map/MapLayerCollection.h"
 #include "Math/RectAreaDbl.h"

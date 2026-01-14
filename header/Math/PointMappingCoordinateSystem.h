@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_POINTMAPPINGCOORDINATESYSTEM
 #define _SM_MATH_POINTMAPPINGCOORDINATESYSTEM
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListArr.hpp"
 #include "Math/CoordinateSystem.h"
 
 namespace Math
@@ -9,7 +9,7 @@ namespace Math
 	{
 	private:
 		NN<Math::CoordinateSystem> baseCSys;
-		Data::ArrayList<Double*> mappingList;
+		Data::ArrayListArr<Double> mappingList;
 
 	public:
 		PointMappingCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, NN<Math::CoordinateSystem> baseCSys);

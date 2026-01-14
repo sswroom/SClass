@@ -68,7 +68,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 {
 	if (hdr[0] != 0x7f || hdr[1] != 'E' || hdr[2] != 'L' || hdr[3] != 'F')
 	{
-		return 0;
+		return nullptr;
 	}
 
 	RInt64Func readInt64;
@@ -81,7 +81,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 	IO::EXEFile *exef;
 	if (hdr[4] != 1 && hdr[4] != 2)
 	{
-		return 0;
+		return nullptr;
 	}
 	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
 	if (hdr[4] == 1)

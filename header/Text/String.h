@@ -64,7 +64,7 @@ namespace Text
 		static NN<String> NewSubstr(Text::CStringNN s, UOSInt index, UOSInt maxLen);
 		static NN<String> NewEmpty() { return emptyStr.Clone(); }
 		static NN<String> OrEmpty(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret; return emptyStr.Clone(); }
-		static Optional<String> CopyOrNull(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret->Clone(); return 0; }
+		static Optional<String> CopyOrNull(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret->Clone(); return nullptr; }
 		static Text::CStringNN ToCStringOr(Optional<Text::String> s, Text::CStringNN cstr) { NN<Text::String> nns; if (s.SetTo(nns)) return nns->ToCString(); else return cstr; }
 		void Release();
 		NN<String> Clone() const;
@@ -82,6 +82,6 @@ namespace Text
 #define STR_REL(s) (s->Release())
 #define SCOPY_STRING(s) ((s)?(s)->Clone().Ptr():0)
 #define SDEL_STRING(s) if (s) { (s)->Release(); s = 0; }
-#define OPTSTR_DEL(s) {Optional<Text::String> os = (s); if (!os.IsNull()) {os.OrNull()->Release(); s = 0;}}
-#define OPTSTR_CSTR(s) (s.IsNull()?Text::CString(0, 0):s.OrNull()->ToCString())
+#define OPTSTR_DEL(s) {Optional<Text::String> os = (s); if (!os.IsNull()) {os.OrNull()->Release(); s = nullptr;}}
+#define OPTSTR_CSTR(s) (s.IsNull()?Text::CString(nullptr, 0):s.OrNull()->ToCString())
 #endif

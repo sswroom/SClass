@@ -1,8 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
-#include "Data/ArrayList.hpp"
-#include "Data/ArrayListInt32.h"
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "IO/Stream.h"
@@ -123,7 +121,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 	if (svr->svrSocv4.SetTo(soc))
 	{
 		svr->socf->DestroySocket(soc);
-		svr->svrSocv4 = 0;
+		svr->svrSocv4 = nullptr;
 	}
 	if (sthreadCnt > 0)
 	{
@@ -243,7 +241,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 	if (svr->svrSocv6.SetTo(soc))
 	{
 		svr->socf->DestroySocket(soc);
-		svr->svrSocv6 = 0;
+		svr->svrSocv6 = nullptr;
 	}
 	if (sthreadCnt > 0)
 	{
@@ -348,8 +346,8 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 	this->errorv6 = false;
 	this->port = port;
 	this->log = log;
-	this->svrSocv4 = 0;
-	this->svrSocv6 = 0;
+	this->svrSocv4 = nullptr;
+	this->svrSocv6 = nullptr;
 	this->logPrefix = Text::String::NewOrNull(logPrefix);
 	this->hdlr = {hdlr, userObj};
 	this->threadRunning = 0;
@@ -371,7 +369,7 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 		str = Text::StrInt32(str, this->port);
 		this->AddLogMsgC(CSTRP(buff, str), IO::LogHandler::LogLevel::Error);
 		this->socf->DestroySocket(soc);
-		this->svrSocv4 = 0;
+		this->svrSocv4 = nullptr;
 		this->errorv4 = true;
 	}
 	else if (!this->socf->SocketListen(soc))
@@ -380,7 +378,7 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 		str = Text::StrInt32(str, this->port);
 		this->AddLogMsgC(CSTRP(buff, str), IO::LogHandler::LogLevel::Error);
 		this->socf->DestroySocket(soc);
-		this->svrSocv4 = 0;
+		this->svrSocv4 = nullptr;
 		this->errorv4 = true;
 	}
 	else if (this->port == 0)
@@ -404,7 +402,7 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 
 	if (skipV6)
 	{
-		this->svrSocv6 = 0;
+		this->svrSocv6 = nullptr;
 		this->errorv6 = true;
 	}
 	else
@@ -421,7 +419,7 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 			str = Text::StrInt32(str, this->port);
 			this->AddLogMsgC(CSTRP(buff, str), IO::LogHandler::LogLevel::Error);
 			this->socf->DestroySocket(soc);
-			this->svrSocv6 = 0;
+			this->svrSocv6 = nullptr;
 			this->errorv6 = true;
 		}
 		else if (!this->socf->SocketListen(soc))
@@ -430,7 +428,7 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 			str = Text::StrInt32(str, this->port);
 			this->AddLogMsgC(CSTRP(buff, str), IO::LogHandler::LogLevel::Error);
 			this->socf->DestroySocket(soc);
-			this->svrSocv6 = 0;
+			this->svrSocv6 = nullptr;
 			this->errorv6 = true;
 		}
 	}
@@ -497,8 +495,8 @@ void Net::TCPServer::Close()
 		this->socsEvt.Set();
 		this->errorv4 = true;
 		this->errorv6 = true;
-		this->svrSocv4 = 0;
-		this->svrSocv6 = 0;
+		this->svrSocv4 = nullptr;
+		this->svrSocv6 = nullptr;
 	}
 }
 

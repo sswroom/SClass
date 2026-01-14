@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Net/HTTPClient.h"
@@ -24,11 +23,11 @@ Net::HTTPClient::HTTPClient(NN<Net::TCPClientFactory> clif, Bool kaConn) : IO::S
 	this->contLeng = 0;
 	this->respStatus = Net::WebStatus::SC_UNKNOWN;
 	this->url = Text::String::NewEmpty();
-	this->sbForm = 0;
+	this->sbForm = nullptr;
 	this->hdrLen = 0;
 	this->totalUpload = 0;
 	this->totalDownload = 0;
-	this->forceHost = 0;
+	this->forceHost = nullptr;
 	this->kaConn = kaConn;
 	this->svrAddr.addrType = Net::AddrType::Unknown;
 }
@@ -141,7 +140,7 @@ UnsafeArrayOpt<UTF8Char> Net::HTTPClient::GetRespHeader(UOSInt index, UnsafeArra
 	if (this->headers.GetItem(index).SetTo(s))
 		return s->ConcatTo(buff);
 	else
-		return 0;
+		return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Net::HTTPClient::GetRespHeader(Text::CStringNN name, UnsafeArray<UTF8Char> valueBuff)
@@ -151,7 +150,7 @@ UnsafeArrayOpt<UTF8Char> Net::HTTPClient::GetRespHeader(Text::CStringNN name, Un
 	{
 		return v.ConcatTo(valueBuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Net::HTTPClient::GetRespHeader(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb)
@@ -321,7 +320,7 @@ Optional<Text::String> Net::HTTPClient::GetURL()
 	if (this->url->leng > 0)
 		return this->url;
 	else
-		return 0;
+		return nullptr;
 }
 
 Net::WebStatus::StatusCode Net::HTTPClient::GetRespStatus()

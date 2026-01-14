@@ -3,15 +3,15 @@
 #include "Text/MyString.h"
 #include "Data/ArrayListStrUTF8.h"
 
-Data::ArrayListStrUTF8::ArrayListStrUTF8() : Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>()
+Data::ArrayListStrUTF8::ArrayListStrUTF8() : Data::SortableArrayListObj<UnsafeArrayOpt<const UTF8Char>>()
 {
 }
 
-Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>(capacity)
+Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayListObj<UnsafeArrayOpt<const UTF8Char>>(capacity)
 {
 }
 
-NN<Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> Data::ArrayListStrUTF8::Clone() const
+NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> Data::ArrayListStrUTF8::Clone() const
 {
 	NN<Data::ArrayListStrUTF8> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrUTF8(this->capacity));

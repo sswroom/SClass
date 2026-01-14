@@ -1,7 +1,7 @@
 #ifndef _SM_IO_DEVICE_DENSOWAVEQB30
 #define _SM_IO_DEVICE_DENSOWAVEQB30
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "IO/CodeScanner.h"
 #include "IO/Stream.h"
 #include "Sync/Mutex.h"
@@ -46,7 +46,7 @@ namespace IO
 			virtual Bool ResetDefault();
 			virtual void HandleCodeScanned(ScanHandler hdlr, AnyType userObj);
 
-			virtual UOSInt GetCommandList(NN<Data::ArrayList<DeviceCommand>> cmdList);
+			virtual UOSInt GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList);
 			virtual Text::CString GetCommandName(DeviceCommand dcmd);
 			virtual CommandType GetCommandParamType(DeviceCommand dcmd, OutParam<Int32> minVal, OutParam<Int32> maxVal);
 			virtual Text::CString GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal);

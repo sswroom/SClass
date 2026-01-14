@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SOCKETFACTORY
 #define _SM_NET_SOCKETFACTORY
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/DataArray.hpp"
 #include "Data/Duration.h"
 #include "IO/LogTool.h"
@@ -209,7 +209,7 @@ namespace Net
 
 		virtual Bool DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr) = 0;
 		virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr) = 0;
-		virtual UOSInt GetDNSList(NN<Data::ArrayList<UInt32>> dnsList) = 0;
+		virtual UOSInt GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList) = 0;
 		virtual Bool LoadHosts(NN<Net::DNSHandler> dnsHdlr) = 0;
 
 		virtual Bool ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4) = 0;

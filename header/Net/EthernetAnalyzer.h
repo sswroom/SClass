@@ -1,10 +1,11 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
 #include "AnyType.h"
-#include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListICaseStringNN.h"
+#include "Data/ArrayListStringNN.h"
+#include "Data/ArrayListT.hpp"
 #include "Data/CallbackStorage.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Data/FixedCircularBuff.hpp"
 #include "Data/ICaseStringMapNN.hpp"
 #include "IO/PacketAnalyse.h"
@@ -251,7 +252,7 @@ namespace Net
 		NN<const Data::ReadingListNN<IPLogInfo>> IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
-		UOSInt TCP4SYNGetList(NN<Data::ArrayList<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
+		UOSInt TCP4SYNGetList(NN<Data::ArrayListT<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
 		NN<Data::FastMapNN<UInt32, BandwidthStat>> BandwidthGetAll(NN<Sync::MutexUsage> mutUsage);
 
 		Bool PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid

@@ -47,9 +47,9 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN nameList;
-			Data::ArrayList<Double> xList;
-			Data::ArrayList<Double> yList;
-			Data::ArrayList<Double> zList;
+			Data::ArrayListNative<Double> xList;
+			Data::ArrayListNative<Double> yList;
+			Data::ArrayListNative<Double> zList;
 			Bool inited;
 
 			static void __stdcall OnSrcRadChanged(AnyType userObj, Bool newValue);

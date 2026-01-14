@@ -1,7 +1,7 @@
 #ifndef _SM_UI_CLIPBOARD
 #define _SM_UI_CLIPBOARD
 #include "Handles.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ByteBuffer.h"
 #include "Text/String.h"
@@ -27,7 +27,7 @@ namespace UI
 		Clipboard(Optional<ControlHandle> hwnd);
 		~Clipboard();
 
-		UOSInt GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes);
+		UOSInt GetDataFormats(NN<Data::ArrayListNative<UInt32>> dataTypes);
 		Bool GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb);
 		Optional<Data::ByteBuffer> GetDataRAW(UInt32 fmtId);
 		FilePasteType GetDataFiles(NN<Data::ArrayListStringNN> fileNames);

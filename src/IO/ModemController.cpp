@@ -59,13 +59,13 @@ UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommand(UnsafeArray<UTF8
 		else
 		{
 			ClearCmdResult();
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
 		ClearCmdResult();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -123,7 +123,7 @@ UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommandDirect(UnsafeArra
 				if (val->Equals(UTF8STRC("ERROR")))
 				{
 					ClearCmdResult();
-					return 0;
+					return nullptr;
 				}
 				else if (val->v[0] != 0)
 				{
@@ -136,7 +136,7 @@ UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommandDirect(UnsafeArra
 		j++;
 	}
 	ClearCmdResult();
-	return 0;
+	return nullptr;
 }
 
 Bool IO::ModemController::SendStringListCommand(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)

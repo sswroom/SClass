@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_NFDUMPFILEANALYSE
 #define _SM_IO_FILEANALYSE_NFDUMPFILEANALYSE
-#include "Data/FastMap.hpp"
+#include "Data/FastMapObj.hpp"
 #include "Data/SyncArrayListNN.hpp"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
@@ -23,7 +23,7 @@ namespace IO
 		private:
 			Optional<IO::StreamData> fd;
 			Data::SyncArrayListNN<PackInfo> packs;
-			Data::FastMap<Int32, UnsafeArrayOpt<UInt8>> extMap;
+			Data::FastMapObj<Int32, UnsafeArrayOpt<UInt8>> extMap;
 			Bool hasLZODecomp;
 
 			Bool pauseParsing;

@@ -130,7 +130,7 @@ UnsafeArrayOpt<UTF8Char> Media::V4LVideoCapture::GetSourceName(UnsafeArray<UTF8C
 	else
 	{
 		*buff = 0;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -509,7 +509,7 @@ Media::V4LVideoCaptureMgr::~V4LVideoCaptureMgr()
 {
 }
 
-UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(NN<Data::ArrayList<UInt32>> devList)
+UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNative<UInt32>> devList)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/dev/"));

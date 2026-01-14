@@ -229,7 +229,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 			threads[i].Delete();
 		}
 		MemFreeArr(threads);
-		this->threads = 0;
+		this->threads = nullptr;
 		this->threadCnt = 0;
 	}
 }
@@ -251,7 +251,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->clif = core->GetTCPClientFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
-	this->threads = 0;
+	this->threads = nullptr;
 	this->connCurrIndex = 0;
 	this->connLeftCnt = 0;
 	this->threadCnt = 0;

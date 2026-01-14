@@ -14,7 +14,7 @@ namespace Net
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Data::ArrayListNN<JMeterListener> listeners;
-			Data::ArrayList<AnyType> listenerData;
+			Data::ArrayListObj<AnyType> listenerData;
 
 		public:
 			JMeterIteration(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : listeners(2), listenerData(2) { this->clif = clif; this->ssl = ssl; }

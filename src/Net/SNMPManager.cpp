@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/ByteTool_C.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "Net/ASN1Util.h"
 #include "Net/SNMPManager.h"
 #include "Sync/MutexUsage.h"
@@ -102,7 +102,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 {
 	Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 	Net::SNMPUtil::ErrorStatus err;
-	Optional<Net::SNMPManager::AgentInfo> optagent = 0;
+	Optional<Net::SNMPManager::AgentInfo> optagent = nullptr;
 	NN<Net::SNMPUtil::BindingItem> item;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -128,12 +128,12 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			agent->community = community->Clone();
 			agent->descr = Text::String::New(item->valBuff, item->valLen);
 			agent->objIdLen = 0;
-			agent->name = 0;
-			agent->location = 0;
-			agent->contact = 0;
-			agent->model = 0;
-			agent->vendor = 0;
-			agent->cpuName = 0;
+			agent->name = nullptr;
+			agent->location = nullptr;
+			agent->contact = nullptr;
+			agent->model = nullptr;
+			agent->vendor = nullptr;
+			agent->cpuName = nullptr;
 			MemClear(agent->mac, 6);
 			Sync::MutexUsage mutUsage(this->agentMut);
 			this->agentList.Add(agent);
@@ -912,7 +912,7 @@ void Net::SNMPManager::Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor
 {
 	cliId.Set(Agent2CliId(agent));
 
-	Data::FastMap<UInt32, Int32> readingIdMap;
+	Data::FastMapNative<UInt32, Int32> readingIdMap;
 	Int32 currId;
 	NN<ReadingInfo> reading;
 	Data::DateTime dt;

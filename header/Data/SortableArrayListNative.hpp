@@ -1,16 +1,16 @@
 #ifndef _SM_DATA_SORTABLEARRAYLISTNATIVE
 #define _SM_DATA_SORTABLEARRAYLISTNATIVE
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/Comparator.hpp"
 #include "Data/Sort/ArtificialQuickSortCmp_C.h"
 
 namespace Data
 {
-	template <class T> class SortableArrayListNative : public Data::ArrayList<T>, public Data::Comparator<T>
+	template <class T> class SortableArrayListNative : public Data::ArrayListNative<T>, public Data::Comparator<T>
 	{
 	public:
-		SortableArrayListNative() : ArrayList<T>() {};
-		SortableArrayListNative(UOSInt capacity) : ArrayList<T>() {};
+		SortableArrayListNative() : ArrayListNative<T>() {};
+		SortableArrayListNative(UOSInt capacity) : ArrayListNative<T>() {};
 		virtual ~SortableArrayListNative() {};
 
 		UOSInt SortedInsert(T val);

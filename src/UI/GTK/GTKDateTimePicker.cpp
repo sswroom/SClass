@@ -5,7 +5,7 @@
 
 UI::GTK::GTKDateTimePicker::GTKDateTimePicker(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIDateTimePicker(ui, parent)
 {
-	this->format = 0;
+	this->format = nullptr;
 	this->widget = gtk_entry_new();
 	gtk_widget_set_vexpand(this->widget, false);
 	gtk_widget_set_hexpand(this->widget, false);

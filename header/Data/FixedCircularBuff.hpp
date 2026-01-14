@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_FIXEDCIRCULARBUFF
 #define _SM_DATA_FIXEDCIRCULARBUFF
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 
 namespace Data
 {
@@ -25,7 +25,7 @@ namespace Data
 		UOSInt GetCount() const;
 		UOSInt IndexOf(T item) const;
 		UOSInt GetPutIndex() const;
-		UOSInt GetItems(NN<Data::ArrayList<T>> list) const;
+		UOSInt GetItems(NN<Data::ArrayListNative<T>> list) const;
 	};
 }
 
@@ -135,7 +135,7 @@ template<typename T> UOSInt Data::FixedCircularBuff<T>::GetPutIndex() const
 	return this->putIndex;
 }
 
-template<typename T> UOSInt Data::FixedCircularBuff<T>::GetItems(NN<Data::ArrayList<T>> list) const
+template<typename T> UOSInt Data::FixedCircularBuff<T>::GetItems(NN<Data::ArrayListNative<T>> list) const
 {
 	UOSInt i;
 	UOSInt j;

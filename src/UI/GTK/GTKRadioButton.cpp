@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
-#include "Data/ArrayList.hpp"
 #include "UI/GTK/GTKRadioButton.h"
 
 void UI::GTK::GTKRadioButton::SignalToggled(GtkRadioButton *btn, gpointer data)

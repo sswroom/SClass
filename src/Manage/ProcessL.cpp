@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/ByteTool_C.h"
-#include "Data/FastMap.hpp"
+#include "Data/ArrayListObj.hpp"
+#include "Data/FastMapObj.hpp"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Manage/Process.h"
@@ -445,7 +446,7 @@ Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
 	return false;
 }
 
-UOSInt Manage::Process::GetThreadIds(NN<Data::ArrayList<UInt32>> threadList)
+UOSInt Manage::Process::GetThreadIds(NN<Data::ArrayListNative<UInt32>> threadList)
 {
 	return 0;
 }
@@ -543,8 +544,8 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sarr[6];
 		UnsafeArray<UTF8Char> sarr2[2];
-		Data::FastMap<Int32, ModuleInfoData*> dataMap;
-		ModuleInfoData *data;
+		Data::FastMapObj<Int32, Optional<ModuleInfoData>> dataMap;
+		NN<ModuleInfoData> data;
 		NN<Manage::ModuleInfo> mod;
 		UOSInt ret = 0;
 		UOSInt i;
@@ -566,14 +567,13 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 						{
 							UOSInt startAddr = (UOSInt)Text::StrHex2Int64C(UnsafeArray<const UTF8Char>(sarr2[0]));
 							UOSInt endAddr = (UOSInt)Text::StrHex2Int64C(UnsafeArray<const UTF8Char>(sarr2[1]));
-							data = dataMap.Get(inode);
-							if (data)
+							if (dataMap.Get(inode).SetTo(data))
 							{
 								data->size += (UOSInt)(endAddr - startAddr);
 							}
 							else
 							{
-								data = MemAlloc(ModuleInfoData, 1);
+								data = MemAllocNN(ModuleInfoData);
 								data->fileName = Text::StrCopyNew(UnsafeArray<const UInt8>(sarr[5])).Ptr();
 								data->addr = startAddr;
 								data->size = (UOSInt)(endAddr - startAddr);
@@ -590,12 +590,14 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 		ret = dataMap.GetCount();
 		while (i < ret)
 		{
-			data = dataMap.GetItem(i);
+			if (dataMap.GetItem(i).SetTo(data))
+			{
+				NEW_CLASSNN(mod, Manage::ModuleInfo(0, data.Ptr()));
+				modList->Add(mod);
+				Text::StrDelNew(data->fileName);
+				MemFreeNN(data);
+			}
 
-			NEW_CLASSNN(mod, Manage::ModuleInfo(0, data));
-			modList->Add(mod);
-			Text::StrDelNew(data->fileName);
-			MemFree(data);
 			i++;
 		}
 		return ret;
@@ -629,7 +631,7 @@ UOSInt Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> thr
 	return retCnt;
 }
 
-UOSInt Manage::Process::GetHeapLists(NN<Data::ArrayList<UInt32>> heapList)
+UOSInt Manage::Process::GetHeapLists(NN<Data::ArrayListNative<UInt32>> heapList)
 {
 	return 0;
 }
@@ -651,7 +653,7 @@ Data::Timestamp Manage::Process::GetStartTime()
 	return IO::Path::GetModifyTime(sbuff);
 }
 
-UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
+UOSInt Manage::Process::GetHandles(NN<Data::ArrayListNative<HandleInfo>> handleList)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -958,7 +960,7 @@ Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CStri
 	FindProcSess *sess;
 	if (!IO::Path::FindFile(CSTR("/proc/*")).SetTo(ffsess))
 	{
-		return 0;
+		return nullptr;
 	}
 	sess = MemAlloc(FindProcSess, 1);
 	sess->findFileSess = ffsess;
@@ -972,7 +974,7 @@ Optional<Manage::Process::FindProcSess> Manage::Process::FindProcessW(UnsafeArra
 	FindProcSess *sess;
 	if (!IO::Path::FindFile(CSTR("/proc/*")).SetTo(ffsess))
 	{
-		return 0;
+		return nullptr;
 	}
 	sess = MemAlloc(FindProcSess, 1);
 	sess->findFileSess = ffsess;
@@ -1045,7 +1047,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, NN<Manage::Process::FindProcSess> fpsess, NN<Manage::Process::ProcessInfo> info)
@@ -1113,7 +1115,7 @@ UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> proce
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void Manage::Process::FindProcessClose(NN<Manage::Process::FindProcSess> fpsess)
@@ -1128,7 +1130,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
 	UnsafeArray<const UTF8Char> cptr = cmd.v;
-	Data::ArrayList<UTF8Char *> args;
+	Data::ArrayListObj<UTF8Char *> args;
 	Bool argStart = false;
 
 	UOSInt cmdLen = cmd.leng;

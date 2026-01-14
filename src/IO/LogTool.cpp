@@ -1,8 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
-#include "Data/ArrayList.hpp"
-#include "Data/ArrayListInt32.h"
 #include "IO/BuildTime.h"
 #include "IO/FileLog.h"
 #include "IO/FileStream.h"

@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 		me->lvValues->ClearItems();
 		cli->Unbind();
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->btnConnect->SetText(CSTR("Connect"));
 		return;
 	}
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 	if (!succ)
 	{
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->ui->ShowMsgOK(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 	if (!succ)
 	{
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->ui->ShowMsgOK(CSTR("Error in searching for <ROOT> in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 	{
 		Net::LDAPClient::SearchResultsFree(results);
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->ui->ShowMsgOK(CSTR("Unsupported <ROOT> information in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 	{
 		Net::LDAPClient::SearchResultsFree(results);
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->ui->ShowMsgOK(CSTR("rootDomainNamingContext not found in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
@@ -345,7 +345,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(Optional<UI::GUIClient
 	this->lvValues->AddColumn(CSTR("Type"), 200);
 	this->lvValues->AddColumn(CSTR("Value"), 500);
 
-	this->cli = 0;
+	this->cli = nullptr;
 }
 
 SSWR::AVIRead::AVIRLDAPExplorerForm::~AVIRLDAPExplorerForm()

@@ -142,7 +142,7 @@ void Data::ArrayListStringNN::FreeAll()
 	this->objCnt = 0;
 }
 
-void Data::ArrayListStringNN::ValueCounts(NN<Data::FastStringMap<UInt32>> counts) const
+void Data::ArrayListStringNN::ValueCounts(NN<Data::FastStringMapNative<UInt32>> counts) const
 {
 	UInt32 cnt;
 	NN<Text::String> s;

@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Math/Math_C.h"
 #include "UI/GTK/GTKTrackBar.h"
 

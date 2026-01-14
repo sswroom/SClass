@@ -65,7 +65,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Data::ArrayListICaseString dirArr;
 	Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord> strArr;
 
-	GetMapDirs(env, &dirArr, 0);
+	GetMapDirs(env, &dirArr, nullptr);
 	i = env->GetImageFileCnt();
 	while (i-- > 0)
 	{
@@ -101,7 +101,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	*(Int32*)&buff[32] = (Int32)env->GetImageFileCnt();
 	*(Int32*)&buff[36] = (Int32)env->GetFontStyleCount();
 	*(Int32*)&buff[40] = (Int32)env->GetLineStyleCount();
-	*(Int32*)&buff[44] = (Int32)env->GetItemCount(0);
+	*(Int32*)&buff[44] = (Int32)env->GetItemCount(nullptr);
 	*(Int32*)&buff[48] = (Int32)env->GetDefLineStyle();
 	*(Int32*)&buff[52] = (Int32)env->GetDefFontStyle();
 
@@ -228,7 +228,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i++;
 	}
 
-	WriteGroupItems(env, 0, &stmPos, stm, strArr, &dirArr);
+	WriteGroupItems(env, nullptr, &stmPos, stm, strArr, &dirArr);
 
 	tmpArr = strArr.GetValues();
 	j = tmpArr->GetCount();

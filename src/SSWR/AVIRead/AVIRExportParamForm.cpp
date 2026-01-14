@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 		}
 		else if (pi.paramType == ::IO::FileExporter::ParamType::STRINGUTF8)
 		{
-			this->ctrls[i] = 0;
+			this->ctrls[i] = nullptr;
 		}
 		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 		}
 		else
 		{
-			this->ctrls[i] = 0;
+			this->ctrls[i] = nullptr;
 		}
 		i++;
 	}

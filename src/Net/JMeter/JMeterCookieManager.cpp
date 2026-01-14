@@ -230,11 +230,11 @@ void Net::JMeter::JMeterCookieManager::HTTPEnd(NN<const JMeterIteration> iter, A
 								cookie->domain = Text::String::NewP(domain, domainEnd);
 								if (path[0])
 								{
-									cookie->path = Text::String::New(path, (UOSInt)(pathEnd - path)).Ptr();
+									cookie->path = Text::String::New(path, (UOSInt)(pathEnd - path));
 								}
 								else
 								{
-									cookie->path = 0;
+									cookie->path = nullptr;
 								}
 								cookie->secure = secure;
 								cookie->expireTime = expiryTime;

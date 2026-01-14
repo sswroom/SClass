@@ -193,7 +193,7 @@ namespace Data
 	template <class T> UnsafeArrayOpt<T> ArrayListArr<T>::RemoveAt(UOSInt index)
 	{
 		if (index >= this->objCnt)
-			return 0;
+			return nullptr;
 		UOSInt i = this->objCnt - index - 1;
 		UnsafeArray<T> o = arr[index];
 		if (i > 0)
@@ -306,7 +306,7 @@ namespace Data
 	template <class T> UnsafeArrayOpt<T> ArrayListArr<T>::GetItem(UOSInt index) const
 	{
 		if (index >= this->objCnt || index < 0)
-			return 0;
+			return nullptr;
 		return this->arr[index];
 	}
 

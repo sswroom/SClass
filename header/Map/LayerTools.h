@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_LAYERTOOLS
 #define _SM_MAP_LAYERTOOLS
+#include "Data/ArrayListNN.hpp"
 #include "Map/VectorLayer.h"
-#include "Data/ArrayList.hpp"
 
 namespace Map
 {

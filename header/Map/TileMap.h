@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_TILEMAP
 #define _SM_MAP_TILEMAP
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
+#include "Data/ArrayListT.hpp"
 #include "Math/CoordinateSystem.h"
 #include "Math/Size2D.h"
 #include "Math/Geometry/Vector2D.h"
@@ -50,18 +51,18 @@ namespace Map
 		virtual UOSInt GetTileSize() const = 0;
 		virtual ImageType GetImageType() const = 0;
 		virtual Bool CanQuery() const { return false; };
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const { return false; };
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const { return false; };
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi) {};
 
-		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids) = 0;
+		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids) = 0;
 		virtual Optional<Media::ImageList> LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly) = 0;
 		virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId) = 0;
 		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId) = 0;
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it) = 0;
 
 		virtual UOSInt GetScreenObjCnt() { return 0; };
-		virtual Optional<Math::Geometry::Vector2D> CreateScreenObjVector(UOSInt index) { return 0; };
-		virtual UnsafeArrayOpt<UTF8Char> GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UOSInt index) { return 0; };
+		virtual Optional<Math::Geometry::Vector2D> CreateScreenObjVector(UOSInt index) { return nullptr; };
+		virtual UnsafeArrayOpt<UTF8Char> GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UOSInt index) { return nullptr; };
 		virtual Bool GetScreenObjURL(NN<Text::StringBuilderUTF8> sb, UOSInt index) {return false;};
 	};
 }

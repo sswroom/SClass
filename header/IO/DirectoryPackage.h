@@ -2,6 +2,7 @@
 #define _SM_IO_DIRECTORYPACKAGE
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListNN.hpp"
+#include "Data/ArrayListT.hpp"
 #include "Data/ArrayListUInt64.h"
 #include "IO/PackageFile.h"
 #include "Text/CString.h"
@@ -44,7 +45,7 @@ namespace IO
 			}
 		};
 	private:
-		Data::ArrayList<FileItem> files;
+		Data::ArrayListT<FileItem> files;
 		NN<Text::String> dirName;
 		Optional<IO::PackageFile> parent;
 

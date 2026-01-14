@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListArr.hpp"
-#include "Data/FastStringMap.hpp"
+#include "Data/ArrayListT.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Data/StringUTF8Map.hpp"
 #include "Exporter/XLSXExporter.h"
 #include "IO/BuildTime.h"
@@ -80,7 +81,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	UOSInt drawingCnt = 0;
 	UOSInt chartCnt = 0;
 	Data::ArrayListNN<Text::String> sharedStrings;
-	Data::FastStringMap<UOSInt> stringMap;
+	Data::FastStringMapNative<UOSInt> stringMap;
 	ts = Data::Timestamp::UtcNow();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm, IO::ZIPOS::MSDOS));
 
@@ -167,7 +168,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	{
 		Data::StringUTF8Map<UOSInt> numFmtMap;
 		Data::ArrayListArr<const UTF8Char> numFmts;
-		Data::ArrayList<BorderInfo*> borders;
+		Data::ArrayListObj<BorderInfo*> borders;
 		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
 		borderNone.borderType = BorderType::None;
 		borderNone.borderColor = 0;
@@ -427,7 +428,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			}
 			k++;
 		}
-		Data::ArrayList<LinkInfo*> links;
+		Data::ArrayListObj<LinkInfo*> links;
 		LinkInfo *link;
 
 		sb.ClearStr();
@@ -542,7 +543,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		{
 			sb.AppendC(UTF8STRC("</cols>"));
 		}
-		Data::ArrayList<Math::RectArea<UOSInt>> mergeList;
+		Data::ArrayListT<Math::RectArea<UOSInt>> mergeList;
 		k = 0;
 		l = sheet->GetCount();
 		if (l > 0)
@@ -1162,7 +1163,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	sb.AppendC(UTF8STRC("</dc:creator>"));
 	sb.AppendC(UTF8STRC("<dc:description>"));
-	csptr = 0;
+	csptr = nullptr;
 	if (csptr.SetTo(nncsptr))
 	{
 		s = Text::XML::ToNewXMLText(nncsptr);
@@ -1204,7 +1205,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendU32(1);
 	sb.AppendC(UTF8STRC("</cp:revision>"));
 	sb.AppendC(UTF8STRC("<dc:subject>"));
-	csptr = 0;
+	csptr = nullptr;
 	if (csptr.SetTo(nncsptr))
 	{
 		s = Text::XML::ToNewXMLText(nncsptr);
@@ -1213,7 +1214,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	sb.AppendC(UTF8STRC("</dc:subject>"));
 	sb.AppendC(UTF8STRC("<dc:title>"));
-	csptr = 0;
+	csptr = nullptr;
 	if (csptr.SetTo(nncsptr))
 	{
 		s = Text::XML::ToNewXMLText(nncsptr);
@@ -1649,7 +1650,7 @@ void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::
 	}
 }
 
-void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayList<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap)
+void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap)
 {
 	UOSInt k;
 	UnsafeArray<const UTF8Char> csptr;

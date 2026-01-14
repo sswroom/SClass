@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListString.h"
 #include "Data/ByteBuffer.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/HTTPClient.h"
@@ -39,7 +39,7 @@ Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::CreateControl(Net::SNS::SNS
 	if (ctrl && ctrl->IsError())
 	{
 		DEL_CLASS(ctrl);
-		return 0;
+		return nullptr;
 	}
 	return ctrl;
 }
@@ -380,7 +380,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 	NN<Net::SNS::SNSManager::ChannelData> channel;
 	me->threadRunning = true;
 	{
-		Data::FastMap<Int32, Int32> cntMap;
+		Data::FastMapNative<Int32, Int32> cntMap;
 		while (!me->threadToStop)
 		{
 			t = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -525,7 +525,7 @@ Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::AddChannel(Net::SNS::SNSCon
 		ctrl = this->channelList.GetItemNoCheck(i)->ctrl;
 		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId.v, channelId.leng))
 		{
-			return 0;
+			return nullptr;
 		}
 		i++;
 	}
@@ -555,7 +555,7 @@ Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::AddChannel(Net::SNS::SNSCon
 		mutUsage.EndUse();
 		return ctrl;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Net::SNS::SNSManager::Use(NN<Sync::MutexUsage> mutUsage)
@@ -578,5 +578,5 @@ Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::GetItem(UOSInt index) const
 	NN<ChannelData> data;
 	if (this->channelList.GetItem(index).SetTo(data))
 		return data->ctrl;
-	return 0;
+	return nullptr;
 }

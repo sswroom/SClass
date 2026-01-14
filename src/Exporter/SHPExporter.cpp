@@ -214,7 +214,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				nPoint = pl->GetPointCount();
 				points = MemAllocA(Math::Coord2DDbl, nPoint);
-				pl->FillPointOfstList(points, ptOfsts, 0, 0);
+				pl->FillPointOfstList(points, ptOfsts, nullptr, nullptr);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
 
@@ -280,7 +280,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				nPoint = pl->GetPointCount();
 				points = MemAllocA(Math::Coord2DDbl, nPoint);
 				alts = MemAlloc(Double, nPoint);
-				pl->FillPointOfstList(points, ptOfsts, alts, 0);
+				pl->FillPointOfstList(points, ptOfsts, alts, nullptr);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
 
@@ -362,7 +362,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				nPoint = pg->GetPointCount();
 				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				points = MemAllocA(Math::Coord2DDbl, nPoint);
-				pg->FillPointOfstList(points, ptOfsts, 0, 0);
+				pg->FillPointOfstList(points, ptOfsts, nullptr, nullptr);
 				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
 				WriteUInt32(&nvals[4], (UInt32)nPoint);
 
@@ -430,7 +430,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		IO::MemoryStream mstm;
 		Exporter::DBFExporter exporter;
 		exporter.SetCodePage(this->codePage);
-		exporter.ExportFile(mstm, CSTRP(fileName2, sptr), layer, 0);
+		exporter.ExportFile(mstm, CSTRP(fileName2, sptr), layer, nullptr);
 		IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		mstm.SeekFromBeginning(0);
 		mstm.ReadToEnd(fs, 1048576);

@@ -7,17 +7,19 @@ DB::PageRequest::PageRequest(UOSInt pageNum, UOSInt pageSize)
 {
 	this->pageNum = pageNum;
 	this->pageSize = pageSize;
-	this->sortDescList = 0;
-	this->sortList = 0;
+	this->sortDescList = nullptr;
+	this->sortList = nullptr;
 }
 
 DB::PageRequest::~PageRequest()
 {
-	if (this->sortList)
+	NN<Data::ArrayListArr<const UTF8Char>> sortList;
+	NN<Data::ArrayListNative<Bool>> sortDescList;
+	if (this->sortList.SetTo(sortList) && this->sortDescList.SetTo(sortDescList))
 	{
-		LIST_FREE_FUNC(this->sortList, Text::StrDelNew);
-		DEL_CLASS(this->sortList);
-		DEL_CLASS(this->sortDescList);
+		NNLIST_CALL_FUNC(sortList, Text::StrDelNew);
+		this->sortList.Delete();
+		this->sortDescList.Delete();
 	}
 }
 
@@ -33,30 +35,45 @@ UOSInt DB::PageRequest::GetPageSize()
 
 void DB::PageRequest::Sort(UnsafeArray<const UTF8Char> colName, Bool descending)
 {
-	if (this->sortList == 0)
+	NN<Data::ArrayListArr<const UTF8Char>> sortList;
+	NN<Data::ArrayListNative<Bool>> sortDescList;
+	if (!this->sortList.SetTo(sortList) || !this->sortDescList.SetTo(sortDescList))
 	{
-		NEW_CLASS(this->sortList, Data::ArrayList<const UTF8Char*>());
-		NEW_CLASS(this->sortDescList, Data::ArrayList<Bool>());
+		NEW_CLASSNN(sortList, Data::ArrayListArr<const UTF8Char>());
+		NEW_CLASSNN(sortDescList, Data::ArrayListNative<Bool>());
+		this->sortList = sortList;
+		this->sortDescList = sortDescList;
 	}
-	this->sortList->Add(Text::StrCopyNew(colName).Ptr());
-	this->sortDescList->Add(descending);
+	sortList->Add(Text::StrCopyNew(colName).Ptr());
+	sortDescList->Add(descending);
 }
 
 UOSInt DB::PageRequest::GetSortingCount()
 {
-	if (this->sortList == 0)
+	NN<Data::ArrayListArr<const UTF8Char>> sortList;
+	if (!this->sortList.SetTo(sortList))
 	{
 		return 0;
 	}
-	return this->sortList->GetCount();
+	return sortList->GetCount();
 }
 
-const UTF8Char *DB::PageRequest::GetSortColumn(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> DB::PageRequest::GetSortColumn(UOSInt index)
 {
-	return this->sortList->GetItem(index);
+	NN<Data::ArrayListArr<const UTF8Char>> sortList;
+	if (!this->sortList.SetTo(sortList))
+	{
+		return nullptr;
+	}
+	return sortList->GetItem(index);
 }
 
 Bool DB::PageRequest::IsSortDesc(UOSInt index)
 {
-	return this->sortDescList->GetItem(index);
+	NN<Data::ArrayListNative<Bool>> sortDescList;
+	if (!this->sortDescList.SetTo(sortDescList))
+	{
+		return false;
+	}
+	return sortDescList->GetItem(index);
 }

@@ -51,10 +51,10 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadInt32(&hdr[0]) != 0x4643534d || ReadInt32(&hdr[4]) != 0 || ReadInt32(&hdr[12]) != 0 || ReadInt32(&hdr[20]) != 0)
-		return 0;
+		return nullptr;
 	if (ReadUInt32(&hdr[4]) != fd->GetDataSize())
-		return 0;
-	return 0;
+		return nullptr;
+	return nullptr;
 	/////////////////////////////////////
 //	coffFiles = ReadUInt32(&hdrBuff[16]);
 //	cFolders = ReadUInt16(&hdrBuff[26]);
@@ -63,25 +63,25 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 	dataOfst = ReadUInt32(&hdr[4]);
 	recSize = ReadUInt32(&hdr[8]);
 	if (recSize % 40 != 0 || dataOfst > fd->GetDataSize())
-		return 0;
+		return nullptr;
 	if (dataOfst - recSize != 273)
-		return 0;
+		return nullptr;
 	Text::Encoding enc(932);
 	sptr = enc.UTF8FromBytes(fileName, &hdr[12], 255, 0);
 	if (!fd->GetFullName()->EndsWith(fileName, (UOSInt)(sptr - fileName)))
 	{
-		return 0;
+		return nullptr;
 	}
 	recCnt = recSize / 40;
 	if (recCnt == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(273, recSize, recBuff) != recSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -97,7 +97,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 		if (fileOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);
 		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);

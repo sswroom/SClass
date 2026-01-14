@@ -15,7 +15,7 @@
 Parser::FileParser::MDBParser::MDBParser()
 {
 	this->codePage = 0;
-	this->log = 0;
+	this->log = nullptr;
 }
 
 Parser::FileParser::MDBParser::~MDBParser()
@@ -58,10 +58,10 @@ IO::ParserType Parser::FileParser::MDBParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->IsFullFile())
-		return 0;
+		return nullptr;
 	if (ReadInt32(&hdr[0]) != 0x100)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (Text::StrEqualsC(&hdr[4], 15, UTF8STRC("Standard Jet DB")))
 	{
@@ -73,20 +73,20 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 #ifndef _WIN32_WCE
 	NN<DB::MDBFileConn> mdb;
 	NN<IO::LogTool> log;
 	if (!this->log.SetTo(log))
 	{
-		return 0;
+		return nullptr;
 	}
 	NEW_CLASSNN(mdb, DB::MDBFileConn(fd->GetFullFileName()->ToCString(), log, this->codePage, 0, 0));
 	if (mdb->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		mdb.Delete();
-		return 0;
+		return nullptr;
 	}
 
 	Data::ArrayListStringNN tableNames;
@@ -106,7 +106,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		{
 			if (tableName->leng > 0 && tableName->EqualsICase(UTF8STRC("GDB_SpatialRefs")))
 				hasSpRef = true;
-			if (mdb->QueryTableData(nullptr, tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(rdr))
+			if (mdb->QueryTableData(nullptr, tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(rdr))
 			{
 				if (rdr->ColCount() >= 2)
 				{
@@ -139,7 +139,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	if (shpTables.GetCount())
 	{
 		Map::MapLayerCollection *lyrColl;
-		Optional<Math::CoordinateSystem> csys = 0;
+		Optional<Math::CoordinateSystem> csys = nullptr;
 		NN<Math::CoordinateSystem> nncsys;
 		NN<DB::SharedDBConn> conn;
 		NN<Map::ESRI::ESRIMDBLayer> lyr;
@@ -149,7 +149,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		if (hasSpRef && this->prjParser.SetTo(prjParser))
 		{
 			NN<DB::DBReader> rdr;
-			if (mdb->QueryTableData(nullptr, CSTR("GDB_SpatialRefs"), 0, 0, 0, nullptr, 0).SetTo(rdr))
+			if (mdb->QueryTableData(nullptr, CSTR("GDB_SpatialRefs"), nullptr, 0, 0, nullptr, nullptr).SetTo(rdr))
 			{
 				if (rdr->ColCount() >= 2)
 				{

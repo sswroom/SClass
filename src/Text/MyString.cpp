@@ -3455,7 +3455,7 @@ UnsafeArrayOpt<const UTF8Char> Text::StrSCopyNew(UnsafeArrayOpt<const UTF8Char> 
 	UnsafeArray<const UTF8Char> nns;
 	if (str1.SetTo(nns))
 		return StrCopyNew(nns);
-	return 0;
+	return nullptr;
 }
 
 UnsafeArray<const UTF8Char> Text::StrCopyNewC(UnsafeArray<const UTF8Char> str1, UOSInt strLen)

@@ -1,6 +1,6 @@
 #ifndef _SM_DB_JAVADBUTIL
 #define _SM_DB_JAVADBUTIL
-#include "Data/StringMap.hpp"
+#include "Data/StringMapNative.hpp"
 #include "DB/DBTool.h"
 #include "Net/SocketFactory.h"
 
@@ -9,8 +9,8 @@ namespace DB
 	class JavaDBUtil
 	{
 	private:
-		static NN<Text::String> AppendFieldAnno(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Data::StringMap<Bool>> importMap); //return colName, need release
-		static void AppendFieldDef(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Data::StringMap<Bool>> importMap);
+		static NN<Text::String> AppendFieldAnno(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Data::StringMapNative<Bool>> importMap); //return colName, need release
+		static void AppendFieldDef(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Data::StringMapNative<Bool>> importMap);
 		static void AppendConstrHdr(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, Bool isLast);
 		static void AppendConstrItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName);
 		static void AppendGetterSetter(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName);

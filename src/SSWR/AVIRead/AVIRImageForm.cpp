@@ -634,7 +634,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(AnyType userObj)
 			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(&iccBuff[0]))).SetTo(icc))
 			{
 				NN<SSWR::AVIRead::AVIRICCInfoForm> frm;
-				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(nullptr, me->ui, me->core));
 				frm->SetICCProfile(icc, me->imgList->GetSourceNameObj()->ToCString());
 				me->core->ShowForm(frm);
 			}
@@ -683,7 +683,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->imgList = imgList;
 	this->allowEnlarge = false;
-	this->currImg = 0;
+	this->currImg = nullptr;
 	this->currImgDelay = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
@@ -766,7 +766,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_IMAGE_RENAME:
 		{
-			SSWR::AVIRead::AVIRFileRenameForm frm(0, this->ui, this->core, this->imgList->GetSourceNameObj());
+			SSWR::AVIRead::AVIRFileRenameForm frm(nullptr, this->ui, this->core, this->imgList->GetSourceNameObj());
 			if (frm.ShowDialog(this))
 			{
 				this->imgList->SetSourceName(frm.GetFileName());
@@ -788,7 +788,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 
 				this->pbImage->SetImage(prevImg.Ptr(), true);
 
-				SSWR::AVIRead::AVIRImageColorForm frm(0, this->ui, this->core, buffImg, prevImg, this->pbImage);
+				SSWR::AVIRead::AVIRImageColorForm frm(nullptr, this->ui, this->core, buffImg, prevImg, this->pbImage);
 				UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
 				
 				if (dr == UI::GUIForm::DR_OK)
@@ -826,7 +826,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 
 					this->pbImage->SetImage(prevImg.Ptr(), true);
 
-					SSWR::AVIRead::AVIRImageGRForm frm(0, this->ui, this->core, buffImg, prevImg, this->pbImage);
+					SSWR::AVIRead::AVIRImageGRForm frm(nullptr, this->ui, this->core, buffImg, prevImg, this->pbImage);
 					UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
 					
 					if (dr == UI::GUIForm::DR_OK)
@@ -862,12 +862,12 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				
 				if (valid)
 				{
-					SSWR::AVIRead::AVIRImageResizeForm frm(0, this->ui, this->core, img);
+					SSWR::AVIRead::AVIRImageResizeForm frm(nullptr, this->ui, this->core, img);
 					UI::GUIForm::DialogResult dr = frm.ShowDialog(this);
 					
 					if (dr == UI::GUIForm::DR_OK && Optional<Media::RasterImage>(frm.GetNewImage()).SetTo(img))
 					{
-						this->pbImage->SetImage(0, false);
+						this->pbImage->SetImage(nullptr, false);
 						this->imgList->ReplaceImage((UOSInt)selInd, img);
 						this->pbImage->SetImage(img, false);
 						this->currImg = img.Ptr();

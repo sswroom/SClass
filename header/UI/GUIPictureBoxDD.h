@@ -18,12 +18,12 @@ namespace UI
 	public:
 		typedef void (CALLBACKFUNC DrawHandler32)(AnyType userObj, UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 	private:
-		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseDownHdlrs;
-		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseUpHdlrs;
-		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseMoveHdlrs;
-		Data::ArrayList<Data::CallbackStorage<DrawHandler32>> drawHdlrs;
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> moveToNextHdlrs;
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> moveToPrevHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<MouseEventHandler>> mouseDownHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<MouseEventHandler>> mouseUpHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<MouseEventHandler>> mouseMoveHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<DrawHandler32>> drawHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> moveToNextHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> moveToPrevHdlrs;
 
 		UInt8 *bgBuff;
 		Math::Size2D<UOSInt> bgBuffSize;

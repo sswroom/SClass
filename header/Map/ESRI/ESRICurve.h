@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_ESRICURVE
 #define _SM_MAP_ESRI_ESRICURVE
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListA.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Math/Coord2DDbl.h"
 #include "Math/Geometry/Vector2D.h"
@@ -42,9 +42,9 @@ namespace Map
 		private:
 			UInt32 srid;
 			Data::ArrayListA<Math::Coord2DDbl> ptList;
-			Data::ArrayList<UInt32> partList;
-			Data::ArrayList<Double> zList;
-			Data::ArrayList<Double> mList;
+			Data::ArrayListNative<UInt32> partList;
+			Data::ArrayListNative<Double> zList;
+			Data::ArrayListNative<Double> mList;
 			Data::ArrayListNN<CurveInfo> curveList;
 		public:
 			ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UOSInt nParts, UnsafeArray<Math::Coord2DDbl> ptArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr);

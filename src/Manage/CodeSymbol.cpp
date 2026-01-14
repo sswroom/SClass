@@ -42,25 +42,25 @@ Optional<Manage::CodeSymbol> Manage::CodeSymbol::ParseFromStr(UnsafeArray<const 
 	Text::CStringNN funcName;
 	UOSInt i = Text::StrIndexOfChar(buff, '(');
 	if (i == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	moduleName = Text::CStringNN(buff, i);
 	buff = &buff[i + 1];
 	i = Text::StrIndexOfChar(buff, ')');
 	if (i == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	funcName = Text::CStringNN(buff, i);
 	;
 	OSInt ofst;
 	if ((i = funcName.IndexOf('+')) != INVALID_INDEX)
 	{
 		if (!funcName.Substring(i + 1).ToOSInt(ofst))
-			return 0;
+			return nullptr;
 		funcName.leng = i;
 	}
 	else if ((i = funcName.IndexOf('-')) != INVALID_INDEX)
 	{
 		if (!funcName.Substring(i + 1).ToOSInt(ofst))
-			return 0;
+			return nullptr;
 		ofst = -ofst;
 		funcName.leng = i;
 	}

@@ -22,7 +22,7 @@ namespace Math
 			Bool IsOpen() const;
 			Bool IsClose() const;
 
-			static Double GetIntersactsCenter(NN<Data::ArrayList<Double>> vals);
+			static Double GetIntersactsCenter(NN<Data::ArrayListNative<Double>> vals);
 			static NN<LinearRing> CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints);
 		};
 	}

@@ -14,8 +14,8 @@ namespace UI
 		NN<Game::Sudoku::SudokuBoard> board;
 		UOSInt selX;
 		UOSInt selY;
-		Data::ArrayList<NumberInputEvent> numInputHdlr;
-		Data::ArrayList<AnyType> numInputObj;
+		Data::ArrayListObj<NumberInputEvent> numInputHdlr;
+		Data::ArrayListObj<AnyType> numInputObj;
 
 	public:
 		GUISudokuViewer(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess, NN<Game::Sudoku::SudokuBoard> board);

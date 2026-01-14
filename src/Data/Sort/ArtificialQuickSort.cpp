@@ -465,7 +465,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(AnyType userObj)
 Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 {
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
-	this->arr = 0;
+	this->arr = nullptr;
 	this->tasks = MemAllocArr(OSInt, 65536);
 	this->taskCnt = 0;
 	this->threads = MemAllocArr(ThreadStat, this->threadCnt);
@@ -575,7 +575,7 @@ void Data::Sort::ArtificialQuickSort::SortInt32(UnsafeArray<Int32> arr, OSInt fi
 			break;
 		}
 	}
-	this->arr = 0;
+	this->arr = nullptr;
 }
 
 void Data::Sort::ArtificialQuickSort::SortUInt32(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
@@ -621,7 +621,7 @@ void Data::Sort::ArtificialQuickSort::SortUInt32(UnsafeArray<UInt32> arr, OSInt 
 			break;
 		}
 	}
-	this->arr = 0;
+	this->arr = nullptr;
 }
 
 void Data::Sort::ArtificialQuickSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex)
@@ -667,7 +667,7 @@ void Data::Sort::ArtificialQuickSort::SortStr(UnsafeArray<UnsafeArray<UTF8Char>>
 			break;
 		}
 	}
-	this->arr = 0;
+	this->arr = nullptr;
 }
 
 /*

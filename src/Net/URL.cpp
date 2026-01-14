@@ -73,9 +73,9 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 		Text::PString sarr[2];
 		Text::PString sarr2[2];
 		if (Text::StrSplitP(sarr, 2, sb, ';') != 2)
-			return 0;
+			return nullptr;
 		if (Text::StrSplitP(sarr2, 2, sarr[1], ',') != 2)
-			return 0;
+			return nullptr;
 		IO::MemoryStream *mstm;
 		if (sarr2[0].Equals(UTF8STRC("base64")))
 		{
@@ -88,10 +88,10 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 			mstm->SeekFromBeginning(0);
 			return mstm;
 		}
-		return 0;
+		return nullptr;
 
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::Stream> Net::URL::OpenStream(Text::CStringNN url, Text::CString userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
@@ -145,5 +145,5 @@ Optional<IO::Stream> Net::URL::OpenStream(Text::CStringNN url, Text::CString use
 		NEW_CLASSOPT(stm, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		return stm;
 	}
-	return 0;
+	return nullptr;
 };

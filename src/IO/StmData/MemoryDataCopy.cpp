@@ -18,7 +18,7 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(UnsafeArray<const UInt8> data, UOSIn
 	this->stat->dataLength = dataLength;
 	MemCopyNO(this->stat->data.Ptr(), data.Ptr(), dataLength);
 	this->stat->useCnt = 1;
-	this->stat->fullName = 0;
+	this->stat->fullName = nullptr;
 	this->data = this->stat->data;
 	this->dataLength = dataLength;
 }
@@ -30,7 +30,7 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(const Data::ByteArrayR &data)
 	this->stat->dataLength = data.GetSize();
 	MemCopyNO(this->stat->data.Ptr(), data.Arr().Ptr(), data.GetSize());
 	this->stat->useCnt = 1;
-	this->stat->fullName = 0;
+	this->stat->fullName = nullptr;
 	this->data = this->stat->data;
 	this->dataLength = data.GetSize();
 }

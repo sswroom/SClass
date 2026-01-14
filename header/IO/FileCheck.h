@@ -1,7 +1,6 @@
 #ifndef _SM_IO_FILECHECK
 #define _SM_IO_FILECHECK
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "IO/ActiveStreamReader.h"
 #include "IO/ParsedObject.h"

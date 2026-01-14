@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Media/PDFParameter.h"
 
 Media::PDFParameter::PDFParameter()
@@ -34,7 +34,7 @@ Optional<Text::String> Media::PDFParameter::GetEntryValue(Text::CStringNN type) 
 	NN<ParamEntry> entry;
 	if (this->GetEntry(type).SetTo(entry))
 		return entry->value;
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Media::PDFParameter::GetEntryType(UOSInt index) const
@@ -42,7 +42,7 @@ Optional<Text::String> Media::PDFParameter::GetEntryType(UOSInt index) const
 	NN<ParamEntry> entry;
 	if (this->GetItem(index).SetTo(entry))
 		return entry->type;
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Media::PDFParameter::GetEntryValue(UOSInt index) const
@@ -50,7 +50,7 @@ Optional<Text::String> Media::PDFParameter::GetEntryValue(UOSInt index) const
 	NN<ParamEntry> entry;
 	if (this->GetItem(index).SetTo(entry))
 		return entry->value;
-	return 0;
+	return nullptr;
 }
 
 Bool Media::PDFParameter::ContainsEntry(Text::CStringNN type) const
@@ -70,7 +70,7 @@ Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetEntry(Text::CS
 			return entry;
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Media::PDFParameter::GetEntryIndex(Text::CStringNN type) const
@@ -110,13 +110,13 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 	UOSInt j = parameter.leng;
 	UOSInt k;
 	if (j == 0)
-		return 0;
+		return nullptr;
 	if (parameter.v[0] != '/')
-		return 0;
+		return nullptr;
 	PDFParameter *param;
 	NEW_CLASS(param, PDFParameter());
-	Data::ArrayList<UTF8Char> endChars;
-	Optional<ParamEntry> lastEntry = 0;
+	Data::ArrayListNative<UTF8Char> endChars;
+	Optional<ParamEntry> lastEntry = nullptr;
 	NN<ParamEntry> nnlastEntry;
 	UOSInt startType = i;
 	UOSInt endType = 0;
@@ -133,7 +133,7 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 				if (lastEntry.SetTo(nnlastEntry))
 				{
 					nnlastEntry->value = Text::String::New(&parameter.v[startType - 1], k - startType + 1);
-					lastEntry = 0;
+					lastEntry = nullptr;
 				}
 				else
 				{
@@ -143,7 +143,7 @@ Optional<Media::PDFParameter> Media::PDFParameter::Parse(Text::CStringNN paramet
 			else
 			{
 				param->AddEntry(Text::CStringNN(&parameter.v[startType], endType - startType), Text::CString(&parameter.v[startValue], k - startValue));
-				lastEntry = 0;
+				lastEntry = nullptr;
 			}
 			startType = i + 1;
 			endType = 0;

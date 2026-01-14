@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_SHPDATA
 #define _SM_MAP_SHPDATA
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListDbl.h"
+#include "Data/ArrayListObj.hpp"
 #include "DB/DBFFile.h"
 #include "IO/StmData/FileData.h"
 #include "Map/MapDrawLayer.h"
@@ -33,7 +33,7 @@ namespace Map
 		Data::ArrayListDbl *ptY;
 		Data::ArrayListDbl *ptZ;
 		Sync::Mutex *recsMut;
-		Data::ArrayList<Optional<RecHdr>> *recs;
+		Data::ArrayListObj<Optional<RecHdr>> *recs;
 
 		Bool isPoint;
 		Math::Coord2DDbl max;

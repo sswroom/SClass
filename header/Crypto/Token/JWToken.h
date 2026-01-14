@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Crypto/Token/JWTParam.h"
 #include "Crypto/Token/JWSignature.h"
-#include "Data/StringMap.hpp"
+#include "Data/StringMapObj.hpp"
 #include "Net/SSLEngine.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -52,8 +52,8 @@ namespace Crypto
 			Bool SignatureValid(Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-			Optional<Data::StringMap<Text::String*>> ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr);
-			void FreeResult(NN<Data::StringMap<Text::String*>> result);
+			Optional<Data::StringMapObj<Text::String*>> ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr);
+			void FreeResult(NN<Data::StringMapObj<Text::String*>> result);
 
 			static Optional<JWToken> Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			static Optional<JWToken> GenerateRSA(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, Text::CStringNN keyId, NN<Crypto::Cert::X509PrivKey> key);

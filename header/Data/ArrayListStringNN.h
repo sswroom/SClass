@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_ARRAYLISTSTRINGNN
 #define _SM_DATA_ARRAYLISTSTRINGNN
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Data/SortableArrayListNN.hpp"
 #include "Text/String.h"
 
@@ -20,7 +20,7 @@ namespace Data
 		NN<Text::String> JoinString() const;
 		NN<Text::String> JoinString(Text::CStringNN s) const;
 		void FreeAll();
-		void ValueCounts(NN<Data::FastStringMap<UInt32>> counts) const;
+		void ValueCounts(NN<Data::FastStringMapNative<UInt32>> counts) const;
 		void RemoveDuplicates(); //Assume sorted
 	};
 }

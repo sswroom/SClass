@@ -109,7 +109,7 @@ namespace Data
 			Optional<Currency> GetCurrencyInfo(UOSInt index) const { return this->currMap.GetItem(index); }
 			Optional<Currency> FindCurrency(UInt32 c) const { return this->currMap.Get(c); }
 			Bool UpdateCurrency(NN<Currency> curr, Data::Timestamp ts, Double value);
-			void CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList, OptOut<Double> initValue);
+			void CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayListNative<Double>> valueList, OptOut<Double> initValue);
 			Double CurrencyGetRate(NN<Currency> curr, Data::Timestamp ts);
 			UOSInt GetAssetCount() const { return this->assetList.GetCount(); }
 			Optional<Asset> GetAsset(UOSInt index) const { return this->assetList.GetItem(index); }
@@ -119,7 +119,7 @@ namespace Data
 			Bool UpdateAsset(NN<Asset> ass, Data::Timestamp ts, Double value, Double divValue);
 			Double AssetGetPrice(NN<Asset> ass, Data::Timestamp ts) const;
 			Double AssetGetAmount(NN<Asset> ass, Data::Timestamp ts) const;
-			void AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList, OptOut<Double> initValue);
+			void AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayListNative<Double>> valueList, OptOut<Double> initValue);
 
 			UOSInt GetTransactionCount() const { return this->tradeList.GetCount(); }
 			Optional<TradeEntry> GetTransactionEntry(UOSInt index) const { return this->tradeList.GetItem(index); }

@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_X509FILE
 #define _SM_CRYPTO_CERT_X509FILE
 #include "Crypto/Hash/HashAlgorithm.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Net/ASN1Data.h"
 #include "Text/CString.h"
@@ -193,8 +193,8 @@ namespace Crypto
 			static UnsafeArrayOpt<UTF8Char> NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<UTF8Char> sbuff);
 			static Bool NamesGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertNames> names);
 			static Bool ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertExtensions> ext);
-			static UOSInt ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayList<Text::CString>> crlDistributionPoints);
-			static UOSInt DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayList<Text::CString>> crlDistributionPoints);
+			static UOSInt ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints);
+			static UOSInt DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints);
 			static Optional<Crypto::Cert::X509Key> PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
 
 			static UOSInt KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, KeyType keyType);

@@ -48,7 +48,7 @@ void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeIte
 			ind->index = index;
 			ind->itemType = Map::MapEnv::IT_LAYER;
 			ind->item = item;
-			treeItem = this->InsertItem(treeItem, 0, name->ToCString().Substring(i + 1), ind);
+			treeItem = this->InsertItem(treeItem, nullptr, name->ToCString().Substring(i + 1), ind);
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
@@ -61,7 +61,7 @@ void UI::GUIMapTreeView::AddTreeNode(Optional<UI::GUITreeView::TreeItem> treeIte
 			ind->itemType = Map::MapEnv::IT_GROUP;
 			ind->item = item;
 			NN<TreeItem> nntreeItem;
-			if (this->InsertItem(treeItem, 0, this->env->GetGroupName(grp), ind).SetTo(nntreeItem))
+			if (this->InsertItem(treeItem, nullptr, this->env->GetGroupName(grp), ind).SetTo(nntreeItem))
 			{
 				i = 0;
 				while (i < j)
@@ -178,17 +178,17 @@ void UI::GUIMapTreeView::UpdateTree()
 	}
 	this->RemoveItems();
 	ind = MemAllocNN(ItemIndex);
-	ind->group = 0;
+	ind->group = nullptr;
 	ind->index = (UOSInt)-1;
 	ind->itemType = Map::MapEnv::IT_GROUP;
-	ind->item = 0;
-	if (this->InsertItem(0, 0, CSTR("ROOT"), ind).SetTo(item))
+	ind->item = nullptr;
+	if (this->InsertItem(nullptr, nullptr, CSTR("ROOT"), ind).SetTo(item))
 	{
-		j = this->env->GetItemCount(0);
+		j = this->env->GetItemCount(nullptr);
 		i = 0;
 		while (i < j)
 		{
-			this->AddTreeNode(item, 0, i);
+			this->AddTreeNode(item, nullptr, i);
 			i++;
 		}
 		this->ExpandItem(item);
@@ -208,7 +208,7 @@ void UI::GUIMapTreeView::AddSubGroup(NN<UI::GUITreeView::TreeItem> item)
 		ind->group = Optional<Map::MapEnv::GroupItem>::ConvertFrom(item->GetItemObj().GetNN<ItemIndex>()->item);
 		ind->item = grp;
 		ind->index = this->env->GetItemCount(Optional<Map::MapEnv::GroupItem>::ConvertFrom(item->GetItemObj().GetNN<ItemIndex>()->item)) - 1;
-		if (this->InsertItem(item, 0, CSTR("Group"), ind).SetTo(n))
+		if (this->InsertItem(item, nullptr, CSTR("Group"), ind).SetTo(n))
 		{
 			this->ExpandItem(n);
 			this->BeginEdit(n);
@@ -223,8 +223,8 @@ void UI::GUIMapTreeView::AddSubGroup(NN<UI::GUITreeView::TreeItem> item)
 		ind->item = grp;
 		if (ind->group.IsNull())
 		{
-			ind->index = this->env->GetItemCount(0) - 1;
-			if (this->InsertItem(0, 0, CSTR("Group"), ind).SetTo(n))
+			ind->index = this->env->GetItemCount(nullptr) - 1;
+			if (this->InsertItem(nullptr, nullptr, CSTR("Group"), ind).SetTo(n))
 			{
 				this->ExpandItem(n);
 				this->BeginEdit(n);
@@ -233,7 +233,7 @@ void UI::GUIMapTreeView::AddSubGroup(NN<UI::GUITreeView::TreeItem> item)
 		else
 		{
 			ind->index = this->env->GetItemCount(item->GetItemObj().GetNN<ItemIndex>()->group) - 1;
-			if (this->InsertItem(item->GetParent(), 0, CSTR("Group"), ind).SetTo(n))
+			if (this->InsertItem(item->GetParent(), nullptr, CSTR("Group"), ind).SetTo(n))
 			{
 				this->ExpandItem(n);
 				this->BeginEdit(n);

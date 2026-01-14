@@ -2,7 +2,7 @@
 #define _SM_NET_RTPCLICHANNEL
 #include "AnyType.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapObj.hpp"
 #include "Media/AudioSource.h"
 #include "Media/MediaSource.h"
 #include "Media/VideoSource.h"
@@ -37,7 +37,7 @@ namespace Net
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
 			UInt32 lastSeqNumLo;
-			Data::FastMap<Int32, Net::RTPPayloadHandler *> payloadMap;
+			Data::FastMapObj<Int32, Net::RTPPayloadHandler *> payloadMap;
 			Media::MediaType mediaType;
 			NN<Net::SocketFactory> sockf;
 

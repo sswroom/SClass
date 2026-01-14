@@ -88,6 +88,6 @@ Optional<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::ToSimpleShape(
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	NN<Math::Geometry::LineString> ls;
 	this->GetDrawPoints(ptList);
-	NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, ptList.Arr(), ptList.GetCount(), 0, 0));
+	NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, ptList.Arr(), ptList.GetCount(), nullptr, nullptr));
 	return ls;
 }

@@ -1,6 +1,7 @@
 #ifndef _SM_UI_GUIBUTTON
 #define _SM_UI_GUIBUTTON
 #include "AnyType.h"
+#include "Data/ArrayListObj.hpp"
 #include "Data/CallbackStorage.h"
 #include "UI/GUIClientControl.h"
 
@@ -11,9 +12,9 @@ namespace UI
 	public:
 		typedef void (CALLBACKFUNC UpDownEvent)(AnyType userObj, Bool isDown);
 	private:
-		Data::ArrayList<Data::CallbackStorage<UIEvent>> btnClkHandlers;
-		Data::ArrayList<Data::CallbackStorage<UpDownEvent>> btnUpDownHandlers;
-		Data::ArrayList<Data::CallbackStorage<UIEvent>> btnFocusLostHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<UIEvent>> btnClkHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<UpDownEvent>> btnUpDownHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<UIEvent>> btnFocusLostHandlers;
 	public:
 		GUIButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIButton();

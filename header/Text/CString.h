@@ -46,7 +46,7 @@ namespace Text
 			UnsafeArray<const UTF8Char> nnv;
 			if (!nnv.Set(v))
 			{
-				return CString(0, 0);
+				return CString(nullptr, 0);
 			}
 			return CString(nnv, Text::StrCharCnt(nnv));
 		}

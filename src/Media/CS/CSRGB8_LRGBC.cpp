@@ -109,8 +109,8 @@ Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
 	this->invert = invert;
-	this->srcPal = 0;
-	this->destPal = 0;
+	this->srcPal = nullptr;
+	this->destPal = nullptr;
 
 	NN<Media::ColorManagerSess> nncolorSess;
 	if (colorSess.SetTo(nncolorSess))
@@ -133,7 +133,7 @@ Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 		this->srcPal = MemAlloc(UInt8, colorCnt * 4);
 		this->destPal = MemAlloc(UInt8, colorCnt * 8);
 	}
-	this->rgbTable = 0;
+	this->rgbTable = nullptr;
 	this->rgbUpdated = true;
 }
 
@@ -145,17 +145,17 @@ Media::CS::CSRGB8_LRGBC::~CSRGB8_LRGBC()
 	if (this->rgbTable.SetTo(rgbTable))
 	{
 		MemFreeAArr(rgbTable);
-		this->rgbTable = 0;
+		this->rgbTable = nullptr;
 	}
 	if (this->srcPal.SetTo(srcPal))
 	{
 		MemFreeArr(srcPal);
-		this->srcPal = 0;
+		this->srcPal = nullptr;
 	}
 	if (this->destPal.SetTo(destPal))
 	{
 		MemFreeArr(destPal);
-		this->destPal = 0;
+		this->destPal = nullptr;
 	}
 }
 

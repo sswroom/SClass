@@ -84,7 +84,7 @@ Optional<Text::String> IO::Stream::ReadAsString(UOSInt buffSize)
 	UOSInt readSize;
 	readSize = this->Read(buff);
 	if (readSize <= 0)
-		return 0;
+		return nullptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(buff.Arr(), readSize);
 	while (true)

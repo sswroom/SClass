@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapObj.hpp"
 #include "Map/MapLayerCollection.h"
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMParser.h"
@@ -20,10 +20,10 @@ typedef struct
 
 NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
-	Data::FastMap<Int64, OSMNodeInfo*> nodeMap;
+	Data::FastMapObj<Int64, OSMNodeInfo*> nodeMap;
 	OSMNodeInfo *node;
-	Data::ArrayList<Double> latList;
-	Data::ArrayList<Double> lonList;
+	Data::ArrayListNative<Double> latList;
+	Data::ArrayListNative<Double> lonList;
 	Map::VectorLayer *layers[OSMTYPECNT];
 	UnsafeArrayOpt<const UTF8Char> colName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Elevation"};
 	UnsafeArrayOpt<const UTF8Char> pgName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Type"};
@@ -153,8 +153,8 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 					{
 						if (nodeText->Equals(UTF8STRC("tag")))
 						{
-							kName = 0;
-							vName = 0;
+							kName = nullptr;
+							vName = nullptr;
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
@@ -715,8 +715,8 @@ NN<Map::MapDrawLayer> Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> re
 				}
 				else if (nodeText->Equals(UTF8STRC("tag")))
 				{
-					kName = 0;
-					vName = 0;
+					kName = nullptr;
+					vName = nullptr;
 					i = reader->GetAttribCount();
 					while (i-- > 0)
 					{
@@ -1436,8 +1436,8 @@ NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> read
 					{
 						if (nodeText->Equals(UTF8STRC("tag")))
 						{
-							Optional<Text::String> k = 0;
-							Optional<Text::String> v = 0;
+							Optional<Text::String> k = nullptr;
+							Optional<Text::String> v = nullptr;
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
@@ -1531,8 +1531,8 @@ NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> read
 						}
 						else if (nodeText->Equals(UTF8STRC("tag")))
 						{
-							Optional<Text::String> k = 0;
-							Optional<Text::String> v = 0;
+							Optional<Text::String> k = nullptr;
+							Optional<Text::String> v = nullptr;
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
@@ -1598,7 +1598,7 @@ NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> read
 						if (nodeText->Equals(UTF8STRC("member")))
 						{
 							Int64 refId = 0;
-							Optional<Text::String> role = 0;
+							Optional<Text::String> role = nullptr;
 							ElementType type = ElementType::Unknown;
 							i = reader->GetAttribCount();
 							while (i-- > 0)
@@ -1633,8 +1633,8 @@ NN<Map::OSM::OSMData> Map::OSM::OSMParser::ParseOSMNode(NN<Text::XMLReader> read
 						}
 						else if (nodeText->Equals(UTF8STRC("tag")))
 						{
-							Optional<Text::String> k = 0;
-							Optional<Text::String> v = 0;
+							Optional<Text::String> k = nullptr;
+							Optional<Text::String> v = nullptr;
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{

@@ -1,6 +1,5 @@
 #ifndef _SM_EXPORTER_MEVEXPORTER
 #define _SM_EXPORTER_MEVEXPORTER
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/StringMapNN.hpp"

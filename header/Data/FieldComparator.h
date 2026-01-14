@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_FIELDCOMPARATOR
 #define _SM_DATA_FIELDCOMPARATOR
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/Comparator.hpp"
 #include "Data/VariObject.h"
@@ -13,7 +13,7 @@ namespace Data
 	{
 	private:
 		Data::ArrayListStringNN fieldNames;
-		Data::ArrayList<Int8> dirs;
+		Data::ArrayListNative<Int8> dirs;
 	public:
 		FieldComparator(Text::CString compareConds);
 		virtual ~FieldComparator();

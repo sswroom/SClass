@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_SPREADSHEET_WORKSHEET
 #define _SM_TEXT_SPREADSHEET_WORKSHEET
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListDbl.h"
+#include "Data/ArrayListObj.hpp"
 #include "Data/DateTime.h"
 #include "Math/Unit/Distance.h"
 #include "Text/String.h"
@@ -61,13 +61,13 @@ namespace Text
 			typedef struct
 			{
 				Optional<CellStyle> style;
-				Data::ArrayList<Optional<CellData>> cells;
+				Data::ArrayListObj<Optional<CellData>> cells;
 				Double height;
 			} RowData;
 
 		private:
 			NN<Text::String> name;
-			Data::ArrayList<Optional<RowData>> rows;
+			Data::ArrayListObj<Optional<RowData>> rows;
 			Data::ArrayListDbl colWidthsPt;
 			Data::ArrayListNN<WorksheetDrawing> drawings;
 			Double defColWidthPt;

@@ -2,7 +2,7 @@
 #define _SM_UI_GUICONTROL
 #include "AnyType.h"
 #include "Handles.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/CallbackStorage.h"
 #include "Math/Size2D.h"
 #include "Media/DrawEngine.h"
@@ -217,7 +217,7 @@ namespace UI
 
 
 	protected:
-		Data::ArrayList<Data::CallbackStorage<UIEvent>> resizeHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<UIEvent>> resizeHandlers;
 		Bool inited;
 		Optional<ControlHandle> hwnd;
 		void *hFont;

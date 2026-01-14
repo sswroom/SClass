@@ -43,7 +43,7 @@ namespace Net
 		Bool recvRunning;
 		Bool recvStarted;
 
-		Data::ArrayList<Data::CallbackStorage<PublishMessageHdlr>> hdlrList;
+		Data::ArrayListObj<Data::CallbackStorage<PublishMessageHdlr>> hdlrList;
 		Data::CallbackStorage<DisconnectHdlr> discHdlr;
 
 		Data::ArrayListNN<PacketInfo> packetList;

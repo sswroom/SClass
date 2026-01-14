@@ -7,9 +7,9 @@ Text::SpreadSheet::OfficeChartSeries::OfficeChartSeries(NN<WorkbookDataSource> c
 {
 	this->categoryData = categoryData;
 	this->valueData = valueData;
-	this->title = 0;
+	this->title = nullptr;
 	this->smooth = false;
-	this->shapeProp = 0;
+	this->shapeProp = nullptr;
 	this->markerSize = 0;
 	this->markerStyle = MarkerStyle::None;
 }

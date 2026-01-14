@@ -1,5 +1,6 @@
 #ifndef _SM_EXPORTER_XLSXEXPORTER
 #define _SM_EXPORTER_XLSXEXPORTER
+#include "Data/ArrayListObj.hpp"
 #include "Data/DateTime.h"
 #include "Data/StringUTF8Map.hpp"
 #include "IO/FileExporter.h"
@@ -46,7 +47,7 @@ namespace Exporter
 		static void AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UOSInt index);
 		static void AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::OfficeChartSeries> series, UOSInt index);
 		static void AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CStringNN name);
-		static void AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayList<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap);
+		static void AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap);
 
 		static Text::CStringNN PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UnsafeArray<UTF8Char> ToFormatCode(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> dataFormat);

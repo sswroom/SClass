@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_ESRI_FILEGDBDIR
 #define _SM_MAP_ESRI_FILEGDBDIR
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Data/FastStringMapNN.hpp"
 #include "DB/ReadingDB.h"
 #include "IO/PackageFile.h"
@@ -15,7 +15,7 @@ namespace Map
 		{
 		private:
 			NN<IO::PackageFile> pkg;
-			Data::FastStringMap<Int32> tableMap;
+			Data::FastStringMapNative<Int32> tableMap;
 			Data::FastStringMapNN<FileGDBTable> tables;
 			Data::ArrayListStringNN tableNames;
 			NN<Math::ArcGISPRJParser> prjParser;

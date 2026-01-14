@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_JSONBUILDER
 #define _SM_TEXT_JSONBUILDER
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListA.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/VariItem.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/Vector3.h"
@@ -24,7 +24,7 @@ namespace Text
 		} ObjectType;
 	private:
 		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<ObjectType> objTypes;
+		Data::ArrayListNative<ObjectType> objTypes;
 		ObjectType currType;
 		Bool isFirst;
 
@@ -78,7 +78,7 @@ namespace Text
 		Bool ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts);
 		Bool ObjectAddDateStr(Text::CStringNN name, Data::Date dat);
 		Bool ObjectAddNull(Text::CStringNN name);
-		Bool ObjectAddArrayInt32(Text::CStringNN name, Optional<Data::ArrayList<Int32>> i32Arr);
+		Bool ObjectAddArrayInt32(Text::CStringNN name, Optional<Data::ArrayListNative<Int32>> i32Arr);
 		Bool ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl coord);
 		Bool ObjectAddArrayCoord2D(Text::CStringNN name, Optional<Data::ArrayListA<Math::Coord2DDbl>> coordArr);
 		Bool ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec3);

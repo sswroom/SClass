@@ -1,6 +1,6 @@
 #ifndef _SM_MANAGE_ENVIRONMENTVAR
 #define _SM_MANAGE_ENVIRONMENTVAR
-#include "Data/ICaseStringMap.hpp"
+#include "Data/ICaseStringMapObj.hpp"
 
 namespace Manage
 {
@@ -8,7 +8,7 @@ namespace Manage
 	{
 	private:
 		void *envs;
-		Data::ICaseStringMap<UnsafeArrayOpt<const UTF8Char>> names;
+		Data::ICaseStringMapObj<UnsafeArrayOpt<const UTF8Char>> names;
 	public:
 		EnvironmentVar();
 		~EnvironmentVar();

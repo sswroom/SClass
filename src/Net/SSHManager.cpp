@@ -39,37 +39,37 @@ Int32 Net::SSHManager::GetError() const
 Optional<Net::SSHClient> Net::SSHManager::CreateClient(Text::CStringNN host, UInt16 port, Text::CStringNN userName, Text::CStringNN password)
 {
 	if (this->error != 0)
-		return 0;
+		return nullptr;
 	NN<Net::SSHConn> conn;
 	NEW_CLASSNN(conn, Net::SSHConn(this->sockf, host, port, 5000));
 	if (conn->IsError())
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	UInt8 hostKey[20];
 	if (!conn->GetHostKeySHA1(hostKey))
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	Data::ArrayListStringNN authMethod;
 	if (!conn->GetAuthMethods(userName, authMethod))
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	if (authMethod.IndexOfC(CSTR("password")) == INVALID_INDEX)
 	{
 		authMethod.FreeAll();
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	authMethod.FreeAll();
 	if (!conn->AuthPassword(userName, password))
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<Net::SSHClient> cli;
 	NEW_CLASSNN(cli, Net::SSHClient(conn));
@@ -79,7 +79,7 @@ Optional<Net::SSHClient> Net::SSHManager::CreateClient(Text::CStringNN host, UIn
 Optional<Net::SSHConn> Net::SSHManager::CreateConn(Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
 	if (this->error != 0)
-		return 0;
+		return nullptr;
 	NN<Net::SSHConn> conn;
 	NEW_CLASSNN(conn, Net::SSHConn(this->sockf, host, port, timeout));
 	return conn;

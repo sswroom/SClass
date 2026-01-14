@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_SORT_ARTIFICIALQUICKSORTFUNC
 #define _SM_DATA_SORT_ARTIFICIALQUICKSORTFUNC
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayCollection.hpp"
 //http://www.critticall.com/ArtificialSort.html
 
 namespace Data

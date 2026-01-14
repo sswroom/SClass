@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Math/WKTReader.h"
 #include "Math/Geometry/CircularString.h"
 #include "Math/Geometry/CompoundCurve.h"
@@ -58,14 +58,14 @@ UnsafeArrayOpt<const UTF8Char> Math::WKTReader::NextDouble(UnsafeArray<const UTF
 	UOSInt len = (UOSInt)(wkt - sptr);
 	if (len > 100 || len == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StrConcatC(sbuff, sptr, len);
 	if (Text::StrToDouble(sbuff, val))
 	{
 		return wkt;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Math::WKTReader::SetLastError(UnsafeArrayOpt<const UTF8Char> lastError)
@@ -85,17 +85,17 @@ Optional<Math::Geometry::Point> Math::WKTReader::ParsePoint(UnsafeArray<const UT
 	}
 	if (*wkt != '(')
 	{
-		return 0;
+		return nullptr;
 	}
 	wkt++;
 	if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 	{
-		return 0;
+		return nullptr;
 	}
 	while (*++wkt == ' ');
 	if (!NextDouble(wkt, y).SetTo(wkt))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (wkt[0] == ')')
 	{
@@ -106,12 +106,12 @@ Optional<Math::Geometry::Point> Math::WKTReader::ParsePoint(UnsafeArray<const UT
 	}
 	else if (wkt[0] != ' ')
 	{
-		return 0;
+		return nullptr;
 	}
 	while (*++wkt == ' ');
 	if (!NextDouble(wkt, z).SetTo(wkt))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (wkt[0] == ')' && wkt[1] == 0)
 	{
@@ -120,13 +120,13 @@ Optional<Math::Geometry::Point> Math::WKTReader::ParsePoint(UnsafeArray<const UT
 		wktEnd.Set(wkt + 1);
 		return pt;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd, Bool curve)
 {
-	Data::ArrayList<Double> ptList;
-	Data::ArrayList<Double> zList;
+	Data::ArrayListNative<Double> ptList;
+	Data::ArrayListNative<Double> zList;
 	Double x;
 	Double y;
 	Double z;
@@ -136,26 +136,26 @@ Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArra
 	}
 	if (*wkt != '(')
 	{
-		return 0;
+		return nullptr;
 	}
 	while (true)
 	{
 		while (*++wkt == ' ');
 		if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 		{
-			return 0;
+			return nullptr;
 		}
 		while (*++wkt == ' ');
 		if (!NextDouble(wkt, y).SetTo(wkt))
 		{
-			return 0;
+			return nullptr;
 		}
 		while (*wkt == ' ')
 		{
 			while (*++wkt == ' ');
 			if (!NextDouble(wkt, z).SetTo(wkt))
 			{
-				return 0;
+				return nullptr;
 			}
 			zList.Add(z);
 		}
@@ -172,7 +172,7 @@ Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArra
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	Math::Geometry::LineString *pl;
@@ -221,8 +221,8 @@ Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArra
 
 Optional<Math::Geometry::LinearRing> Math::WKTReader::ParseLinearRing(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
 {
-	Data::ArrayList<Double> ptList;
-	Data::ArrayList<Double> zList;
+	Data::ArrayListNative<Double> ptList;
+	Data::ArrayListNative<Double> zList;
 	Double x;
 	Double y;
 	Double z;
@@ -232,26 +232,26 @@ Optional<Math::Geometry::LinearRing> Math::WKTReader::ParseLinearRing(UnsafeArra
 	}
 	if (*wkt != '(')
 	{
-		return 0;
+		return nullptr;
 	}
 	while (true)
 	{
 		while (*++wkt == ' ');
 		if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 		{
-			return 0;
+			return nullptr;
 		}
 		while (*++wkt == ' ');
 		if (!NextDouble(wkt, y).SetTo(wkt))
 		{
-			return 0;
+			return nullptr;
 		}
 		while (*wkt == ' ')
 		{
 			while (*++wkt == ' ');
 			if (!NextDouble(wkt, z).SetTo(wkt))
 			{
-				return 0;
+				return nullptr;
 			}
 			zList.Add(z);
 		}
@@ -268,7 +268,7 @@ Optional<Math::Geometry::LinearRing> Math::WKTReader::ParseLinearRing(UnsafeArra
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	Math::Geometry::LinearRing *lr;
@@ -319,7 +319,7 @@ Optional<Math::Geometry::CompoundCurve> Math::WKTReader::ParseCompoundCurve(Unsa
 	if (*wkt != '(')
 	{
 		cc.Delete();
-		return 0;
+		return nullptr;
 	}
 	while (true)
 	{
@@ -332,7 +332,7 @@ Optional<Math::Geometry::CompoundCurve> Math::WKTReader::ParseCompoundCurve(Unsa
 			if (!this->ParseLineString(wkt, wkt, true).SetTo(ls))
 			{
 				cc.Delete();
-				return 0;
+				return nullptr;
 			}
 			cc->AddGeometry(ls);
 		}
@@ -341,13 +341,13 @@ Optional<Math::Geometry::CompoundCurve> Math::WKTReader::ParseCompoundCurve(Unsa
 			if (*wkt != '(')
 			{
 				cc.Delete();
-				return 0;
+				return nullptr;
 			}
 			NN<Math::Geometry::LineString> ls;
 			if (!this->ParseLineString(wkt, wkt, false).SetTo(ls))
 			{
 				cc.Delete();
-				return 0;
+				return nullptr;
 			}
 			cc->AddGeometry(ls);
 		}
@@ -359,7 +359,7 @@ Optional<Math::Geometry::CompoundCurve> Math::WKTReader::ParseCompoundCurve(Unsa
 		else if (wkt[0] != ',')
 		{
 			cc.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -376,7 +376,7 @@ Optional<Math::Geometry::Polygon> Math::WKTReader::ParsePolygon(UnsafeArray<cons
 	if (*wkt != '(')
 	{
 		pg.Delete();
-		return 0;
+		return nullptr;
 	}
 	while (true)
 	{
@@ -384,12 +384,12 @@ Optional<Math::Geometry::Polygon> Math::WKTReader::ParsePolygon(UnsafeArray<cons
 		if (*wkt != '(')
 		{
 			pg.Delete();
-			return 0;
+			return nullptr;
 		}
 		if (!this->ParseLinearRing(wkt, wkt).SetTo(lr))
 		{
 			pg.Delete();
-			return 0;
+			return nullptr;
 		}
 		pg->AddGeometry(lr);
 		if (*wkt == ')')
@@ -400,7 +400,7 @@ Optional<Math::Geometry::Polygon> Math::WKTReader::ParsePolygon(UnsafeArray<cons
 		else if (wkt[0] != ',')
 		{
 			pg.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -416,7 +416,7 @@ Optional<Math::Geometry::CurvePolygon> Math::WKTReader::ParseCurvePolygon(Unsafe
 	if (*wkt != '(')
 	{
 		cpg.Delete();
-		return 0;
+		return nullptr;
 	}
 	while (true)
 	{
@@ -429,7 +429,7 @@ Optional<Math::Geometry::CurvePolygon> Math::WKTReader::ParseCurvePolygon(Unsafe
 			if (!this->ParseCompoundCurve(wkt, wkt).SetTo(cc))
 			{
 				cpg.Delete();
-				return 0;
+				return nullptr;
 			}
 			cpg->AddGeometry(cc);
 		}
@@ -438,13 +438,13 @@ Optional<Math::Geometry::CurvePolygon> Math::WKTReader::ParseCurvePolygon(Unsafe
 			if (*wkt != '(')
 			{
 				cpg.Delete();
-				return 0;
+				return nullptr;
 			}
 			NN<Math::Geometry::LinearRing> lr;
 			if (!this->ParseLinearRing(wkt, wkt).SetTo(lr))
 			{
 				cpg.Delete();
-				return 0;
+				return nullptr;
 			}
 			cpg->AddGeometry(lr);
 		}
@@ -456,7 +456,7 @@ Optional<Math::Geometry::CurvePolygon> Math::WKTReader::ParseCurvePolygon(Unsafe
 		else if (wkt[0] != ',')
 		{
 			cpg.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -473,7 +473,7 @@ Optional<Math::Geometry::MultiPolygon> Math::WKTReader::ParseMultiPolygon(Unsafe
 	if (*wkt != '(')
 	{
 		mpg.Delete();
-		return 0;
+		return nullptr;
 	}
 	while (true)
 	{
@@ -481,12 +481,12 @@ Optional<Math::Geometry::MultiPolygon> Math::WKTReader::ParseMultiPolygon(Unsafe
 		if (*wkt != '(')
 		{
 			mpg.Delete();
-			return 0;
+			return nullptr;
 		}
 		if (!this->ParsePolygon(wkt, wkt).SetTo(pg))
 		{
 			mpg.Delete();
-			return 0;
+			return nullptr;
 		}
 		mpg->AddGeometry(pg);
 		if (*wkt == ')')
@@ -497,7 +497,7 @@ Optional<Math::Geometry::MultiPolygon> Math::WKTReader::ParseMultiPolygon(Unsafe
 		else if (wkt[0] != ',')
 		{
 			mpg.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -513,7 +513,7 @@ Optional<Math::Geometry::MultiSurface> Math::WKTReader::ParseMultiSurface(Unsafe
 	if (*wkt != '(')
 	{
 		ms.Delete();
-		return 0;
+		return nullptr;
 	}
 	while (true)
 	{
@@ -528,7 +528,7 @@ Optional<Math::Geometry::MultiSurface> Math::WKTReader::ParseMultiSurface(Unsafe
 		if (*wkt != '(')
 		{
 			ms.Delete();
-			return 0;
+			return nullptr;
 		}
 		if (curve)
 		{
@@ -536,7 +536,7 @@ Optional<Math::Geometry::MultiSurface> Math::WKTReader::ParseMultiSurface(Unsafe
 			if (!this->ParseCurvePolygon(wkt, wkt).SetTo(cpg))
 			{
 				ms.Delete();
-				return 0;
+				return nullptr;
 			}
 			ms->AddGeometry(cpg);
 		}
@@ -546,7 +546,7 @@ Optional<Math::Geometry::MultiSurface> Math::WKTReader::ParseMultiSurface(Unsafe
 			if (!this->ParsePolygon(wkt, wkt).SetTo(pg))
 			{
 				ms.Delete();
-				return 0;
+				return nullptr;
 			}
 			ms->AddGeometry(pg);
 		}
@@ -558,7 +558,7 @@ Optional<Math::Geometry::MultiSurface> Math::WKTReader::ParseMultiSurface(Unsafe
 		else if (wkt[0] != ',')
 		{
 			ms.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -566,7 +566,7 @@ Optional<Math::Geometry::MultiSurface> Math::WKTReader::ParseMultiSurface(Unsafe
 Math::WKTReader::WKTReader(UInt32 srid)
 {
 	this->srid = srid;
-	this->lastError = 0;
+	this->lastError = nullptr;
 }
 
 Math::WKTReader::~WKTReader()
@@ -581,38 +581,38 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 		wkt += 5;
 		NN<Math::Geometry::Point> vec;
 		if (!this->ParsePoint(wkt, wkt).SetTo(vec))
-			return 0;
+			return nullptr;
 		if (wkt[0] == 0)
 			return vec;
 		vec.Delete();
-		return 0;
+		return nullptr;
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"LINESTRING"))
 	{
 		wkt += 10;
 		NN<Math::Geometry::LineString> vec;
 		if (!this->ParseLineString(wkt, wkt, false).SetTo(vec))
-			return 0;
+			return nullptr;
 		if (wkt[0] == 0)
 			return vec;
 		vec.Delete();
-		return 0;
+		return nullptr;
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"POLYGON"))
 	{
 		wkt += 7;
 		NN<Math::Geometry::Polygon> vec;
 		if (!this->ParsePolygon(wkt, wkt).SetTo(vec))
-			return 0;
+			return nullptr;
 		if (wkt[0] == 0)
 			return vec;
 		vec.Delete();
-		return 0;
+		return nullptr;
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"MULTILINESTRING"))
 	{
-		Data::ArrayList<Double> ptList;
-		Data::ArrayList<Double> zList;
+		Data::ArrayListNative<Double> ptList;
+		Data::ArrayListNative<Double> zList;
 		Double x;
 		Double y;
 		Double z;
@@ -625,7 +625,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 		}
 		if (*wkt != '(')
 		{
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(pl, Math::Geometry::Polyline(this->srid));
 		while (true)
@@ -634,7 +634,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 			if (*wkt != '(')
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 			ptList.Clear();
 			zList.Clear();
@@ -644,13 +644,13 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 				if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 				{
 					DEL_CLASS(pl);
-					return 0;
+					return nullptr;
 				}
 				while (*++wkt == ' ');
 				if (!NextDouble(wkt, y).SetTo(wkt))
 				{
 					DEL_CLASS(pl);
-					return 0;
+					return nullptr;
 				}
 				while (*wkt == ' ')
 				{
@@ -658,7 +658,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 					if (!NextDouble(wkt, z).SetTo(wkt))
 					{
 						DEL_CLASS(pl);
-						return 0;
+						return nullptr;
 					}
 					zList.Add(z);
 				}
@@ -676,7 +676,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 				else
 				{
 					DEL_CLASS(pl);
-					return 0;
+					return nullptr;
 				}
 			}
 
@@ -726,13 +726,13 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 		if (*wkt != 0)
 		{
 			DEL_CLASS(pl);
-			return 0;
+			return nullptr;
 		}
 		return pl;
 	}
@@ -741,24 +741,24 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 		wkt += 12;
 		NN<Math::Geometry::MultiPolygon> vec;
 		if (!this->ParseMultiPolygon(wkt, wkt).SetTo(vec))
-			return 0;
+			return nullptr;
 		if (wkt[0] == 0)
 			return vec;
 		vec.Delete();
-		return 0;
+		return nullptr;
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"MULTISURFACE"))
 	{
 		wkt += 12;
 		NN<Math::Geometry::MultiSurface> vec;
 		if (!this->ParseMultiSurface(wkt, wkt).SetTo(vec))
-			return 0;
+			return nullptr;
 		if (wkt[0] == 0)
 			return vec;
 		vec.Delete();
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<const UTF8Char> Math::WKTReader::GetLastError()

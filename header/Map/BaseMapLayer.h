@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_BASEMAPLAYER
 #define _SM_MAP_BASEMAPLAYER
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -28,7 +28,7 @@ namespace Map
 			BLT_GMAP_SATELITE
 		} BaseLayerType;
 	public:
-		static UOSInt GetLayerTypes(NN<Data::ArrayList<BaseLayerType>> layerTypes);
+		static UOSInt GetLayerTypes(NN<Data::ArrayListNative<BaseLayerType>> layerTypes);
 		static Text::CStringNN BaseLayerTypeGetName(BaseLayerType blt);
 		static Optional<Map::MapDrawLayer> CreateLayer(BaseLayerType blt, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers);
 	};

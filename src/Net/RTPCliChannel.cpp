@@ -344,7 +344,7 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 	{
 		port = (UInt16)(port + 1);
 	}
-	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
+	NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->chData->rtpUDP->GetPort();
@@ -352,11 +352,11 @@ Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<
 		{
 			port = (UInt16)(port + 1);
 			DEL_CLASS(this->chData->rtpUDP);
-			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
+			NEW_CLASS(this->chData->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this->chData, log, nullptr, this->chData->threadCnt, false));
 		}
 	}
 	this->chData->rtpUDP->SetBuffSize(1048576);
-	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, 0, (UInt16)(port + 1), nullptr, PacketCtrlHdlr, this->chData, log, nullptr, 1, false));
+	NEW_CLASS(this->chData->rtcpUDP, Net::UDPServer(sockf, nullptr, (UInt16)(port + 1), nullptr, PacketCtrlHdlr, this->chData, log, nullptr, 1, false));
 }
 
 Net::RTPCliChannel::RTPCliChannel(Net::RTPCliChannel *ch)
@@ -430,25 +430,25 @@ void Net::RTPCliChannel::SetMediaType(Media::MediaType mediaType)
 Optional<Media::VideoSource> Net::RTPCliChannel::GetVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
-		return 0;
+		return nullptr;
 	return (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
 }
 
 Optional<Media::AudioSource> Net::RTPCliChannel::GetAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
-		return 0;
-	return 0;//(Net::RTPVPLHandler*)this->payloadMap->GetValues()->GetItem(index);
+		return nullptr;
+	return nullptr;//(Net::RTPVPLHandler*)this->payloadMap->GetValues()->GetItem(index);
 }
 
 Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
-		return 0;
+		return nullptr;
 	NN<Net::RTPVPLHandler> hdlr;
 	if (!hdlr.Set((Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index)))
 	{
-		return 0;
+		return nullptr;
 	}
 	Net::RTPVSource *vSrc;
 	NN<Net::RTPCliChannel> ch;
@@ -460,11 +460,11 @@ Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 Optional<Media::AudioSource> Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
-		return 0;
+		return nullptr;
 	NN<Net::RTPAPLHandler> hdlr;
 	if (!hdlr.Set((Net::RTPAPLHandler*)this->chData->payloadMap.GetItem(index)))
 	{
-		return 0;
+		return nullptr;
 	}
 	Net::RTPASource *aSrc;
 	NN<Net::RTPCliChannel> ch;

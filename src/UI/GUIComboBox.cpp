@@ -55,7 +55,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIComboBox::GetSelectedItemText(UnsafeArray<UTF8Ch
 	UOSInt i = this->GetSelectedIndex();
 	NN<Text::String> s;
 	if (i == INVALID_INDEX || !this->itemTexts.GetItem(i).SetTo(s))
-		return 0;
+		return nullptr;
 	return Text::StrConcatC(sbuff, s->v, s->leng);
 }
 
@@ -63,7 +63,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIComboBox::GetItemText(UnsafeArray<UTF8Char> buff
 {
 	NN<Text::String> txt;
 	if (!this->itemTexts.GetItem(index).SetTo(txt))
-		return 0;
+		return nullptr;
 	return Text::StrConcatC(buff, txt->v, txt->leng);
 }
 

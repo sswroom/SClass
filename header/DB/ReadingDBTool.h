@@ -1,6 +1,6 @@
 #ifndef _SM_DB_READINGDBTOOL
 #define _SM_DB_READINGDBTOOL
-#include "Data/TwinItem.h"
+#include "Data/TwinItemObj.hpp"
 #include "DB/DBConn.h"
 #include "DB/SQLBuilder.h"
 #include "DB/TableDef.h"
@@ -110,8 +110,8 @@ namespace DB
 		virtual Optional<Text::String> GetCurrDBName();
 		Bool GetDBCollation(Text::CStringNN databaseName, NN<Collation> collation);
 
-		UOSInt GetVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
-		void FreeVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
+		UOSInt GetVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars);
+		void FreeVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars);
 
 		UOSInt GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
 		void FreeConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);

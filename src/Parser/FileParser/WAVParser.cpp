@@ -1,7 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
-#include "Data/ArrayListInt32.h"
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
 #include "IO/Stream.h"
@@ -51,9 +49,9 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 	UInt32 fileSize;
 	UInt64 currPos;
 	if (ReadNUInt32(&hdr[0]) != *(UInt32*)"RIFF")
-		return 0;
+		return nullptr;
 	if (ReadNUInt32(&hdr[8]) != *(UInt32*)"WAVE")
-		return 0;
+		return nullptr;
 	fileSize = ReadUInt32(&hdr[4]) + 8;
 
 	Media::MediaFile *vid;
@@ -108,7 +106,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					else
 					{
 						data.Delete();
-						return 0;
+						return nullptr;
 					}
 				}
 				else if (fmt.ReadI16(0) == 0x55)
@@ -126,7 +124,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					else
 					{
 						data.Delete();
-						return 0;
+						return nullptr;
 					}
 				}
 				else if (fmt.ReadI16(0) == 0x50)
@@ -144,7 +142,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					else
 					{
 						data.Delete();
-						return 0;
+						return nullptr;
 					}
 				}
 				else if (*(Int16*)&fmt[12] > 1)
@@ -163,10 +161,10 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 		}
 		else if (ReadUInt32(&chunkBuff[0]) & 0x80808080)
 		{
-			return 0;
+			return nullptr;
 		}
 
 		currPos += ReadUInt32(&chunkBuff[4]) + 8;
 	}
-	return 0;
+	return nullptr;
 }

@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
+#include "Data/FastMapObj.hpp"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "IO/StreamDataStream.h"
@@ -20,8 +21,8 @@
 Parser::FileParser::TXTParser::TXTParser()
 {
 	this->codePage = 0;
-	this->parsers = 0;
-	this->mapMgr = 0;
+	this->parsers = nullptr;
+	this->mapMgr = nullptr;
 }
 
 Parser::FileParser::TXTParser::~TXTParser()
@@ -79,7 +80,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 	UOSInt k;
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".TXT")))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Parser::ParserList> parsers;
 	NN<Map::MapManager> mapMgr;
@@ -87,15 +88,15 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 	IO::StreamReader reader(stm, this->codePage);
 	if (!reader.ReadLine(sbuff, 255).SetTo(sptr))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && this->parsers.SetTo(parsers) && this->mapMgr.SetTo(mapMgr))
 	{
 		NN<Map::MapEnv> env;
-		Optional<Map::MapEnv::GroupItem> currGroup = 0;
+		Optional<Map::MapEnv::GroupItem> currGroup = nullptr;
 		if (Text::StrSplitTrimP(sarr, 8, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 		{
-			return 0;
+			return nullptr;
 		}
 
 		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
@@ -111,7 +112,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 				fileName = fd->GetFullFileName()->ConcatTo(baseDir);
 				fileName = IO::Path::AppendPath(baseDir, fileName, sarr[1].ToCString());
@@ -123,7 +124,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 				j = Text::StrToUInt32(sarr[1].v);
 				if (env->GetLineStyleCount() <= j)
@@ -156,7 +157,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 				env->SetLineStyleName(Text::StrToUInt32(sarr[1].v), sarr[2].ToCString());
 			}
@@ -175,7 +176,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 				i = Text::StrToUInt32(sarr[1].v);
 				if (env->GetFontStyle(i, fontName, fontSize, bold, fontColor, buffSize, buffColor))
@@ -223,7 +224,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				NN<Map::MapDrawLayer> lyr;
@@ -247,7 +248,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
@@ -274,7 +275,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				NN<Map::MapDrawLayer> lyr;
@@ -313,7 +314,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					mapMgr->ClearMap(env);
 					env.Delete();
-					return 0;
+					return nullptr;
 				}
 				OSInt si;
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
@@ -339,7 +340,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("15,")))
 			{
-				currGroup = env->AddGroup(0, CSTRP(&sbuff[3], sptr));
+				currGroup = env->AddGroup(nullptr, CSTRP(&sbuff[3], sptr));
 			}
 		}
 
@@ -352,7 +353,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		fileName = Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));
 		if (IO::Path::GetPathType(CSTRP(sbuff4, fileName)) != IO::Path::PathType::File)
 		{
-			return 0;
+			return nullptr;
 		}
 
 		Bool hasPt = false;
@@ -362,8 +363,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		Data::ArrayListDbl ptX;
 		Data::ArrayListDbl ptY;
 		Data::ArrayListDbl ptZ;
-		Data::FastMap<Int32, Math::Geometry::Vector2D *> vecMap;
-		Data::FastMap<Int32, Bool> vecUsed;
+		Data::FastMapObj<Int32, Math::Geometry::Vector2D *> vecMap;
+		Data::FastMapNative<Int32, Bool> vecUsed;
 		Int32 currId = 0;
 		Math::Geometry::Polygon *pg;
 		Math::Geometry::LineString *pl;
@@ -527,7 +528,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		{
 			csarr[i] = UnsafeArray<const UTF8Char>(sarr[i].v);
 		}
-		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, csarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, csarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, nullptr));
 		while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 		{
 			i = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
@@ -557,7 +558,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		}
 		return lyr;
 	}
-	return 0;
+	return nullptr;
 }
 
 UInt32 Parser::FileParser::TXTParser::ToColor(UInt32 val)

@@ -10,7 +10,7 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(AnyType userObj)
 	UOSInt i = me->cboFilter->GetSelectedIndex();
 	if (i == 0)
 	{
-		SSWR::SHPConv::SHPConvValueFilterForm frm(0, me->ui, me->dbf);
+		SSWR::SHPConv::SHPConvValueFilterForm frm(nullptr, me->ui, me->dbf);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->filter = frm.GetFilter();
@@ -19,7 +19,7 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(AnyType userObj)
 	}
 	else if (i == 1)
 	{
-		SSWR::SHPConv::SHPConvRangeFilterForm frm(0, me->ui, me->deng);
+		SSWR::SHPConv::SHPConvRangeFilterForm frm(nullptr, me->ui, me->deng);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->filter = frm.GetFilter();
@@ -28,7 +28,7 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(AnyType userObj)
 	}
 	else if (i == 2)
 	{
-		SSWR::SHPConv::SHPConvElevationFilterForm frm(0, me->ui, me->dbf);
+		SSWR::SHPConv::SHPConvElevationFilterForm frm(nullptr, me->ui, me->dbf);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->filter = frm.GetFilter();
@@ -52,7 +52,7 @@ SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(Optional<UI::GUIClient
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	this->deng = deng;
 	this->dbf = dbf;
-	this->filter = 0;
+	this->filter = nullptr;
 	
 	this->lblFilter = ui->NewLabel(*this, CSTR("Filter Type"));
 	this->lblFilter->SetRect(8, 16, 64, 23, false);

@@ -55,7 +55,7 @@ void Net::SSHTCPChannel::Close()
 	if (this->channel.SetTo(channel))
 	{
 		this->conn->ChannelClose(channel);
-		this->channel = 0;
+		this->channel = nullptr;
 	}
 }
 

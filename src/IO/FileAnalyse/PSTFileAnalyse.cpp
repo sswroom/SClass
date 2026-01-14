@@ -68,7 +68,7 @@ void __stdcall IO::FileAnalyse::PSTFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::PSTFileAnalyse::PSTFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("PSTFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->unicode = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
@@ -148,9 +148,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PSTFileAnalyse::GetFrame
 	UOSInt j;
 	UInt32 v32;
 	if (!this->items.GetItem(index).SetTo(item))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(item->ofst, item->size));
 	if (item->packType == PackType::Header)
 	{

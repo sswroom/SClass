@@ -104,7 +104,7 @@ Media::CS::CSRGB16_LRGBC::CSRGB16_LRGBC(UOSInt srcNBits, Media::PixelFormat srcP
 	{
 		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
 	}
-	this->rgbTable = 0;
+	this->rgbTable = nullptr;
 	this->rgbUpdated = true;
 }
 
@@ -114,7 +114,7 @@ Media::CS::CSRGB16_LRGBC::~CSRGB16_LRGBC()
 	if (this->rgbTable.SetTo(rgbTable))
 	{
 		MemFreeAArr(rgbTable);
-		this->rgbTable = 0;
+		this->rgbTable = nullptr;
 	}
 }
 

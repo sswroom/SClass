@@ -7,6 +7,7 @@
 
 namespace Data
 {
+	// ArrayList of aligned data type
 	template <class T> class ArrayListA : public List<T>, public ArrayCollection<T>
 	{
 	protected:

@@ -8,32 +8,32 @@ IO::Sensor::~Sensor()
 
 Optional<IO::SensorAccelerometer> IO::Sensor::GetSensorAccelerator()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::SensorPressure> IO::Sensor::GetSensorPressure()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::SensorMagnetometer> IO::Sensor::GetSensorMagnetometer()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::SensorOrientation> IO::Sensor::GetSensorOrientation()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::SensorLocation> IO::Sensor::GetSensorLocation()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::SensorLight> IO::Sensor::GetSensorLight()
 {
-	return 0;
+	return nullptr;
 }
 
 Text::CStringNN IO::Sensor::GetSensorTypeName(SensorType sensorType)

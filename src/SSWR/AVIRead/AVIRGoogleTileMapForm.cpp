@@ -34,7 +34,7 @@ SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(Optional<UI::GUIClie
 
 	this->core = core;
 	this->ssl = ssl;
-	this->layer = 0;
+	this->layer = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblMapType = ui->NewLabel(*this, CSTR("Map Type"));

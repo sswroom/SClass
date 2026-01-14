@@ -1025,7 +1025,7 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NN<DB::SQLBuilder> sql, Text::CString s
 
 Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, NN<DB::DBReader> r)
 {
-	return GenInsertCmd(sql, schemaName, tableName, 0, r);
+	return GenInsertCmd(sql, schemaName, tableName, nullptr, r);
 }
 
 Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, NN<DB::TableDef> tabDef, NN<DB::DBReader> r)
@@ -1146,7 +1146,7 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 			case DB::DBUtil::CT_Binary:
 				if (r->IsNull(i))
 				{
-					sql->AppendStrUTF8(0);
+					sql->AppendStrUTF8(nullptr);
 				}
 				else
 				{
@@ -1303,11 +1303,15 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NN<DB::SQLBuilde
 		Bool hasOrder = false;
 		UOSInt i = 1;
 		UOSInt j = nnpage->GetSortingCount();
+		UnsafeArray<const UTF8Char> sortCol;
 		if (j > 0)
 		{
 			hasOrder = true;
 			sql->AppendCmdC(CSTR(" order by "));
-			sql->AppendCol(nnpage->GetSortColumn(0));
+			if (nnpage->GetSortColumn(0).SetTo(sortCol))
+			{
+				sql->AppendCol(sortCol);
+			}
 			if (nnpage->IsSortDesc(0))
 			{
 				sql->AppendCmdC(CSTR(" desc"));
@@ -1315,7 +1319,10 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NN<DB::SQLBuilde
 			while (i < j)
 			{
 				sql->AppendCmdC(CSTR(", "));
-				sql->AppendCol(nnpage->GetSortColumn(i));
+				if (nnpage->GetSortColumn(i).SetTo(sortCol))
+				{
+					sql->AppendCol(sortCol);
+				}
 				if (nnpage->IsSortDesc(i))
 				{
 					sql->AppendCmdC(CSTR(" desc"));

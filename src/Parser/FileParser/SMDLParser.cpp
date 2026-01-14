@@ -233,7 +233,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 	s = fd->GetFullName();
 	if (!s->EndsWith(UTF8STRC(".loc")))
 	{
-		return 0;
+		return nullptr;
 	}
 	sptr = fd->GetFullName()->v;
 	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
@@ -243,13 +243,13 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 	t = Text::StrToInt32(sbuff);
 	fileSize = fd->GetDataSize();
 	if (fd->GetRealData(0, 252, BYTEARR(buff)) != 252)
-		return 0;
+		return nullptr;
 	Data::DateTime dt;
 	dt.SetTicks(ReadInt64(&buff[0]));
 	fileT = dt.GetYear() * 10000 + dt.GetMonth() * 100 + dt.GetDay();
 	if (fileT != t)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	NN<Map::GPSTrack> track;

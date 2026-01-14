@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/StringMapNative.hpp"
 #include "DB/DBReader.h"
 #include "DB/JavaDBUtil.h"
 #include "DB/MSSQLConn.h"
@@ -7,7 +8,7 @@
 
 #define LOGPREFIX CSTR("DB:")
 
-NN<Text::String> DB::JavaDBUtil::AppendFieldAnno(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> colDef, NN<Data::StringMap<Bool>> importMap)
+NN<Text::String> DB::JavaDBUtil::AppendFieldAnno(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> colDef, NN<Data::StringMapNative<Bool>> importMap)
 {
 	if (colDef->IsPK())
 	{
@@ -36,7 +37,7 @@ NN<Text::String> DB::JavaDBUtil::AppendFieldAnno(NN<Text::StringBuilderUTF8> sb,
 	}
 }
 
-void DB::JavaDBUtil::AppendFieldDef(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Data::StringMap<Bool>> importMap)
+void DB::JavaDBUtil::AppendFieldDef(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Data::StringMapNative<Bool>> importMap)
 {
 	sb->AppendC(UTF8STRC("\tprivate "));
 	DB::DBUtil::ColType colType = col->GetColType();
@@ -201,7 +202,7 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Tex
 {
 	if (!url->StartsWith(UTF8STRC("jdbc:")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (url->StartsWith(5, UTF8STRC("sqlserver://")))
 	{
@@ -221,7 +222,7 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Tex
 		{
 			if (!Text::StrToUInt16(sarr2[1].v, port))
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		while (scnt == 2)
@@ -238,12 +239,12 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(NN<Text::String> url, Optional<Tex
 		}
 		return MSSQLConn::CreateDBToolTCP(sarr2[0].ToCString(), port, encrypt, dbName, OPTSTR_CSTR(username), OPTSTR_CSTR(password), log, LOGPREFIX);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> schemaName, NN<Text::String> tableName, Optional<Text::String> databaseName, NN<DB::ReadingDB> db)
 {
-	Data::StringMap<Bool> importMap;
+	Data::StringMapNative<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;
 	Text::StringBuilderUTF8 sbConstrHdr;
 	Text::StringBuilderUTF8 sbConstrItem;
@@ -351,7 +352,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 	else
 	{
 		NN<DB::DBReader> r;
-		if (db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			DB::ColDef colDef(CSTR(""));
 			UOSInt j = 0;

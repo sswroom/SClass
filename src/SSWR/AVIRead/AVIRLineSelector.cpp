@@ -58,18 +58,18 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 		if (currPos == defVal)
 		{
 			NN<Media::DrawBrush> bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(itemTH)), 0, bDef);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(itemTH)), nullptr, bDef);
 			img->DelBrush(bDef);
 		}
 		else
 		{
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bWhite);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), nullptr, bWhite);
 		}
 		this->core->GenLineStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currLineStyle)
 		{
 			NN<Media::DrawBrush> bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(itemW, itemTH), 0, bRed);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(itemW, itemTH), nullptr, bRed);
 			img->DelBrush(bRed);
 		}
 		if (w >= itemW)
@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 	}
 	if (i < h)
 	{
-		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h - i)), 0, bWhite);
+		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h - i)), nullptr, bWhite);
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);
@@ -141,7 +141,7 @@ SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NN<UI::GUICore> ui, NN<UI::GUI
 	this->env = env;
 	this->colorSess = colorSess;
 	this->currLineStyle = initLineStyle;
-	this->mnuLayers = 0;
+	this->mnuLayers = nullptr;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));

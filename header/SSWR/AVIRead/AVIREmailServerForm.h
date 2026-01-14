@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIREMAILSERVERFORM
 #include "Data/ArrayListNN.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Net/Email/EmailStore.h"
 #include "Net/Email/POP3Server.h"
 #include "Net/Email/SMTPServer.h"
@@ -91,7 +92,7 @@ namespace SSWR
 			Optional<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 
 			Sync::Mutex userMut;
-			Data::FastStringMap<UOSInt> userMap;
+			Data::FastStringMapNative<UOSInt> userMap;
 			Data::ArrayListStringNN userList;
 
 			NN<Net::Email::EmailStore> store;
@@ -126,7 +127,7 @@ namespace SSWR
 
 			virtual Bool Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId);
 			virtual UOSInt GetMessageStat(Int32 userId, OutParam<UOSInt> size);
-			virtual Bool GetUnreadList(Int32 userId, NN<Data::ArrayList<UInt32>> unreadList);
+			virtual Bool GetUnreadList(Int32 userId, NN<Data::ArrayListNative<UInt32>> unreadList);
 			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, NN<MessageInfo> info);
 			virtual Bool GetMessageContent(Int32 userId, UInt32 msgId, NN<IO::Stream> stm);
 			virtual RemoveStatus RemoveMessage(Int32 userId, UInt32 msgId);

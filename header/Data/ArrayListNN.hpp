@@ -402,13 +402,13 @@ namespace Data
 
 	template <class T> Optional<T> ArrayListNN<T>::GetLast()
 	{
-		if (this->objCnt == 0) return 0;
+		if (this->objCnt == 0) return nullptr;
 		return arr[this->objCnt - 1];
 	}
 
 	template <class T> Optional<T> ArrayListNN<T>::Pop()
 	{
-		if (this->objCnt == 0) return 0;
+		if (this->objCnt == 0) return nullptr;
 		NN<T> o = arr[this->objCnt - 1];
 		this->objCnt--;
 		return o;

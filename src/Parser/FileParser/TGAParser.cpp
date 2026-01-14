@@ -55,12 +55,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 	UInt64 ds = fd->GetDataSize();
 	if (fd->GetRealData(ds - 26, 26, BYTEARR(footer)) != 26)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	if (*(Int32*)&footer[8] != 0x45555254 || *(Int32*)&footer[12] != 0x49534956 || *(Int32*)&footer[16] != 0x582D4E4F || *(Int32*)&footer[20] != 0x454C4946 || *(Int16*)&footer[24] != 0x2E)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	bpp = hdr[16];
@@ -68,17 +68,17 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 	imgHeight = *(UInt16*)&hdr[14];
 	if (hdr[17] & 0x10)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (bpp != 32)//bpp != 1 && bpp != 2 && bpp != 4 && bpp != 8 && bpp != 16 && bpp != 24 && bpp != 32)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	if (outImg == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	imgPos = 18;
@@ -89,31 +89,31 @@ Optional<IO::ParsedObject> Parser::FileParser::TGAParser::ParseFileHdr(NN<IO::St
 		if (hdr[7] == 32)
 		{
 			DEL_CLASS(outImg);
-			return 0;
+			return nullptr;
 			/////////////////////////////////////
 		}
 		else if (hdr[7] == 16 || hdr[7] == 15)
 		{
 			DEL_CLASS(outImg);
-			return 0;
+			return nullptr;
 			/////////////////////////////////////
 		}
 		else if (hdr[7] == 24)
 		{
 			DEL_CLASS(outImg);
-			return 0;
+			return nullptr;
 			/////////////////////////////////////
 		}
 		else
 		{
 			DEL_CLASS(outImg);
-			return 0;
+			return nullptr;
 		}
 	}
 	else if (hdr[1] != 0 || bpp <= 8)
 	{
 		DEL_CLASS(outImg);
-		return 0;
+		return nullptr;
 	}
 
 	if (outImg)
@@ -356,6 +356,6 @@ rle32exit:
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

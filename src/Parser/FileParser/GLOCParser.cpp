@@ -269,14 +269,14 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 	sptr2 = Text::StrConcatC(sbuff, &sptr[i + 1], name->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr2 - sbuff), UTF8STRC("GLOC")))
 	{
-		return 0;
+		return nullptr;
 	}
 	i = Text::StrIndexOfChar(sbuff, '_');
 	if (i == INVALID_INDEX)
 	{
 		i = Text::StrIndexOfChar(sbuff, '.');
 		if (i == INVALID_INDEX)
-			return 0;
+			return nullptr;
 		sbuff[i] = 0;
 		devId = Text::StrToInt64(&sbuff[4]);
 	}
@@ -286,14 +286,14 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 		devId = Text::StrToInt64(&sbuff[4]);
 	}
 	if (devId == 0)
-		return 0;
+		return nullptr;
 	fileSize = fd->GetDataSize();
 	if (fileSize & 127)
-		return 0;
+		return nullptr;
 	idevId = (UInt32)(devId & 0xffffffffLL);
 
 	if (ReadUInt32(&hdr[0]) != idevId || (fileSize > 128 && ReadUInt32(&hdr[128]) != idevId) || (fileSize > 256 && ReadUInt32(&hdr[256]) != idevId))
-		return 0;
+		return nullptr;
 
 	Map::GPSTrack *track;
 	sptr = Text::StrInt64(sbuff, devId);

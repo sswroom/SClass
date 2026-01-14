@@ -1,7 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
-#include "Data/ArrayListInt32.h"
 #include "Core/ByteTool_C.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
@@ -43,9 +41,9 @@ IO::ParserType Parser::FileParser::XPCMParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::XPCMParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"XPCM")
-		return 0;
+		return nullptr;
 	if (ReadUInt64(&hdr[4]) != fd->GetDataSize() - 28)
-		return 0;
+		return nullptr;
 
 	Media::MediaFile *vid;
 	Media::AudioFormat af;

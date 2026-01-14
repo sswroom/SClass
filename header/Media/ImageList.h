@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_IMAGELIST
 #define _SM_MEDIA_IMAGELIST
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListUInt32.h"
 #include "IO/ParsedObject.h"
@@ -44,15 +44,15 @@ namespace Media
 		} ThermoType;
 	public:
 		Data::ArrayListNN<Media::RasterImage> imgList;
-		Data::ArrayList<ImageType> imgTypeList;
-		Data::ArrayListUInt32 imgTimes;
+		Data::ArrayListNative<ImageType> imgTypeList;
+		Data::ArrayListNative<UInt32> imgTimes;
 		UnsafeArrayOpt<const UTF8Char> author;
 		UnsafeArrayOpt<const UTF8Char> imgName;
-		Data::ArrayList<ValueType> valTypeI32;
-		Data::ArrayList<Int32> valI32;
-		Data::ArrayList<ValueType> valTypeI64;
-		Data::ArrayList<Int64> valI64;
-		Data::ArrayList<ValueType> valTypeStr;
+		Data::ArrayListNative<ValueType> valTypeI32;
+		Data::ArrayListNative<Int32> valI32;
+		Data::ArrayListNative<ValueType> valTypeI64;
+		Data::ArrayListNative<Int64> valI64;
+		Data::ArrayListNative<ValueType> valTypeStr;
 		Data::ArrayListStringNN valStr;
 
 		Math::Size2D<UOSInt> thermoSize;

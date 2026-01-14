@@ -16,6 +16,8 @@ public:
 		this->p = p;
 	}
 
+	UnsafeArrayOpt(UOSInt p) = delete;
+
 	UnsafeArrayOpt(UnsafeArray<T> p)
 	{
 		this->p = p.Ptr();

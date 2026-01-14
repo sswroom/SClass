@@ -74,7 +74,7 @@ UnsafeArrayOpt<UTF8Char> Map::OSM::OSMTileMap::GetTileImageURL(UnsafeArray<UTF8C
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 		return sptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Map::OSM::OSMTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)

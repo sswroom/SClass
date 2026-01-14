@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORCORE
 #define _SM_SSWR_SMONITOR_SMONITORCORE
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/FastMapNN.hpp"
 #include "IO/MemoryStream.h"
@@ -117,7 +118,7 @@ namespace SSWR
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId) = 0;
 			virtual UOSInt UserGetList(NN<Data::ArrayListNN<WebUser>> userList) = 0;
 			virtual Optional<WebUser> UserGet(Int32 userId) = 0;
-			virtual Bool UserAssign(Int32 userId, NN<Data::ArrayList<Int64>> devIdList) = 0;
+			virtual Bool UserAssign(Int32 userId, NN<Data::ArrayListNative<Int64>> devIdList) = 0;
 
 			virtual Bool SendCapturePhoto(Int64 cliId) = 0;
 		};

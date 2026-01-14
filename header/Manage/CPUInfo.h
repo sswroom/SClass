@@ -1,6 +1,5 @@
 #ifndef _SM_MANAGE_CPUINFO
 #define _SM_MANAGE_CPUINFO
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListArr.hpp"
 #include "Manage/CPUVendor.h"
 #include "Text/CString.h"

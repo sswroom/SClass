@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_XMLDOM
 #define _SM_TEXT_XMLDOM
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListNN.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "IO/Stream.h"
 #include "Text/CString.h"
 #include "Text/EncodingFactory.h"
@@ -60,10 +60,10 @@ namespace Text
 		void GetInnerText(NN<Text::StringBuilderUTF8> sb);
 	private:
 		void SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<XMLNode>> outArr, Bool singleResult);
-		Bool SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
-		Bool SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
-		Bool SearchEqual(UOSInt level, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr);
-		Bool SearchEval(UOSInt level, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB);
+		Bool SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
+		Bool SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
+		Bool SearchEqual(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr);
+		Bool SearchEval(UOSInt level, NN<Data::ArrayListObj<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB);
 	public:
 		static Text::CStringNN NodeTypeGetName(NodeType ntype);
 	};

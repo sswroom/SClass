@@ -28,7 +28,7 @@ Optional<Text::JSONBase> Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 	if (!cli->ReadAllContent(sb, 8192, 1048576))
 	{
 		cli.Delete();
-		return 0;
+		return nullptr;
 	}
 	cli.Delete();
 #if defined(VERBOSE)
@@ -55,7 +55,7 @@ Optional<Text::String> Net::SolarEdgeAPI::GetCurrentVersion()
 	this->BuildURL(sbURL, CSTR("/version/current"));
 	NN<Text::JSONBase> json;
 	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
-		return 0;
+		return nullptr;
 	Optional<Text::String> s = json->GetValueString(CSTR("version.release"));
 	if (s.IsNull())
 	{
@@ -234,7 +234,7 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, NN<SiteOverview> overview)
 	return true;
 }
 
-Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayList<TimedValue>> values)
+Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayListT<TimedValue>> values)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -281,7 +281,7 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	return succ;
 }
 
-Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, NN<Data::ArrayList<TimedValue>> values)
+Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, NN<Data::ArrayListT<TimedValue>> values)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;

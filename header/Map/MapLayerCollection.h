@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPLAYERCOLLECTION
 #define _SM_MAP_MAPLAYERCOLLECTION
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/CallbackStorage.h"
 #include "Map/MapDrawLayer.h"
 #include "Sync/RWMutex.h"
@@ -13,7 +13,7 @@ namespace Map
 	private:
 		Sync::RWMutex mut;
 		Data::ArrayListNN<Map::MapDrawLayer> layerList;
-		Data::ArrayList<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
 
 		static void __stdcall InnerUpdated(AnyType userObj);
 	public:

@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyTy
 		Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData> itemList;
 		NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
 		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-		me->ctrl->GetChannelItems(s, 0, itemList, 0);
+		me->ctrl->GetChannelItems(s, 0, itemList, nullptr);
 		s->Release();
 		i = 0;
 		j = itemList.GetCount();
@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(Optional<UI::GUICl
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	//const UnsafeArray<UTF8Char> userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), 0));
+	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), nullptr));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlRequest = ui->NewPanel(*this);

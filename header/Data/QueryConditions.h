@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_QUERYCONDITIONS
 #define _SM_DATA_QUERYCONDITIONS
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListArr.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/Condition.h"
 #include "Data/ObjectGetter.h"
@@ -363,10 +363,10 @@ namespace Data
 		class Int32InCondition : public FieldCondition
 		{
 		private:
-			Data::ArrayList<Int32> vals;
+			Data::ArrayListNative<Int32> vals;
 
 		public:
-			Int32InCondition(Text::CStringNN fieldName, NN<const Data::ArrayList<Int32>> val);
+			Int32InCondition(Text::CStringNN fieldName, NN<const Data::ArrayListNative<Int32>> val);
 			virtual ~Int32InCondition();
 
 			virtual ObjectType GetType() const;
@@ -502,7 +502,7 @@ namespace Data
 		NN<QueryConditions> Int32LE(Text::CStringNN fieldName, Int32 val);
 		NN<QueryConditions> Int32GT(Text::CStringNN fieldName, Int32 val);
 		NN<QueryConditions> Int32LT(Text::CStringNN fieldName, Int32 val);
-		NN<QueryConditions> Int32In(Text::CStringNN fieldName, NN<Data::ArrayList<Int32>> val);
+		NN<QueryConditions> Int32In(Text::CStringNN fieldName, NN<Data::ArrayListNative<Int32>> val);
 		NN<QueryConditions> Int64Equals(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64GE(Text::CStringNN fieldName, Int64 val);
 		NN<QueryConditions> Int64LE(Text::CStringNN fieldName, Int64 val);

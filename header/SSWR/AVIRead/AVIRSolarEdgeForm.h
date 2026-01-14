@@ -23,8 +23,8 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Optional<Net::SolarEdgeAPI> seAPI;
 			Data::ArrayListNN<Net::SolarEdgeAPI::Site> siteList;
-			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> siteEnergyList;
-			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> sitePowerList;
+			Data::ArrayListT<Net::SolarEdgeAPI::TimedValue> siteEnergyList;
+			Data::ArrayListT<Net::SolarEdgeAPI::TimedValue> sitePowerList;
 			Optional<Media::StaticImage> imgSiteEnergy;
 			Optional<Media::StaticImage> imgSitePower;
 

@@ -1,6 +1,6 @@
 #ifndef _SM_MATH_VECTORTEXTWRITERLIST
 #define _SM_MATH_VECTORTEXTWRITERLIST
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Math/VectorTextWriter.h"
 
 namespace Math
@@ -8,7 +8,7 @@ namespace Math
 	class VectorTextWriterList : public Data::ReadingList<Math::VectorTextWriter*>
 	{
 	private:
-		Data::ArrayList<Math::VectorTextWriter*> list;
+		Data::ArrayListObj<Math::VectorTextWriter*> list;
 	public:
 		VectorTextWriterList();
 		virtual ~VectorTextWriterList();

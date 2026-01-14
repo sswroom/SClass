@@ -25,7 +25,7 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	dataSize = fd->GetDataSize();
 	lastSize = 0;
 	
-	tag = 0;
+	tag = nullptr;
 
 	while (ofst < dataSize && !thread->IsStopping())
 	{
@@ -55,7 +55,7 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("PNGFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 0x89 && buff[1] != 0x50 && buff[2] != 0x4e && buff[3] != 0x47 && buff[4] != 0x0d && buff[5] != 0x0a && buff[6] != 0x1a && buff[7] != 0x0a)
@@ -337,9 +337,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, U8STR("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));

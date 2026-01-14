@@ -32,7 +32,7 @@ Optional<Net::WebDriverOSInfo> Net::WebDriverOSInfo::Parse(NN<Text::JSONObject> 
 		NEW_CLASSNN(me, Net::WebDriverOSInfo(arch->Clone(), name->Clone(), version->Clone()));
 		return me;
 	}
-	return 0;
+	return nullptr;
 }
 
 Net::WebDriverSlot::WebDriverSlot()
@@ -46,7 +46,7 @@ Net::WebDriverSlot::~WebDriverSlot()
 Optional<Net::WebDriverSlot> Net::WebDriverSlot::Parse(NN<Text::JSONObject> obj)
 {
 	/////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 Net::WebDriverNode::WebDriverNode()
@@ -124,9 +124,9 @@ void Net::WebDriverBrowserOptions::BuildW3CJSON(NN<Text::JSONBuilder> builder) c
 Net::WebDriverBrowserOptions::WebDriverBrowserOptions(Text::CStringNN browserName)
 {
 	this->browserName = Text::String::New(browserName);
-	this->pageLoadStrategy = 0;
-	this->platformName = 0;
-	this->timeouts = 0;
+	this->pageLoadStrategy = nullptr;
+	this->platformName = nullptr;
+	this->timeouts = nullptr;
 }
 
 Net::WebDriverBrowserOptions::~WebDriverBrowserOptions()
@@ -157,7 +157,7 @@ void Net::WebDriverBrowserOptions::SetTimeouts(Optional<WebDriverTimeouts> timeo
 
 Net::WebDriverChromeOptions::WebDriverChromeOptions() : WebDriverBrowserOptions(CSTR("chrome"))
 {
-	this->mobileDeviceName = 0;
+	this->mobileDeviceName = nullptr;
 }
 
 Net::WebDriverChromeOptions::~WebDriverChromeOptions()
@@ -210,7 +210,7 @@ void Net::WebDriverChromeOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
 
 Net::WebDriverMSEdgeOptions::WebDriverMSEdgeOptions() : WebDriverBrowserOptions(CSTR("MicrosoftEdge"))
 {
-	this->mobileDeviceName = 0;
+	this->mobileDeviceName = nullptr;
 }
 
 Net::WebDriverMSEdgeOptions::~WebDriverMSEdgeOptions()
@@ -388,14 +388,14 @@ Optional<Net::WebDriverNode> Net::WebDriverNode::Parse(NN<Text::JSONObject> obj)
 	NN<Text::String> availability;
 	NN<Text::String> version;
 	NN<Text::JSONObject> osinfoObj;
-	if (!obj->GetValueString(CSTR("id")).SetTo(id)) return 0;
-	if (!obj->GetValueString(CSTR("uri")).SetTo(uri)) return 0;
-	if (!obj->GetValueAsInt64(CSTR("maxSessions"), maxSessions)) return 0;
-	if (!obj->GetValueAsInt64(CSTR("sessionTimeout"), sessionTimeout)) return 0;
-	if (!obj->GetValueAsInt64(CSTR("heartbeatPeriod"), heartbeatPeriod)) return 0;
-	if (!obj->GetValueString(CSTR("availability")).SetTo(availability)) return 0;
-	if (!obj->GetValueString(CSTR("version")).SetTo(version)) return 0;
-	if (!obj->GetValueObject(CSTR("osinfo")).SetTo(osinfoObj) || !WebDriverOSInfo::Parse(osinfoObj).SetTo(osinfo)) return 0;
+	if (!obj->GetValueString(CSTR("id")).SetTo(id)) return nullptr;
+	if (!obj->GetValueString(CSTR("uri")).SetTo(uri)) return nullptr;
+	if (!obj->GetValueAsInt64(CSTR("maxSessions"), maxSessions)) return nullptr;
+	if (!obj->GetValueAsInt64(CSTR("sessionTimeout"), sessionTimeout)) return nullptr;
+	if (!obj->GetValueAsInt64(CSTR("heartbeatPeriod"), heartbeatPeriod)) return nullptr;
+	if (!obj->GetValueString(CSTR("availability")).SetTo(availability)) return nullptr;
+	if (!obj->GetValueString(CSTR("version")).SetTo(version)) return nullptr;
+	if (!obj->GetValueObject(CSTR("osinfo")).SetTo(osinfoObj) || !WebDriverOSInfo::Parse(osinfoObj).SetTo(osinfo)) return nullptr;
 	NN<WebDriverSlot> slot;
 	NN<WebDriverNode> node;
 	NEW_CLASSNN(node, WebDriverNode());
@@ -427,8 +427,8 @@ Optional<Net::WebDriverNode> Net::WebDriverNode::Parse(NN<Text::JSONObject> obj)
 
 Net::WebDriverStartSession::WebDriverStartSession(NN<WebDriverBrowserOptions> browser) : capabilities(browser)
 {
-	this->user = 0;
-	this->password = 0;
+	this->user = nullptr;
+	this->password = nullptr;
 }
 
 Net::WebDriverStartSession::~WebDriverStartSession()
@@ -471,7 +471,7 @@ Optional<Text::JSONBase> Net::WebDriverClient::ParseResponse(Net::WebStatus::Sta
 					this->lastErrorStacktrace = s->Clone();
 				}
 				obj->EndUse();
-				return 0;
+				return nullptr;
 			}
 			objBase->BeginUse();
 			obj->EndUse();
@@ -481,7 +481,7 @@ Optional<Text::JSONBase> Net::WebDriverClient::ParseResponse(Net::WebStatus::Sta
 		{
 			obj->EndUse();
 			this->ErrorInvalidResponse(code, mstm, command, param);
-			return 0;
+			return nullptr;
 		}
 	}
 	else if (WebDriver::ParseJSON(mstm).SetTo(obj))
@@ -501,13 +501,13 @@ Optional<Text::JSONBase> Net::WebDriverClient::ParseResponse(Net::WebStatus::Sta
 					this->lastErrorStacktrace = s->Clone();
 				}
 				obj->EndUse();
-				return 0;
+				return nullptr;
 			}
 		}
 		obj->EndUse();
 	}
 	this->ErrorInvalidResponse(code, mstm, command, param);
-	return 0;
+	return nullptr;
 }
 
 void Net::WebDriverClient::ErrorInvalidResponse(Net::WebStatus::StatusCode code, NN<IO::MemoryStream> mstm, Text::CStringNN command, Optional<WebDriverParam> param)
@@ -572,7 +572,7 @@ Optional<Text::String> Net::WebDriverClient::ResponseString(Optional<Text::JSONB
 	NN<Text::JSONBase> json;
 	if (value.SetTo(json))
 	{
-		Optional<Text::String> ret = 0;
+		Optional<Text::String> ret = nullptr;
 		if (json->GetType() == Text::JSONType::String)
 		{
 			ret = NN<Text::JSONString>::ConvertFrom(json)->GetValue()->Clone();
@@ -584,7 +584,7 @@ Optional<Text::String> Net::WebDriverClient::ResponseString(Optional<Text::JSONB
 		json->EndUse();
 		return ret;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Net::WebDriverClient::ResponseBool(Optional<Text::JSONBase> value, OutParam<Bool> outVal, Text::CStringNN command, Optional<WebDriverParam> param)
@@ -602,7 +602,7 @@ Bool Net::WebDriverClient::ResponseBool(Optional<Text::JSONBase> value, OutParam
 Optional<Text::JSONBase> Net::WebDriverClient::DoGet(Text::CStringNN command)
 {
 	IO::MemoryStream mstm;
-	return ParseResponse(this->resource->Get(command, mstm), mstm, command, 0);
+	return ParseResponse(this->resource->Get(command, mstm), mstm, command, nullptr);
 }
 
 Optional<Text::JSONBase> Net::WebDriverClient::DoPost(Text::CStringNN command, NN<WebDriverParam> param)
@@ -627,18 +627,18 @@ Net::WebDriverClient::WebDriverClient(NN<Net::TCPClientFactory> clif, Optional<N
 {
 	NEW_CLASSNN(this->resource, Net::RESTResource(clif, ssl, url));
 	this->lastErrorCode = Net::WebStatus::SC_UNKNOWN;
-	this->lastError = 0;
-	this->lastErrorMessage = 0;
-	this->lastErrorStacktrace = 0;
+	this->lastError = nullptr;
+	this->lastErrorMessage = nullptr;
+	this->lastErrorStacktrace = nullptr;
 }
 
 Net::WebDriverClient::WebDriverClient(NN<Net::RESTResource> resource)
 {
 	this->resource = resource;
 	this->lastErrorCode = Net::WebStatus::SC_UNKNOWN;
-	this->lastError = 0;
-	this->lastErrorMessage = 0;
-	this->lastErrorStacktrace = 0;
+	this->lastError = nullptr;
+	this->lastErrorMessage = nullptr;
+	this->lastErrorStacktrace = nullptr;
 }
 
 Net::WebDriverClient::~WebDriverClient()
@@ -655,12 +655,12 @@ Net::WebDriverSession::WebDriverSession(NN<Net::RESTResource> resource) : WebDri
 
 Net::WebDriverSession::~WebDriverSession()
 {
-	this->ResponseExists(this->DoDelete(CSTR(""), 0));
+	this->ResponseExists(this->DoDelete(CSTR(""), nullptr));
 }
 
 Optional<Net::WebDriverTimeouts> Net::WebDriverSession::GetTimeouts()
 {
-	Optional<WebDriverTimeouts> timeouts = 0;
+	Optional<WebDriverTimeouts> timeouts = nullptr;
 	NN<Text::JSONBase> obj;
 	if (this->DoGet(CSTR("timeouts")).SetTo(obj))
 	{
@@ -670,7 +670,7 @@ Optional<Net::WebDriverTimeouts> Net::WebDriverSession::GetTimeouts()
 		}
 		else
 		{
-			this->ErrorInvalidValue(obj, CSTR("timeouts"), 0);
+			this->ErrorInvalidValue(obj, CSTR("timeouts"), nullptr);
 		}
 		obj->EndUse();
 	}
@@ -696,7 +696,7 @@ Bool Net::WebDriverSession::NavigateTo(Text::CStringNN url)
 
 Optional<Text::String> Net::WebDriverSession::GetCurrentURL()
 {
-	return ResponseString(this->DoGet(CSTR("url")), CSTR("url"), 0);
+	return ResponseString(this->DoGet(CSTR("url")), CSTR("url"), nullptr);
 }
 
 Bool Net::WebDriverSession::Back()
@@ -719,12 +719,12 @@ Bool Net::WebDriverSession::Refresh()
 
 Optional<Text::String> Net::WebDriverSession::GetTitle()
 {
-	return ResponseString(this->DoGet(CSTR("title")), CSTR("title"), 0);
+	return ResponseString(this->DoGet(CSTR("title")), CSTR("title"), nullptr);
 }
 
 Optional<Text::String> Net::WebDriverSession::GetWindowHandle()
 {
-	return ResponseString(this->DoGet(CSTR("window")), CSTR("window"), 0);
+	return ResponseString(this->DoGet(CSTR("window")), CSTR("window"), nullptr);
 }
 
 Bool Net::WebDriverSession::GetWindowRect(OutParam<Math::RectArea<Int64>> rect)
@@ -747,12 +747,12 @@ Bool Net::WebDriverSession::GetWindowRect(OutParam<Math::RectArea<Int64>> rect)
 			}
 			else
 			{
-				this->ErrorInvalidValue(obj, CSTR("window/rect"), 0);
+				this->ErrorInvalidValue(obj, CSTR("window/rect"), nullptr);
 			}
 		}
 		else
 		{
-			this->ErrorInvalidValue(obj, CSTR("window/rect"), 0);
+			this->ErrorInvalidValue(obj, CSTR("window/rect"), nullptr);
 		}
 		obj->EndUse();
 	}
@@ -789,7 +789,7 @@ Bool Net::WebDriverSession::FullscreenWindow()
 
 Optional<Text::String> Net::WebDriverSession::FindElement(NN<WebDriverBy> by)
 {
-	Optional<Text::String> ret = 0;
+	Optional<Text::String> ret = nullptr;
 	NN<Text::JSONBase> obj;
 	NN<Text::JSONObject> valueObj;
 	if (this->DoPost(CSTR("element"), by).SetTo(obj))
@@ -847,7 +847,7 @@ Bool Net::WebDriverSession::FindElements(NN<WebDriverBy> by, NN<Data::ArrayListS
 
 Optional<Text::String> Net::WebDriverSession::FindElementFromElement(Text::CStringNN elementId, NN<WebDriverBy> by)
 {
-	Optional<Text::String> ret = 0;
+	Optional<Text::String> ret = nullptr;
 	NN<Text::JSONBase> obj;
 	NN<Text::JSONObject> valueObj;
 	Text::StringBuilderUTF8 sb;
@@ -917,7 +917,7 @@ Bool Net::WebDriverSession::IsElementDisplayed(Text::CStringNN elementId, OutPar
 	sb.Append(CSTR("element/"));
 	sb.Append(elementId);
 	sb.Append(CSTR("/displayed"));
-	return ResponseBool(DoGet(sb.ToCString()), displayed, sb.ToCString(), 0);
+	return ResponseBool(DoGet(sb.ToCString()), displayed, sb.ToCString(), nullptr);
 }
 
 Bool Net::WebDriverSession::IsElementDisplayed(Text::CStringNN elementId)
@@ -932,7 +932,7 @@ Bool Net::WebDriverSession::IsElementSelected(Text::CStringNN elementId, OutPara
 	sb.Append(CSTR("element/"));
 	sb.Append(elementId);
 	sb.Append(CSTR("/selected"));
-	return ResponseBool(DoGet(sb.ToCString()), selected, sb.ToCString(), 0);
+	return ResponseBool(DoGet(sb.ToCString()), selected, sb.ToCString(), nullptr);
 }
 
 Bool Net::WebDriverSession::IsElementSelected(Text::CStringNN elementId)
@@ -947,7 +947,7 @@ Bool Net::WebDriverSession::IsElementEnabled(Text::CStringNN elementId, OutParam
 	sb.Append(CSTR("element/"));
 	sb.Append(elementId);
 	sb.Append(CSTR("/enabled"));
-	return ResponseBool(DoGet(sb.ToCString()), enabled, sb.ToCString(), 0);
+	return ResponseBool(DoGet(sb.ToCString()), enabled, sb.ToCString(), nullptr);
 }
 
 Bool Net::WebDriverSession::IsElementEnabled(Text::CStringNN elementId)
@@ -998,9 +998,9 @@ Bool Net::WebDriverSession::ExecuteScript(Text::CStringNN script)
 Optional<IO::MemoryStream> Net::WebDriverSession::TakeScreenshot()
 {
 	NN<Text::String> b64;
-	if (!ResponseString(this->DoGet(CSTR("screenshot")), CSTR("screenshot"), 0).SetTo(b64))
+	if (!ResponseString(this->DoGet(CSTR("screenshot")), CSTR("screenshot"), nullptr).SetTo(b64))
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::TextBinEnc::Base64Enc b64Enc;
 	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, b64->leng);
@@ -1018,7 +1018,7 @@ Net::WebDriver::WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngin
 {
 	this->SetTimeout(cmdTimeout);
 	this->ready = false;
-	this->message = 0;
+	this->message = nullptr;
 	this->UpdateStatus();
 }
 
@@ -1078,7 +1078,7 @@ Optional<Net::WebDriverSession> Net::WebDriver::NewSession(NN<WebDriverStartSess
 		}
 		response->EndUse();
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::JSONObject> Net::WebDriver::ParseJSON(NN<IO::MemoryStream> mstm)
@@ -1092,7 +1092,7 @@ Optional<Text::JSONObject> Net::WebDriver::ParseJSON(NN<IO::MemoryStream> mstm)
 		}
 		json->EndUse();
 	}
-	return 0;
+	return nullptr;
 }
 
 
@@ -1121,7 +1121,7 @@ Optional<Net::WebDriverBy> Net::WebDriver::ParseBy(Text::CStringNN by)
 	}
 	else
 	{
-		ret = 0;
+		ret = nullptr;
 	}
 	return ret;
 }

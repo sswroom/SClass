@@ -19,7 +19,7 @@ namespace Net
 			Optional<Text::String> postType;
 			Optional<Data::ByteBuffer> postData;
 		public:
-			JMeterHTTPSamplerProxy(Text::CStringNN name, Net::WebUtil::RequestMethod method, Text::CStringNN url, Bool followRedirects, Bool useKeepalive, Bool enableGZip) : JMeterStep(name) { this->method = method; this->url = Text::String::New(url); this->followRedirects = followRedirects; this->useKeepalive = useKeepalive; this->postData = 0; this->postType = 0; this->enableGZip = enableGZip; }
+			JMeterHTTPSamplerProxy(Text::CStringNN name, Net::WebUtil::RequestMethod method, Text::CStringNN url, Bool followRedirects, Bool useKeepalive, Bool enableGZip) : JMeterStep(name) { this->method = method; this->url = Text::String::New(url); this->followRedirects = followRedirects; this->useKeepalive = useKeepalive; this->postData = nullptr; this->postType = nullptr; this->enableGZip = enableGZip; }
 			virtual ~JMeterHTTPSamplerProxy() {this->url->Release(); OPTSTR_DEL(postType); this->postData.Delete(); };
 
 			virtual Bool Step(NN<JMeterIteration> iter, NN<JMeterResult> result) const;

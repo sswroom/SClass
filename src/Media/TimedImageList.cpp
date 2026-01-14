@@ -41,7 +41,7 @@ Media::TimedImageList::TimedImageList(Text::CStringNN fileName)
 	if (fileSize > 0 && fileSize < 16)
 	{
 		fs.Delete();
-		this->fs = 0;
+		this->fs = nullptr;
 		return;
 	}
 	else if (fileSize == 0)
@@ -65,7 +65,7 @@ Media::TimedImageList::TimedImageList(Text::CStringNN fileName)
 		if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')
 		{
 			fs.Delete();
-			this->fs = 0;
+			this->fs = nullptr;
 			return;
 		}
 		this->fs = fs;
@@ -129,7 +129,7 @@ Media::TimedImageList::~TimedImageList()
 			fs->Write(Data::ByteArrayR(hdr, 16));
 		}
 		fs.Delete();
-		this->fs = 0;
+		this->fs = nullptr;
 	}
 }
 

@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "IO/SeekableStream.h"
 #include "IO/StreamReader.h"
 #include "Sync/Event.h"
@@ -221,7 +220,7 @@ UnsafeArrayOpt<UTF8Char> IO::StreamReader::ReadLine(UnsafeArray<UTF8Char> buff, 
 		{
 			if (buff == dest)
 			{
-				return 0;
+				return nullptr;
 			}
 			else
 			{
@@ -231,7 +230,7 @@ UnsafeArrayOpt<UTF8Char> IO::StreamReader::ReadLine(UnsafeArray<UTF8Char> buff, 
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool IO::StreamReader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)

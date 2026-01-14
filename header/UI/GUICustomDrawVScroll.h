@@ -23,8 +23,8 @@ namespace UI
 		} KeyButton;
 	private:
 		static Int32 useCnt;
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> dblClkHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> dblClkHdlrs;
 
 	private:
 		static OSInt __stdcall CDVSWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);

@@ -2372,7 +2372,7 @@ Optional<const IO::DeviceDB::USBDeviceInfo> IO::DeviceDB::GetUSBInfo(UInt16 vend
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<const IO::DeviceDB::DeviceInfo> IO::DeviceDB::GetPCIInfo(UInt16 vendorId, UInt16 productId)
@@ -2407,7 +2407,7 @@ Optional<const IO::DeviceDB::DeviceInfo> IO::DeviceDB::GetPCIInfo(UInt16 vendorI
 			return pci;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Text::CStringNN IO::DeviceDB::GetUSBVendorName(UInt16 vendorId)

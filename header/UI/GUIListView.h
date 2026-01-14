@@ -15,9 +15,9 @@ namespace UI
 	protected:
 		void *clsData;
 	private:
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
-		Data::ArrayList<Data::CallbackStorage<ItemEvent>> dblClkHdlrs;
-		Data::ArrayList<Data::CallbackStorage<MouseEvent>> rClkHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<ItemEvent>> dblClkHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<MouseEvent>> rClkHdlrs;
 		void *himgList;
 		UInt32 imgW;
 		UInt32 imgH;
@@ -60,7 +60,7 @@ namespace UI
 		UOSInt GetCount();
 		void SetSelectedIndex(UOSInt index);
 		UOSInt GetSelectedIndex();
-		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
+		UOSInt GetSelectedIndices(Data::ArrayListNative<UOSInt> *selIndices);
 		AnyType GetSelectedItem();
 		UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff);
 		Optional<Text::String> GetSelectedItemTextNew();

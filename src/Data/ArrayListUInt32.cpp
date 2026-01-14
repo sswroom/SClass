@@ -14,7 +14,7 @@ Data::ArrayListUInt32::~ArrayListUInt32()
 {
 }
 
-NN<Data::ArrayList<UInt32>> Data::ArrayListUInt32::Clone() const
+NN<Data::ArrayListNative<UInt32>> Data::ArrayListUInt32::Clone() const
 {
 	NN<Data::ArrayListUInt32> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListUInt32(this->capacity));

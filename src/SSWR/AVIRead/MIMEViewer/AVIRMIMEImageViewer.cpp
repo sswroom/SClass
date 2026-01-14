@@ -5,7 +5,7 @@
 SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::UnknownMIMEObj> obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	this->obj = obj;
-	this->imgList = 0;
+	this->imgList = nullptr;
 	UOSInt buffSize;
 	UnsafeArray<const UInt8> buff = this->obj->GetRAWData(buffSize);
 	{

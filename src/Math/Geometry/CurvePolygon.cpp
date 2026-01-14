@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Math/Geometry/CompoundCurve.h"
 #include "Math/Geometry/CurvePolygon.h"
 #include "Math/Geometry/Polygon.h"
@@ -49,7 +49,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 	NN<Math::Geometry::Polygon> pg;
 	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
 	NN<Math::Geometry::LinearRing> lr;
-	Data::ArrayList<UInt32> ptOfst;
+	Data::ArrayListNative<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
 	NN<Math::Geometry::Vector2D> vec;

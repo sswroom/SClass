@@ -48,16 +48,16 @@ Net::TFTPClient::TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUt
 	this->addr = addr.Ptr()[0];
 	this->port = port;
 	this->recvPort = port;
-	this->recvStm = 0;
+	this->recvStm = nullptr;
 	this->recvSize = 0;
 	this->replyRecv = false;
 	this->nextId = 0;
 	NN<Net::UDPServer> svr;
-	NEW_CLASSNN(svr, Net::UDPServer(sockf, 0, 0, nullptr, OnDataPacket, this, log, nullptr, 2, false));
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, nullptr, 0, nullptr, OnDataPacket, this, log, nullptr, 2, false));
 	if (svr->IsError())
 	{
 		svr.Delete();
-		this->svr = 0;
+		this->svr = nullptr;
 	}
 	else
 	{
@@ -163,6 +163,6 @@ Bool Net::TFTPClient::RecvFile(UnsafeArray<const UTF8Char> fileName, NN<IO::Stre
 			}
 		}
 	}
-	this->recvStm = 0;
+	this->recvStm = nullptr;
 	return succ;
 }

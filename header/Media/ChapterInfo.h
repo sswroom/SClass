@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_CHAPTERINFO
 #define _SM_MEDIA_CHAPTERINFO
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListUInt32.h"
 #include "Data/Duration.h"
@@ -12,7 +13,7 @@ namespace Media
 	private:
 		Data::ArrayListUInt32 chapterTimes;
 		Data::ArrayListStringNN chapterNames;
-		Data::ArrayList<Optional<Text::String>> chapterArtists;
+		Data::ArrayListObj<Optional<Text::String>> chapterArtists;
 
 	public:
 		ChapterInfo();

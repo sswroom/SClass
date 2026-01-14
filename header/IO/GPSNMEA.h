@@ -1,8 +1,9 @@
 #ifndef _SM_IO_GPSNMEA
 #define _SM_IO_GPSNMEA
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/CallbackStorage.h"
+#include "IO/Stream.h"
 #include "Map/LocationService.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -34,7 +35,7 @@ namespace IO
 		NN<IO::Stream> stm;
 	private:
 		Bool relStm;
-		Data::ArrayList<Data::CallbackStorage<LocationHandler>> hdlrList;
+		Data::ArrayListObj<Data::CallbackStorage<LocationHandler>> hdlrList;
 		Sync::RWMutex hdlrMut;
 		CommandHandler cmdHdlr;
 		AnyType cmdHdlrObj;

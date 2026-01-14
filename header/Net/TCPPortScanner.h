@@ -29,7 +29,7 @@ namespace Net
 
 		void Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPort);
 		Bool IsFinished();
-		UOSInt GetAvailablePorts(Data::ArrayList<UInt16> *portList);
+		UOSInt GetAvailablePorts(NN<Data::ArrayListNative<UInt16>> portList);
 	};
 }
 #endif

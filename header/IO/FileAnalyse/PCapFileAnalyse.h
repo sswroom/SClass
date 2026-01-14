@@ -1,6 +1,6 @@
 #ifndef _SM_IO_FILEANALYSE_PCAPFILEANALYSE
 #define _SM_IO_FILEANALYSE_PCAPFILEANALYSE
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
@@ -18,8 +18,8 @@ namespace IO
 			Optional<IO::StreamData> fd;
 			Bool isBE;
 			UInt32 linkType;
-			Data::ArrayList<UInt64> ofstList;
-			Data::ArrayList<UInt64> sizeList;
+			Data::ArrayListNative<UInt64> ofstList;
+			Data::ArrayListNative<UInt64> sizeList;
 			Sync::Mutex dataMut;
 			Data::ByteBuffer packetBuff;
 

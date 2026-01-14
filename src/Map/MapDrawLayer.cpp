@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListICaseString.h"
 #include "Data/Sort/ArtificialQuickSortFunc.hpp"

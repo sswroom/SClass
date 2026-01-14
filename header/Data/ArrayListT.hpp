@@ -1,10 +1,11 @@
 #ifndef _SM_DATA_ARRAYLISTT
 #define _SM_DATA_ARRAYLISTT
-#include "Data/ArrayListBase.hpp"
+#include "Data/ArrayListNativeBase.hpp"
 
 namespace Data
 {
-	template <class T> class ArrayListT : public ArrayListBase<T>
+	// ArrayList of class/struct which cannot use MemCopy
+	template <class T> class ArrayListT : public ArrayListNativeBase<T>
 	{
 	public:
 		ArrayListT();

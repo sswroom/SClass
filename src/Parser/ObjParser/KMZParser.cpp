@@ -8,9 +8,9 @@
 
 Parser::ObjParser::KMZParser::KMZParser()
 {
-	this->browser = 0;
-	this->parsers = 0;
-	this->encFact = 0;
+	this->browser = nullptr;
+	this->parsers = nullptr;
+	this->encFact = nullptr;
 }
 
 Parser::ObjParser::KMZParser::~KMZParser()
@@ -54,9 +54,9 @@ Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::Pars
 {
 	NN<Parser::ParserList> parsers;
 	if (pobj->GetParserType() != IO::ParserType::PackageFile || (targetType != IO::ParserType::MapLayer && targetType != IO::ParserType::Unknown))
-		return 0;
+		return nullptr;
 	if (!this->parsers.SetTo(parsers))
-		return 0;
+		return nullptr;
 
 	NN<IO::PackageFile> pf = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[256];
@@ -67,7 +67,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::Pars
 		if (pf->GetItemName(sbuff, ui).SetTo(sptr) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
 		{
 			NN<IO::StreamData> stmData;
-			Optional<IO::ParsedObject> pobj = 0;
+			Optional<IO::ParsedObject> pobj = nullptr;
 			NN<IO::ParsedObject> nnpobj;
 			if (pf->GetItemStmDataNew(ui).SetTo(stmData))
 			{
@@ -165,5 +165,5 @@ Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::Pars
 		}
 		return mapLyrColl;
 	}*/
-	return 0;
+	return nullptr;
 }

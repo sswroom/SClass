@@ -81,7 +81,7 @@ Manage::CPUInfo::CPUInfo()
 	this->clsData = info;
 #else
 	InfoData *info = MemAlloc(InfoData, 1);
-	info->cpuName = 0;
+	info->cpuName = nullptr;
 #if defined(__APPLE__)
 	Text::StringBuilderUTF8 sb;
 	Char cbuff[1024];
@@ -584,7 +584,7 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 	{
 		return Text::StrConcat(sbuff, cpuName);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)

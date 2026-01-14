@@ -49,13 +49,13 @@ Net::SSHClient::~SSHClient()
 Optional<Net::SSHForwarder> Net::SSHClient::CreateForward(UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort)
 {
 	if (remotePort == 0)
-		return 0;
+		return nullptr;
 	NN<Net::SSHForwarder> fwd;
 	NEW_CLASSNN(fwd, Net::SSHForwarder(this->conn, localPort, remoteHost, remotePort));
 	if (fwd->IsError())
 	{
 		fwd.Delete();
-		return 0;
+		return nullptr;
 	}
 	this->fwd.Add(fwd);
 	return fwd;

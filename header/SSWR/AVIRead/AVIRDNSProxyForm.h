@@ -228,7 +228,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			Bool IsError();
-			void SetDNSList(NN<Data::ArrayList<UInt32>> dnsList);
+			void SetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList);
 			void SetDisableV6(Bool disableV6);
 			void AddBlacklist(Text::CStringNN blackList);
 		};

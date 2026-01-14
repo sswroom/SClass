@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_V4LVIDEOCAPTURE
 #define _SM_MEDIA_V4LVIDEOCAPTURE
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Media/VideoCapturer.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
@@ -50,7 +50,7 @@ namespace Media
 		V4LVideoCaptureMgr();
 		~V4LVideoCaptureMgr();
 
-		UOSInt GetDeviceList(NN<Data::ArrayList<UInt32>> devList);
+		UOSInt GetDeviceList(NN<Data::ArrayListNative<UInt32>> devList);
 		UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devId);
 
 		NN<Media::VideoCapturer> CreateDevice(UOSInt devId);

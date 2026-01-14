@@ -12,7 +12,7 @@ namespace UI
 		typedef void (CALLBACKFUNC PosChgEvent)(AnyType userObj, UOSInt newPos);
 
 	private:
-		Data::ArrayList<Data::CallbackStorage<PosChgEvent>> posChgHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<PosChgEvent>> posChgHdlrs;
 	
 	public:
 		GUIHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent);

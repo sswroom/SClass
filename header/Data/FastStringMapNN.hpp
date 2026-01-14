@@ -160,7 +160,7 @@ namespace Data
 	{
 		if (index >= this->cnt)
 		{
-			return 0;
+			return nullptr;
 		}
 		return this->items[index].val;
 	}
@@ -174,7 +174,7 @@ namespace Data
 	{
 		if (index >= this->cnt)
 		{
-			return 0;
+			return nullptr;
 		}
 		return this->items[index].s;
 	}
@@ -278,7 +278,7 @@ namespace Data
 		if (index < 0)
 		{
 			this->Insert((UOSInt)~index, hash, key->Clone(), val);
-			return 0;
+			return nullptr;
 		}
 		else
 		{
@@ -295,7 +295,7 @@ namespace Data
 		if (index < 0)
 		{
 			this->Insert((UOSInt)~index, hash, Text::String::New(key.v, key.leng), val);
-			return 0;
+			return nullptr;
 		}
 		else
 		{
@@ -318,7 +318,7 @@ namespace Data
 		{
 			return this->items[index].val;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> Optional<T> FastStringMapNN<T>::GetC(Text::CStringNN key) const
@@ -329,7 +329,7 @@ namespace Data
 		{
 			return this->items[index].val;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> Optional<T> FastStringMapNN<T>::Remove(Optional<Text::String> key)
@@ -352,7 +352,7 @@ namespace Data
 			}
 			return oldVal;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> Optional<T> FastStringMapNN<T>::RemoveC(Text::CStringNN key)
@@ -370,7 +370,7 @@ namespace Data
 			}
 			return oldVal;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> Optional<T> FastStringMapNN<T>::RemoveAt(UOSInt index)
@@ -386,7 +386,7 @@ namespace Data
 			}
 			return oldVal;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> Bool FastStringMapNN<T>::IsEmpty() const

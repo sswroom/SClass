@@ -3,7 +3,7 @@
 #include "Data/ArrayListStringNN.h"
 #include "Data/ByteArray.h"
 #include "Data/NamedClass.hpp"
-#include "Data/StringMap.hpp"
+#include "Data/StringMapObj.hpp"
 #include "Data/StringUTF8Map.hpp"
 #include "Math/Size2D.h"
 #include "Text/CString.h"
@@ -17,7 +17,7 @@ namespace Text
 	{
 	public:
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> s);
-		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map);
+		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMapObj<Text::String*> *map);
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
 		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, NN<Data::NamedClass<T>> cls);
 		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen);
@@ -30,7 +30,7 @@ namespace Text
 		static Bool IsInteger(UnsafeArray<const UTF8Char> s);
 		static Bool IsHKID(Text::CStringNN hkid);
 		static UnsafeArray<const UTF8Char> Null2Empty(UnsafeArrayOpt<const UTF8Char> s);
-		static Bool SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayList<Double>> outArr);
+		static Bool SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListNative<Double>> outArr);
 		static UOSInt SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListStringNN> outArr);
 		static Bool Equals(Optional<Text::String> s1, Optional<Text::String> s2);
 		static OSInt Compare(Optional<Text::String> s1, Optional<Text::String> s2);

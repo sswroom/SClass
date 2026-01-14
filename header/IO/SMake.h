@@ -1,12 +1,11 @@
 #ifndef _SM_IO_SMAKE
 #define _SM_IO_SMAKE
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/ArrayListUInt64.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Data/FastStringMapNN.hpp"
 #include "Data/StringMapNN.hpp"
 #include "IO/ParsedObject.h"
@@ -47,7 +46,7 @@ namespace IO
 	private:
 		Data::StringMapNN<ConfigItem> cfgMap;
 		Data::FastStringMapNN<ProgramItem> progMap;
-		Data::FastStringMap<Int64> fileTimeMap;
+		Data::FastStringMapNative<Int64> fileTimeMap;
 		Sync::Mutex errorMsgMut;
 		Optional<Text::String> errorMsg;
 		NN<Text::String> basePath;

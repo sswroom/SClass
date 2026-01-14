@@ -296,7 +296,7 @@ Optional<Net::MSGraphAccessToken> SSWR::AVIRead::AVIRMSGraphEmailForm::GetToken(
 		if (token->IsExpired())
 		{
 			token.Delete();
-			this->token = 0;
+			this->token = nullptr;
 		}
 		else
 		{
@@ -309,17 +309,17 @@ Optional<Net::MSGraphAccessToken> SSWR::AVIRead::AVIRMSGraphEmailForm::GetToken(
 	if (!this->txtTenantId->GetText(sbTenantId) || sbTenantId.leng != 36)
 	{
 		this->ui->ShowMsgOK(CSTR("Tenant Id invalid"), MSGBOX_TITLE, this);
-		return 0;
+		return nullptr;
 	}
 	if (!this->txtClientId->GetText(sbClientId) || sbClientId.leng != 36)
 	{
 		this->ui->ShowMsgOK(CSTR("Client Id invalid"), MSGBOX_TITLE, this);
-		return 0;
+		return nullptr;
 	}
 	if (!this->txtClientSecret->GetText(sbClientSecret) || sbClientSecret.leng == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("Client Secret invalid"), MSGBOX_TITLE, this);
-		return 0;
+		return nullptr;
 	}
 
     if (cli->AccessTokenGet(sbTenantId.ToCString(), sbClientId.ToCString(), sbClientSecret.ToCString(), nullptr).SetTo(token))
@@ -331,7 +331,7 @@ Optional<Net::MSGraphAccessToken> SSWR::AVIRead::AVIRMSGraphEmailForm::GetToken(
     {
 		this->log.LogMessage(CSTR("Error in getting access token"), IO::LogHandler::LogLevel::Error);
         this->ui->ShowMsgOK(CSTR("Error in getting access token"), MSGBOX_TITLE, this);
-		return 0;
+		return nullptr;
     }
 }
 
@@ -340,7 +340,7 @@ SSWR::AVIRead::AVIRMSGraphEmailForm::AVIRMSGraphEmailForm(Optional<UI::GUIClient
 	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("MSGraph Email"));
 
-	this->token = 0;
+	this->token = nullptr;
 
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 128, false);

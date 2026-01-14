@@ -1,8 +1,6 @@
 //require dbghelp.lib
 #ifndef _SM_MANAGE_EXCEPTIONRECORDER
 #define _SM_MANAGE_EXCEPTIONRECORDER
-#include "Data/ArrayList.hpp"
-#include "Data/ArrayListInt32.h"
 #include "IO/Stream.h"
 #include "IO/Writer.h"
 #include "Manage/AddressResolver.h"

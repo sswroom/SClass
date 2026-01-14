@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_GEOMETRY_VECTOR2D
 #define _SM_MATH_GEOMETRY_VECTOR2D
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListA.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Math/Coord2DDbl.h"
 #include "Math/CoordinateConverter.h"
 #include "Math/RectAreaDbl.h"
@@ -68,7 +68,7 @@ namespace Math
 			virtual void MultiplyCoordinatesXY(Double v) = 0;
 			virtual UOSInt GetPointCount() const = 0;
 			virtual Bool HasArea() const = 0;
-			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const = 0;
+			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const = 0;
 			virtual Math::Coord2DDbl GetDisplayCenter() const = 0;
 			virtual Bool HasCurve() const { return false; }
 			virtual Optional<Vector2D> ToSimpleShape() const { return this->Clone(); }

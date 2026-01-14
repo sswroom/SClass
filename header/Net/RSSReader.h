@@ -2,7 +2,7 @@
 #define _SM_NET_RSSREADER
 #include "AnyType.h"
 #include "Data/DateTime.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNN.hpp"
 #include "Net/RSS.h"
 #include "Net/SSLEngine.h"
 

@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 	Bool valid;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("WPT")))
-		return 0;
+		return nullptr;
 
 	IO::StreamDataStream stm(fd);
 	Text::UTF8Reader reader(stm);
@@ -74,7 +74,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 		reader.ReadLine(sbuff, 1024);
 		UnsafeArray<UTF8Char> cols[2];
 
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colTypes, colSizes, colDPs, 0, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colTypes, colSizes, colDPs, 0, nullptr));
 		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)

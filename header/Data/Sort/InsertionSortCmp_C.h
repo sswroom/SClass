@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_SORT_INSERTIONSORTCMP_C
 #define _SM_DATA_SORT_INSERTIONSORTCMP_C
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/DataComparer.h"
 
 template <class T> void InsertionSort_SortB(T *arr, OSInt left, OSInt right)
@@ -45,7 +45,7 @@ template <class T> void InsertionSort_SortB(T *arr, OSInt left, OSInt right)
 	}
 }
 
-template <class T> void InsertionSort_SortB(Data::ArrayList<T> *arr, OSInt left, OSInt right)
+template <class T> void InsertionSort_SortB(Data::ArrayListNative<T> *arr, OSInt left, OSInt right)
 {
 	OSInt i;
 	OSInt j;

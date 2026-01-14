@@ -22,7 +22,7 @@ namespace Net
 				Int32 userId;
 				const UTF8Char *cliName;
 				Text::String *userName;
-				Data::ArrayList<const UTF8Char *> rcptTo;
+				Data::ArrayListObj<const UTF8Char *> rcptTo;
 				Bool dataMode;
 				IO::MemoryStream *dataStm;
 			} MailStatus;

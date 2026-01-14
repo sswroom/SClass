@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GUICHECKBOX
 #define _SM_UI_GUICHECKBOX
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/CallbackStorage.h"
 #include "UI/GUIClientControl.h"
 
@@ -13,7 +13,7 @@ namespace UI
 		typedef void (CALLBACKFUNC CheckedChangeHandler)(AnyType userObj, Bool newState);
 	protected:
 		Bool checked;
-		Data::ArrayList<Data::CallbackStorage<CheckedChangeHandler>> checkedChangeHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<CheckedChangeHandler>> checkedChangeHdlrs;
 	public:
 		GUICheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUICheckBox();

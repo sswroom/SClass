@@ -1,6 +1,6 @@
 #ifndef _SM_NET_DHCPSERVER
 #define _SM_NET_DHCPSERVER
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/FastMapNN.hpp"
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
@@ -31,7 +31,7 @@ namespace Net
 		UInt32 firstIP;
 		UInt32 devCount;
 		UInt32 gateway;
-		Data::ArrayList<UInt32> dnsList;
+		Data::ArrayListNative<UInt32> dnsList;
 		UInt32 ipLeaseTime;
 
 		Sync::Mutex devMut;
@@ -40,7 +40,7 @@ namespace Net
 
 		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 	public:
-		DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NN<Data::ArrayList<UInt32>> dnsList, NN<IO::LogTool> log);
+		DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NN<Data::ArrayListNative<UInt32>> dnsList, NN<IO::LogTool> log);
 		~DHCPServer();
 
 		Bool IsError() const;

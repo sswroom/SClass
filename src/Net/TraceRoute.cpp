@@ -105,7 +105,7 @@ Net::TraceRoute::~TraceRoute()
 	}
 	this->thread.WaitForEnd();
 	this->resEvt.Delete();
-	this->socV4 = 0;
+	this->socV4 = nullptr;
 }
 
 Bool Net::TraceRoute::IsError()
@@ -113,7 +113,7 @@ Bool Net::TraceRoute::IsError()
 	return this->socV4.IsNull();
 }
 
-Bool Net::TraceRoute::Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList)
+Bool Net::TraceRoute::Tracev4(UInt32 ip, NN<Data::ArrayListNative<UInt32>> ipList)
 {
 	NN<Socket> soc;
 	if (!this->socV4.SetTo(soc))

@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Map/GoogleMap/GoogleMapsUtil.h"
 
 Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(UnsafeArray<const UTF8Char> polylineText)
 {
-	Data::ArrayList<Int32> pointList;
+	Data::ArrayListNative<Int32> pointList;
 	Int32 lastX;
 	Int32 lastY;
 	Int32 v;
@@ -58,9 +58,9 @@ Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolyli
 		}
 	}
 	if (v != 0 || i != 0)
-		return 0;
+		return nullptr;
 	if (isX)
-		return 0;
+		return nullptr;
 	j = pointList.GetCount() >> 1;
 	NEW_CLASS(pl, Math::Geometry::LineString(4326, j, false, false));
 	ptList = pl->GetPointList(i);

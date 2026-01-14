@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GTK_GTKCOMBOBOX
 #define _SM_UI_GTK_GTKCOMBOBOX
+#include "Data/ArrayListObj.hpp"
 #include "UI/GUIComboBox.h"
 #include <gtk/gtk.h>
 
@@ -10,7 +11,7 @@ namespace UI
 		class GTKComboBox : public GUIComboBox
 		{
 		private:
-			Data::ArrayList<AnyType> items;
+			Data::ArrayListObj<AnyType> items;
 			GtkTreeModel *model;
 			UOSInt minVisible;
 			Bool allowEdit;

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/SerialPort.h"
@@ -921,7 +921,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 	}
 	modem->GPRSFreePDPContext(ctxList);
 
-	Data::ArrayList<IO::GSMModemController::ActiveState> actList;
+	Data::ArrayListT<IO::GSMModemController::ActiveState> actList;
 	if (!modem->GPRSGetPDPActive(actList))
 	{
 		this->txtPDPContextStatus->SetText(CSTR("Error in getting PDP Active State"));

@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_ESRIMDBLAYER
 #define _SM_MAP_ESRI_ESRIMDBLAYER
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapObj.hpp"
 #include "DB/DBReader.h"
 #include "DB/SharedDBConn.h"
 #include "Map/MapDrawLayer.h"
@@ -26,7 +26,7 @@ namespace Map
 			NN<Text::String> tableName;
 
 		private:
-			Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
+			Data::FastMapObj<Int32, const UTF8Char **> *ReadNameArr();
 
 			void Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text::CStringNN tableName);
 		public:

@@ -1,6 +1,5 @@
 #ifndef _SM_NET_WEBSOCKETCLIENT
 #define _SM_NET_WEBSOCKETCLIENT
-#include "Data/ArrayList.hpp"
 #include "Data/RandomBytesGenerator.h"
 #include "IO/Stream.h"
 #include "Net/NetConnection.h"

@@ -211,7 +211,7 @@ IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(NN<IO::StreamData> fd)
 	UInt8 buff[128];
 	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
 	{
-		this->fd = 0;
+		this->fd = nullptr;
 		this->blockCnt = 0;
 		return;
 	}
@@ -289,13 +289,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 			Data::ByteBuffer dummyBlock(blockSize);
 			if (fd->GetRealData(index * 128, blockSize, dummyBlock) != blockSize)
 			{
-				return 0;
+				return nullptr;
 			}
 			NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(index << 7, blockSize));
 			frame->AddHexBuff(0, blockSize, CSTR("Dummy data"), dummyBlock.Arr(), true);
 			return frame;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	UOSInt i;
@@ -305,7 +305,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->fd.SetTo(fd) || fd->GetRealData(index << 7, 128, BYTEARR(buff)) != 128)
-		return 0;
+		return nullptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(index << 7, 128));
 	if (index == 0)
 	{

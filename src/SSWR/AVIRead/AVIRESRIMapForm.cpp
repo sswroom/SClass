@@ -117,7 +117,7 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(Optional<UI::GUIClientControl> p
 
 	this->core = core;
 	this->ssl = ssl;
-	this->esriMap = 0;
+	this->esriMap = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->radPredefine = ui->NewRadioButton(*this, CSTR("Predefine"), true);

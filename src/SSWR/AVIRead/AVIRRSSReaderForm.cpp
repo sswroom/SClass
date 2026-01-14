@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 				if (item->description.SetTo(s))
 				{
 					sb.ClearStr();
-					Text::HTMLUtil::HTMLGetText(me->core->GetEncFactory(), s->v, s->leng, true, sb, 0);
+					Text::HTMLUtil::HTMLGetText(me->core->GetEncFactory(), s->v, s->leng, true, sb, nullptr);
 					me->lvItems->SetSubItem(i, 2, sb.ToCString());
 				}
 				i++;
@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(AnyType userObj
 	NN<Net::RSSItem> item;
 	if (me->lvItems->GetItem(index).GetOpt<Net::RSSItem>().SetTo(item))
 	{
-		SSWR::AVIRead::AVIRRSSItemForm frm(0, me->ui, me->core, item);
+		SSWR::AVIRead::AVIRRSSItemForm frm(nullptr, me->ui, me->core, item);
 		frm.ShowDialog(me);
 	}
 }
@@ -197,7 +197,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientContro
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->rss = 0;
+	this->rss = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlURL = ui->NewPanel(*this);

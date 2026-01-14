@@ -10,7 +10,7 @@ Data::ArrayListInt32::ArrayListInt32(UOSInt capacity) : Data::SortableArrayListN
 {
 }
 
-NN<Data::ArrayList<Int32>> Data::ArrayListInt32::Clone() const
+NN<Data::ArrayListNative<Int32>> Data::ArrayListInt32::Clone() const
 {
 	NN<Data::ArrayListInt32> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListInt32(this->capacity));

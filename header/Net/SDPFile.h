@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SDPFILE
 #define _SM_NET_SDPFILE
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/Stream.h"
@@ -32,8 +32,8 @@ namespace Net
 		Optional<Text::String> reqUserAgent;
 
 		Data::ArrayListStringNN sessDesc;
-		Data::ArrayList<Int32> sessDescType;
-		Data::ArrayList<Net::SDPMedia *> sessMedia;
+		Data::ArrayListNative<Int32> sessDescType;
+		Data::ArrayListObj<Net::SDPMedia *> sessMedia;
 
 		Data::ArrayListNN<Data::ArrayListStrUTF8> mediaList;
 

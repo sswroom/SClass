@@ -31,7 +31,7 @@ namespace SSWR
 			{
 				Int32 blockX;
 				Int32 blockY;
-				Data::ArrayList<StrRecord*> *records;
+				Data::ArrayListT<StrRecord*> *records;
 			} Block;
 
 			static Text::CStringNN typeName[];
@@ -104,14 +104,14 @@ namespace SSWR
 			static void __stdcall OnConvertClicked(AnyType userObj);
 			static void __stdcall OnFile(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
-			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NN<Data::ArrayList<UInt32>> dbCols2);
-			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, NN<Data::ArrayList<UInt32>> dbCols2);
+			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayListObj<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayListObj<const UTF8Char*> *outNames, NN<Data::ArrayListNative<UInt32>> dbCols2);
+			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayListObj<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, NN<Data::ArrayListNative<UInt32>> dbCols2);
 			Int32 LoadShape(Text::CStringNN fileName, Bool updateTxt);
 			void ClearFilter();
 
-			virtual void ParseLabelStr(Text::CStringNN labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2);
-			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2);
-			virtual NN<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NN<Data::ArrayList<UInt32>> dbcols2);
+			virtual void ParseLabelStr(Text::CStringNN labelStr, Data::ArrayListObj<const UTF8Char*> *dbCols, Data::ArrayListNative<UInt32> *dbCols2);
+			virtual void FreeLabelStr(Data::ArrayListObj<const UTF8Char*> *dbCols, Data::ArrayListNative<UInt32> *dbCols2);
+			virtual NN<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayListObj<const UTF8Char*> *dbCols, UOSInt currRec, NN<Data::ArrayListNative<UInt32>> dbcols2);
 
 		public:
 			SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, NN<Media::MonitorMgr> monMgr);

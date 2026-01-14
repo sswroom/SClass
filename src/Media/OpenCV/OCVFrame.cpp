@@ -151,7 +151,7 @@ NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Do
 Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
 	NN<Media::CS::CSConverter> converter;
-	if (Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, Media::ColorProfile(), *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, 0).SetTo(converter))
+	if (Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, Media::ColorProfile(), *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, nullptr).SetTo(converter))
 	{
 		cv::Mat *fr;
 		fr = new cv::Mat((int)dispSize.y, (int)dispSize.x, CV_8UC1);
@@ -176,7 +176,7 @@ Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UnsafeAr
 			printf("OCVFrame: Unsupported Format: %s\r\n", sbuff);
 		}
 		
-		return 0;		
+		return nullptr;
 	}
 }
 
@@ -185,7 +185,7 @@ Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(NN<Media
 	cv::Mat *fr;
 	if (!simg->ToW8())
 	{
-		return 0;
+		return nullptr;
 	}
 	fr = new cv::Mat((int)simg->info.dispSize.y, (int)simg->info.dispSize.x, CV_8UC1);
 	simg->GetRasterData(fr->ptr(0), 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.dispSize.x, false, Media::RotateType::None);

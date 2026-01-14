@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "Math/Math_C.h"
 #include "Media/AudioFrameSource.h"
 #include "Media/AACFrameSource.h"

@@ -682,12 +682,12 @@ void Media::Resizer::LanczosResizerRGB_C8::DestoryHori()
 	if (this->hIndex.SetTo(hIndex))
 	{
 		MemFreeAArr(hIndex);
-		this->hIndex = 0;
+		this->hIndex = nullptr;
 	}
 	if (this->hWeight.SetTo(hWeight))
 	{
 		MemFreeAArr(hWeight);
-		this->hWeight = 0;
+		this->hWeight = nullptr;
 	}
 	this->hsSize = 0;
 }
@@ -699,12 +699,12 @@ void Media::Resizer::LanczosResizerRGB_C8::DestoryVert()
 	if (this->vIndex.SetTo(vIndex))
 	{
 		MemFreeAArr(vIndex);
-		this->vIndex = 0;
+		this->vIndex = nullptr;
 	}
 	if (this->vWeight.SetTo(vWeight))
 	{
 		MemFreeAArr(vWeight);
-		this->vWeight = 0;
+		this->vWeight = nullptr;
 	}
 	this->vsSize = 0;
 	this->vsStep = 0;
@@ -722,12 +722,12 @@ Media::Resizer::LanczosResizerRGB_C8::LanczosResizerRGB_C8(UOSInt hnTap, UOSInt 
 	this->hnTap = hnTap << 1;
 	this->vnTap = vnTap << 1;
 	this->rgbChanged = true;
-	this->rgbTable = 0;
+	this->rgbTable = nullptr;
 	this->rgb16Changed = true;
-	this->rgb16Table = 0;
+	this->rgb16Table = nullptr;
 	this->srcPF = Media::PF_B8G8R8A8;
 	this->destPF = Media::PF_B8G8R8A8;
-	this->srcPal = 0;
+	this->srcPal = nullptr;
 	NN<Media::ColorManagerSess> nncolorSess;
 	if (colorSess.SetTo(nncolorSess))
 	{
@@ -736,7 +736,7 @@ Media::Resizer::LanczosResizerRGB_C8::LanczosResizerRGB_C8(UOSInt hnTap, UOSInt 
 	}
 	else
 	{
-		this->colorSess = 0;
+		this->colorSess = nullptr;
 	}
 
 	this->params = MemAllocArr(Media::Resizer::LanczosResizerRGB_C8::TaskParam, this->nThread);
@@ -751,21 +751,21 @@ Media::Resizer::LanczosResizerRGB_C8::LanczosResizerRGB_C8(UOSInt hnTap, UOSInt 
 	hsSize = 0;
 	hsOfst = 0;
 	hdSize = 0;
-	hIndex = 0;
-	hWeight = 0;
+	hIndex = nullptr;
+	hWeight = nullptr;
 	hTap = 0;
 
 	vsSize = 0;
 	vsOfst = 0;
 	vdSize = 0;
 	vsStep = 0;
-	vIndex = 0;
-	vWeight = 0;
+	vIndex = nullptr;
+	vWeight = nullptr;
 	vTap = 0;
 
 	buffW = 0;
 	buffH = 0;
-	buffPtr = 0;
+	buffPtr = nullptr;
 }
 
 Media::Resizer::LanczosResizerRGB_C8::~LanczosResizerRGB_C8()
@@ -786,7 +786,7 @@ Media::Resizer::LanczosResizerRGB_C8::~LanczosResizerRGB_C8()
 		if (this->params[i].tmpbuff.SetTo(tmpBuff))
 		{
 			MemFreeAArr(tmpBuff);
-			this->params[i].tmpbuff = 0;
+			this->params[i].tmpbuff = nullptr;
 			this->params[i].tmpbuffSize = 0;
 		}
 	}
@@ -797,7 +797,7 @@ Media::Resizer::LanczosResizerRGB_C8::~LanczosResizerRGB_C8()
 	if (this->buffPtr.SetTo(buffPtr))
 	{
 		MemFreeAArr(buffPtr);
-		this->buffPtr = 0;
+		this->buffPtr = nullptr;
 	}
 	if (this->rgbTable.SetTo(rgbTable))
 	{
@@ -897,7 +897,7 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = dwidth;
 			buffH = siHeight;
@@ -947,7 +947,7 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = dwidth;
 			buffH = siHeight;
@@ -991,7 +991,7 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = (UOSInt)siWidth;
 			buffH = siHeight;
@@ -1141,7 +1141,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerRGB_C8::ProcessToNewP
 	Media::StaticImage *newImage;
 	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
 	{
-		return 0;
+		return nullptr;
 	}
 	Math::Size2D<UOSInt> targetSize = this->targetSize;
 	if (targetSize.x == 0)

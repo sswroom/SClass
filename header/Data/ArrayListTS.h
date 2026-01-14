@@ -10,7 +10,7 @@ namespace Data
 		ArrayListTS();
 		ArrayListTS(UOSInt capacity);
 
-		virtual NN<ArrayList<Data::Timestamp>> Clone() const;
+		virtual NN<ArrayListNative<Data::Timestamp>> Clone() const;
 	};
 }
 #endif

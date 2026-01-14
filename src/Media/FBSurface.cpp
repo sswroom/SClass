@@ -42,7 +42,7 @@ Media::FBSurface::FBSurface(Optional<MonitorHandle> hMon, Optional<const Media::
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->hMon = hMon;
-	this->clsData->buffSurface = 0;
+	this->clsData->buffSurface = nullptr;
 	this->clsData->ttyfd = -1;
 	this->clsData->bugHandleMode = false;
 	Char sbuff[64];

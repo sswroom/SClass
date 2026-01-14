@@ -1,5 +1,5 @@
-#ifndef _SM_DATA_ARRAYLISTBASE
-#define _SM_DATA_ARRAYLISTBASE
+#ifndef _SM_DATA_ARRAYLISTOBJBASE
+#define _SM_DATA_ARRAYLISTOBJBASE
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/ArrayCollection.hpp"
@@ -7,7 +7,7 @@
 
 namespace Data
 {
-	template <class T> class ArrayListBase : public List<T>, public ArrayCollection<T>
+	template <class T> class ArrayListObjBase : public List<T>, public ArrayCollection<T>
 	{
 	protected:
 		UnsafeArray<T> arr;
@@ -16,10 +16,10 @@ namespace Data
 
 		void Init(UOSInt capacity);
 	protected:
-		ArrayListBase();
-		ArrayListBase(UOSInt capacity);
+		ArrayListObjBase();
+		ArrayListObjBase(UOSInt capacity);
 	public:
-		virtual ~ArrayListBase();
+		virtual ~ArrayListObjBase();
 
 		virtual Bool Remove(T val);
 		virtual UOSInt IndexOf(T val) const;
@@ -40,29 +40,29 @@ namespace Data
 	};
 
 
-	template <class T> void ArrayListBase<T>::Init(UOSInt capacity)
+	template <class T> void ArrayListObjBase<T>::Init(UOSInt capacity)
 	{
 		objCnt = 0;
 		this->capacity = capacity;
 		arr = MemAllocArr(T, capacity);
 	}
 
-	template <class T> ArrayListBase<T>::ArrayListBase()
+	template <class T> ArrayListObjBase<T>::ArrayListObjBase()
 	{
 		Init(40);
 	}
 
-	template <class T> ArrayListBase<T>::ArrayListBase(UOSInt capacity)
+	template <class T> ArrayListObjBase<T>::ArrayListObjBase(UOSInt capacity)
 	{
 		Init(capacity);
 	}
 
-	template <class T> ArrayListBase<T>::~ArrayListBase()
+	template <class T> ArrayListObjBase<T>::~ArrayListObjBase()
 	{
 		MemFreeArr(arr);
 	}
 
-	template <class T> Bool ArrayListBase<T>::Remove(T val)
+	template <class T> Bool ArrayListObjBase<T>::Remove(T val)
 	{
 		UOSInt i = 0;
 		UOSInt j = this->objCnt;
@@ -91,7 +91,7 @@ namespace Data
 		return i != k;
 	}
 
-	template <class T> UOSInt ArrayListBase<T>::IndexOf(T val) const
+	template <class T> UOSInt ArrayListObjBase<T>::IndexOf(T val) const
 	{
 		UOSInt i = objCnt;
 		while (i-- > 0)
@@ -100,37 +100,37 @@ namespace Data
 		return INVALID_INDEX;
 	}
 
-	template <class T> void ArrayListBase<T>::Clear()
+	template <class T> void ArrayListObjBase<T>::Clear()
 	{
 		this->objCnt = 0;
 	}
 
-	template <class T> UOSInt ArrayListBase<T>::GetCount() const
+	template <class T> UOSInt ArrayListObjBase<T>::GetCount() const
 	{
 		return this->objCnt;
 	}
 
-	template <class T> UOSInt ArrayListBase<T>::GetCapacity() const
+	template <class T> UOSInt ArrayListObjBase<T>::GetCapacity() const
 	{
 		return this->capacity;
 	}
 
-	template <class T> T ArrayListBase<T>::GetItem(UOSInt Index) const
+	template <class T> T ArrayListObjBase<T>::GetItem(UOSInt index) const
 	{
-		if (Index >= this->objCnt || Index < 0)
-			return (T)0;
-		return this->arr[Index];
+		if (index >= this->objCnt)
+			return nullptr;
+		return this->arr[index];
 	}
 
-	template <class T> void ArrayListBase<T>::SetItem(UOSInt Index, T Val)
+	template <class T> void ArrayListObjBase<T>::SetItem(UOSInt index, T val)
 	{
-		if (Index == objCnt)
+		if (index == objCnt)
 		{
-			this->Add(Val);
+			this->Add(val);
 		}
-		else if (Index < objCnt)
+		else if (index < objCnt)
 		{
-			this->arr[Index] = Val;
+			this->arr[index] = val;
 		}
 		else
 		{
@@ -138,18 +138,18 @@ namespace Data
 		}
 	}
 
-	template <class T> UnsafeArray<T> ArrayListBase<T>::GetArr(OutParam<UOSInt> arraySize) const
+	template <class T> UnsafeArray<T> ArrayListObjBase<T>::GetArr(OutParam<UOSInt> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
 		return this->arr;
 	}
 
-	template <class T> UnsafeArray<T> ArrayListBase<T>::Arr() const
+	template <class T> UnsafeArray<T> ArrayListObjBase<T>::Arr() const
 	{
 		return this->arr;
 	}
 
-	template <class T> T ArrayListBase<T>::Pop()
+	template <class T> T ArrayListObjBase<T>::Pop()
 	{
 		if (this->objCnt == 0) return 0;
 		T o = arr[this->objCnt - 1];
@@ -157,7 +157,7 @@ namespace Data
 		return o;
 	}
 
-	template <class T> void ArrayListBase<T>::Reverse()
+	template <class T> void ArrayListObjBase<T>::Reverse()
 	{
 		T tmp;
 		if (this->objCnt > 0)
@@ -175,10 +175,4 @@ namespace Data
 		}
 	}
 }
-
-#define LIST_CALL_FUNC(list, func) { UOSInt i = (list)->GetCount(); while (i-- > 0) func((list)->GetItem(i)); }
-#define LIST_FREE_FUNC(list, func) { LIST_CALL_FUNC(list, func); (list)->Clear(); }
-#define LIST_FREE_STRING(list) { UOSInt i = (list)->GetCount(); while (i-- > 0) (list)->GetItem(i)->Release(); (list)->Clear(); }
-#define LIST_FREE_STRING_NO_CLEAR(list) { UOSInt i = (list)->GetCount(); while (i-- > 0) (list)->GetItem(i)->Release(); }
-#define NNLIST_FREE_STRING(list) { UOSInt i = (list)->GetCount(); while (i-- > 0) (list)->GetItemNoCheck(i)->Release(); (list)->Clear(); }
 #endif

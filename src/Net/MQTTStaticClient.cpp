@@ -146,7 +146,7 @@ UInt16 Net::MQTTStaticClient::GetNextPacketId()
 void Net::MQTTStaticClient::Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, Optional<IO::Writer> errLog)
 {
 	this->kaSeconds = 30;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->errLog = errLog;
 	this->connTimeout = 30000;
 
@@ -158,11 +158,11 @@ void Net::MQTTStaticClient::Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::
 	this->hdlrList.Add({hdlr, userObj});
 
 	this->clif = clif;
-	this->ssl = 0;
-	this->host = 0;
+	this->ssl = nullptr;
+	this->host = nullptr;
 	this->port = 0;
-	this->username = 0;
-	this->password = 0;
+	this->username = nullptr;
+	this->password = nullptr;
 	this->webSocket = false;
 }
 

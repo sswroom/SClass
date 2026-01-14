@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VIRTUALIOPINMGR
 #define _SM_IO_VIRTUALIOPINMGR
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "IO/IOPin.h"
 #include "Sync/Mutex.h"
 
@@ -27,7 +27,7 @@ namespace IO
 		~VirtualIOPinMgr();
 
 		Optional<IO::IOPin> CreatePin(UInt32 pinNum);
-		UOSInt GetAvailablePins(Data::ArrayList<Int32> *pinList);
+		UOSInt GetAvailablePins(NN<Data::ArrayListNative<Int32>> pinList);
 	};
 
 	class VirtualIOPin : public IOPin

@@ -1,5 +1,4 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringMap.hpp"
 #include "DB/DBModel.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -54,9 +53,9 @@ Optional<DB::TableDef> DB::DBModel::GetTable(Text::CStringNN tableName)
 	return this->tableMap.GetC(tableName);
 }
 
-UOSInt DB::DBModel::GetTableNames(NN<Data::ArrayList<Text::CString>> tableNames)
+UOSInt DB::DBModel::GetTableNames(NN<Data::ArrayListObj<Text::CString>> tableNames)
 {
-	NN<Data::ArrayList<Optional<Text::String>>> keys = this->tableMap.GetKeys();
+	NN<Data::ArrayListObj<Optional<Text::String>>> keys = this->tableMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

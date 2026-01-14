@@ -49,9 +49,9 @@ namespace UI
 		Bool showMarker;
 		Data::ArrayListNN<Math::Geometry::Vector2D> selVecList;
 
-		Data::ArrayList<Data::CallbackStorage<ScaleChangedHandler>> scaleChgHdlrs;
-		Data::ArrayList<Data::CallbackStorage<MouseMoveHandler>> mouseMoveHdlrs;
-		Data::ArrayList<Data::CallbackStorage<MapUpdatedHandler>> mapUpdHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<ScaleChangedHandler>> scaleChgHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<MouseMoveHandler>> mouseMoveHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<MapUpdatedHandler>> mapUpdHdlrs;
 		Data::CallbackStorage<MouseEventHandler> mouseDownHdlr;
 		Data::CallbackStorage<MouseEventHandler> mouseUpHdlr;
 		Data::CallbackStorage<DrawHandler> drawHdlr;

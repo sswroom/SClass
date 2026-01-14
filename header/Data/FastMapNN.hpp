@@ -1,43 +1,20 @@
 #ifndef _SM_DATA_FASTMAPNN
 #define _SM_DATA_FASTMAPNN
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ListMapNN.hpp"
 #include "Data/ReadingListNN.hpp"
-#include "Data/TwinItem.h"
+#include "Data/TwinItemNN.hpp"
 
 namespace Data
 {
-	template <class T, class V> struct TwinItemNN
-	{
-	public:
-		T key;
-		NN<V> value;
-	
-		TwinItemNN(T key, NN<V> value)
-		{
-			this->key = key;
-			this->value = value;
-		}
-
-		TwinItemNN(T key)
-		{
-			this->key = key;
-		}
-
-		Bool operator==(TwinItemNN<T,V> item)
-		{
-			return this->key == item.key;
-		}
-	};
-
 	template <class T, class V> class FastMapNNIterator
 	{
 	private:
-		NN<const Data::ArrayList<TwinItemNN<T, V>>> arr;
+		NN<const Data::ArrayListNative<TwinItemNN<T, V>>> arr;
 		UOSInt nextIndex;
 
 	public:
-		FastMapNNIterator(NN<const Data::ArrayList<TwinItemNN<T, V>>> arr)
+		FastMapNNIterator(NN<const Data::ArrayListNative<TwinItemNN<T, V>>> arr)
 		{
 			this->arr = arr;
 			this->nextIndex = 0;
@@ -50,14 +27,14 @@ namespace Data
 
 		NN<V> Next()
 		{
-			return this->arr->GetItem(this->nextIndex++);
+			return this->arr->GetItem(this->nextIndex++).value;
 		}
 	};
 
 	template <class T, class V> class FastMapNN : public ListMapNN<T, V>
 	{
 	protected:
-		Data::ArrayList<TwinItemNN<T, V>> values;
+		Data::ArrayListNative<TwinItemNN<T, V>> values;
 
 	public:
 		FastMapNN();
@@ -106,7 +83,7 @@ namespace Data
 		else
 		{
 			this->values.Insert((UOSInt)~i, TwinItemNN<T,V>(key, val));
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -120,7 +97,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -134,7 +111,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -202,7 +179,7 @@ namespace Data
 	template <class T, class V> Optional<V> FastMapNN<T, V>::GetItem(UOSInt index) const
 	{
 		if (index >= this->values.GetCount())
-			return 0;
+			return nullptr;
 		return this->values.GetItem(index).value;
 	}
 

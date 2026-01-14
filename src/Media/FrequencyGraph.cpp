@@ -14,7 +14,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 {
 	if (!audio->SupportSampleRead())
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UTF8Char sbuff[32];
@@ -52,14 +52,14 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 		if (!eng->CreateImage32(Math::Size2D<UOSInt>(32, 32), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
 		{
-			return 0;
+			return nullptr;
 		}
 		allFreqs = MemAllocA(Double, fftSize * (timeRes + 1));
 		maxFreq = MemAlloc(Double, fftSize);
 		minFreq = MemAlloc(Double, fftSize);
 
 		f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-		Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
+		Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, nullptr);
 		yAxis = 0;
 		it = chartLabels.Iterator();
 		while (it.HasNext())
@@ -77,7 +77,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 		chartPos.Clear();
 		chartLabels.Clear();
-		Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
+		Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, nullptr);
 		xAxis = 0;
 		it = chartLabels.Iterator();
 		while (it.HasNext())
@@ -157,7 +157,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 			tmpImg->SetColorProfile(color);
 			sbpl = tmpImg->GetImgBpl();
 			b = tmpImg->NewBrushARGB(0xffffffff);
-			tmpImg->DrawRect(Math::Coord2DDbl(0, 0), tmpImg->GetSize().ToDouble(), 0, b);
+			tmpImg->DrawRect(Math::Coord2DDbl(0, 0), tmpImg->GetSize().ToDouble(), nullptr, b);
 			tmpImg->DelBrush(b);
 
 			minVal = minFreq[0];
@@ -263,7 +263,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 			trans.Delete();
 			MemFree(lut);
 
-			p = tmpImg->NewPenARGB(0xff000000, 1, 0, 0);
+			p = tmpImg->NewPenARGB(0xff000000, 1, nullptr, 0);
 			b = tmpImg->NewBrushARGB(0xff000000);
 			f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			tmpImg->DrawLine(yAxis + 3, ihFontSize, yAxis + 3, ihFontSize + dfftSize * 0.5, p);
@@ -271,7 +271,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 			chartPos.Clear();
 			chartLabels.Clear();
-			Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
+			Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, nullptr);
 			it = chartLabels.Iterator();
 			while (it.HasNext())
 			{
@@ -287,7 +287,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 			chartPos.Clear();
 			chartLabels.Clear();
-			Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
+			Data::ChartPlotter::CalScaleMarkDbl(chartPos, chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, nullptr);
 			it = chartLabels.Iterator();
 			while (it.HasNext())
 			{

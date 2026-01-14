@@ -1,6 +1,6 @@
 #ifndef _SM_IO_TVCONTROL
 #define _SM_IO_TVCONTROL
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Text/CString.h"
 
 namespace IO
@@ -96,9 +96,9 @@ namespace IO
 		virtual Bool SendInstruction(CommandType ct) = 0;
 		virtual Bool SendGetCommand(CommandType ct, Int32 *val, UnsafeArray<UTF8Char> sbuff) = 0;
 		virtual Bool SendSetCommand(CommandType ct, Int32 val) = 0;
-		virtual void GetSupportedCmd(Data::ArrayList<CommandType> *cmdList, Data::ArrayList<CommandFormat> *cmdFormats) = 0;
+		virtual void GetSupportedCmd(Data::ArrayListNative<CommandType> *cmdList, Data::ArrayListNative<CommandFormat> *cmdFormats) = 0;
 
-		static OSInt GetTVList(Data::ArrayList<TVType> *tvList);
+		static OSInt GetTVList(Data::ArrayListNative<TVType> *tvList);
 		static Bool GetTVInfo(TVType tvType, TVInfo *info);
 		static Optional<TVControl> CreateTVControl(NN<IO::Stream> stm, TVType tvType, Int32 monId);
 		static Text::CStringNN GetCommandName(CommandType cmdType);

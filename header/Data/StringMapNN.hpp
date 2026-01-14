@@ -73,7 +73,7 @@ namespace Data
 		{
 			this->keys->Insert((UOSInt)~i, Text::String::CopyOrNull(key));
 			this->vals.Insert((UOSInt)~i, val);
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -91,7 +91,7 @@ namespace Data
 		{
 			this->keys->Insert((UOSInt)~i, key->Clone());
 			this->vals.Insert((UOSInt)~i, val);
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -109,7 +109,7 @@ namespace Data
 		{
 			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng));
 			this->vals.Insert((UOSInt)~i, val);
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -123,7 +123,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -137,7 +137,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -151,7 +151,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -168,7 +168,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 

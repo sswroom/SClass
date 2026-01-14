@@ -16,7 +16,7 @@ UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 	this->selectedIndex = INVALID_INDEX;
 
 	Media::ColorProfile rgbColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, rgbColor, rgbColor, 0, Media::AT_ALPHA_ALL_FF));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, rgbColor, rgbColor, nullptr, Media::AT_ALPHA_ALL_FF));
 	this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(iconSize);
 }
@@ -54,7 +54,7 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 				if (i == this->selectedIndex)
 				{
 					NN<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
-					img->DrawRect(Math::Coord2DDbl(0, OSInt2Double(ofst)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(this->iconSize.y + ICONPADDING)), 0, b);
+					img->DrawRect(Math::Coord2DDbl(0, OSInt2Double(ofst)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(this->iconSize.y + ICONPADDING)), nullptr, b);
 					img->DelBrush(b);
 				}
 				if (this->imgList.GetItem(i).SetTo(gimg))
@@ -90,7 +90,7 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 					if (i + k == this->selectedIndex)
 					{
 						NN<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
-						img->DrawRect(Math::Coord2DDbl(UOSInt2Double((this->iconSize.x + ICONPADDING) * k), OSInt2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, 0, b);
+						img->DrawRect(Math::Coord2DDbl(UOSInt2Double((this->iconSize.x + ICONPADDING) * k), OSInt2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, nullptr, b);
 						img->DelBrush(b);
 					}
 					if (this->imgList.GetItem(i + k).SetTo(gimg))
@@ -117,8 +117,8 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 
 	if (this->hasBorder)
 	{
-		NN<Media::DrawPen> p = img->NewPenARGB(0xff000000, 1, 0, 0);
-		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w - 1), UOSInt2Double(h - 1)), p, 0);
+		NN<Media::DrawPen> p = img->NewPenARGB(0xff000000, 1, nullptr, 0);
+		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w - 1), UOSInt2Double(h - 1)), p, nullptr);
 		img->DelPen(p);
 	}
 }

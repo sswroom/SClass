@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Core/ByteTool_C.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"

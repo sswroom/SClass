@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ICaseStringMap.hpp"
 #include "IO/Path.h"
 #include "IO/ParsedObject.h"
 #include "IO/StmData/FileData.h"

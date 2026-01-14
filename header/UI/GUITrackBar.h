@@ -12,7 +12,7 @@ namespace UI
 		typedef void (CALLBACKFUNC ScrollEvent)(AnyType userObj, UOSInt scrollPos);
 
 	private:
-		Data::ArrayList<Data::CallbackStorage<ScrollEvent>> scrollHandlers;
+		Data::ArrayListObj<Data::CallbackStorage<ScrollEvent>> scrollHandlers;
 
 	public:
 		GUITrackBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent);

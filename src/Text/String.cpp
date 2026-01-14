@@ -13,7 +13,7 @@ Text::String Text::String::emptyStr(1048576);
 Optional<Text::String> Text::String::NewOrNullSlow(UnsafeArrayOpt<const UTF8Char> str)
 {
 	UnsafeArray<const UTF8Char> nnstr;
-	if (!str.SetTo(nnstr)) return 0;
+	if (!str.SetTo(nnstr)) return nullptr;
 	if (nnstr[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(nnstr);
 	Text::String *s = (Text::String*)MemAllocA(UInt8, len + sizeof(String));
@@ -39,7 +39,7 @@ NN<Text::String> Text::String::NewNotNullSlow(UnsafeArray<const UTF8Char> str)
 Optional<Text::String> Text::String::NewOrNull(Text::CString str)
 {
 	Text::CStringNN nnstr;
-	if (!str.SetTo(nnstr)) return 0;
+	if (!str.SetTo(nnstr)) return nullptr;
 	if (nnstr.leng == 0) return NewEmpty();
 	Text::String *s = (Text::String*)MemAllocA(UInt8, nnstr.leng + sizeof(String));
 	s->v = s->vbuff;
@@ -80,7 +80,7 @@ NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArray
 Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF16Char> str)
 {
 	UnsafeArray<const UTF16Char> nnstr;
-	if (!str.SetTo(nnstr)) return 0;
+	if (!str.SetTo(nnstr)) return nullptr;
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(nnstr);
 	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
@@ -110,7 +110,7 @@ NN<Text::String> Text::String::NewW(UnsafeArray<const UTF16Char> str, UOSInt len
 Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF32Char> str)
 {
 	UnsafeArray<const UTF32Char> nnstr;
-	if (!str.SetTo(nnstr)) return 0;
+	if (!str.SetTo(nnstr)) return nullptr;
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(nnstr);
 	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);

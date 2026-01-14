@@ -1,7 +1,7 @@
 #ifndef _SM_NET_IPSCANDETECTOR
 #define _SM_NET_IPSCANDETECTOR
 #include "AnyType.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "Data/FastMapNN.hpp"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
@@ -27,7 +27,7 @@ namespace Net
 			UInt64 iMAC;
 			Int64 lastDetectTime;
 			OSInt detectCnt;
-			Data::FastMap<UInt32, Int64> targetIPMap;
+			Data::FastMapNative<UInt32, Int64> targetIPMap;
 		};
 
 	private:

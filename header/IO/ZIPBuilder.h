@@ -1,7 +1,7 @@
 #ifndef _SM_IO_ZIPBUILDER
 #define _SM_IO_ZIPBUILDER
 #include "Crypto/Hash/CRC32RIEEE.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/Timestamp.h"
 #include "Data/Compress/Inflate.h"
 #include "IO/BufferedOutputStream.h"
@@ -73,7 +73,7 @@ TTTTsstrwxrwxrwx0000000000ADVSHR
 		Crypto::Hash::CRC32RIEEE crc;
 		UInt64 baseOfst;
 		UInt64 currOfst;
-		Data::ArrayList<FileInfo*> files;
+		Data::ArrayListObj<FileInfo*> files;
 		Sync::Mutex mut;
 		ZIPOS osType;
 

@@ -11,15 +11,15 @@
 Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeTextNN()->EndsWith(UTF8STRC(":FeatureCollection")))
-		return 0;
+		return nullptr;
 	
 	NN<Text::String> nodeText;
 	ParseEnv env;
-	env.csys = 0;
+	env.csys = nullptr;
 	env.srid = 0;
 	UOSInt colCnt = 0;
 	Data::ArrayListArr<const UTF8Char> nameList;
-	Data::ArrayList<Text::String *> valList;
+	Data::ArrayListObj<Text::String *> valList;
 	Text::StringBuilderUTF8 sb;
 	Map::VectorLayer *lyr = 0;
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
@@ -38,7 +38,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 				{
 					tableName = Text::String::New(nodeText->ToCString().Substring(i + 1)).Ptr();
 				}
-				Optional<Math::Geometry::Vector2D> vec = 0;
+				Optional<Math::Geometry::Vector2D> vec = nullptr;
 				NN<Math::Geometry::Vector2D> nnvec;
 				while (reader->NextElementName().SetTo(nodeText))
 				{
@@ -716,7 +716,7 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 							}
 							else if (nodeName->Equals(UTF8STRC("gml:posList")) && dimension != 0)
 							{
-								Data::ArrayList<Double> posList;
+								Data::ArrayListNative<Double> posList;
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
 								sarr[1] = sb.v;

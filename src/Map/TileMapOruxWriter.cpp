@@ -17,7 +17,7 @@ Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLe
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(&sbuff[i + 1], UTF8STRC("OruxMapsImages.db"));
 	NEW_CLASSNN(this->db, DB::SQLiteFile(CSTRP(sbuff, sptr)));
-	this->sess = 0;
+	this->sess = nullptr;
 	if (!this->db->IsError())
 	{
 		DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
@@ -141,7 +141,7 @@ Map::TileMapOruxWriter::~TileMapOruxWriter()
 	if (this->sess.SetTo(sess))
 	{
 		this->db->Commit(sess);
-		this->sess = 0;
+		this->sess = nullptr;
 	}
 	this->db.Delete();
 	MemFree(this->levels);

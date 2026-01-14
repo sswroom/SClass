@@ -132,13 +132,13 @@ UnsafeArrayOpt<UTF8Char> IO::Device::HuaweiGSMModemController::HuaweiGetICCID(Un
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^ICCID?"), 3000).SetTo(sptr))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^ICCID: ")))
 	{
 		return Text::StrConcatC(iccid, &sbuff[8], (UOSInt)(sptr - &sbuff[8]));
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool IO::Device::HuaweiGSMModemController::HuaweiGetCardMode(OutParam<SIMCardType> simType)
@@ -350,13 +350,13 @@ Bool IO::Device::HuaweiGSMModemController::HuaweiGetVersion(NN<VersionInfo> vers
 	{
 		return false;
 	}
-	version->biosDateTime = 0;
-	version->cfg = 0;
-	version->extd = 0;
-	version->exth = 0;
-	version->exts = 0;
-	version->extu = 0;
-	version->ini = 0;
+	version->biosDateTime = nullptr;
+	version->cfg = nullptr;
+	version->extd = nullptr;
+	version->exth = nullptr;
+	version->exts = nullptr;
+	version->extu = nullptr;
+	version->ini = nullptr;
 	NN<Text::String> s;
 	Text::CStringNN type;
 	UOSInt i = 0;

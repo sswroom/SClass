@@ -91,13 +91,13 @@ IO::FileStream::FileStream(NN<Text::String> fileName, FileMode mode, FileShare s
 		return;
 	}
 	this->handle = 0;
-	this->InitStream(0, mode, share, buffType);
+	this->InitStream(nullptr, mode, share, buffType);
 }
 
 IO::FileStream::FileStream(Text::CStringNN fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	this->handle = 0;
-	this->InitStream(0, mode, share, buffType);
+	this->InitStream(nullptr, mode, share, buffType);
 }
 
 IO::FileStream::~FileStream()

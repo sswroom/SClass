@@ -25,7 +25,7 @@ namespace Net
 
 		NN<Text::String> clientId;
 		Sync::Mutex hdlrMut;
-		Data::ArrayList<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
+		Data::ArrayListObj<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
 		Sync::Mutex topicMut;
 		Data::ArrayListNN<Text::String> topicList;
 

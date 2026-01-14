@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/ColDef.h"
 #include "DB/CSVFile.h"
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 		sess.totalCnt = 0;
 		sess.startTime = Data::Timestamp::UtcNow();
 		sess.lastUpdateTime = sess.startTime;
-		sess.db = 0;
+		sess.db = nullptr;
 		
 		{
 			IO::FileStream fs(dlg->GetFileName()->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 	sess.totalCnt = 0;
 	sess.startTime = Data::Timestamp::UtcNow();
 	sess.lastUpdateTime = sess.startTime;
-	sess.stm = 0;
+	sess.stm = nullptr;
 	sess.db = db;
 	if (me->chkMultiRow->IsChecked())
 	{
@@ -247,7 +247,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 	{
 		return;
 	}
-	SSWR::AVIRead::AVIRDBAssignColumnForm frm(0, me->ui, me->core, table, dataFile, nullptr, sbTable.ToCString(), me->dataFileNoHeader, me->connTz, me->colInd, me->colStr);
+	SSWR::AVIRead::AVIRDBAssignColumnForm frm(nullptr, me->ui, me->core, table, dataFile, nullptr, sbTable.ToCString(), me->dataFileNoHeader, me->connTz, me->colInd, me->colStr);
 	frm.ShowDialog(me);
 	table.Delete();
 }
@@ -304,7 +304,7 @@ Optional<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewText(UOSInt colI
 	if (this->colStr.GetItem(colIndex).SetTo(s))
 		return s->Clone();
 	else
-		return 0;
+		return nullptr;
 }
 
 NN<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewTextNN(UOSInt colIndex)
@@ -334,11 +334,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		NEW_CLASSNN(csv, DB::CSVFile(fileName, 65001))
 		if (noHeader) csv->SetNoHeader(true);
 		NN<DB::DBReader> r;
-		if (!csv->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (!csv->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			csv.Delete();
 			this->ui->ShowMsgOK(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
-			this->dataConn = 0;
+			this->dataConn = nullptr;
 			return false;
 		}
 		csv->CloseReader(r);
@@ -355,7 +355,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 	else
 	{
 		IO::Path::PathType pt = IO::Path::GetPathType(fileName);
-		Optional<DB::ReadingDB> db = 0;
+		Optional<DB::ReadingDB> db = nullptr;
 		if (pt == IO::Path::PathType::File)
 		{
 			IO::StmData::FileData fd(fileName, false);
@@ -380,7 +380,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		else
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("Check Table Changes"), this);
-			this->dataConn = 0;
+			this->dataConn = nullptr;
 			return false;
 		}
 	}
@@ -415,7 +415,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::InitConn(NN<DB::ReadingDB> conn, Int8 co
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayListNative<UOSInt>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable)
 {
 	colInd->Clear();
 	UOSInt i = 0;
@@ -433,7 +433,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> 
 	}
 
 	NN<DB::ReadingDB> dataConn;
-	if (!this->dataConn.SetTo(dataConn) || !dataConn->QueryTableData(srcSchema, srcTable, 0, 0, 1, nullptr, 0).SetTo(r))
+	if (!this->dataConn.SetTo(dataConn) || !dataConn->QueryTableData(srcSchema, srcTable, nullptr, 0, 1, nullptr, nullptr).SetTo(r))
 	{
 		return false;
 	}
@@ -482,7 +482,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> 
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayListNative<UOSInt>> colInd, NN<DB::TableDef> destTable)
 {
 	UOSInt j = colInd->GetCount();
 	if (j == 0)
@@ -532,8 +532,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	Optional<Data::QueryConditions> srcDBCond = 0;
-	Optional<Data::QueryConditions> dataDBCond = 0;
+	Optional<Data::QueryConditions> srcDBCond = nullptr;
+	Optional<Data::QueryConditions> dataDBCond = nullptr;
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
@@ -577,7 +577,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UOSInt k;
 	UOSInt dbCnt;
 	UOSInt srcCnt;
-	Data::FastStringMap<Text::String**> csvData;
+	Data::FastStringMapObj<Text::String**> csvData;
 	Text::String** rowData;
 	NN<DB::ColDef> col;
 	NN<DB::DBReader> r;
@@ -588,7 +588,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		table.Delete();
 		return false;
 	}
-	if (!dataConn->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, dataDBCond).SetTo(r))
+	if (!dataConn->QueryTableData(nullptr, sbTable.ToCString(), nullptr, 0, 0, nullptr, dataDBCond).SetTo(r))
 	{
 		srcDBCond.Delete();
 		dataDBCond.Delete();
@@ -772,7 +772,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 
 	if (succ && keyCol1 != INVALID_INDEX)
 	{
-		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, nullptr, srcDBCond).SetTo(r))
+		if (!this->db->QueryTableData(this->schema, this->table, nullptr, 0, 0, nullptr, srcDBCond).SetTo(r))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 			succ = false;
@@ -1061,8 +1061,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	Optional<Data::QueryConditions> srcDBCond = 0;
-	Optional<Data::QueryConditions> dataDBCond = 0;
+	Optional<Data::QueryConditions> srcDBCond = nullptr;
+	Optional<Data::QueryConditions> dataDBCond = nullptr;
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
@@ -1168,7 +1168,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	UOSInt k;
 	UOSInt srcCnt;
-	Data::FastStringMap<Text::String**> csvData;
+	Data::FastStringMapObj<Text::String**> csvData;
 	Text::String** rowData;
 	NN<DB::DBReader> r;
 	if (!this->IsColIndexValid(this->colInd, table))
@@ -1178,7 +1178,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		table.Delete();
 		return false;
 	}
-	if (!dataConn->QueryTableData(nullptr, sbTable.ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (!dataConn->QueryTableData(nullptr, sbTable.ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		table.Delete();
 		srcDBCond.Delete();
@@ -1409,7 +1409,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 	if (keyCol1 != INVALID_INDEX)
 	{
-		if (!this->db->QueryTableData(this->schema, this->table, 0, 0, 0, nullptr, srcDBCond).SetTo(r))
+		if (!this->db->QueryTableData(this->schema, this->table, nullptr, 0, 0, nullptr, srcDBCond).SetTo(r))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in getting table data"), CSTR("Check Table Changes"), this);
 		}
@@ -1423,7 +1423,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				sbId.ClearStr();
 				id1 = r->GetNewStrNN(keyCol1);
 				sbId.Append(id1);
-				id2 = 0;
+				id2 = nullptr;
 				if (keyCol2 != INVALID_INDEX)
 				{
 					sbId.AppendC(UTF8STRC("_ _"));
@@ -2234,12 +2234,12 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->db = db;
 	this->schema = schema;
 	this->table = table;
-	this->relDataFile = 0;
-	this->dataConn = 0;
+	this->relDataFile = nullptr;
+	this->dataConn = nullptr;
 	this->inited = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	if (schema.v == 0)
+	if (schema.v.IsNull())
 	{
 		schema = CSTR("");
 	}

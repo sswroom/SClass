@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Da
 		{
 			DB::CSVFile csv(file, 0);
 			NN<DB::DBReader> r;
-			if (csv.QueryTableData(0, CSTR(""), 0, 0, 0, 0, 0).SetTo(r))
+			if (csv.QueryTableData(0, CSTR(""), nullptr, 0, 0, 0, nullptr).SetTo(r))
 			{
 				Bool succ = true;
 				if (!r->GetName(0, sbuff).SetTo(sptr) || !CSTRP(sbuff, sptr).Equals(CSTR("Time"))) succ = false;
@@ -238,7 +238,7 @@ SSWR::AVIRead::AVIRSIDERunnerLogForm::AVIRSIDERunnerLogForm(Optional<UI::GUIClie
 	this->lvSteps->AddColumn(CSTR("Min Time"), 60);
 	this->lvSteps->AddColumn(CSTR("Max Time"), 60);
 
-	this->side = 0;
+	this->side = nullptr;
 	this->HandleDropFiles(OnFiles, this);
 }
 

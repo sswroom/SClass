@@ -123,7 +123,7 @@ UInt64 IO::CDSectorStreamData::GetDataSize() const
 
 UnsafeArrayOpt<const UInt8> IO::CDSectorStreamData::GetPointer() const
 {
-	return 0;
+	return nullptr;
 }
 
 NN<IO::StreamData> IO::CDSectorStreamData::GetPartialData(UInt64 offset, UInt64 length)

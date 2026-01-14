@@ -1,13 +1,13 @@
 #ifndef _SM_DATA_SORT_ARTIFICIALQUICKSORTALIST_C
 #define _SM_DATA_SORT_ARTIFICIALQUICKSORTALIST_C
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/Sort/ArtificialQuickSortCmp_C.h"
 
 template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNN<T> *arr);
-template <class T> void ArtificialQuickSort_SortAList(Data::ArrayList<T> *arr);
+template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNative<T> *arr);
 
-template <class T> void ArtificialQuickSort_SortAList(Data::ArrayList<T> *arr)
+template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNative<T> *arr)
 {
 	UOSInt size;
 	T *a = arr->GetArray(&size);

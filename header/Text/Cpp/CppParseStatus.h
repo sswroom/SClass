@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_CPP_CPPPARSESTATUS
 #define _SM_TEXT_CPP_CPPPARSESTATUS
 #include "Data/ArrayListICaseString.h"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Data/FastStringMapNN.hpp"
 #include "Data/StringUTF8Map.hpp"
@@ -54,8 +55,8 @@ namespace Text
 				Bool lineStart;
 				ParserMode currMode;
 				Int32 modeStatus;
-				Data::ArrayList<Int32> ifValid;
-				Data::ArrayList<ParserMode> pastModes;
+				Data::ArrayListNative<Int32> ifValid;
+				Data::ArrayListNative<ParserMode> pastModes;
 				Text::StringBuilderUTF8 lineBuffSB;
 				UTF8Char *lineBuffWS;
 			} FileParseStatus;

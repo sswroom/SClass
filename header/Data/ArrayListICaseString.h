@@ -10,7 +10,7 @@ namespace Data
 		ArrayListICaseString();
 		ArrayListICaseString(UOSInt capacity);
 
-		virtual NN<Data::ArrayList<Optional<Text::String>>> Clone() const;
+		virtual NN<Data::ArrayListObj<Optional<Text::String>>> Clone() const;
 		virtual OSInt Compare(Optional<Text::String> obj1, Optional<Text::String> obj2) const;
 		virtual OSInt SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UOSInt len) const;
 	};

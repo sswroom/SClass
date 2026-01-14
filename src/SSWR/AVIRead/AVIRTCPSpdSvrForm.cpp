@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(AnyType userObj)
 	{
 		NEW_CLASSOPT(me->cliMgr, Net::TCPClientMgr(60, OnClientEvent, OnClientData, me, 4, OnClientTimeout));
 	}
-	NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, nullptr, true));
+	NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), nullptr, port, me->log, OnClientConn, me, nullptr, true));
 	if (svr->IsV4Error())
 	{
 		svr.Delete();
@@ -118,8 +118,8 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(Optional<UI::GUIClientContro
 	this->SetText(CSTR("TCP Speed Server"));
 
 	this->core = core;
-	this->svr = 0;
-	this->cliMgr = 0;
+	this->svr = nullptr;
+	this->cliMgr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));

@@ -62,7 +62,7 @@ Optional<IO::ParsedObject> Parser::FileParser::X509Parser::ParseFileHdr(NN<IO::S
 	UInt64 len = fd->GetDataSize();
 	if (targetType != IO::ParserType::Unknown && targetType != IO::ParserType::ASN1Data)
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> fileName = fd->GetFullFileName();
 	if (len > sizeof(buff))
@@ -72,13 +72,13 @@ Optional<IO::ParsedObject> Parser::FileParser::X509Parser::ParseFileHdr(NN<IO::S
 			Data::ByteBuffer tmpBuff(len);
 			if (fd->GetRealData(0, (UOSInt)len, tmpBuff) != len)
 			{
-				return 0;
+				return nullptr;
 			}
 			return ParseBuff(tmpBuff, fileName);
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -115,7 +115,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END CERTIFICATE-----")))
 					{
@@ -153,7 +153,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END RSA PRIVATE KEY-----")))
 					{
@@ -198,7 +198,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END DSA PRIVATE KEY-----")))
 					{
@@ -236,7 +236,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END EC PRIVATE KEY-----")))
 					{
@@ -274,7 +274,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END PRIVATE KEY-----")))
 					{
@@ -312,7 +312,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END ENCRYPTED PRIVATE KEY-----")))
 					{
@@ -350,7 +350,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END PUBLIC KEY-----")))
 					{
@@ -388,7 +388,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END CERTIFICATE REQUEST-----")))
 					{
@@ -426,7 +426,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END NEW CERTIFICATE REQUEST-----")))
 					{
@@ -464,7 +464,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
-						return 0;
+						return nullptr;
 					}
 					if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----END PKCS7-----")))
 					{
@@ -535,7 +535,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	return ret;
@@ -547,13 +547,13 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ToType(NN<IO::P
 	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
 	{
 		pobj.Delete();
-		return 0;
+		return nullptr;
 	}
 	asn1 = NN<Net::ASN1Data>::ConvertFrom(pobj);
 	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		pobj.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 	if (x509->GetFileType() == ftype)
@@ -574,7 +574,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ToType(NN<IO::P
 		}
 	}
 	x509.Delete();
-	return 0;
+	return nullptr;
 }
 
 Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBinary(Data::ByteArrayR buff)
@@ -592,5 +592,5 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBinary(Dat
 		Crypto::Cert::SSHPubKey key(CSTR("PublicKey.key"), buff);
 		return key.CreateKey();
 	}
-	return 0;
+	return nullptr;
 }

@@ -37,7 +37,7 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUICl
 	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	this->dbf = dbf;
-	this->filter = 0;
+	this->filter = nullptr;
 	
 	this->lblCol = ui->NewLabel(*this, CSTR("Column"));
 	this->lblCol->SetRect(8, 8, 56, 23, false);

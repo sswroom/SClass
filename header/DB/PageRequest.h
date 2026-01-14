@@ -1,6 +1,7 @@
 #ifndef _SM_DB_PAGEREQUEST
 #define _SM_DB_PAGEREQUEST
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListArr.hpp"
+#include "Data/ArrayListNative.hpp"
 
 namespace DB
 {
@@ -9,8 +10,8 @@ namespace DB
 	private:
 		UOSInt pageNum;
 		UOSInt pageSize;
-		Data::ArrayList<const UTF8Char*> *sortList;
-		Data::ArrayList<Bool> *sortDescList;
+		Optional<Data::ArrayListArr<const UTF8Char>> sortList;
+		Optional<Data::ArrayListNative<Bool>> sortDescList;
 	public:
 		PageRequest(UOSInt pageNum, UOSInt pageSize);
 		~PageRequest();
@@ -20,7 +21,7 @@ namespace DB
 
 		void Sort(UnsafeArray<const UTF8Char> colName, Bool descending);
 		UOSInt GetSortingCount();
-		const UTF8Char *GetSortColumn(UOSInt index);
+		UnsafeArrayOpt<const UTF8Char> GetSortColumn(UOSInt index);
 		Bool IsSortDesc(UOSInt index);
 	};
 }

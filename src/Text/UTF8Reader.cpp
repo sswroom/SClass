@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "IO/SeekableStream.h"
 #include "Sync/Event.h"
 #include "Text/UTF8Reader.h"
@@ -477,7 +476,7 @@ UnsafeArrayOpt<UTF8Char> Text::UTF8Reader::ReadLine(UnsafeArray<UTF8Char> sbuff,
 	{
 		this->FillBuffer();
 		if (this->currOfst >= this->buffSize)
-			return 0;
+			return nullptr;
 	}
 
 	this->lineBreak = Text::LineBreakType::None;
@@ -602,7 +601,7 @@ UnsafeArrayOpt<UTF8Char> Text::UTF8Reader::ReadLine(UnsafeArray<UTF8Char> sbuff,
 				if (this->buffSize - this->currOfst < currSize + charSize)
 				{
 					if (writeSize <= 0)
-						return 0;
+						return nullptr;
 					return sbuff;
 				}
 				buffSize = this->buffSize;

@@ -127,7 +127,7 @@ Bool Math::Geometry::LinearRing::IsClose() const
 	return this->pointArr[0] == this->pointArr[this->nPoint - 1];
 }
 
-Double Math::Geometry::LinearRing::GetIntersactsCenter(NN<Data::ArrayList<Double>> vals)
+Double Math::Geometry::LinearRing::GetIntersactsCenter(NN<Data::ArrayListNative<Double>> vals)
 {
 	if (vals->GetCount() == 0)
 	{

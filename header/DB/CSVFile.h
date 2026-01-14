@@ -21,7 +21,7 @@ namespace DB
 		Bool noHeader;
 		Bool nullIfEmpty;
 		UOSInt indexCol;
-		Data::ArrayList<UOSInt> timeCols;
+		Data::ArrayListNative<UOSInt> timeCols;
 
 		void InitReader(NN<CSVReader> r);
 	public:

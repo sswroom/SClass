@@ -422,7 +422,7 @@ Map::OSM::LayerType Map::OSM::OSMData::CalcElementLayerType(NN<ElementInfo> elem
 	return LayerType::Unknown;
 }
 
-Map::OSM::OSMData::OSMData(Text::CStringNN sourceName) : Map::MapDrawLayer(sourceName, 0, CSTR("OSM"), Math::CoordinateSystemManager::CreateWGS84Csys())
+void Map::OSM::OSMData::Init()
 {
 	this->groupDist = 0.01;
 	this->lang = nullptr;
@@ -437,6 +437,16 @@ Map::OSM::OSMData::OSMData(Text::CStringNN sourceName) : Map::MapDrawLayer(sourc
 	this->currScale = 1000;
 	this->mixedData = MixedData::AllData;
 	this->SetStyleDefault();
+}
+
+Map::OSM::OSMData::OSMData(Text::CStringNN sourceName) : Map::MapDrawLayer(sourceName, 0, CSTR("OSM"), Math::CoordinateSystemManager::CreateWGS84Csys())
+{
+	this->Init();
+}
+
+Map::OSM::OSMData::OSMData(NN<Text::String> sourceName) : Map::MapDrawLayer(sourceName, 0, nullptr, Math::CoordinateSystemManager::CreateWGS84Csys())
+{
+	this->Init();
 }
 
 Map::OSM::OSMData::~OSMData()

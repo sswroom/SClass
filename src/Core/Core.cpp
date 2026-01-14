@@ -1,10 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
+#include "Data/ArrayListObj.hpp"
 
-Data::ArrayList<Core::DecodeVideoFunc> *Core_decVFuncs = 0;
-Data::ArrayList<Core::DecodeAudioFunc> *Core_decAFuncs = 0;
-Data::ArrayList<Core::SimpleFunc> *Core_onExitFuncs = 0;
+Data::ArrayListObj<Core::DecodeVideoFunc> *Core_decVFuncs = 0;
+Data::ArrayListObj<Core::DecodeAudioFunc> *Core_decAFuncs = 0;
+Data::ArrayListObj<Core::SimpleFunc> *Core_onExitFuncs = 0;
 
 void Core::CoreStart()
 {
@@ -40,7 +41,7 @@ void Core::CoreAddVideoDecFunc(DecodeVideoFunc func)
 {
 	if (Core_decVFuncs == 0)
 	{
-		NEW_CLASS(Core_decVFuncs, Data::ArrayList<DecodeVideoFunc>());
+		NEW_CLASS(Core_decVFuncs, Data::ArrayListObj<DecodeVideoFunc>());
 	}
 	Core_decVFuncs->Add(func);
 }
@@ -49,7 +50,7 @@ void Core::CoreAddAudioDecFunc(DecodeAudioFunc func)
 {
 	if (Core_decAFuncs == 0)
 	{
-		NEW_CLASS(Core_decAFuncs, Data::ArrayList<DecodeAudioFunc>());
+		NEW_CLASS(Core_decAFuncs, Data::ArrayListObj<DecodeAudioFunc>());
 	}
 	Core_decAFuncs->Add(func);
 }
@@ -58,16 +59,16 @@ void Core::CoreAddOnExitFunc(SimpleFunc func)
 {
 	if (Core_onExitFuncs == 0)
 	{
-		NEW_CLASS(Core_onExitFuncs, Data::ArrayList<SimpleFunc>());
+		NEW_CLASS(Core_onExitFuncs, Data::ArrayListObj<SimpleFunc>());
 	}
 	Core_onExitFuncs->Add(func);
 }
 
 Optional<Media::VideoSource> Core::DecodeVideo(NN<Media::VideoSource> video)
 {
-	Optional<Media::VideoSource> decoder = 0;
+	Optional<Media::VideoSource> decoder = nullptr;
 	if (Core_decVFuncs == 0)
-		return 0;
+		return nullptr;
 	UOSInt i = 0;
 	UOSInt j = Core_decVFuncs->GetCount();
 	while (decoder.IsNull() && i < j)
@@ -80,9 +81,9 @@ Optional<Media::VideoSource> Core::DecodeVideo(NN<Media::VideoSource> video)
 
 Optional<Media::AudioSource> Core::DecodeAudio(NN<Media::AudioSource> audio)
 {
-	Optional<Media::AudioSource> decoder = 0;
+	Optional<Media::AudioSource> decoder = nullptr;
 	if (Core_decAFuncs == 0)
-		return 0;
+		return nullptr;
 	UOSInt i = 0;
 	UOSInt j = Core_decAFuncs->GetCount();
 	while (decoder.IsNull() && i < j)

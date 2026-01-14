@@ -19,7 +19,7 @@ namespace UI
 		Optional<IO::FileAnalyse::FrameDetail> frame;
 		UInt64 fileSize;
 		UInt64 currOfst;
-		Data::ArrayList<Data::CallbackStorage<OffsetChgHandler>> hdlrList;
+		Data::ArrayListObj<Data::CallbackStorage<OffsetChgHandler>> hdlrList;
 		UInt32 frameColor;
 		UInt32 fieldColor;
 

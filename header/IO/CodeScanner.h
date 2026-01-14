@@ -1,7 +1,7 @@
 #ifndef _SM_IO_CODESCANNER
 #define _SM_IO_CODESCANNER
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "IO/Stream.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
@@ -172,7 +172,7 @@ namespace IO
 		virtual Bool ResetDefault() = 0;
 		virtual void HandleCodeScanned(ScanHandler hdlr, AnyType userObj) = 0;
 
-		virtual UOSInt GetCommandList(NN<Data::ArrayList<DeviceCommand>> cmdList) = 0;
+		virtual UOSInt GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList) = 0;
 		virtual Text::CString GetCommandName(DeviceCommand dcmd) = 0;
 		virtual CommandType GetCommandParamType(DeviceCommand dcmd, OutParam<Int32> minVal, OutParam<Int32> maxVal) = 0;
 		virtual Text::CString GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal) = 0;

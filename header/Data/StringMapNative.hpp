@@ -1,18 +1,18 @@
-#ifndef _SM_DATA_STRINGMAP
-#define _SM_DATA_STRINGMAP
+#ifndef _SM_DATA_STRINGMAPNATIVE
+#define _SM_DATA_STRINGMAPNATIVE
 #include "MyMemory.h"
-#include "Data/ArrayCmpMap.hpp"
+#include "Data/ArrayCmpMapNative.hpp"
 #include "Data/ArrayListString.h"
 #include "Text/CString.h"
 
 namespace Data
 {
-	template <class T> class StringMap : public ArrayCmpMap<Optional<Text::String>, T>
+	template <class T> class StringMapNative : public ArrayCmpMapNative<Optional<Text::String>, T>
 	{
 	public:
-		StringMap();
-		StringMap(NN<const StringMap<T>> map);
-		virtual ~StringMap();
+		StringMapNative();
+		StringMapNative(NN<const StringMapNative<T>> map);
+		virtual ~StringMapNative();
 
 		virtual T Put(Optional<Text::String> key, T val);
 		T PutNN(NN<Text::String> key, T val);
@@ -25,15 +25,15 @@ namespace Data
 		T Remove(Text::CStringNN key);
 		virtual Optional<Text::String> GetKey(UOSInt index) const;
 		virtual void Clear();
-		virtual NN<StringMap<T>> Clone() const;
+		virtual NN<StringMapNative<T>> Clone() const;
 	};
 
 
-	template <class T> StringMap<T>::StringMap() : ArrayCmpMap<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
+	template <class T> StringMapNative<T>::StringMapNative() : ArrayCmpMapNative<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
 	{
 	}
 
-	template <class T> StringMap<T>::StringMap(NN<const StringMap<T>> map) : ArrayCmpMap<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
+	template <class T> StringMapNative<T>::StringMapNative(NN<const StringMapNative<T>> map) : ArrayCmpMapNative<Optional<Text::String>, T>(NEW_CLASS_D(Data::ArrayListString()))
 	{
 		UOSInt i = 0;
 		UOSInt j = map->keys->GetCount();
@@ -45,7 +45,7 @@ namespace Data
 		}
 	}
 
-	template <class T> StringMap<T>::~StringMap()
+	template <class T> StringMapNative<T>::~StringMapNative()
 	{
 		NN<Text::String> s;
 		UOSInt i = this->keys->GetCount();
@@ -57,7 +57,7 @@ namespace Data
 		this->keys.Delete();
 	}
 
-	template <class T> T StringMap<T>::Put(Optional<Text::String> key, T val)
+	template <class T> T StringMapNative<T>::Put(Optional<Text::String> key, T val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -75,7 +75,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::PutNN(NN<Text::String> key, T val)
+	template <class T> T StringMapNative<T>::PutNN(NN<Text::String> key, T val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -93,7 +93,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Put(Text::CStringNN key, T val)
+	template <class T> T StringMapNative<T>::Put(Text::CStringNN key, T val)
 	{
 		OSInt i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
@@ -111,7 +111,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Get(Optional<Text::String> key) const
+	template <class T> T StringMapNative<T>::Get(Optional<Text::String> key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -125,7 +125,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::GetNN(NN<Text::String> key) const
+	template <class T> T StringMapNative<T>::GetNN(NN<Text::String> key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -139,7 +139,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Get(Text::CStringNN key) const
+	template <class T> T StringMapNative<T>::Get(Text::CStringNN key) const
 	{
 		OSInt i;
 		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
@@ -153,7 +153,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Remove(Optional<Text::String> key)
+	template <class T> T StringMapNative<T>::Remove(Optional<Text::String> key)
 	{
 		NN<Text::String> s;
 		OSInt i;
@@ -170,7 +170,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::RemoveNN(NN<Text::String> key)
+	template <class T> T StringMapNative<T>::RemoveNN(NN<Text::String> key)
 	{
 		NN<Text::String> s;
 		OSInt i;
@@ -187,7 +187,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Remove(Text::CStringNN key)
+	template <class T> T StringMapNative<T>::Remove(Text::CStringNN key)
 	{
 		NN<Text::String> s;
 		OSInt i;
@@ -204,12 +204,12 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<Text::String> StringMap<T>::GetKey(UOSInt index) const
+	template <class T> Optional<Text::String> StringMapNative<T>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
-	template <class T> void StringMap<T>::Clear()
+	template <class T> void StringMapNative<T>::Clear()
 	{
 		NN<Text::String> s;
 		UOSInt i;
@@ -222,10 +222,10 @@ namespace Data
 		this->vals.Clear();
 	}
 
-	template <class T> NN<StringMap<T>> StringMap<T>::Clone() const
+	template <class T> NN<StringMapNative<T>> StringMapNative<T>::Clone() const
 	{
-		NN<StringMap<T>> ret;
-		NEW_CLASSNN(ret, StringMap<T>(NNTHIS));
+		NN<StringMapNative<T>> ret;
+		NEW_CLASSNN(ret, StringMapNative<T>(NNTHIS));
 		return ret;
 	}
 }

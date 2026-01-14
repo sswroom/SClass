@@ -21,7 +21,7 @@
 #endif
 #include <stdio.h>
 
-Media::GTKDrawEngine::GTKDrawEngine() : iab(0, true)
+Media::GTKDrawEngine::GTKDrawEngine() : iab(nullptr, true)
 {
 }
 
@@ -40,7 +40,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSI
 	{
 		atype = Media::AT_PREMUL_ALPHA;
 	}
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, 0));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, nullptr));
 	return dimg;
 }
 
@@ -56,7 +56,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileN
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
-		return 0;
+		return nullptr;
 	}
 	return LoadImageStream(fs);
 
@@ -66,7 +66,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileN
 		IO::StmData::FileData fd(fileName, false);
 		if (fd.IsError())
 		{
-			return 0;
+			return nullptr;
 		}
 		if (imgList.IsNull())
 		{
@@ -78,10 +78,10 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileN
 	if (!imgList.SetTo(nnimgList))
 	{
 //		printf("GTKDrawEngine: Error in loading image %s\r\n", fileName.v);
-		return 0;
+		return nullptr;
 	}
 
-	Optional<Media::DrawImage> dimg = 0;
+	Optional<Media::DrawImage> dimg = nullptr;
 	NN<Media::RasterImage> img;
 	if (nnimgList->GetImage(0, 0).SetTo(img))
 	{
@@ -115,7 +115,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 	UInt8 hdr[128];
 	if (stm->Read(Data::ByteArray(hdr, 128)) != 128)
 	{
-		return 0;
+		return nullptr;
 	}
 	Int32 isImage = 0;
 	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUInt32(&hdr[4]) == 0x0a1a0a0d)
@@ -135,13 +135,13 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 		isImage = 4;
 	}
 	if (isImage == 0)
-		return 0;
+		return nullptr;
 	UInt64 fileLength = stm->GetLength();
 	Data::ByteBuffer data((UOSInt)fileLength);
 	data.CopyFrom(Data::ByteArrayR(hdr, 128));
 	if (stm->Read(data.SubArray(128)) != fileLength - 128)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (isImage == 1)
 	{
@@ -162,7 +162,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 			{
 				atype = Media::AT_PREMUL_ALPHA;
 			}
-			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, 0));
+			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, nullptr));
 			return dimg;
 
 		}
@@ -191,7 +191,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 				atype = Media::AT_PREMUL_ALPHA;
 				Sync::MutexUsage mutUsage(this->iabMut);
 				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
-				this->iab.SetColorSess(0);
+				this->iab.SetColorSess(nullptr);
 				this->iab.SetSourceProfile(srgb);
 				this->iab.SetDestProfile(srgb);
 				this->iab.SetOutputProfile(srgb);
@@ -204,22 +204,22 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 			cairo_surface_mark_dirty(surface);
 			g_object_unref(pixBuf);
 
-			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, 0));
+			NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, nullptr));
 			return dimg;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess)
 {
 	if (img->info.fourcc != 0)
 	{
-		return 0; 
+		return nullptr; 
 	}
 	NN<Media::GTKDrawImage> gimg;;
 	if (!Optional<Media::GTKDrawImage>::ConvertFrom(this->CreateImage32(img->info.dispSize, img->info.atype)).SetTo(gimg))
-		return 0;
+		return nullptr;
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
 	gimg->info.color.Set(img->info.color);
@@ -268,7 +268,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::CloneImage(NN<DrawImage> img)
 			return newImg;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Media::GTKDrawEngine::DeleteImage(NN<DrawImage> img)
@@ -1044,7 +1044,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	if (this->surface == 0)
 	{
 		NN<Media::DrawImage> dimg;
-		if (!this->eng->ConvImage(img, 0).SetTo(dimg))
+		if (!this->eng->ConvImage(img, nullptr).SetTo(dimg))
 		{
 			return false;
 		}
@@ -1226,8 +1226,8 @@ Bool Media::GTKDrawImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadri
 		points[2] = quad.br;
 		points[3] = quad.bl;
 		points[4] = quad.tl;
-		NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, 0, 0);
-		this->DrawPolygon(points, 5, p, 0);
+		NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, nullptr, 0);
+		this->DrawPolygon(points, 5, p, nullptr);
 		this->DelPen(p);
 		return false;
 	}
@@ -1354,12 +1354,12 @@ Optional<Media::StaticImage> Media::GTKDrawImage::ToStaticImage() const
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		if (srcData == 0)
-			return 0;
+			return nullptr;
 		NEW_CLASSNN(simg, Media::StaticImage(this->info));
 		MemCopyNO(simg->data.Ptr(), srcData, this->info.storeSize.CalcArea() * 4);
 		return simg;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Media::GTKDrawImage::SavePng(NN<IO::SeekableStream> stm)

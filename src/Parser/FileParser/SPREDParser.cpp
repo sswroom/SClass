@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
-#include "Data/FastMap.hpp"
+#include "Data/ArrayListNN.hpp"
+#include "Data/FastMapObj.hpp"
 #include "IO/Path.h"
 #include "Text/MyString.h"
 #include "Map/GPSTrack.h"
@@ -52,7 +52,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 	UInt32 cmdSize;
 	if (hdr[0] != 'R' || hdr[1] != 'D')
 	{
-		return 0;
+		return nullptr;
 	}
 	
 	cmdType = ReadUInt16(&hdr[2]);
@@ -70,11 +70,11 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	if (hdr[cmdSize] != 'R' || hdr[cmdSize + 1] != 'D')
 	{
-		return 0;
+		return nullptr;
 	}
 
 	NN<Text::String> s = fd->GetFullName();
@@ -82,20 +82,20 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RED")))
 	{
-		return 0;
+		return nullptr;
 	}
 	i = Text::StrIndexOfChar(sbuff, '.');
 	if (i == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	if (sbuff[i - 1] != 's' && sbuff[i - 1] != 'S')
-		return 0;
+		return nullptr;
 	if (!Text::StrEqualsICaseC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), UTF8STRC("DAT")))
-		return 0;
+		return nullptr;
 
 	fileSize = fd->GetDataSize();
 	currPos = 0;
 
-	Data::FastMap<Int32, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>*> devRecs;
+	Data::FastMapObj<Int32, Data::ArrayListNN<Map::GPSTrack::GPSRecord3>*> devRecs;
 	buffSize = 0;
 	while (true)
 	{
@@ -207,11 +207,11 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 			}
 			DEL_CLASS(currDev);
 		}
-		return 0;
+		return nullptr;
 	}
 
 	Map::GPSTrack *track;
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, 0));
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, nullptr));
 	i = devRecs.GetCount();
 	while (i-- > 0)
 	{

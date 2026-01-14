@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ETHERNETWEBHANDLER
 #define _SM_NET_ETHERNETWEBHANDLER
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "Net/EthernetAnalyzer.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
@@ -13,7 +13,7 @@ namespace Net
 
 	private:
 		NN<Net::EthernetAnalyzer> analyzer;
-		Data::FastStringMap<RequestHandler> reqMap;
+		Data::FastStringMapObj<RequestHandler> reqMap;
 
 		static void AppendHeader(NN<Text::StringBuilderUTF8> sbOut);
 		void AppendMenu(NN<Text::StringBuilderUTF8> sbOut);

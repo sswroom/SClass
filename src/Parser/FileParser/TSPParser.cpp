@@ -33,7 +33,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TSPParser::ParseFileHdr(NN<IO::St
 {
 	if (hdr.ReadNI64(0) != *(Int64*)"SmTS____" && hdr.ReadNI64(0) != *(Int64*)"SmTS___A" && hdr.ReadNI64(0) != *(Int64*)"SmTS___B")
 	{
-		return 0;
+		return native;
 	}
 	Math::TSPFile *pf;
 	NEW_CLASS(pf, Math::TSPFile(fd));

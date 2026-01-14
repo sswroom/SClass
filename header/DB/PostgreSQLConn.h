@@ -1,6 +1,6 @@
 #ifndef _SM_DB_POSTGRESQLCONN
 #define _SM_DB_POSTGRESQLCONN
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListStringNN.h"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
@@ -13,7 +13,7 @@ namespace DB
 	{
 	private:
 		struct ClassData;
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
 		Bool isTran;
 		NN<Text::String> server;

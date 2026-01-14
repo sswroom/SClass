@@ -1,6 +1,5 @@
 #ifndef _SM_DB_READINGDB
 #define _SM_DB_READINGDB
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/QueryConditions.h"
 #include "IO/ParsedObject.h"

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/Class.h"
-#include "Data/StringMap.hpp"
+#include "Data/StringMapNative.hpp"
 #include "Text/CharUtil.h"
 #include "Text/CPPText.h"
 #include "Text/JavaText.h"

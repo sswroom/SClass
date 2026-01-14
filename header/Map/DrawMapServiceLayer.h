@@ -34,7 +34,7 @@ namespace Map
 		Optional<Text::String> lastImageURL;
 
 		Sync::Mutex updMut;
-		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
 		static UInt32 __stdcall TaskThread(AnyType userObj);
 		void ClearDisp();
@@ -69,7 +69,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass() const;
 
 		virtual Bool CanQuery();
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);

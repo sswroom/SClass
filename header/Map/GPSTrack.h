@@ -81,7 +81,7 @@ namespace Map
 		Optional<GPSExtraParser> extraParser;
 
 		Sync::Mutex updMut;
-		Data::ArrayList<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
 
 	public:
 		GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Optional<Text::String> layerName);

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(AnyType userObj)
 	if (me->lora.SetTo(lora))
 	{
 		lora.Delete();
-		me->lora = 0;
+		me->lora = nullptr;
 		me->txtGatewayEUI->SetReadOnly(false);
 		me->txtServerIP->SetReadOnly(false);
 		me->txtServerPort->SetReadOnly(false);
@@ -191,7 +191,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientContro
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = this->core->GetSocketFactory();
-	this->lora = 0;
+	this->lora = nullptr;
 
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);

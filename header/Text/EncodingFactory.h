@@ -30,7 +30,7 @@ namespace Text
 		static UnsafeArray<UTF8Char> GetDotNetName(UnsafeArray<UTF8Char> buff, UInt32 codePage);
 		static UInt32 GetSystemCodePage();
 		static UInt32 GetSystemLCID();
-		static void GetCodePages(NN<Data::ArrayList<UInt32>> codePages);
+		static void GetCodePages(NN<Data::ArrayListNative<UInt32>> codePages);
 	};
 }
 #endif

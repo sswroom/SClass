@@ -11,8 +11,8 @@ namespace UI
 	class GUITabControl : public GUIControl
 	{
 	protected:
-		Data::ArrayList<UIEvent> selChgHdlrs;
-		Data::ArrayList<AnyType> selChgObjs;
+		Data::ArrayListObj<UIEvent> selChgHdlrs;
+		Data::ArrayListObj<AnyType> selChgObjs;
 
 	public:
 		GUITabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent);

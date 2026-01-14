@@ -95,7 +95,7 @@ Optional<IO::ConfigFile> IO::IniFile::ParseReader(NN<IO::StreamReader> reader)
 	if (cfg->GetCateCount() == 0)
 	{
 		cfg.Delete();
-		return 0;
+		return nullptr;
 	}
 	return cfg;
 }

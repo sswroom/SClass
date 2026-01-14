@@ -11,7 +11,7 @@
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
-	SSWR::AVIRead::AVIRMySQLConnForm frm(0, me->GetUI(), me->core);
+	SSWR::AVIRead::AVIRMySQLConnForm frm(nullptr, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->dbCache.Delete();
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
-	SSWR::AVIRead::AVIRODBCDSNForm frm(0, me->GetUI(), me->core);
+	SSWR::AVIRead::AVIRODBCDSNForm frm(nullptr, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->dbCache.Delete();
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 		NN<Net::WebServer::WebListener> svr;
 		NN<Net::WebServer::RESTfulHandler> restHdlr;
 		NEW_CLASSNN(restHdlr, Net::WebServer::RESTfulHandler(dbCache));
-		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, restHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), nullptr, restHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (svr->IsError())
 		{
 			valid = false;
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			}
 
 			me->lvTable->ClearItems();
-			Data::ArrayList<Text::CString> tableNames;
+			Data::ArrayListObj<Text::CString> tableNames;
 			Text::CStringNN tableName;
 			UTF8Char sbuff[32];
 			UnsafeArray<UTF8Char> sptr;
@@ -200,12 +200,12 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->SetText(CSTR("RESTful Server"));
 	this->SetFont(nullptr, 8.25, false);
-	this->svr = 0;
-	this->logger = 0;
-	this->db = 0;
-	this->dbConn = 0;
-	this->dbCache = 0;
-	this->dbModel = 0;
+	this->svr = nullptr;
+	this->logger = nullptr;
+	this->db = nullptr;
+	this->dbConn = nullptr;
+	this->dbCache = nullptr;
+	this->dbModel = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);

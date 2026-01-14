@@ -108,7 +108,7 @@ namespace Media
 		void Remove(UInt32 id);
 		Bool RemoveLargest();
 
-		UOSInt GetExifIds(NN<Data::ArrayList<UInt32>> idArr) const;
+		UOSInt GetExifIds(NN<Data::ArrayListNative<UInt32>> idArr) const;
 		EXIFType GetExifType(UInt32 id) const;
 		UInt64 GetExifCount(UInt32 id) const;
 		Optional<EXIFItem> GetExifItem(UInt32 id) const;

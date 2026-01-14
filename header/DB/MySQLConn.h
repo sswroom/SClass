@@ -1,6 +1,5 @@
 #ifndef _SM_DB_MYSQLCONN
 #define _SM_DB_MYSQLCONN
-#include "Data/ArrayList.hpp"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"

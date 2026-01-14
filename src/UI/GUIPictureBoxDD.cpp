@@ -372,10 +372,10 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl
 	this->bgBuff = 0;
 	this->bgBuffSize = Math::Size2D<UOSInt>(0, 0);
 	this->allowEnlarge = allowEnlarge;
-	this->currImage = 0;
+	this->currImage = nullptr;
 	this->currImageSize = Math::Size2D<UOSInt>(0, 0);
-	this->csconv = 0;
-	this->imgBuff = 0;
+	this->csconv = nullptr;
+	this->imgBuff = nullptr;
 	this->zoomScale = 1.0;
 	this->zoomMinScale = 1.0;
 	this->mouseDowned = false;
@@ -1069,7 +1069,7 @@ Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Me
 	if (!Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess.Ptr()).SetTo(csConv))
 	{
 		MemFreeA(prevImgData);
-		return 0;
+		return nullptr;
 	}
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;

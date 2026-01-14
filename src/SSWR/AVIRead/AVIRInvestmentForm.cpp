@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnCurrencyImportClicked(AnyTyp
 	{
 		NN<DB::ReadingDB> db;
 		NN<AVIRInvestmentImportForm> frm;
-		NEW_CLASSNN(frm, AVIRInvestmentImportForm(0, me->ui, me->core, curr->invert));
+		NEW_CLASSNN(frm, AVIRInvestmentImportForm(nullptr, me->ui, me->core, curr->invert));
 		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK && frm->GetDB().SetTo(db))
 		{
 			if (mgr->CurrencyImport(curr, db, frm->GetTimeCol(), frm->GetValueCol(), frm->GetDateFormat(), frm->IsInvert()))
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsAddClicked(AnyType use
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		AVIRInvestmentAssetForm frm(0, me->ui, me->core);
+		AVIRInvestmentAssetForm frm(nullptr, me->ui, me->core);
 		NN<Text::String> shortName;
 		NN<Text::String> fullName;
 		UInt32 currency;
@@ -227,7 +227,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsImportClicked(AnyType 
 	{
 		NN<DB::ReadingDB> db;
 		NN<AVIRInvestmentImportForm> frm;
-		NEW_CLASSNN(frm, AVIRInvestmentImportForm(0, me->ui, me->core, false));
+		NEW_CLASSNN(frm, AVIRInvestmentImportForm(nullptr, me->ui, me->core, false));
 		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK && frm->GetDB().SetTo(db))
 		{
 			if (mgr->AssetImport(ass, db, frm->GetTimeCol(), frm->GetValueCol(), frm->GetDateFormat()))
@@ -248,7 +248,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnAssetsImportDivClicked(AnyTy
 	{
 		NN<DB::ReadingDB> db;
 		NN<AVIRInvestmentImportForm> frm;
-		NEW_CLASSNN(frm, AVIRInvestmentImportForm(0, me->ui, me->core, false));
+		NEW_CLASSNN(frm, AVIRInvestmentImportForm(nullptr, me->ui, me->core, false));
 		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK && frm->GetDB().SetTo(db))
 		{
 			if (mgr->AssetImportDiv(ass, db, frm->GetTimeCol(), frm->GetValueCol(), frm->GetDateFormat()))
@@ -323,7 +323,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionFXClicked(AnyType
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		AVIRInvestmentFXForm frm(0, me->ui, me->core, mgr);
+		AVIRInvestmentFXForm frm(nullptr, me->ui, me->core, mgr);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->DisplayTransactions(mgr);
@@ -337,7 +337,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDepositClicked(An
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		AVIRInvestmentDepositForm frm(0, me->ui, me->core, mgr);
+		AVIRInvestmentDepositForm frm(nullptr, me->ui, me->core, mgr);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->DisplayTransactions(mgr);
@@ -351,7 +351,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionAssetClicked(AnyT
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		AVIRInvestmentTAssetForm frm(0, me->ui, me->core, mgr);
+		AVIRInvestmentTAssetForm frm(nullptr, me->ui, me->core, mgr);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->DisplayTransactions(mgr);
@@ -365,7 +365,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionAInterestClicked(
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		AVIRInvestmentAInterestForm frm(0, me->ui, me->core, mgr);
+		AVIRInvestmentAInterestForm frm(nullptr, me->ui, me->core, mgr);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->DisplayTransactions(mgr);
@@ -379,7 +379,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionCInterestClicked(
 	NN<Data::Invest::InvestmentManager> mgr;
 	if (me->mgr.SetTo(mgr))
 	{
-		AVIRInvestmentCInterestForm frm(0, me->ui, me->core, mgr);
+		AVIRInvestmentCInterestForm frm(nullptr, me->ui, me->core, mgr);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->DisplayTransactions(mgr);
@@ -396,7 +396,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDblClk(AnyType us
 	{
 		if (ent->type == Data::Invest::TradeType::AssetInterest)
 		{
-			AVIRInvestmentAInterestForm frm(0, me->ui, me->core, mgr);
+			AVIRInvestmentAInterestForm frm(nullptr, me->ui, me->core, mgr);
 			frm.SetEntry(ent);
 			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 			{
@@ -405,7 +405,7 @@ void __stdcall SSWR::AVIRead::AVIRInvestmentForm::OnTransactionDblClk(AnyType us
 		}
 		else if (ent->type == Data::Invest::TradeType::CashToAsset)
 		{
-			AVIRInvestmentTAssetForm frm(0, me->ui, me->core, mgr);
+			AVIRInvestmentTAssetForm frm(nullptr, me->ui, me->core, mgr);
 			frm.SetEntry(ent);
 			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 			{
@@ -607,7 +607,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrency(NN<Data::Invest::Currenc
 					}
 					else
 					{
-						optt = 0;
+						optt = nullptr;
 					}
 					if (optt.SetTo(t))
 					{
@@ -794,7 +794,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Curr
 		if (curr->tsList.GetCount() < 2)
 		{
 			NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			dimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 			dimg->DelBrush(b);
 		}
 		else
@@ -1134,7 +1134,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> 
 		if (ass->tsList.GetCount() < 2)
 		{
 			NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			dimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 			dimg->DelBrush(b);
 		}
 		else
@@ -1290,7 +1290,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayMonthly(NN<Data::Invest::Investme
 	Data::Date endDate = startDate;
 	endDate.SetMonth(startDate.GetDateValue().month + 1);
 	NN<Data::ChartPlotter> chart;
-	if (GenerateSummary(mgr, startDate, endDate, this->lvMonthly, 0).SetTo(chart))
+	if (GenerateSummary(mgr, startDate, endDate, this->lvMonthly, nullptr).SetTo(chart))
 	{
 		this->monthlyChart.Delete();
 		this->monthlyChart = chart;
@@ -1438,8 +1438,8 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 	Double initTotal;
 	UOSInt dp;
 	Data::ArrayListTS dateList;
-	Data::ArrayList<Double> totalList;
-	Data::ArrayList<Double> valList;
+	Data::ArrayListNative<Double> totalList;
+	Data::ArrayListNative<Double> valList;
 	if (mgr->GetCurrencyInfo(0).SetTo(curr) && mgr->FindCurrency(mgr->GetLocalCurrency()).SetTo(localCurr))
 	{
 		mgr->CurrencyCalcValues(curr, startDate, endDate, dateList, valList, initValue);
@@ -1584,13 +1584,13 @@ SSWR::AVIRead::AVIRInvestmentForm::AVIRInvestmentForm(Optional<UI::GUIClientCont
 	this->SetText(TITLE);
 
 	this->core = core;
-	this->mgr = 0;
-	this->currencyImg = 0;
-	this->assetsImg = 0;
-	this->monthlyChart = 0;
-	this->monthlyImg = 0;
-	this->yearlyChart = 0;
-	this->yearlyImg = 0;
+	this->mgr = nullptr;
+	this->currencyImg = nullptr;
+	this->assetsImg = nullptr;
+	this->monthlyChart = nullptr;
+	this->monthlyImg = nullptr;
+	this->yearlyChart = nullptr;
+	this->yearlyImg = nullptr;
 	this->deng = core->GetDrawEngine();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	

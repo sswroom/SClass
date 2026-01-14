@@ -1,6 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_HTTPDIRECTORYHANDLER
 #define _SM_NET_WEBSERVER_HTTPDIRECTORYHANDLER
 #include "Data/BTreeUTF8Map.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Data/StringUTF8Map.hpp"
 #include "Data/Timestamp.h"
 #include "IO/VirtualPackageFile.h"
@@ -42,7 +43,7 @@ namespace Net
 			{
 				NN<Text::String> reqPath;
 				NN<Text::String> statFileName;
-				Data::FastStringMap<UInt32> *cntMap;
+				Data::FastStringMapNative<UInt32> *cntMap;
 				Bool updated;
 			} StatInfo;
 			

@@ -98,9 +98,9 @@ namespace Data
 	{
 		BTreeUTF8Node<T> *node = (BTreeUTF8Node<T> *)MAlloc(sizeof(BTreeUTF8Node<T>) + sizeof(UTF8Char) * key.leng);
 		node->nodeCnt = 0;
-		node->parNode = 0;
-		node->leftNode = 0;
-		node->rightNode = 0;
+		node->parNode = nullptr;
+		node->leftNode = nullptr;
+		node->rightNode = nullptr;
 		node->nodeVal = val;
 		node->nodeHash = hash;
 		node->maxLev = 0;
@@ -251,7 +251,7 @@ namespace Data
 		if (!node->leftNode.SetTo(leftNode) && !node->rightNode.SetTo(rightNode))
 		{
 			MemFreeNN(node);
-			return 0;
+			return nullptr;
 		}
 		else if (node->rightNode.SetTo(rightNode) && node->leftNode.IsNull())
 		{
@@ -385,7 +385,7 @@ namespace Data
 
 	template <class T> BTreeUTF8Map<T>::BTreeUTF8Map() : DataMap<Text::CStringNN, T>()
 	{
-		rootNode = 0;
+		rootNode = nullptr;
 		NEW_CLASSNN(crc, Crypto::Hash::CRC32RC());
 	}
 
@@ -395,7 +395,7 @@ namespace Data
 		if (this->rootNode.SetTo(rootNode))
 		{
 			ReleaseNodeTree(rootNode);
-			this->rootNode = 0;
+			this->rootNode = nullptr;
 		}
 		crc.Delete();
 	}
@@ -554,7 +554,7 @@ namespace Data
 		if (this->rootNode.SetTo(rootNode))
 		{
 			ReleaseNodeTree(rootNode);
-			this->rootNode = 0;
+			this->rootNode = nullptr;
 		}
 	}
 }

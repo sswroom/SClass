@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
-#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "IO/Console.h"
 #include "Manage/HiResClock.h"

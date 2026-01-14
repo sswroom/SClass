@@ -40,7 +40,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> tmpArr[6];
-	Map::GPSTrack *track = 0;
+	Map::GPSTrack *track = nullptr;
 	Bool valid;
 
 /*	UOSInt i = fd->GetFullName()->LastIndexOf('.');
@@ -49,7 +49,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], L"PLT") != 0)
 		return 0;*/
 	if (!Text::StrEqualsC(&hdr[0], 37, UTF8STRC("OziExplorer Track Point File Version ")))
-		return 0;
+		return nullptr;
 
 	IO::StreamDataStream stm(fd);
 	Text::UTF8Reader reader(stm);
@@ -77,7 +77,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 		reader.ReadLine(sbuff, 1024);
 		UOSInt cnt;
 
-		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 65001, 0));
+		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 65001, nullptr));
 		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			cnt = Text::StrSplitTrim(tmpArr, 6, sbuff, ',');

@@ -23,7 +23,7 @@ namespace Net
 				UOSInt buffSize;
 				Text::String *cliName;
 				Text::String *mailFrom;
-				Data::ArrayList<Text::String *> rcptTo;
+				Data::ArrayListObj<Text::String *> rcptTo;
 				Bool dataMode;
 				Int32 loginMode;
 				IO::MemoryStream *dataStm;

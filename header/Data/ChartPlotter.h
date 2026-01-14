@@ -1,11 +1,12 @@
 #ifndef _SM_DATA_CHARTPLOTTER
 #define _SM_DATA_CHARTPLOTTER
 #include "Media/DrawEngine.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListDbl.h"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Data/DateTime.h"
 #include "Data/RandomOS.h"
+#include "Data/TwinItemNative.hpp"
 #include "Text/String.h"
 
 namespace Data
@@ -161,7 +162,7 @@ namespace Data
 			Optional<Text::String> name;
 			Double labelRotate;
 		public:
-			Axis() { this->name = 0; this->labelRotate = 0; }
+			Axis() { this->name = nullptr; this->labelRotate = 0; }
 			virtual ~Axis() { OPTSTR_DEL(this->name); };
 
 			virtual DataType GetType() const = 0;
@@ -379,11 +380,11 @@ namespace Data
 		static NN<Int32Data> NewDataSeq(Int32 startSeq, UOSInt count);
 		static Optional<Axis> NewAxis(NN<ChartData> data);
 
-		template<class K, class V> static NN<ChartData> NewDataFromKey(NN<Data::ArrayList<TwinItem<K, V>>> vals)
+		template<class K, class V> static NN<ChartData> NewDataFromKey(NN<Data::ArrayListNative<TwinItemNative<K, V>>> vals)
 		{
 			UOSInt i = 0;
 			UOSInt j = vals->GetCount();
-			Data::ArrayList<K> arr(j);
+			Data::ArrayListNative<K> arr(j);
 			while (i < j)
 			{
 				arr.Add(vals->GetItem(i).key);
@@ -392,11 +393,11 @@ namespace Data
 			return NewData(arr);
 		}
 
-		template<class K, class V> static NN<ChartData> NewDataFromValue(NN<Data::ArrayList<TwinItem<K, V>>> vals)
+		template<class K, class V> static NN<ChartData> NewDataFromValue(NN<Data::ArrayListNative<TwinItemNative<K, V>>> vals)
 		{
 			UOSInt i = 0;
 			UOSInt j = vals->GetCount();
-			Data::ArrayList<V> arr(j);
+			Data::ArrayListNative<V> arr(j);
 			while (i < j)
 			{
 				arr.Add(vals->GetItem(i).value);

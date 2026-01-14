@@ -16,7 +16,7 @@ void Math::GeoJSONWriter::SetLastError(Text::CStringNN lastError)
 
 Math::GeoJSONWriter::GeoJSONWriter()
 {
-	this->lastError = 0;
+	this->lastError = nullptr;
 }
 
 Math::GeoJSONWriter::~GeoJSONWriter()

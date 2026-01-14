@@ -129,7 +129,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509CertReq::GetNewPublicKey() con
 	{
 		return PublicKeyGetNew(keyPDU, keyPDU + itemLen);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Crypto::Cert::X509CertReq::GetKeyId(const Data::ByteArray &keyId) const

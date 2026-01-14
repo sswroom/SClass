@@ -4,7 +4,7 @@
 Media::ConsoleVideoRenderer::ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Media::ColorManagerSess> colorSess) : Media::VideoRenderer(colorSess, surfaceMgr, 6, 2)
 {
 	this->surfaceMgr = surfaceMgr;
-	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
+	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), nullptr, Media::RotateType::None);
 	NN<Media::MonitorSurface> primarySurface;
 	if (this->primarySurface.SetTo(primarySurface))
 	{

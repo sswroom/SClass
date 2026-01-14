@@ -11,7 +11,7 @@ namespace UI
 	public:
 		typedef void (CALLBACKFUNC SelectedChangeHandler)(AnyType userObj, Bool newState);
 	private:
-		Data::ArrayList<Data::CallbackStorage<SelectedChangeHandler>> selectedChangeHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<SelectedChangeHandler>> selectedChangeHdlrs;
 
 	public:
 		GUIRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent);

@@ -86,11 +86,11 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		{
 			if (srcDB->GetTableDef(nullptr, tabName->ToCString()).SetTo(nntabDef))
 			{
-				r = srcDB->QueryTableData(nullptr, tabName->ToCString(), 0, 0, 0, nullptr, 0);
+				r = srcDB->QueryTableData(nullptr, tabName->ToCString(), nullptr, 0, 0, nullptr, nullptr);
 				if (r.IsNull())
 				{
 					nntabDef.Delete();
-					tabDef = 0;
+					tabDef = nullptr;
 				}
 				else
 				{
@@ -99,20 +99,20 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			}
 			else
 			{
-				tabDef = 0;
-				r = 0;
+				tabDef = nullptr;
+				r = nullptr;
 			}
 		}
 		else
 		{
-			r = sDB->QueryTableData(nullptr, tabName->ToCString(), 0, 0, 0, nullptr, 0);
+			r = sDB->QueryTableData(nullptr, tabName->ToCString(), nullptr, 0, 0, nullptr, nullptr);
 			if (r.SetTo(nnr))
 			{
 				tabDef = nnr->GenTableDef(nullptr, tabName->ToCString());
 			}
 			else
 			{
-				tabDef = 0;
+				tabDef = nullptr;
 			}
 		}
 		if (r.SetTo(nnr))

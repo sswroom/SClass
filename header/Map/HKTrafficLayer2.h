@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKTRAFFICLAYER2
 #define _SM_MAP_HKTRAFFICLAYER2
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"

@@ -99,15 +99,15 @@ namespace SSWR
 			Bool dispConn;
 
 			Sync::Mutex alertMut;
-			Data::ArrayList<Int32> alertList;
+			Data::ArrayListNative<Int32> alertList;
 			Bool alertUpd;
 
 			Sync::Mutex deviceMut;
-			Data::ArrayList<Int64> deviceList;
+			Data::ArrayListNative<Int64> deviceList;
 			Bool deviceUpd;
 
 			Sync::Mutex userMut;
-			Data::ArrayList<Int32> userList;
+			Data::ArrayListNative<Int32> userList;
 			Bool userUpd;
 
 			Bool devContUpd;
@@ -121,12 +121,12 @@ namespace SSWR
 			Bool alertContUpd;
 			Sync::Mutex alertContMut;
 			Data::ArrayListStringNN alertConts;
-			Data::ArrayList<Int64> alertContDevs;
+			Data::ArrayListNative<Int64> alertContDevs;
 
 			Bool userContUpd;
 			Sync::Mutex userContMut;
 			Data::ArrayListStringNN userConts;
-			Data::ArrayList<Int64> userContDevs;
+			Data::ArrayListNative<Int64> userContDevs;
 
 			static UInt32 __stdcall ClientThread(AnyType userObj);
 			static void __stdcall OnConnClicked(AnyType userObj);

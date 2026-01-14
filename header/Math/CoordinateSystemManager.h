@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_COORDINATESYSTEMMANAGER
 #define _SM_MATH_COORDINATESYSTEMMANAGER
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListArr.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Text/CString.h"
 
@@ -187,13 +187,13 @@ namespace Math
 		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static NN<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);
 		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystem(Text::CStringNN sourceNmae, UnsafeArray<const UTF8Char> projName);
-		static UOSInt GetProjCoordinateSystems(NN<Data::ArrayList<ProjCoordSysType>> csysList);
+		static UOSInt GetProjCoordinateSystems(NN<Data::ArrayListNative<ProjCoordSysType>> csysList);
 		static UOSInt GetProjCoordinateSystemNames(NN<Data::ArrayListArr<const UTF8Char>> nameList);
 		static Optional<const ProjectedCSysInfo> GetProjCoordinateSystemInfo(UnsafeArray<const UTF8Char> projName);
 
 		static Optional<Math::GeographicCoordinateSystem> CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst);
 		static Optional<Math::GeographicCoordinateSystem> CreateGeogCoordinateSystem(Text::CStringNN sourceName, UnsafeArray<const UTF8Char> geoName);
-		static UOSInt GetGeogCoordinateSystems(NN<Data::ArrayList<GeoCoordSysType>> csysList);
+		static UOSInt GetGeogCoordinateSystems(NN<Data::ArrayListNative<GeoCoordSysType>> csysList);
 		static Optional<const GeographicCSysInfo> GetGeogCoordinateSystemInfo(UnsafeArray<const UTF8Char> geoName);
 		static NN<Math::GeographicCoordinateSystem> CreateWGS84Csys();
 		static NN<Math::CoordinateSystem> CreateCsysByCoord(Math::Coord2DDbl coord);

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ASN1NAMES
 #define _SM_NET_ASN1NAMES
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "Net/ASN1Util.h"
 #include "Text/StringBuilderUTF8.h"
@@ -46,7 +47,7 @@ namespace Net
 		Text::CString currCondParam;
 		Data::ArrayListNN<NameRule> rules;
 
-		Data::ArrayList<UOSInt> readLev;
+		Data::ArrayListNative<UOSInt> readLev;
 		UOSInt readIndex;
 		RuleContainer *readContainer;
 		UInt8 readLastOID[32];

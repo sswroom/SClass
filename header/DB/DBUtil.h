@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBUTIL
 #define _SM_DB_DBUTIL
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Data/NamedClass.hpp"
 #include "Data/Class.h"
 #include "Data/DateTime.h"

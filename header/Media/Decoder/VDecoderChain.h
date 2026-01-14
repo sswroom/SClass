@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_DECODER_VDECODERCHAIN
 #define _SM_MEDIA_DECODER_VDECODERCHAIN
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "Media/Decoder/VDecoderBase.h"
 
 namespace Media
@@ -10,7 +10,7 @@ namespace Media
 		class VDecoderChain : public VDecoderBase
 		{
 		private:
-			Data::ArrayList<Media::VideoSource *> srcFilters;
+			Data::ArrayListNN<Media::VideoSource> srcFilters;
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:

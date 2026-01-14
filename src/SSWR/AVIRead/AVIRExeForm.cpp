@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	partInd.Delete();
 	this->parts = parts;
 
-	Optional<ExeB16Addr> lastAddr = 0;
+	Optional<ExeB16Addr> lastAddr = nullptr;
 	NN<ExeB16Addr> addr;
 	i = 0;
 	j = parts->GetCount();
@@ -298,7 +298,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 		else if (res->rt == IO::EXEFile::RT_ICON || res->rt == IO::EXEFile::RT_CURSOR)
 		{
 			IO::StmData::MemoryDataCopy fd(res->data, res->dataSize);
-			me->core->LoadData(fd, 0);
+			me->core->LoadData(fd, nullptr);
 		}
 		else if (res->rt == IO::EXEFile::RT_FONT)
 		{
@@ -317,8 +317,8 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, N
 	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(nullptr, 8.25, false);
 	this->exeFile = exeFile;
-	this->parts = 0;
-	this->codesList = 0;
+	this->parts = nullptr;
+	this->codesList = nullptr;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	sptr = exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EXE Form - ")));

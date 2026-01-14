@@ -1,21 +1,20 @@
-#ifndef _SM_DATA_SORTABLEARRAYLIST
-#define _SM_DATA_SORTABLEARRAYLIST
-#include "Data/ArrayList.hpp"
+#ifndef _SM_DATA_SORTABLEARRAYLISTOBJ
+#define _SM_DATA_SORTABLEARRAYLISTOBJ
+#include "Data/ArrayListObj.hpp"
 #include "Data/Comparator.hpp"
 
 namespace Data
 {
-	template <class T> class SortableArrayList : public Data::ArrayList<T>, public Comparator<T>
+	template <class T> class SortableArrayListObj : public Data::ArrayListObj<T>, public Comparator<T>
 	{
 	public:
-		SortableArrayList() : ArrayList<T>() {};
-		SortableArrayList(UOSInt capacity) : ArrayList<T>() {};
-
+		SortableArrayListObj() : ArrayListObj<T>() {};
+		SortableArrayListObj(UOSInt capacity) : ArrayListObj<T>() {};
 		UOSInt SortedInsert(T val);
 		OSInt SortedIndexOf(T val) const;
 	};
 
-	template <class T> UOSInt Data::SortableArrayList<T>::SortedInsert(T val)
+	template <class T> UOSInt Data::SortableArrayListObj<T>::SortedInsert(T val)
 	{
 		OSInt i;
 		OSInt j;
@@ -45,7 +44,7 @@ namespace Data
 		return (UOSInt)i;
 	}
 
-	template <class T> OSInt Data::SortableArrayList<T>::SortedIndexOf(T val) const
+	template <class T> OSInt Data::SortableArrayListObj<T>::SortedIndexOf(T val) const
 	{
 		OSInt i;
 		OSInt j;

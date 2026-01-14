@@ -46,22 +46,22 @@ Optional<IO::ParsedObject> Parser::FileParser::PACParser::ParseFileHdr(NN<IO::St
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".PAC")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (*(Int32*)&hdr[0] != *(Int32*)"PAC ")
-		return 0;
+		return nullptr;
 	recCnt = ReadUInt32(&hdr[8]);
 	if (recCnt == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (recCnt * 40 + 2048 + 4 >= fd->GetDataSize())
-		return 0;
+		return nullptr;
 	
 	Data::ByteBuffer recBuff(40 * recCnt);
 	if (fd->GetRealData(2052, 40 * recCnt, recBuff) != 40 * recCnt)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -78,7 +78,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PACParser::ParseFileHdr(NN<IO::St
 		if (fileOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);
 		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);

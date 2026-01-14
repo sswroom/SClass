@@ -80,7 +80,7 @@ namespace Media
 		{
 			NN<Media::RasterImage> nnimg;
 			if (img.SetTo(nnimg)) return ConvImage(nnimg, colorSess);
-			return 0;
+			return nullptr;
 		}
 	};
 

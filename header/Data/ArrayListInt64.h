@@ -10,10 +10,10 @@ namespace Data
 		ArrayListInt64();
 		ArrayListInt64(UOSInt capacity);
 
-		virtual NN<ArrayList<Int64>> Clone() const;
+		virtual NN<ArrayListNative<Int64>> Clone() const;
 
 		void AddRangeI32(UnsafeArray<Int32> arr, UOSInt cnt);
-		void AddRangeI32(NN<const Data::ArrayList<Int32>> arr);
+		void AddRangeI32(NN<const Data::ArrayListNative<Int32>> arr);
 	};
 }
 #endif

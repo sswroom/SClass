@@ -5,8 +5,8 @@
 #include "Core/ByteTool_C.h"
 
 #define SCOPY_TEXT(var) (((var) != 0)?Text::StrCopyNew(var).Ptr():0)
-#define SDEL_TEXT(var) {UnsafeArray<const UTF8Char> nnvar; if (var.SetTo(nnvar)) { Text::StrDelNew(nnvar); var = 0;}}
-#define SDEL_TEXTC(var) {UnsafeArray<const Char> nnvar; if (var.SetTo(nnvar)) { Text::StrDelNewCh(nnvar); var = 0;}}
+#define SDEL_TEXT(var) {UnsafeArray<const UTF8Char> nnvar; if (var.SetTo(nnvar)) { Text::StrDelNew(nnvar); var = nullptr;}}
+#define SDEL_TEXTC(var) {UnsafeArray<const Char> nnvar; if (var.SetTo(nnvar)) { Text::StrDelNewCh(nnvar); var = nullptr;}}
 
 #if !defined(_WIN32) && !defined(__CYGWIN__) && !defined(__APPLE__)
 #define MyString_StrDigit100U8 _MyString_StrDigit100U8

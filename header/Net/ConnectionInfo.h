@@ -1,6 +1,5 @@
 #ifndef _SM_NET_CONNECTIONINFO
 #define _SM_NET_CONNECTIONINFO
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListUInt32.h"
 #include "Data/Timestamp.h"
 #include "Net/SocketUtil.h"

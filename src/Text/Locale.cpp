@@ -172,7 +172,7 @@ Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntry(UInt32 lcid)
 			return &locales[k];
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntryByCodePage(UInt32 codePage)
@@ -183,7 +183,7 @@ Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntryByCodePage(UInt3
 		if (locales[j].defCodePage == codePage)
 			return &locales[j];
 	}
-	return 0;
+	return nullptr;
 }
 
 Text::Locale::Locale()
@@ -207,7 +207,7 @@ Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntryByName(Text::CSt
 	UTF8Char sbuff[6];
 	if (name.leng > 5)
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StrToLowerC(sbuff, name.v, name.leng);
 	return this->names.GetC(Text::CStringNN(sbuff, name.leng));

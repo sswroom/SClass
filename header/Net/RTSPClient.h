@@ -50,7 +50,7 @@ namespace Net
 		~RTSPClient();
 
 
-		Bool GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8Char *> *options);
+		Bool GetOptions(Text::CStringNN url, Data::ArrayListObj<const UTF8Char *> *options);
 		Net::SDPFile *GetMediaInfo(Text::CStringNN url);
 
 		static IO::ParsedObject *ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);

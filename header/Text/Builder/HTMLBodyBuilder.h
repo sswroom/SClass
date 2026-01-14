@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_BUILDER_HTMLBODYBUILDER
 #define _SM_TEXT_BUILDER_HTMLBODYBUILDER
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextCommon.h"
 #include "Text/Builder/HTMLBuilder.h"
@@ -12,7 +12,7 @@ namespace Text
 		class HTMLBodyBuilder : public HTMLBuilder
 		{
 		private:
-			Data::ArrayList<Text::CString> elements;
+			Data::ArrayListObj<Text::CString> elements;
 		public:
 			HTMLBodyBuilder(NN<Text::StringBuilderUTF8> sb);
 			virtual ~HTMLBodyBuilder();

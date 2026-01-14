@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_CHINESEINFO
 #define _SM_TEXT_CHINESEINFO
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "IO/FileStream.h"
 
 namespace Text
@@ -122,7 +122,7 @@ namespace Text
 
 		Bool GetCharInfo(UInt32 charCode, CharacterInfo *chInfo);
 		Bool SetCharInfo(UInt32 charCode, CharacterInfo *chInfo);
-		Bool GetRelatedChars(UInt32 charCode, Data::ArrayList<UInt32> *relatedChars);
+		Bool GetRelatedChars(UInt32 charCode, Data::ArrayListNative<UInt32> *relatedChars);
 		Bool AddRelation(UInt32 charCode, UInt32 relatedCharCode);
 
 		//UnsafeArray<UTF8Char> AppendCharCode(UnsafeArray<UTF8Char> buff, UInt32 charCode);

@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		if (useWS)
 		{
 			NN<Net::WebSocketClient> ws;
-			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 10000));
+			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:nullptr, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
 				ws.Delete();
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		}
 		else
 		{
-			NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 10000));
+			NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:nullptr, sb.ToCString(), port, 0, 0, 10000));
 		}
 		if (client->IsError())
 		{
@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		else
 		{
 			client.Delete();
-			me->client = 0;
+			me->client = nullptr;
 			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
@@ -365,7 +365,7 @@ void SSWR::AVIRead::AVIRMQTTPublishTestForm::ServerStop()
 		}
 		this->threadToStop = false;
 		client.Delete();
-		this->client = 0;
+		this->client = nullptr;
 		OPTSTR_DEL(this->connTopic);
 		OPTSTR_DEL(this->connContent);
 	}
@@ -380,12 +380,12 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(Optional<UI::GUI
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->cliCert = 0;
-	this->cliKey = 0;
+	this->cliCert = nullptr;
+	this->cliKey = nullptr;
 	this->totalCount = 0;
 	this->dispCount = 0;
-	this->connTopic = 0;
-	this->connContent = 0;
+	this->connTopic = nullptr;
+	this->connContent = nullptr;
 	this->threadToStop = false;
 	this->threadRunning = false;
 	this->lastDispTime = Data::Timestamp::UtcNow();
@@ -444,7 +444,7 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(Optional<UI::GUI
 	this->lblStatus = ui->NewLabel(*this, CSTR("Not Connected"));
 	this->lblStatus->SetRect(4, 172, 150, 23, false);
 
-	this->client = 0;
+	this->client = nullptr;
 
 	this->AddTimer(30000, OnPingTimerTick, this);
 	this->AddTimer(1000, OnTimerTick, this);

@@ -63,7 +63,7 @@ UOSInt Exporter::GUITIFExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> Exporter::GUITIFExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	return 0;
+	return nullptr;
 /*	Bool *val = MemAlloc(Bool, 1);
 	*val = false;
 	return val;*/

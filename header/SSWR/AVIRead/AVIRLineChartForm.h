@@ -45,7 +45,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<DB::ReadingDB> db;
 			Optional<Data::ChartPlotter> chart;
-			Data::ArrayList<UInt32> yCols;
+			Data::ArrayListNative<UInt32> yCols;
 			NN<Text::String> tableName;
 			Optional<Text::String> schemaName;
 			UnsafeArrayOpt<DB::DBUtil::ColType> strTypes;

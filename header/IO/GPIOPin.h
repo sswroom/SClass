@@ -1,6 +1,5 @@
 #ifndef _SM_IO_GPIOPIN
 #define _SM_IO_GPIOPIN
-#include "Data/ArrayList.hpp"
 #include "IO/GPIOControl.h"
 #include "IO/IOPin.h"
 

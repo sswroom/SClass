@@ -37,10 +37,10 @@ namespace UI
 		struct ClassData;
 
 	private:
-		Data::ArrayList<UI::UIEvent> selChgHdlrs;
-		Data::ArrayList<AnyType> selChgObjs;
-		Data::ArrayList<UI::UIEvent> rightClkHdlrs;
-		Data::ArrayList<AnyType> rightClkObjs;
+		Data::ArrayListObj<UI::UIEvent> selChgHdlrs;
+		Data::ArrayListObj<AnyType> selChgObjs;
+		Data::ArrayListObj<UI::UIEvent> rightClkHdlrs;
+		Data::ArrayListObj<AnyType> rightClkObjs;
 		Data::ArrayListNN<TreeItem> treeItems;
 		Bool autoFocus;
 		Bool editing;

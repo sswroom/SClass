@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GUIMENU
 #define _SM_UI_GUIMENU
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "UI/GUIControl.h"
 
 namespace UI
@@ -31,7 +31,7 @@ namespace UI
 		Data::ArrayListNN<GUIMenu> subMenus;
 		UOSInt itemCnt;
 		Data::ArrayListNN<ShortcutKey> keys;
-		Data::ArrayList<AnyType> items;
+		Data::ArrayListObj<AnyType> items;
 		Double hdpi;
 		Double ddpi;
 

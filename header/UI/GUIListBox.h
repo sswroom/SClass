@@ -11,9 +11,9 @@ namespace UI
 	class GUIListBox : public GUIControl
 	{
 	private:
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> dblClickHdlrs;
-		Data::ArrayList<Data::CallbackStorage<UI::GUIControl::MouseEventHandler>> rightClickHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> selChgHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> dblClickHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::GUIControl::MouseEventHandler>> rightClickHdlrs;
 
 	public:
 		GUIListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
@@ -38,7 +38,7 @@ namespace UI
 		virtual UOSInt GetCount() = 0;
 		virtual void SetSelectedIndex(UOSInt index) = 0;
 		virtual UOSInt GetSelectedIndex() = 0;
-		virtual Bool GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices) = 0;
+		virtual Bool GetSelectedIndices(NN<Data::ArrayListNative<UInt32>> indices) = 0;
 		virtual AnyType GetSelectedItem() = 0;
 		virtual UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Optional<Text::String> GetSelectedItemTextNew() = 0;

@@ -36,7 +36,7 @@ Optional<Text::String> Net::ACMEConn::JWK(NN<Crypto::Cert::X509Key> key, OutPara
 			UnsafeArray<const UInt8> e;
 			if (!key->GetRSAModulus(mSize).SetTo(m) || !key->GetRSAPublicExponent(eSize).SetTo(e))
 			{
-				return 0;
+				return nullptr;
 			}
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("{\"e\":\""));
@@ -49,12 +49,12 @@ Optional<Text::String> Net::ACMEConn::JWK(NN<Crypto::Cert::X509Key> key, OutPara
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
 	case Crypto::Cert::X509Key::KeyType::ECPublic:
-		return 0;
+		return nullptr;
 	case Crypto::Cert::X509Key::KeyType::DSA:
 	case Crypto::Cert::X509Key::KeyType::ED25519:
 	case Crypto::Cert::X509Key::KeyType::Unknown:
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -64,7 +64,7 @@ Optional<Text::String> Net::ACMEConn::ProtectedJWK(NN<Text::String> nonce, NN<Te
 	Crypto::Token::JWSignature::Algorithm palg;
 	if (!JWK(key, palg).SetTo(jwk))
 	{
-		return 0;
+		return nullptr;
 	}
 	alg.Set(palg);
 	Text::StringBuilderUTF8 sb;
@@ -141,13 +141,13 @@ Optional<Net::HTTPClient> Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CS
 	NN<Text::String> nonce;
 	if (!this->nonce.SetTo(nonce) || !this->key.SetTo(key))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> protStr;
 	Crypto::Token::JWSignature::Algorithm alg;
 	if (!ProtectedJWK(nonce, url, key, alg, this->accountId).SetTo(protStr))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> jws;
 	jws = EncodeJWS(ssl, protStr->ToCString(), data, key, alg);
@@ -211,7 +211,7 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8
 		json->EndUse();
 		return order;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeJSON(NN<Text::JSONBase> json)
@@ -233,12 +233,12 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeJSON(NN<Text::JSONBas
 		chall->token = token->Clone();
 		return chall;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	Optional<Challenge> chall = 0;
+	Optional<Challenge> chall = nullptr;
 	NN<Text::JSONBase> json;
 	if (Text::JSONBase::ParseJSONBytes(buff, buffSize).SetTo(json))
 	{
@@ -253,20 +253,20 @@ Net::ACMEConn::ACMEConn(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHo
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	this->clif = clif;
-	this->key = 0;
+	this->key = nullptr;
 	this->ssl = Net::SSLEngineFactory::Create(clif, false);
 	this->serverHost = Text::String::New(serverHost);
 	this->port = port;
-	this->urlNewNonce = 0;
-	this->urlNewAccount = 0;
-	this->urlNewOrder = 0;
-	this->urlNewAuthz = 0;
-	this->urlRevokeCert = 0;
-	this->urlKeyChange = 0;
-	this->urlTermOfService = 0;
-	this->urlWebsite = 0;
-	this->nonce = 0;
-	this->accountId = 0;
+	this->urlNewNonce = nullptr;
+	this->urlNewAccount = nullptr;
+	this->urlNewOrder = nullptr;
+	this->urlNewAuthz = nullptr;
+	this->urlRevokeCert = nullptr;
+	this->urlKeyChange = nullptr;
+	this->urlTermOfService = nullptr;
+	this->urlWebsite = nullptr;
+	this->nonce = nullptr;
+	this->accountId = nullptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("https://"));
 	sb.Append(this->serverHost);
@@ -513,7 +513,7 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Cha
 	NN<Text::String> url;
 	if (!this->urlNewOrder.SetTo(url))
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sbNames;
 	Text::StringBuilderUTF8 sb;
@@ -564,15 +564,15 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Cha
 					order->orderURL = Text::String::New(sb.ToString(), sb.GetLength());
 				return order;
 			}
-			return 0;
+			return nullptr;
 		}
 		else
 		{
 			cli.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType)
@@ -588,7 +588,7 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String
 		Text::CStringNN sAuthType;
 		if (!AuthorizeTypeGetName(authType).SetTo(sAuthType) || Text::StrEqualsICaseC(sAuthType.v, sAuthType.leng, UTF8STRC("UNKNOWN")))
 		{
-			return 0;
+			return nullptr;
 		}
 		UOSInt i;
 		UOSInt j;
@@ -597,14 +597,14 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String
 		NN<Text::JSONBase> json;
 		if (!Text::JSONBase::ParseJSONBytes(authBuff, i).SetTo(json))
 		{
-			return 0;
+			return nullptr;
 		}
 		if (json->GetType() != Text::JSONType::Object)
 		{
 			json->EndUse();
-			return 0;
+			return nullptr;
 		}
-		Optional<Challenge> ret = 0;
+		Optional<Challenge> ret = nullptr;
 		NN<Text::JSONObject> authObj = NN<Text::JSONObject>::ConvertFrom(json);
 		if (authObj->GetObjectValue(CSTR("challenges")).SetTo(json) && json->GetType() == Text::JSONType::Array)
 		{
@@ -627,17 +627,17 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String
 		authObj->EndUse();
 		return ret;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderGetStatus(UnsafeArray<const UTF8Char> orderURL)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, NN<Crypto::Cert::X509CertReq> csr)
 {
-	return 0;
+	return nullptr;
 }
 
 void Net::ACMEConn::OrderFree(NN<Order> order)
@@ -671,10 +671,10 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeBegin(NN<Text::String
 		else
 		{
 			cli.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeGetStatus(NN<Text::String> challURL)
@@ -694,10 +694,10 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeGetStatus(NN<Text::St
 		else
 		{
 			cli.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void Net::ACMEConn::ChallengeFree(NN<Challenge> chall)

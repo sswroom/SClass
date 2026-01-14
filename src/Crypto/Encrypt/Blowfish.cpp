@@ -674,7 +674,7 @@ UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(UnsafeArray<const UInt8> inBlock,
 void Crypto::Encrypt::Blowfish::SetKey(UnsafeArray<const UInt8> key, UOSInt keySize)
 {
 	this->Init();
-	this->ExpandKey(0, key, keySize);
+	this->ExpandKey(nullptr, key, keySize);
 }
 
 void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password)

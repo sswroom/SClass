@@ -16,12 +16,12 @@ namespace UI
 		Bool allowResize;
 		Bool noBGColor;
 		NN<Media::DrawEngine> eng;
-		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
-		Data::ArrayList<AnyType> mouseDownObjs;
-		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
-		Data::ArrayList<AnyType> mouseMoveObjs;
-		Data::ArrayList<MouseEventHandler> mouseUpHdlrs;
-		Data::ArrayList<AnyType> mouseUpObjs;
+		Data::ArrayListObj<MouseEventHandler> mouseDownHdlrs;
+		Data::ArrayListObj<AnyType> mouseDownObjs;
+		Data::ArrayListObj<MouseEventHandler> mouseMoveHdlrs;
+		Data::ArrayListObj<AnyType> mouseMoveObjs;
+		Data::ArrayListObj<MouseEventHandler> mouseUpHdlrs;
+		Data::ArrayListObj<AnyType> mouseUpObjs;
 	
 		virtual void UpdatePreview() = 0;
 	public:

@@ -1,48 +1,49 @@
-#ifndef _SM_DATA_ARRAYLIST
-#define _SM_DATA_ARRAYLIST
-#include "Data/ArrayListBase.hpp"
+#ifndef _SM_DATA_ARRAYLISTNATIVE
+#define _SM_DATA_ARRAYLISTNATIVE
+#include "Data/ArrayListNativeBase.hpp"
 
 namespace Data
 {
-	template <class T> class ArrayList : public ArrayListBase<T>
+	// ArrayList for native types
+	template <class T> class ArrayListNative : public ArrayListNativeBase<T>
 	{
 	public:
-		ArrayList();
-		ArrayList(UOSInt capacity);
-		ArrayList(const ArrayList<T> &list);
-		virtual ~ArrayList();
+		ArrayListNative();
+		ArrayListNative(UOSInt capacity);
+		ArrayListNative(const ArrayListNative<T> &list);
+		virtual ~ArrayListNative();
 
 		virtual UOSInt Add(T val);
 		UOSInt AddAll(NN<const ReadingList<T>> arr);
 		virtual UOSInt AddRange(UnsafeArray<const T> arr, UOSInt cnt);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
-		virtual NN<ArrayList<T>> Clone() const;
+		virtual NN<ArrayListNative<T>> Clone() const;
 
 		void EnsureCapacity(UOSInt capacity);
 		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		ArrayList<T> &operator =(const ArrayList<T> &v);
+		ArrayListNative<T> &operator =(const ArrayListNative<T> &v);
 	};
 
-	template <class T> ArrayList<T>::ArrayList() : ArrayListBase<T>()
+	template <class T> ArrayListNative<T>::ArrayListNative() : ArrayListNativeBase<T>()
 	{
 	}
 
-	template <class T> ArrayList<T>::ArrayList(UOSInt capacity) : ArrayListBase<T>(capacity)
+	template <class T> ArrayListNative<T>::ArrayListNative(UOSInt capacity) : ArrayListNativeBase<T>(capacity)
 	{
 	}
 
-	template <class T> ArrayList<T>::ArrayList(const ArrayList<T> &list) : ArrayListBase<T>(list.capacity)
+	template <class T> ArrayListNative<T>::ArrayListNative(const ArrayListNative<T> &list) : ArrayListNativeBase<T>(list.capacity)
 	{
 		this->AddAll(list);
 	}
 
-	template <class T> ArrayList<T>::~ArrayList()
+	template <class T> ArrayListNative<T>::~ArrayListNative()
 	{
 	}
 
-	template <class T> UOSInt ArrayList<T>::Add(T val)
+	template <class T> UOSInt ArrayListNative<T>::Add(T val)
 	{
 		UOSInt ret;
 		if (this->objCnt == this->capacity)
@@ -57,7 +58,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayList<T>::AddAll(NN<const ReadingList<T>> arr)
+	template <class T> UOSInt ArrayListNative<T>::AddAll(NN<const ReadingList<T>> arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (this->objCnt + cnt >= this->capacity)
@@ -84,7 +85,7 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> UOSInt ArrayList<T>::AddRange(UnsafeArray<const T> arr, UOSInt cnt)
+	template <class T> UOSInt ArrayListNative<T>::AddRange(UnsafeArray<const T> arr, UOSInt cnt)
 	{
 		if (this->objCnt + cnt >= this->capacity)
 		{
@@ -105,7 +106,7 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> T ArrayList<T>::RemoveAt(UOSInt index)
+	template <class T> T ArrayListNative<T>::RemoveAt(UOSInt index)
 	{
 		if (index >= this->objCnt)
 			return (T)0;
@@ -120,7 +121,7 @@ namespace Data
 		return o;
 	}
 
-	template <class T> void ArrayList<T>::Insert(UOSInt index, T Val)
+	template <class T> void ArrayListNative<T>::Insert(UOSInt index, T Val)
 	{
 		if (this->objCnt == this->capacity)
 		{
@@ -151,15 +152,15 @@ namespace Data
 		this->objCnt++;
 	}
 
-	template <class T> NN<ArrayList<T>> ArrayList<T>::Clone() const
+	template <class T> NN<ArrayListNative<T>> ArrayListNative<T>::Clone() const
 	{
-		NN<ArrayList<T>> newArr;
-		NEW_CLASSNN(newArr, ArrayList<T>(this->capacity));
+		NN<ArrayListNative<T>> newArr;
+		NEW_CLASSNN(newArr, ArrayListNative<T>(this->capacity));
 		newArr->AddAll(NNTHIS);
 		return newArr;
 	}
 
-	template <class T> void ArrayList<T>::EnsureCapacity(UOSInt capacity)
+	template <class T> void ArrayListNative<T>::EnsureCapacity(UOSInt capacity)
 	{
 		if (capacity > this->capacity)
 		{
@@ -175,7 +176,7 @@ namespace Data
 		}
 	}
 
-	template <class T> UOSInt ArrayList<T>::GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const
+	template <class T> UOSInt ArrayListNative<T>::GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const
 	{
 		UOSInt startIndex = index;
 		UOSInt endIndex = index + cnt;
@@ -193,7 +194,7 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> UOSInt ArrayList<T>::RemoveRange(UOSInt index, UOSInt cnt)
+	template <class T> UOSInt ArrayListNative<T>::RemoveRange(UOSInt index, UOSInt cnt)
 	{
 		UOSInt startIndex = index;
 		UOSInt endIndex = index + cnt;
@@ -221,7 +222,7 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> ArrayList<T> &ArrayList<T>::operator =(const ArrayList<T> &v)
+	template <class T> ArrayListNative<T> &ArrayListNative<T>::operator =(const ArrayListNative<T> &v)
 	{
 		this->Clear();
 		this->EnsureCapacity(v.capacity);

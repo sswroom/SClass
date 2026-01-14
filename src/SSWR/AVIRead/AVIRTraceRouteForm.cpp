@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 	UInt32 ip = (UInt32)me->cboSelfIP->GetSelectedItem().GetOSInt();
 	if (ip)
 	{
-		Data::ArrayList<UInt32> ipList;
+		Data::ArrayListNative<UInt32> ipList;
 		Net::TraceRoute *tracert;
 		NEW_CLASS(tracert, Net::TraceRoute(me->sockf, ip));
 		if (tracert->IsError())
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 		}
 		else
 		{
-			if (tracert->Tracev4(targetIP, &ipList))
+			if (tracert->Tracev4(targetIP, ipList))
 			{
 				me->lbIP->ClearItems();
 				i = 0;

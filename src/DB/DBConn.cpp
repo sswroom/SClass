@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/DateTime.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "DB/DBConn.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"

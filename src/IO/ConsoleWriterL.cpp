@@ -81,7 +81,7 @@ UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UOSI
 {
 #if !defined(__arm__)
 	if (fgetws(sbuff.Ptr(), (int)nChar, stdin) == 0)
-		return 0;
+		return nullptr;
 	else
 	{
 		while (*sbuff++);

@@ -2,7 +2,6 @@
 #define _SM_DB_DBREADER
 #include "Data/ByteBuffer.h"
 #include "Data/Class.h"
-#include "Data/StringMap.hpp"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 #include "Math/Geometry/Vector2D.h"
@@ -51,7 +50,7 @@ namespace DB
 			if (GetStr(colIndex, tmpBuff))
 				return Text::String::New(tmpBuff->ToCString());
 			else
-				return 0;
+				return nullptr;
 		}
 
 		NN<Text::String> GetNewStrBNN(UOSInt colIndex, NN<Text::StringBuilderUTF8> tmpBuff)
@@ -87,14 +86,14 @@ namespace DB
 		Optional<Data::ByteBuffer> GetNewByteBuff(UOSInt colIndex)
 		{
 			if (IsNull(colIndex))
-				return 0;
+				return nullptr;
 			UOSInt byteSize = GetBinarySize(colIndex);
 			NN<Data::ByteBuffer> buff;
 			NEW_CLASSNN(buff, Data::ByteBuffer(byteSize));
 			if (GetBinary(byteSize, buff->Arr()) == byteSize)
 				return buff;
 			buff.Delete();
-			return 0;
+			return nullptr;
 		}
 
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex) = 0;

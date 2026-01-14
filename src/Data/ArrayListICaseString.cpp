@@ -11,9 +11,9 @@ Data::ArrayListICaseString::ArrayListICaseString(UOSInt capacity) : Data::ArrayL
 {
 }
 
-NN<Data::ArrayList<Optional<Text::String>>> Data::ArrayListICaseString::Clone() const
+NN<Data::ArrayListObj<Optional<Text::String>>> Data::ArrayListICaseString::Clone() const
 {
-	NN<Data::ArrayList<Optional<Text::String>>> newArr;
+	NN<Data::ArrayListObj<Optional<Text::String>>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseString(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

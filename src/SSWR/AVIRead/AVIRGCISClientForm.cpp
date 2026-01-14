@@ -8,7 +8,7 @@
 void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, me->cliCACerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, me->cliCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -132,9 +132,9 @@ SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(Optional<UI::GUIClientCont
 	this->SetNoResize(true);
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(core->GetTCPClientFactory(), true);
-	this->cliCert = 0;
-	this->cliKey = 0;
-	this->svrCert = 0;
+	this->cliCert = nullptr;
+	this->cliKey = nullptr;
+	this->svrCert = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 

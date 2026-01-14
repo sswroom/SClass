@@ -2,7 +2,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Data/DateTime.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/OpenSSLClient.h"
@@ -37,7 +37,7 @@ struct Net::OpenSSLEngine::ClassData
 	SSL_CTX *ctx;
 	Crypto::Cert::X509File *cliCert;
 	Crypto::Cert::X509File *cliKey;
-	Data::FastStringMap<Bool> *alpnSupports;
+	Data::FastStringMapNative<Bool> *alpnSupports;
 };
 
 Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
@@ -55,7 +55,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
 #endif
 		SSL_free(ssl);
 		this->clif->GetSocketFactory()->DestroySocket(s);
-		return 0;
+		return nullptr;
 	}
 	else
 	{
@@ -83,7 +83,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 #endif
 		SSL_free(ssl);
 		err.Set(ErrorType::InitSession);
-		return 0;
+		return nullptr;
 	}
 	if (!this->skipCertCheck)
 	{
@@ -93,7 +93,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::CertNotFound);
-			return 0;
+			return nullptr;
 		}
 		X509 *cert = sk_X509_value(certs, 0);
 		UInt8 certBuff[4096];
@@ -104,7 +104,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::CertNotFound);
-			return 0;
+			return nullptr;
 		}
 		Crypto::Cert::X509Cert *svrCert;
 		NEW_CLASS(svrCert, Crypto::Cert::X509Cert(hostName, Data::ByteArrayR(certBuff, (UInt32)certLen)));
@@ -118,7 +118,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidPeriod);
-			return 0;
+			return nullptr;
 		}
 		if (!svrCert->GetNotAfter(dt) || currTime > dt.ToTicks())
 		{
@@ -126,7 +126,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidPeriod);
-			return 0;
+			return nullptr;
 		}
 		if (!svrCert->DomainValid(hostName))
 		{
@@ -134,7 +134,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidName);
-			return 0;
+			return nullptr;
 		}
 		if (svrCert->IsSelfSigned())
 		{
@@ -142,7 +142,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::SelfSign);
-			return 0;
+			return nullptr;
 		}
 		DEL_CLASS(svrCert);
 	}
@@ -459,7 +459,7 @@ Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CStringNN proto)
 	}
 	if (this->clsData->alpnSupports == 0)
 	{
-		NEW_CLASS(this->clsData->alpnSupports, Data::FastStringMap<Bool>());
+		NEW_CLASS(this->clsData->alpnSupports, Data::FastStringMapNative<Bool>());
 		SSL_CTX_set_alpn_select_cb(this->clsData->ctx, OpenSSLEngine_alpn_select_cb, this->clsData.Ptr());
 		SSL_CTX_set_next_proto_select_cb(this->clsData->ctx, OpenSSLEngine_next_proto_select_cb, this->clsData.Ptr());
 	}
@@ -493,13 +493,13 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostN
 	if (addrCnt == 0)
 	{
 		err.Set(ErrorType::HostnameNotResolved);
-		return 0;
+		return nullptr;
 	}
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	if (ssl == 0)
 	{
 		err.Set(ErrorType::OutOfMemory);
-		return 0;
+		return nullptr;
 	}
 	if (this->clsData->cliCert)
 	{
@@ -533,7 +533,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostN
 
 	SSL_free(ssl);
 	err.Set(ErrorType::CannotConnect);
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::SSLClient> Net::OpenSSLEngine::ClientInit(NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
@@ -542,7 +542,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientInit(NN<Socket> s, Text::CStr
 	if (ssl == 0)
 	{
 		err.Set(ErrorType::OutOfMemory);
-		return 0;
+		return nullptr;
 	}
 	if (this->clsData->cliCert)
 	{
@@ -603,8 +603,8 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		BIO *bio1;
 		BIO *bio2;
 		UInt8 buff[8192];
-		Optional<Crypto::Cert::X509File> pobjKey = 0;
-		Optional<Crypto::Cert::X509Cert> pobjCert = 0;
+		Optional<Crypto::Cert::X509File> pobjKey = nullptr;
+		Optional<Crypto::Cert::X509Cert> pobjCert = nullptr;
 
 		BIO_new_bio_pair(&bio1, 8192, &bio2, 8192);
 		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
@@ -694,7 +694,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey(UOSInt keyLen
 		BIO *bio1;
 		BIO *bio2;
 		UInt8 buff[8192];
-		Optional<Crypto::Cert::X509File> pobjKey = 0;
+		Optional<Crypto::Cert::X509File> pobjKey = nullptr;
 		NN<Crypto::Cert::X509File> nnpobjKey;
 
 		BIO_new_bio_pair(&bio1, 8192, &bio2, 8192);
@@ -717,7 +717,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey(UOSInt keyLen
 		EVP_PKEY_free(pkey);
 		return Optional<Crypto::Cert::X509Key>::ConvertFrom(pobjKey);
 	}
-	return 0;
+	return nullptr;
 #endif
 }
 
@@ -896,7 +896,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateECDSAKey(Crypto::Cer
 		BIO *bio1;
 		BIO *bio2;
 		UInt8 buff[8192];
-		Optional<Crypto::Cert::X509File> pobjKey = 0;
+		Optional<Crypto::Cert::X509File> pobjKey = nullptr;
 		NN<Crypto::Cert::X509File> nnpobjKey;
 
 		BIO_new_bio_pair(&bio1, 8192, &bio2, 8192);
@@ -944,7 +944,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateECDSAKey(Crypto::Cer
 		EVP_PKEY_free(pkey);
 		return Optional<Crypto::Cert::X509Key>::ConvertFrom(pobjKey);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen)

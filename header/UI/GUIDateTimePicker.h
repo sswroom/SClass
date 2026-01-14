@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GUIDATETIMEPICKER
 #define _SM_UI_GUIDATETIMEPICKER
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/CallbackStorage.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
@@ -14,7 +14,7 @@ namespace UI
 	public:
 		typedef void (CALLBACKFUNC DateChangedHandler)(AnyType userObj, NN<Data::DateTime> newDate);
 	private:
-		Data::ArrayList<Data::CallbackStorage<DateChangedHandler>> dateChangedHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<DateChangedHandler>> dateChangedHdlrs;
 
 	public:
 		GUIDateTimePicker(NN<GUICore> ui, NN<UI::GUIClientControl> parent);

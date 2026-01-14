@@ -100,7 +100,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType u
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.ShowAlpha();
 		dlg.SetColor32(me->fillStyle);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -126,7 +126,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType user
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
-	SSWR::AVIRead::AVIRGISLineForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor);
+	SSWR::AVIRead::AVIRGISLineForm frm(nullptr, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
-	SSWR::AVIRead::AVIRGISLineStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle);
+	SSWR::AVIRead::AVIRGISLineStyleForm frm(nullptr, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
 		Math::Size2D<UOSInt> sz;
@@ -177,7 +177,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType u
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
-		SSWR::AVIRead::AVIRGISImageForm frm(0, me->ui, me->core, me->env, me->imgIndex);
+		SSWR::AVIRead::AVIRGISImageForm frm(nullptr, me->ui, me->core, me->env, me->imgIndex);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->imgIndex = frm.GetImgIndex();
@@ -201,7 +201,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	NN<Text::String> fontName;
-	SSWR::AVIRead::AVIRGISFontForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor);
+	SSWR::AVIRead::AVIRGISFontForm frm(nullptr, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
-	SSWR::AVIRead::AVIRGISFontStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle);
+	SSWR::AVIRead::AVIRGISFontStyleForm frm(nullptr, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
 		Math::Size2D<UOSInt> sz;
@@ -390,8 +390,8 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->SetCancelButton(this->btnCancel);
 	this->SetDefaultButton(this->btnOK);
 
-	this->imgLine = 0;
-	this->imgFont = 0;
+	this->imgLine = nullptr;
+	this->imgFont = nullptr;
 	Map::MapEnv::LayerItem setting;
 	NN<Map::MapEnv::LayerItem> lyr;
 	if (this->env->GetLayerProp(setting, this->group, this->index) && Optional<Map::MapEnv::LayerItem>::ConvertFrom(this->env->GetItem(this->group, this->index)).SetTo(lyr))
@@ -498,7 +498,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 		}
 		else
 		{
-			this->fontName = 0;
+			this->fontName = nullptr;
 		}
 		this->fontSizePt = setting.fontSizePt;
 		this->fontColor = setting.fontColor;

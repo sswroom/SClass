@@ -10,7 +10,7 @@ namespace Data
 		ArrayListDbl();
 		ArrayListDbl(UOSInt capacity);
 
-		virtual NN<ArrayList<Double>> Clone() const;
+		virtual NN<ArrayListNative<Double>> Clone() const;
 		Double FrobeniusNorm() const;
 		Double Average() const;
 		Double StdDev() const;

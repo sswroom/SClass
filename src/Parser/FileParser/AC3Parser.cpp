@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AC3Parser::ParseFileHdr(NN<IO::St
 {
 	if (hdr[0] != 0x0b || hdr[1] != 0x77)
 	{
-		return 0;
+		return nullptr;
 	}
 	
 	NN<Media::AudioBlockSource> src;
@@ -49,6 +49,6 @@ Optional<IO::ParsedObject> Parser::FileParser::AC3Parser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

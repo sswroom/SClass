@@ -16,6 +16,8 @@ public:
 		this->p = p;
 	}
 
+	Optional(OSInt p) = delete;
+
 	Optional(T &p)
 	{
 		this->p = &p;
@@ -100,7 +102,7 @@ public:
 		NN<V> p;
 		if (ptr.SetTo(p))
 			return Optional<T>((T*)p.Ptr());
-		return Optional<T>(0);
+		return Optional<T>(nullptr);
 	}
 };
 #endif

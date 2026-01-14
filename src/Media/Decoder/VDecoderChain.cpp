@@ -17,12 +17,7 @@ Media::Decoder::VDecoderChain::~VDecoderChain()
 	{
 		DEL_CLASS(this->sourceVideo);
 	}
-	UOSInt i = this->srcFilters.GetCount();
-	while (i-- > 0)
-	{
-		Media::VideoSource *video = this->srcFilters.GetItem(i);
-		DEL_CLASS(video);
-	}
+	this->srcFilters.DeleteAll();
 }
 
 Text::CStringNN Media::Decoder::VDecoderChain::GetFilterName()
@@ -36,7 +31,7 @@ Text::CStringNN Media::Decoder::VDecoderChain::GetFilterName()
 
 void Media::Decoder::VDecoderChain::AddDecoder(NN<Media::VideoSource> decoder)
 {
-	this->srcFilters.Add(decoder.Ptr());
+	this->srcFilters.Add(decoder);
 }
 
 Bool Media::Decoder::VDecoderChain::CaptureImage(ImageCallback imgCb, AnyType userData)

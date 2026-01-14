@@ -1,7 +1,8 @@
 #ifndef _SM_MAP_FILEGDBLAYER
 #define _SM_MAP_FILEGDBLAYER
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
+#include "Data/FastMapObj.hpp"
 #include "DB/SharedReadingDB.h"
 #include "Map/MapDrawLayer.h"
 #include "Math/ArcGISPRJParser.h"
@@ -25,7 +26,7 @@ namespace Map
 		Optional<DB::TableDef> tabDef;
 
 	private:
-		Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> ReadNameArr();
+		Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> ReadNameArr();
 	public:
 		FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser);
 		virtual ~FileGDBLayer();

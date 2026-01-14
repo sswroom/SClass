@@ -19726,7 +19726,7 @@ void Manage::DasmX86_64::EndDasm(NN<DasmX86_64_Sess> sess)
 UnsafeArrayOpt<UTF8Char> Manage::DasmX86_64::DasmNext(NN<DasmX86_64_Sess> sess, UnsafeArray<UTF8Char> buff)
 {
 	if (sess->endType != Manage::DasmX86_64::ET_NOT_END)
-		return 0;
+		return nullptr;
 	sess->sbuff = buff;
 	Bool ret = this->codes[sess->memReader->ReadMemUInt8(sess->regs.rip)](sess);
 	UnsafeArray<UTF8Char> sptr = sess->sbuff;

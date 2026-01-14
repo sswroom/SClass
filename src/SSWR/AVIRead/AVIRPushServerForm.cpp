@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj
 		me->svr.Delete();
 		me->serviceAccount.Delete();
 		me->log.ClearHandlers();
-		me->svr = 0;
+		me->svr = nullptr;
 		me->txtServiceAccount->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		return;
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj
 	if (svr->IsError())
 	{
 		svr.Delete();
-		me->svr = 0;
+		me->svr = nullptr;
 		me->serviceAccount.Delete();
 		me->log.ClearHandlers();
 		me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("PushServer"), me);
@@ -69,8 +69,8 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(Optional<UI::GUIClientCont
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->serviceAccount = 0;
-	this->svr = 0;
+	this->serviceAccount = nullptr;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));

@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::DTSParser::ParseFileHdr(NN<IO::St
 {
 	if (ReadUInt32(&hdr[0]) != 0x180FE7F || (hdr[4] & 0xfc) != 0xfc)
 	{
-		return 0;
+		return nullptr;
 	}
 	
 	NN<Media::AudioBlockSource> src;
@@ -52,6 +52,6 @@ Optional<IO::ParsedObject> Parser::FileParser::DTSParser::ParseFileHdr(NN<IO::St
 	else
 	{
 		data.Delete();
-		return 0;
+		return nullptr;
 	}
 }

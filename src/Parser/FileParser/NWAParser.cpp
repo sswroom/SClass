@@ -1,7 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
-#include "Data/ArrayListInt32.h"
 #include "Core/ByteTool_C.h"
 #include "IO/Stream.h"
 #include "IO/FileStream.h"
@@ -48,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::NWAParser::ParseFileHdr(NN<IO::St
 	UInt32 restSize;
 	Media::AudioFormat afmt;
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NWA")))
-		return 0;
+		return nullptr;
 	afmt.formatId = 1;
 	afmt.nChannels = ReadUInt16(&hdr[0]);
 	afmt.bitpersample = ReadUInt16(&hdr[2]);
@@ -72,20 +70,20 @@ Optional<IO::ParsedObject> Parser::FileParser::NWAParser::ParseFileHdr(NN<IO::St
 	afmt.intType = Media::AudioFormat::IT_NORMAL;
 	afmt.other = 0;
 	if (afmt.nChannels != 1 && afmt.nChannels != 2)
-		return 0;
+		return nullptr;
 	if (afmt.bitpersample != 8 && afmt.bitpersample != 16)
-		return 0;
+		return nullptr;
 	if (fd->GetDataSize() != compDataSize)
-		return 0;
+		return nullptr;
 
 	UInt32 byps = afmt.bitpersample / 8;
 	if (dataSize != sampleCount * byps)
-		return 0;
+		return nullptr;
 	if (sampleCount != (nBlocks - 1) * blockSize + restSize )
-		return 0;
+		return nullptr;
 	if (compLevel < -1 || compLevel > 2)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	if (compLevel == -1)

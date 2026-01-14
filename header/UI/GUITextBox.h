@@ -7,8 +7,8 @@ namespace UI
 	class GUITextBox : public GUIControl
 	{
 	private:
-		Data::ArrayList<Data::CallbackStorage<UI::UIEvent>> txtChgHdlrs;
-		Data::ArrayList<Data::CallbackStorage<UI::KeyEvent>> keyDownHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::UIEvent>> txtChgHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UI::KeyEvent>> keyDownHdlrs;
 
 	public:
 		GUITextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);

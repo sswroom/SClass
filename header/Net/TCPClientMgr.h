@@ -1,7 +1,6 @@
 #ifndef _SM_NET_TCPCLIENTMGR
 #define _SM_NET_TCPCLIENTMGR
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ByteArray.h"
 #include "Data/FastMapNN.hpp"
 #include "Data/SyncCircularBuffNN.hpp"

@@ -50,8 +50,8 @@ SSWR::AVIRead::AVIRInvestmentAssetForm::AVIRInvestmentAssetForm(Optional<UI::GUI
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->shortName = 0;
-	this->fullName = 0;
+	this->shortName = nullptr;
+	this->fullName = nullptr;
 	this->currency = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

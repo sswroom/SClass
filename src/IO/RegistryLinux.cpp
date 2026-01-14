@@ -13,8 +13,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-void *IO::Registry::thisRegistryFile = 0;
-void *IO::Registry::allRegistryFile = 0;
+void *IO::Registry::thisRegistryFile = nullptr;
+void *IO::Registry::allRegistryFile = nullptr;
 
 struct Registry_File
 {
@@ -128,7 +128,7 @@ Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr
 	param.reg = (Registry_File*)OpenUserType(usr);
 	if (param.reg == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Software\\"));
@@ -151,7 +151,7 @@ Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr
 	param.reg = (Registry_File*)OpenUserType(usr);
 	if (param.reg == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Software\\"));
@@ -171,7 +171,7 @@ Optional<IO::Registry> IO::Registry::OpenLocalHardware()
 	param.reg = (Registry_File*)OpenUserType(REG_USER_ALL);
 	if (param.reg == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	param.currCate = CSTR("Hardware");
 	IO::Registry *reg;
@@ -185,7 +185,7 @@ Optional<IO::Registry> IO::Registry::OpenLocalSoftware(UnsafeArray<const WChar> 
 	param.reg = (Registry_File*)OpenUserType(REG_USER_ALL);
 	if (param.reg == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	param.currCate = CSTR("Software");
 	IO::Registry *reg;
@@ -239,11 +239,11 @@ UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UOSInt in
 	NN<IO::ConfigFile> cfg;
 	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> cate;
 	cfg->GetCateList(cateList, false);
-	UnsafeArrayOpt<WChar> ret = 0;
+	UnsafeArrayOpt<WChar> ret = nullptr;
 	Text::StringBuilderUTF8 sbSubReg;
 	UOSInt thisCateLen = this->clsData->cate->leng;
 	Data::ArrayIterator<NN<Text::String>> it = cateList.Iterator();
@@ -364,7 +364,7 @@ UnsafeArrayOpt<WChar> IO::Registry::GetValueStr(UnsafeArray<const WChar> name, U
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> s = Text::String::NewNotNull(name);
 	NN<Text::String> csval;
@@ -374,7 +374,7 @@ UnsafeArrayOpt<WChar> IO::Registry::GetValueStr(UnsafeArray<const WChar> name, U
 		return Text::StrUTF8_WChar(buff, csval->v + 3, 0);
 	}
 	s->Release();
-	return 0;
+	return nullptr;
 }
 
 Bool IO::Registry::GetValueI32(UnsafeArray<const WChar> name, OutParam<Int32> value)
@@ -403,7 +403,7 @@ UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UOSInt 
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
-		return 0;
+		return nullptr;
 	}
 	Data::ArrayListStringNN keys;
 	cfg->GetKeys(this->clsData->cate->ToCString(), keys);
@@ -412,5 +412,5 @@ UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UOSInt 
 	{
 		return Text::StrUTF8_WChar(nameBuff, key->v, 0);
 	}
-	return 0;
+	return nullptr;
 }

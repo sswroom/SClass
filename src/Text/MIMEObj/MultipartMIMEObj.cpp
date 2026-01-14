@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayListString.h"
 #include "Data/ArrayListStringNN.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Text/MailBase64Stream.h"
 #include "Text/MyString.h"
@@ -20,7 +20,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	UOSInt k;
 	Data::ArrayListStringNN hdrNames;
 	Data::ArrayListStringNN hdrValues;
-	Data::FastStringMap<Text::String*> hdrMap;
+	Data::FastStringMapObj<Text::String*> hdrMap;
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[2];
 	NN<Text::String> hdrName;

@@ -41,7 +41,7 @@ Net::UDPServerStream::UDPServerStream(NN<Net::SocketFactory> sockf, UInt16 port,
 	this->buffSize = 0;
 	this->isClient = false;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, nullptr, OnUDPPacket, this, log, CSTR("UDPStm: "), 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, port, nullptr, OnUDPPacket, this, log, CSTR("UDPStm: "), 2, false));
 	if (this->svr->IsError())
 	{
 		SDEL_CLASS(this->svr);

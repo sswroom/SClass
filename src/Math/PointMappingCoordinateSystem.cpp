@@ -19,12 +19,12 @@ Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CStringNN
 Math::PointMappingCoordinateSystem::~PointMappingCoordinateSystem()
 {
 	UOSInt i;
-	Double *ptItem;
+	UnsafeArray<Double> ptItem;
 	i = this->mappingList.GetCount();
 	while (i-- > 0)
 	{
-		ptItem = this->mappingList.GetItem(i);
-		MemFree(ptItem);
+		ptItem = this->mappingList.GetItemNoCheck(i);
+		MemFreeArr(ptItem);
 	}
 	this->baseCSys.Delete();
 }
@@ -49,7 +49,7 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::ToBaseXY(Math::Coord2DDbl m
 	Double dist;
 	Double ptDist[3];
 	Double *ptList[3];
-	Double *ptItem;
+	UnsafeArray<Double> ptItem;
 	UOSInt i;
 	UOSInt j;
 	ptDist[0] = -1;
@@ -62,7 +62,7 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::ToBaseXY(Math::Coord2DDbl m
 	j = this->mappingList.GetCount();
 	while (i < j)
 	{
-		ptItem = this->mappingList.GetItem(i);
+		ptItem = this->mappingList.GetItemNoCheck(i);
 		dist = (ptItem[0] - mapPt.x) * (ptItem[0] - mapPt.x) + (ptItem[1] - mapPt.y) * (ptItem[1] - mapPt.y);
 		if (ptDist[0] < 0 || ptDist[0] > dist)
 		{
@@ -71,19 +71,19 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::ToBaseXY(Math::Coord2DDbl m
 			ptDist[1] = ptDist[0];
 			ptList[1] = ptList[0];
 			ptDist[0] = dist;
-			ptList[0] = ptItem;
+			ptList[0] = ptItem.Ptr();
 		}
 		else if (ptDist[1] < 0 || ptDist[1] > dist)
 		{
 			ptDist[2] = ptDist[1];
 			ptList[2] = ptList[1];
 			ptDist[1] = dist;
-			ptList[1] = ptItem;
+			ptList[1] = ptItem.Ptr();
 		}
 		else if (ptDist[2] < 0 || ptDist[2] > dist)
 		{
 			ptDist[2] = dist;
-			ptList[2] = ptItem;
+			ptList[2] = ptItem.Ptr();
 		}
 		i++;
 	}
@@ -139,13 +139,13 @@ NN<Math::CoordinateSystem> Math::PointMappingCoordinateSystem::Clone() const
 	NN<Math::PointMappingCoordinateSystem> csys;
 	UOSInt i;
 	UOSInt j;
-	Double *ptItem;
+	UnsafeArray<Double> ptItem;
 	NEW_CLASSNN(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->baseCSys->Clone()));
 	i = 0;
 	j = this->mappingList.GetCount();
 	while (i < j)
 	{
-		ptItem = this->mappingList.GetItem(i);
+		ptItem = this->mappingList.GetItemNoCheck(i);
 		csys->AddMappingPoint(ptItem[0], ptItem[1], ptItem[2], ptItem[3]);
 		i++;
 	}
@@ -166,7 +166,7 @@ void Math::PointMappingCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb
 {
 	UOSInt i;
 	UOSInt j;
-	Double *ptItem;
+	UnsafeArray<Double> ptItem;
 	sb->AppendC(UTF8STRC("Point Mapping File Name: "));
 	sb->Append(this->sourceName);
 	sb->AppendC(UTF8STRC("\r\nCSys Name: "));
@@ -176,7 +176,7 @@ void Math::PointMappingCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb
 	j = this->mappingList.GetCount();
 	while (i < j)
 	{
-		ptItem = this->mappingList.GetItem(i);
+		ptItem = this->mappingList.GetItemNoCheck(i);
 		sb->AppendC(UTF8STRC("\r\n"));
 		Text::SBAppendF64(sb, ptItem[0]);
 		sb->AppendC(UTF8STRC(", "));
@@ -198,8 +198,8 @@ Bool Math::PointMappingCoordinateSystem::Equals(NN<const CoordinateSystem> csys)
 		return false;
 	}
 	const Math::PointMappingCoordinateSystem *pmcs = (const Math::PointMappingCoordinateSystem*)csys.Ptr();
-	Double *ptItem1;
-	Double *ptItem2;
+	UnsafeArray<Double> ptItem1;
+	UnsafeArray<Double> ptItem2;
 	UOSInt i;
 	UOSInt j = this->mappingList.GetCount();
 	if (pmcs->mappingList.GetCount() != j)
@@ -207,8 +207,8 @@ Bool Math::PointMappingCoordinateSystem::Equals(NN<const CoordinateSystem> csys)
 	i = 0;
 	while (i < j)
 	{
-		ptItem1 = this->mappingList.GetItem(i);
-		ptItem2 = pmcs->mappingList.GetItem(i);
+		ptItem1 = this->mappingList.GetItemNoCheck(i);
+		ptItem2 = pmcs->mappingList.GetItemNoCheck(i);
 		if (ptItem1[0] != ptItem2[0] || ptItem1[1] != ptItem2[1] || ptItem1[2] != ptItem2[2] || ptItem1[3] != ptItem2[3])
 		{
 			return false;

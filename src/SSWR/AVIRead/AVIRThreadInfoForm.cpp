@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(AnyType userOb
 		}
 		funcOfst = Text::StrHex2Int64C(sbuff);
 
-		SSWR::AVIRead::AVIRFunctionInfoForm frm(0, me->ui, me->core, me->proc, me->symbol, funcOfst);
+		SSWR::AVIRead::AVIRFunctionInfoForm frm(nullptr, me->ui, me->core, me->proc, me->symbol, funcOfst);
 		frm.ShowDialog(me);
 	}
 }

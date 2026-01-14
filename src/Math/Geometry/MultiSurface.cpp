@@ -60,14 +60,14 @@ Optional<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::ToSimpleShape()
 			{
 				printf("Error: MultiSurface SimpleShape is not polygon\r\n");
 				newObj.Delete();
-				return 0;
+				return nullptr;
 			}
 		}
 		else
 		{
 			printf("Error: Error in MultiSurface converting to simple shape\r\n");
 			newObj.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 	return newObj;

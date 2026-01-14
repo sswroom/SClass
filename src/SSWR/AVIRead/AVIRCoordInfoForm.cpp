@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = 0;
+	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
 	if (sb.ToUInt32(srid))
 	{
 		srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = 0;
+	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
 	NN<const Math::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
 	if (sb.ToUInt32(srid))
 	{
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
-	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = 0;
+	Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo = nullptr;
 	NN<const Math::CoordinateSystemManager::SpatialRefInfo> nnsrinfo;
 	if (sb.ToUInt32(srid))
 	{
