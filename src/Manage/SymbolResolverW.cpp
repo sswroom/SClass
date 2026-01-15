@@ -120,7 +120,7 @@ UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Cha
 	if (!found)
 	{
 		*buff = 0;
-		return 0;
+		return nullptr;
 	}
 	else
 	{

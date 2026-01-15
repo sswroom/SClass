@@ -581,7 +581,7 @@ Optional<IO::FileStream> IO::FileStream::CreateNamedPipe(UnsafeArray<const UTF8C
 	hand = ::CreateNamedPipeW(wbuff, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, buffSize, buffSize, 0, 0);
 	if (hand == INVALID_HANDLE_VALUE)
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream());
@@ -615,7 +615,7 @@ Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(UnsafeArrayOpt<const UTF8
 	if (outStm->IsError())
 	{
 		DEL_CLASS(outStm);
-		return 0;
+		return nullptr;
 	}
 	return outStm;
 #endif

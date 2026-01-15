@@ -44,7 +44,7 @@ Bool Crypto::Cert::WinHttpCert::IsSelfSigned() const
 
 Optional<Crypto::Cert::X509Cert> Crypto::Cert::WinHttpCert::CreateX509Cert() const
 {
-	return 0;
+	return nullptr;
 }
 
 void Crypto::Cert::WinHttpCert::ToString(NN<Text::StringBuilderUTF8> sb) const

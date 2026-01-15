@@ -140,7 +140,7 @@ UnsafeArrayOpt<UTF8Char> IO::FileUtil::GetMountPoint(UnsafeArray<UTF8Char> buff,
 	else
 	{
 		Text::StrDelNew(wptr);
-		return 0;
+		return nullptr;
 	}
 }
 

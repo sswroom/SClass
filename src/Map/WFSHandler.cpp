@@ -7,7 +7,7 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	NN<Text::String> s;
 	NN<GISFeature> feature;
@@ -4618,7 +4618,7 @@ Bool Map::WFSHandler::GetCapabilities(NN<Net::WebServer::WebRequest> req, NN<Net
 	}
 }
 
-Bool Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::DescribeFeatureType(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	Optional<Text::String> typeName;
 	NN<Text::String> nntypeName;
@@ -4913,52 +4913,52 @@ Bool Map::WFSHandler::GetFeature(NN<Net::WebServer::WebRequest> req, NN<Net::Web
 	return succ;
 }
 
-Bool Map::WFSHandler::GetGmlObject(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::GetGmlObject(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::GetPropertyValue(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::GetPropertyValue(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::ListStoredQueries(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::ListStoredQueries(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::DescribeStoredQueries(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::DescribeStoredQueries(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::CreateStoredQuery(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::CreateStoredQuery(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::DropStoredQuery(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::DropStoredQuery(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::LockFeature(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::LockFeature(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::GetFeatureWithLock(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::GetFeatureWithLock(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::Transaction(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::Transaction(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<WFSHandler> me, Text::CStringNN version, NN<Data::FastStringMapNN<GISFeature>> features, NN<GISWebService> svc)
 {
 	return false;
 }
 
-Bool Map::WFSHandler::ServiceExceptionReport(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN exceptionCode, Text::CString locator, Text::CStringNN exceptionMessage, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::ServiceExceptionReport(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN exceptionCode, Text::CString locator, Text::CStringNN exceptionMessage, NN<GISWebService> svc)
 {
 	NN<Text::String> s;
 	Text::CStringNN nnlocator;
@@ -4994,7 +4994,7 @@ Bool Map::WFSHandler::ServiceExceptionReport(NN<Net::WebServer::WebRequest> req,
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/xml"), sb.ToCString());
 }
 
-Bool Map::WFSHandler::ResponseGML(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<GISFeature> feature, NN<Data::ArrayListInt64> idList, Optional<Map::NameArray> nameArr, Optional<Text::String> bbox, NN<GISWebService> svc)
+Bool __stdcall Map::WFSHandler::ResponseGML(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<GISFeature> feature, NN<Data::ArrayListInt64> idList, Optional<Map::NameArray> nameArr, Optional<Text::String> bbox, NN<GISWebService> svc)
 {
 	NN<GISWebService::GISWorkspace> ws = feature->ws;
 	NN<Text::String> s;

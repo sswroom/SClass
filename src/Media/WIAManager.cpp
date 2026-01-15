@@ -98,7 +98,7 @@ Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UIntOS index)
 {
 	UnsafeArray<const UTF8Char> devId;
 	if (!this->devIds->GetItem(index).SetTo(devId))
-		return 0;
+		return nullptr;
 	DEVITEMTYPE *devItem;
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(devId);
 #if defined(__WiaDevMgr2_FWD_DEFINED__) && (_MSC_VER >= 1400)
@@ -113,7 +113,7 @@ Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UIntOS index)
 		NEW_CLASS(dev, Media::WIADevice(devItem));
 		return dev;
 	}
-	return 0;
+	return nullptr;
 }
 
 Media::WIADevice::WIADevice(void *pWiaItem)

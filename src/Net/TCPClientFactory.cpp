@@ -5,10 +5,10 @@
 Net::TCPClientFactory::TCPClientFactory(NN<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
-	this->proxyHost = 0;
+	this->proxyHost = nullptr;
 	this->proxyPort = 0;
-	this->proxyUser = 0;
-	this->proxyPwd = 0;
+	this->proxyUser = nullptr;
+	this->proxyPwd = nullptr;
 }
 
 Net::TCPClientFactory::~TCPClientFactory()

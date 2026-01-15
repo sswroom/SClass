@@ -362,7 +362,7 @@ Data::Timestamp DB::SortableDBReader::GetTimestamp(UIntOS colIndex)
 	}
 	else
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 }
 

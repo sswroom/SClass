@@ -37,7 +37,7 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 	UnsafeArray<UInt8> buff;
 	UIntOS buffSize;
 	NN<Crypto::Cert::X509File> file;
-	if (!Net::URL::OpenStream(path, 0, clif, ssl, 10000, log).SetTo(stm))
+	if (!Net::URL::OpenStream(path, nullptr, clif, ssl, 10000, log).SetTo(stm))
 	{
 		return nullptr;
 	}

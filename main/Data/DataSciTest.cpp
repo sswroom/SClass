@@ -42,7 +42,7 @@ Int32 TestPage27()
 			Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, Double>> groupResult;
 			ds->GroupKeyByMonth().Sum(groupResult);
 			NN<Data::ChartPlotter::Axis> axis;
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, Double>(groupResult), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, Double>(groupResult), 0xff000000);
 			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(60);
 			chart.SavePng(deng, {640, 480}, CSTR("Chapter1-2.png"));
@@ -73,7 +73,7 @@ Int32 TestPage28()
 			Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> groupResult;
 			ds->GroupKeyByMonth().Count(groupResult);
 			NN<Data::ChartPlotter::Axis> axis;
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, UInt32>(groupResult), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, UInt32>(groupResult), 0xff000000);
 			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(60);
 			chart.SavePng(deng, {640, 480}, CSTR("Chapter1-2-2.png"));
@@ -150,7 +150,7 @@ Int32 TestPage31()
 			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
 
 			NN<Data::ChartPlotter::Axis> axis;
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			chart.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(cnts), 21, 0xff000000, 0xff000000);
 			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(0);
 			chart.SetDblFormat(CSTR("0"));
@@ -193,7 +193,7 @@ Int32 TestPage37_2()
 			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
 
 			NN<Data::ChartPlotter::Axis> axis;
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			chart.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(cnts), 21, 0xff000000, 0xff000000);
 			if (chart.GetXAxis().SetTo(axis)) axis->SetLabelRotate(0);
 			chart.SetDblFormat(CSTR("0"));
@@ -227,7 +227,7 @@ Int32 TestPage38()
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
 		NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
-		Data::ChartPlotter chart(0);
+		Data::ChartPlotter chart(nullptr);
 		Page38AddChart(chart, dfInfo, Data::QueryConditions::New()->StrEquals(CSTR("方案"), CSTR("A")), 0xff0000ff);
 		Page38AddChart(chart, dfInfo, Data::QueryConditions::New()->StrEquals(CSTR("方案"), CSTR("B")), 0xff00ff00);
 		Page38AddChart(chart, dfInfo, Data::QueryConditions::New()->StrEquals(CSTR("方案"), CSTR("C")), 0xffff0000);
@@ -294,7 +294,7 @@ Int32 TestPage40()
 		{
 			ds2 = ds->ValueCountsAsDS();
 			ds2->SortByValueInv();
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 
 			Data::VariItem item;
@@ -340,7 +340,7 @@ Int32 TestPage41()
 		{
 			ds2 = ds->ValueCountsAsDS();
 			ds2->SortByValueInv();
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 
 			Data::VariItem item;
@@ -413,7 +413,7 @@ Int32 TestPage43()
 			UInt32 preCnts[200];
 			UInt32 postCnts[200];
 			Optional<Text::String> labels[200];
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 
 			ds2 = ds->ValueCountsAsDS();
@@ -474,7 +474,7 @@ Int32 TestPage44()
 		{
 			UInt32 preCnts[200];
 			UInt32 postCnts[200];
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 
 			ds2 = ds->ValueCountsAsDS();
@@ -534,7 +534,7 @@ Int32 TestPage46()
 		{
 			UInt32 preCnts[200];
 			UInt32 postCnts[200];
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 
 			ds2 = ds->ValueCountsAsDS();
@@ -672,7 +672,7 @@ Int32 TestPage48()
 				}
 				i++;
 			}
-			Data::TableData data2(newDB, false, 0, CSTR("Temp"));
+			Data::TableData data2(newDB, false, nullptr, CSTR("Temp"));
 			Text::TextWriteUtil::WriteTableData(console, data2);
 			ds2.Delete();
 			ds.Delete();
@@ -728,7 +728,7 @@ Int32 TestPage53()
 			ds2.Delete();
 			ds.Delete();
 		}
-		Data::ChartPlotter chart(0);
+		Data::ChartPlotter chart(nullptr);
 		NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 		if (iId.SetTo(s))
 		{
@@ -858,7 +858,7 @@ Int32 TestPage81()
 	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(xAve)->ToCString());
 	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("標準差:"))->F64(xStd)->ToCString());
 	UIntOS numBin = 21;
-	Data::ChartPlotter chart(0);
+	Data::ChartPlotter chart(nullptr);
 	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 	chart.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(x), numBin, 0xff000000, 0xff000000);
 	NN<Data::ChartPlotter::Axis> axis;
@@ -889,7 +889,7 @@ Int32 TestPage81()
 	Double xTrialStd = xTrial.StdDev();
 	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(xTrialAve)->ToCString());
 	console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("標準差:"))->F64(xTrialStd)->ToCString());
-	Data::ChartPlotter chart2(0);
+	Data::ChartPlotter chart2(nullptr);
 	chart2.AddHistogramCount(CSTR(""), Data::ChartPlotter::NewData(xTrial), numBin, 0xff000000, 0xff000000);
 	if (chart2.GetXAxis().SetTo(axis))
 	{
@@ -928,7 +928,7 @@ Int32 TestPage323()
 	if (IO::TextFileLoader::LoadDoubleList(CSTR(DATAPATH "Chapter9/rnn_sin_40_80.csv"), data))
 	{
 		NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
-		Data::ChartPlotter chart(0);
+		Data::ChartPlotter chart(nullptr);
 		chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(data.Arr(), 500), Data::ChartPlotter::NewDataSeq(0, 500), 0xff0000ff);
 		chart.SavePng(deng, {640, 480}, CSTR("Chapter9-1.png"));
 		deng.Delete();
@@ -1000,7 +1000,7 @@ void PredictAll(NN<Data::ML::MLModel> model, NN<Data::ArrayListArr<UnsafeArray<D
 		i++;
 	}
 	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
-	Data::ChartPlotter chart(0);
+	Data::ChartPlotter chart(nullptr);
 	chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(yPred), Data::ChartPlotter::NewDataSeq(0, j), 0xff0000ff);
 	chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewData(yData), Data::ChartPlotter::NewDataSeq(0, j), 0xffff0000);
 	chart.SavePng(deng, {640, 480}, imgFileName);
@@ -1038,7 +1038,7 @@ Int32 TestPage330()
 			if (xTest.GetCount() == yPred.GetCount())
 			{
 				NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
-				Data::ChartPlotter chart(0);
+				Data::ChartPlotter chart(nullptr);
 				Data::ArrayListDbl dbl;
 				j = xTest.GetCount();
 				i = 0;

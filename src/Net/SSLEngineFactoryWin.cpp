@@ -9,7 +9,7 @@ Optional<Net::SSLEngine> Net::SSLEngineFactory::Create(NN<Net::TCPClientFactory>
 	if (ssl->IsError())
 	{
 		ssl.Delete();
-		return 0;
+		return nullptr;
 	}
 	ssl->ClientSetSkipCertCheck(skipCertCheck);
 	return ssl;

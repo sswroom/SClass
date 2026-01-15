@@ -287,29 +287,29 @@ Data::Timestamp IO::EXEFile::GetFileTime(Text::CStringNN fileName)
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
-		return 0;
+		return nullptr;
 	}
 	if (fs.Read(BYTEARR(buff)) != 64)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (buff[0] != 'M' || buff[1] != 'Z')
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 ofst = ReadUInt32(&buff[60]);
 	if ((ofst & 7) != 0 || ofst < 64)
 	{
-		return 0;
+		return nullptr;
 	}
 	fs.SeekFromBeginning(ofst);
 	if (fs.Read(BYTEARR(buff)) != 64)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (buff[0] != 'P' || buff[1] != 'E' || buff[2] != 0 || buff[3] != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	return Data::Timestamp(Data::TimeInstant(ReadUInt32(&buff[8]), 0), Data::DateTimeUtil::GetLocalTzQhr());
 }

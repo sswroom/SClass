@@ -53,7 +53,7 @@ Optional<IO::ParsedObject> Parser::FileParser::X13Parser::ParseFileHdr(NN<IO::St
 	while (buffOfst < ReadUInt32(&hdr[8]))
 	{
 		sptr = enc.UTF8FromBytes(name, &recHdrs[buffOfst], 48, 0);
-		pf->AddData(fd, ReadUInt32(&recHdrs[buffOfst + 56]), ReadUInt32(&recHdrs[buffOfst + 60]), IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, ReadUInt32(&recHdrs[buffOfst + 56]), ReadUInt32(&recHdrs[buffOfst + 60]), IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
 		buffOfst += 64;
 	}
 	return pf;

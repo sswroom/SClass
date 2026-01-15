@@ -268,7 +268,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("TAG"));
 	case 33:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[0];
 #else
@@ -278,7 +278,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM0"));
 	case 34:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[1];
 #else
@@ -288,7 +288,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM1"));
 	case 35:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[2];
 #else
@@ -298,7 +298,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM2"));
 	case 36:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[3];
 #else
@@ -308,7 +308,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM3"));
 	case 37:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[4];
 #else
@@ -318,7 +318,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM4"));
 	case 38:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[5];
 #else
@@ -328,7 +328,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM5"));
 	case 39:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[6];
 #else
@@ -338,7 +338,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM6"));
 	case 40:
 		if (this->mmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		UnsafeArray<Int64>::ConvertFrom(regVal)[0] = *(Int64*)&((CONTEXT_TYPE*)this->context)->Legacy[7];
 #else
@@ -348,7 +348,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("MM7"));
 	case 41:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm0;
 #else
@@ -359,7 +359,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("XMM0"));
 	case 42:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm1;
 #else
@@ -370,7 +370,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("XMM1"));
 	case 43:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm2;
 #else
@@ -381,7 +381,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("XMM2"));
 	case 44:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm3;
 #else
@@ -392,7 +392,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("XMM3"));
 	case 45:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm4;
 #else
@@ -403,7 +403,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("XMM4"));
 	case 46:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm5;
 #else
@@ -414,7 +414,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("XMM5"));
 	case 47:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm6;
 #else
@@ -425,7 +425,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		return Text::StrConcatC(buff, UTF8STRC("XMM6"));
 	case 48:
 		if (this->xmmOfst < 0)
-			return 0;
+			return nullptr;
 #ifdef CONTEXT_VX86
 		*(M128A*)regVal = ((CONTEXT_TYPE*)this->context)->Xmm7;
 #else
@@ -435,7 +435,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_32::GetRegister(UIntOS index, 
 		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM7"));
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 

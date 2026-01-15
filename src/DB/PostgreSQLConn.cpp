@@ -157,11 +157,11 @@ public:
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, item))
 		{
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 		}
 		if (item.GetItemType() == Data::VariItem::ItemType::Null)
 		{
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 		}
 		return item.GetAsTimestamp();
 	}

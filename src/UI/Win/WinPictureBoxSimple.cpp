@@ -146,21 +146,21 @@ void UI::Win::WinPictureBoxSimple::UpdatePreview()
 	if (this->prevImageD.SetTo(dimg))
 	{
 		this->eng->DeleteImage(dimg);
-		this->prevImageD = 0;
+		this->prevImageD = nullptr;
 	}
 
 	NN<Media::StaticImage> simg;
 	if (this->currImage.SetTo(simg))
 	{
-		this->prevImageD = this->eng->ConvImage(simg, 0);
+		this->prevImageD = this->eng->ConvImage(simg, nullptr);
 	}
 	this->Redraw();
 }
 
 UI::Win::WinPictureBoxSimple::WinPictureBoxSimple(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
 {
-	this->currImage = 0;
-	this->prevImageD = 0;
+	this->currImage = nullptr;
+	this->prevImageD = nullptr;
 
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -181,7 +181,7 @@ UI::Win::WinPictureBoxSimple::~WinPictureBoxSimple()
 	if (this->prevImageD.SetTo(dimg))
 	{
 		this->eng->DeleteImage(dimg);
-		this->prevImageD = 0;
+		this->prevImageD = nullptr;
 	}
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
@@ -202,13 +202,13 @@ void UI::Win::WinPictureBoxSimple::SetImage(Optional<Media::StaticImage> currIma
 
 void UI::Win::WinPictureBoxSimple::SetImageDImg(Optional<Media::DrawImage> img)
 {
-	this->currImage = 0;
+	this->currImage = nullptr;
 	NN<Media::DrawImage> dimg;
 	NN<Media::GDIImage> gimg;
 	if (this->prevImageD.SetTo(dimg))
 	{
 		this->eng->DeleteImage(dimg);
-		this->prevImageD = 0;
+		this->prevImageD = nullptr;
 	}
 	if (Optional<Media::GDIImage>::ConvertFrom(img).SetTo(gimg))
 	{

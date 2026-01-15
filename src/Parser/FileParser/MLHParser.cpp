@@ -72,7 +72,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MLHParser::ParseFileHdr(NN<IO::St
 		sptr = enc.UTF8FromBytes(sbuff, fileInfo[i].fileName, 16, 0);
 		if (fileInfo[i].storeSize == fileInfo[i].decompSize)
 		{
-			pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].decompSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), 0, 0, 0, 0);
+			pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].decompSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
 		}
 		else
 		{
@@ -83,7 +83,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MLHParser::ParseFileHdr(NN<IO::St
 			compInfo.compExtraSize = 0;
 			compInfo.compExtras = 0;
 			compInfo.checkMethod = Crypto::Hash::HashType::Unknown;
-			pf->AddCompData(fd, fileInfo[i].startOfst, fileInfo[i].storeSize, IO::PackFileItem::HeaderType::No, &compInfo, CSTRP(sbuff, sptr), 0, 0, 0, 0);
+			pf->AddCompData(fd, fileInfo[i].startOfst, fileInfo[i].storeSize, IO::PackFileItem::HeaderType::No, &compInfo, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
 		}
 		i++;
 	}

@@ -249,7 +249,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 {
 	GetThreadDescriptionFunc GetThreadDescription = (GetThreadDescriptionFunc)GetProcAddress(GetModuleHandleA("Kernel32.dll"), "GetThreadDescription");
 	WChar *sbuff;
-	if (GetThreadDescription == 0) return 0; 
+	if (GetThreadDescription == 0) return nullptr; 
 	HRESULT hres = GetThreadDescription((HANDLE)this->hand, &sbuff);
 	if (SUCCEEDED(hres))
 	{
@@ -257,7 +257,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 		LocalFree(sbuff);
 		return buff;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Manage::ThreadInfo::Suspend()

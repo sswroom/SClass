@@ -23,7 +23,7 @@ NN<Text::String> DB::TDSConn::GetConnHost() const
 
 Optional<Text::String> DB::TDSConn::GetConnDB() const
 {
-	return 0;
+	return nullptr;
 }
 
 NN<Text::String> DB::TDSConn::GetConnUID() const
@@ -71,7 +71,7 @@ IntOS DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 
 Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 {
-	return 0;
+	return nullptr;
 }
 
 void DB::TDSConn::CloseReader(NN<DBReader> r)
@@ -93,7 +93,7 @@ void DB::TDSConn::Reconnect()
 
 Optional<DB::DBTransaction> DB::TDSConn::BeginTransaction()
 {
-	return 0;
+	return nullptr;
 }
 
 void DB::TDSConn::Commit(NN<DB::DBTransaction> tran)
@@ -111,5 +111,5 @@ UIntOS DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 
 Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	return 0;
+	return nullptr;
 }

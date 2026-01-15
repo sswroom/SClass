@@ -959,7 +959,7 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMapNative<Int32>> objList, NN<Dat
 		{
 			Data::ArrayListUInt64 objParsedProgs;
 			Int64 thisTime;
-			if (!this->ParseSource(objList, libList, procList, headerList, thisTime, s->ToCString(), 0, objParsedProgs, tmpSb))
+			if (!this->ParseSource(objList, libList, procList, headerList, thisTime, s->ToCString(), nullptr, objParsedProgs, tmpSb))
 			{
 				return false;
 			}
@@ -1031,7 +1031,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMapNative<Int32>> objList,
 		}
 		objList->PutNN(cfg->value, 1);
 		objParsedProgs.Clear();
-		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, Text::String::OrEmpty(subProg->srcFile)->ToCString(), 0, objParsedProgs, tmpSb))
+		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, Text::String::OrEmpty(subProg->srcFile)->ToCString(), nullptr, objParsedProgs, tmpSb))
 		{
 			return false;
 		}
@@ -1052,7 +1052,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMapNative<Int32>> objList,
 			return false;
 		}
 		objParsedProgs.Clear();
-		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, Text::String::OrEmpty(subProg->srcFile)->ToCString(), 0, objParsedProgs, tmpSb))
+		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, Text::String::OrEmpty(subProg->srcFile)->ToCString(), nullptr, objParsedProgs, tmpSb))
 		{
 			return false;
 		}
@@ -1521,7 +1521,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 			{
 				return false;
 			}
-			Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+			Data::FastStringNativeKeyIterator<Int32> iterator = objList.KeyIterator();
 			NN<Text::String> objName;
 			sb.ClearStr();
 			while (iterator.HasNext())
@@ -1870,7 +1870,7 @@ Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
 	}
 	else
 	{
-		return this->CompileProgInternal(prog, asmListing, false, 0);
+		return this->CompileProgInternal(prog, asmListing, false, nullptr);
 	}
 }
 

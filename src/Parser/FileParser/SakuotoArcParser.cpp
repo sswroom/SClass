@@ -79,7 +79,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 		fileName = (UTF16Char*)&recBuff[i + 8];
 		while (*fileName++);
 		NN<Text::String> s = Text::String::NewNotNull((UTF16Char*)&recBuff[i + 8]);
-		pf->AddData(fd, dataOfst + fileOfst, fileSize, IO::PackFileItem::HeaderType::No, s->ToCString(), 0, 0, 0, 0);
+		pf->AddData(fd, dataOfst + fileOfst, fileSize, IO::PackFileItem::HeaderType::No, s->ToCString(), nullptr, nullptr, nullptr, 0);
 		s->Release();
 
 		nextOfst = fileOfst + fileSize;

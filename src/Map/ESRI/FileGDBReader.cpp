@@ -552,16 +552,16 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UIntOS colIndex)
 	UIntOS fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 	NN<Map::ESRI::FileGDBFieldInfo> field;
 	if (!this->tableInfo->fields->GetItem(fieldIndex).SetTo(field))
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 	else if (this->fieldNull[fieldIndex])
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 	switch (field->fieldType)
 	{
@@ -577,7 +577,7 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UIntOS colIndex)
 			return Data::Timestamp::FromStr(sb.ToCString(), 0);
 		}
 	}
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 Double Map::ESRI::FileGDBReader::GetDblOrNAN(UIntOS colIndex)

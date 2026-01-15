@@ -22,6 +22,8 @@ namespace Data
 			this->tzQhr = 127;
 		}
 
+//		Timestamp(IntOS) = delete;
+
 		Timestamp(Int64 ticks, Int8 tzQhr)
 		{
 			this->inst = Data::TimeInstant::FromTicks(ticks);
@@ -519,7 +521,7 @@ namespace Data
 			}
 			else
 			{
-				return Timestamp(0);
+				return Timestamp(nullptr);
 			}
 		}
 
@@ -636,7 +638,7 @@ namespace Data
 
 		static Timestamp Null()
 		{
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 		}
 	};
 }

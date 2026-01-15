@@ -550,7 +550,7 @@ UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 {
 	this->deng = deng;
 	this->colorSess = colorSess;
-	this->drawBuff = 0;
+	this->drawBuff = nullptr;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
 
@@ -582,7 +582,7 @@ UI::GUITextView::~GUITextView()
 	if (this->drawBuff.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->drawBuff = 0;
+		this->drawBuff = nullptr;
 	}
 	if (Sync::Interlocked::DecrementOS(useCnt) == 0)
 	{

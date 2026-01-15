@@ -1,6 +1,6 @@
 #ifndef _SM_IO_AMDGPUMANAGER
 #define _SM_IO_AMDGPUMANAGER
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "IO/GPUControl.h"
 #include "IO/Library.h"
 
@@ -12,7 +12,7 @@ namespace IO
 		IO::Library *lib;
 		void *funcs;
 		UInt8 *adapterInfos;
-		Data::ArrayList<UInt8*> *adapterList;
+		Data::ArrayListObj<UInt8*> *adapterList;
 
 	public:
 		AMDGPUManager();

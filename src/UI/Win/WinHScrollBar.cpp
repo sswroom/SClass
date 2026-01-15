@@ -98,7 +98,7 @@ UI::Win::WinHScrollBar::WinHScrollBar(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, GetSystemMetrics(SM_CYHSCROLL) + 1);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, CLASSNAME, nullptr, style, 0, 0, 0, width, GetSystemMetrics(SM_CYHSCROLL) + 1);
 }
 
 UI::Win::WinHScrollBar::~WinHScrollBar()

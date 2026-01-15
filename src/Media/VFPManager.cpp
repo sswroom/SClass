@@ -263,7 +263,7 @@ void Media::VFPManager::LoadPlugin(const WChar *fileName)
 	}
 	else
 	{
-		plugin->searchPattern = 0;
+		plugin->searchPattern = nullptr;
 	}
 	this->plugins.Add(plugin);
 }

@@ -12,8 +12,8 @@ Net::SAMLSSOResponse::SAMLSSOResponse(ResponseError error, Text::CStringNN error
 	this->sessionIndex = nullptr;
 	this->issuer = nullptr;
 	this->audience = nullptr;
-	this->notBefore = 0;
-	this->notOnOrAfter = 0;
+	this->notBefore = nullptr;
+	this->notOnOrAfter = nullptr;
 	this->nameID = nullptr;
 	this->name = nullptr;
 	this->givenname = nullptr;

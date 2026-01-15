@@ -72,7 +72,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 		}
 
 		sptr = enc.UTF8FromBytes(name, rec, 12, 0);
-		pf->AddData(fd, thisOfst, thisSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, thisOfst, thisSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
 
 		lastOfst = thisOfst + thisSize;
 		hdrOfst += 20;

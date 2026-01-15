@@ -122,7 +122,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::St
 			}
 		}
 		currOfst += hdrSize;
-		pf->AddData(fd, currOfst, dataSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, currOfst, dataSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
 		currOfst += dataSize;
 	}
 	return pf;

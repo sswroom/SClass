@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		}
 
 		me->statusList.MemFreeAll();
-		Text::CString mobile = 0;
+		Text::CString mobile = nullptr;
 		IO::SeleniumIDERunner::RunOptions options;
 		IO::SeleniumIDERunner runner(me->core->GetTCPClientFactory(), port);
 		if (me->chkTestUserDataDir->IsChecked())

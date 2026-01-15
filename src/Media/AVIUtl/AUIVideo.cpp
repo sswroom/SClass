@@ -105,7 +105,7 @@ Media::AVIUtl::AUIVideo::~AUIVideo()
 
 UnsafeArrayOpt<UTF8Char> Media::AVIUtl::AUIVideo::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Text::CStringNN Media::AVIUtl::AUIVideo::GetFilterName()

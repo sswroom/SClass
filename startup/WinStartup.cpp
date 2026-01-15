@@ -144,7 +144,7 @@ void __stdcall WinProgControl_SignalRestart(NN<Core::ProgControl> progCtrl)
 void WinProgControl_Create(NN<WinProgControl> ctrl, UI::InstanceHandle *hInst)
 {
 	ctrl->argc = 0;
-	ctrl->argv = 0;
+	ctrl->argv = nullptr;
 	ctrl->hInst = hInst;
 	ctrl->WaitForExit = WinProgControl_WaitForExit;
 	ctrl->SignalExit = WinProgControl_SignalExit;
@@ -163,7 +163,7 @@ void WinProgControl_Destroy(NN<WinProgControl> ctrl)
 			Text::StrDelNew(UnsafeArray<const UTF8Char>(argv[i]));
 		}
 		MemFreeArr(argv);
-		ctrl->argv = 0;
+		ctrl->argv = nullptr;
 	}
 }
 

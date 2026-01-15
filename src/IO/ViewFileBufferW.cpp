@@ -12,7 +12,7 @@ IO::ViewFileBuffer::ViewFileBuffer(const UTF8Char *fileName)
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = TRUE;
 
-	this->filePtr = 0;
+	this->filePtr = nullptr;
 	WChar wbuff[512];
 	Text::StrUTF8_WChar(wbuff, fileName, 0);
 
@@ -45,9 +45,9 @@ UnsafeArrayOpt<UInt8> IO::ViewFileBuffer::GetPointer()
 {
 	if (fileHandle == 0 || mapHandle == 0)
 	{
-		return 0;
+		return nullptr;
 	}
-	if (this->filePtr == 0)
+	if (this->filePtr.IsNull())
 	{
 		this->filePtr = (UInt8*)MapViewOfFile((HANDLE)mapHandle, FILE_MAP_READ, 0, 0, 0);
 	}
@@ -73,7 +73,7 @@ void IO::ViewFileBuffer::FreePointer()
 	if (this->filePtr.SetTo(filePtr))
 	{
 		UnmapViewOfFile(this->filePtr.Ptr());
-		this->filePtr = 0;
+		this->filePtr = nullptr;
 	}
 }
 

@@ -12,5 +12,5 @@ UnsafeArrayOpt<UTF8Char> Manage::Computer::GetHostName(UnsafeArray<UTF8Char> sbu
 	{
 		return Text::StrWChar_UTF8(sbuff, tmpBuff);
 	}
-	return 0;
+	return nullptr;
 }

@@ -65,8 +65,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	UInt64 sizeLeft;
 	Data::Timestamp createTS;
 	Data::Timestamp modifyTS;
-	Data::Timestamp rootCreateTS = 0;
-	Data::Timestamp rootModifyTS = 0;
+	Data::Timestamp rootCreateTS = nullptr;
+	Data::Timestamp rootModifyTS = nullptr;
 
 	Data::ByteBuffer fat(sectorSize * fatCnt);
 	UIntOS fatSize = 0;

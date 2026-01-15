@@ -89,7 +89,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PAC2Parser::ParseFileHdr(NN<IO::S
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], fnameSize, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), nullptr, nullptr, nullptr, 0);
 
 		nextOfst = fileOfst + fileSize;
 		if (nextOfst & 15)

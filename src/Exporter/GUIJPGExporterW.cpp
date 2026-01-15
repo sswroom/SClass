@@ -95,7 +95,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	{
 		return false;
 	}
-	Optional<Media::RasterImage> srcImg = 0;
+	Optional<Media::RasterImage> srcImg = nullptr;
 	NN<Media::RasterImage> nnsrcImg;
 	NN<Media::ImageList> imgList;
 	UnsafeArray<UInt8> jpgBuff;

@@ -133,7 +133,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 				parking->parkingLatitude = r->GetDblOrNAN(colInd[13]);
 				parking->parkingLongitude = r->GetDblOrNAN(colInd[14]);
 				parking->vacancy = -1;
-				parking->lastupdate = 0;
+				parking->lastupdate = nullptr;
 				Math::Coord2DDbl coord = Math::Coord2DDbl(parking->parkingLongitude, parking->parkingLatitude);
 				if (this->parkingMap.GetCount() == 0)
 				{

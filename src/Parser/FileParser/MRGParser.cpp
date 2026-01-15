@@ -63,7 +63,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MRGParser::ParseFileHdr(NN<IO::St
 		}
 		sptr = enc.UTF8FromBytes(name, rec, 64, 0);
 		currSize = *(UInt32*)&rec[64];
-		pf->AddData(fd, currOfst, currSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, currOfst, currSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
 		currOfst += currSize;
 		hdrOfst += 76;
 	}

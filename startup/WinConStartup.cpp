@@ -78,7 +78,7 @@ void ConsoleControl_Create(NN<Core::ConsoleControl> ctrl)
 {
 	ConsoleControl_self = ctrl;
 	ctrl->argc = 0;
-	ctrl->argv = 0;
+	ctrl->argv = nullptr;
 	ctrl->exited = false;
 	ctrl->ending = false;
 	ctrl->ended = false;
@@ -117,7 +117,7 @@ void ConsoleControl_Destroy(NN<Core::ConsoleControl> ctrl)
 
 Optional<UI::GUICore> Core::ProgControl::CreateGUICore(NN<Core::ProgControl> progCtrl)
 {
-	return 0;
+	return nullptr;
 }
 
 Int32 main(int argc, char *argv[])

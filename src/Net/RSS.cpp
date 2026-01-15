@@ -17,7 +17,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLNode> itemNode)
 	this->category = nullptr;
 	this->comments = nullptr;
 	this->enclosure = nullptr;
-	this->pubDate = 0;
+	this->pubDate = nullptr;
 	this->source = nullptr;
 	this->imgURL = nullptr;
 	this->lat = Math::GetNAN();
@@ -214,7 +214,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 	this->category = nullptr;
 	this->comments = nullptr;
 	this->enclosure = nullptr;
-	this->pubDate = 0;
+	this->pubDate = nullptr;
 	this->source = nullptr;
 	this->imgURL = nullptr;
 	this->lat = Math::GetNAN();
@@ -441,8 +441,8 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCP
 	this->copyright = nullptr;
 	this->managingEditor = nullptr;
 	this->webMaster = nullptr;
-	this->pubDate = 0;
-	this->lastBuildDate = 0;
+	this->pubDate = nullptr;
+	this->lastBuildDate = nullptr;
 	this->generator = nullptr;
 	this->docs = nullptr;
 	this->ttl = 0;

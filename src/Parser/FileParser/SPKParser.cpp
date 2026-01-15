@@ -156,7 +156,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 						if (!pf2->GetPackFile({sptr, k}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
+							pf2->AddPack(pf3, {sptr, k}, nullptr, nullptr, nullptr, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 						sptr = &sptr[k + 1];
@@ -169,14 +169,14 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 						if (!pf2->GetPackFile({sptr, l}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
+							pf2->AddPack(pf3, {sptr, l}, nullptr, nullptr, nullptr, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 						sptr = &sptr[l + 1];
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), nullptr, nullptr, 0);
 						break;
 					}
 				}
@@ -218,7 +218,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 						if (!pf2->GetPackFile({sptr, k}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, k}, 0, 0, 0, 0);
+							pf2->AddPack(pf3, {sptr, k}, nullptr, nullptr, nullptr, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 						sptr = &sptr[k + 1];
@@ -231,14 +231,14 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 						if (!pf2->GetPackFile({sptr, l}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(CSTRP(srcPath, srcPtr2)));
-							pf2->AddPack(pf3, {sptr, l}, 0, 0, 0, 0);
+							pf2->AddPack(pf3, {sptr, l}, nullptr, nullptr, nullptr, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 						sptr = &sptr[l + 1];
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), 0, 0, 0);
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0), nullptr, nullptr, 0);
 						break;
 					}
 				}

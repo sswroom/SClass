@@ -236,7 +236,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 		Bool toSave = true;
 		this->ClearFileNames();
 		OPTSTR_DEL(this->fileName);
-		this->fileName = 0;
+		this->fileName = nullptr;
 		this->filterIndex = ofn.nFilterIndex - 1;
 		if (isSave && ofn.nFileExtension == 0)
 		{

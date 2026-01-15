@@ -86,7 +86,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 	cinfo.compExtras = 0;
 	*(Int32*)cinfo.checkBytes = *(Int32*)footer;
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
-	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, IO::PackFileItem::HeaderType::No, &cinfo, CSTRP(sbuff, sptr), Data::Timestamp(ReadUInt32(&hdr[4]) * 1000LL, 0), 0, 0, 0);
+	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, IO::PackFileItem::HeaderType::No, &cinfo, CSTRP(sbuff, sptr), Data::Timestamp(ReadUInt32(&hdr[4]) * 1000LL, 0), nullptr, nullptr, 0);
 
 	return pf;
 }

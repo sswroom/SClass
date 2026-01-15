@@ -15,7 +15,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NN<Text::String> txt)
 {
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
-	this->parent = 0;
+	this->parent = nullptr;
 	this->txt = txt->Clone();
 }
 
@@ -23,7 +23,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, Text::CStringNN txt)
 {
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
-	this->parent = 0;
+	this->parent = nullptr;
 	this->txt = Text::String::New(txt);
 }
 
@@ -258,7 +258,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	if(hItem == 0)
 	{
 		item.Delete();
-		return 0;
+		return nullptr;
 	}
 	item->SetHItem(hItem);
 
@@ -305,7 +305,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	if(hItem == 0)
 	{
 		item.Delete();
-		return 0;
+		return nullptr;
 	}
 	item->SetHItem(hItem);
 
@@ -441,7 +441,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 {
 	HTREEITEM hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_CARET, 0);
 	if (hTreeItem == 0)
-		return 0;
+		return nullptr;
 	TVITEM item;
 	item.mask = TVIF_HANDLE | TVIF_PARAM;
 	item.hItem =  hTreeItem;
@@ -450,7 +450,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 	{
 		return (UI::GUITreeView::TreeItem *)item.lParam;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
@@ -460,7 +460,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 	{
 		hTreeItem = (HTREEITEM)SendMessage((HWND)this->hwnd.OrNull(), TVM_GETNEXTITEM, TVGN_CARET, 0);
 		if (hTreeItem == 0)
-			return 0;
+			return nullptr;
 	}
 	TVITEM item;
 	item.mask = TVIF_HANDLE | TVIF_PARAM;
@@ -470,7 +470,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 	{
 		return (UI::GUITreeView::TreeItem *)item.lParam;
 	}
-	return 0;
+	return nullptr;
 }
 
 void UI::GUITreeView::BeginEdit(NN<TreeItem> item)

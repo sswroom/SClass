@@ -94,24 +94,24 @@ Text::CStringNN Data::BinaryParser::NextStrNN()
 Text::CString Data::BinaryParser::NextStr()
 {
 	if (this->error)
-		return 0;
+		return nullptr;
 	if (this->currOfst + 2 > this->buff.GetSize())
 	{
 		this->error = true;
-		return 0;
+		return nullptr;
 	}
 	UInt16 b1 = ReadUInt16(&buff[this->currOfst]);
 	if (b1 == 65535)
 	{
 		this->currOfst += 2;
-		return 0;
+		return nullptr;
 	}
 	if (b1 != 65534)
 	{
 		if (this->currOfst + 2 + b1 > this->buff.GetSize())
 		{
 			this->error = true;
-			return 0;
+			return nullptr;
 		}
 		Text::CStringNN s = Text::CStringNN(&this->buff[this->currOfst + 2], b1);
 		this->currOfst = b1 + 2;
@@ -120,13 +120,13 @@ Text::CString Data::BinaryParser::NextStr()
 	if (this->currOfst + 6 > this->buff.GetSize())
 	{
 		this->error = true;
-		return 0;
+		return nullptr;
 	}
 	UIntOS len = ReadUInt32(&this->buff[this->currOfst + 2]) + 65534;
 	if (this->currOfst + 6 + len > this->buff.GetSize())
 	{
 		this->error = true;
-		return 0;
+		return nullptr;
 	}
 	Text::CStringNN s = Text::CStringNN(&this->buff[this->currOfst + 6], len);
 	this->currOfst = len + 6;

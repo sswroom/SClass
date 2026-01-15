@@ -77,8 +77,8 @@ Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::Socket
 	this->tokenNext = (UInt16)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffff);
 	this->statInterval = 30;
 	this->pullInterval = 5;
-	this->lastPullTime = Data::Timestamp(0);
-	this->lastStatTime = Data::Timestamp(0);
+	this->lastPullTime = Data::Timestamp(nullptr);
+	this->lastStatTime = Data::Timestamp(nullptr);
 	this->threadToStop = false;
 	this->threadEvt = nullptr;
 	this->hasPos = false;

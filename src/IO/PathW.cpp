@@ -273,13 +273,13 @@ Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 
 UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, UnsafeArray<const UTF8Char> ext, UIntOS extLen)
 {
-	UnsafeArrayOpt<UTF8Char> oldExt = 0;
+	UnsafeArrayOpt<UTF8Char> oldExt = nullptr;
 	UTF8Char c;
 	while ((c = *fileName++) != 0)
 	{
 		if (c == '\\' || c == '/')
 		{
-			oldExt = 0;
+			oldExt = nullptr;
 		}
 		else if (c == '.')
 		{
@@ -297,14 +297,14 @@ UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, Unsaf
 
 UnsafeArray<WChar> IO::Path::ReplaceExtW(UnsafeArray<WChar> fileName, UnsafeArray<const WChar> ext)
 {
-	UnsafeArrayOpt<WChar> oldExt = 0;
+	UnsafeArrayOpt<WChar> oldExt = nullptr;
 	UnsafeArray<WChar> nnoldExt;
 	WChar c;
 	while ((c = *fileName++) != 0)
 	{
 		if (c == '\\' || c == '/')
 		{
-			oldExt = 0;
+			oldExt = nullptr;
 		}
 		else if (c == '.')
 		{
@@ -808,7 +808,7 @@ Optional<IO::Path::FindFileSession> IO::Path::FindFile(Text::CStringNN path)
 	else
 	{
 		MemFree(sess);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -830,7 +830,7 @@ Optional<IO::Path::FindFileSession> IO::Path::FindFileW(UnsafeArray<const WChar>
 	else
 	{
 		MemFree(sess);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -861,7 +861,7 @@ UnsafeArrayOpt<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, NN<I
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -892,7 +892,7 @@ UnsafeArrayOpt<WChar> IO::Path::FindNextFileW(UnsafeArray<WChar> buff, NN<IO::Pa
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -966,7 +966,7 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UIntOS fileNa
 	UnsafeArray<const UTF8Char> fileNameEnd = &fileName[fileNameLen];
 	UIntOS i;
 	Bool isWC = false;
-	UnsafeArrayOpt<const UTF8Char> patternStart = 0;
+	UnsafeArrayOpt<const UTF8Char> patternStart = nullptr;
 	UnsafeArray<const UTF8Char> nnpatternStart;
 	UnsafeArray<const UTF8Char> currPattern = searchPattern;
 	UTF8Char c;
@@ -999,7 +999,7 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UIntOS fileNa
 				if ((i = Text::StrIndexOfC(fileName, (UIntOS)(fileNameEnd - fileName), nnpatternStart, (UIntOS)(currPattern - nnpatternStart))) == INVALID_INDEX)
 					return false;
 				fileName += i + (currPattern - nnpatternStart);
-				patternStart = 0;
+				patternStart = nullptr;
 				isWC = false;
 			}
 			else if (patternStart.SetTo(nnpatternStart))
@@ -1007,7 +1007,7 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UIntOS fileNa
 				if (!Text::StrStartsWithICaseC(fileName, (UIntOS)(fileNameEnd - fileName), nnpatternStart, (UIntOS)(currPattern - nnpatternStart)))
 					return false;
 				fileName += currPattern - nnpatternStart;
-				patternStart = 0;
+				patternStart = nullptr;
 				isWC = false;
 			}
 			if (c == '?')
@@ -1020,12 +1020,12 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UIntOS fileNa
 			else
 			{
 				isWC = true;
-				patternStart = 0;
+				patternStart = nullptr;
 				currPattern++;
 			}
 			break;
 		default:
-			if (patternStart == 0)
+			if (patternStart.IsNull())
 			{
 				patternStart = currPattern;
 			}
@@ -1166,7 +1166,7 @@ UnsafeArrayOpt<UTF8Char> IO::Path::GetLocAppDataPath(UnsafeArray<UTF8Char> buff)
 	WChar wbuff[512];
 	if (SHGetFolderPathW(0, CSIDL_LOCAL_APPDATA, 0, SHGFP_TYPE_CURRENT, wbuff) != S_OK)
 	{
-		return 0;
+		return nullptr;
 	}
 	return Text::StrWChar_UTF8(buff, wbuff);
 #endif
@@ -1175,11 +1175,11 @@ UnsafeArrayOpt<UTF8Char> IO::Path::GetLocAppDataPath(UnsafeArray<UTF8Char> buff)
 UnsafeArrayOpt<WChar> IO::Path::GetLocAppDataPathW(UnsafeArray<WChar> buff)
 {
 #ifdef _WIN32_WCE
-	return 0;
+	return nullptr;
 #else
 	if (SHGetFolderPathW(0, CSIDL_LOCAL_APPDATA, 0, SHGFP_TYPE_CURRENT, buff.Ptr()) != S_OK)
 	{
-		return 0;
+		return nullptr;
 	}
 	return &buff[Text::StrCharCnt(UnsafeArray<const WChar>(buff))];
 #endif

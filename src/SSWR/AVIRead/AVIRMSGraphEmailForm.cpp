@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnSendClicked(AnyType userOb
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
 	Net::Email::EmailMessage msg;
-	msg.SetFrom(0, sbUserName.ToCString());
+	msg.SetFrom(nullptr, sbUserName.ToCString());
 	me->txtSendTo->GetText(sb);
 	if (sb.leng > 0)
 	{

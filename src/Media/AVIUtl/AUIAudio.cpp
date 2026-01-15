@@ -26,7 +26,7 @@ Media::AVIUtl::AUIAudio::~AUIAudio()
 
 UnsafeArrayOpt<UTF8Char> Media::AVIUtl::AUIAudio::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	return 0;//this->plugin->GetName(buff);
+	return nullptr;//this->plugin->GetName(buff);
 }
 
 Bool Media::AVIUtl::AUIAudio::CanSeek()
@@ -69,7 +69,7 @@ Bool Media::AVIUtl::AUIAudio::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 
 void Media::AVIUtl::AUIAudio::Stop()
 {
-	this->playEvt = 0;
+	this->playEvt = nullptr;
 }
 
 UIntOS Media::AVIUtl::AUIAudio::ReadBlock(Data::ByteArray blk)

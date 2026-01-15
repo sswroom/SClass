@@ -11,7 +11,7 @@
 Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 {
 	UnsafeArray<UInt8> edid;
-	this->edid = 0;
+	this->edid = nullptr;
 	this->edidSize = 0;
 	this->hMon = hMon;
 
@@ -33,7 +33,7 @@ Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 	MemClear(&dd, sizeof(dd));
 	dd.cb = sizeof(dd);
 	DWORD dev = 0;
-	while ((this->edid == 0) && EnumDisplayDevicesW(0, dev, &dd, 0))
+	while ((this->edid.IsNull()) && EnumDisplayDevicesW(0, dev, &dd, 0))
 	{
 		if (Text::StrEquals(dd.DeviceName, monInfo.szDevice))
 		{
@@ -42,7 +42,7 @@ Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 			ddMon.cb = sizeof(ddMon);
 			DWORD devMon = 0;
 			
-			while ((this->edid == 0) && EnumDisplayDevicesW(dd.DeviceName, devMon, &ddMon, 0))
+			while ((this->edid.IsNull()) && EnumDisplayDevicesW(dd.DeviceName, devMon, &ddMon, 0))
 			{
 				if (ddMon.StateFlags & DISPLAY_DEVICE_ACTIVE && !(ddMon.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER))
 				{
@@ -128,9 +128,9 @@ Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 {
 	UnsafeArray<UInt8> edid;
-	this->edid = 0;
+	this->edid = nullptr;
 	this->edidSize = 0;
-	this->hMon = 0;
+	this->hMon = nullptr;
 
 	const GUID GUID_CLASS_MONITOR = {0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18};
 
@@ -145,7 +145,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 	MemClear(&dd, sizeof(dd));
 	dd.cb = sizeof(dd);
 	DWORD dev = 0;
-	while ((this->edid == 0) && EnumDisplayDevicesW(0, dev, &dd, 0))
+	while ((this->edid.IsNull()) && EnumDisplayDevicesW(0, dev, &dd, 0))
 	{
 		DISPLAY_DEVICEW ddMon;
 		MemClear(&ddMon, sizeof(ddMon));
@@ -242,7 +242,7 @@ Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UIntOS edidSize)
 	UnsafeArray<UInt8> nnedid;
 	this->edid = nnedid = MemAllocArr(UInt8, edidSize);
 	this->edidSize = edidSize;
-	this->hMon = 0;
+	this->hMon = nullptr;
 	MemCopyNO(nnedid.Ptr(), edid.Ptr(), edidSize);
 }
 
@@ -252,7 +252,7 @@ Media::DDCReader::~DDCReader()
 	if (this->edid.SetTo(nnedid))
 	{
 		MemFreeArr(nnedid);
-		this->edid = 0;
+		this->edid = nullptr;
 	}
 }
 

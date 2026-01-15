@@ -191,7 +191,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 	return table;
 }
 
-void Map::ESRI::FileGDBUtil::FreeFieldInfo(NN<FileGDBFieldInfo> fieldInfo)
+void __stdcall Map::ESRI::FileGDBUtil::FreeFieldInfo(NN<FileGDBFieldInfo> fieldInfo)
 {
 	UnsafeArray<UInt8> valArr;
 	fieldInfo->name->Release();
@@ -207,7 +207,7 @@ void Map::ESRI::FileGDBUtil::FreeFieldInfo(NN<FileGDBFieldInfo> fieldInfo)
 	MemFreeNN(fieldInfo);
 }
 
-void Map::ESRI::FileGDBUtil::FreeTableInfo(NN<FileGDBTableInfo> tableInfo)
+void __stdcall Map::ESRI::FileGDBUtil::FreeTableInfo(NN<FileGDBTableInfo> tableInfo)
 {
 	tableInfo->fields->FreeAll(FreeFieldInfo);
 	tableInfo->fields.Delete();

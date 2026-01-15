@@ -247,7 +247,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, NN<ServiceDet
 		}
 		svcDetail->memoryUsage = 0;
 		svcDetail->procId = 0;
-		svcDetail->startTime = 0;
+		svcDetail->startTime = nullptr;
 		svcDetail->status = IO::ServiceInfo::RunStatus::Unknown;
 		svcDetail->enabled = IO::ServiceInfo::ServiceState::Unknown;
 		while (lineCnt == 2)

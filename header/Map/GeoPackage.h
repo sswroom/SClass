@@ -26,7 +26,7 @@ namespace Map
 		UInt32 useCnt;
 	private:
 		~GeoPackage();
-		static void FreeContent(NN<ContentInfo> cont);
+		static void __stdcall FreeContent(NN<ContentInfo> cont);
 	public:
 		GeoPackage(NN<DB::DBConn> conn);
 		void Release();

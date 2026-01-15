@@ -373,24 +373,24 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 	if (this->handle == 0)
 	{
 		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 	else
 	{
 		if (fstat64((int)(IntOS)this->handle, &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 #else
 	struct stat s;
 	if (this->handle == 0)
 	{
 		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 	else
 	{
 		if (fstat((int)(IntOS)this->handle, &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 #endif
 #if defined(__APPLE__)
@@ -408,24 +408,24 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	if (this->handle == 0)
 	{
 		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 	else
 	{
 		if (fstat64((int)(IntOS)this->handle, &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 #else
 	struct stat s;
 	if (this->handle == 0)
 	{
 		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 	else
 	{
 		if (fstat((int)(IntOS)this->handle, &s) != 0)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 	}
 #endif
 #if defined(__APPLE__)

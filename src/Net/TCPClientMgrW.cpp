@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
-#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "IO/Console.h"
 #include "Manage/HiResClock.h"
@@ -354,7 +353,7 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	}
 	else
 	{
-		cliStat->readReq = 0;
+		cliStat->readReq = nullptr;
 	}
 }
 
@@ -422,7 +421,7 @@ Optional<Net::TCPClient> Net::TCPClientMgr::GetClient(UIntOS index, OutParam<Any
 		cliData.Set(cliStat->cliData);
 		return cliStat->cli.Ptr();
 	}
-	return 0;
+	return nullptr;
 }
 
 IO::SMTCWriter *Net::TCPClientMgr::GetLogWriter() const

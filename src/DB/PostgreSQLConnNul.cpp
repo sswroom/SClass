@@ -10,7 +10,6 @@ Bool DB::PostgreSQLConn::Connect()
 
 DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Optional<Text::String> uid, Optional<Text::String> pwd, NN<Text::String> database, NN<IO::LogTool> log) : DBConn(server)
 {
-	this->clsData = 0;
 	this->tzQhr = 0;
 	this->log = log;
 	this->server = server->Clone();
@@ -26,7 +25,6 @@ DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Optiona
 
 DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CStringNN database, NN<IO::LogTool> log) : DBConn(server)
 {
-	this->clsData = 0;
 	this->tzQhr = 0;
 	this->log = log;
 	this->server = Text::String::New(server);
@@ -90,7 +88,7 @@ IntOS DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 
 Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 {
-	return 0;
+	return nullptr;
 }
 
 void DB::PostgreSQLConn::CloseReader(NN<DB::DBReader> r)
@@ -117,7 +115,7 @@ Optional<DB::DBTransaction> DB::PostgreSQLConn::BeginTransaction()
 {
 	if (this->isTran)
 	{
-		return 0;
+		return nullptr;
 	}
 	this->ExecuteNonQuery(CSTR("BEGIN"));
 	this->isTran = true;
@@ -405,7 +403,7 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverNam
 	if (conn->IsConnError())
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
@@ -419,7 +417,7 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName
 	if (conn->IsConnError())
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));

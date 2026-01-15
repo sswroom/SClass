@@ -49,11 +49,11 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Text::CStringNN cmd;
 	Text::CStringNN param;
 	UInt16 port = 4444;
-	Text::CString url = 0;
-	Text::CString mobile = 0;
+	Text::CString url = nullptr;
+	Text::CString mobile = nullptr;
 	IO::SeleniumIDERunner::BrowserType browser = IO::SeleniumIDERunner::BrowserType::Chrome;
 	Text::CStringNN logPath = CSTR("log");
-	Text::CString sideFile = 0;
+	Text::CString sideFile = nullptr;
 	Text::CStringNN s;
 	UIntOS retryCnt = 3;
 	IO::SeleniumIDERunner::RunOptions options;

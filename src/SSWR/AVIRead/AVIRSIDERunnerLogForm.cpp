@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Da
 		{
 			DB::CSVFile csv(file, 0);
 			NN<DB::DBReader> r;
-			if (csv.QueryTableData(0, CSTR(""), nullptr, 0, 0, 0, nullptr).SetTo(r))
+			if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
 				Bool succ = true;
 				if (!r->GetName(0, sbuff).SetTo(sptr) || !CSTRP(sbuff, sptr).Equals(CSTR("Time"))) succ = false;

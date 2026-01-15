@@ -243,12 +243,12 @@ namespace DB
 		virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
-				return Data::Timestamp(0);
+				return Data::Timestamp(nullptr);
 			Text::String **row = this->rows->GetItem((UIntOS)this->rowIndex);
 			if (row == nullptr)
-				return Data::Timestamp(0);
+				return Data::Timestamp(nullptr);
 			if (row[colIndex] == nullptr)
-				return Data::Timestamp(0);
+				return Data::Timestamp(nullptr);
 			return Data::Timestamp(row[colIndex]->ToCString(), 0);
 		}
 

@@ -323,14 +323,14 @@ UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UInt
 #if defined(__CYGWIN__)
 	Char buff[512];
 	if (fgets(buff, nChar, stdin) == 0)
-		return 0;
+		return nullptr;
 	else
 	{
 		return Text::StrUTF8_WChar(sbuff, (UTF8Char*)buff, 0);
 	}
 #else
 	if (fgetws(sbuff.Ptr(), (int)nChar, stdin) == 0)
-		return 0;
+		return nullptr;
 	else
 		return &sbuff[Text::StrCharCnt(UnsafeArray<const WChar>(sbuff))];
 #endif

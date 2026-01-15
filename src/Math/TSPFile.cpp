@@ -385,12 +385,12 @@ UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 Data::Timestamp Math::TSPReader::GetTimestamp(UIntOS colIndex)
 {
 	if (this->currRowPtr == 0)
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	if (colIndex == 2)
 	{
 		return Data::Timestamp(ReadInt64(&this->currRowPtr[48]), Data::DateTimeUtil::GetLocalTzQhr());
 	}
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 Double Math::TSPReader::GetDblOrNAN(UIntOS colIndex)
@@ -689,7 +689,7 @@ UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetStr(UIntOS colIndex, UnsafeArray<U
 
 Data::Timestamp Math::TSPHReader::GetTimestamp(UIntOS colIndex)
 {
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 Double Math::TSPHReader::GetDblOrNAN(UIntOS colIndex)

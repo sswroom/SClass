@@ -47,7 +47,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 			optjson = json;
 			Text::MailCreator mail;
 			cert->GetSubjectCN(sb2);
-			mail.SetFrom(0, sb2.ToCString());
+			mail.SetFrom(nullptr, sb2.ToCString());
 			NN<Text::JSONObject> msgObj = NN<Text::JSONObject>::ConvertFrom(json);
 			NN<Text::String> s;
 			if (msgObj->GetObjectString(CSTR("ChanType")).SetTo(s) && !s->Equals(UTF8STRC("EM")) && !s->Equals(UTF8STRC("BD")))

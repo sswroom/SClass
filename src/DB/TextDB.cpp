@@ -131,11 +131,11 @@ public:
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
 		if (!this->row.SetTo(row))
-			return 0;
+			return nullptr;
 		if (colIndex >= this->data->colList.GetCount())
-			return 0;
+			return nullptr;
 		if (!row[colIndex].SetTo(s))
-			return 0;
+			return nullptr;
 		return Data::Timestamp(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 

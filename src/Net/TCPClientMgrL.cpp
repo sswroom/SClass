@@ -256,7 +256,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 	}
 	Data::Timestamp currTime;
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
-	Data::Timestamp lastCheckTime = 0;
+	Data::Timestamp lastCheckTime = nullptr;
 	UIntOS i;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -494,7 +494,7 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	cliStat->reading = false;
 	cliStat->processing = false;
 	cliStat->timeAlerted = false;
-	cliStat->timeStart = 0;
+	cliStat->timeStart = nullptr;
 	Sync::MutexUsage readMutUsage(cliStat->readMut);
 	cliStat->reading = true;
 	cliStat->recvDataExist = false;

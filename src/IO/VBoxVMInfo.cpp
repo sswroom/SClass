@@ -5,7 +5,7 @@ IO::VBoxVMInfo::VBoxVMInfo(Text::CStringNN name)
 {
 	this->name = Text::String::New(name);
 	this->state = State::Unknown;
-	this->stateSince = 0;
+	this->stateSince = nullptr;
 }
 
 IO::VBoxVMInfo::~VBoxVMInfo()

@@ -498,7 +498,7 @@ Bool Manage::CPUInfo::GetInfoName(UIntOS index, NN<Text::StringBuilderUTF8> sb)
 #if defined(WIN32) || defined(_WIN64)
 UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	NN<IO::Registry> reg;
 	NN<IO::Registry> reg2;
 	WChar wbuff[256];

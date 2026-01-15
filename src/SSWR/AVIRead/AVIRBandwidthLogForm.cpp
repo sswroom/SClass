@@ -249,7 +249,7 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadBandwidthLog(Text::CStringNN fileN
 	NN<DB::ColDef> col;
 	NN<DB::DBReader> r;
 	DB::CSVFile csv(fileName, 0);
-	if (csv.GetTableDef(0, fileName).SetTo(table))
+	if (csv.GetTableDef(nullptr, fileName).SetTo(table))
 	{
 		if (table->GetColCnt() >= 6)
 		{
@@ -266,7 +266,7 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadBandwidthLog(Text::CStringNN fileN
 				valid = false;
 			if (!table->GetCol(5).SetTo(col) || !col->GetColName()->Equals(CSTR("SendBytes")))
 				valid = false;
-			if (valid && csv.QueryTableData(0, fileName, nullptr, 0, 0, 0, nullptr).SetTo(r))
+			if (valid && csv.QueryTableData(nullptr, fileName, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
 				this->ClearBandwidthLog();
 				Text::StringBuilderUTF8 sb;
@@ -431,10 +431,10 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadSIDELog(Text::CStringNN filePath)
 		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2) && pt == IO::Path::PathType::File)
 		{
 			DB::CSVFile csv(CSTRP(sbuff, sptr2), 65001);
-			if (csv.QueryTableData(0, CSTR(""), nullptr, 0, 0, 0, nullptr).SetTo(r))
+			if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
-				startTime = 0;
-				endTime = 0;
+				startTime = nullptr;
+				endTime = nullptr;
 				Bool valid = true;
 				if (!r->GetName(0, sbuff2).SetTo(sptr3) || !CSTRP(sbuff2, sptr3).Equals(CSTR("Time"))) valid = false;
 				if (!r->GetName(1, sbuff2).SetTo(sptr3) || !CSTRP(sbuff2, sptr3).Equals(CSTR("TestId"))) valid = false;

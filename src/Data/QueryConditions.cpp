@@ -483,7 +483,7 @@ Data::Timestamp Data::Conditions::TimeField::Eval(NN<Data::VariObject> obj) cons
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -493,7 +493,7 @@ Data::Timestamp Data::Conditions::TimeField::Eval(NN<Data::ObjectGetter> getter)
 	if (item->GetItemType() == Data::VariItem::ItemType::Null)
 	{
 		item.Delete();
-		return 0;
+		return nullptr;
 	}
 	Data::Timestamp ts = item->GetAsTimestamp();
 	item.Delete();

@@ -67,7 +67,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, recbuff, 16, 0);
-		pf->AddData(fd, thisOfst, thisSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, thisOfst, thisSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), nullptr, nullptr, nullptr, 0);
 
 		fileOfst += thisSize;
 		hdrOfst += 24;

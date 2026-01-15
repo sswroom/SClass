@@ -660,12 +660,12 @@ UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8
 Data::Timestamp DB::DBFReader::GetTimestamp(UIntOS colIndex)
 {
 	if (!this->recordExist)
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	if (colIndex >= this->colCnt)
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	if (this->cols[colIndex].type != 'D')
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 	Char buff[5];
 	Char *currPtr = (Char*)&this->recordData[this->cols[colIndex].colOfst];

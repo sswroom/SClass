@@ -267,8 +267,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	//			UInt64 decompSize = ReadUInt32(&buff[22]);
 				UInt16 modTime = ReadUInt16(&buff[10]);
 				UInt16 modDate = ReadUInt16(&buff[12]);
-				Data::Timestamp accTime = 0;
-				Data::Timestamp createTime = 0;
+				Data::Timestamp accTime = nullptr;
+				Data::Timestamp createTime = nullptr;
 				dt.ToLocalTime();
 				dt.SetMSDOSTime(modDate, modTime);
 				UIntOS extraStart = 30 + fnameSize;
@@ -528,8 +528,8 @@ UIntOS Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 		}
 		ofst = ReadUInt32(&buff[i + 42]);
 		modTime = Data::Timestamp::FromMSDOSTime(ReadUInt16(&buff[i + 14]), ReadUInt16(&buff[i + 12]), Data::DateTimeUtil::GetLocalTzQhr());
-		accTime = 0;
-		createTime = 0;
+		accTime = nullptr;
+		createTime = nullptr;
 
 		if (i + 46 + (UIntOS)fnameLen + extraLen + commentLen > buff.GetSize())
 		{

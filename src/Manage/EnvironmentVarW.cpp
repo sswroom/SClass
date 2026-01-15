@@ -48,7 +48,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 Manage::EnvironmentVar::~EnvironmentVar()
 {
 	UIntOS i;
-	NN<const Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> nameList = this->names.GetValues();
+	NN<const Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> nameList = this->names.GetValues();
 	UnsafeArray<const UTF8Char> name;
 	i = nameList->GetCount();
 	while (i-- > 0)
@@ -87,12 +87,12 @@ UnsafeArrayOpt<UTF8Char> Manage::EnvironmentVar::GetEnvValue(UnsafeArray<UTF8Cha
 	UInt32 retSize = GetEnvironmentVariableW(wptr.Ptr(), wbuff, 512);
 	Text::StrDelNew(wptr);
 	if (retSize == 0)
-		return 0;
+		return nullptr;
 	else if (retSize > 512)
-		return 0;
+		return nullptr;
 	else
 		return Text::StrWChar_UTF8C(buff, wbuff, retSize);
 #else
-	return 0;
+	return nullptr;
 #endif
 }

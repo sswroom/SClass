@@ -12,10 +12,10 @@
 Net::ConnectionInfo::ConnectionInfo(void *info)
 {
 	IP_ADAPTER_ADDRESSES *addr = (IP_ADAPTER_ADDRESSES*)info;
-	this->ent.internalName = 0;
-	this->ent.name = 0;
-	this->ent.description = 0;
-	this->ent.dnsSuffix = 0;
+	this->ent.internalName = nullptr;
+	this->ent.name = nullptr;
+	this->ent.description = nullptr;
+	this->ent.dnsSuffix = nullptr;
 	this->ent.dhcpSvr = 0;
 	if (addr->AdapterName)
 	{

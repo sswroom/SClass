@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::AUIParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::AUIParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->IsFullFile())
-		return 0;
+		return nullptr;
 	Data::ArrayListNN<Media::MediaSource> mediaArr;
 	if (auiMgr->LoadFile(fd->GetFullFileName()->v, mediaArr) > 0)
 	{
@@ -48,5 +48,5 @@ Optional<IO::ParsedObject> Parser::FileParser::AUIParser::ParseFileHdr(NN<IO::St
 		}
 		return file;
 	}
-	return 0;
+	return nullptr;
 }

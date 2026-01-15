@@ -85,7 +85,7 @@ COLORREF GDIEGetCol(UInt32 col)
 	return ((col & 0xff) << 16) | (col & 0xff00) | ((col >> 16) & 0xff);
 }
 
-Media::GDIEngine::GDIEngine() : iab(0, true)
+Media::GDIEngine::GDIEngine() : iab(nullptr, true)
 {
 #ifdef HAS_GDIPLUS
 	NEW_CLASS(gdiplusStartupInput, Gdiplus::GdiplusStartupInput());
@@ -151,7 +151,7 @@ Optional<Media::DrawImage> Media::GDIEngine::CreateImage32(Math::Size2D<UIntOS> 
 		}
 		return img;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UIntOS> size)
@@ -192,7 +192,7 @@ Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UIntOS> s
 		}
 		return img;
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Media::DrawImage> Media::GDIEngine::CreateImageScn(void *hdc, IntOS left, IntOS top, IntOS right, IntOS bottom, Optional<Media::ColorSess> colorSess)
@@ -211,7 +211,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImage(Text::CStringNN fileName)
 	if (fstm->IsError())
 	{
 		fstm.Delete();
-		return 0;
+		return nullptr;
 	}
 	Optional<DrawImage> img = LoadImageStream(fstm);
 
@@ -240,7 +240,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 		if (gimg == 0)
 		{
 			DEL_CLASS(comStm);
-			return 0;
+			return nullptr;
 		}
 		Gdiplus::BitmapData bmpd;
 		Gdiplus::Status stat;
@@ -472,11 +472,11 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 {
 	if (img->info.fourcc != 0)
 	{
-		return 0; 
+		return nullptr; 
 	}
 	NN<Media::GDIImage> gimg;
 	if (!Optional<Media::GDIImage>::ConvertFrom(CreateImage32(img->info.dispSize, img->info.atype)).SetTo(gimg))
-		return 0;
+		return nullptr;
 	gimg->SetColorSess(colorSess);
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
@@ -524,7 +524,7 @@ Optional<Media::DrawImage> Media::GDIEngine::CloneImage(NN<Media::DrawImage> img
 		}
 		return newImg;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Media::GDIEngine::DeleteImage(NN<DrawImage> img)
@@ -727,10 +727,10 @@ Media::GDIImage::GDIImage(NN<GDIEngine> eng, Math::Coord2D<IntOS> tl, Math::Size
 	this->bmpBits = bmpBits;
 	this->hdcBmp = hdcBmp;
 	this->strAlign = Media::DrawEngine::DRAW_POS_TOPLEFT;
-	this->currBrush = 0;
-	this->currFont = 0;
-	this->currPen = 0;
-	this->colorSess = 0;
+	this->currBrush = nullptr;
+	this->currFont = nullptr;
+	this->currPen = nullptr;
+	this->colorSess = nullptr;
 	SetBkMode((HDC)this->hdcBmp, TRANSPARENT);
 }
 
@@ -1280,7 +1280,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 					SelectObject((HDC)this->hdcBmp, pen->hpen);
 				}
 				SelectObject((HDC)this->hdcBmp, GetStockObject(NULL_BRUSH));
-				this->currBrush = 0;
+				this->currBrush = nullptr;
 
 				Ellipse((HDC)this->hdcBmp, Double2Int32(tl.x), Double2Int32(tl.y), Double2Int32(tl.x + size.x), Double2Int32(tl.y + size.y));
 			}
@@ -1298,7 +1298,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 			else
 			{
 				SelectObject((HDC)this->hdcBmp, GetStockObject(NULL_PEN));
-				this->currPen = 0;
+				this->currPen = nullptr;
 			}
 			if (this->currBrush != nnb.Ptr())
 			{
@@ -2274,8 +2274,8 @@ Bool Media::GDIImage::DrawImageQuad(NN<Media::StaticImage> img, Math::Quadrilate
 		points[2] = quad.br;
 		points[3] = quad.bl;
 		points[4] = quad.tl;
-		NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, 0, 0);
-		this->DrawPolygon(points, 5, p, 0);
+		NN<Media::DrawPen> p = this->NewPenARGB(0xffff0000, 1, nullptr, 0);
+		this->DrawPolygon(points, 5, p, nullptr);
 		this->DelPen(p);
 		return false;
 	}
@@ -2379,7 +2379,7 @@ NN<Media::DrawFont> Media::GDIImage::CloneFont(NN<Media::DrawFont> f)
 void Media::GDIImage::DelPen(NN<DrawPen> p)
 {
 	if (this->currPen == p.Ptr())
-		this->currPen = 0;
+		this->currPen = nullptr;
 	GDIPen *pen = (GDIPen *)p.Ptr();
 	if (pen->pattern)
 		MemFree(pen->pattern);
@@ -2390,7 +2390,7 @@ void Media::GDIImage::DelPen(NN<DrawPen> p)
 void Media::GDIImage::DelBrush(NN<DrawBrush> b)
 {
 	if (this->currBrush == b.Ptr())
-		this->currBrush = 0;
+		this->currBrush = nullptr;
 	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
 	DeleteObject((HBRUSH)brush->hbrush);
 	brush.Delete();
@@ -2399,7 +2399,7 @@ void Media::GDIImage::DelBrush(NN<DrawBrush> b)
 void Media::GDIImage::DelFont(NN<DrawFont> f)
 {
 	if (this->currFont == f.Ptr())
-		this->currFont = 0;
+		this->currFont = nullptr;
 	NN<GDIFont> font = NN<GDIFont>::ConvertFrom(f);
 	font.Delete();
 }
@@ -3034,7 +3034,7 @@ Bool Media::GDIImage::DrawRectN(IntOS oriX, IntOS oriY, IntOS oriW, IntOS oriH, 
 	{
 		if (p != 0)
 		{
-			DrawRect(Math::Coord2DDbl(IntOS2Double(oriX), IntOS2Double(oriY)), Math::Size2DDbl(IntOS2Double(oriW), IntOS2Double(oriH)), p, 0);
+			DrawRect(Math::Coord2DDbl(IntOS2Double(oriX), IntOS2Double(oriY)), Math::Size2DDbl(IntOS2Double(oriW), IntOS2Double(oriH)), p, nullptr);
 		}
 		return true;
 	}
@@ -3082,7 +3082,7 @@ Bool Media::GDIImage::DrawRectN(IntOS oriX, IntOS oriY, IntOS oriW, IntOS oriH, 
 	}
 	if (p)
 	{
-		DrawRect(Math::Coord2DDbl(IntOS2Double(oriX), IntOS2Double(oriY)), Math::Size2DDbl(IntOS2Double(oriW), IntOS2Double(oriH)), p, 0);
+		DrawRect(Math::Coord2DDbl(IntOS2Double(oriX), IntOS2Double(oriY)), Math::Size2DDbl(IntOS2Double(oriW), IntOS2Double(oriH)), p, nullptr);
 	}
 	return true;
 }

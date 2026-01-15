@@ -80,7 +80,7 @@ DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 	data->pIDBInitialize = 0;
 	data->pSession = 0;
 	data->pITransactionLocal = 0;
-	data->connStr = 0;
+	data->connStr = nullptr;
 }
 
 void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
@@ -171,7 +171,7 @@ DB::OLEDBConn::OLEDBConn(UnsafeArray<const WChar> connStr, NN<IO::LogTool> log) 
 	data->pIDBInitialize = 0;
 	data->pSession = 0;
 	data->pITransactionLocal = 0;
-	data->connStr = 0;
+	data->connStr = nullptr;
 	this->Init(connStr);
 }
 
@@ -537,7 +537,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	if (data->pSession == 0)
 	{
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 	
 	HRESULT hr;
@@ -547,7 +547,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	if (FAILED(hr))
 	{
 		this->lastDataError = DE_INIT_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 
 	hr = pIDBCreateCommand->CreateCommand(0, IID_ICommandText, (IUnknown**)&pICommandText);
@@ -555,7 +555,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	{
 		pIDBCreateCommand->Release();
 		this->lastDataError = DE_INIT_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sql.v);
@@ -566,7 +566,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 		pICommandText->Release();
 		pIDBCreateCommand->Release();
 		this->lastDataError = DE_INIT_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 
 	DBROWCOUNT rowChanged = -1;
@@ -605,7 +605,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 		pICommandText->Release();
 		pIDBCreateCommand->Release();
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 	pICommandText->Release();
 	pIDBCreateCommand->Release();
@@ -711,7 +711,7 @@ Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 		data->pITransactionLocal->StartTransaction(ISOLATIONLEVEL_READCOMMITTED, 0, NULL, NULL);
 		return (DB::DBTransaction*)data->pITransactionLocal;
 	}
-	return 0;
+	return nullptr;
 }
 
 void DB::OLEDBConn::Commit(NN<DB::DBTransaction> tran)
@@ -1076,13 +1076,13 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
-		return 0;
+		return nullptr;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
 	UInt8 *val = &data->dataBuff[data->dbBinding[colIndex].obValue];
 	if (*status == DBSTATUS_S_ISNULL)
 	{
-		return 0;
+		return nullptr;
 	}
 	switch (data->dbColInfo[colIndex].wType)
 	{
@@ -1091,61 +1091,61 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 		{
 			return Text::StrInt16(buff, ReadInt16(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
 			return Text::StrInt32(buff, ReadInt32(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
 			return Text::StrDoubleW(buff, ReadFloat(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
 			return Text::StrDoubleW(buff, ReadDouble(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI1:
 		if (*valLen == 1)
 		{
 			return Text::StrUInt16(buff, val[0]);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_I1:
 		if (*valLen == 1)
 		{
 			return Text::StrInt16(buff, (Int8)val[0]);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
 			return Text::StrUInt16(buff, ReadUInt16(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
 			return Text::StrUInt32(buff, ReadUInt32(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
 			return Text::StrInt64(buff, ReadInt64(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
 			return Text::StrUInt64(buff, ReadUInt64(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_WSTR:
 		return Text::StrConcatC(buff, (const WChar*)val, *valLen / sizeof(WChar));
 	case DBTYPE_DBDATE:
@@ -1157,7 +1157,7 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_DBTIME:
 		if (*valLen == 6)
 		{
@@ -1167,7 +1167,7 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_DBTIMESTAMP:
 		if (*valLen == 16)
 		{
@@ -1177,10 +1177,10 @@ UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<WChar
 			dt.ToString(sbuff);
 			return Text::StrUTF8_WChar(buff, sbuff, 0);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_NULL:
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1308,13 +1308,13 @@ Optional<Text::String> DB::OLEDBReader::GetNewStr(UIntOS colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
-		return 0;
+		return nullptr;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
 	UInt8 *val = &data->dataBuff[data->dbBinding[colIndex].obValue];
 	if (*status == DBSTATUS_S_ISNULL)
 	{
-		return 0;
+		return nullptr;
 	}
 	WChar wbuff[64];
 	switch (data->dbColInfo[colIndex].wType)
@@ -1333,22 +1333,22 @@ Optional<Text::String> DB::OLEDBReader::GetNewStr(UIntOS colIndex)
 		{
 			return Text::String::NewNotNull(wbuff);
 		}
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UTF8Char> buff, UIntOS buffSize)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
-		return 0;
+		return nullptr;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
 	UInt8 *val = &data->dataBuff[data->dbBinding[colIndex].obValue];
 	if (*status == DBSTATUS_S_ISNULL)
 	{
-		return 0;
+		return nullptr;
 	}
 	switch (data->dbColInfo[colIndex].wType)
 	{
@@ -1357,61 +1357,61 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 		{
 			return Text::StrInt16(buff, ReadInt16(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
 			return Text::StrInt32(buff, ReadInt32(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
 			return Text::StrDouble(buff, ReadFloat(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
 			return Text::StrDouble(buff, ReadDouble(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI1:
 		if (*valLen == 1)
 		{
 			return Text::StrUInt16(buff, val[0]);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_I1:
 		if (*valLen == 1)
 		{
 			return Text::StrInt16(buff, (Int8)val[0]);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
 			return Text::StrUInt16(buff, ReadUInt16(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
 			return Text::StrUInt32(buff, ReadUInt32(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
 			return Text::StrInt64(buff, ReadInt64(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
 			return Text::StrUInt64(buff, ReadUInt64(val));
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_WSTR:
 		return Text::StrWChar_UTF8C(buff, (const WChar*)val, (UIntOS)*valLen / sizeof(WChar));
 	case DBTYPE_DBDATE:
@@ -1419,7 +1419,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 		{
 			return Data::Date(ReadUInt16(val), (UInt8)ReadUInt16(&val[2]), (UInt8)ReadUInt16(&val[4])).ToString(buff);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_DBTIME:
 		if (*valLen == 6)
 		{
@@ -1427,7 +1427,7 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 			dt.SetValue(1970, 1, 1, ReadUInt16(val), ReadUInt16(&val[2]), ReadUInt16(&val[4]), 0, 0);
 			return dt.ToString(buff);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_DBTIMESTAMP:
 		if (*valLen == 16)
 		{
@@ -1435,10 +1435,10 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 			dt.SetValue(ReadUInt16(val), ReadUInt16(&val[2]), ReadInt16(&val[4]), ReadInt16(&val[6]), ReadInt16(&val[8]), ReadInt16(&val[10]), ReadInt32(&val[12]), 0);
 			return dt.ToString(buff);
 		}
-		return 0;
+		return nullptr;
 	case DBTYPE_NULL:
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1614,7 +1614,7 @@ UIntOS DB::OLEDBReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 
 Optional<Math::Geometry::Vector2D> DB::OLEDBReader::GetVector(UIntOS colIndex)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool DB::OLEDBReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
@@ -1626,9 +1626,9 @@ UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetName(UIntOS colIndex, UnsafeArray<U
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
-		return 0;
+		return nullptr;
 	if (data->dbColInfo[colIndex].pwszName == 0)
-		return 0;
+		return nullptr;
 	return Text::StrWChar_UTF8(buff, data->dbColInfo[colIndex].pwszName);
 }
 

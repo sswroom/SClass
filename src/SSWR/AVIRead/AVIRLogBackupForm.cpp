@@ -93,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 				NN<Text::String> s = it.Next();
 				IO::FileStream rfs(s, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				UInt32 unixAttr = IO::Path::GetFileUnixAttr(s->ToCString());
-				Data::Timestamp lastModTime = 0;
-				Data::Timestamp createTime = 0;
-				Data::Timestamp accessTime = 0;
+				Data::Timestamp lastModTime = nullptr;
+				Data::Timestamp createTime = nullptr;
+				Data::Timestamp accessTime = nullptr;
 				rfs.GetFileTimes(createTime, accessTime, lastModTime);
 				succ = succ & zip.AddFile(s->ToCString().Substring((UIntOS)(filePath - sbuff)), rfs, lastModTime, accessTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
 			}

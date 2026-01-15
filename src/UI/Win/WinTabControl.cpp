@@ -112,7 +112,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NN<Text::String> tabName)
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
-	NEW_CLASSNN(page, UI::GUITabPage(this->ui, 0, *this, index));
+	NEW_CLASSNN(page, UI::GUITabPage(this->ui, nullptr, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
 	Math::RectArea<IntOS> rect = GetTabPageRect();
@@ -135,7 +135,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN tabName)
 	Text::StrDelNew((const WChar*)item.pszText);
 	NN<UI::GUITabPage> page;
 //		NEW_CLASS(page, UI::GUITabPage(this, index));
-	NEW_CLASSNN(page, UI::GUITabPage(this->ui, 0, *this, index));
+	NEW_CLASSNN(page, UI::GUITabPage(this->ui, nullptr, *this, index));
 	page->SetDPI(this->hdpi, this->ddpi);
 	this->tabPages.Add(page);
 	Math::RectArea<IntOS> rect = GetTabPageRect();

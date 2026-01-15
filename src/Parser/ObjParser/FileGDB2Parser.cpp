@@ -88,7 +88,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 		}
 		if (layers.GetCount() == 0)
 		{
-			fgdb->QueryTableNames(0, layers);
+			fgdb->QueryTableNames(nullptr, layers);
 			UIntOS i = layers.GetCount();
 			while (i-- > 0)
 			{

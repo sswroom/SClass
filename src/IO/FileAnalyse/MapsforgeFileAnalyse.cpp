@@ -428,7 +428,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 					v = v | ((UInt64)(packBuff[ofst] & 0x7f) << 32);
 					sb.ClearStr();
 					sb.Append(CSTR("Tile x="))->AppendI32(x)->Append(CSTR(", y="))->AppendI32(y)->Append(CSTR(", z="))->AppendU16(pack->baseZoomLevel);
-					frame->AddField(ofst, 5, sb.ToCString(), 0);
+					frame->AddField(ofst, 5, sb.ToCString(), nullptr);
 					frame->AddUInt(ofst, 5, CSTR("Offset"), v);
 					frame->AddBit(ofst, CSTR("All water"), packBuff[ofst], 7);
 					ofst += 5;

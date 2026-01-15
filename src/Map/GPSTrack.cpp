@@ -855,7 +855,7 @@ Data::Timestamp Map::GPSTrack::GetTrackStartTime(UIntOS index)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -891,7 +891,7 @@ Data::Timestamp Map::GPSTrack::GetTrackEndTime(UIntOS index)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1302,12 +1302,12 @@ Data::Timestamp Map::GPSDataReader::GetTimestamp(UIntOS colIndex)
 {
 	NN<GPSTrack::GPSRecordFull> currRec;
 	if (!this->currRec.SetTo(currRec))
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	if (colIndex == 0)
 	{
 		return Data::Timestamp(currRec->recTime, Data::DateTimeUtil::GetLocalTzQhr());
 	}
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 Double Map::GPSDataReader::GetDblOrNAN(UIntOS colIndex)

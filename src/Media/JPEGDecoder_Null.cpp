@@ -18,7 +18,7 @@ Bool Media::JPEGDecoder::Decode(Data::ByteArrayR dataBuff, UnsafeArray<UInt8> im
 	Parser::FileParser::GUIImgParser parser;
 	NN<Media::ImageList> imgList;
 	IO::StmData::MemoryDataRef md(dataBuff);
-	if (Optional<Media::ImageList>::ConvertFrom(parser.ParseFileHdr(md, 0, IO::ParserType::ImageList, dataBuff)).SetTo(imgList))
+	if (Optional<Media::ImageList>::ConvertFrom(parser.ParseFileHdr(md, nullptr, IO::ParserType::ImageList, dataBuff)).SetTo(imgList))
 	{
 		NN<Media::StaticImage> simg;
 		imgList->ToStaticImage(0);
@@ -55,7 +55,7 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 	Parser::FileParser::GUIImgParser parser;
 	NN<Media::ImageList> imgList;
 	IO::StmData::MemoryDataRef md(dataBuff);
-	if (Optional<Media::ImageList>::ConvertFrom(parser.ParseFileHdr(md, 0, IO::ParserType::ImageList, dataBuff)).SetTo(imgList))
+	if (Optional<Media::ImageList>::ConvertFrom(parser.ParseFileHdr(md, nullptr, IO::ParserType::ImageList, dataBuff)).SetTo(imgList))
 	{
 		NN<Media::StaticImage> simg;
 		imgList->ToStaticImage(0);
@@ -67,6 +67,6 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 		}
 		imgList.Delete();
 	}
-	return 0;
+	return nullptr;
 }
 

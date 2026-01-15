@@ -711,7 +711,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 	sb.Append(CSTR("/messages"));
 	Text::JSONBuilder builder(Text::JSONBuilder::OT_OBJECT);
 	builder.ObjectAddStr(CSTR("subject"), message->GetSubject());
-	UInt64 contentLen;
+	UIntOS contentLen;
 	UnsafeArray<UInt8> content;
 	Text::CStringNN cstr;
 	if (message->GetContent(contentLen).SetTo(content))

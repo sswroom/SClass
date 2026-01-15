@@ -531,7 +531,7 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 		}
@@ -549,7 +549,7 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Net::HTTPClient> Net::HTTPClient::CreateClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)

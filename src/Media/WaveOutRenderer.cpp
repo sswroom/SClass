@@ -323,7 +323,7 @@ Media::WaveOutRenderer::WaveOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 			}
 		}
 	}
-	this->audsrc = 0;
+	this->audsrc = nullptr;
 	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 0;
@@ -332,7 +332,7 @@ Media::WaveOutRenderer::WaveOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 Media::WaveOutRenderer::WaveOutRenderer(Int32 devId)
 {
 	this->devId = devId;
-	this->audsrc = 0;
+	this->audsrc = nullptr;
 	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 0;
@@ -342,7 +342,7 @@ Media::WaveOutRenderer::~WaveOutRenderer()
 {
 	if (this->audsrc.NotNull())
 	{
-		BindAudio(0);
+		BindAudio(nullptr);
 	}
 }
 
@@ -363,7 +363,7 @@ Bool Media::WaveOutRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	if (this->audsrc.NotNull())
 	{
 		waveOutClose((HWAVEOUT)this->hwo);
-		this->audsrc = 0;
+		this->audsrc = nullptr;
 		this->hwo = 0;
 		DEL_CLASS(playEvt);
 	}

@@ -61,8 +61,8 @@ Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void
 	this->clsData->readBuff = 0;
 	this->clsData->readSize = 0;
 	this->clsData->remoteCerts = 0;
-	this->clsData->readData = 0;
-	this->clsData->readEvt = 0;
+	this->clsData->readData = nullptr;
+	this->clsData->readEvt = nullptr;
 
 	PCCERT_CONTEXT serverCert = 0;
 	PCCERT_CONTEXT thisCert = 0;
@@ -353,7 +353,7 @@ Optional<IO::StreamReadReq> Net::WinSSLClient::BeginRead(const Data::ByteArray &
 {
 	if (this->clsData->step == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	this->clsData->readBuff = buff.Ptr();
 	this->clsData->readSize = buff.GetSize();
@@ -413,7 +413,7 @@ Optional<IO::StreamReadReq> Net::WinSSLClient::BeginRead(const Data::ByteArray &
 
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 6) != 0)
-		return 0;
+		return nullptr;
 	Net::SocketFactory::ErrorType et;
 	this->clsData->readEvt = evt;
 	NN<Net::SocketRecvSess> data;
@@ -431,7 +431,7 @@ Optional<IO::StreamReadReq> Net::WinSSLClient::BeginRead(const Data::ByteArray &
 		{
 			this->Close();
 		}
-		return 0;
+		return nullptr;
 	}
 	else
 	{
@@ -501,11 +501,11 @@ UIntOS Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, Ou
 		{
 			return 0;
 		}
-		this->clsData->readData = 0;
+		this->clsData->readData = nullptr;
 		this->flags |= 2;
 		return ret;
 	}
-	this->clsData->readData = 0;
+	this->clsData->readData = nullptr;
 
 #if defined(DEBUG_PRINT)
 	debugDt.SetCurrTime();
@@ -714,7 +714,7 @@ Optional<Crypto::Cert::Certificate> Net::WinSSLClient::GetRemoteCert()
 	if (this->clsData->remoteCerts)
 		return this->clsData->remoteCerts->GetItem(0);
 	else
-		return 0;
+		return nullptr;
 }
 
 Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::WinSSLClient::GetRemoteCerts()

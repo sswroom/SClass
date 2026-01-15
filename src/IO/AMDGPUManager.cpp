@@ -170,7 +170,7 @@ IO::AMDGPUManager::AMDGPUManager()
 					cnt = 0;
 				}
 				this->adapterInfos = MemAlloc(UInt8, sizeof(AdapterInfo) * (UIntOS)(UInt32)cnt);
-				NEW_CLASS(this->adapterList, Data::ArrayList<UInt8*>());
+				NEW_CLASS(this->adapterList, Data::ArrayListObj<UInt8*>());
 				AdapterInfo *adapter;
 				if (cnt > 0)
 				{
@@ -244,10 +244,10 @@ Optional<IO::GPUControl> IO::AMDGPUManager::CreateGPUControl(UIntOS index)
 {
 	IO::AMDGPUControl *gpuCtrl;
 	if (this->adapterList == 0)
-		return 0;
+		return nullptr;
 	AdapterInfo *adapter = (AdapterInfo*)this->adapterList->GetItem(index);
 	if (adapter == 0)
-		return 0;
+		return nullptr;
 	NEW_CLASS(gpuCtrl, IO::AMDGPUControl(*this, adapter));
 	return gpuCtrl;
 }

@@ -243,7 +243,7 @@ UI::Win::WinHSplitter::WinHSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl>
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, width, 10);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, nullptr, style, 0, 0, 0, width, 10);
 	this->SetDockType(isRight?DOCK_RIGHT:DOCK_LEFT);
 }
 

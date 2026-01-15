@@ -38,7 +38,7 @@ UI::Win::WinDropData::~WinDropData()
 	if (this->dataMap)
 	{
 		FORMATETC *fmt;
-		NN<const Data::ArrayList<FORMATETC *>> fmtList = this->dataMap->GetValues();
+		NN<const Data::ArrayListObj<FORMATETC *>> fmtList = this->dataMap->GetValues();
 		UIntOS i = fmtList->GetCount();
 		while (i-- > 0)
 		{

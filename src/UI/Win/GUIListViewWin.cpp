@@ -249,7 +249,7 @@ Bool UI::GUIListView::SetSubItem(UIntOS index, UIntOS subIndex, NN<Text::String>
 Bool UI::GUIListView::SetSubItem(UIntOS index, UIntOS subIndex, Text::CStringNN text)
 {
 	UnsafeArray<const WChar> ws;
-	UnsafeArrayOpt<const WChar> optws = 0;
+	UnsafeArrayOpt<const WChar> optws = nullptr;
 	LVITEMW item;
 	item.iItem = (int)index;
 	item.iSubItem = (int)subIndex;
@@ -369,7 +369,7 @@ UIntOS UI::GUIListView::GetSelectedIndex()
 	return (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETSELECTIONMARK, 0, 0);
 }
 
-UIntOS UI::GUIListView::GetSelectedIndices(Data::ArrayList<UIntOS> *selIndices)
+UIntOS UI::GUIListView::GetSelectedIndices(Data::ArrayListNative<UIntOS> *selIndices)
 {
 	UIntOS cnt = (UIntOS)SendMessage((HWND)this->hwnd.OrNull(), LVM_GETITEMCOUNT, 0, 0);
 	UIntOS i;
@@ -400,7 +400,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetSelectedItemText(UnsafeArray<UTF8Ch
 	UIntOS i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
 		return this->GetItemText(buff, i);
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> UI::GUIListView::GetSelectedItemTextNew()
@@ -408,7 +408,7 @@ Optional<Text::String> UI::GUIListView::GetSelectedItemTextNew()
 	UIntOS i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
 		return this->GetItemTextNew(i);
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff, UIntOS index)
@@ -430,7 +430,7 @@ Optional<Text::String> UI::GUIListView::GetItemTextNew(UIntOS index)
 	NN<Text::String> sout;
 	UnsafeArray<UTF8Char> sptr;
 	if (!GetItemText(sbuff, index).SetTo(sptr))
-		return 0;
+		return nullptr;
 	sout = Text::String::New((UIntOS)(sptr - sbuff));
 	MemCopyNO(sout->v.Ptr(), sbuff, sizeof(UTF8Char) * (UIntOS)(sptr - sbuff + 1));
 	return sout;

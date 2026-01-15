@@ -33,6 +33,7 @@ namespace Text
 			this->v = UnsafeArray<const UTF8Char>::FromPtrNoCheck(0);
 			this->leng = 0;
 		}
+		CString(IntOS) = delete;
 
 		CString(CStringNN);
 		CString(UnsafeArrayOpt<const UTF8Char> v, UIntOS leng)

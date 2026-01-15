@@ -87,7 +87,7 @@ UIntOS IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 	UIntOS ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
-	if (qry.QueryTableData(nullptr, CSTR("CIM_LogicalDevice"), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (qry.QueryTableData(nullptr, CSTR("CIM_LogicalDevice"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		UIntOS descCol = INVALID_INDEX;
 		UIntOS devIdCol = INVALID_INDEX;

@@ -428,14 +428,14 @@ Bool Net::DNSHandler::AddHost(NN<const Net::SocketUtil::AddressInfo> addr, Text:
 		dnsStat = this->reqv4Map.Get(domain);
 		if (dnsStat)
 		{
-			dnsStat->timeout = Data::Timestamp(0);
+			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];
 		}
 		else
 		{
 			NEW_CLASS(dnsStat, DomainStatus());
 			dnsStat->domain = Text::String::New(domain);
-			dnsStat->timeout = Data::Timestamp(0);
+			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];
 			this->reqv4Map.Put(domain, dnsStat);
 		}
@@ -447,14 +447,14 @@ Bool Net::DNSHandler::AddHost(NN<const Net::SocketUtil::AddressInfo> addr, Text:
 		dnsStat = this->reqv6Map.Get(domain);
 		if (dnsStat)
 		{
-			dnsStat->timeout = Data::Timestamp(0);
+			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];
 		}
 		else
 		{
 			NEW_CLASS(dnsStat, DomainStatus());
 			dnsStat->domain = Text::String::New(domain);
-			dnsStat->timeout = Data::Timestamp(0);
+			dnsStat->timeout = Data::Timestamp(nullptr);
 			dnsStat->addr = addr.Ptr()[0];
 			this->reqv6Map.Put(domain, dnsStat);
 		}

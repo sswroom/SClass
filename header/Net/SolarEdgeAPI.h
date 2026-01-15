@@ -63,7 +63,7 @@ namespace Net
 			TimedValue() = default;
 			TimedValue(Int32 *)
 			{
-				this->ts = 0;
+				this->ts = nullptr;
 				this->value = 0;
 			}
 

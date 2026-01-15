@@ -27,7 +27,7 @@ Media::DDrawSurface::DDrawSurface(NN<DDrawManager> mgr, void *lpDD, void *surfac
 	this->clsData->hMon = hMon;
 	this->clsData->clipper = 0;
 	this->clsData->needRelease = needRelease;
-	this->clsData->buffSurface = 0;
+	this->clsData->buffSurface = nullptr;
 
 	DDSURFACEDESC2 ddsd;
 	MemClear(&ddsd, sizeof(ddsd));
@@ -452,7 +452,7 @@ UnsafeArrayOpt<UInt8> Media::DDrawSurface::LockSurface(OutParam<IntOS> lineAdd)
 		lineAdd.Set(ddsd.lPitch);
 		return (UInt8*)ddsd.lpSurface;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Media::DDrawSurface::UnlockSurface()

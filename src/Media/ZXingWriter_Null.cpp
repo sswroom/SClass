@@ -3,5 +3,5 @@
 
 Optional<Media::StaticImage> Media::ZXingWriter::GenQRCode(Text::CStringNN content, Math::Size2D<UIntOS> size)
 {
-	return 0;
+	return nullptr;
 }

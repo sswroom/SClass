@@ -269,8 +269,8 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil
 		}
 		else
 		{
-			this->logDateR = Data::Timestamp(0);
-			this->logDateS = Data::Timestamp(0);
+			this->logDateR = Data::Timestamp(nullptr);
+			this->logDateS = Data::Timestamp(nullptr);
 		}
 
 		UnsafeArray<ThreadStat> v4threadStats;
@@ -324,8 +324,8 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil
 	}
 	else
 	{
-		this->logDateR = Data::Timestamp(0);
-		this->logDateS = Data::Timestamp(0);
+		this->logDateR = Data::Timestamp(nullptr);
+		this->logDateS = Data::Timestamp(nullptr);
 	}
 }
 

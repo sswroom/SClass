@@ -1002,7 +1002,7 @@ Data::Timestamp IO::Path::GetModifyTime(UnsafeArray<const UTF8Char> path)
 	int status = lstat((const Char*)path.Ptr(), &s);
 #endif
 	if (status != 0)
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 #if defined(__APPLE__)
 	return Data::Timestamp::FromSecNS(s.st_mtimespec.tv_sec, (UInt32)s.st_mtimespec.tv_nsec, Data::DateTimeUtil::GetLocalTzQhr());
 #else

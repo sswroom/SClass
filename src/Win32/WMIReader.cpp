@@ -13,7 +13,7 @@ Win32::WMIReader::WMIReader(void *pEnum)
 	this->pObject = 0;
 	this->fObject = 0;
 	this->isFirst = false;
-	NEW_CLASS(this->columns, Data::ArrayList<WMIColumn*>());
+	NEW_CLASS(this->columns, Data::ArrayListObj<WMIColumn*>());
 
 	IWbemClassObject *pObject;
 	ULONG returned;
@@ -273,9 +273,9 @@ UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<WCha
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
-		return 0;
+		return nullptr;
 
-	UnsafeArrayOpt<WChar> ret = 0;
+	UnsafeArrayOpt<WChar> ret = nullptr;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -456,11 +456,11 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UIntOS colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
-		return 0;
+		return nullptr;
 
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	Optional<Text::String> ret = 0;
+	Optional<Text::String> ret = nullptr;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -551,7 +551,7 @@ UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UIntOS colIndex, UnsafeArray<U
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
-		return 0;
+		return nullptr;
 
 	*buff = 0;
 	HRESULT hr;
@@ -813,7 +813,7 @@ UIntOS Win32::WMIReader::GetBinary(UIntOS colIndex, UnsafeArray<UInt8> buff)
 
 Optional<Math::Geometry::Vector2D> Win32::WMIReader::GetVector(UIntOS colIndex)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool Win32::WMIReader::GetUUID(UIntOS colIndex, NN<Data::UUID> uuid)
@@ -854,7 +854,7 @@ UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetName(UIntOS colIndex, UnsafeArray<
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)
-		return 0;
+		return nullptr;
 	return Text::StrWChar_UTF8(buff, col->name);
 }
 
@@ -995,9 +995,9 @@ UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UnsafeArray<const WChar> colName,
 {
 	if (this->pObject == 0)
 	{
-		return 0;
+		return nullptr;
 	}
-	UnsafeArrayOpt<WChar> ret = 0;
+	UnsafeArrayOpt<WChar> ret = nullptr;
 
 	BSTR temp = SysAllocString(colName.Ptr());
 	HRESULT hr;

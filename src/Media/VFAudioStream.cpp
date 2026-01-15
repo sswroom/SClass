@@ -91,7 +91,7 @@ Bool Media::VFAudioStream::Start(Optional<Sync::Event> evt, UIntOS blkSize)
 
 void Media::VFAudioStream::Stop()
 {
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 }
 
 UIntOS Media::VFAudioStream::ReadBlock(Data::ByteArray blk)

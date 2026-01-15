@@ -22,7 +22,7 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
-		Data::Timestamp ts = 0;
+		Data::Timestamp ts = nullptr;
 		Text::StringBuilderUTF8 sb;
 		while (i < j)
 		{
@@ -91,7 +91,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 			dlg->AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
 			if (dlg->ShowDialog(this->hwnd))
 			{
-				Data::Timestamp ts = 0;
+				Data::Timestamp ts = nullptr;
 				Text::StringBuilderUTF8 sb;
 				UIntOS i;
 				UIntOS j;

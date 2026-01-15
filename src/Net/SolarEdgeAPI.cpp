@@ -145,16 +145,16 @@ Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UIntOS
 				site->status = siteObj->GetObjectNewString(CSTR("status"));
 				site->peakPower_kWp = siteObj->GetValueAsDoubleOrNAN(CSTR("peakPower"));
 				if (!siteObj->GetObjectString(CSTR("lastUpdateTime")).SetTo(s))
-					site->lastUpdateTime = 0;
+					site->lastUpdateTime = nullptr;
 				else
 					site->lastUpdateTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 				site->currency = siteObj->GetObjectNewString(CSTR("currency"));
 				if (!siteObj->GetObjectString(CSTR("installationDate")).SetTo(s))
-					site->installationDate = 0;
+					site->installationDate = nullptr;
 				else
 					site->installationDate = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 				if (!siteObj->GetObjectString(CSTR("ptoDate")).SetTo(s))
-					site->ptoDate = 0;
+					site->ptoDate = nullptr;
 				else
 					site->ptoDate = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 				site->notes = siteObj->GetObjectNewString(CSTR("notes"));
@@ -223,7 +223,7 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, NN<SiteOverview> overview)
 	if (json->GetValueString(CSTR("overview.lastUpdateTime")).SetTo(s))
 		overview->lastUpdateTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	else
-		overview->lastUpdateTime = 0;
+		overview->lastUpdateTime = nullptr;
 	overview->lifeTimeEnergy_Wh = json->GetValueAsDoubleOrNAN(CSTR("overview.lifeTimeData.energy"));
 	overview->lifeTimeRevenue = json->GetValueAsDoubleOrNAN(CSTR("overview.lifeTimeData.revenue"));
 	overview->yearlyEnergy_Wh = json->GetValueAsDoubleOrNAN(CSTR("overview.lastYearData.energy"));

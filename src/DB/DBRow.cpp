@@ -261,7 +261,7 @@ Data::Timestamp DB::DBRow::GetFieldDate(NN<DB::DBRow::Field> field) const
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 	if (field->currentChanged)
 	{
@@ -549,7 +549,7 @@ Data::Timestamp DB::DBRow::GetValueDate(Text::CStringNN fieldName) const
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 	return this->GetFieldDate(field);
 }

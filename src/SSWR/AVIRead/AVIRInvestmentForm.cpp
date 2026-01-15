@@ -799,7 +799,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayCurrencyImg(NN<Data::Invest::Curr
 		}
 		else
 		{
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			NN<Data::ChartPlotter::DoubleData> yData = Data::ChartPlotter::NewData(curr->valList);
 			NN<Data::ChartPlotter::TimeData> xData = Data::ChartPlotter::NewData(curr->tsList);
 			if (curr->invert)
@@ -1139,7 +1139,7 @@ void SSWR::AVIRead::AVIRInvestmentForm::DisplayAssetImg(NN<Data::Invest::Asset> 
 		}
 		else
 		{
-			Data::ChartPlotter chart(0);
+			Data::ChartPlotter chart(nullptr);
 			NN<Data::ChartPlotter::DoubleData> yData = Data::ChartPlotter::NewData(ass->valList);
 			NN<Data::ChartPlotter::TimeData> xData = Data::ChartPlotter::NewData(ass->tsList);
 			UIntOS range = this->cboAssetsRange->GetSelectedIndex();
@@ -1571,7 +1571,7 @@ Optional<Data::ChartPlotter> SSWR::AVIRead::AVIRInvestmentForm::GenerateSummary(
 			i++;
 		}
 		NN<Data::ChartPlotter> chart;
-		NEW_CLASSNN(chart, Data::ChartPlotter(0));
+		NEW_CLASSNN(chart, Data::ChartPlotter(nullptr));
 		chart->AddLineChart(CSTR(""), Data::ChartPlotter::NewData(totalList), Data::ChartPlotter::NewData(dateList), 0xffff0000);
 		return chart;
 	}

@@ -9,7 +9,7 @@ IO::Device::BYDC9R::BYDC9R()
 	this->status.door2 = DoorStatus::Closed;
 	this->status.batteryLevelPercent = 0;
 	this->status.motorRPM = 0;
-	this->status.batteryChargedStart = 0;
+	this->status.batteryChargedStart = nullptr;
 	this->status.leftMotorMode = MotorMode::DriveMode;
 	this->status.rightMotorMode = MotorMode::DriveMode;
 	this->status.carbinDoorBack = false;

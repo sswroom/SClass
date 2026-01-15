@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Cert/WinHttpCert.h"
-#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/WindowsError.h"
@@ -96,7 +95,7 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 	data->certs = 0;
 	data->cliCert = 0;
 	data->cliKey = 0;
-	this->cliHost = 0;
+	this->cliHost = nullptr;
 	this->writing = false;
 	this->buffSize = 0;
 	this->contRead = 0;
@@ -505,7 +504,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		{
 			UIntOS len = sbForm->GetLength();
 			this->AddContentLength(len);
-			this->sbForm = 0;
+			this->sbForm = nullptr;
 			this->Write(sbForm->ToByteArray());
 			sbForm.Delete();
 		}
@@ -671,7 +670,7 @@ Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient
 	DWORD certSize = sizeof(serverCert);
 	if (WinHttpQueryOption(this->clsData->hRequest, WINHTTP_OPTION_SERVER_CERT_CONTEXT, &serverCert, &certSize) == FALSE)
 	{
-		return 0;
+		return nullptr;
 	}
 	PCCERT_CONTEXT thisCert = 0;
 	PCCERT_CONTEXT lastCert = 0;

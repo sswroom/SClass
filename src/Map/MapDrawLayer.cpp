@@ -118,7 +118,7 @@ void Map::MapDrawLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 Optional<DB::TableDef> Map::MapDrawLayer::CreateLayerTableDef() const
 {
 	NN<DB::TableDef> tab;
-	NEW_CLASSNN(tab, DB::TableDef(0, this->GetName()->ToCString()));
+	NEW_CLASSNN(tab, DB::TableDef(nullptr, this->GetName()->ToCString()));
 	NN<DB::ColDef> col;
 	if (this->GetGeomCol() == INVALID_INDEX)
 	{
@@ -1121,14 +1121,14 @@ Data::Timestamp Map::MapLayerReader::GetTimestamp(UIntOS colIndex)
 	{
 		if (colIndex <= 0)
 		{
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 		}
 		colIndex -= 1;
 	}
 	Text::StringBuilderUTF8 sb;
 	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
 		return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
-	return 0;
+	return nullptr;
 }
 
 Double Map::MapLayerReader::GetDblOrNAN(UIntOS colIndex)

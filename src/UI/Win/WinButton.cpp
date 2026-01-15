@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "UI/Win/WinButton.h"

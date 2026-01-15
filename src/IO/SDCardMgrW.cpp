@@ -208,7 +208,7 @@ UIntOS IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList
 	NN<IO::SDCardInfo> sdcard;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
-	if (qry.QueryTableData(nullptr, CSTR("CIM_MediaAccessDevice"), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (qry.QueryTableData(nullptr, CSTR("CIM_MediaAccessDevice"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		Bool valid = true;
 		sbuff[0] = 0;

@@ -61,7 +61,7 @@ Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devTyp
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

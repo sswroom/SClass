@@ -47,13 +47,13 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 			}
 			else
 			{
-				this->monId = 0;
+				this->monId = nullptr;
 			}
 		}
 		else
 		{
-			this->desc = 0;
-			this->monId = 0;
+			this->desc = nullptr;
+			this->monId = nullptr;
 		}
 #endif
 	}
@@ -65,8 +65,8 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 		this->bottom = 0;
 		this->isPrimary = false;
 		this->name = Text::String::NewEmpty();
-		this->desc = 0;
-		this->monId = 0;
+		this->desc = nullptr;
+		this->monId = nullptr;
 	}
 }
 

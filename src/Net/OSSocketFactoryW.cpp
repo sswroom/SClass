@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Core/ByteTool_C.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "IO/Path.h"
 #include "Manage/Process.h"
 #include "Net/ConnectionInfo.h"
@@ -36,7 +36,7 @@
 struct Net::OSSocketFactory::ClassData
 {
 	Sync::Mutex socMut;
-	Data::Int32FastMap<UInt8> acceptedSoc;
+	Data::Int32FastMapNative<UInt8> acceptedSoc;
 };
 
 IntOS Net::OSSocketFactory::SSocketGetFD(NN<Socket> socket)
@@ -108,7 +108,7 @@ Optional<Socket> Net::OSSocketFactory::CreateTCPSocketv4()
 {
 	SOCKET s = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 	Sync::MutexUsage mutUsage(this->clsData->socMut);
 	this->clsData->acceptedSoc.Put((Int32)s, 1);
 	return (Socket*)s;
@@ -118,7 +118,7 @@ Optional<Socket> Net::OSSocketFactory::CreateTCPSocketv6()
 {
 	SOCKET s = WSASocket(AF_INET6, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 	Sync::MutexUsage mutUsage(this->clsData->socMut);
 	this->clsData->acceptedSoc.Put((Int32)s, 1);
 	return (Socket*)s;
@@ -128,7 +128,7 @@ Optional<Socket> Net::OSSocketFactory::CreateUDPSocketv4()
 {
 	SOCKET s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 	return (Socket*)s;
 }
 
@@ -136,7 +136,7 @@ Optional<Socket> Net::OSSocketFactory::CreateUDPSocketv6()
 {
 	SOCKET s = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 	return (Socket*)s;
 }
 
@@ -144,7 +144,7 @@ Optional<Socket> Net::OSSocketFactory::CreateICMPIPv4Socket(UInt32 ip)
 {
 	SOCKET s = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 
 	NN<Socket> soc = NN<Socket>::FromPtr((Socket*)s);
 	this->SocketBindv4(soc, ip, 0);
@@ -159,7 +159,7 @@ Optional<Socket> Net::OSSocketFactory::CreateUDPRAWv4Socket(UInt32 ip)
 {
 	SOCKET s = socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 
 	NN<Socket> soc = NN<Socket>::FromPtr((Socket*)s);
 	this->SocketBindv4(soc, ip, 0);
@@ -174,7 +174,7 @@ Optional<Socket> Net::OSSocketFactory::CreateRAWIPv4Socket(UInt32 ip)
 {
 	SOCKET s = socket(AF_INET, SOCK_RAW, IPPROTO_IP);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 
 	NN<Socket> soc = NN<Socket>::FromPtr((Socket*)s);
 	this->SocketBindv4(soc, ip, 0);
@@ -187,14 +187,14 @@ Optional<Socket> Net::OSSocketFactory::CreateRAWIPv4Socket(UInt32 ip)
 
 Optional<Socket> Net::OSSocketFactory::CreateARPSocket()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> Net::OSSocketFactory::CreateRAWSocket()
 {
 	SOCKET s = socket(AF_UNSPEC, SOCK_RAW, IPPROTO_IP);
 	if (s == INVALID_SOCKET)
-		return 0;
+		return nullptr;
 	return (Socket*)s;
 }
 
@@ -527,7 +527,7 @@ Optional<Net::SocketRecvSess> Net::OSSocketFactory::BeginReceiveData(NN<Socket> 
 					et.SetNoCheck(FromSystemError(err));
 				}
 				MemFree(overlapped);
-				return 0;
+				return nullptr;
 			}
 		}
 	}
@@ -807,7 +807,7 @@ Bool Net::OSSocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
 #endif
 }
 
-UIntOS Net::OSSocketFactory::GetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
+UIntOS Net::OSSocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
 #ifdef _WIN32_WCE
 	/////////////////////////////////
@@ -1332,7 +1332,7 @@ Bool Net::OSSocketFactory::AdapterEnable(Text::CStringNN adapterName, Bool enabl
 	return ret == 0;
 }
 
-UIntOS Net::OSSocketFactory::GetBroadcastAddrs(NN<Data::ArrayList<UInt32>> addrs)
+UIntOS Net::OSSocketFactory::GetBroadcastAddrs(NN<Data::ArrayListNative<UInt32>> addrs)
 {
 	UInt32 currIP;
 	UInt32 netMask;

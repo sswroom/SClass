@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 			DEL_CLASS(pf);
 			return nullptr;
 		}
-		pf->AddData(fd, ofst, leng, IO::PackFileItem::HeaderType::No, {sbuff, 8}, 0, 0, 0, 0);
+		pf->AddData(fd, ofst, leng, IO::PackFileItem::HeaderType::No, {sbuff, 8}, nullptr, nullptr, nullptr, 0);
 		i++;
 	}
 	return pf;

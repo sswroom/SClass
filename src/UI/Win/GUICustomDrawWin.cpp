@@ -161,7 +161,7 @@ IntOS __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UIntOS wP
 	case WM_ERASEBKGND:
 		return 0;
 	case WM_KEYDOWN:
-		if (me->OnKeyDown(me->OSKey2GUIKey((UInt32)wParam)))
+		if (me->OnKeyDown(me->OSKey2GUIKey((UInt32)wParam)) == UI::EventState::StopEvent)
 		{
 			return 0;
 		}
@@ -265,23 +265,23 @@ IntOS UI::GUICustomDraw::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-Bool UI::GUICustomDraw::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn)
+UI::EventState UI::GUICustomDraw::OnMouseDown(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
-Bool UI::GUICustomDraw::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton btn)
+UI::EventState UI::GUICustomDraw::OnMouseUp(Math::Coord2D<IntOS> scnPos, MouseButton btn)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUICustomDraw::OnMouseMove(Math::Coord2D<IntOS> scnPos)
 {
 }
 
-Bool UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 delta)
+UI::EventState UI::GUICustomDraw::OnMouseWheel(Math::Coord2D<IntOS> scnPos, Int32 delta)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUICustomDraw::OnGestureBegin(Math::Coord2D<IntOS> scnPos, UInt64 dist)
@@ -308,9 +308,9 @@ void UI::GUICustomDraw::OnJSAxis(IntOS axis1, IntOS axis2, IntOS axis3, IntOS ax
 {
 }
 
-Bool UI::GUICustomDraw::OnKeyDown(UI::GUIControl::GUIKey key)
+UI::EventState UI::GUICustomDraw::OnKeyDown(UI::GUIControl::GUIKey key)
 {
-	return false;
+	return UI::EventState::ContinueEvent;
 }
 
 void UI::GUICustomDraw::OnTimerTick()

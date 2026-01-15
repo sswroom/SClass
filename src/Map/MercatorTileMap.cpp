@@ -329,7 +329,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UIntOS level, Mat
 	if (status == 304)
 	{
 		IO::FileStream fs({filePathU, (UIntOS)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(0), Data::Timestamp(0));
+		fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(nullptr), Data::Timestamp(nullptr));
 //		printf("Reply 304\r\n");
 	}
 	else if (status >= 200 && status < 300 && !cli->IsError())
@@ -350,7 +350,7 @@ Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UIntOS level, Mat
 				}
 				else
 				{
-					fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(0), Data::Timestamp(0));
+					fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(nullptr), Data::Timestamp(nullptr));
 				}
 			}
 			else if (this->spkg.SetTo(spkg))

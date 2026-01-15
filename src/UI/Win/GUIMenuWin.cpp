@@ -430,7 +430,7 @@ UI::GUIMenu::GUIMenu(Bool isPopup)
 		this->hMenu = CreateMenu();
 	}
 	this->itemCnt = 0;
-	this->mnuForm = 0;
+	this->mnuForm = nullptr;
 }
 
 UI::GUIMenu::~GUIMenu()

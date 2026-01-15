@@ -491,9 +491,9 @@ public:
 	virtual Data::Timestamp GetTimestamp(UIntOS colIndex)
 	{
 		if (colIndex >= this->nCols)
-			return 0;
+			return nullptr;
 		if (this->cols[colIndex].status == -1)
-			return 0;
+			return nullptr;
 		if (this->cols[colIndex].type == SYBDATETIME)
 		{
 			Int64 secs = (-25567 + ReadInt32(this->cols[colIndex].buff)) * 86400;
@@ -520,7 +520,7 @@ public:
 		else
 		{
 
-			return 0;
+			return nullptr;
 		}
 	}
 

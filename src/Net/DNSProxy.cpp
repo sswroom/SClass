@@ -979,7 +979,7 @@ void Net::DNSProxy::SetCustomAnswer(Text::CStringNN name, NN<const Net::SocketUt
 			NEW_CLASSNN(req, RequestResult());
 			req->status = NS_CUSTOM;
 			req->recSize = 0;
-			req->reqTime = 0;
+			req->reqTime = nullptr;
 			mutUsage.ReplaceMutex(req->mut);
 			this->reqv4Map.PutC(name, req);
 			this->reqv4Updated = true;
@@ -1006,7 +1006,7 @@ void Net::DNSProxy::SetCustomAnswer(Text::CStringNN name, NN<const Net::SocketUt
 			NEW_CLASSNN(req, RequestResult());
 			req->status = NS_CUSTOM;
 			req->recSize = 0;
-			req->reqTime = 0;
+			req->reqTime = nullptr;
 			mutUsage.ReplaceMutex(req->mut);
 			this->reqv6Map.PutC(name, req);
 			this->reqv6Updated = true;

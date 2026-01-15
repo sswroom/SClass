@@ -306,7 +306,7 @@ UI::Win::WinVSplitter::WinVSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl>
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, 0, style, 0, 0, 0, 10, height);
+	this->InitControl(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst(), parent, CLASSNAME, nullptr, style, 0, 0, 0, 10, height);
 	this->SetDockType(isBottom?DOCK_BOTTOM:DOCK_TOP);
 }
 

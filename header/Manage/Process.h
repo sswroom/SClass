@@ -26,7 +26,7 @@ namespace Manage
 			HandleInfo(Int32 id)
 			{
 				this->id = id;
-				this->createTime = 0;
+				this->createTime = nullptr;
 			}
 
 			HandleInfo(Int32 id, const Data::Timestamp &createTime)

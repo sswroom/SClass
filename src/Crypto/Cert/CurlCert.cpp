@@ -27,7 +27,7 @@ Data::Timestamp Crypto::Cert::CurlCert::GetNotBefore() const
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Data::Timestamp Crypto::Cert::CurlCert::GetNotAfter() const
@@ -43,7 +43,7 @@ Data::Timestamp Crypto::Cert::CurlCert::GetNotAfter() const
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Bool Crypto::Cert::CurlCert::IsSelfSigned() const

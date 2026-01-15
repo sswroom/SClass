@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "IO/Library.h"
 #include "Media/GDIEngine.h"
 #include "UI/Win/WinButton.h"
@@ -39,12 +38,12 @@
 UI::Win::WinCore::WinCore(Optional<InstanceHandle> hInst)
 {
 	this->hInst = hInst;
-	this->focusWnd = 0;
+	this->focusWnd = nullptr;
 	this->focusHAcc = 0;
 	this->noDispOff = false;
 	frmCnt = 0;
 	this->hasCommCtrl = false;
-	this->monMgr = 0;
+	this->monMgr = nullptr;
 	// InitCommonControls();
 }
 

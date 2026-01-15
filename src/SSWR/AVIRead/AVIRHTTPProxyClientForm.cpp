@@ -95,7 +95,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 			me->reqURL = nullptr;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, me->proxyIP);
 			clif.SetProxy(CSTRP(sbuff, sptr), me->proxyPort, OPTSTR_CSTR(userName), OPTSTR_CSTR(password));
-			cli = Net::HTTPClient::CreateClient(clif, ssl, 0, false, currURL->StartsWith(CSTR("https://")));
+			cli = Net::HTTPClient::CreateClient(clif, ssl, nullptr, false, currURL->StartsWith(CSTR("https://")));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, me->respTimeDNS, me->respTimeConn, false);
 			cli->AddHeaderC(CSTR("User-Agent"), CSTR("Test/1.0"));
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));

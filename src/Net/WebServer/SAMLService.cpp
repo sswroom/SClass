@@ -18,8 +18,8 @@ Bool __stdcall Net::WebServer::SAMLService::GetLoginFunc(NN<Net::WebServer::WebR
 Bool __stdcall Net::WebServer::SAMLService::GetLogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
 	NN<SAMLService> me = NN<SAMLService>::ConvertFrom(svcHdlr);
-	Text::CString nameID = 0;
-	Text::CString sessionIndex = 0;
+	Text::CString nameID = nullptr;
+	Text::CString sessionIndex = nullptr;
 	NN<Text::String> s;
 	if (req->GetQueryValue(CSTR("nameID")).SetTo(s))
 	{

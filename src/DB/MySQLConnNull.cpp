@@ -45,7 +45,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 			sb.AppendC(UTF8STRC("Error in resolving MySQL Server IP"));
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
-		return 0;
+		return nullptr;
 	}
 	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
@@ -64,7 +64,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -82,7 +82,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 			sb.AppendC(UTF8STRC("Error in resolving MySQL Server IP"));
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
-		return 0;
+		return nullptr;
 	}
 	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
@@ -101,7 +101,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif,
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 

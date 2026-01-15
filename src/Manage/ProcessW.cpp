@@ -422,7 +422,7 @@ Bool Manage::Process::SetMemorySize(UIntOS minSize, UIntOS maxSize)
 #endif
 }
 
-UIntOS Manage::Process::GetThreadIds(NN<Data::ArrayList<UInt32>> threadList)
+UIntOS Manage::Process::GetThreadIds(NN<Data::ArrayListNative<UInt32>> threadList)
 {
 	THREADENTRY32 threadEntry;
 	UIntOS threadCnt = 0;
@@ -539,7 +539,7 @@ UIntOS Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> thr
 	return threadCnt;
 }
 
-UIntOS Manage::Process::GetHeapLists(NN<Data::ArrayList<UInt32>> heapList)
+UIntOS Manage::Process::GetHeapLists(NN<Data::ArrayListNative<UInt32>> heapList)
 {
 	HEAPLIST32 heapListInfo;
 	HANDLE hSnapShot;
@@ -665,7 +665,7 @@ Data::Timestamp Manage::Process::GetStartTime()
 	}
 }
 
-UIntOS Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
+UIntOS Manage::Process::GetHandles(NN<Data::ArrayListNative<HandleInfo>> handleList)
 {
 	IO::Library lib((const UTF8Char*)"Ntdll.dll");
 	NtQuerySystemInformationFunc qsi = (NtQuerySystemInformationFunc)lib.GetFunc("NtQuerySystemInformation");
@@ -1230,13 +1230,13 @@ Optional<Manage::Process::FindProcSess> Manage::Process::FindProcess(Text::CStri
 	HANDLE hand;
 	hand = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hand == INVALID_HANDLE_VALUE)
-		return 0;
+		return nullptr;
 	sess = MemAlloc(Manage::Process::FindProcSess, 1);
 	sess->hand = hand;
 	Text::CStringNN nnprocessName;
 	if (!processName.SetTo(nnprocessName) || nnprocessName.leng == 0)
 	{
-		sess->fileName = 0;
+		sess->fileName = nullptr;
 	}
 	else
 	{
@@ -1252,13 +1252,13 @@ Optional<Manage::Process::FindProcSess> Manage::Process::FindProcessW(UnsafeArra
 	HANDLE hand;
 	hand = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hand == INVALID_HANDLE_VALUE)
-		return 0;
+		return nullptr;
 	sess = MemAlloc(Manage::Process::FindProcSess, 1);
 	sess->hand = hand;
 	UnsafeArray<const WChar> nnprocessName;
 	if (!processName.SetTo(nnprocessName))
 	{
-		sess->fileName = 0;
+		sess->fileName = nullptr;
 	}
 	else
 	{
@@ -1342,7 +1342,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 		}
 		ret = Process32NextW(pfsess->hand, &pe32);
 	}
-	return 0;
+	return nullptr;
 #endif
 }
 
@@ -1420,7 +1420,7 @@ UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> proce
 		}
 		ret = Process32NextW(pfsess->hand, &pe32);
 	}
-	return 0;
+	return nullptr;
 #endif
 }
 

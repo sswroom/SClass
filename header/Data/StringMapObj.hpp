@@ -89,7 +89,7 @@ namespace Data
 		{
 			this->keys->Insert((UIntOS)~i, key->Clone());
 			this->vals.Insert((UIntOS)~i, val);
-			return 0;
+			return nullptr;
 		}
 	}
 

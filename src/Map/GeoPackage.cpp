@@ -14,7 +14,7 @@ Map::GeoPackage::~GeoPackage()
 	this->tableList.FreeAll(FreeContent);
 }
 
-void Map::GeoPackage::FreeContent(NN<ContentInfo> cont)
+void __stdcall Map::GeoPackage::FreeContent(NN<ContentInfo> cont)
 {
 	cont->tableName->Release();
 	MemFreeNN(cont);

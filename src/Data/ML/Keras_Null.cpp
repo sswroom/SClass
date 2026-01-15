@@ -3,5 +3,5 @@
 
 Optional<Data::ML::MLModel> Data::ML::Keras::LoadModel(Text::CStringNN fileName, NN<IO::LogTool> log)
 {
-	return 0;
+	return nullptr;
 }

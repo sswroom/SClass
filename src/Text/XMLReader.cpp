@@ -1713,7 +1713,7 @@ Text::CString Text::XMLReader::NextElementName2()
 	while (true)
 	{
 		if (!this->ReadNext())
-			return 0;
+			return nullptr;
 		if (this->nt == Text::XMLNode::NodeType::Element)
 		{
 			Text::CStringNN name = Text::String::OrEmpty(this->nodeText)->ToCString();
@@ -1721,7 +1721,7 @@ Text::CString Text::XMLReader::NextElementName2()
 			return name.Substring(i + 1);
 		}
 		if (this->nt == Text::XMLNode::NodeType::ElementEnd)
-			return 0;
+			return nullptr;
 	}
 }
 

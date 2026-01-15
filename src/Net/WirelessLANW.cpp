@@ -49,9 +49,9 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, AnyType bssEntry)
 	this->rssi = bss->lRssi;
 	this->linkQuality = bss->uLinkQuality;
 	this->freq = bss->ulChCenterFrequency * 1000.0;
-	this->devManuf = 0;
-	this->devModel = 0;
-	this->devSN = 0;
+	this->devManuf = nullptr;
+	this->devModel = nullptr;
+	this->devSN = nullptr;
 	this->devCountry[0] = 0;
 	i = 0;
 	while (i < WLAN_OUI_CNT)
@@ -248,13 +248,13 @@ UnsafeArrayOpt<const UTF8Char> Net::WirelessLAN::BSSInfo::GetCountry()
 	if (this->devCountry[0])
 		return this->devCountry;
 	else
-		return 0;
+		return nullptr;
 }
 
 UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(IntOS index)
 {
 	if (index < 0 || index >= WLAN_OUI_CNT)
-		return 0;
+		return nullptr;
 	return this->chipsetOUIs[index];
 }
 

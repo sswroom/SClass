@@ -215,7 +215,7 @@ Optional<Data::TableData> DB::CSVFile::LoadAsTableData(Text::CStringNN fileName,
 	csv->SetIndexCol(indexCol);
 	csv->SetTimeCols(timeCols);
 	NN<Data::TableData> data;
-	NEW_CLASSNN(data, Data::TableData(csv, true, 0, CSTR("")));
+	NEW_CLASSNN(data, Data::TableData(csv, true, nullptr, CSTR("")));
 	return data;
 }
 
@@ -818,7 +818,7 @@ Data::Timestamp DB::CSVReader::GetTimestamp(UIntOS colIndex)
 	UnsafeArray<UTF8Char> sptr;
 	if (this->GetStr(colIndex, buff, sizeof(buff)).SetTo(sptr))
 		return Data::Timestamp(CSTRP(buff, sptr), Data::DateTimeUtil::GetLocalTzQhr());
-	return 0;
+	return nullptr;
 }
 
 Double DB::CSVReader::GetDblOrNAN(UIntOS colIndex)

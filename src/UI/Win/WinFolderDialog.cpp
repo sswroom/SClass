@@ -52,7 +52,7 @@ Bool UI::Win::WinFolderDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 		wbuff[0] = 0;
 	}
 	info.pszDisplayName = wbuff;
-	UnsafeArrayOpt<const WChar> wptr = 0;
+	UnsafeArrayOpt<const WChar> wptr = nullptr;
 	UnsafeArray<const WChar> nnwptr;
 	if (this->message.SetTo(s))
 	{

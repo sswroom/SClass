@@ -38,7 +38,7 @@ Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -68,7 +68,7 @@ Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -84,7 +84,7 @@ Optional<IO::Registry> IO::Registry::OpenLocalHardware()
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -101,7 +101,7 @@ Optional<IO::Registry> IO::Registry::OpenLocalSoftware(UnsafeArray<const WChar> 
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -130,7 +130,7 @@ Optional<IO::Registry> IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
 		NEW_CLASS(reg, IO::Registry(newHand));
 		return reg;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UIntOS index)
@@ -138,7 +138,7 @@ UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UIntOS in
 	DWORD buffSize = 256;
 	if (RegEnumKeyExW((HKEY)this->clsData, (DWORD)index, buff.Ptr(), &buffSize, 0, 0, 0, 0) == ERROR_SUCCESS)
 		return &buff[Text::StrCharCnt(UnsafeArray<const WChar>(buff))];
-	return 0;
+	return nullptr;
 }
 
 void IO::Registry::SetValue(UnsafeArray<const WChar> name, Int32 value)
@@ -215,12 +215,12 @@ UnsafeArrayOpt<WChar> IO::Registry::GetValueStr(UnsafeArray<const WChar> name, U
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -266,6 +266,6 @@ UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UIntOS 
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

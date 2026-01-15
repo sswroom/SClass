@@ -22,7 +22,7 @@ Data::TableData::~TableData()
 
 Optional<DB::DBReader> Data::TableData::GetTableData()
 {
-	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), nullptr, 0, 0, 0, this->cond);
+	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), nullptr, 0, 0, nullptr, this->cond);
 }
 
 Optional<DB::DBReader> Data::TableData::GetTableData(NN<Data::QueryConditions> cond)
@@ -32,7 +32,7 @@ Optional<DB::DBReader> Data::TableData::GetTableData(NN<Data::QueryConditions> c
 	{
 		cond->And(NN<Conditions::BooleanObject>::ConvertFrom(tabCond->GetRootCond()->Clone()));
 	}
-	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), nullptr, 0, 0, 0, cond);
+	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), nullptr, 0, 0, nullptr, cond);
 }
 
 Bool Data::TableData::GetColumnDataStr(Text::CStringNN columnName, NN<Data::ArrayListStringNN> str)

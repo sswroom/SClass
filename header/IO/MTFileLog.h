@@ -2,6 +2,7 @@
 #define _SM_IO_MTFILELOG
 #include "AnyType.h"
 #include "Data/ArrayListInt64.h"
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
@@ -17,7 +18,7 @@ namespace IO
 	{
 	private:
 		Sync::Mutex mut;
-		Data::ArrayListNative<Data::Timestamp> dateList;
+		Data::ArrayListObj<Data::Timestamp> dateList;
 		Data::ArrayListStringNN msgList;
 		Sync::Event evt;
 

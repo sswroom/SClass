@@ -30,5 +30,5 @@ IO::ParserType Parser::FileParser::WebPParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	return 0;
+	return nullptr;
 }

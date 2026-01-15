@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnSourceUDPPacket(NN<cons
 		sess->me = me;
 		sess->displayed = false;
 		sess->sessCreatedTime = sess->lastDataTime;
-		NEW_CLASSNN(sess->targetUDP, Net::UDPServer(me->sockf, nullptr, 0, 0, OnTargetUDPPacket, sess, me->log, 0, 2, true));
+		NEW_CLASSNN(sess->targetUDP, Net::UDPServer(me->sockf, nullptr, 0, nullptr, OnTargetUDPPacket, sess, me->log, nullptr, 2, true));
 		me->sessList.Add(sess);
 	}
 	sess->targetUDP->SendTo(sess->targetAddr, sess->targetPort, data.Arr(), data.GetSize());
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnStartClicked(AnyType us
 		me->ui->ShowMsgOK(CSTR("Timeout invalid"), TITLE, me);
 		return;
 	}
-	NEW_CLASSNN(udp, Net::UDPServer(me->sockf, nullptr, port, 0, OnSourceUDPPacket, me, me->log, 0, 4, true));
+	NEW_CLASSNN(udp, Net::UDPServer(me->sockf, nullptr, port, nullptr, OnSourceUDPPacket, me, me->log, nullptr, 4, true));
 	if (udp->IsError())
 	{
 		udp.Delete();

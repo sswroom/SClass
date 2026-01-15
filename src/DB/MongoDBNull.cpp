@@ -19,12 +19,12 @@ UIntOS DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 
 Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UIntOS ofst, UIntOS maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	return 0;
+	return nullptr;
 }
 		
 void DB::MongoDB::CloseReader(NN<DBReader> r)

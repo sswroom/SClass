@@ -91,7 +91,7 @@ Media::GDPrintDocument::GDPrintDocument(NN<Text::String> printerName, UInt8 *dev
 	this->devMode = devMode;
 	this->eng = eng;
 	this->hdlr = hdlr;
-	this->docName = 0;
+	this->docName = nullptr;
 	this->started = false;
 	this->running = false;
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(printerName->v);
@@ -158,7 +158,7 @@ void Media::GDPrintDocument::Start()
 
 	if (this->hdlr->BeginPrint(*this))
 	{
-		UnsafeArrayOpt<const WChar> wptr = 0;
+		UnsafeArrayOpt<const WChar> wptr = nullptr;
 		UnsafeArray<const WChar> nnwptr;
 		DOCINFOW docInfo;
 		NN<Text::String> s;
@@ -191,7 +191,7 @@ void Media::GDPrintDocument::Start()
 		if (wptr.SetTo(nnwptr))
 		{
 			Text::StrDelNew(nnwptr);
-			wptr = 0;
+			wptr = nullptr;
 		}
 	}
 }
@@ -223,7 +223,7 @@ UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sb
 	UInt32 cReturned = 0;
 	EnumPrintersW(PRINTER_ENUM_LOCAL, 0, 1, buff, 4096, (LPDWORD)&cbNeeded, (LPDWORD)&cReturned);
 	if (index > cReturned)
-		return 0;
+		return nullptr;
 	_PRINTER_INFO_1W *info = (_PRINTER_INFO_1W*)buff;
 	return Text::StrWChar_UTF8(sbuff, info[index].pName);
 }
@@ -385,12 +385,12 @@ Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<Media::PrintHandler
 {
 	Media::GDPrintDocument *doc;
 	if (this->devMode == 0)
-		return 0;
+		return nullptr;
 	NEW_CLASS(doc, Media::GDPrintDocument(this->printerName, this->devMode, NN<Media::GDIEngine>::ConvertFrom(eng), hdlr));
 	if (doc->IsError())
 	{
 		DEL_CLASS(doc);
-		return 0;
+		return nullptr;
 	}
 	doc->Start();
 	return doc;

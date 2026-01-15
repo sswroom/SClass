@@ -82,10 +82,10 @@ NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Do
 
 Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UnsafeArray<UnsafeArray<UInt8>> imgData, UIntOS dataSize, UInt32 fourcc, Math::Size2D<UIntOS> dispSize, UIntOS storeWidth, UIntOS storeBPP, Media::PixelFormat pf)
 {
-	return 0;		
+	return nullptr;		
 }
 
 Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(NN<Media::StaticImage> simg)
 {
-	return 0;
+	return nullptr;
 }

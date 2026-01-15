@@ -148,7 +148,7 @@ Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(UnsafeArray<const WChar> 
 	else
 	{
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -159,7 +159,7 @@ Bool Win32::WMIQuery::IsLastDataError()
 
 Optional<DB::DBTransaction> Win32::WMIQuery::BeginTransaction()
 {
-	return 0;
+	return nullptr;
 }
 
 void Win32::WMIQuery::Commit(NN<DB::DBTransaction> tran)

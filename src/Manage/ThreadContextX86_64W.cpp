@@ -217,7 +217,7 @@ UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_64::GetRegister(UIntOS index, 
 		regBitCount.Set(128);
 		return Text::StrConcatC(buff, UTF8STRC("XMM15"));
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 

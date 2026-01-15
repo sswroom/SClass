@@ -217,7 +217,7 @@ Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UIntOS blkSize
 	{
 		this->seeked = true;
 		this->acmOupBuffLeft = 0;
-		sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(nullptr, blkSize);
 		this->readEvt = evt;
 
 		if (this->readEvt.SetTo(readEvt))
@@ -234,7 +234,7 @@ void Media::Decoder::ACMDecoder::Stop()
 	{
 		sourceAudio->Stop();
 	}
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 }
 
 UIntOS Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)

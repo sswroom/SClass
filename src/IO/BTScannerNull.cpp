@@ -3,5 +3,5 @@
 
 Optional<IO::BTScanner> IO::BTScanner::CreateScanner()
 {
-	return 0;
+	return nullptr;
 }

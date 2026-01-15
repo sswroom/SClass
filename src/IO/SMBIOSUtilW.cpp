@@ -77,5 +77,5 @@ Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 		return smbios;
 	}
 
-	return 0;
+	return nullptr;
 }

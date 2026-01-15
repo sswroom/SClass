@@ -275,11 +275,11 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 					Data::Timestamp priceTime = Data::Timestamp(r->GetInt64(7), Data::DateTimeUtil::GetLocalTzQhr());
 					if (endTime.ToTicks() == 0)
 					{
-						endTime = 0;
+						endTime = nullptr;
 					}
 					if (priceTime.ToTicks() == 0)
 					{
-						priceTime = 0;
+						priceTime = nullptr;
 					}
 					this->AddTransactionAsset(startTime, endTime, priceTime, (UIntOS)r->GetInt64(6), r->GetDblOrNAN(8), r->GetDblOrNAN(5));
 				}
@@ -289,7 +289,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 					Data::Timestamp endTime = Data::Timestamp(r->GetInt64(2), Data::DateTimeUtil::GetLocalTzQhr());
 					if (endTime.ToTicks() == 0)
 					{
-						endTime = 0;
+						endTime = nullptr;
 					}
 					this->AddTransactionAInterest(startTime, endTime, (UIntOS)r->GetInt64(3), r->GetDblOrNAN(8));
 				}

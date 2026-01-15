@@ -101,7 +101,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 						if (!pf2->GetPackFile({sptr, i}).SetTo(pf3))
 						{
 							NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
-							pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
+							pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), nullptr, nullptr, 0);
 						}
 						pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 						sptr = &sptr[i + 1];
@@ -115,7 +115,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 							if (!pf2->GetPackFile({sptr, (UIntOS)(sptrEnd - sptr)}).SetTo(pf3))
 							{
 								NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
-								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
+								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), nullptr, nullptr, 0);
 							}
 						}
 						break;
@@ -141,7 +141,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 				if (!pf2->GetPackFile({sptr, i}).SetTo(pf3))
 				{
 					NEW_CLASSNN(pf3, IO::VirtualPackageFileFast(sb.ToCString()));
-					pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
+					pf2->AddPack(pf3, {sptr, i}, Data::Timestamp(t * 1000LL, 0), nullptr, nullptr, 0);
 				}
 				pf2 = (IO::VirtualPackageFile*)pf3.Ptr();
 				sptr = &sptr[i + 1];
@@ -151,7 +151,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 				break;
 			}
 		}
-		pf2->AddData(fd, currOfst, itemSize, IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), 0, 0, 0);
+		pf2->AddData(fd, currOfst, itemSize, IO::PackFileItem::HeaderType::No, CSTRP(sptr, sptrEnd), Data::Timestamp(t * 1000LL, 0), nullptr, nullptr, 0);
 		if (itemSize & 511)
 		{
 			currOfst += itemSize + 512 - (itemSize & 511);

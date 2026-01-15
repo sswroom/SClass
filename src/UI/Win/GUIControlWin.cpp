@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Math/Math_C.h"
 #include "Media/GDIEngine.h"
 #include "Text/MyString.h"
@@ -101,13 +100,13 @@ UI::GUIControl::GUIControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent
 	this->dropHdlr = 0;
 	this->inited = false;
 	this->selfResize = false;
-	this->hwnd = 0;
+	this->hwnd = nullptr;
 	this->hFont = 0;
 	this->hbrBackground = 0;
 	this->parent = parent;
 	this->ui = ui;
 	this->dockType = UI::GUIControl::DOCK_NONE;
-	this->fontName = 0;
+	this->fontName = nullptr;
 	this->fontHeightPt = 0;
 	this->fontIsBold = false;
 	NN<GUIClientControl> nnparent;
@@ -294,13 +293,13 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(UnsafeArrayOpt<const UTF8Char> name, UIntOS nameLen, Double ptSize, Bool isBold)
+void UI::GUIControl::SetFont(Text::CString name, Double ptSize, Bool isBold)
 {
 	OPTSTR_DEL(this->fontName);
-	UnsafeArray<const UTF8Char> nnname;
+	Text::CStringNN nnname;
 	if (name.SetTo(nnname))
 	{
-		this->fontName = Text::String::New(nnname, nameLen).Ptr();
+		this->fontName = Text::String::New(nnname);
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
@@ -714,7 +713,7 @@ Optional<UI::GUIForm> UI::GUIControl::GetRootForm()
 		}
 		ctrl = ctrl->GetParent().OrNull();
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<ControlHandle> UI::GUIControl::GetHandle()
@@ -743,7 +742,7 @@ Optional<Media::MonitorInfo> UI::GUIControl::GetMonitorInfo()
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -776,7 +775,7 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 {
 	void *f = this->GetFont();
 	if (f == 0)
-		return 0;
+		return nullptr;
 	Media::GDIFont *fnt;
 	NN<Text::String> fontName;
 	if (!this->fontName.SetTo(fontName))

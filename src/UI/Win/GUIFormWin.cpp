@@ -505,12 +505,12 @@ void UI::GUIForm::UpdateHAcc()
 		((UI::Win::WinCore*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc);
 	}
 }
-UI::GUIForm::GUIForm(NN<UI::GUICore> ui, Optional<ControlHandle> hWnd) : UI::GUIClientControl(ui, 0)
+UI::GUIForm::GUIForm(NN<UI::GUICore> ui, Optional<ControlHandle> hWnd) : UI::GUIClientControl(ui, nullptr)
 {
 	this->hwnd = hWnd;
 	this->hAcc = 0;
 	this->virtualMode = true;
-	this->currDialog = 0;
+	this->currDialog = nullptr;
 	this->fs = false;
 }
 
@@ -521,7 +521,7 @@ Optional<UI::GUIForm> UI::GUIForm::FindForm(NN<UI::GUICore> ui, Text::CStringNN 
 	hWnd = FindWindowW(L"WinForm", wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (hWnd == 0)
-		return 0;
+		return nullptr;
 	UI::GUIForm *frm;
 	NEW_CLASS(frm, UI::GUIForm(ui, (ControlHandle*)hWnd));
 	return frm;
@@ -531,7 +531,7 @@ UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double
 {
 	this->virtualMode = false;
 	this->hAcc = 0;
-	this->currDialog = 0;
+	this->currDialog = nullptr;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		Init(((UI::Win::WinCore*)ui.Ptr())->GetHInst());
@@ -542,9 +542,9 @@ UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double
 	this->ui = ui;
 	this->isDialog = false;
 	this->dialogResult = DR_UNKNOWN;
-	this->menu = 0;
-	this->okBtn = 0;
-	this->cancelBtn = 0;
+	this->menu = nullptr;
+	this->okBtn = nullptr;
+	this->cancelBtn = nullptr;
 	this->fs = false;
 
 	Math::Size2DDbl sz;
@@ -698,7 +698,7 @@ UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
 	}
 	if (owner.SetTo(frm))
 	{
-		frm->currDialog = 0;
+		frm->currDialog = nullptr;
 		frm->SetEnabled(true);
 		frm->MakeForeground();
 	}

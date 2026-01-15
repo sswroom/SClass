@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapObj.hpp"
 #include "Media/DDrawManager.h"
 #include "Media/DDrawSurface.h"
 #include <windows.h>
@@ -7,7 +7,7 @@
 
 struct Media::DDrawManager::ClassData
 {
-	Data::FastMap<IntOS, LPDIRECTDRAW7> monMap;
+	Data::FastMapObj<IntOS, LPDIRECTDRAW7> monMap;
 	LPDIRECTDRAW7 defDD;
 	Optional<Media::MonitorMgr> monMgr;
 	Optional<Media::ColorManager> colorMgr;
@@ -65,8 +65,8 @@ Media::DDrawManager::DDrawManager(Optional<Media::MonitorMgr> monMgr, NN<Media::
 {
 	NEW_CLASS(this->clsData, ClassData());
 	this->clsData->defDD = 0;
-	this->clsData->monMgr = 0;
-	this->clsData->colorMgr = 0;
+	this->clsData->monMgr = nullptr;
+	this->clsData->colorMgr = nullptr;
 	this->clsData->colorSess = colorSess;
 	this->RecheckMonitor();
 }
@@ -77,7 +77,7 @@ Media::DDrawManager::DDrawManager(NN<Media::MonitorMgr> monMgr, NN<Media::ColorM
 	this->clsData->defDD = 0;
 	this->clsData->monMgr = monMgr;
 	this->clsData->colorMgr = colorMgr;
-	this->clsData->colorSess = 0;
+	this->clsData->colorSess = nullptr;
 	this->RecheckMonitor();
 }
 
@@ -163,7 +163,7 @@ Optional<const Media::ColorProfile> Media::DDrawManager::GetMonProfile(Optional<
 	{
 		return &colorSess->GetRGBParam()->monProfile;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Media::DDrawManager::SetFSMode(Optional<MonitorHandle> hMon, Optional<ControlHandle> hWnd, Bool fs)
@@ -225,7 +225,7 @@ Optional<MonitorHandle> Media::DDrawManager::GetMonitorHandle(UIntOS monIndex)
 	arrs[2] = 0;
 	if (EnumDisplayMonitors(NULL, NULL, DDrawManager_MonitorEnumProc, (LPARAM)&arrs))
 		return (MonitorHandle*)arrs[2];
-	return 0;
+	return nullptr;
 }
 
 UIntOS Media::DDrawManager::GetMonitorCount()
@@ -244,12 +244,12 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreateSurface(Math::Size2D<
 {
 	if (this->IsError())
 	{
-		return 0;
+		return nullptr;
 	}
-	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(0);
+	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(nullptr);
 	if (lpDD == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	DDSURFACEDESC2 ddsd;
 	LPDIRECTDRAWSURFACE7 surface;
@@ -265,10 +265,10 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreateSurface(Math::Size2D<
 	HRESULT res = lpDD->CreateSurface(&ddsd, &surface, NULL);
 	if (res != DD_OK)
 	{
-		return 0;
+		return nullptr;
 	}
 	Media::DDrawSurface *retSurface;
-	NEW_CLASS(retSurface, Media::DDrawSurface(*this, lpDD, surface, 0, true, Media::RotateType::None));
+	NEW_CLASS(retSurface, Media::DDrawSurface(*this, lpDD, surface, nullptr, true, Media::RotateType::None));
 	return retSurface;
 }
 
@@ -276,12 +276,12 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(Option
 {
 	if (this->IsError())
 	{
-		return 0;
+		return nullptr;
 	}
 	LPDIRECTDRAW7 lpDD = (LPDIRECTDRAW7)this->GetDD7(hMon);
 	if (lpDD == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	DDSURFACEDESC2 ddsd;
 	LPDIRECTDRAWSURFACE7 primarySurface;
@@ -299,7 +299,7 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(Option
 	}
 	if (res != DD_OK)
 	{
-		return 0;
+		return nullptr;
 	}
 	Media::DDrawSurface *surface;
 	NEW_CLASS(surface, Media::DDrawSurface(*this, lpDD, primarySurface, hMon, true, rotateType));

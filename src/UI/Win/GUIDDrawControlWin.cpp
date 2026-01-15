@@ -320,7 +320,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 		if (this->currScnMode == SM_VFS)
 		{
 			this->surfaceMon = this->GetHMonitor();
-			hWnd = 0;
+			hWnd = nullptr;
 		}
 		else if (this->currScnMode == SM_WINDOWED_DIR)
 		{
@@ -329,7 +329,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 		}
 		else
 		{
-			this->surfaceMon = 0;
+			this->surfaceMon = nullptr;
 			hWnd = this->GetHandle();
 		}
 		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, hWnd, Media::RotateType::None);
@@ -421,7 +421,7 @@ UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UIntOS targetWidth, 
 	if (!this->buffSurface.SetTo(buffSurface))
 	{
 		this->surfaceMut.Unlock();
-		return 0;
+		return nullptr;
 	}
 	if (targetWidth == this->bkBuffSize.x && targetHeight == this->bkBuffSize.y)
 	{
@@ -432,7 +432,7 @@ UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UIntOS targetWidth, 
 		}
 	}
 	this->surfaceMut.Unlock();
-	return 0;
+	return nullptr;
 }
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
@@ -467,8 +467,8 @@ void UI::GUIDDrawControl::EndUpdateSize()
 UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool directMode, NN<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
 {
 	this->inited = false;
-	this->primarySurface = 0;
-	this->buffSurface = 0;
+	this->primarySurface = nullptr;
+	this->buffSurface = nullptr;
 	this->imgCopy = 0;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
@@ -503,7 +503,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->InitControl(((Win::WinCore*)ui.Ptr())->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"DDrawControl", style, 0, 0, 0, 640, 480);
 
 	this->currScnMode = SM_VFS;
-	this->surfaceMon = 0;
+	this->surfaceMon = nullptr;
 	NEW_CLASSNN(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess));
 	if (((Media::DDrawManager*)this->surfaceMgr.Ptr())->IsError())
 	{
@@ -807,7 +807,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		{
 			this->currScnMode = SM_WINDOWED;
 		}
-		this->surfaceMgr->SetFSMode(0, rootForm->GetHandle(), false);
+		this->surfaceMgr->SetFSMode(nullptr, rootForm->GetHandle(), false);
 
 		this->CreateSurface();
 		mutUsage.EndUse();
@@ -844,7 +844,7 @@ UInt32 UI::GUIDDrawControl::GetRefreshRate()
 
 Bool UI::GUIDDrawControl::IsSurfaceReady()
 {
-	return this->buffSurface != 0;
+	return this->buffSurface.NotNull();
 }
 
 void UI::GUIDDrawControl::SetRotateType(Media::RotateType rotType)

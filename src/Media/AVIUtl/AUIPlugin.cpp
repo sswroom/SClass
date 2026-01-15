@@ -322,7 +322,7 @@ Optional<Media::AVIUtl::AUIPlugin> Media::AVIUtl::AUIPlugin::LoadPlugin(const WC
 {
 	HMODULE hMod = LoadLibraryW(fileName);
 	if (hMod == 0)
-		return 0;
+		return nullptr;
 
 	AUI_GetInputPluginTable GetInputPluginTable;
 #ifdef _WIN32_WCE
@@ -333,14 +333,14 @@ Optional<Media::AVIUtl::AUIPlugin> Media::AVIUtl::AUIPlugin::LoadPlugin(const WC
 	if (GetInputPluginTable == 0)
 	{
 		FreeLibrary(hMod);
-		return 0;
+		return nullptr;
 	}
 
 	INPUT_PLUGIN_TABLE *pluginTable = GetInputPluginTable();
 	if (pluginTable == 0)
 	{
 		FreeLibrary(hMod);
-		return 0;
+		return nullptr;
 	}
 
 	NN<Media::AVIUtl::AUIPlugin> plugin;

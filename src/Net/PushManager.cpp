@@ -75,7 +75,7 @@ void Net::PushManager::LoadData()
 						devType = DeviceType::Android;
 					}
 					sarr[2].Trim();
-					this->Subscribe(sarr[0].ToCString(), sarr[2].ToCString(), devType, addr, 0);
+					this->Subscribe(sarr[0].ToCString(), sarr[2].ToCString(), devType, addr, nullptr);
 				}
 			}
 
@@ -156,7 +156,7 @@ Net::PushManager::PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLE
 	this->log = log;
 	this->loading = false;
 	this->accessToken = nullptr;
-	this->accessTokenExpire = 0;
+	this->accessTokenExpire = nullptr;
 	this->LoadData();
 }
 
@@ -222,7 +222,7 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 		dev->devType = devType;
 		dev->subscribeAddr.addrType = Net::AddrType::Unknown;
 		dev->devModel = nullptr;
-		dev->lastSubscribeTime = 0;
+		dev->lastSubscribeTime = nullptr;
 		this->devMap.PutNN(dev->token, dev);
 	}
 	user = this->GetUser(userName);

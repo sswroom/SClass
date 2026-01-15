@@ -1354,7 +1354,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UIntOS
 								NEW_CLASSNN(dhcp, DHCPInfo());
 								dhcp->iMAC64 = iMAC;
 								dhcp->updated = false;
-								dhcp->ipAddrTime = 0;
+								dhcp->ipAddrTime = nullptr;
 								dhcp->ipAddr = 0;
 								dhcp->ipAddrLease = 0;
 								dhcp->subnetMask = 0;

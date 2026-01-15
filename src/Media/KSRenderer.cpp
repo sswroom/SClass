@@ -271,8 +271,8 @@ Media::KSRenderer::KSRenderer(IntOS devId)
 	this->playing = false;
 	this->threadInit = false;
 	this->stopPlay = false;
-	this->audsrc = 0;
-	this->playEvt = 0;
+	this->audsrc = nullptr;
+	this->playEvt = nullptr;
 	this->endHdlr = 0;
 	this->buffTime = 0;
 
@@ -312,7 +312,7 @@ Media::KSRenderer::KSRenderer(IntOS devId)
 
 Media::KSRenderer::~KSRenderer()
 {
-	this->BindAudio(0);
+	this->BindAudio(nullptr);
 	if (this->pEnumerator)
 	{
 		CKsEnumFilters *pEnumerator = (CKsEnumFilters*)this->pEnumerator;
@@ -333,7 +333,7 @@ Bool Media::KSRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	NN<Media::AudioSource> nnaudsrc;
 	pFilter = (CKsAudRenFilter*)this->pFilter;
 	this->Stop();
-	this->audsrc = 0;
+	this->audsrc = nullptr;
 	if (this->pPin)
 	{
 		pPin = (CKsAudRenPin *)this->pPin;

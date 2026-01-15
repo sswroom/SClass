@@ -672,8 +672,8 @@ Int32 SMTPProxyTest()
 
 	Text::CStringNN proxyHost = CSTR("127.0.0.1");
 	UInt16 proxyPort = 8080;
-	Text::CString proxyUser = 0;
-	Text::CString proxyPwd = 0;	
+	Text::CString proxyUser = nullptr;
+	Text::CString proxyPwd = nullptr;	
 	Net::Email::SMTPConn::ConnType connType = Net::Email::SMTPConn::ConnType::STARTTLS;
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
@@ -686,8 +686,8 @@ Int32 SMTPProxyTest()
 	Net::Email::SMTPClient cli(clif, ssl, smtpHost, smtpPort, connType, log, 15000);
 	cli.SetPlainAuth(smtpUser, smtpPwd);
 	Net::Email::EmailMessage msg;
-	msg.SetFrom(0, smtpUser);
-	msg.AddTo(0, smtpTo);
+	msg.SetFrom(nullptr, smtpUser);
+	msg.AddTo(nullptr, smtpTo);
 	msg.SetSubject(CSTR("SMTP Proxy Test"));
 	msg.SetSentDate(Data::Timestamp::Now());
 	msg.SetContent(CSTR("Message Content to display"), CSTR("text/plain"));
@@ -700,7 +700,7 @@ Int32 HTTPSProxyCliTest()
 {
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
-	clif.SetProxy(CSTR("localhost"), 8080, 0, 0);
+	clif.SetProxy(CSTR("localhost"), 8080, nullptr, nullptr);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("https://a.tile.openstreetmap.org/13/6693/3571.png"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	IO::MemoryStream mstm;
@@ -718,8 +718,8 @@ Int32 AWSEmailTest()
 
 	Net::Email::AWSEmailClient cli(CSTR("us-east-2"));
 	Net::Email::EmailMessage msg;
-	msg.SetFrom(0, smtpUser);
-	msg.AddTo(0, smtpTo);
+	msg.SetFrom(nullptr, smtpUser);
+	msg.AddTo(nullptr, smtpTo);
 	msg.SetSubject(CSTR("AWS Email Test"));
 	msg.SetSentDate(Data::Timestamp::Now());
 	msg.SetContent(CSTR("Message Content to display"), CSTR("text/plain"));
@@ -849,7 +849,7 @@ Int32 FGDBTest()
 		if (fgdb->GetTable(CSTR("PedestrianRoute")).SetTo(table))
 		{
 			printf("File Name: %s\r\n", table->GetFileName()->v.Ptr());
-			if (table->OpenReader(nullptr, 0, 0, 0, nullptr).SetTo(r))
+			if (table->OpenReader(nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
 				while (r->ReadNext())
 				{

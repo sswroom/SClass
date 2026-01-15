@@ -3134,6 +3134,68 @@ exprgb16lop2:
 	pop rbp
 	ret
 
+;void LanczosResizerFunc_ExpandB16G16R16(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *rgbaTable)
+;0 rdi
+;8 rsi
+;16 rbx
+;24 rbp
+;32 retAddr
+;rcx inPt
+;rdx outPt
+;r8 width
+;r9 height
+;72 sstep
+;80 dstep
+;88 rgbaTable
+
+	align 16
+LanczosResizerFunc_ExpandB16G16R16:
+	push rbp
+	push rbx
+	push rsi
+	push rdi
+	
+;	mov rcx,qword [rsp+40] ;inPt
+	mov rsi,rdx ;outPt
+	lea rdx,[r8*2+r8] ;width
+	lea rax,[r8*8] ;width
+	sub qword [rsp+72],rdx ;sstep
+	sub qword [rsp+72],rdx ;sstep
+	sub qword [rsp+80],rax ;dstep
+	mov rbx,qword [rsp+88] ;rgbaTable
+	xor rdx,rdx
+	align 16
+expbgr16lop:
+	mov rax,r8 ;width
+
+	ALIGN 16
+expbgr16lop2:
+	movzx rdx,word [rcx+4]
+	movq xmm1,[rbx+rdx*8+0]
+	movzx rdx,word [rcx+2]
+	movq xmm0,[rbx+rdx*8+524288]
+	paddsw xmm1,xmm0
+	movzx rdx,word [rcx]
+	movq xmm0,[rbx+rdx*8+1048576]
+	paddsw xmm1,xmm0
+	movq [rsi],xmm1
+
+	lea rsi,[rsi+8]
+	lea rcx,[rcx+6]
+	dec rax
+	jnz expbgr16lop2
+
+	add rcx,qword [rsp+72] ;sstep
+	add rsi,qword [rsp+80] ;dstep
+
+	dec r9
+	jnz expbgr16lop
+	pop rdi
+	pop rsi
+	pop rbx
+	pop rbp
+	ret
+
 ;void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable)
 ;	Int64 toAdd = 0xff80ff80ff80ff80;
 ;	Int64 toAdd2 = 0x80808080;
@@ -3621,6 +3683,73 @@ icrgb16_bgra8lop2:
 	pop rbp
 	ret
 
+;void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;0 rdi
+;8 rsi
+;16 rbx
+;24 rbp
+;32 retAddr
+;rcx inPt
+;rdx outPt
+;r8 width
+;r9 height
+;72 sstep
+;80 dstep
+;88 lrbgraTable
+;96 rgbaTable
+
+	align 16
+LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8A8:
+	push rbp
+	push rbx
+	push rsi
+	push rdi
+	mov rsi,rcx ;inPt
+	mov rdi,rdx ;outPt
+	mov rbx,qword [rsp+88] ;lrbgraTable
+	mov rbp,qword [rsp+96] ;rgbaTable
+	lea rax,[r8*2+r8] ;width
+	lea rax,[rax*2]
+	sub qword [rsp+72],rax ;sstep
+	lea rax,[r8*4] ;width
+	sub qword [rsp+80],rax ;dstep
+	align 16
+icbgr16_bgra8lop:
+	mov rdx,r8 ;width
+	ALIGN 16
+icbgr16_bgra8lop2:
+	movzx rax,word [rsi+4]
+	movq xmm1,[rbp+rax*8+0]
+	movzx rax,word [rsi+2]
+	movq xmm0,[rbp+rax*8+524288]
+	paddsw xmm1,xmm0
+	movzx rax,word [rsi]
+	movq xmm0,[rbp+rax*8+1048576]
+	paddsw xmm1,xmm0
+	pextrw rcx,xmm1,2
+	mov al,byte [rbx+rcx+131072]
+	mov ah,0xff
+	shl eax,16
+	pextrw rcx,xmm1,1
+	mov ah,byte [rbx+rcx+65536]
+	pextrw rcx,xmm1,0
+	mov al,byte [rbx+rcx]
+	movnti [rdi],rax
+	lea rsi,[rsi+6]
+	lea rdi,[rdi+4]
+	dec rdx
+	jnz icbgr16_bgra8lop2
+
+	add rsi,qword [rsp+72] ;sstep
+	add rdi,qword [rsp+80] ;dstep
+	dec r9
+	jnz icbgr16_bgra8lop
+	pop rdi
+	pop rsi
+	pop rbx
+	pop rbp
+	ret
+
 ;void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 rdi
 ;8 rsi
@@ -3867,6 +3996,70 @@ icrgb16_bgr8lop2:
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
 	jnz icrgb16_bgr8lop
+	pop rdi
+	pop rsi
+	pop rbx
+	pop rbp
+	ret
+
+;void LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8(UInt8 *inPt, UInt8 *outPt, IntOS width, IntOS height, IntOS sstep, IntOS dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;0 rdi
+;8 rsi
+;16 rbx
+;24 rbp
+;32 retAddr
+;rcx inPt
+;rdx outPt
+;r8 width
+;r9 height
+;72 sstep
+;80 dstep
+;88 lrbgraTable
+;96 rgbaTable
+
+	align 16
+LanczosResizerFunc_ImgCopyB16G16R16_B8G8R8:
+	push rbp
+	push rbx
+	push rsi
+	push rdi
+	mov rsi,rcx ;inPt
+	mov rdi,rdx ;outPt
+	mov rbx,qword [rsp+88] ;lrbgraTable
+	mov rbp,qword [rsp+96] ;rgbaTable
+	lea rax,[r8*2+r8] ;width
+	sub qword [rsp+72],rax ;sstep
+	sub qword [rsp+80],rax ;dstep
+	align 16
+icbgr16_bgr8lop:
+	mov rdx,r8 ;width
+	ALIGN 16
+icbgr16_bgr8lop2:
+	movzx rax,word [rsi+4]
+	movq xmm1,[rbp+rax*8+0]
+	movzx rax,word [rsi+2]
+	movq xmm0,[rbp+rax*8+524288]
+	paddsw xmm1,xmm0
+	movzx rax,word [rsi]
+	movq xmm0,[rbp+rax*8+1048576]
+	paddsw xmm1,xmm0
+	pextrw rcx,xmm1,2
+	mov al,byte [rbx+rcx+131072]
+	mov byte [rdi+2],al
+	pextrw rcx,xmm1,1
+	mov ah,byte [rbx+rcx+65536]
+	pextrw rcx,xmm1,0
+	mov al,byte [rbx+rcx]
+	mov word [rdi],ax
+	lea rsi,[rsi+6]
+	lea rdi,[rdi+3]
+	dec rdx
+	jnz icbgr16_bgr8lop2
+
+	add rsi,qword [rsp+72] ;sstep
+	add rdi,qword [rsp+80] ;dstep
+	dec r9
+	jnz icbgr16_bgr8lop
 	pop rdi
 	pop rsi
 	pop rbx

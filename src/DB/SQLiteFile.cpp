@@ -470,7 +470,7 @@ UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UIntOS colIndex, UnsafeArray<WCha
 #if _WCHAR_SIZE == 2
 	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 	if (outp == 0)
-		return 0;
+		return nullptr;
 	else
 		return Text::StrConcat(buff, (const WChar *)outp);
 #else
@@ -558,7 +558,7 @@ Data::Timestamp DB::SQLiteReader::GetTimestamp(UIntOS colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!GetStr(colIndex, sb))
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 }
 

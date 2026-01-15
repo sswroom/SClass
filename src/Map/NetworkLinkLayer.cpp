@@ -804,7 +804,7 @@ UIntOS Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, T
 	link->viewFormat = Text::String::NewOrNull(viewFormat);
 	link->mode = mode;
 	link->reloadInterval = seconds;
-	link->lastUpdated = Data::Timestamp(0);
+	link->lastUpdated = Data::Timestamp(nullptr);
 	if (mode == RefreshMode::OnStop)
 	{
 		link->lastUpdated = Data::Timestamp::UtcNow();

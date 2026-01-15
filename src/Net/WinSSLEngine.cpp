@@ -996,7 +996,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 #endif
 		Text::StrDelNew(wptr);
 		err.Set(ErrorType::InitSession);
-		return 0;
+		return nullptr;
 	}
 	Net::SocketFactory::ErrorType et;
 #if defined(VERBOSE_CLI)
@@ -1011,7 +1011,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 		FreeContextBuffer(outputBuff[0].pvBuffer);
 		Text::StrDelNew(wptr);
 		err.Set(ErrorType::InitSession);
-		return 0;
+		return nullptr;
 	}
 	FreeContextBuffer(outputBuff[0].pvBuffer);
 
@@ -1033,7 +1033,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 			{
 				Text::StrDelNew(wptr);
 				err.Set(ErrorType::InitSession);
-				return 0;
+				return nullptr;
 			}
 			recvOfst += recvSize;
 		}
@@ -1094,7 +1094,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 				DeleteSecurityContext(&ctxt);
 				Text::StrDelNew(wptr);
 				err.Set(ErrorType::InitSession);
-				return 0;
+				return nullptr;
 			}
 			if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
 			{
@@ -1118,7 +1118,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 			DeleteSecurityContext(&ctxt);
 			Text::StrDelNew(wptr);
 			err.Set(ErrorType::InitSession);
-			return 0;
+			return nullptr;
 		}
 	}
 	Text::StrDelNew(wptr);
@@ -1137,7 +1137,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 		printf("SSL: Server not init\r\n");
 #endif
 		this->clif->GetSocketFactory()->DestroySocket(s);
-		return 0;
+		return nullptr;
 	}
 
 #if defined(VERBOSE_SVR)
@@ -1169,7 +1169,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 		printf("%s SSL: Svr %x, Recv size 0\r\n", debugBuff, (Int32)(IntOS)s.Ptr());
 #endif
 		this->clif->GetSocketFactory()->DestroySocket(s);
-		return 0;
+		return nullptr;
 	}
 
 	SecBuffer_Set(&inputBuff[0], SECBUFFER_TOKEN, recvBuff, (UInt32)recvSize);
@@ -1215,7 +1215,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 		printf("%s SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", debugBuff, (Int32)(IntOS)s.Ptr(), (UInt32)status);
 #endif
 		this->clif->GetSocketFactory()->DestroySocket(s);
-		return 0;
+		return nullptr;
 	}
 	recvOfst = 0;
 	i = 0;
@@ -1249,7 +1249,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 	{
 		DeleteSecurityContext(&ctxt);
 		this->clif->GetSocketFactory()->DestroySocket(s);
-		return 0;
+		return nullptr;
 	}
 
 	while (status == SEC_I_CONTINUE_NEEDED || status == SEC_E_INCOMPLETE_MESSAGE)
@@ -1266,7 +1266,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #endif
 				DeleteSecurityContext(&ctxt);
 				this->clif->GetSocketFactory()->DestroySocket(s);
-				return 0;
+				return nullptr;
 			}
 			recvOfst += recvSize;
 
@@ -1340,7 +1340,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 			{
 				DeleteSecurityContext(&ctxt);
 				this->clif->GetSocketFactory()->DestroySocket(s);
-				return 0;
+				return nullptr;
 			}
 		}
 		else
@@ -1360,7 +1360,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #endif
 			DeleteSecurityContext(&ctxt);
 			this->clif->GetSocketFactory()->DestroySocket(s);
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -1548,7 +1548,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 			!this->InitClient(Method::TLSV1, 0))
 		{
 			err.Set(ErrorType::InitEnv);
-			return 0;
+			return nullptr;
 		}
 		this->clsData->cliInit = true;
 	}
@@ -1559,7 +1559,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 	if (addrCnt == 0)
 	{
 		err.Set(ErrorType::HostnameNotResolved);
-		return 0;
+		return nullptr;
 	}
 	NN<Net::TCPClient> cli = this->clif->Create(hostName, port, timeout);
 	if (cli->RemoveSocket().SetTo(s))
@@ -1569,7 +1569,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 	}
 	cli.Delete();
 	err.Set(ErrorType::CannotConnect);
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::SSLClient> Net::WinSSLEngine::ClientInit(NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
@@ -1581,7 +1581,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientInit(NN<Socket> s, Text::CStri
 			!this->InitClient(Method::TLSV1_1, 0) &&
 			!this->InitClient(Method::TLSV1, 0))
 		{
-			return 0;
+			return nullptr;
 		}
 		this->clsData->cliInit = true;
 	}
@@ -1745,7 +1745,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey(UIntOS keyLeng
 	DWORD certBuffSize = 4096;
 	if (!WinSSLEngine_CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 lenFlags;
 	if (keyLength == 2048)
@@ -1763,20 +1763,20 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey(UIntOS keyLeng
 	if (!CryptGenKey(hProv, AT_SIGNATURE, lenFlags | CRYPT_EXPORTABLE, &hKey))
 	{
 		CryptReleaseContext(hProv, 0);
-		return 0;
+		return nullptr;
 	}
 
 	if (!CryptExportKey(hKey, 0, PRIVATEKEYBLOB, 0, privKeyBuff, &privKeySize))
 	{
 		CryptDestroyKey(hKey);
 		CryptReleaseContext(hProv, 0);
-		return 0;
+		return nullptr;
 	}
 	if (!CryptEncodeObjectEx(X509_ASN_ENCODING | PKCS_7_ASN_ENCODING, PKCS_RSA_PRIVATE_KEY, privKeyBuff, 0, 0, certBuff, &certBuffSize))
 	{
 		CryptDestroyKey(hKey);
 		CryptReleaseContext(hProv, 0);
-		return 0;
+		return nullptr;
 	}
 
 	Crypto::Cert::X509Key *key;
@@ -1812,7 +1812,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateECDSAKey(Crypto::Cert
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("WinSSLEngine.GenerateECDSAKey: Unsupported name\r\n");
 #endif
-		return 0;
+		return nullptr;
 	}
 	NTSTATUS status;
 	if ((status = BCryptOpenAlgorithmProvider(&hAlgorithm, algId, 0, 0)) != 0)
@@ -1820,7 +1820,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateECDSAKey(Crypto::Cert
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("WinSSLEngine.GenerateECDSAKey: BCryptOpenAlgorithmProvider failed: %d\r\n", status);
 #endif
-		return 0;
+		return nullptr;
 	}
 	if ((status = BCryptGenerateKeyPair(hAlgorithm, &hKey, bitLeng, 0)) != 0)
 	{
@@ -1828,7 +1828,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateECDSAKey(Crypto::Cert
 		printf("WinSSLEngine.GenerateECDSAKey: BCryptGenerateKeyPair failed: %d\r\n", status);
 #endif
 		BCryptCloseAlgorithmProvider(hAlgorithm, 0);
-		return 0;
+		return nullptr;
 	}
 	if ((status = BCryptFinalizeKeyPair(hKey, 0)) != 0)
 	{
@@ -1836,9 +1836,9 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateECDSAKey(Crypto::Cert
 		printf("WinSSLEngine.GenerateECDSAKey: BCryptFinalizeKeyPair failed: %d\r\n", status);
 #endif
 		BCryptCloseAlgorithmProvider(hAlgorithm, 0);
-		return 0;
+		return nullptr;
 	}
-	Optional<Crypto::Cert::X509Key> key = 0;
+	Optional<Crypto::Cert::X509Key> key = nullptr;
 	if ((status = BCryptExportKey(hKey, 0, BCRYPT_ECCPRIVATE_BLOB, buff, sizeof(buff), &buffSize, 0)) == 0)
 	{
 		UInt32 pkLen = ReadUInt32(&buff[4]);

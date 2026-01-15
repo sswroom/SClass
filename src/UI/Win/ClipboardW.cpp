@@ -30,7 +30,7 @@ UI::Clipboard::~Clipboard()
 	}
 }
 
-UIntOS UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
+UIntOS UI::Clipboard::GetDataFormats(NN<Data::ArrayListNative<UInt32>> dataTypes)
 {
 	if (!this->succ)
 		return 0;
@@ -52,6 +52,26 @@ Bool UI::Clipboard::GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb)
 {
 	HANDLE hand = GetClipboardData(fmtId);
 	return GetDataTextH(hand, fmtId, sb, 1);
+}
+
+Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
+{
+	HANDLE hand = GetClipboardData(fmtId);
+	if (hand == 0)
+	{
+		return nullptr;
+	}
+	UInt8 *memptr = (UInt8*)GlobalLock(hand);
+	if (memptr == 0)
+	{
+		return nullptr;
+	}
+	UIntOS size = GlobalSize(hand);
+	NN<Data::ByteBuffer> buff;
+	NEW_CLASSNN(buff, Data::ByteBuffer(size));
+	MemCopyNO(buff->Arr().Ptr(), memptr, size);
+	GlobalUnlock(hand);
+	return buff;
 }
 
 UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStringNN> fileNames)

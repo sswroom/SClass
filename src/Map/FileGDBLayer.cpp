@@ -13,7 +13,7 @@ Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>
 	Sync::MutexUsage mutUsage;
 	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
 	NN<DB::DBReader> r;
-	if (currDB->QueryTableData(nullptr, tableName->ToCString(), nullptr, 0, 0, 0, nullptr).SetTo(r))
+	if (currDB->QueryTableData(nullptr, tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
@@ -74,7 +74,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
 	this->tabDef = currDB->GetTableDef(nullptr, tableName);
 	NN<DB::DBReader> r;
-	if (currDB->QueryTableData(nullptr, tableName, nullptr, 0, 0, 0, nullptr).SetTo(r))
+	if (currDB->QueryTableData(nullptr, tableName, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		UIntOS i;
 		UIntOS j;

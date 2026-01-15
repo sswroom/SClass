@@ -139,7 +139,7 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UIntOS>> ports, Data::ArrayList<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UIntOS>> ports, Data::ArrayListNative<SerialPortType> *portTypes)
 {
 	NN<IO::Registry> reg;
 	NN<IO::Registry> comreg;
@@ -446,7 +446,7 @@ Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buf
 {
 	void *h = this->handle;
 	if (h == 0)
-		return 0;
+		return nullptr;
 
 #ifdef _WIN32_WCE
 	UInt32 readSize;
@@ -456,7 +456,7 @@ Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buf
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 #else
 	NN<ReadEvent> re = MemAllocNN(ReadEvent);
@@ -505,7 +505,7 @@ Optional<IO::StreamWriteReq> IO::SerialPort::BeginWrite(Data::ByteArrayR buff, N
 {
 	evt->Set();
 	if (handle == 0)
-		return 0;
+		return nullptr;
 	return (IO::StreamWriteReq*)Write(buff);
 }
 

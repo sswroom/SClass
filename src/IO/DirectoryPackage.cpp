@@ -23,8 +23,8 @@ void IO::DirectoryPackage::AddFile(Text::CStringNN fileName)
 			item.fileName = Text::String::New(fileName);
 			item.fileSize = fileSize;
 			item.modTime = ts;
-			item.accTime = 0;
-			item.createTime = 0;
+			item.accTime = nullptr;
+			item.createTime = nullptr;
 			IO::Path::GetFileTime(fileName, item.modTime, item.accTime, item.createTime);
 			item.unixAttr = IO::Path::GetFileUnixAttr(fileName);
 			this->files.Add(item);
@@ -67,8 +67,8 @@ void IO::DirectoryPackage::Init()
 					item.fileName = Text::String::New(sbuff, (UIntOS)(sptr2 - sbuff));
 					item.fileSize = fileSize;
 					item.modTime = ts;
-					item.accTime = 0;
-					item.createTime = 0;
+					item.accTime = nullptr;
+					item.createTime = nullptr;
 					IO::Path::GetFileTime(CSTRP(sbuff, sptr2), item.modTime, item.accTime, item.createTime);
 					item.unixAttr = IO::Path::GetFileUnixAttr(CSTRP(sbuff, sptr2));
 					this->files.Add(item);

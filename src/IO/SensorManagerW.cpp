@@ -153,7 +153,7 @@ Optional<IO::Sensor> IO::SensorManager::CreateSensor(UIntOS index)
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0 || index < 0)
-		return 0;
+		return nullptr;
 
 	IO::Sensor *ret = 0;
 	ISensorCollection *pSensorColl;
@@ -249,7 +249,7 @@ Optional<IO::SensorAccelerometer> IO::SensorManager::CreateAccelerometer(UIntOS 
 	IO::SensorAccelerometer *ret = 0;
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0 || index < 0)
-		return 0;
+		return nullptr;
 
 	ISensorCollection *pSensorColl;
 	HRESULT hr;

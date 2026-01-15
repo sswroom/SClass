@@ -41,7 +41,7 @@ UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char>
 		return Media::KSRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("KS: ")), devNo - asioCnt - woCnt);
 	}
 #endif
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::AudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
@@ -66,7 +66,7 @@ Media::AudioRenderer *renderer = 0;
 
 Media::AudioDevice::AudioDevice()
 {
-	this->currRenderer = 0;
+	this->currRenderer = nullptr;
 }
 
 Media::AudioDevice::~AudioDevice()
@@ -124,7 +124,7 @@ Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 
 void Media::AudioDevice::ClearDevices()
 {
-	BindAudio(0);
+	BindAudio(nullptr);
 	this->rendererList.DeleteAll();
 }
 
@@ -147,11 +147,11 @@ Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::Aud
 	}
 	if (this->currRenderer.SetTo(renderer))
 	{
-		renderer->BindAudio(0);
-		this->currRenderer = 0;
+		renderer->BindAudio(nullptr);
+		this->currRenderer = nullptr;
 	}
 	if (audsrc.IsNull())
-		return 0;
+		return nullptr;
 	i = 0;
 	j = this->rendererList.GetCount();
 	while (i < j)
@@ -161,7 +161,7 @@ Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::Aud
 		{
 			if (renderer->IsError())
 			{
-				renderer->BindAudio(0);
+				renderer->BindAudio(nullptr);
 			}
 			else
 			{

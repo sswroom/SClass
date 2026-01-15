@@ -834,7 +834,7 @@ Data::Timestamp Data::VariItem::GetAsTimestamp() const
 	}
 	else
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 }
 
@@ -1951,7 +1951,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, NN<VariItem> item)
 			ItemType itemType = item->GetItemType();
 			if (itemType == ItemType::Null)
 			{
-				*(Text::CString*)ptr = 0;
+				*(Text::CString*)ptr = nullptr;
 			}
 			else if (itemType == ItemType::Str)
 			{
@@ -2064,7 +2064,7 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, NN<VariItem>
 			ItemType itemType = item->GetItemType();
 			if (itemType == ItemType::Null)
 			{
-				*(Text::CString*)ptr = 0;
+				*(Text::CString*)ptr = nullptr;
 			}
 			else if (itemType == ItemType::Str)
 			{

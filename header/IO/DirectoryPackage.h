@@ -28,9 +28,9 @@ namespace IO
 			{
 				fileName = Text::String::NewEmpty();
 				fileSize = 0;
-				modTime = 0;
-				accTime = 0;
-				createTime = 0;
+				modTime = nullptr;
+				accTime = nullptr;
+				createTime = nullptr;
 				unixAttr = 0;
 			}
 

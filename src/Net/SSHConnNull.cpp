@@ -12,7 +12,7 @@ Net::SSHConn::SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16
 {
 	this->sockf = sockf;
 	this->clsData = MemAllocNN(ClassData);
-	this->cli = 0;
+	this->cli = nullptr;
 }
 
 Net::SSHConn::~SSHConn()
@@ -62,7 +62,7 @@ Bool Net::SSHConn::AuthPassword(Text::CStringNN userName, Text::CStringNN passwo
 
 Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle> channel, UnsafeArray<UInt8> buff, UIntOS maxSize, OutParam<UIntOS> size)

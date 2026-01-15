@@ -155,16 +155,16 @@ public:
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
-			return 0;
+			return nullptr;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
-			return 0;
+			return nullptr;
 		NN<Text::String> s;
 		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		}
-		return 0;
+		return nullptr;
 	}
 
 	virtual Double GetDblOrNAN(UIntOS colIndex)

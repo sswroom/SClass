@@ -3,10 +3,13 @@
 
 Media::OCREngine::OCREngine(Language lang)
 {
-	this->clsData = 0;
 }
 
 Media::OCREngine::~OCREngine()
+{
+}
+
+void Media::OCREngine::ChangeLanguage(Text::CStringNN lang)
 {
 }
 
@@ -26,7 +29,7 @@ Bool Media::OCREngine::SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame)
 
 Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UIntOS> area, OptOut<UIntOS> confidence)
 {
-	return 0;
+	return nullptr;
 }
 
 void Media::OCREngine::HandleOCRResult(OCRResultFunc hdlr, AnyType userObj)
@@ -38,4 +41,8 @@ void Media::OCREngine::HandleOCRResult(OCRResultFunc hdlr, AnyType userObj)
 Bool Media::OCREngine::ParseAllInImage()
 {
 	return false;
+}
+
+void Media::OCREngine::GetAvailableLanguages(NN<Data::ArrayListStringNN> langs) const
+{
 }

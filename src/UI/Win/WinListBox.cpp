@@ -173,7 +173,7 @@ UIntOS UI::Win::WinListBox::GetSelectedIndex()
 	return (UIntOS)(IntOS)SendMessage((HWND)hwnd.OrNull(), LB_GETCURSEL, 0, 0);
 }
 
-Bool UI::Win::WinListBox::GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices)
+Bool UI::Win::WinListBox::GetSelectedIndices(NN<Data::ArrayListNative<UInt32>> indices)
 {
 	if (this->mulSel)
 	{
@@ -212,7 +212,7 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinListBox::GetSelectedItemText(UnsafeArray<UT
 {
 	UIntOS currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	return GetItemText(buff, currSel);
 }
 
@@ -228,7 +228,7 @@ Optional<Text::String> UI::Win::WinListBox::GetSelectedItemTextNew()
 {
 	UIntOS currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	return GetItemTextNew(currSel);
 }
 
@@ -237,7 +237,7 @@ UnsafeArrayOpt<UTF8Char> UI::Win::WinListBox::GetItemText(UnsafeArray<UTF8Char> 
 	NN<Text::String> s;
 	if (!this->GetItemTextNew(index).SetTo(s))
 	{
-		return 0;
+		return nullptr;
 	}
 	buff = s->ConcatTo(buff);
 	s->Release();
@@ -268,13 +268,13 @@ Optional<Text::String> UI::Win::WinListBox::GetItemTextNew(UIntOS index)
 {
 	IntOS strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXTLEN, index, 0);
 	if (strLen == LB_ERR)
-		return 0;
+		return nullptr;
 	WChar *sbuff = MemAlloc(WChar, (UIntOS)strLen + 1);
 	strLen = SendMessageW((HWND)hwnd.OrNull(), LB_GETTEXT, index, (LPARAM)sbuff);
 	if (strLen == LB_ERR)
 	{
 		MemFree(sbuff);
-		return 0;
+		return nullptr;
 	}
 	else
 	{

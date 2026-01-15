@@ -187,7 +187,7 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 					{
 						log = MemAllocNN(Net::WiFiLogFile::LogFileEntry);
 						MemClear(log->neighbour, sizeof(log->neighbour));
-						log->lastScanTime = 0;
+						log->lastScanTime = nullptr;
 						log->lastRSSI = 0;
 						log->mac[0] = buff[0];
 						log->mac[1] = buff[1];
@@ -468,7 +468,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 	if (!this->Get(imac).SetTo(log))
 	{
 		log = MemAllocNN(Net::WiFiLogFile::LogFileEntry);
-		log->lastScanTime = 0;
+		log->lastScanTime = nullptr;
 		MemClear(log->neighbour, sizeof(log->neighbour));
 		MemCopyNO(log->mac, &buff[0], 6);
 		log->mac64Int = imac;

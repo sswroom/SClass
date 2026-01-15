@@ -37,7 +37,7 @@ SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(Optional<UI::GUIClientControl> paren
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblConnStr = ui->NewLabel(*this, CSTR("Conn String"));

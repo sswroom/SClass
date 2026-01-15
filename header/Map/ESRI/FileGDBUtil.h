@@ -60,8 +60,8 @@ namespace Map
 		{
 		public:
 			static Optional<FileGDBTableInfo> ParseFieldDesc(Data::ByteArray fieldDesc, NN<Math::ArcGISPRJParser> prjParser);
-			static void FreeFieldInfo(NN<FileGDBFieldInfo> fieldInfo);
-			static void FreeTableInfo(NN<FileGDBTableInfo> tableInfo);
+			static void __stdcall FreeFieldInfo(NN<FileGDBFieldInfo> fieldInfo);
+			static void __stdcall FreeTableInfo(NN<FileGDBTableInfo> tableInfo);
 			static NN<FileGDBFieldInfo> FieldInfoClone(NN<FileGDBFieldInfo> tableInfo);
 			static NN<FileGDBTableInfo> TableInfoClone(NN<FileGDBTableInfo> tableInfo);
 			static UIntOS ReadVarUInt(UnsafeArray<const UInt8> buff, UIntOS ofst, OutParam<UInt64> val);

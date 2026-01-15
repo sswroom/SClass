@@ -89,7 +89,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 			readSize = fd->GetRealData(ofst, 256, BYTEARR(buff));
 			UIntOS chainCnt = ReadMUInt32(buff);
 			ofst += 4;
-			pkg->AddObject(file, Text::CStringNN(sb.v, sb.leng - 4), Data::Timestamp(ts, 0), 0, 0, 0);
+			pkg->AddObject(file, Text::CStringNN(sb.v, sb.leng - 4), Data::Timestamp(ts, 0), nullptr, nullptr, 0);
 			s->Release();
 			if (chainCnt > 0)
 			{
@@ -107,7 +107,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 				ofst += ofst + 6 + certTypeLen + certLen;
 				if (chainCnt == 1)
 				{
-					pkg->AddObject(file, Text::CStringNN(sb.v, sb.leng - 4), Data::Timestamp(ts, 0), 0, 0, 0);
+					pkg->AddObject(file, Text::CStringNN(sb.v, sb.leng - 4), Data::Timestamp(ts, 0), nullptr, nullptr, 0);
 				}
 				else
 				{
@@ -129,7 +129,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 						ofst += ofst + 6 + certTypeLen + certLen;
 						i++;
 					}
-					pkg->AddObject(files, Text::CStringNN(sb.v, sb.leng - 4), Data::Timestamp(ts, 0), 0, 0, 0);
+					pkg->AddObject(files, Text::CStringNN(sb.v, sb.leng - 4), Data::Timestamp(ts, 0), nullptr, nullptr, 0);
 				}
 				s->Release();
 			}
@@ -157,7 +157,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 			NN<Crypto::Cert::X509Cert> cert;
 			if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(Parser::FileParser::X509Parser::ParseBuff(cerBuff.WithSize(certLen), s)).SetTo(cert))
 			{
-				pkg->AddObject(cert, Text::CStringNN(&buff[6], aliasLen), Data::Timestamp(ts, 0), 0, 0, 0);
+				pkg->AddObject(cert, Text::CStringNN(&buff[6], aliasLen), Data::Timestamp(ts, 0), nullptr, nullptr, 0);
 			}
 			else
 			{

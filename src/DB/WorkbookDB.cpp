@@ -122,7 +122,7 @@ public:
 		NN<Text::String> cellValue;
 		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
-			return 0;
+			return nullptr;
 		}
 		return Data::Timestamp::FromStr(cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}

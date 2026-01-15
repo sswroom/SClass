@@ -330,7 +330,7 @@ void ASIOHdlrSRChg(ASIOSampleRate sRate)
 Int32 Media::ASIOOutRenderer::GetDeviceIndex(UnsafeArrayOpt<const UTF8Char> buff)
 {
 	HKEY hkEnum;
-	UnsafeArrayOpt<const WChar> wbuff = 0;
+	UnsafeArrayOpt<const WChar> wbuff = nullptr;
 	UnsafeArray<const WChar> nnwbuff;
 	UnsafeArray<const UTF8Char> nnbuff;
 	if (buff.SetTo(nnbuff))
@@ -723,7 +723,7 @@ UnsafeArrayOpt<UTF8Char> Media::ASIOOutRenderer::GetDeviceName(UnsafeArray<UTF8C
 {
 	WChar wbuff[MAXDRVNAMELEN];
 	HKEY hkEnum;
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	DWORD nameLen = MAXDRVNAMELEN;
 	Int32 cr = RegOpenKeyW(HKEY_LOCAL_MACHINE, ASIO_PATH, &hkEnum);
 	if (cr == ERROR_SUCCESS)
@@ -760,7 +760,7 @@ Int64 Media::ASIOOutRenderer::SwitchBuffer(Int32 index)
 Media::ASIOOutRenderer::ASIOOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 {
 	asiodrv = 0;
-	drvName = 0;
+	drvName = nullptr;
 	this->endHdlr = 0;
 	InitDevice((UInt32)GetDeviceIndex(devName));
 }
@@ -768,7 +768,7 @@ Media::ASIOOutRenderer::ASIOOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 Media::ASIOOutRenderer::ASIOOutRenderer(UInt32 devId)
 {
 	asiodrv = 0;
-	drvName = 0;
+	drvName = nullptr;
 	this->endHdlr = 0;
 	this->buffTime = 0;
 	InitDevice(devId);
@@ -781,7 +781,7 @@ Media::ASIOOutRenderer::~ASIOOutRenderer()
 	if (drvName.SetTo(nndrvName))
 	{
 		Text::StrDelNew(nndrvName);
-		drvName = 0;
+		drvName = nullptr;
 	}
 	if (asiodrv)
 	{

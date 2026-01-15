@@ -609,9 +609,9 @@ UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetStr(UIntOS colIndex, UnsafeArray<UT
 Data::Timestamp DB::MySQLReader::GetTimestamp(UIntOS colIndex)
 {
 	if (this->row == 0)
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	if (colIndex >= this->colCount)
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
@@ -619,7 +619,7 @@ Data::Timestamp DB::MySQLReader::GetTimestamp(UIntOS colIndex)
 	}
 	else
 	{
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 }
 

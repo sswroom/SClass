@@ -590,8 +590,8 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 		MemFreeNN(attachment);
 		return nullptr;
 	}
-	attachment->createTime = 0;
-	attachment->modifyTime = 0;
+	attachment->createTime = nullptr;
+	attachment->modifyTime = nullptr;
 	fs.GetFileTimes(attachment->createTime, 0, attachment->modifyTime);
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
 	sptr = Text::StrUIntOS(Text::StrConcatC(sbuff, UTF8STRC("attach")), this->attachments.GetCount() + 1);
@@ -672,7 +672,7 @@ Text::CString Net::Email::EmailMessage::GetSubject()
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Net::Email::EmailMessage::GetContentType()

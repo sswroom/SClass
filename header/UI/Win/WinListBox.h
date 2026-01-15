@@ -34,7 +34,7 @@ namespace UI
 			virtual UIntOS GetCount();
 			virtual void SetSelectedIndex(UIntOS index);
 			virtual UIntOS GetSelectedIndex();
-			virtual Bool GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices);
+			virtual Bool GetSelectedIndices(NN<Data::ArrayListNative<UInt32>> indices);
 			virtual AnyType GetSelectedItem();
 			virtual UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff);
 			WChar *GetSelectedItemText(WChar *buff);

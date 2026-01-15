@@ -40,7 +40,7 @@ Media::DShow::DShowVideoCapture::DShowVideoCapture(IBaseFilter *baseFilter, IPro
 	}
 	else
 	{
-		this->displayName = 0;
+		this->displayName = nullptr;
 	}
 	this->baseFilter = baseFilter;
 	this->pPropBag = pPropBag;
@@ -614,11 +614,11 @@ UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(Unsaf
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
 	UInt32 cnt;
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 
 	if (pEnum == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	pEnum->Reset();
 	cnt = 0;
@@ -630,7 +630,7 @@ UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(Unsaf
 			if (FAILED(hr))
 			{
 				pMoniker->Release();
-				return 0;
+				return nullptr;
 			} 
 			VARIANT var;
 			VariantInit(&var);
@@ -653,7 +653,7 @@ UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(Unsaf
         pMoniker->Release();
 		cnt++;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArray<WChar> buff, UIntOS devNo)
@@ -662,11 +662,11 @@ UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArra
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
 	UInt32 cnt;
-	UnsafeArrayOpt<WChar> wptr = 0;
+	UnsafeArrayOpt<WChar> wptr = nullptr;
 
 	if (pEnum == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	pEnum->Reset();
 	cnt = 0;
@@ -678,7 +678,7 @@ UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArra
 			if (FAILED(hr))
 			{
 				pMoniker->Release();
-				return 0;
+				return nullptr;
 			} 
 			VARIANT var;
 			VariantInit(&var);
@@ -697,7 +697,7 @@ UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArra
         pMoniker->Release();
 		cnt++;
 	}
-	return 0;
+	return nullptr;
 }
 
 Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(UIntOS devNo)

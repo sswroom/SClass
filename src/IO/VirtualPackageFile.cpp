@@ -679,7 +679,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemModTime(UIntOS index) const
 	{
 		return item->modTime;
 	}
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 Data::Timestamp IO::VirtualPackageFile::GetItemAccTime(UIntOS index) const
@@ -689,7 +689,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemAccTime(UIntOS index) const
 	{
 		return item->accTime;
 	}
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 Data::Timestamp IO::VirtualPackageFile::GetItemCreateTime(UIntOS index) const
@@ -699,7 +699,7 @@ Data::Timestamp IO::VirtualPackageFile::GetItemCreateTime(UIntOS index) const
 	{
 		return item->createTime;
 	}
-	return Data::Timestamp(0);
+	return Data::Timestamp(nullptr);
 }
 
 UInt32 IO::VirtualPackageFile::GetItemUnixAttr(UIntOS index) const
@@ -825,9 +825,9 @@ Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, Optional<IO::Pro
 		{
 			return false;
 		}
-		Data::Timestamp modTime = 0;
-		Data::Timestamp createTime = 0;
-		Data::Timestamp accTime = 0;
+		Data::Timestamp modTime = nullptr;
+		Data::Timestamp createTime = nullptr;
+		Data::Timestamp accTime = nullptr;
 		fd.GetFileStream()->GetFileTimes(createTime, accTime, modTime);
 		UInt32 unixAttr = IO::Path::GetFileUnixAttr(fileName);
 		return this->AddOrReplaceData(fd, 0, fd.GetDataSize(), PackFileItem::HeaderType::No, fName, modTime, accTime, createTime, unixAttr);
@@ -838,9 +838,9 @@ Bool IO::VirtualPackageFile::CopyFrom(Text::CStringNN fileName, Optional<IO::Pro
 		Text::CStringNN fName = fileName.Substring(i + 1);
 		NN<IO::DirectoryPackage> dpkg;
 		NEW_CLASSNN(dpkg, IO::DirectoryPackage(fileName));
-		Data::Timestamp modTime = 0;
-		Data::Timestamp createTime = 0;
-		Data::Timestamp accTime = 0;
+		Data::Timestamp modTime = nullptr;
+		Data::Timestamp createTime = nullptr;
+		Data::Timestamp accTime = nullptr;
 		IO::Path::GetFileTime(fileName, modTime, createTime, accTime);
 		UInt32 unixAttr = IO::Path::GetFileUnixAttr(fileName);
 		return this->AddOrReplacePack(dpkg, fName, modTime, accTime, createTime, unixAttr);

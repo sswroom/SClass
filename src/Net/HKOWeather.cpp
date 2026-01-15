@@ -375,7 +375,7 @@ Bool Net::HKOWeather::GetWarningSummary(NN<Net::TCPClientFactory> clif, Optional
 						}
 						else
 						{
-							summary->expireTime = 0;
+							summary->expireTime = nullptr;
 						}
 						warnings->Add(summary);
 					}

@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 		}
 		sptr = enc.UTF8FromBytes(sbuff, fileBuff, 256, 0);
 		Text::StrReplace(sbuff, ';', '\\');
-		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), 0, 0, 0, 0);
+		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), nullptr, nullptr, nullptr, 0);
 
 		ofst += 272;
 		i++;

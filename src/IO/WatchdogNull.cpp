@@ -4,10 +4,10 @@
 
 Optional<IO::Watchdog> IO::Watchdog::Create()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::Watchdog> IO::Watchdog::Create(Int32 devNum)
 {
-	return 0;
+	return nullptr;
 }

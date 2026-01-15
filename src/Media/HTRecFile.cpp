@@ -316,12 +316,12 @@ Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UIntOS colIndex)
 				return this->file->GetStartTime();
 			}
 		}
-		return Data::Timestamp(0);
+		return Data::Timestamp(nullptr);
 	}
 	else
 	{
 		if (currRow >= this->recCount)
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 		if (colIndex == 1)
 		{
 			Data::Timestamp ts = this->file->GetAdjStartTime().AddMS((IntOS)currRow * this->file->GetAdjRecInterval());
@@ -329,7 +329,7 @@ Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UIntOS colIndex)
 		}
 		else
 		{
-			return Data::Timestamp(0);
+			return Data::Timestamp(nullptr);
 		}
 	}
 }

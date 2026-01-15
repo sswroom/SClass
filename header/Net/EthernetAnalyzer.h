@@ -146,7 +146,7 @@ namespace Net
 				this->destAddr = 0;
 				this->srcPort = 0;
 				this->destPort = 0;
-				this->reqTime = Data::Timestamp(0);
+				this->reqTime = Data::Timestamp(nullptr);
 			}
 
 			Bool operator==(TCP4SYNInfo info)

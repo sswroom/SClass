@@ -21,7 +21,7 @@ IO::SystemInfo::~SystemInfo()
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
 	WChar wbuff[256];
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	UnsafeArray<UTF8Char> nnret;
 
 	NN<IO::Registry> reg;
@@ -42,7 +42,7 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> s
 		IO::Registry::CloseRegistry(reg);
 	}
 
-	if (ret == 0)
+	if (ret.IsNull())
 	{
 		NN<IO::SMBIOS> smbios;
 		if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
@@ -58,7 +58,7 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> s
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	NN<IO::SMBIOS> smbios;
 	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
@@ -67,7 +67,7 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbu
 		if (ret.NotNull())
 			return ret;
 	}
-	return 0;
+	return nullptr;
 }
 
 UInt64 IO::SystemInfo::GetTotalMemSize()
@@ -214,7 +214,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 				}
 				else
 				{
-					ram->deviceLocator = 0;
+					ram->deviceLocator = nullptr;
 				}
 				if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->manufacturer).SetTo(csptr))
 				{
@@ -222,7 +222,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 				}
 				else
 				{
-					ram->manufacturer = 0;
+					ram->manufacturer = nullptr;
 				}
 				if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->partNo).SetTo(csptr))
 				{
@@ -230,7 +230,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 				}
 				else
 				{
-					ram->partNo = 0;
+					ram->partNo = nullptr;
 				}
 				if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(mem->sn).SetTo(csptr))
 				{
@@ -238,7 +238,7 @@ UIntOS IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 				}
 				else
 				{
-					ram->sn = 0;
+					ram->sn = nullptr;
 				}
 				ram->defSpdMHz = mem->maxSpeedMTs;
 				ram->confSpdMHz = mem->confSpeedMTs;
