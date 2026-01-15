@@ -67,10 +67,10 @@ namespace IO
 		Bool LoadConfigFile(Text::CStringNN cfgFile);
 
 		Text::PString ParseCond(Text::PString str1, OutParam<Bool> valid);
-		Bool ParseSource(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, Text::CStringNN sourceFile, Text::CString sourceRefPath, NN<Data::ArrayListUInt64> objParsedProgs, NN<Text::StringBuilderUTF8> tmpSb);
-		Bool ParseHeader(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> headerFile, Text::CStringNN sourceFile, NN<Data::ArrayListUInt64> objParsedProgs, NN<Text::StringBuilderUTF8> tmpSb);
-		Bool ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> objectFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
-		Bool ParseProgInternal(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseSource(NN<Data::FastStringMapNative<Int32>> objList, NN<Data::FastStringMapNative<Int32>> libList, NN<Data::FastStringMapNative<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, Text::CStringNN sourceFile, Text::CString sourceRefPath, NN<Data::ArrayListUInt64> objParsedProgs, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseHeader(NN<Data::FastStringMapNative<Int32>> objList, NN<Data::FastStringMapNative<Int32>> libList, NN<Data::FastStringMapNative<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> headerFile, Text::CStringNN sourceFile, NN<Data::ArrayListUInt64> objParsedProgs, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseObject(NN<Data::FastStringMapNative<Int32>> objList, NN<Data::FastStringMapNative<Int32>> libList, NN<Data::FastStringMapNative<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> objectFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseProgInternal(NN<Data::FastStringMapNative<Int32>> objList, NN<Data::FastStringMapNative<Int32>> libList, NN<Data::FastStringMapNative<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> tmpSb);
 
 		static void __stdcall CompileTask(AnyType userObj);
 		void CompileObject(Text::CStringNN cmd);
@@ -101,7 +101,7 @@ namespace IO
 		NN<const Data::ArrayListNN<ConfigItem>> GetConfigList() const;
 		Bool HasProg(Text::CStringNN progName) const;
 		Bool CompileProg(Text::CStringNN progName, Bool asmListing);
-		Bool ParseProg(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NN<Text::String> progName);
+		Bool ParseProg(NN<Data::FastStringMapNative<Int32>> objList, NN<Data::FastStringMapNative<Int32>> libList, NN<Data::FastStringMapNative<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NN<Text::String> progName);
 
 		void CleanFiles();
 

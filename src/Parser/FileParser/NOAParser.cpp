@@ -51,26 +51,26 @@ Optional<IO::ParsedObject> Parser::FileParser::NOAParser::ParseFileHdr(NN<IO::St
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NOA")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[0]) != 0x69746e45 || ReadInt32(&hdr[4]) != 0x1a73)
-		return 0;
+		return nullptr;
 
 	dataOfst = 64;
 	if (ReadInt32(&hdr[64]) != 0x45726944 || ReadInt32(&hdr[68]) != 0x7972746e)
 	{
-		return 0;
+		return nullptr;
 	}
 	tagSize = ReadUInt32(&hdr[72]);
 	fd->GetRealData(64 + tagSize + 16, 16, BYTEARR(tagBuff));
 	if (ReadInt32(&tagBuff[0]) != 0x656c6966 || ReadInt32(&tagBuff[4]) != 0x61746164)
 	{
-		return 0;
+		return nullptr;
 	}
 	Data::ByteBuffer recBuff(tagSize);
 	if (fd->GetRealData(64 + 16, tagSize, recBuff) != tagSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;

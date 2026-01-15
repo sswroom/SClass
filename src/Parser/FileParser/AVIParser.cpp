@@ -144,10 +144,10 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	Data::ByteBuffer chap(0);
 
 	if (*(Int32*)&hdr[0] != *(Int32*)"RIFF" || *(Int32*)&hdr[8] != *(Int32*)"AVI ")
-		return 0;
+		return nullptr;
 	if (*(Int32*)&hdr[12] != *(Int32*)"LIST" || *(Int32*)&hdr[20] != *(Int32*)"hdrl")
 	{
-		return 0;
+		return nullptr;
 	}
 //	hdrlSize = *(Int32*)&chunkBuffer[4];
 
@@ -155,7 +155,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	offset += fd->GetRealData(offset, 8, BYTEARR(chunkBuffer));
 	if (*(Int32*)chunkBuffer != *(Int32*)"avih")
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Text::Encoding enc(this->codePage);

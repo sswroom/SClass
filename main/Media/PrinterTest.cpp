@@ -65,7 +65,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	eng = Media::DrawEngineFactory::CreateDrawEngine();
 	NEW_CLASS(printer, Media::Printer(PRINTERNAME));
-	printer->ShowPrintSettings(0);
+	printer->ShowPrintSettings(nullptr);
 	NEW_CLASSNN(prtobj, PrintObj());
 	if (printer->StartPrint(prtobj, eng).SetTo(doc))
 	{

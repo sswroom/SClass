@@ -323,8 +323,8 @@ Optional<Crypto::Cert::X509CertReq> Crypto::Cert::CertUtil::CertReqCreate(NN<Net
 
 	builder.BeginSequence();
 	builder.AppendInt32(0);
-	if (!AppendNames(builder, names)) return 0;
-	if (!AppendPublicKey(builder, key)) return 0;
+	if (!AppendNames(builder, names)) return nullptr;
+	if (!AppendPublicKey(builder, key)) return nullptr;
 	builder.BeginOther(0xA0);
 	if (ext.SetTo(nnext))
 	{
@@ -338,7 +338,7 @@ Optional<Crypto::Cert::X509CertReq> Crypto::Cert::CertUtil::CertReqCreate(NN<Net
 	builder.EndLevel();
 	builder.EndLevel();
 
-	if (!AppendSign(builder, ssl, key, Crypto::Hash::HashType::SHA256)) return 0;
+	if (!AppendSign(builder, ssl, key, Crypto::Hash::HashType::SHA256)) return nullptr;
 	builder.EndLevel();
 
 	Text::StringBuilderUTF8 sb;
@@ -377,7 +377,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN
 	builder.AppendNull();
 	builder.EndLevel();
 
-	if (!AppendNames(builder, names)) return 0;
+	if (!AppendNames(builder, names)) return nullptr;
 	dt.SetCurrTimeUTC();
 	builder.BeginSequence();
 	builder.AppendUTCTime(dt);
@@ -385,8 +385,8 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN
 	builder.AppendUTCTime(dt);
 	builder.EndLevel();
 
-	if (!AppendNames(builder, names)) return 0;
-	if (!AppendPublicKey(builder, key)) return 0;
+	if (!AppendNames(builder, names)) return nullptr;
+	if (!AppendPublicKey(builder, key)) return nullptr;
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
 	if (ext.SetTo(nnext))
 	{
@@ -395,7 +395,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::SelfSignedCertCreate(NN
 	builder.EndLevel();
 	builder.EndLevel();
 
-	if (!AppendSign(builder, ssl, key, Crypto::Hash::HashType::SHA256)) return 0;
+	if (!AppendSign(builder, ssl, key, Crypto::Hash::HashType::SHA256)) return nullptr;
 	builder.EndLevel();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendOpt(names->commonName);
@@ -437,12 +437,12 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEn
 	MemClear(&names, sizeof(names));
 	if (!caCert->GetSubjNames(names))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!AppendNames(builder, names))
 	{
 		Crypto::Cert::CertNames::FreeNames(names);
- 		return 0;
+ 		return nullptr;
 	}
 	Crypto::Cert::CertNames::FreeNames(names);
 	dt.SetCurrTimeUTC();
@@ -455,24 +455,24 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEn
 	MemClear(&names, sizeof(names));
 	if (!csr->GetNames(names))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!AppendNames(builder, names))
 	{
 		Crypto::Cert::CertNames::FreeNames(names);
- 		return 0;
+ 		return nullptr;
 	}
 	sbFileName.AppendOpt(names.commonName);
 	Crypto::Cert::CertNames::FreeNames(names);
 	NN<Crypto::Cert::X509Key> pubKey;;
 	if (!csr->GetNewPublicKey().SetTo(pubKey))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!AppendPublicKey(builder, pubKey))
 	{
 		pubKey.Delete();
-		return 0;
+		return nullptr;
 	}
 	pubKey.Delete();
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
@@ -486,7 +486,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEn
 	builder.EndLevel();
 	builder.EndLevel();
 
-	if (!AppendSign(builder, ssl, caKey, Crypto::Hash::HashType::SHA256)) return 0;
+	if (!AppendSign(builder, ssl, caKey, Crypto::Hash::HashType::SHA256)) return nullptr;
 	builder.EndLevel();
 	sbFileName.AppendC(UTF8STRC(".crt"));
 	Crypto::Cert::X509Cert *cert;
@@ -506,29 +506,29 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::C
 	MemClear(&ext, sizeof(ext));
 	if (!cert->GetExtensions(ext))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!ext.useAuthKeyId)
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(ext);
-		return 0;
+		return nullptr;
 	}
 	sptr = cert->GetSourceNameObj()->ConcatTo(sbuff);
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(ext);
-		return 0;
+		return nullptr;
 	}
 	if (!cert->GetKeyId(BYTEARR(keyId)))
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(ext);
-		return 0;
+		return nullptr;
 	}
 	if (BytesEquals(keyId, ext.authKeyId, 20))
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(ext);
-		return 0;
+		return nullptr;
 	}
 	sptr = &sbuff[i + 1];
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -582,5 +582,5 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::C
 	}
 
 	Crypto::Cert::CertExtensions::FreeExtensions(ext);
-	return 0;
+	return nullptr;
 }

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
+#include "Data/ArrayListObj.hpp"
 #include "Data/DateTime.h"
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
@@ -49,7 +50,7 @@ namespace Net
 			UInt8 decimals;
 		} ColumnDef;
 
-		Data::ArrayList<ColumnDef*> cols;
+		Data::ArrayListObj<ColumnDef*> cols;
 		UOSInt colCount;
 		OSInt rowChanged;
 		Text::String **currRow;
@@ -164,15 +165,15 @@ namespace Net
 		{
 			if (this->currRow == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (colIndex >= this->colCount)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (this->currRow[colIndex] == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			return Text::StrUTF8_WChar(buff, this->currRow[colIndex]->v, 0);
 		}
@@ -199,15 +200,15 @@ namespace Net
 		{
 			if (this->currRow == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (colIndex >= this->colCount)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (this->currRow[colIndex] == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			return this->currRow[colIndex]->Clone();
 		}
@@ -216,15 +217,15 @@ namespace Net
 		{
 			if (this->currRow == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (colIndex >= this->colCount)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (this->currRow[colIndex] == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			return this->currRow[colIndex]->ConcatToS(buff, buffSize);
 		}
@@ -295,7 +296,7 @@ namespace Net
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 		{
 			/////////////////////////////
-			return 0;
+			return nullptr;
 		}
 
 		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -324,7 +325,7 @@ namespace Net
 			{
 				return col->name->ConcatTo(buff);
 			}
-			return 0;
+			return nullptr;
 		}
 
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
@@ -480,7 +481,7 @@ namespace Net
 			UOSInt rowNum;
 		} RowData;	
 
-		Data::ArrayList<ColumnDef*> cols;
+		Data::ArrayListObj<ColumnDef*> cols;
 		Net::MySQLUtil::MySQLType *colTypes;
 		UOSInt colCount;
 		OSInt rowChanged;
@@ -644,12 +645,12 @@ namespace Net
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
 			{
-				return 0;
+				return nullptr;
 			}
 			Data::VariItem::ItemType itemType = item.GetItemType();
 			if (itemType == Data::VariItem::ItemType::Null)
 			{
-				return 0;
+				return nullptr;
 			}
 			Text::StringBuilderUTF8 sb;
 			item.GetAsString(sb);
@@ -677,7 +678,7 @@ namespace Net
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
 			{
-				return 0;
+				return nullptr;
 			}
 			Data::VariItem::ItemType itemType = item.GetItemType();
 			if (itemType == Data::VariItem::ItemType::Str)
@@ -686,7 +687,7 @@ namespace Net
 			}
 			else if (itemType == Data::VariItem::ItemType::Null)
 			{
-				return 0;
+				return nullptr;
 			}
 			else
 			{
@@ -701,11 +702,11 @@ namespace Net
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
 			{
-				return 0;
+				return nullptr;
 			}
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				return 0;
+				return nullptr;
 			}
 			return item.GetAsStringS(buff, buffSize);
 		}
@@ -787,7 +788,7 @@ namespace Net
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
 			{
-				return 0;
+				return false;
 			}
 			return item.GetAsBool();
 		}
@@ -825,7 +826,7 @@ namespace Net
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
 			{
-				return 0;
+				return nullptr;
 			}
 			return item.GetAndRemoveVector();
 		}
@@ -1065,7 +1066,7 @@ namespace Net
 			{
 				return Text::StrConcat(buff, col->name->v);
 			}
-			return 0;
+			return nullptr;
 		}
 
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
@@ -2078,19 +2079,19 @@ Net::MySQLTCPClient::MySQLTCPClient(NN<Net::TCPClientFactory> clif, NN<const Net
 	this->port = port;
 	this->mode = ClientMode::Handshake;
 	this->authenType = Net::MySQLUtil::AuthenType::MySQLNativePassword;
-	this->svrVer = 0;
+	this->svrVer = nullptr;
 	this->connId = 0;
 	this->authPluginDataSize = 0;
 	this->svrCap = 0;
-	this->lastError = 0;
+	this->lastError = nullptr;
 	this->userName = userName->Clone();
 	this->password = password->Clone();
 	this->database = Text::String::CopyOrNull(database);
 	this->cmdSeqNum = 0;
-	this->cmdTCPReader = 0;
-	this->cmdBinReader = 0;
+	this->cmdTCPReader = nullptr;
+	this->cmdBinReader = nullptr;
 	this->cmdResultType = CmdResultType::Processing;
-	this->cli = 0;
+	this->cli = nullptr;
 	this->Reconnect();
 }
 
@@ -2102,20 +2103,20 @@ Net::MySQLTCPClient::MySQLTCPClient(NN<Net::TCPClientFactory> clif, NN<const Net
 	this->addr = *addr.Ptr();
 	this->port = port;
 	this->mode = ClientMode::Handshake;
-	this->svrVer = 0;
+	this->svrVer = nullptr;
 	this->axisAware = false;
 	this->connId = 0;
 	this->authPluginDataSize = 0;
 	this->svrCap = 0;
-	this->lastError = 0;
+	this->lastError = nullptr;
 	this->userName = Text::String::New(userName);
 	this->password = Text::String::New(password);
 	this->database = Text::String::NewOrNull(database);
 	this->cmdSeqNum = 0;
-	this->cmdTCPReader = 0;
-	this->cmdBinReader = 0;
+	this->cmdTCPReader = nullptr;
+	this->cmdBinReader = nullptr;
 	this->cmdResultType = CmdResultType::Processing;
-	this->cli = 0;
+	this->cli = nullptr;
 	this->Reconnect();
 }
 
@@ -2235,13 +2236,13 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	if (this->cli.IsNull() || !this->recvRunning)
 	{
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 	while (this->mode != ClientMode::Data)
 	{
 		if (this->cli.IsNull() || !this->recvRunning)
 		{
-			return 0;
+			return nullptr;
 		}
 		Sync::SimpleThread::Sleep(10);
 	}
@@ -2256,11 +2257,11 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (!this->cli.SetTo(cli) || cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)
 	{
-		this->cmdTCPReader = 0;
+		this->cmdTCPReader = nullptr;
 		reader.Delete();
 		MemFree(buff);
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 	MemFree(buff);
 #if defined(VERBOSE)
@@ -2274,11 +2275,11 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	}
 	if (this->cmdResultType == CmdResultType::Error)
 	{
-		this->cmdTCPReader = 0;
+		this->cmdTCPReader = nullptr;
 		reader->EndData();
 		reader.Delete();
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 	this->lastDataError = DE_NO_ERROR;
 	return reader;
@@ -2290,13 +2291,13 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	if (this->cli.IsNull() || !this->recvRunning)
 	{
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 	while (this->mode != ClientMode::Data)
 	{
 		if (this->cli.IsNull() || !this->recvRunning)
 		{
-			return 0;
+			return nullptr;
 		}
 		Sync::SimpleThread::Sleep(10);
 	}
@@ -2311,11 +2312,11 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (!this->cli.SetTo(cli) || cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)
 	{
-		this->cmdBinReader = 0;
+		this->cmdBinReader = nullptr;
 		reader.Delete();
 		MemFree(buff);
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 	MemFree(buff);
 #if defined(VERBOSE)
@@ -2329,11 +2330,11 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	}
 	if (this->cmdResultType == CmdResultType::Error)
 	{
-		this->cmdBinReader = 0;
+		this->cmdBinReader = nullptr;
 		reader->EndData();
 		reader.Delete();
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 	this->lastDataError = DE_NO_ERROR;
 	return reader;
@@ -2351,13 +2352,13 @@ void Net::MySQLTCPClient::CloseReader(NN<DB::DBReader> r)
 	if (this->cmdBinReader == NN<MySQLTCPBinaryReader>::ConvertFrom(r))
 	{
 		NN<MySQLTCPBinaryReader> reader = NN<MySQLTCPBinaryReader>::ConvertFrom(r);
-		this->cmdBinReader = 0;
+		this->cmdBinReader = nullptr;
 		reader.Delete();
 	}
 	else if (this->cmdTCPReader == (MySQLTCPReader*)r.Ptr())
 	{
 		NN<MySQLTCPReader> reader = NN<MySQLTCPReader>::ConvertFrom(r);
-		this->cmdTCPReader = 0;
+		this->cmdTCPReader = nullptr;
 		reader.Delete();
 	}
 }
@@ -2423,7 +2424,7 @@ Optional<DB::DBTransaction> Net::MySQLTCPClient::BeginTransaction()
 	{
 		return (DB::DBTransaction*)-1;
 	}
-	return 0;
+	return nullptr;
 }
 void Net::MySQLTCPClient::Commit(NN<DB::DBTransaction> tran)
 {
@@ -2624,12 +2625,12 @@ Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory>
 		else
 		{
 			conn.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -2649,11 +2650,11 @@ Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::TCPClientFactory>
 		else
 		{
 			conn.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

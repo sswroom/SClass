@@ -5,8 +5,8 @@
 
 Data::SyncLinkedList::SyncLinkedList()
 {
-	this->firstItem = 0;
-	this->lastItem = 0;
+	this->firstItem = nullptr;
+	this->lastItem = nullptr;
 }
 
 Data::SyncLinkedList::~SyncLinkedList()
@@ -21,8 +21,8 @@ Data::SyncLinkedList::~SyncLinkedList()
 		MemFreeNN(nnitem);
 		item = item2;
 	}
-	this->lastItem = 0;
-	this->firstItem = 0;
+	this->lastItem = nullptr;
+	this->firstItem = nullptr;
 }
 
 Bool Data::SyncLinkedList::HasItems()
@@ -45,7 +45,7 @@ void Data::SyncLinkedList::Put(AnyType item)
 		this->firstItem = this->lastItem = lastItem = MemAllocNN(Data::LinkedListItem);
 	}
 	lastItem->item = item;
-	lastItem->nextItem = 0;
+	lastItem->nextItem = nullptr;
 }
 
 AnyType Data::SyncLinkedList::Get()
@@ -57,7 +57,7 @@ AnyType Data::SyncLinkedList::Get()
 	{
 		if ((this->firstItem = item->nextItem).IsNull())
 		{
-			this->lastItem = 0;
+			this->lastItem = nullptr;
 		}
 		mutUsage.EndUse();
 		obj = item->item;

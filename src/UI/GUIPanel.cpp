@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUIPanel.h"
 
-UI::GUIPanel::GUIPanel(NN<GUICore> ui, Optional<ControlHandle> parentHWnd) : UI::GUIClientControl(ui, 0)
+UI::GUIPanel::GUIPanel(NN<GUICore> ui, Optional<ControlHandle> parentHWnd) : UI::GUIClientControl(ui, nullptr)
 {
 	this->base = ui->NewPanelBase(*this, parentHWnd);
 }

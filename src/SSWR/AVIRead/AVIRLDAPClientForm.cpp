@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 	{
 		cli->Unbind();
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->btnConnect->SetText(CSTR("Connect"));
 		return;
 	}
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 	else
 	{
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->ui->ShowMsgOK(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Client"), me);
 		return;
 	}
@@ -221,7 +221,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientCont
 	this->lvSearch->AddColumn(CSTR("Type"), 200);
 	this->lvSearch->AddColumn(CSTR("Value"), 500);
 
-	this->cli = 0;
+	this->cli = nullptr;
 }
 
 SSWR::AVIRead::AVIRLDAPClientForm::~AVIRLDAPClientForm()

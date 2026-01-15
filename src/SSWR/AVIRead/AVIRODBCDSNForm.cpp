@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(Optional<UI::GUIClientControl> p
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblDSN = ui->NewLabel(*this, CSTR("DSN"));

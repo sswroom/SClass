@@ -56,7 +56,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 	UOSInt currCol;
 
 	if (!fd->GetFullFileName()->EndsWithICase(UTF8STRC(".CSV")))
-		return 0;
+		return nullptr;
 
 	UOSInt i;
 	IO::StreamDataStream stm(fd);
@@ -196,7 +196,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		{
 			Data::Timestamp startTime = Data::Timestamp::FromStr(sarr[1].ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 			Text::String *lastTime = 0;
-			NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, 0));
+			NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, nullptr));
 			track->SetTrackName(fd->GetShortName());
 			
 			while (true)
@@ -226,7 +226,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 				rec.nSateViewQZSS = 0;
 				rec.nSateViewBD = 0;
 				track->AddRecord(rec);
-				if (reader.ReadLine(sbuff, 1024) == 0)
+				if (reader.ReadLine(sbuff, 1024).IsNull())
 				{
 					break;
 				}
@@ -240,7 +240,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else if (((dateCol != INVALID_INDEX && timeCol != INVALID_INDEX) || (dtCol != INVALID_INDEX)) && latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
@@ -248,7 +248,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		Map::GPSTrack *track;
 		Map::GPSTrack::GPSRecord3 rec;
 		Data::DateTime dt;
-		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, 0));
+		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, nullptr));
 		track->SetTrackName(fd->GetShortName());
 		
 		tmpArr2 = MemAlloc(Text::PString, currCol + 1);
@@ -384,7 +384,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 			}
 		}
 		NN<Math::CoordinateSystem> csys;
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpcArr2), csys = Math::CoordinateSystemManager::CreateWGS84Csys(), nameCol, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpcArr2), csys = Math::CoordinateSystemManager::CreateWGS84Csys(), nameCol, nullptr));
 		
 		UnsafeArray<UnsafeArray<UTF8Char>> tmpUArr2 = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(tmpcArr2);
 		while (reader.ReadLine(sbuff, 1024).NotNull())
@@ -418,7 +418,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 }

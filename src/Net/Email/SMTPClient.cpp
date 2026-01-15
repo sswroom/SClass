@@ -13,8 +13,8 @@ Net::Email::SMTPClient::SMTPClient(NN<Net::TCPClientFactory> clif, Optional<Net:
 	this->connType = connType;
 	this->logWriter = logWriter;
 	this->logRelease = false;
-	this->authUser = 0;
-	this->authPassword = 0;
+	this->authUser = nullptr;
+	this->authPassword = nullptr;
 	this->timeout = timeout;
 }
 
@@ -25,10 +25,10 @@ Net::Email::SMTPClient::SMTPClient(NN<Net::TCPClientFactory> clif, Optional<Net:
 	this->host = Text::String::New(host);
 	this->port = port;
 	this->connType = connType;
-	this->logWriter = 0;
+	this->logWriter = nullptr;
 	this->logRelease = false;
-	this->authUser = 0;
-	this->authPassword = 0;
+	this->authUser = nullptr;
+	this->authPassword = nullptr;
 	this->timeout = timeout;
 	NN<IO::LogTool> nnlog;
 	if (log.SetTo(nnlog))

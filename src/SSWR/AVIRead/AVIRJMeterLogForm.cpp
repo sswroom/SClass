@@ -158,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRJMeterLogForm::OnExportClicked(AnyType userObj
 		}
 		Exporter::XLSXExporter exporter;
 		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		exporter.ExportFile(fs, dlg->GetFileName()->ToCString(), wb, 0);
+		exporter.ExportFile(fs, dlg->GetFileName()->ToCString(), wb, nullptr);
 	}
 }
 
@@ -265,7 +265,7 @@ SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientContro
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->log = 0;
+	this->log = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlFile = ui->NewPanel(*this);

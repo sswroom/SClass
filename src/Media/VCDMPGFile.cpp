@@ -241,7 +241,7 @@ Media::VCDMPGFile::VCDMPGFile(NN<IO::SectorData> data, UInt64 startSector, UInt6
 	this->playToStop = false;
 	this->startTime = 0;
 	this->fleng = endSector - startSector;
-	this->vstm = 0;
+	this->vstm = nullptr;
 
 	Bool succ;
 	UOSInt currSector = 0;
@@ -439,7 +439,7 @@ UOSInt Media::VCDMPGFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 Optional<Media::MediaSource> Media::VCDMPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
 {
 	if (index > this->audStms.GetCount())
-		return 0;
+		return nullptr;
 	syncTime.Set(0);
 	if (index == 0)
 		return this->vstm;

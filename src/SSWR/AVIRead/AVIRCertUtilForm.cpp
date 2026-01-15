@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType use
 	}
 	else
 	{
-		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, 0);
+		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, nullptr);
 	}
 	if (csr.SetTo(nncsr))
 	{
@@ -447,7 +447,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->key = 0;
+	this->key = nullptr;
 
 	this->lblKey = ui->NewLabel(*this, CSTR("Key"));
 	this->lblKey->SetRect(4, 4, 100, 23, false);

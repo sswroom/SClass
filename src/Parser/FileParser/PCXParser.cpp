@@ -54,7 +54,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCXParser::ParseFileHdr(NN<IO::St
 
 	if (hdr[0] != 10 || hdr[2] != 1)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	imgWidth = ReadUInt16(&hdr[8]) - (UInt32)ReadUInt16(&hdr[4]) + 1;
@@ -195,6 +195,6 @@ lop24:
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

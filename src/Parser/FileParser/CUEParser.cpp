@@ -10,7 +10,7 @@
 
 Parser::FileParser::CUEParser::CUEParser()
 {
-	this->parsers = 0;
+	this->parsers = nullptr;
 }
 
 Parser::FileParser::CUEParser::~CUEParser()
@@ -58,7 +58,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 	Bool errorFound = false;
 	NN<Parser::ParserList> parsers;
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".CUE")) || !this->parsers.SetTo(parsers))
-		return 0;
+		return nullptr;
 
 	i = 100;
 	while (i-- > 0)

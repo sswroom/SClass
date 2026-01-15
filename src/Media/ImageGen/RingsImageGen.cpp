@@ -37,7 +37,7 @@ Optional<Media::RasterImage> Media::ImageGen::RingsImageGen::GenerateImage(NN<co
 		d = dheight;
 	}
 	if (size.x < 8 || size.x < 4)
-		return 0;
+		return nullptr;
 	NN<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
 	NN<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
 	NN<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());

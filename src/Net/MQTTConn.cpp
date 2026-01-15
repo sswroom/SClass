@@ -33,7 +33,7 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 		UInt8 qosLev = (cmdType & 6) >> 1;
 		UOSInt i;
 		UOSInt packetId = ReadMUInt16(&cmd[0]);
-		UnsafeArrayOpt<UTF8Char> topic = 0;
+		UnsafeArrayOpt<UTF8Char> topic = nullptr;
 		UnsafeArray<UTF8Char> nntopic;
 		UOSInt topicLen = 0;
 		if ((UOSInt)(packetId + 2) <= cmdSize)
@@ -75,7 +75,7 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 		if (topic.SetTo(nntopic))
 		{
 			MemFreeArr(nntopic);
-			topic = 0;
+			topic = nullptr;
 		}
 	}
 	else if (packetType == 2 || packetType == 4 || packetType == 9 || packetType == 11 || packetType == 13)
@@ -179,7 +179,7 @@ Optional<Net::MQTTConn::PacketInfo> Net::MQTTConn::GetNextPacket(UInt8 packetTyp
 		}
 		t = Data::Duration::FromUs(clk.GetTimeDiffus());
 		if (!this->recvRunning || t >= timeout)
-			return 0;
+			return nullptr;
 		this->packetEvt.Wait(timeout - t);
 	}
 }
@@ -216,7 +216,7 @@ Net::MQTTConn::MQTTConn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 	this->totalUpload = 0;
 	this->discHdlr = {discHdlr, discHdlrObj};
 	this->cliData = 0;
-	this->stm = 0;
+	this->stm = nullptr;
 
 	NN<Net::TCPClient> cli;
 	NN<Net::SSLEngine> nnssl;
@@ -258,7 +258,7 @@ Net::MQTTConn::MQTTConn(NN<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType dis
 	this->totalUpload = 0;
 	this->discHdlr = {discHdlr, discHdlrObj};
 	this->cliData = 0;
-	this->stm = 0;
+	this->stm = nullptr;
 	this->InitStream(stm);
 }
 
@@ -277,7 +277,7 @@ Net::MQTTConn::~MQTTConn()
 		}
 		this->protoHdlr.DeleteStreamData(stm, this->cliData);
 		stm.Delete();
-		this->stm = 0;
+		this->stm = nullptr;
 	}
 	UOSInt i;
 	i = this->packetList.GetCount();

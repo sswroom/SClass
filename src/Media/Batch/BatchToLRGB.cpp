@@ -7,7 +7,7 @@
 Media::Batch::BatchToLRGB::BatchToLRGB(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::Batch::BatchHandler> hdlr) : srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->hdlr = hdlr;
-	this->csconv = 0;
+	this->csconv = nullptr;
 	this->srcFCC = 0;
 	this->srcBpp = 0;
 }
@@ -42,7 +42,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(NN<Media::ImageList> imgList, Text::
 				this->srcBpp = simg->info.storeBPP;
 				this->srcPF = simg->info.pf;
 				this->srcProfile.Set(simg->info.color);
-				this->csconv = Media::CS::CSConverter::NewConverter(this->srcFCC, this->srcBpp, this->srcPF, this->srcProfile, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, this->destProfile, simg->info.yuvType, 0);
+				this->csconv = Media::CS::CSConverter::NewConverter(this->srcFCC, this->srcBpp, this->srcPF, this->srcProfile, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, this->destProfile, simg->info.yuvType, nullptr);
 			}
 			NN<Media::CS::CSConverter> csconv;
 			if (this->csconv.SetTo(csconv))

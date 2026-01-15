@@ -5,30 +5,30 @@
 
 Media::VectorDocument::VectorDocument(UInt32 srid, NN<Media::DrawEngine> refEng) : IO::ParsedObject(CSTR("Untitled"))
 {
-	this->currDoc = 0;
+	this->currDoc = nullptr;
 	this->srid = srid;
 	this->refEng = refEng;
-	this->docName = 0;
-	this->author = 0;
-	this->subject = 0;
-	this->keywords = 0;
-	this->creator = 0;
-	this->producer = 0;
+	this->docName = nullptr;
+	this->author = nullptr;
+	this->subject = nullptr;
+	this->keywords = nullptr;
+	this->creator = nullptr;
+	this->producer = nullptr;
 	this->createTimeTicks = 0;
 	this->modTimeTicks = 0;
 }
 
 Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NN<Media::DrawEngine> refEng) : IO::ParsedObject(name)
 {
-	this->currDoc = 0;
+	this->currDoc = nullptr;
 	this->srid = srid;
 	this->refEng = refEng;
 	this->docName = Text::String::New(name).Ptr();
-	this->author = 0;
-	this->subject = 0;
-	this->keywords = 0;
-	this->creator = 0;
-	this->producer = 0;
+	this->author = nullptr;
+	this->subject = nullptr;
+	this->keywords = nullptr;
+	this->creator = nullptr;
+	this->producer = nullptr;
 	this->createTimeTicks = 0;
 	this->modTimeTicks = 0;
 }
@@ -236,7 +236,7 @@ Bool Media::VectorDocument::PrintPage(NN<Media::DrawImage> printPage)
 
 Bool Media::VectorDocument::EndPrint(NN<PrintDocument> doc)
 {
-	this->currDoc = 0;
+	this->currDoc = nullptr;
 	return true;
 }
 

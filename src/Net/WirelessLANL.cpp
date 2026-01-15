@@ -206,14 +206,14 @@ UnsafeArrayOpt<const UTF8Char> Net::WirelessLAN::BSSInfo::GetCountry()
 	if (this->devCountry[0])
 		return this->devCountry;
 	else
-		return 0;
+		return nullptr;
 }
 
 UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 {
 	if (index < 0 || index >= WLAN_OUI_CNT)
 	{
-		return 0;
+		return nullptr;
 	}
 	return this->chipsetOUIs[index];
 }

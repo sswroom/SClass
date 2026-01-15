@@ -21,7 +21,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 		sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		{
 			Text::UTF8Reader reader(cli);
 			reader.ReadToEnd(sb);
@@ -126,7 +126,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(NN<Data::ArrayListStringNN> nameLis
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/gp/gpControl/info"));
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	{
 		Text::UTF8Reader reader(cli);
 		reader.ReadToEnd(sb);
@@ -245,7 +245,7 @@ Bool IO::Device::GoProCameraControl::GetFile(NN<IO::CameraControl::FileInfo> fil
 	sptr = Text::StrConcatC(sptr, file->filePath2, file->filePathLen);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcatC(sptr, file->fileName2, file->fileNameLen);
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
@@ -271,7 +271,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(NN<IO::CameraControl::File
 	sptr = Text::StrConcatC(sptr, file->filePath2, file->filePathLen);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcatC(sptr, file->fileName2, file->fileNameLen);
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
@@ -287,7 +287,7 @@ Optional<IO::Device::GoProCameraControl> IO::Device::GoProCameraControl::CreateC
 	NN<Net::ConnectionInfo> connInfo;
 	Bool found = false;
 	if (clif->GetSocketFactory()->GetConnInfoList(connInfoList) == 0)
-		return 0;
+		return nullptr;
 	UInt32 ip = Net::SocketUtil::GetIPAddr(CSTR("10.5.5.9"));
 	UOSInt i = connInfoList.GetCount();
 	while (i-- > 0)
@@ -307,6 +307,6 @@ Optional<IO::Device::GoProCameraControl> IO::Device::GoProCameraControl::CreateC
 		NEW_CLASS(ctrl, IO::Device::GoProCameraControl(clif, &addr));
 		return ctrl;
 	}
-	return 0;
+	return nullptr;
 }
 

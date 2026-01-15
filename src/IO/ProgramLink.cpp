@@ -3,19 +3,19 @@
 
 IO::ProgramLink::ProgramLink()
 {
-	this->type = 0;
-	this->name = 0;
-	this->genericName = 0;
-	this->version = 0;
-	this->comment = 0;
-	this->mimeTypes = 0;
-	this->categories = 0;
-	this->keywords = 0;
-	this->cmdLine = 0;
+	this->type = nullptr;
+	this->name = nullptr;
+	this->genericName = nullptr;
+	this->version = nullptr;
+	this->comment = nullptr;
+	this->mimeTypes = nullptr;
+	this->categories = nullptr;
+	this->keywords = nullptr;
+	this->cmdLine = nullptr;
 	this->noDisplay = false;
 	this->startupNotify = false;
 	this->terminal = false;
-	this->icon = 0;
+	this->icon = nullptr;
 }
 
 IO::ProgramLink::~ProgramLink()

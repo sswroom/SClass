@@ -35,10 +35,10 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UO
 
 IO::Device::MTKGPSNMEA::MTKGPSNMEA(NN<IO::Stream> stm, Bool relStm) : IO::GPSNMEA(stm, relStm)
 {
-	this->firmwareBuild = 0;
-	this->firmwareRel = 0;
-	this->productMode = 0;
-	this->sdkVer = 0;
+	this->firmwareBuild = nullptr;
+	this->firmwareRel = nullptr;
+	this->productMode = nullptr;
+	this->sdkVer = nullptr;
 }
 
 IO::Device::MTKGPSNMEA::~MTKGPSNMEA()
@@ -202,8 +202,8 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UnsafeArray<UInt8> buff)
 	sptr = Text::StrHexVal32(sptr, 0x400);
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	Optional<Text::String> data = 0;
-	Optional<Text::String> resp = 0;
+	Optional<Text::String> data = nullptr;
+	Optional<Text::String> resp = nullptr;
 	NN<Text::String> nndata;
 	NN<Text::String> nnresp;
 	NN<Text::String> cmdRes;
@@ -531,7 +531,7 @@ Optional<Text::String> IO::Device::MTKGPSNMEA::SendMTKCommand(UnsafeArray<const 
 
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->stm->Write(Data::ByteArrayR(cmdBuff, cmdSize));
-	Optional<Text::String> resultStr = 0;
+	Optional<Text::String> resultStr = nullptr;
 	
 	dt.SetCurrTimeUTC();
 	while (true)

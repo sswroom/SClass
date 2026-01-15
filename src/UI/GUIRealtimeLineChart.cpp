@@ -29,7 +29,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 	if (this->eng->CreateImage32(dimg->GetSize(), Media::AT_ALPHA_ALL_FF).SetTo(img))
 	{
 		b = img->NewBrushARGB(this->bgColor);
-		img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
+		img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, b);
 		img->DelBrush(b);
 
 		Sync::MutexUsage mutUsage(this->chartMut);
@@ -56,7 +56,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 		if (pw < 1)
 			pw = 1;
 		f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		p = img->NewPenARGB(this->fontColor, Double2Int32(pw), 0, 0);
+		p = img->NewPenARGB(this->fontColor, Double2Int32(pw), nullptr, 0);
 		b = img->NewBrushARGB(this->fontColor);
 		sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
 		if (this->unit.SetTo(nns))
@@ -82,7 +82,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 		{
 			lastX = -1;
 			lastY = -1;
-			p = img->NewPenARGB(this->lineColor[k], Double2Int32(pw), 0, 0);
+			p = img->NewPenARGB(this->lineColor[k], Double2Int32(pw), nullptr, 0);
 			i = k + this->chartOfst * this->lineCnt;
 			l = 0;
 			while (l < this->sampleCnt)
@@ -120,7 +120,7 @@ UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUICli
 	this->lineColor = MemAlloc(UInt32, lineCnt);
 	this->bgColor = 0xffffffff;
 	this->fontColor = 0xff000000;
-	this->unit = 0;
+	this->unit = nullptr;
 	UOSInt i;
 	if (lineCnt >= 1)
 		this->lineColor[0] = 0xffff0000;

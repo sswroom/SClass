@@ -229,7 +229,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<cons
 	}
 	else
 	{
-		this->extName = 0;
+		this->extName = nullptr;
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{

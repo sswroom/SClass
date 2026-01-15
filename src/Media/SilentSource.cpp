@@ -19,7 +19,7 @@ Media::SilentSource::SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bi
 	this->format.bitRate = sampleRate * bitCount * nChannels;
 	this->sampleCnt = sampleCnt;
 	this->name = Text::String::NewOrNull(name);
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 	this->currSample = 0;
 }
@@ -33,7 +33,7 @@ UnsafeArrayOpt<UTF8Char> Media::SilentSource::GetSourceName(UnsafeArray<UTF8Char
 {
 	NN<Text::String> s;
 	if (!this->name.SetTo(s))
-		return 0;
+		return nullptr;
 	return s->ConcatTo(buff);
 }
 
@@ -90,7 +90,7 @@ Bool Media::SilentSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 
 void Media::SilentSource::Stop()
 {
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 

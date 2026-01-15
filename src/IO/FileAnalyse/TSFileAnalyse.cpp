@@ -7,7 +7,7 @@
 IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(NN<IO::StreamData> fd)
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->packSize = 192;
 	this->fileSize = 0;
 	this->hasTime = false;
@@ -282,9 +282,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameD
 	NN<IO::StreamData> fd;
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;

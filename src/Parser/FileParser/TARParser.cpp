@@ -51,12 +51,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 	Int64 t;
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".TAR")))
 	{
-		return 0;
+		return nullptr;
 	}
 	fileSize = fd->GetDataSize();
 	if (fileSize & 511)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	currOfst = 0;
@@ -72,7 +72,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 		if (currOfst >= fileSize)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		fd->GetRealData(currOfst, 512, BYTEARR(buff));
 		currOfst += 512;
@@ -124,7 +124,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 				continue;
 			}
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		pf2 = pf;
 		sptr = sbuff;
@@ -161,5 +161,5 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 			currOfst += itemSize;
 		}
 	}
-	return 0;
+	return nullptr;
 }

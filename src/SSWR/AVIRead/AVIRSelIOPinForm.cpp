@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayListInt32 *ports;
+	NN<Data::ArrayListInt32> ports;
 
 	this->SetText(CSTR("Select IOPin"));
 	this->SetFont(nullptr, 8.25, false);
@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 			this->cboGPIO->SetSelectedIndex(0);
 		}
 	}
-	NEW_CLASS(ports, Data::ArrayListInt32());
+	NEW_CLASSNN(ports, Data::ArrayListInt32());
 	ports->Clear();
 	this->vioPinMgr->GetAvailablePins(ports);
 	i = 0;
@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 	{
 		this->cboVirtualPin->SetSelectedIndex(0);
 	}
-	DEL_CLASS(ports);
+	ports.Delete();
 
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);

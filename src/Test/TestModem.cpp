@@ -7,10 +7,10 @@
 UOSInt Test::TestModem::ListPorts(NN<IO::Writer> writer)
 {
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<UOSInt> ports;
+	Data::ArrayListNative<UOSInt> ports;
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<IO::SerialPort::SerialPortType> portTypes;
+	Data::ArrayListNative<IO::SerialPort::SerialPortType> portTypes;
 	IO::SerialPort::GetAvailablePorts(ports, &portTypes);
 	writer->WriteLine(CSTR("Available Serial Ports:"));
 	i = 0;

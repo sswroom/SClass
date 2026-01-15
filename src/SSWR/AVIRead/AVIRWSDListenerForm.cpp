@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRWSDListenerForm::AVIRWSDListenerForm(Optional<UI::GUIClientCo
 	this->txtRAW->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtRAW->SetReadOnly(true);
 
-	NEW_CLASSNN(this->listener, Net::UDPServer(core->GetSocketFactory(), 0, 3702, 0, OnUDPPacket, this, this->log, CSTR("UDP: "), 3, true));
+	NEW_CLASSNN(this->listener, Net::UDPServer(core->GetSocketFactory(), nullptr, 3702, 0, OnUDPPacket, this, this->log, CSTR("UDP: "), 3, true));
 	this->packetUpdated = false;
 	if (this->listener->IsError())
 	{

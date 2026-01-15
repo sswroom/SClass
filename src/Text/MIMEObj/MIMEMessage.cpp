@@ -11,7 +11,7 @@
 
 Text::MIMEObj::MIMEMessage::MIMEMessage() : Text::MIMEObject(CSTR("message/rfc822"))
 {
-	this->content = 0;
+	this->content = nullptr;
 	this->transferData = 0;
 	this->transferSize = 0;
 }
@@ -158,7 +158,7 @@ Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeader(UnsafeArray<const U
 			return this->headerValue.GetItem(i);
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Text::MIMEObj::MIMEMessage::GetHeaderCount() const

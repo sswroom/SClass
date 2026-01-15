@@ -2,7 +2,7 @@
 #define _SM_SSWR_SMONITOR_SMONITORSVRCORE
 #include "Crypto/Hash/CRC32RC.h"
 #include "Crypto/Hash/HashCalc.h"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNN.hpp"
 #include "Data/StringUTF8Map.hpp"
 #include "DB/DBTool.h"
 #include "IO/Writer.h"
@@ -136,7 +136,7 @@ namespace SSWR
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId);
 			virtual UOSInt UserGetList(NN<Data::ArrayListNN<WebUser>> userList);
 			virtual Optional<WebUser> UserGet(Int32 userId);
-			virtual Bool UserAssign(Int32 userId, NN<Data::ArrayList<Int64>> devIdList);
+			virtual Bool UserAssign(Int32 userId, NN<Data::ArrayListNative<Int64>> devIdList);
 
 			virtual Bool SendCapturePhoto(Int64 cliId);
 

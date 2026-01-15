@@ -29,7 +29,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::RockwellModemController::VoiceGetRevision(U
 Bool IO::Device::RockwellModemController::VoiceGetBaudRate(OutParam<Int32> baudRate)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT#BDR?"), 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#BDR?"), 3000).IsNull())
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, v))
@@ -49,7 +49,7 @@ Bool IO::Device::RockwellModemController::VoiceSetBaudRate(Int32 baudRate)
 Bool IO::Device::RockwellModemController::VoiceGetCallerIDType(OutParam<CallerIDType> callerIDType)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT#CID?"), 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#CID?"), 3000).IsNull())
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, v))
@@ -76,7 +76,7 @@ Bool IO::Device::RockwellModemController::VoiceSetCallerIDType(CallerIDType call
 Bool IO::Device::RockwellModemController::VoiceGetType(OutParam<VoiceType> voiceType)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT#CLS?"), 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#CLS?"), 3000).IsNull())
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, v))
@@ -105,7 +105,7 @@ Bool IO::Device::RockwellModemController::VoiceSetType(VoiceType voiceType)
 Bool IO::Device::RockwellModemController::VoiceGetBufferSize(OutParam<Int32> buffSize)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBQ?"), 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBQ?"), 3000).IsNull())
 		return false;
 	return Text::StrToInt32(sbuff, buffSize);
 }
@@ -113,7 +113,7 @@ Bool IO::Device::RockwellModemController::VoiceGetBufferSize(OutParam<Int32> buf
 Bool IO::Device::RockwellModemController::VoiceGetBitsPerSample(OutParam<Int32> bps)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBS?"), 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBS?"), 3000).IsNull())
 		return false;
 	return Text::StrToInt32(sbuff, bps);
 }
@@ -129,7 +129,7 @@ Bool IO::Device::RockwellModemController::VoiceSetBitsPerSample(Int32 bps)
 Bool IO::Device::RockwellModemController::VoiceGetToneDur(OutParam<Int32> durMS)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBS?"), 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBS?"), 3000).IsNull())
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, v))
@@ -154,7 +154,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::RockwellModemController::VoiceGetCompressio
 Bool IO::Device::RockwellModemController::VoiceGetVoiceLineType(OutParam<VoiceLineType> voiceLineType)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VLS?"), 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VLS?"), 3000).IsNull())
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, v))

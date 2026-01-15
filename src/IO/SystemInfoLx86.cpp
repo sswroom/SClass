@@ -88,7 +88,7 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> s
 	{
 		return this->clsData->platformName->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
@@ -97,7 +97,7 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbu
 	{
 		return this->clsData->platformSN->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 UInt64 IO::SystemInfo::GetTotalMemSize()

@@ -89,7 +89,7 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 	if (IO::Path::GetPathType(CSTR("/usr/sbin/ENG/stringlist_ENG.txt")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
-		UnsafeArrayOpt<UTF8Char> ret = 0;
+		UnsafeArrayOpt<UTF8Char> ret = nullptr;
 
 		IO::FileStream fs(CSTR("/usr/sbin/ENG/stringlist_ENG.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
@@ -118,7 +118,7 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 			return nnret;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
@@ -148,7 +148,7 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/debian_version")) == IO::Path::PathType::File)
 	{
-		UnsafeArrayOpt<UTF8Char> ret = 0;
+		UnsafeArrayOpt<UTF8Char> ret = nullptr;
 		IO::FileStream fs(CSTR("/etc/debian_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
@@ -178,7 +178,7 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/openwrt_version")) == IO::Path::PathType::File)
 	{
-		UnsafeArrayOpt<UTF8Char> ret = 0;
+		UnsafeArrayOpt<UTF8Char> ret = nullptr;
 		IO::FileStream fs(CSTR("/etc/openwrt_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
@@ -276,5 +276,5 @@ UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 			return Text::StrConcatC(sbuff, &sbuff[7], (UOSInt)(nnsptr - &sbuff[7]));
 		}
 	}
-	return 0;
+	return nullptr;
 }

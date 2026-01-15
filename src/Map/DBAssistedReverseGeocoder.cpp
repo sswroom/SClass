@@ -21,11 +21,11 @@ Map::DBAssistedReverseGeocoder::~DBAssistedReverseGeocoder()
 UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	NN<DB::DBReader> r;
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 	if (keyx == 0 && keyy == 0)
-		return 0;
+		return nullptr;
 
 	Sync::MutexUsage mutUsage(this->mut);
 	DB::SQLBuilder sql(this->conn);
@@ -52,7 +52,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::SearchName(UnsafeArray<
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
-		if (sptr == 0 || buff[0] == 0)
+		if (sptr.IsNull() || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
@@ -81,14 +81,14 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::SearchName(UnsafeArray<
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
 UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	NN<DB::DBReader> r;
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 
@@ -117,7 +117,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::CacheName(UnsafeArray<U
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
-		if (sptr == 0 || buff[0] == 0)
+		if (sptr.IsNull() || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
@@ -148,7 +148,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoder::CacheName(UnsafeArray<U
 	else
 	{
 		mutUsage.EndUse();
-		return 0;
+		return nullptr;
 	}
 }
 

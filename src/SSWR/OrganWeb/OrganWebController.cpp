@@ -29,7 +29,7 @@ Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebController::ParseRe
 {
 	env->scnWidth = this->scnSize;
 	env->isMobile = false;
-	env->user = 0;
+	env->user = nullptr;
 	Manage::OSInfo::OSType os = req->GetOS();
 	if (os == Manage::OSInfo::OT_ANDROID || os == Manage::OSInfo::OT_IPAD || os == Manage::OSInfo::OT_IPHONE)
 	{
@@ -54,9 +54,9 @@ Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebController::ParseRe
 	else
 	{
 		env->pickObjType = PickObjType::POT_UNKNOWN;
-		env->pickObjs = 0;
+		env->pickObjs = nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType)
@@ -114,7 +114,7 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(NN<IO::Writer> writer,
 void SSWR::OrganWeb::OrganWebController::WriteHeader(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> title, Optional<WebUserInfo> user, Bool isMobile)
 {
 	this->WriteHeaderPart1(writer, title, isMobile);
-	this->WriteHeaderPart2(writer, user, 0);
+	this->WriteHeaderPart2(writer, user, nullptr);
 }
 
 void SSWR::OrganWeb::OrganWebController::WriteFooter(NN<IO::Writer> writer)

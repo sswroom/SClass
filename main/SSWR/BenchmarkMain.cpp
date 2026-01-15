@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRBenchmarkForm(0, ui, core));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRBenchmarkForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		ui->Run();

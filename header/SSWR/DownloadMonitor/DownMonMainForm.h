@@ -20,7 +20,7 @@ namespace SSWR
 			SSWR::DownloadMonitor::DownMonCore *core;
 			SSWR::DownloadMonitor::DownMonCore::CheckStatus currStatus;
 			Sync::Mutex endedMut;
-			Data::ArrayList<Int32> endedList;
+			Data::ArrayListNative<Int32> endedList;
 			Bool alarmSet;
 			Int64 alarmTime;
 

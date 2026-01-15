@@ -45,10 +45,10 @@ Optional<IO::ParsedObject> Parser::FileParser::SHPParser::ParseFileHdr(NN<IO::St
 {
 	NN<Math::ArcGISPRJParser> prjParser;
 	if (!fd->IsFullFile() || !this->prjParser.SetTo(prjParser))
-		return 0;
+		return nullptr;
 	if (ReadMInt32(&hdr[0]) != 9994 || ReadInt32(&hdr[28]) != 1000 || (ReadMUInt32(&hdr[24]) << 1) != fd->GetDataSize())
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Map::SHPData *shp;
@@ -56,7 +56,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SHPParser::ParseFileHdr(NN<IO::St
 	if (shp->IsError())
 	{
 		DEL_CLASS(shp);
-		return 0;
+		return nullptr;
 	}
 	return shp;
 }

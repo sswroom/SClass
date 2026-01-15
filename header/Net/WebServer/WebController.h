@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBCONTROLLER
 #define _SM_NET_WEBSERVER_WEBCONTROLLER
-#include "Data/FastMap.hpp"
+#include "Data/FastMapObj.hpp"
 #include "Data/FastStringMapNN.hpp"
 #include "Net/WebServer/WebRequest.h"
 #include "Net/WebServer/WebResponse.h"
@@ -17,7 +17,7 @@ namespace Net
 			typedef struct
 			{
 				NN<Text::String> svcPath;
-				Data::FastMap<Int32, ServiceFunc> funcs;
+				Data::FastMapObj<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			
 			Data::FastStringMapNN<ServiceInfo> services;

@@ -39,9 +39,9 @@ Optional<IO::ParsedObject> Parser::FileParser::CDXAParser::ParseFileHdr(NN<IO::S
 	UInt32 fileSize;
 	UInt64 currPos;
 	if (ReadNInt32(&hdr[0]) != *(Int32*)"RIFF")
-		return 0;
+		return nullptr;
 	if (ReadNInt32(&hdr[8]) != *(Int32*)"CDXA")
-		return 0;
+		return nullptr;
 	fileSize = ReadUInt32(&hdr[4]) + 8;
 
 	UInt8 riffBuff[12];
@@ -73,7 +73,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CDXAParser::ParseFileHdr(NN<IO::S
 		{
 			if (fmt)
 				MemFree(fmt);
-			return 0;
+			return nullptr;
 		}
 
 		currPos += ReadUInt32(&riffBuff[4]) + 8;

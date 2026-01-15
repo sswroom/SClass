@@ -1,8 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_HTTPDIRECTORYHANDLER
 #define _SM_NET_WEBSERVER_HTTPDIRECTORYHANDLER
-#include "Data/BTreeUTF8Map.hpp"
+#include "Data/BTreeStringMapObj.hpp"
 #include "Data/FastStringMapNative.hpp"
-#include "Data/StringUTF8Map.hpp"
 #include "Data/Timestamp.h"
 #include "IO/VirtualPackageFile.h"
 #include "Parser/ParserList.h"
@@ -55,7 +54,7 @@ namespace Net
 			CacheType ctype;
 			Int32 expirePeriod;
 			UInt64 fileCacheSize;
-			Data::BTreeUTF8Map<CacheInfo*> fileCache;
+			Data::BTreeStringMapObj<CacheInfo*> fileCache;
 			Sync::Mutex fileCacheMut;
 			Data::FastStringMapNN<StatInfo> *statMap;
 			Sync::Mutex *statMut;

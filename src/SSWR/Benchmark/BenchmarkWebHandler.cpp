@@ -43,8 +43,8 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 		}
 		else
 		{
-			UnsafeArrayOpt<const UTF8Char> platform = 0;
-			UnsafeArrayOpt<const UTF8Char> cpu = 0;
+			UnsafeArrayOpt<const UTF8Char> platform = nullptr;
+			UnsafeArrayOpt<const UTF8Char> cpu = nullptr;
 			NN<IO::MemoryStream> mstm;
 			Text::UTF8Reader *reader;
 			UTF8Char sbuff[512];

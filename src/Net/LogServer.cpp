@@ -109,7 +109,7 @@ Optional<Net::LogServer::IPStatus> Net::LogServer::GetIPStatus(NN<const Net::Soc
 		mutUsage.EndUse();
 		return status;
 	}
-	return 0;
+	return nullptr;
 }
 
 Net::LogServer::LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStringNN logPath, NN<IO::LogTool> svrLog, Bool redirLog, Bool autoStart) : protoHdlr(*this)
@@ -121,7 +121,7 @@ Net::LogServer::LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStri
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, ClientEvent, ClientData, this, 4, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, 0, port, log, ConnHdlr, this, nullptr, autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, ConnHdlr, this, nullptr, autoStart));
 }
 
 Net::LogServer::~LogServer()

@@ -809,7 +809,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 	}
 	if (me->analyzer->TCP4SYNIsDiff(me->tcp4synLastIndex))
 	{
-		Data::ArrayListT<Net::EthernetAnalyzer::TCP4SYNInfo> synList;
+		Data::ArrayListNative<Net::EthernetAnalyzer::TCP4SYNInfo> synList;
 		Net::EthernetAnalyzer::TCP4SYNInfo syn;
 		UOSInt i = 0;
 		UOSInt j = me->analyzer->TCP4SYNGetList(synList, me->tcp4synLastIndex);

@@ -264,7 +264,7 @@ void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EXEFileAnalyse"))
 {
 	UInt8 buff[8];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->imageSize = 0;
 	fd->GetRealData(0, 8, BYTEARR(buff));
@@ -825,9 +825,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EXEFileAnalyse::GetFrame
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

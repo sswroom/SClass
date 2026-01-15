@@ -78,7 +78,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				}
 				else if (cmdLines[i][1] == 'q')
 				{
-					smake.SetCommandWriter(0);
+					smake.SetCommandWriter(nullptr);
 				}
 				else if (cmdLines[i][1] == 's')
 				{

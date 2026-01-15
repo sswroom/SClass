@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj
 	NN<Net::EthernetWebHandler> webHdlr;
 	NN<Net::WebServer::WebListener> listener;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->clif, nullptr, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
@@ -207,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000), analyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
+SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000), analyzer(nullptr, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
 {
 	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Ping Monitor"));
@@ -215,11 +215,11 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	this->core = core;
 	this->clif = core->GetTCPClientFactory();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->listener = 0;
-	this->webHdlr = 0;
+	this->listener = nullptr;
+	this->webHdlr = nullptr;
 	this->ipListUpdated = false;
 	this->ipContUpdated = false;
-	this->currIP = 0;
+	this->currIP = nullptr;
 	this->analyzer.HandlePingv4Request(OnPingPacket, this);
 
 	this->pnlControl = ui->NewPanel(*this);
@@ -317,7 +317,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	{
 		this->cboIP->SetSelectedIndex(0);
 	}
-	this->socMon = 0;
+	this->socMon = nullptr;
 	this->AddTimer(1000, OnTimerTick, this);
 }
 

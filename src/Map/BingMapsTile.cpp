@@ -22,11 +22,11 @@ Optional<Text::String> Map::BingMapsTile::GetNextSubdomain()
 
 Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 1, 19, clif, ssl)
 {
-	this->url = 0;
+	this->url = nullptr;
 	this->key = Text::String::NewOrNull(key);
 	this->urlNext = 0;
-	this->brandLogoUri = 0;
-	this->brandLogoImg = 0;
+	this->brandLogoUri = nullptr;
+	this->brandLogoImg = nullptr;
 	this->hideLogo = false;
 	this->dispDPI = 96;
 	this->dispSize = Math::Size2DDbl(640, 480);
@@ -77,9 +77,9 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 			Parser::FileParser::PNGParser parser;
 			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 			NN<IO::ParsedObject> pobj;
-			if (parser.ParseFile(fd, 0, IO::ParserType::ImageList).SetTo(pobj))
+			if (parser.ParseFile(fd, nullptr, IO::ParserType::ImageList).SetTo(pobj))
 			{
-				NEW_CLASSOPT(this->brandLogoImg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(pobj), 0));
+				NEW_CLASSOPT(this->brandLogoImg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(pobj), nullptr));
 			}
 		}
 	}
@@ -174,7 +174,7 @@ Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UOSI
 			return Math::Geometry::VectorImage::CreateScreenImage(0, brandLogoImg, pos / size96, imgSize / size96, OPTSTR_CSTR(this->brandLogoUri));
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UOSInt index)
@@ -183,7 +183,7 @@ UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char
 	{
 		return Text::String::OrEmpty(this->brandLogoUri)->ConcatTo(sbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Map::BingMapsTile::GetScreenObjURL(NN<Text::StringBuilderUTF8> sb, UOSInt index)

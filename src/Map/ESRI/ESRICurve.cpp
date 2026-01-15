@@ -133,13 +133,13 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 				{
 					if (cc->GetCount() == 0)
 					{
-						NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+						NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 						cpg->AddGeometry(ls);
 						currIndex = endPart + indexOfst;
 					}
 					else
 					{
-						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 						cc->AddGeometry(ls);
 						cpg->AddGeometry(cc);
 						currIndex = endPart + indexOfst;
@@ -163,7 +163,7 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 			}
 			if (curve->startIndex + indexOfst > currIndex)
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], curve->startIndex + indexOfst - currIndex + 1, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], curve->startIndex + indexOfst - currIndex + 1, nullptr, nullptr));
 				cc->AddGeometry(ls);
 			}
 			if (curve->type == 5)
@@ -186,7 +186,7 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 				curvePts[0] = ptList.GetItem(arc->startIndex + indexOfst);
 				curvePts[1] = arc->center;
 				curvePts[2] = ptList.GetItem(arc->startIndex + indexOfst + 1);
-				NEW_CLASSNN(ls, Math::Geometry::CircularString(this->srid, curvePts, 3, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::CircularString(this->srid, curvePts, 3, nullptr, nullptr));
 				cc->AddGeometry(ls);
 				currIndex = arc->startIndex + indexOfst + 1;
 			}
@@ -196,13 +196,13 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 		{
 			if (cc->GetCount() == 0)
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				cpg->AddGeometry(ls);
 				currIndex = endPart + indexOfst;
 			}
 			else
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				cc->AddGeometry(ls);
 				cpg->AddGeometry(cc);
 				currIndex = endPart + indexOfst;
@@ -223,14 +223,14 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 		{
 			if (cc->GetCount() == 0)
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				cpg->AddGeometry(ls);
 				currIndex = endPart + indexOfst;
 				cc.Delete();
 			}
 			else
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				cc->AddGeometry(ls);
 				cpg->AddGeometry(cc);
 				currIndex = endPart + indexOfst;
@@ -252,8 +252,8 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 	}
 	else
 	{
-		UnsafeArrayOpt<Double> zArr = 0;
-		UnsafeArrayOpt<Double> mArr = 0;
+		UnsafeArrayOpt<Double> zArr = nullptr;
+		UnsafeArrayOpt<Double> mArr = nullptr;
 		if (this->ptList.GetCount() == this->zList.GetCount())
 		{
 			zArr = this->zList.Arr();
@@ -307,13 +307,13 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 				{
 					if (cc->GetCount() == 0)
 					{
-						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 						mc->AddGeometry(ls);
 						currIndex = endPart + indexOfst;
 					}
 					else
 					{
-						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 						cc->AddGeometry(ls);
 						mc->AddGeometry(cc);
 						currIndex = endPart + indexOfst;
@@ -337,7 +337,7 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 			}
 			if (curve->startIndex + indexOfst > currIndex)
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], curve->startIndex + indexOfst - currIndex + 1, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], curve->startIndex + indexOfst - currIndex + 1, nullptr, nullptr));
 				cc->AddGeometry(ls);
 			}
 			if (curve->type == 5)
@@ -360,7 +360,7 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 				curvePts[0] = ptList.GetItem(arc->startIndex + indexOfst);
 				curvePts[1] = arc->center;
 				curvePts[2] = ptList.GetItem(arc->startIndex + indexOfst + 1);
-				NEW_CLASSNN(ls, Math::Geometry::CircularString(this->srid, curvePts, 3, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::CircularString(this->srid, curvePts, 3, nullptr, nullptr));
 				cc->AddGeometry(ls);
 				currIndex = arc->startIndex + indexOfst + 1;
 			}
@@ -370,13 +370,13 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 		{
 			if (cc->GetCount() == 0)
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				mc->AddGeometry(ls);
 				currIndex = endPart + indexOfst;
 			}
 			else
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				cc->AddGeometry(ls);
 				mc->AddGeometry(cc);
 				currIndex = endPart + indexOfst;
@@ -397,14 +397,14 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 		{
 			if (cc->GetCount() == 0)
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				mc->AddGeometry(ls);
 				currIndex = endPart + indexOfst;
 				cc.Delete();
 			}
 			else
 			{
-				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, nullptr, nullptr));
 				cc->AddGeometry(ls);
 				mc->AddGeometry(cc);
 				currIndex = endPart + indexOfst;
@@ -425,8 +425,8 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 	}
 	else
 	{
-		UnsafeArrayOpt<Double> zArr = 0;
-		UnsafeArrayOpt<Double> mArr = 0;
+		UnsafeArrayOpt<Double> zArr = nullptr;
+		UnsafeArrayOpt<Double> mArr = nullptr;
 		if (this->ptList.GetCount() == this->zList.GetCount())
 		{
 			zArr = this->zList.Arr();

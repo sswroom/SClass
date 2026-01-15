@@ -46,15 +46,15 @@ Optional<IO::ParsedObject> Parser::FileParser::BurikoPackFileParser::ParseFileHd
 	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadInt32(&hdr[0]) != 0x6b636150 || ReadInt32(&hdr[4]) != 0x656c6946 || ReadInt32(&hdr[8]) != 0x20202020)
-		return 0;
+		return nullptr;
 	recCnt = ReadUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt * 32 + 16 > fd->GetDataSize())
-		return 0;
+		return nullptr;
 	dataOfst = recCnt * 32 + 16;
 	Data::ByteBuffer recBuff(recCnt * 32);
 	if (fd->GetRealData(16, recCnt * 32, recBuff) != recCnt * 32)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BurikoPackFileParser::ParseFileHd
 		if (fileOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 16, 0);
 		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);

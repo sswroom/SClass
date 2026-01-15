@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(AnyType userObj
 	if (me->svr.SetTo(svr))
 	{
 		svr.Delete();
-		me->svr = 0;
+		me->svr = nullptr;
 		me->txtPort->SetReadOnly(false);
 	}
 	else
@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(Optional<UI::GUIClient
 	this->core = core;
 	this->SetText(CSTR("Syslog Server"));
 	this->SetFont(nullptr, 8.25, false);
-	this->svr = 0;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->currIP = 0;

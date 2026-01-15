@@ -73,7 +73,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 		{
 			currHeader = Text::String::CopyOrNull(me->reqHeader);
 			currPath = currPath->Clone();
-			me->reqURL = 0;
+			me->reqURL = nullptr;
 
 			sptr = currPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -263,9 +263,9 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUICl
 	this->respHdrChanged = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	this->reqURL = 0;
-	this->reqHeader = 0;
-	this->downPath = 0;
+	this->reqURL = nullptr;
+	this->reqHeader = nullptr;
+	this->downPath = nullptr;
 
 	Data::DateTime t;
 	t.SetCurrTimeUTC();

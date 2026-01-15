@@ -282,7 +282,7 @@ Map::WebFeatureService::WebFeatureService(NN<Net::TCPClientFactory> clif, Option
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->wfsURL = Text::String::New(wfsURL);
-	this->version = 0;
+	this->version = nullptr;
 	this->LoadXML(version);
 }
 
@@ -354,19 +354,19 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 		IO::MemoryStream mstm;
 		if (!Net::HTTPClient::LoadContent(this->clif, this->ssl, sb.ToCString(), mstm, 104857600))
 		{
-			return 0;
+			return nullptr;
 		}
 		mstm.SeekFromBeginning(0);
 		sb.ClearStr();
 		sb.Append(currFeature->title);
 		sb.AppendC(UTF8STRC(".gml"));
 		NN<IO::ParsedObject> pobj;
-		if (Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), 0, 0, 0).SetTo(pobj))
+		if (Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), nullptr, nullptr, nullptr).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::MapLayer)
 			{
@@ -382,8 +382,8 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 				}
 			}
 			pobj.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }

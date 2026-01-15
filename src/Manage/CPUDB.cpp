@@ -857,7 +857,7 @@ Optional<const Manage::CPUDB::CPUSpec> Manage::CPUDB::GetCPUSpec(Text::CStringNN
 			return cpu;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Text::CString Manage::CPUDB::X86CPUNameToModel(Text::CStringNN x86CPUName)
@@ -1019,7 +1019,7 @@ Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 	}
 	else if (sbHW.GetLength() > 0)
 	{
-		Optional<const Manage::CPUDB::CPUSpec> cpu = 0;
+		Optional<const Manage::CPUDB::CPUSpec> cpu = nullptr;
 		NN<const Manage::CPUDB::CPUSpec> nncpu;
 		UOSInt i;
 		if (sbHW.StartsWith(UTF8STRC("Qualcomm")))

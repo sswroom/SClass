@@ -5,7 +5,7 @@
 #include "Map/GoogleMap/GoogleTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
 
-UOSInt Map::BaseMapLayer::GetLayerTypes(NN<Data::ArrayList<BaseLayerType>> layerTypes)
+UOSInt Map::BaseMapLayer::GetLayerTypes(NN<Data::ArrayListNative<BaseLayerType>> layerTypes)
 {
 	UOSInt initCnt = layerTypes->GetCount();
 	layerTypes->Add(BLT_OSM_TILE);
@@ -152,7 +152,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	default:
-		return 0;
+		return nullptr;
 	}
 	
 }

@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 	{
 		seAPI->FreeSiteList(me->siteList);
 		seAPI.Delete();
-		me->seAPI = 0;
+		me->seAPI = nullptr;
 		me->btnAPIKey->SetText(CSTR("Start"));
 	}
 	else
@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(AnyType use
 		timeVal.second = 0;
 		Data::Timestamp startTime = GetDefaultStartTime(Data::Timestamp::FromTimeValue(timeVal, 0, Data::DateTimeUtil::GetLocalTzQhr()), timeUnit);
 		Data::Timestamp endTime = GetDefaultEndTime(startTime, timeUnit);
-		Data::ArrayList<Net::SolarEdgeAPI::TimedValue> values;
+		Data::ArrayListT<Net::SolarEdgeAPI::TimedValue> values;
 		if (seAPI->GetSiteEnergy(site->id, startTime, endTime, timeUnit, values))
 		{
 			me->siteEnergyList.Clear();
@@ -233,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(AnyType user
 		timeVal.second = 0;
 		Data::Timestamp startTime = GetDefaultStartTime(Data::Timestamp::FromTimeValue(timeVal, 0, Data::DateTimeUtil::GetLocalTzQhr()), timeUnit);
 		Data::Timestamp endTime = startTime.AddMinute(24 * 60 - 15);
-		Data::ArrayList<Net::SolarEdgeAPI::TimedValue> values;
+		Data::ArrayListT<Net::SolarEdgeAPI::TimedValue> values;
 		if (seAPI->GetSitePower(site->id, startTime, endTime, values))
 		{
 			me->sitePowerList.Clear();
@@ -370,10 +370,10 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->seAPI = 0;
+	this->seAPI = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->imgSiteEnergy = 0;
-	this->imgSitePower = 0;
+	this->imgSiteEnergy = nullptr;
+	this->imgSitePower = nullptr;
 
 	this->pnlAPIKey = ui->NewPanel(*this);
 	this->pnlAPIKey->SetRect(0, 0, 100, 31, false);
@@ -564,7 +564,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::~AVIRSolarEdgeForm()
 	{
 		seAPI->FreeSiteList(this->siteList);
 		seAPI.Delete();
-		this->seAPI = 0;
+		this->seAPI = nullptr;
 	}
 	this->ClearChildren();
 	this->ssl.Delete();

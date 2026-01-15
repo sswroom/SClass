@@ -31,7 +31,7 @@ UOSInt Data::Class::AddField(Text::CStringNN name, OSInt ofst, Data::VariItem::I
 	field->ofst = ofst;
 	field->itemType = itemType;
 	field->notNull = notNull;
-	field->typeName = 0;
+	field->typeName = nullptr;
 	field->byNameFunc = 0;
 	this->fields.Add(field);
 	return Data::VariItem::GetItemSize(itemType);
@@ -173,7 +173,7 @@ Optional<Text::String> Data::Class::GetFieldName(UOSInt index)
 	{
 		return field->name;
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
@@ -196,7 +196,7 @@ Optional<Data::VariItem> Data::Class::GetNewValue(UOSInt index, AnyType obj)
 	NN<FieldInfo> field;
 	if (!this->fields.GetItem(index).SetTo(field))
 	{
-		return 0;
+		return nullptr;
 	}
 	void *valPtr = (void*)(field->ofst + (UInt8*)obj.p);
 	return Data::VariItem::NewFromPtr(valPtr, field->itemType).Ptr();
@@ -938,7 +938,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 
 void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, NN<Text::StringBuilderUTF8> sb)
 {
-	Data::StringMap<Bool> importMap;
+	Data::StringMapNative<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;
 	Text::StringBuilderUTF8 sbConstrHdr;
 	Text::StringBuilderUTF8 sbConstrItem;
@@ -1208,7 +1208,7 @@ Optional<Data::Class> Data::Class::ParseFromStr(Text::CStringNN str)
 	Optional<Data::Class> cls = ParseFromCpp(str);
 	if (cls.NotNull())
 		return cls;
-	return 0;
+	return nullptr;
 }
 
 Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
@@ -1234,14 +1234,14 @@ Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
 			{
 				printf("Not end with ';': %s\r\n", sarr[0].v.Ptr());
 				cls.Delete();
-				return 0;
+				return nullptr;
 			}
 			j = sarr[0].IndexOf(' ');
 			if (j == INVALID_INDEX)
 			{
 				printf("Space not found: %s\r\n", sarr[0].v.Ptr());
 				cls.Delete();
-				return 0;
+				return nullptr;
 			}
 			strName = sarr[0].SubstrTrim(j + 1);
 			strType = sarr[0].SubstrTrim(0, j);

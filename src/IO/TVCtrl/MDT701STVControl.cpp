@@ -209,7 +209,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendSetCommand(CommandType ct, Int32 val)
 }
 
 #define ADDCMD(a, b) {cmdList->Add(a);cmdFormats->Add(b);}
-void IO::TVCtrl::MDT701STVControl::GetSupportedCmd(Data::ArrayList<CommandType> *cmdList, Data::ArrayList<CommandFormat> *cmdFormats)
+void IO::TVCtrl::MDT701STVControl::GetSupportedCmd(Data::ArrayListNative<CommandType> *cmdList, Data::ArrayListNative<CommandFormat> *cmdFormats)
 {
 	ADDCMD(CT_POWERON, CF_INSTRUCTION);
 	ADDCMD(CT_POWEROFF, CF_INSTRUCTION);

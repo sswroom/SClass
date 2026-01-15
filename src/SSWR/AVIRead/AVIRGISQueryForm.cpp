@@ -96,7 +96,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType use
 				me->lvInfo->SetSubItem(i, 1, CSTR(""));
 			}
 			me->currVec.Delete();
-			me->navi->SetSelectedVector(0);
+			me->navi->SetSelectedVector(nullptr);
 		}
 		else
 		{
@@ -200,7 +200,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType use
 			me->lvInfo->SetSubItem(i, 1, CSTR(""));
 		}
 		me->currVec.Delete();
-		me->navi->SetSelectedVector(0);
+		me->navi->SetSelectedVector(nullptr);
 	}
 	else
 	{
@@ -340,7 +340,7 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UO
 	{
 		UOSInt j;
 		UOSInt k;
-		Optional<Text::String> value = 0;
+		Optional<Text::String> value = nullptr;
 		if (me->layerNames)
 		{
 			j = me->lyr->GetColumnCnt();
@@ -757,11 +757,11 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = lyr;
 	this->navi = navi;
-	this->currVec = 0;
+	this->currVec = nullptr;
 	this->layerNames = true;
 	this->nameCol = lyr->GetNameCol();
 	this->dispCnt = 0;
-	this->downPath = 0;
+	this->downPath = nullptr;
 	this->rdown = false;
 	sb.AppendC(UTF8STRC("Query - "));
 	sb.Append(lyr->GetSourceNameObj());

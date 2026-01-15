@@ -127,7 +127,7 @@ void SSWR::AVIRead::AVIRGISCombineForm::OnMonitorChanged()
 
 Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRGISCombineForm::GetCombinedLayer()
 {
-	Optional<Map::VectorLayer> layer = 0;
+	Optional<Map::VectorLayer> layer = nullptr;
 	NN<Text::String> s = Text::String::New(UTF8STRC("CombinedLayer"));
 	layer = Map::LayerTools::CombineLayers(this->selLayers, s);
 	s->Release();

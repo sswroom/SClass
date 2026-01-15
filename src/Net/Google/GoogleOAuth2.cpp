@@ -10,7 +10,7 @@ Optional<Net::Google::AccessTokenResponse> Net::Google::GoogleOAuth2::GetService
 	NN<Crypto::Token::JWToken> token;
 	if (!serviceAccount->ToJWT(this->ssl, scope).SetTo(token))
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion="));
@@ -22,7 +22,7 @@ Optional<Net::Google::AccessTokenResponse> Net::Google::GoogleOAuth2::GetService
 	cli->WriteCont(sb.v, sb.leng);
 	sb.ClearStr();
 	cli->ReadAllContent(sb, 8192, 1048576);
-	Optional<AccessTokenResponse> ret = 0;
+	Optional<AccessTokenResponse> ret = nullptr;
 	NN<Text::String> accessToken;
 	NN<Text::String> tokenType;
 	Int32 expiresIn;

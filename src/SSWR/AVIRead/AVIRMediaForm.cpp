@@ -153,9 +153,9 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NN<Media::VideoSource> video)
 
 void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::AudioSource> audio, Int32 timeDelay)
 {
-	this->core->BindAudio(0);
+	this->core->BindAudio(nullptr);
 	this->currADecoder.Delete();
-	this->activeAudio = 0;
+	this->activeAudio = nullptr;
 
 	this->vbdMain->SetTimeDelay(timeDelay);
 
@@ -214,7 +214,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(AnyType userObj)
 	else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 	{
 		NN<Media::AudioSource> audSrc = NN<Media::AudioSource>::ConvertFrom(mediaSrc);
-		SSWR::AVIRead::AVIRAudioViewerForm frm(0, me->ui, me->core, audSrc);
+		SSWR::AVIRead::AVIRAudioViewerForm frm(nullptr, me->ui, me->core, audSrc);
 		frm.ShowDialog(me);
 	}
 }
@@ -334,9 +334,9 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 
 	this->core = core;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
-	this->activeVideo = 0;
-	this->activeAudio = 0;
-	this->audRenderer = 0;
+	this->activeVideo = nullptr;
+	this->activeAudio = nullptr;
+	this->audRenderer = nullptr;
 	this->files.Add(mediaFile);
 	this->currChapters = mediaFile->GetChapterInfo();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -391,8 +391,8 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 	this->mnuAudio->AddItem(CSTR("Frequency Graph"), MNU_POPA_FREQ_GRAPH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 
-	this->currDecoder = 0;
-	this->currADecoder = 0;
+	this->currDecoder = nullptr;
+	this->currADecoder = nullptr;
 	NEW_CLASSNN(this->adecoders, Media::Decoder::AudioDecoderFinder());
 	NEW_CLASSNN(this->decoders, Media::Decoder::VideoDecoderFinder());
 	NEW_CLASSNN(this->clk, Media::RefClock());
@@ -404,7 +404,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 {
 	this->PBStop();
-	this->vbdMain->SetVideo(0);
+	this->vbdMain->SetVideo(nullptr);
 
 	this->currDecoder.Delete();
 	this->currADecoder.Delete();
@@ -417,7 +417,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 	this->mnuVideo.Delete();
 	if (this->audRenderer.NotNull())
 	{
-		this->core->BindAudio(0);
+		this->core->BindAudio(nullptr);
 	}
 	this->ClearChildren();
 	this->core->GetDrawEngine()->EndColorSess(this->colorSess);

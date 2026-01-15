@@ -39,7 +39,7 @@ namespace Net
 			virtual Net::Email::MailController::RemoveStatus RemoveMessage(Text::CString userName, UOSInt msgIndex);
 			virtual Optional<Net::Email::EmailStore::EmailInfo> GetEmailByIndex(Text::CString userName, UOSInt msgIndex);
 			virtual void GetMessageStat(Text::CString userName, NN<MessageStat> stat);
-			virtual UOSInt GetUnreadIndices(Text::CString userName, NN<Data::ArrayList<UOSInt>> indices);
+			virtual UOSInt GetUnreadIndices(Text::CString userName, NN<Data::ArrayListNative<UOSInt>> indices);
 		};
 	}
 }

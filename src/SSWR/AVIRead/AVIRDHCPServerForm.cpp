@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj
 	if (me->svr.SetTo(svr))
 	{
 		svr.Delete();
-		me->svr = 0;
+		me->svr = nullptr;
 		me->cboIP->SetEnabled(true);
 		me->txtSubnet->SetReadOnly(false);
 		me->txtFirstIP->SetReadOnly(false);
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj
 		UInt32 firstIP = 0;
 		UInt32 devCount = 0;
 		UInt32 gateway = 0;
-		Data::ArrayList<UInt32> dnsList;
+		Data::ArrayListNative<UInt32> dnsList;
 		Text::StringBuilderUTF8 sb;
 		if (ifIp == 0)
 		{
@@ -208,7 +208,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 {
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
-	this->svr = 0;
+	this->svr = nullptr;
 	this->SetText(CSTR("DHCP Server"));
 	this->SetFont(nullptr, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

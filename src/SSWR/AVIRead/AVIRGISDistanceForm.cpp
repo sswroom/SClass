@@ -53,7 +53,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyT
 				me->dispDist = dist;
 				me->UpdateDistDisp();
 				Math::Geometry::LineString *pl;
-				NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, 0, 0));
+				NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, nullptr, nullptr));
 				me->navi->SetSelectedVector(pl);
 				me->lastMapPos = Math::Coord2DDbl(0, 0);
 			}
@@ -105,7 +105,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyT
 			Math::Coord2DDbl pts[2];
 			pts[0] = mapPt;
 			pts[1] = me->lastMapPos;
-			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, 0, 0));
+			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), pts, 2, nullptr, nullptr));
 			me->navi->SetSelectedVector(pl);
 		}
 	}

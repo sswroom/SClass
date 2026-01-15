@@ -33,7 +33,7 @@ void Text::TextWriteUtil::WriteArrayRange(NN<Text::StyledTextWriter> writer, NN<
 	writer->WriteChar(']');
 }
 
-void Text::TextWriteUtil::WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayList<UOSInt>> arr, UOSInt startIndex, UOSInt endIndex)
+void Text::TextWriteUtil::WriteArrayUOSRange(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UOSInt>> arr, UOSInt startIndex, UOSInt endIndex)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -67,7 +67,7 @@ void Text::TextWriteUtil::WriteArray(NN<Text::StyledTextWriter> writer, NN<Data:
 	WriteArrayRange(writer, arr, 0, arr->GetCount());
 }
 
-void Text::TextWriteUtil::WriteArrayUOS(NN<Text::StyledTextWriter> writer, NN<Data::ArrayList<UOSInt>> arr)
+void Text::TextWriteUtil::WriteArrayUOS(NN<Text::StyledTextWriter> writer, NN<Data::ArrayListNative<UOSInt>> arr)
 {
 	WriteArrayUOSRange(writer, arr, 0, arr->GetCount());
 }
@@ -158,7 +158,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 			else
 			{
 				s->Release();
-				valArr[i] = 0;
+				valArr[i] = nullptr;
 			}
 		}
 		else
@@ -172,7 +172,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 				j++;
 			}
 			writer->ResetTextColor();
-			valArr[i] = 0;
+			valArr[i] = nullptr;
 		}
 		i++;
 	}
@@ -192,7 +192,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 			else
 			{
 				s->Release();
-				valArr[i] = 0;
+				valArr[i] = nullptr;
 			}
 		}
 		else
@@ -239,7 +239,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 				else
 				{
 					s->Release();
-					valArr[i] = 0;
+					valArr[i] = nullptr;
 				}
 			}
 			else
@@ -253,7 +253,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 					j++;
 				}
 				writer->ResetTextColor();
-				valArr[i] = 0;
+				valArr[i] = nullptr;
 			}
 			i++;
 		}
@@ -273,7 +273,7 @@ void Text::TextWriteUtil::WriteTableData(NN<Text::StyledTextWriter> writer, NN<D
 				else
 				{
 					s->Release();
-					valArr[i] = 0;
+					valArr[i] = nullptr;
 				}
 			}
 			else
@@ -404,7 +404,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 			else
 			{
 				s->Release();
-				valArr[i] = 0;
+				valArr[i] = nullptr;
 			}
 		}
 		else
@@ -418,7 +418,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 				j++;
 			}
 			writer->ResetTextColor();
-			valArr[i] = 0;
+			valArr[i] = nullptr;
 		}
 		i++;
 	}
@@ -438,7 +438,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 			else
 			{
 				s->Release();
-				valArr[i] = 0;
+				valArr[i] = nullptr;
 			}
 		}
 		else
@@ -488,7 +488,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 					else
 					{
 						s->Release();
-						valArr[i] = 0;
+						valArr[i] = nullptr;
 					}
 				}
 				else
@@ -502,7 +502,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 						j++;
 					}
 					writer->ResetTextColor();
-					valArr[i] = 0;
+					valArr[i] = nullptr;
 				}
 				i++;
 			}
@@ -522,7 +522,7 @@ void Text::TextWriteUtil::WriteTableDataPart(NN<Text::StyledTextWriter> writer, 
 					else
 					{
 						s->Release();
-						valArr[i] = 0;
+						valArr[i] = nullptr;
 					}
 				}
 				else

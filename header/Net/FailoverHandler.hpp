@@ -53,7 +53,7 @@ namespace Net
 		Sync::MutexUsage mutUsage(this->mut);
 		if (this->channelList.GetCount() == 0)
 		{
-			return 0;
+			return nullptr;
 		}
 		UOSInt initIndex;
 		UOSInt currIndex;
@@ -70,7 +70,7 @@ namespace Net
 			initIndex = (this->lastIndex + 1) % this->channelList.GetCount();
 			break;
 		default:
-			return 0;
+			return nullptr;
 		}
 		channel = this->channelList.GetItemNoCheck(initIndex);
 		if (!channel->ChannelFailure())
@@ -89,7 +89,7 @@ namespace Net
 			}
 			currIndex = (currIndex + 1) % this->channelList.GetCount();
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> void FailoverHandler<T>::GetOtherChannels(NN<Data::ArrayListNN<T>> chList)

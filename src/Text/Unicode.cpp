@@ -356,5 +356,5 @@ Optional<Text::Unicode::Block> Text::Unicode::GetBlock(UInt32 code)
 			return blk;
 		}
 	}
-	return 0;
+	return nullptr;
 }

@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
-	NEW_CLASS(info, Media::MonitorInfo(0));
+	NEW_CLASS(info, Media::MonitorInfo(nullptr));
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Name = "));
 	sb.Append(info->GetName());

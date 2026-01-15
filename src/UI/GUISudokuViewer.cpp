@@ -133,16 +133,16 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 		size = sz.y;
 		tly = 0;
 		tlx = (sz.x - sz.y) >> 1;
-		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(tlx), UOSInt2Double(sz.y)), 0, b3);
-		img->DrawRect(Math::Coord2DDbl(UOSInt2Double(tlx + size), 0), Math::Size2DDbl(UOSInt2Double(sz.x - tlx - size), UOSInt2Double(sz.y)), 0, b3);
+		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(tlx), UOSInt2Double(sz.y)), nullptr, b3);
+		img->DrawRect(Math::Coord2DDbl(UOSInt2Double(tlx + size), 0), Math::Size2DDbl(UOSInt2Double(sz.x - tlx - size), UOSInt2Double(sz.y)), nullptr, b3);
 	}
 	else
 	{
 		size = sz.x;
 		tlx = 0;
 		tly = (sz.y - sz.x) >> 1;
-		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(tly)), 0, b3);
-		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(tly + size)), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(sz.y - tly - size)), 0, b3);
+		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(tly)), nullptr, b3);
+		img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(tly + size)), Math::Size2DDbl(UOSInt2Double(sz.x), UOSInt2Double(sz.y - tly - size)), nullptr, b3);
 	}
 	blockSize = ((size - 4) / 9) - 2;
 
@@ -158,7 +158,7 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	UOSInt j;
 	UInt16 v;
 
-	p = img->NewPenARGB(0xff000000, 1, 0, 0);
+	p = img->NewPenARGB(0xff000000, 1, nullptr, 0);
 	i = 9;
 	lastPos = size;
 	while (i-- > 0)
@@ -180,12 +180,12 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	}
 	img->DelPen(p);
 
-	p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+	p = img->NewPenARGB(0xffff0000, 3, nullptr, 0);
 	i = MulDivUOS(size - 4, this->selX, 9) + (this->selX / 3) * 2;
 	j = MulDivUOS(size - 4, this->selX + 1, 9) + (this->selX / 3) * 2;
 	currPos = MulDivUOS(size - 4, this->selY, 9) + (this->selY / 3) * 2;
 	lastPos = MulDivUOS(size - 4, this->selY + 1, 9) + (this->selY / 3) * 2;
-	img->DrawRect(Math::Coord2DDbl(UOSInt2Double(tlx + i), UOSInt2Double(tly + currPos)), Math::Size2DDbl(UOSInt2Double(j - i - 1), UOSInt2Double(lastPos - currPos - 1)), p, 0);
+	img->DrawRect(Math::Coord2DDbl(UOSInt2Double(tlx + i), UOSInt2Double(tly + currPos)), Math::Size2DDbl(UOSInt2Double(j - i - 1), UOSInt2Double(lastPos - currPos - 1)), p, nullptr);
 	img->DelPen(p);
 
 	f = img->NewFontPx(CSTR("Arial"), UOSInt2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
@@ -217,23 +217,23 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 				sz = img->GetTextSize(f, {ch, 1});
 				if (isDefault)
 				{
-					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b);
+					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), nullptr, b);
 					img->DrawString(pt.ToDouble() + ((pt2 - pt).ToDouble() - sz) * 0.5, {ch, 1}, f, b2);
 				}
 				else if (this->board->HasError(i, j))
 				{
-					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b3);
+					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), nullptr, b3);
 					img->DrawString(pt.ToDouble() + ((pt2 - pt).ToDouble() - sz) * 0.5, {ch, 1}, f, redBrush);
 				}
 				else
 				{
-					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b3);
+					img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), nullptr, b3);
 					img->DrawString(pt.ToDouble() + ((pt2 - pt).ToDouble() - sz) * 0.5, {ch, 1}, f, b2);
 				}				
 			}
 			else
 			{
-				img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), 0, b3);
+				img->DrawRect(pt.ToDouble(), (pt2 - pt).ToDouble(), nullptr, b3);
 				v = this->board->GetBoardValue(i, j);
 				Math::Double2D smallSize = ((pt2 - pt).ToDouble()) / 3;
 				if (v & 0x20)

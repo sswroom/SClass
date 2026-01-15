@@ -92,7 +92,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 			ssl = Net::SSLEngineFactory::Create(clif, false);
 			userName = Text::String::CopyOrNull(me->reqUser);
 			password = Text::String::CopyOrNull(me->reqPwd);
-			me->reqURL = 0;
+			me->reqURL = nullptr;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, me->proxyIP);
 			clif.SetProxy(CSTRP(sbuff, sptr), me->proxyPort, OPTSTR_CSTR(userName), OPTSTR_CSTR(password));
 			cli = Net::HTTPClient::CreateClient(clif, ssl, 0, false, currURL->StartsWith(CSTR("https://")));
@@ -228,9 +228,9 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->respChanged = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	this->reqURL = 0;
-	this->reqUser = 0;
-	this->reqPwd = 0;
+	this->reqURL = nullptr;
+	this->reqUser = nullptr;
+	this->reqPwd = nullptr;
 	NEW_CLASSNN(this->threadEvt, Sync::Event(true));
 
 	this->pnlRequest = ui->NewPanel(*this);

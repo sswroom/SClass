@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(AnyType 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
-	SSWR::AVIRead::AVIRCaptureDevForm dlg(0, me->ui, me->core);
+	SSWR::AVIRead::AVIRCaptureDevForm dlg(nullptr, me->ui, me->core);
 	NN<Media::VideoCapturer> capture;
 	me->player->CloseFile();
 	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<U
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->listener = 0;
+	this->listener = nullptr;
 	this->videoOpening = false;
 	NEW_CLASSNN(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorManager(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<U
 	while (port < 8090)
 	{
 		NN<Net::WebServer::WebListener> listener;
-		NEW_CLASSNN(listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), 0, this->webIface, port, 10, 1, 2, CSTR("ConsoleMediaPlayer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASSNN(listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), nullptr, this->webIface, port, 10, 1, 2, CSTR("ConsoleMediaPlayer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (listener->IsError())
 		{
 			listener.Delete();

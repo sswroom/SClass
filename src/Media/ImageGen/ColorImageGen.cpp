@@ -30,7 +30,7 @@ Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<co
 	UInt16 c[4];
 	UOSInt bpl = size.x << 3;
 	if (size.x < 8 || size.y < 4)
-		return 0;
+		return nullptr;
 	NN<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
 	NN<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
 	NN<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());

@@ -38,7 +38,7 @@ SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(Optional<UI::GUIClientCo
 	this->core = core;
 	this->ssl = ssl;
 	this->envCSys = envCSys;
-	this->layer = 0;
+	this->layer = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->txtDesc = ui->NewTextBox(*this, CSTR(""), true);

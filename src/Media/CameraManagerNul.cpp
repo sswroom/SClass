@@ -17,5 +17,5 @@ OSInt Media::CameraManager::GetDeviceCount()
 
 Optional<Media::PhotoCapturer> Media::CameraManager::CreateDevice(OSInt devId)
 {
-	return 0;
+	return nullptr;
 }

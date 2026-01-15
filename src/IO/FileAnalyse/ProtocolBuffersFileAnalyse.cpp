@@ -43,7 +43,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ProtocolBuffersFileAnaly
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (index != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, (UOSInt)this->fd->GetDataSize()));
 	Data::ByteBuffer packetBuff((UOSInt)this->fd->GetDataSize());

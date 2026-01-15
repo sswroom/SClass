@@ -313,7 +313,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 			if (succ && copyData)
 			{
 				UOSInt rowCopied = 0;
-				if (dataConn->QueryTableData(OPTSTR_CSTR(me->dataSchema), tableName->ToCString(), 0, 0, 0, 0, 0).SetTo(r))
+				if (dataConn->QueryTableData(OPTSTR_CSTR(me->dataSchema), tableName->ToCString(), nullptr, 0, 0, 0, nullptr).SetTo(r))
 				{
 					Text::StringBuilderUTF8 sbInsert;
 					UOSInt nInsert = 0;
@@ -464,7 +464,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 	this->SetText(CSTR("Copy Tables"));
 	this->core = core;
 	this->dbList = dbList;
-	this->dataSchema = 0;
+	this->dataSchema = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);

@@ -15,7 +15,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 		Media::PixelFormat pf = img->info.pf;
 		if (pf == Media::PF_PAL_W8)
 		{
-			Media::Resizer::LanczosResizerW8_8 resizer(3, 3, img->info.color, img->info.color, 0);
+			Media::Resizer::LanczosResizerW8_8 resizer(3, 3, img->info.color, img->info.color, nullptr);
 			while (currWidth >= maxSize || currHeight >= maxSize)
 			{
 				currWidth >>= 1;
@@ -35,7 +35,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 				img->ToPal8();
 				pf = img->info.pf;
 			}
-			Media::Resizer::LanczosResizerRGB_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
+			Media::Resizer::LanczosResizerRGB_C8 resizer(3, 3, img->info.color, img->info.color, nullptr, img->info.atype);
 			if (resizer.IsSupported(img->info))
 			{
 				if (pf == Media::PF_B8G8R8)

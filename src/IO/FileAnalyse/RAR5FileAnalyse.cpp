@@ -152,7 +152,7 @@ void __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(NN<Sync::Thread> th
 IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RAR5FileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadInt32(&buff[0]) != 0x21726152 || ReadInt32(&buff[4]) != 0x0001071A)
@@ -559,9 +559,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 	Data::ByteArray nextPtr;
 	Data::ByteArray nextPtr2;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (pack->headerSize + pack->dataSize)));
 	Data::ByteBuffer packBuff(pack->headerSize);

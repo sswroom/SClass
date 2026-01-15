@@ -84,7 +84,7 @@ Bool Net::SMSGatewaySmartone::SendSMS(Text::CStringNN targetNum, Text::CStringNN
 #endif
 		url.ClearStr();
 		IO::MemoryReadingStream mstm(data.ToByteArray());
-		Text::XMLReader reader(0, mstm, Text::XMLReader::PM_XML);
+		Text::XMLReader reader(nullptr, mstm, Text::XMLReader::PM_XML);
 		if (reader.NextElementName().SetTo(s) && s->Equals(CSTR("Response")))
 		{
 			if (reader.NextElementName().SetTo(s) && s->Equals(CSTR("RequestStatus")))

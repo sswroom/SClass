@@ -10,8 +10,8 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	Optional<Text::String> fileName = 0;
-	Optional<DataInfo> info = 0;
+	Optional<Text::String> fileName = nullptr;
+	Optional<DataInfo> info = nullptr;
 	Bool found;
 	UOSInt i;
 	NN<IO::ParsedObject> nnpobj;
@@ -28,13 +28,13 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 			if (state->me->fileNames.HasItems())
 			{
 				fileName = state->me->fileNames.Get();
-				info = 0;
+				info = nullptr;
 				found = true;
 				state->processing = true;
 			}
 			else if (state->me->datas.HasItems())
 			{
-				fileName = 0;
+				fileName = nullptr;
 				info = state->me->datas.Get();
 				found = true;
 			}

@@ -329,14 +329,14 @@ Net::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl)
 {
 	Text::CStringNN nns;
 	this->ssl = ssl;
-	this->serverHost = 0;
-	this->metadataPath = 0;
-	this->loginPath = 0;
-	this->logoutPath = 0;
-	this->ssoPath = 0;
-	this->signCert = 0;
-	this->signKey = 0;
-	this->idp = 0;
+	this->serverHost = nullptr;
+	this->metadataPath = nullptr;
+	this->loginPath = nullptr;
+	this->logoutPath = nullptr;
+	this->ssoPath = nullptr;
+	this->signCert = nullptr;
+	this->signKey = nullptr;
+	this->idp = nullptr;
 	this->hashType = Crypto::Hash::HashType::SHA1;
 	this->nAuthMethods = 5;
 	this->authMethods = MemAllocArr(SAMLAuthMethod, 5);
@@ -1050,7 +1050,7 @@ NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebReque
 						{
 							if (s->Equals(CSTR("Attribute")))
 							{
-								Optional<Text::String> attrName = 0;
+								Optional<Text::String> attrName = nullptr;
 								i = reader.GetAttribCount();
 								while (i-- > 0)
 								{

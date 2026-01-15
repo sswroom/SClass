@@ -176,7 +176,7 @@ Net::RTPSvrChannel::RTPSvrChannel(NN<Net::SocketFactory> sockf, UInt16 port, Int
 	{
 		port += 1;
 	}
-	NEW_CLASSNN(this->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
+	NEW_CLASSNN(this->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
 	if (port == 0)
 	{
 		port = this->rtpUDP->GetPort();
@@ -184,10 +184,10 @@ Net::RTPSvrChannel::RTPSvrChannel(NN<Net::SocketFactory> sockf, UInt16 port, Int
 		{
 			port += 1;
 			this->rtpUDP.Delete();
-			NEW_CLASSNN(this->rtpUDP, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
+			NEW_CLASSNN(this->rtpUDP, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, this->log, nullptr, this->threadCnt, false));
 		}
 	}
-	NEW_CLASSNN(this->rtcpUDP, Net::UDPServer(sockf, 0, port + 1, nullptr, PacketCtrlHdlr, this, this->log, nullptr, 1, false));
+	NEW_CLASSNN(this->rtcpUDP, Net::UDPServer(sockf, nullptr, port + 1, nullptr, PacketCtrlHdlr, this, this->log, nullptr, 1, false));
 }
 
 Net::RTPSvrChannel::~RTPSvrChannel()

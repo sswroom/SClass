@@ -109,7 +109,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const 
 	}
 	else
 	{
-		this->extName = 0;
+		this->extName = nullptr;
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
@@ -152,7 +152,7 @@ IO::FileLog::~FileLog()
 	if (this->extName.SetTo(extName))
 	{
 		Text::StrDelNew(extName);
-		this->extName = 0;
+		this->extName = nullptr;
 	}
 
 	log.Delete();

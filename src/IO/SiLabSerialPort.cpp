@@ -147,7 +147,7 @@ Optional<IO::StreamReadReq> IO::SiLabSerialPort::BeginRead(const Data::ByteArray
 {
 	void *h = this->handle;
 	if (h == 0)
-		return 0;
+		return nullptr;
 
 	NN<ReadEvent> re = MemAllocNN(ReadEvent);
 	re->buff = buff.Arr();
@@ -191,7 +191,7 @@ void IO::SiLabSerialPort::CancelRead(NN<IO::StreamReadReq> reqData)
 Optional<IO::StreamWriteReq> IO::SiLabSerialPort::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
 	if (handle == 0)
-		return 0;
+		return nullptr;
 	evt->Set();
 	return (IO::StreamWriteReq*)Write(buff);
 }

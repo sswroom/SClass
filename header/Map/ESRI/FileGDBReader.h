@@ -22,7 +22,7 @@ namespace Map
 			Int32 objectId;
 			UnsafeArray<UInt8> fieldNull;
 			UnsafeArray<UInt32> fieldOfst;
-			Optional<Data::ArrayList<UOSInt>> columnIndices;
+			Optional<Data::ArrayListNative<UOSInt>> columnIndices;
 			UOSInt dataOfst;
 			UOSInt maxCnt;
 			UInt32 maxRowSize;

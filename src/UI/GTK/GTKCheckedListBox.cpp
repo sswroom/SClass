@@ -16,7 +16,7 @@ typedef struct
 	GtkWidget *treeView;
 	OSInt colCnt;
 	Double *colSizes;
-	Data::ArrayList<MyRow*> *rows;
+	Data::ArrayListObj<MyRow*> *rows;
 	UI::ListViewStyle lvstyle;
 	Bool noChgEvt;
 } GUIListViewData;

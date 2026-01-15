@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPSERVERHANDLER
 #define _SM_MAP_MAPSERVERHANDLER
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "Map/MapDrawLayer.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "Net/WebServer/WebServiceHandler.h"
@@ -15,7 +15,7 @@ namespace Map
 	private:
 		NN<Parser::ParserList> parsers;
 		Data::ArrayListNN<IO::ParsedObject> assets;
-		Data::FastStringMap<Map::MapDrawLayer*> layerMap;
+		Data::FastStringMapObj<Map::MapDrawLayer*> layerMap;
 		Optional<Text::String> cesiumScenePath;
 		Double cesiumMinError;
 		NN<Math::GeographicCoordinateSystem> wgs84;

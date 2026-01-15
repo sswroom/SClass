@@ -820,7 +820,7 @@ Bool Data::Conditions::TimeBetweenCondition::TestValid(NN<Data::VariItem> item) 
 	}
 }
 
-Data::Conditions::Int32InCondition::Int32InCondition(Text::CStringNN fieldName, NN<const Data::ArrayList<Int32>> val) : FieldCondition(fieldName)
+Data::Conditions::Int32InCondition::Int32InCondition(Text::CStringNN fieldName, NN<const Data::ArrayListNative<Int32>> val) : FieldCondition(fieldName)
 {
 	this->vals.AddAll(val);
 }
@@ -955,7 +955,7 @@ Bool Data::Conditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUT
 	{
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		UnsafeArrayOpt<UTF8Char> sptrTmp = 0;
+		UnsafeArrayOpt<UTF8Char> sptrTmp = nullptr;
 		UnsafeArray<UTF8Char> nnsptrTmp;
 		UOSInt sptrSize = 0;
 		UOSInt thisSize;
@@ -1101,7 +1101,7 @@ Bool Data::Conditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilde
 	{
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
-		UnsafeArrayOpt<UTF8Char> sptrTmp = 0;
+		UnsafeArrayOpt<UTF8Char> sptrTmp = nullptr;
 		UnsafeArray<UTF8Char> nnsptrTmp;
 		UOSInt sptrSize = 0;
 		UOSInt thisSize;
@@ -1563,7 +1563,7 @@ Data::QueryConditions::QueryConditions()
 {
 	NEW_CLASSNN(this->andCond, Conditions::BooleanAnd());
 	this->cond = this->andCond;
-	this->orCond = 0;
+	this->orCond = nullptr;
 }
 
 Data::QueryConditions::~QueryConditions()
@@ -1692,7 +1692,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32LT(Text::CStringNN fieldNa
 	return *this;
 }
 
-NN<Data::QueryConditions> Data::QueryConditions::Int32In(Text::CStringNN fieldName, NN<Data::ArrayList<Int32>> vals)
+NN<Data::QueryConditions> Data::QueryConditions::Int32In(Text::CStringNN fieldName, NN<Data::ArrayListNative<Int32>> vals)
 {
 	NN<Conditions::Int32InCondition> cond;
 	NEW_CLASSNN(cond, Conditions::Int32InCondition(fieldName, vals));
@@ -1913,7 +1913,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		if (sbField.leng == 0)
 		{
 			DEL_CLASS(cond);
-			return 0;
+			return nullptr;
 		}
 		sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
 		if (sb.EqualsICase(UTF8STRC("in")))
@@ -1922,7 +1922,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			if (!sb.Equals(UTF8STRC("(")))
 			{
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 			Data::ArrayListNN<Data::VariItem> items;
 			while (true)
@@ -1932,7 +1932,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				{
 					items.DeleteAll();
 					DEL_CLASS(cond);
-					return 0;
+					return nullptr;
 				}
 				items.Add(item);
 				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
@@ -1951,7 +1951,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 							{
 								items.DeleteAll();
 								DEL_CLASS(cond);
-								return 0;
+								return nullptr;
 							}
 							vals.Add(item->GetItemValue().str->v);
 						}
@@ -1961,9 +1961,9 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					}
 					else if (itemType == Data::VariItem::ItemType::I32 || itemType == Data::VariItem::ItemType::I64 || itemType == Data::VariItem::ItemType::F64)
 					{
-						Data::ArrayList<Int32> i32List;
-						Data::ArrayList<Int64> i64List;
-						Data::ArrayList<Double> dblList;
+						Data::ArrayListNative<Int32> i32List;
+						Data::ArrayListNative<Int64> i64List;
+						Data::ArrayListNative<Double> dblList;
 						Bool hasI64 = false;
 						Bool hasF64 = false;
 						Data::ArrayIterator<NN<Data::VariItem>> it = items.Iterator();
@@ -1995,7 +1995,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 							{
 								items.DeleteAll();
 								DEL_CLASS(cond);
-								return 0;
+								return nullptr;
 							}
 						}
 						if (hasF64)
@@ -2003,14 +2003,14 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 //							cond->DoubleIn(sbField.ToCString(), dblList);
 							items.DeleteAll();
 							DEL_CLASS(cond);
-							return 0;
+							return nullptr;
 						}
 						else if (hasI64)
 						{
 //							cond->Int64In(sbField.ToCString(), i64List);
 							items.DeleteAll();
 							DEL_CLASS(cond);
-							return 0;
+							return nullptr;
 						}
 						else
 						{
@@ -2023,7 +2023,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					{
 						items.DeleteAll();
 						DEL_CLASS(cond);
-						return 0;
+						return nullptr;
 					}
 				}
 				else if (sb.Equals(UTF8STRC(",")))
@@ -2033,7 +2033,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				{
 					items.DeleteAll();
 					DEL_CLASS(cond);
-					return 0;
+					return nullptr;
 				}
 			}
 		}
@@ -2046,7 +2046,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				if (!sb.Equals(UTF8STRC("(")))
 				{
 					DEL_CLASS(cond);
-					return 0;
+					return nullptr;
 				}
 				Data::ArrayListNN<Data::VariItem> items;
 				while (true)
@@ -2056,7 +2056,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					{
 						items.DeleteAll();
 						DEL_CLASS(cond);
-						return 0;
+						return nullptr;
 					}
 					items.Add(item);
 					sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
@@ -2075,7 +2075,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 								{
 									items.DeleteAll();
 									DEL_CLASS(cond);
-									return 0;
+									return nullptr;
 								}
 								vals.Add(item->GetItemValue().str->v);
 							}
@@ -2087,7 +2087,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 						{
 							items.DeleteAll();
 							DEL_CLASS(cond);
-							return 0;
+							return nullptr;
 						}
 					}
 					else if (sb.Equals(UTF8STRC(",")))
@@ -2097,14 +2097,14 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 					{
 						items.DeleteAll();
 						DEL_CLASS(cond);
-						return 0;
+						return nullptr;
 					}
 				}
 			}
 			else
 			{
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 		}
 		else if (sb.Equals(UTF8STRC("=")))
@@ -2113,7 +2113,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 			Data::VariItem::ItemType itemType = item->GetItemType();
 			if (itemType == Data::VariItem::ItemType::Str)
@@ -2136,7 +2136,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			{
 				item.Delete();
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 			item.Delete();
 		}
@@ -2146,7 +2146,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 			Data::VariItem::ItemType itemType = item->GetItemType();
 			if (itemType == Data::VariItem::ItemType::I32)
@@ -2165,7 +2165,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			{
 				item.Delete();
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 			item.Delete();
 		}
@@ -2175,7 +2175,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 			Data::VariItem::ItemType itemType = item->GetItemType();
 			if (itemType == Data::VariItem::ItemType::I32)
@@ -2194,14 +2194,14 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			{
 				item.Delete();
 				DEL_CLASS(cond);
-				return 0;
+				return nullptr;
 			}
 			item.Delete();
 		}
 		else
 		{
 			DEL_CLASS(cond);
-			return 0;
+			return nullptr;
 		}
 		sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
 		if (sb.GetLength() == 0)
@@ -2214,10 +2214,10 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else
 		{
 			DEL_CLASS(cond);
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Data::Conditions::TimeObject> Data::QueryConditions::TSField(Text::CStringNN fieldName)

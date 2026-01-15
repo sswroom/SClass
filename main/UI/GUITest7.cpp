@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NN<UI::GUIButton> btn;
 		NN<UI::GUIForm> frm;
 		NN<UI::GUILabel> lbl;
-		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
+		NEW_CLASSNN(frm, UI::GUIForm(nullptr, 640, 480, core));
 		frm->SetText(CSTR("Test 7 - Font and Color"));
 		btn = core->NewButton(frm, CSTR("Button"));
 		btn->SetRect(4, 4, 75, 23, false);

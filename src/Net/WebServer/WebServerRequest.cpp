@@ -87,7 +87,7 @@ void Net::WebServer::WebServerRequest::ParseFormStr(NN<Data::FastStringMapNN<Tex
 
 	tmpBuff = MemAlloc(UInt8, buffSize + 1);
 	buffPos = 0;
-	tmpName = 0;
+	tmpName = nullptr;
 	while (buffSize-- > 0)
 	{
 		b = *buff++;
@@ -113,11 +113,11 @@ void Net::WebServer::WebServerRequest::ParseFormStr(NN<Data::FastStringMapNN<Tex
 				{
 					formMap->PutC({tmpBuff, nameLen}, Text::String::New(nns, (UOSInt)(&tmpBuff[buffPos] - nns)));
 				}
-				tmpName = 0;
+				tmpName = nullptr;
 				buffPos = 0;
 			}
 		}
-		else if (b == '=' && tmpName == 0 && buffPos > 0)
+		else if (b == '=' && tmpName.IsNull() && buffPos > 0)
 		{
 			tmpBuff[buffPos] = 0;
 			nameLen = buffPos;
@@ -180,7 +180,7 @@ void Net::WebServer::WebServerRequest::ParseFormStr(NN<Data::FastStringMapNN<Tex
 		{
 			formMap->PutC({tmpBuff, nameLen}, Text::String::New(nns, (UOSInt)(&tmpBuff[buffPos] - nns)));
 		}
-		tmpName = 0;
+		tmpName = nullptr;
 		buffPos = 0;
 	}
 
@@ -322,7 +322,7 @@ Net::WebServer::WebServerRequest::WebServerRequest(Text::CStringNN requestURI, N
 	this->reqData = 0;
 	this->reqDataSize = 0;
 	this->chunkMStm = 0;
-	this->remoteCert = 0;
+	this->remoteCert = nullptr;
 }
 
 Net::WebServer::WebServerRequest::~WebServerRequest()
@@ -382,7 +382,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebServer::WebServerRequest::GetHeader(UnsafeArray
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -537,14 +537,14 @@ void Net::WebServer::WebServerRequest::ParseHTTPForm()
 Optional<Text::String> Net::WebServer::WebServerRequest::GetHTTPFormStr(Text::CStringNN name)
 {
 	if (this->formMap == 0)
-		return 0;
+		return nullptr;
 	return this->formMap->GetC(name);
 }
 
 UnsafeArrayOpt<const UInt8> Net::WebServer::WebServerRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize)
 {
 	if (this->formFileList == 0)
-		return 0;
+		return nullptr;
 	UOSInt i = 0;
 	UOSInt j = this->formFileList->GetCount();
 	while (i < j)
@@ -566,7 +566,7 @@ UnsafeArrayOpt<const UInt8> Net::WebServer::WebServerRequest::GetHTTPFormFile(Te
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Net::WebServer::WebServerRequest::GetRequestURLBase(NN<Text::StringBuilderUTF8> sb)
@@ -633,7 +633,7 @@ Optional<Crypto::Cert::X509Cert> Net::WebServer::WebServerRequest::GetClientCert
 	}
 	if (!this->cli->IsSSL())
 	{
-		return 0;
+		return nullptr;
 	}
 	Net::SSLClient *cli = (Net::SSLClient*)this->cli.Ptr();
 	NN<Crypto::Cert::Certificate> cert;
@@ -642,7 +642,7 @@ Optional<Crypto::Cert::X509Cert> Net::WebServer::WebServerRequest::GetClientCert
 		this->remoteCert = cert->CreateX509Cert();
 		return this->remoteCert;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<const UInt8> Net::WebServer::WebServerRequest::GetReqData(OutParam<UOSInt> dataSize)
@@ -650,7 +650,7 @@ UnsafeArrayOpt<const UInt8> Net::WebServer::WebServerRequest::GetReqData(OutPara
 	if (this->reqData == 0)
 	{
 		dataSize.Set(0);
-		return 0;
+		return nullptr;
 	}
 	else
 	{

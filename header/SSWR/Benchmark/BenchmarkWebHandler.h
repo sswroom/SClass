@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_BENCHMARK_BENCHMARKWEBHANDLER
 #define _SM_SSWR_BENCHMARK_BENCHMARKWEBHANDLER
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
@@ -13,7 +13,7 @@ namespace SSWR
 		private:
 			typedef Bool (CALLBACKFUNC RequestHandler)(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		private:
-			Data::FastStringMap<RequestHandler> reqMap;
+			Data::FastStringMapObj<RequestHandler> reqMap;
 
 			static Bool __stdcall UploadReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 			static Bool __stdcall CPUInfoReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);

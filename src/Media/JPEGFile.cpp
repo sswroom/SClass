@@ -247,18 +247,18 @@ Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NN<IO::StreamData> fd)
 	UInt32 j;
 	UInt8 buff[18];
 	if (fd->GetRealData(0, 2, BYTEARR(buff)) != 2)
-		return 0;
+		return nullptr;
 	if (buff[0] != 0xff || buff[1] != 0xd8)
-		return 0;
+		return nullptr;
 	ofst = 2;
 	while (true)
 	{
 		if (fd->GetRealData(ofst, 4, BYTEARR(buff)) != 4)
-			return 0;
+			return nullptr;
 		if (buff[0] != 0xff)
-			return 0;
+			return nullptr;
 		if (buff[1] == 0xdb)
-			return 0;
+			return nullptr;
 
 		j = (UInt32)((buff[2] << 8) | buff[3]) - 2;
 		if (buff[1] == 0xe1)
@@ -277,17 +277,17 @@ Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NN<IO::StreamData> fd)
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 				if (bo->GetUInt16(&buff[8]) != 42)
 				{
 					bo.Delete();
-					return 0;
+					return nullptr;
 				}
 				if (bo->GetUInt32(&buff[10]) != 8)
 				{
 					bo.Delete();
-					return 0;
+					return nullptr;
 				}
 				Optional<Media::EXIFData> exif = Media::EXIFData::ParseIFD(fd, ofst + 18, bo, nextOfst, ofst + 10);
 				bo.Delete();
@@ -318,9 +318,9 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 	if (buff[0] != 0xff || buff[1] != 0xd8)
 		return false;
 
-	exif.Set(0);
-	xmf.Set(0);
-	icc.Set(0);
+	exif.Set(nullptr);
+	xmf.Set(nullptr);
+	icc.Set(nullptr);
 	width.Set(0);
 	height.Set(0);
 

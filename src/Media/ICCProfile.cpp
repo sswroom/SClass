@@ -319,7 +319,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateRLUT() const
 				valCnt = ReadMUInt32(&this->iccBuff[tagOfst + 8]);
 				if (valCnt <= 1)
 				{
-					return 0;
+					return nullptr;
 				}
 				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile R")));
 				stab = &this->iccBuff[tagOfst + 12];
@@ -334,12 +334,12 @@ Optional<Media::LUT> Media::ICCProfile::CreateRLUT() const
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::LUT> Media::ICCProfile::CreateGLUT() const
@@ -369,7 +369,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateGLUT() const
 				valCnt = ReadMUInt32(&this->iccBuff[tagOfst + 8]);
 				if (valCnt <= 1)
 				{
-					return 0;
+					return nullptr;
 				}
 				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile G")));
 				stab = &this->iccBuff[tagOfst + 12];
@@ -384,12 +384,12 @@ Optional<Media::LUT> Media::ICCProfile::CreateGLUT() const
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::LUT> Media::ICCProfile::CreateBLUT() const
@@ -419,7 +419,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateBLUT() const
 				valCnt = ReadMUInt32(&this->iccBuff[tagOfst + 8]);
 				if (valCnt <= 1)
 				{
-					return 0;
+					return nullptr;
 				}
 				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile B")));
 				stab = &this->iccBuff[tagOfst + 12];
@@ -434,12 +434,12 @@ Optional<Media::LUT> Media::ICCProfile::CreateBLUT() const
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Media::ICCProfile::GetRedTransferParam(NN<Media::CS::TransferParam> param) const
@@ -927,9 +927,9 @@ Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 {
 	NN<Media::ICCProfile> profile;
 	if (buff.ReadMU32(0) != buff.GetSize())
-		return 0;
+		return nullptr;
 	if (buff.ReadMI32(36) != 0x61637370)
-		return 0;
+		return nullptr;
 	
 	NEW_CLASSNN(profile, Media::ICCProfile(buff.Arr()));
 

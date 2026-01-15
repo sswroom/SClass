@@ -198,7 +198,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(Optional<UI::GUIClientCo
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->file = 0;
+	this->file = nullptr;
 	this->lastPackCount = 0;
 
 	this->pnlCtrl = ui->NewPanel(*this);

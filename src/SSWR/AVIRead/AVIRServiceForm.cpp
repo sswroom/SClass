@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDeleteClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnCreateClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
-	SSWR::AVIRead::AVIRServiceCreateForm frm(0, me->ui, me->core);
+	SSWR::AVIRead::AVIRServiceCreateForm frm(nullptr, me->ui, me->core);
 	if (frm.ShowDialog(me))
 	{
 		me->lvService->ClearItems();

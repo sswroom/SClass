@@ -223,7 +223,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsByte(UnsafeArray<UInt8> srcData, UnsafeA
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx;
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -350,7 +350,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsWord(UnsafeArray<UInt8> srcData, UnsafeA
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[2];
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -507,7 +507,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsRGB24(UnsafeArray<UInt8> srcData, Unsafe
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[3];
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -685,7 +685,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsRGB48(UnsafeArray<UInt8> srcData, Unsafe
 	UnsafeArrayOpt<UInt8> lastLineStart;
 	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[6];
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -928,7 +928,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsARGB32(UnsafeArray<UInt8> srcData, Unsaf
 	UInt8 lastPx[4];
 	UInt8 a;
 	UInt8 aAnd = 0xff;
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -1128,7 +1128,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsARGB64(UnsafeArray<UInt8> srcData, Unsaf
 	UInt8 a0;
 	UInt8 a1;
 	Bool semiTr = false;
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -1453,7 +1453,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsAW16(UnsafeArray<UInt8> srcData, UnsafeA
 	UInt8 lastPx[2];
 	UInt8 a;
 	Bool semiTr = false;
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -1653,7 +1653,7 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsAW32(UnsafeArray<UInt8> srcData, UnsafeA
 	UInt8 a0;
 	UInt8 a1;
 	Bool semiTr = false;
-	lastLineStart = 0;
+	lastLineStart = nullptr;
 	currY = initY;
 	while (currY < maxY)
 	{
@@ -2604,7 +2604,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	UInt64 ofst;
 	if (hdr[0] != 0x89 && hdr[1] != 0x50 && hdr[2] != 0x4e && hdr[3] != 0x47 && hdr[4] != 0x0d && hdr[5] != 0x0a && hdr[6] != 0x1a && hdr[7] != 0x0a)
 	{
-		return 0;
+		return nullptr;
 	}
 	Media::FrameInfo info;
 	NN<Media::ImageList> imgList;
@@ -2617,8 +2617,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 //	UInt8 compMeth;
 //	UInt8 filterMeth;
 	UInt8 interlaceMeth = 0;
-	Optional<IO::MemoryStream> mstm = 0;
-	Optional<Data::Compress::Inflater> cstm = 0;
+	Optional<IO::MemoryStream> mstm = nullptr;
+	Optional<Data::Compress::Inflater> cstm = nullptr;
 	IO::WriteCacheStream *wcstm = 0;
 	UOSInt imgSize = 0;
 	UInt32 imgDelay = 0;
@@ -2997,7 +2997,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	if (imgList->GetCount() <= 0)
 	{
 		imgList.Delete();
-		return 0;
+		return nullptr;
 	}
 	else
 	{

@@ -485,7 +485,7 @@ Net::Email::SMTPServer::SMTPServer(NN<Net::SocketFactory> sockf, Optional<Net::S
 	this->mailObj = userObj;
 	this->loginHdlr = loginHdlr;
 	this->maxMailSize = 104857600;
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, 0, port, log, ConnHdlr, this, nullptr, autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, nullptr, port, log, ConnHdlr, this, nullptr, autoStart));
 	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("SMTPLog.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 

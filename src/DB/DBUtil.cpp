@@ -1824,7 +1824,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 	{
 		if (nnvec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
-			return SDBBinLeng(0, 22, sqlType);
+			return SDBBinLeng(nullptr, 22, sqlType);
 		}
 		else
 		{

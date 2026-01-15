@@ -37,7 +37,7 @@ void Net::MQTTFailoverClient::AddClient(Text::CStringNN host, UInt16 port, Text:
 {
 	NN<ClientInfo> cliInfo = MemAllocNN(ClientInfo);
 	cliInfo->me = this;
-	NEW_CLASSNN(cliInfo->client, Net::MQTTStaticClient(this->clif, this->ssl, host, port, username, password, webSocket, OnMessage, cliInfo, this->kaSeconds, 0));
+	NEW_CLASSNN(cliInfo->client, Net::MQTTStaticClient(this->clif, this->ssl, host, port, username, password, webSocket, OnMessage, cliInfo, this->kaSeconds, nullptr));
 	this->cliList.Add(cliInfo);
 	this->foHdlr.AddChannel(cliInfo->client);
 }

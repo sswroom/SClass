@@ -40,11 +40,11 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 {
 	if (*(Int16*)&hdr[0] != *(Int16*)"MZ")
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 fileSize = *(UInt16*)&hdr[2] + ((UInt32)((*(UInt16*)&hdr[4]) - 1) << 9);
 	if (fd->GetDataSize() < fileSize)
-		return 0;
+		return nullptr;
 	UInt32 relocSize = ReadUInt16(&hdr[6]);
 	UInt32 hdrSize = (UInt32)ReadUInt16(&hdr[8]) << 4;
 //	UInt32 minAlloc = (Int32)*(UInt16*)&hdr[10];

@@ -3,7 +3,7 @@
 #include "SIMD.h"
 #include "Media/CS/CSYUV_Y8.h"
 
-Media::CS::CSYUV_Y8::CSYUV_Y8(UInt32 srcFmt) : Media::CS::CSConverter(0)
+Media::CS::CSYUV_Y8::CSYUV_Y8(UInt32 srcFmt) : Media::CS::CSConverter(nullptr)
 {
 	this->srcFmt = srcFmt;
 }

@@ -51,18 +51,18 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	JxlResizableParallelRunnerPtr runner = JxlResizableParallelRunnerMake(nullptr);
 	JxlDecoderPtr dec = JxlDecoderMake(nullptr);
 	if (JXL_DEC_SUCCESS != JxlDecoderSubscribeEvents(dec.get(), JXL_DEC_BASIC_INFO |
 												JXL_DEC_COLOR_ENCODING |
 												JXL_DEC_FULL_IMAGE | JXL_DEC_FRAME | JXL_DEC_BOX)) {
-		return 0;
+		return nullptr;
 	}
 
 	if (JXL_DEC_SUCCESS != JxlDecoderSetParallelRunner(dec.get(), JxlResizableParallelRunner, runner.get())) {
-		return 0;
+		return nullptr;
 	}
 
 	JxlBasicInfo info;
@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	Data::ByteBuffer buff((UOSInt)dataSize);
 	if (fd->GetRealData(0, buff.GetSize(), buff) != buff.GetSize())
 	{
-		return 0;
+		return nullptr;
 	}
 	JxlDecoderSetInput(dec.get(), buff.Ptr(), buff.GetSize());
 	JxlDecoderCloseInput(dec.get());
@@ -85,10 +85,10 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	UInt32 tps_denominator = 0;
 	UInt32 imgDur = 0;
 	Media::FrameInfo finfo;
-	Optional<Media::StaticImage> optimg = 0;
+	Optional<Media::StaticImage> optimg = nullptr;
 	NN<Media::StaticImage> simg;
 	finfo.Clear();
-	boxData.exif = 0;
+	boxData.exif = nullptr;
 	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	for (;;) {
@@ -99,20 +99,20 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			FreeBoxData(boxData);
 			optimg.Delete();
 			imgList.Delete();
-			return 0;
+			return nullptr;
 		} else if (status == JXL_DEC_NEED_MORE_INPUT) {
 			printf("JXLParser: Need More input\r\n");
 			FreeBoxData(boxData);
 			optimg.Delete();
 			imgList.Delete();
-			return 0;
+			return nullptr;
 		} else if (status == JXL_DEC_BASIC_INFO) {
 			if (JXL_DEC_SUCCESS != JxlDecoderGetBasicInfo(dec.get(), &info)) {
 				printf("JXLParser: JxlDecoderGetBasicInfo failed\r\n");
 				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			optimg.Delete();
 			if (info.have_animation)
@@ -241,7 +241,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			if (boxData.exif.SetTo(exif))
 			{
 				simg->SetEXIFData(exif);
-				boxData.exif = 0;
+				boxData.exif = nullptr;
 			}
 			JxlResizableParallelRunnerSetThreads(runner.get(), JxlResizableParallelRunnerSuggestThreads(info.xsize, info.ysize));
 		} else if (status == JXL_DEC_COLOR_ENCODING) {
@@ -255,14 +255,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			if (!optimg.SetTo(simg))
 			{
 				printf("JXLParser: Image Not found on Color Encoding\r\n");
 				FreeBoxData(boxData);
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			UInt8 *iccBuff = MemAlloc(UInt8, icc_size);
 #if JPEGXL_NUMERIC_VERSION < JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
@@ -275,7 +275,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				optimg.Delete();
 				MemFree(iccBuff);
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			NN<Media::ICCProfile> icc;
 			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, icc_size)).SetTo(icc))
@@ -292,7 +292,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			if (!optimg.SetTo(simg))
 			{
@@ -300,14 +300,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			if (buffer_size > simg->GetDataBpl() * simg->info.dispSize.y) {
 				printf("JXLParser: Invalid out buffer size %d, %d x %d x %d\r\n", (UInt32)buffer_size, (UInt32)simg->info.dispSize.x, (UInt32)simg->info.dispSize.y, (UInt32)simg->info.storeBPP);
 				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			if (JXL_DEC_SUCCESS != JxlDecoderSetImageOutBuffer(dec.get(), &format,
 																simg->data.Ptr(),
@@ -316,7 +316,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 		} else if (status == JXL_DEC_FRAME) {
 			JxlFrameHeader frHeader;
@@ -325,7 +325,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			if (tps_numerator == 0)
 			{
@@ -344,7 +344,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			if (optimg.SetTo(simg))
 			{
 				imgList->AddImage(simg, imgDur);
-				optimg = 0;
+				optimg = nullptr;
 			}
 			else
 			{
@@ -357,7 +357,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				printf("JXLParser: Image not found on Success\r\n");
 				FreeBoxData(boxData);
 				imgList.Delete();
-				return 0;
+				return nullptr;
 			}
 			if (boxSize > 0)
 			{
@@ -369,7 +369,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			if (boxData.exif.SetTo(exif) && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 			{
 				simg->SetEXIFData(exif);
-				boxData.exif = 0;
+				boxData.exif = nullptr;
 			}
 			FreeBoxData(boxData);
 			return imgList;
@@ -388,7 +388,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				FreeBoxData(boxData);
 				imgList.Delete();
 				optimg.Delete();
-				return 0;
+				return nullptr;
 			}
 			JxlDecoderSetBoxBuffer(dec.get(), boxBuffer.Ptr(), boxBuffer.GetSize());
 			boxSize = boxBuffer.GetSize();
@@ -402,11 +402,11 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			FreeBoxData(boxData);
 			optimg.Delete();
 			imgList.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void Parser::FileParser::JXLParser::FreeBoxData(NN<BoxData> boxData)

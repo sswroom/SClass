@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(AnyType userOb
 	if (me->btCtrl.SetTo(btCtrl))
 	{
 		btCtrl->LEScanEnd();
-		me->btCtrl = 0;
+		me->btCtrl = nullptr;
 		me->cboInterface->SetEnabled(true);
 		return;
 	}
@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(Optional<UI::GUIClientCo
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->btMgr.CreateControllers(this->btList);
-	this->btCtrl = 0;
+	this->btCtrl = nullptr;
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::~AVIRBluetoothLEForm()
 	if (this->btCtrl.SetTo(btCtrl))
 	{
 		btCtrl->LEScanEnd();
-		this->btCtrl = 0;
+		this->btCtrl = nullptr;
 	}
 
 	i = this->btList.GetCount();

@@ -148,8 +148,8 @@ void __stdcall Media::MediaPlayer::VideoCropImage(AnyType userObj, Data::Duratio
 void Media::MediaPlayer::ReleaseAudio()
 {
 	NN<Media::AudioDevice> audioDev;
-	if (this->audioDev.SetTo(audioDev)) audioDev->BindAudio(0);
-	this->arenderer = 0;
+	if (this->audioDev.SetTo(audioDev)) audioDev->BindAudio(nullptr);
+	this->arenderer = nullptr;
 	this->currADecoder.Delete();
 }
 
@@ -194,13 +194,13 @@ Media::MediaPlayer::MediaPlayer(NN<Media::VideoRenderer> vrenderer, Optional<Med
 	this->audioDev = audioDev;
 	this->vrenderer = vrenderer;
 
-	this->currFile = 0;
-	this->currChapInfo = 0;
-	this->arenderer = 0;
-	this->currADecoder = 0;
-	this->currVDecoder = 0;
-	this->currVStm = 0;
-	this->currAStm = 0;
+	this->currFile = nullptr;
+	this->currChapInfo = nullptr;
+	this->arenderer = nullptr;
+	this->currADecoder = nullptr;
+	this->currVDecoder = nullptr;
+	this->currVStm = nullptr;
+	this->currAStm = nullptr;
 	this->playing = false;
 	this->videoPlaying = false;
 	this->audioPlaying = false;
@@ -212,7 +212,7 @@ Media::MediaPlayer::~MediaPlayer()
 {
 	if (this->currFile.NotNull())
 	{
-		this->LoadMedia(0);
+		this->LoadMedia(nullptr);
 	}
 }
 
@@ -233,12 +233,12 @@ Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 	if (this->vrenderer.SetTo(vrenderer))
 	{
 		vrenderer->StopPlay();
-		vrenderer->SetVideo(0);
+		vrenderer->SetVideo(nullptr);
 	}
 	this->ReleaseAudio();
-	this->currAStm = 0;
-	this->currVStm = 0;
-	this->currChapInfo = 0;
+	this->currAStm = nullptr;
+	this->currVStm = nullptr;
+	this->currChapInfo = nullptr;
 	this->currVDecoder.Delete();
 	NN<Media::MediaFile> currFile;
 	if (!this->currFile.SetTo(currFile) || !this->vrenderer.SetTo(vrenderer))
@@ -280,7 +280,7 @@ Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 		}
 		i++;
 	}
-	vrenderer->SetHasAudio(this->arenderer != 0);
+	vrenderer->SetHasAudio(this->arenderer.NotNull());
 	this->currTime = 0;
 
 	return videoFound || this->arenderer.NotNull();
@@ -509,5 +509,5 @@ Optional<Media::VideoRenderer> Media::MediaPlayer::GetVideoRenderer()
 void Media::MediaPlayer::Close()
 {
 	this->StopPlayback();
-	this->vrenderer = 0;
+	this->vrenderer = nullptr;
 }

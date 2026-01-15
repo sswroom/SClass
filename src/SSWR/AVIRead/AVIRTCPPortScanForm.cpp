@@ -55,13 +55,13 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(AnyType userObj)
 		{
 			UTF8Char sbuff[32];
 			UnsafeArray<UTF8Char> sptr;
-			Data::ArrayList<UInt16> portList;
+			Data::ArrayListNative<UInt16> portList;
 			UOSInt i;
 			UOSInt j;
 			UInt16 port;
 			Text::CStringNN cstr;
 			me->listUpdated = false;
-			scanner->GetAvailablePorts(&portList);
+			scanner->GetAvailablePorts(portList);
 			me->lvPort->ClearItems();
 			i = 0;
 			j = portList.GetCount();
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(Optional<UI::GUIClientCo
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->scanner = 0;
+	this->scanner = nullptr;
 	this->listUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

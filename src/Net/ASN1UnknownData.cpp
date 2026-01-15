@@ -23,7 +23,7 @@ NN<Net::ASN1Data> Net::ASN1UnknownData::Clone() const
 
 void Net::ASN1UnknownData::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	Net::ASN1Util::PDUToString(this->buff.Arr(), this->buff.ArrEnd(), sb, 0, 0, 0);
+	Net::ASN1Util::PDUToString(this->buff.Arr(), this->buff.ArrEnd(), sb, 0, 0, nullptr);
 }
 
 NN<Net::ASN1Names> Net::ASN1UnknownData::CreateNames() const

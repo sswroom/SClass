@@ -523,7 +523,7 @@ UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent
 {
 	this->deng = deng;
 	this->colorSess = colorSess;
-	this->drawBuff = 0;
+	this->drawBuff = nullptr;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
 
@@ -844,7 +844,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(drawHeight)), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(drawHeight)), nullptr, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);
 		UOSInt btnSize = drawHeight * clsData->scrVPage / (clsData->scrVMax - clsData->scrVMin);
@@ -853,7 +853,7 @@ void UI::GUITextView::OnDraw(void *cr)
 			btnSize = clsData->scrSize;
 		}
 		UOSInt range = clsData->scrVMax - clsData->scrVMin - clsData->scrVPage;
-		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((drawHeight - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range)), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(btnSize)), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((drawHeight - btnSize) * (clsData->scrVPos - clsData->scrVMin) / range)), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(btnSize)), nullptr, b);
 		dimg->DelBrush(b);
 		this->deng->DeleteImage(dimg);
 	}
@@ -863,7 +863,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(drawWidth), UOSInt2Double(clsData->scrSize)), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(drawWidth), UOSInt2Double(clsData->scrSize)), nullptr, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);
 		UOSInt btnSize = drawWidth * clsData->scrHPage / (clsData->scrHMax - clsData->scrHMin);
@@ -876,7 +876,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		{
 			range = 1;
 		}
-		dimg->DrawRect(Math::Coord2DDbl(UOSInt2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0), Math::Size2DDbl(UOSInt2Double(btnSize), UOSInt2Double(clsData->scrSize)), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(UOSInt2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0), Math::Size2DDbl(UOSInt2Double(btnSize), UOSInt2Double(clsData->scrSize)), nullptr, b);
 		dimg->DelBrush(b);
 		this->deng->DeleteImage(dimg);
 	}

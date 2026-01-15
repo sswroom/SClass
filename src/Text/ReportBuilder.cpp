@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "Data/StringUTF8Map.hpp"
 #include "IO/Path.h"
 #include "Math/Math_C.h"
@@ -279,7 +279,7 @@ void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CS
 	NN<Text::ReportBuilder::ColIcon> icon;
 	while (this->icons.GetCount() < cnt)
 	{
-		this->icons.Add(0);
+		this->icons.Add(nullptr);
 	}
 	if (!this->icons.GetItem(cnt).SetTo(iconList))
 	{
@@ -379,7 +379,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 
 		if (this->tableBorders)
 		{
-			tableStyle = wb->NewCellStyle(0, Text::HAlignment::Unknown, Text::VAlignment::Unknown, nullptr).Ptr();
+			tableStyle = wb->NewCellStyle(nullptr, Text::HAlignment::Unknown, Text::VAlignment::Unknown, nullptr).Ptr();
 			tableStyle->SetBorderLeft(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
 			tableStyle->SetBorderTop(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
 			tableStyle->SetBorderRight(Text::SpreadSheet::CellStyle::BorderStyle(0xff000000, Text::SpreadSheet::BorderType::Thin));
@@ -1029,7 +1029,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	colCurrX = MemAlloc(Double, this->colCount);
 
 	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
-	Data::FastStringMap<IconStatus *> iconStatus;
+	Data::FastStringMapObj<IconStatus *> iconStatus;
 	IconStatus *iconSt;
 	NN<Text::ReportBuilder::ColIcon> icon;
 	NN<Media::DrawImage> dimg;
@@ -1202,7 +1202,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	{
 		f = g->NewFontPt(this->fontName->ToCString(), fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 		b = g->NewBrushARGB(0xff000000);
-		p = g->NewPenARGB(0xff000000, 0.2, 0, 0);
+		p = g->NewPenARGB(0xff000000, 0.2, nullptr, 0);
 
 		lastRight = false;
 		currY = border;

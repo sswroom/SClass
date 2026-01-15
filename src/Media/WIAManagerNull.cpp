@@ -20,12 +20,12 @@ UOSInt Media::WIAManager::GetDeviceCount()
 
 UnsafeArrayOpt<const UTF8Char> Media::WIAManager::GetDeviceName(UOSInt index)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UOSInt index)
 {
-	return 0;
+	return nullptr;
 }
 
 Media::WIADevice::WIADevice(void *pWiaItem)

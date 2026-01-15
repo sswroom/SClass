@@ -122,7 +122,7 @@ IO::ATCommandChannel::ATCommandChannel(NN<IO::Stream> stm, Bool needRelease)
 	this->evtHdlrObj = 0;
 	this->cmdHdlr = 0;
 	this->cmdHdlrObj = 0;
-	this->log = 0;
+	this->log = nullptr;
 
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -334,7 +334,7 @@ UOSInt IO::ATCommandChannel::CmdSend(UnsafeArray<const UInt8> data, UOSInt dataS
 
 Optional<Text::String> IO::ATCommandChannel::CmdGetNextResult(Data::Duration timeout)
 {
-	Optional<Text::String> cmdRes = 0;
+	Optional<Text::String> cmdRes = nullptr;
 	this->cmdEvt.Clear();
 	if (this->cmdResults.GetCount() > 0)
 	{
@@ -351,7 +351,7 @@ Optional<Text::String> IO::ATCommandChannel::CmdGetNextResult(Data::Duration tim
 		mutUsage.EndUse();
 		return cmdRes;
 	}
-	return 0;
+	return nullptr;
 }
 
 void IO::ATCommandChannel::Close()

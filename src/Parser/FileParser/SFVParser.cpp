@@ -49,7 +49,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SFVParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::StreamDataStream stm(fd);
 	Text::UTF8Reader reader(stm);

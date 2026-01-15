@@ -13,7 +13,7 @@ Media::AFilter::FileMixFilter::FileMixFilter(NN<AudioSource> sourceAudio, NN<Par
 {
 	sourceAudio->GetFormat(this->format);
 	this->parsers = parsers;
-	this->fileSrc = 0;
+	this->fileSrc = nullptr;
 	this->mixing = false;
 }
 

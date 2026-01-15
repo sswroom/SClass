@@ -9,7 +9,7 @@
 
 Parser::ObjParser::PKGMapParser::PKGMapParser()
 {
-	this->encFact = 0;
+	this->encFact = nullptr;
 }
 
 Parser::ObjParser::PKGMapParser::~PKGMapParser()
@@ -34,12 +34,12 @@ Optional<IO::ParsedObject> Parser::ObjParser::PKGMapParser::ParseObject(NN<IO::P
 {
 	NN<IO::PackageFile> pkg;
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
-		return 0;
+		return nullptr;
 	pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
 	ParsePackage(pkg, layers, this->encFact);
 	if (layers.GetCount() == 0)
-		return 0;
+		return nullptr;
 	if (layers.GetCount() == 1)
 		return layers.GetItemNoCheck(0);
 	NN<Map::MapLayerCollection> mapColl;

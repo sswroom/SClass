@@ -22,8 +22,8 @@ UI::GUIFileDialog::GUIFileDialog(UnsafeArray<const WChar> compName, UnsafeArray<
 	wptr = Text::StrConcat(this->dialogName, dialogName);
 	wptr = Text::StrConcat(wptr, L"Dialog");
 
-	this->fileName = 0;
-	this->lastName = 0;
+	this->fileName = nullptr;
+	this->lastName = nullptr;
 	NN<IO::Registry> nnreg;
 	if (this->reg.SetTo(nnreg) && nnreg->GetValueStr(this->dialogName, buff).SetTo(wptr))
 	{

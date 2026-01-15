@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 	if (me->token.SetTo(token))
 	{
 		Crypto::Token::JWTParam param;
-		NN<Data::StringMap<Text::String*>> result;
+		NN<Data::StringMapObj<Text::String*>> result;
 		if (token->ParsePayload(param, true, sbErr).SetTo(result))
 		{
 			me->verifyType = token->GetVerifyType(param);
@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientContro
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
 	NEW_CLASSNN(this->azure, Net::AzureManager(this->core->GetTCPClientFactory(), this->ssl));
-	this->token = 0;
+	this->token = nullptr;
 	this->verifyType = Crypto::Token::JWToken::VerifyType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

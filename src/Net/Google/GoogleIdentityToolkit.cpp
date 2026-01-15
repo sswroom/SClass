@@ -20,7 +20,7 @@ Optional<Net::Google::TokenResponse> Net::Google::GoogleIdentityToolkit::SignInW
 	cli->WriteCont(req.v, req.leng);
 	sb.ClearStr();
 	cli->ReadAllContent(sb, 65536, 1048576);
-	Optional<TokenResponse> ret = 0;
+	Optional<TokenResponse> ret = nullptr;
 	NN<TokenResponse> res;
 	NN<Text::JSONBase> jret;
 	printf("%s\r\n", sb.v.Ptr());
@@ -57,7 +57,7 @@ Optional<Net::Google::RefreshTokenResponse> Net::Google::GoogleIdentityToolkit::
 	cli->WriteCont(sb.v, sb.leng);
 	sb.ClearStr();
 	cli->ReadAllContent(sb, 65536, 1048576);
-	Optional<RefreshTokenResponse> ret = 0;
+	Optional<RefreshTokenResponse> ret = nullptr;
 	NN<RefreshTokenResponse> res;
 	NN<Text::JSONBase> jret;
 	printf("%s\r\n", sb.v.Ptr());
@@ -101,7 +101,7 @@ Optional<Net::Google::SignUpResponse> Net::Google::GoogleIdentityToolkit::SignUp
 	cli->WriteCont(req.v, req.leng);
 	sb.ClearStr();
 	cli->ReadAllContent(sb, 65536, 1048576);
-	Optional<SignUpResponse> ret = 0;
+	Optional<SignUpResponse> ret = nullptr;
 	NN<SignUpResponse> res;
 	NN<Text::JSONBase> jret;
 	printf("%s\r\n", sb.v.Ptr());
@@ -143,7 +143,7 @@ Optional<Net::Google::VerifyPasswordResponse> Net::Google::GoogleIdentityToolkit
 	cli->WriteCont(req.v, req.leng);
 	sb.ClearStr();
 	cli->ReadAllContent(sb, 65536, 1048576);
-	Optional<VerifyPasswordResponse> ret = 0;
+	Optional<VerifyPasswordResponse> ret = nullptr;
 	NN<VerifyPasswordResponse> res;
 	NN<Text::JSONBase> jret;
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK && Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(jret))
@@ -186,7 +186,7 @@ Optional<Net::Google::SignUpResponse> Net::Google::GoogleIdentityToolkit::SignIn
 	cli->WriteCont(req.v, req.leng);
 	sb.ClearStr();
 	cli->ReadAllContent(sb, 65536, 1048576);
-	Optional<SignUpResponse> ret = 0;
+	Optional<SignUpResponse> ret = nullptr;
 	NN<SignUpResponse> res;
 	NN<Text::JSONBase> jret;
 	printf("%s\r\n", sb.v.Ptr());

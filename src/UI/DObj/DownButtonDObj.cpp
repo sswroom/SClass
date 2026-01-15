@@ -8,7 +8,7 @@ UI::DObj::DownButtonDObj::DownButtonDObj(NN<Media::DrawEngine> deng, Text::CStri
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
 	{
-		this->bmpUnclick = 0;
+		this->bmpUnclick = nullptr;
 	}
 	else
 	{
@@ -17,7 +17,7 @@ UI::DObj::DownButtonDObj::DownButtonDObj(NN<Media::DrawEngine> deng, Text::CStri
 
 	if (fileNameClicked.leng == 0)
 	{
-		this->bmpClicked = 0;
+		this->bmpClicked = nullptr;
 	}
 	else
 	{
@@ -35,12 +35,12 @@ UI::DObj::DownButtonDObj::~DownButtonDObj()
 	if (this->bmpUnclick.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmpUnclick = 0;
+		this->bmpUnclick = nullptr;
 	}
 	if (this->bmpClicked.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmpClicked = 0;
+		this->bmpClicked = nullptr;
 	}
 }
 

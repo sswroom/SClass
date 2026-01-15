@@ -35,7 +35,7 @@ namespace Media
 		Data::ArrayListUInt64 frameOfsts;
 		Data::ArrayListUInt32 frameSizes;
 		Data::ArrayListUInt32 frameParts;
-		Data::ArrayList<Bool> frameIsKey;
+		Data::ArrayListNative<Bool> frameIsKey;
 		Data::ArrayListUInt32 frameTimes;
 
 		UInt32 currFrameNum;

@@ -97,7 +97,7 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 		OPTSTR_DEL(item->imgURL);
 		item->message->Release();
 		MemFreeNN(item);
-		return 0;
+		return nullptr;
 	}
 }
 

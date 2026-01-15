@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 	UOSInt j;
 	NN<Text::String> lang;
 	this->core = core;
-	this->currImg = 0;
+	this->currImg = nullptr;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->ocr.HandleOCRResult(OnOCRResult, this);
 	this->ocr.GetAvailableLanguages(this->langs);

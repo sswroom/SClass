@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::AVIRead::AVIRCoreWin core(ui);
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(nullptr, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));
 		frm->SetExitOnClose(true);
 
 		UOSInt argc;

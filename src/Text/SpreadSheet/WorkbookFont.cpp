@@ -6,7 +6,7 @@
 
 Text::SpreadSheet::WorkbookFont::WorkbookFont()
 {
-	this->name = 0;
+	this->name = nullptr;
 	this->size = 0;
 	this->bold = false;
 	this->italic = false;

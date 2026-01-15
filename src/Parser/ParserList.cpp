@@ -204,7 +204,7 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, 
 	NN<IO::FileParser> parser;
 	NN<IO::ParsedObject> result;
 	if (fd->GetDataSize() <= 0)
-		return 0;
+		return nullptr;
 	Data::ByteBuffer hdr(IO::FileParser::hdrSize);
 	UOSInt readSize;
 	readSize = fd->GetRealData(0, IO::FileParser::hdrSize, hdr);
@@ -218,7 +218,7 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, 
 				readSize = fd->GetRealData(hdrSize, IO::FileParser::hdrSize - hdrSize, hdr.SubArray(hdrSize));
 				if (readSize == 0)
 				{
-					return 0;
+					return nullptr;
 				}
 				hdrSize += readSize;
 				if (hdrSize == IO::FileParser::hdrSize)
@@ -241,7 +241,7 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, 
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile)
@@ -251,13 +251,13 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, 
 
 Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd)
 {
-	return ParseFile(fd, 0, IO::ParserType::Unknown);
+	return ParseFile(fd, nullptr, IO::ParserType::Unknown);
 }
 
 Optional<IO::ParsedObject> Parser::ParserList::ParseFileType(NN<IO::StreamData> fd, IO::ParserType t)
 {
 	NN<IO::ParsedObject> pobj;
-	Optional<IO::ParsedObject> pobj2 = this->ParseFile(fd, 0, t);
+	Optional<IO::ParsedObject> pobj2 = this->ParseFile(fd, nullptr, t);
 	while (pobj2.SetTo(pobj))
 	{
 		if (pobj->GetParserType() == t || (t == IO::ParserType::ReadingDB && pobj->GetParserType() == IO::ParserType::MapLayer))
@@ -265,7 +265,7 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFileType(NN<IO::StreamData> 
 		pobj2 = this->ParseObjectType(pobj, t);
 		pobj.Delete();
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::ParsedObject> Parser::ParserList::ParseObject(NN<IO::ParsedObject> pobj)
@@ -282,11 +282,11 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseObjectType(NN<IO::ParsedObje
 	while (i < j)
 	{
 		parser = this->objPArr.GetItemNoCheck(i);
-		if (parser->ParseObject(pobj, 0, targetType).SetTo(result))
+		if (parser->ParseObject(pobj, nullptr, targetType).SetTo(result))
 		{
 			return result;
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }

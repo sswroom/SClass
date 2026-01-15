@@ -3,7 +3,7 @@
 #include "Data/ArrayListArr.hpp"
 #include "Data/ArrayListT.hpp"
 #include "Data/FastStringMapNative.hpp"
-#include "Data/StringUTF8Map.hpp"
+#include "Data/StringMapNative.hpp"
 #include "Exporter/XLSXExporter.h"
 #include "IO/BuildTime.h"
 #include "IO/ZIPBuilder.h"
@@ -70,8 +70,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	Data::DateTime *t;
 	NN<Text::String> s;
 	NN<Text::String> s2;
-	UnsafeArrayOpt<const UTF8Char> csptr;
-	UnsafeArray<const UTF8Char> nncsptr;
+	Text::CString csptr;
+	Text::CStringNN nncsptr;
+	UnsafeArray<const UTF8Char> u8ptr;
 	IO::ZIPBuilder *zip;
 	UOSInt i;
 	UOSInt k;
@@ -166,8 +167,8 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
 	sb.AppendC(UTF8STRC("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">"));
 	{
-		Data::StringUTF8Map<UOSInt> numFmtMap;
-		Data::ArrayListArr<const UTF8Char> numFmts;
+		Data::StringMapNative<UOSInt> numFmtMap;
+		Data::ArrayListObj<Text::CString> numFmts;
 		Data::ArrayListObj<BorderInfo*> borders;
 		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
 		borderNone.borderType = BorderType::None;
@@ -179,7 +180,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		border->bottom = borderNone;
 		borders.Add(border);
 
-		nncsptr = (const UTF8Char*)"General";
+		nncsptr = CSTR("General");
 		numFmtMap.Put(nncsptr, numFmts.GetCount());
 		numFmts.Add(nncsptr);
 
@@ -191,13 +192,13 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			NN<Text::String> optS;
 			if (!style->GetDataFormat().SetTo(optS))
 			{
-				nncsptr = U8STR("General");
+				nncsptr = CSTR("General");
 			}
 			else
 			{
-				nncsptr = UnsafeArray<const UTF8Char>(optS->v);
+				nncsptr = optS->ToCString();
 			}
-			if (!numFmtMap.ContainsKey(nncsptr))
+			if (!numFmtMap.ContainsKeyC(nncsptr))
 			{
 				numFmtMap.Put(nncsptr, numFmts.GetCount());
 				numFmts.Add(nncsptr);
@@ -238,10 +239,13 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sb.AppendC(UTF8STRC("<numFmt numFmtId=\""));
 				sb.AppendUOSInt(i + 164);
 				sb.AppendC(UTF8STRC("\" formatCode="));
-				ToFormatCode(sbuff, numFmts.GetItemNoCheck(i));
-				s = Text::XML::ToNewAttrText(UARR(sbuff));
-				sb.Append(s);
-				s->Release();
+				if (numFmts.GetItem(i).SetTo(nncsptr))
+				{
+					ToFormatCode(sbuff, nncsptr.v);
+					s = Text::XML::ToNewAttrText(UARR(sbuff));
+					sb.Append(s);
+					s->Release();
+				}
 				sb.AppendC(UTF8STRC("/>"));
 				i++;
 			}
@@ -1155,9 +1159,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sb.AppendC(UTF8STRC("</dcterms:created>"));
 	}
 	sb.AppendC(UTF8STRC("<dc:creator>"));
-	if (workbook->GetAuthor().SetTo(nncsptr))
+	if (workbook->GetAuthor().SetTo(u8ptr))
 	{
-		s = Text::XML::ToNewXMLText(nncsptr);
+		s = Text::XML::ToNewXMLText(u8ptr);
 		sb.Append(s);
 		s->Release();
 	}
@@ -1166,7 +1170,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	csptr = nullptr;
 	if (csptr.SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(nncsptr);
+		s = Text::XML::ToNewXMLText(nncsptr.v);
 		sb.Append(s);
 		s->Release();
 	}
@@ -1182,9 +1186,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	sb.AppendC(UTF8STRC("</dc:language>"));
 	sb.AppendC(UTF8STRC("<cp:lastModifiedBy>"));
-	if (workbook->GetLastAuthor().SetTo(nncsptr))
+	if (workbook->GetLastAuthor().SetTo(u8ptr))
 	{
-		s = Text::XML::ToNewXMLText(nncsptr);
+		s = Text::XML::ToNewXMLText(u8ptr);
 		sb.Append(s);
 		s->Release();
 	}
@@ -1208,7 +1212,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	csptr = nullptr;
 	if (csptr.SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(nncsptr);
+		s = Text::XML::ToNewXMLText(nncsptr.v);
 		sb.Append(s);
 		s->Release();
 	}
@@ -1217,7 +1221,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	csptr = nullptr;
 	if (csptr.SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(nncsptr);
+		s = Text::XML::ToNewXMLText(nncsptr.v);
 		sb.Append(s);
 		s->Release();
 	}
@@ -1650,21 +1654,21 @@ void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::
 	}
 }
 
-void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap)
+void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayListObj<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringMapNative<UOSInt>> numFmtMap)
 {
 	UOSInt k;
-	UnsafeArray<const UTF8Char> csptr;
+	Text::CStringNN csptr;
 	BorderInfo *border;
 	Optional<Text::SpreadSheet::WorkbookFont> font = style->GetFont();
 	NN<Text::SpreadSheet::WorkbookFont> nnfont;
 	NN<Text::String> optS;
 	if (!style->GetDataFormat().SetTo(optS))
 	{
-		csptr = (const UTF8Char*)"General";
+		csptr = CSTR("General");
 	}
 	else
 	{
-		csptr = optS->v;
+		csptr = optS->ToCString();
 	}
 	sb->AppendC(UTF8STRC("<xf numFmtId=\""));
 	sb->AppendUOSInt(numFmtMap->Get(csptr) + 164);

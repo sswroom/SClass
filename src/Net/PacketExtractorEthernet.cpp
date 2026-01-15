@@ -15,7 +15,7 @@ UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::EthernetExtractUDP(Uns
 	UnsafeArray<const UInt8> etherData;
 	if (!EthernetExtract(packet, packetSize, etherDataSize, nnetherHdr).SetTo(etherData))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (nnetherHdr->etherType == 0x0800)
 	{
@@ -29,18 +29,18 @@ UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::EthernetExtractUDP(Uns
 		UnsafeArray<const UInt8> ipv4Data;
 		if (!IPv4Extract(etherData, etherDataSize, ipv4Size, nnipv4Hdr).SetTo(ipv4Data))
 		{
-			return 0;
+			return nullptr;
 		}
 
 		if (nnipv4Hdr->protocol != 17) //UDP
 		{
-			return 0;
+			return nullptr;
 		}
 		return UDPExtract(ipv4Data, ipv4Size, udpSize, udpHdr);
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -48,7 +48,7 @@ UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::EthernetExtract(Unsafe
 {
 	if (packetSize < 14)
 	{
-		return 0;
+		return nullptr;
 	}
 	MemCopyNO(etherHdr->destAddr, &packet[0], 6);
 	MemCopyNO(etherHdr->srcAddr, &packet[6], 6);
@@ -61,11 +61,11 @@ UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::IPv4Extract(UnsafeArra
 {
 	if (packetSize < 20)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (packet[0] != 0x45)
 	{
-		return 0;
+		return nullptr;
 	}
 	ipv4Hdr->verLen = packet[0];
 	ipv4Hdr->dsvc = packet[1];
@@ -85,7 +85,7 @@ UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::UDPExtract(UnsafeArray
 {
 	if (packetSize < 8)
 	{
-		return 0;
+		return nullptr;
 	}
 	udpHdr->srcPort = ReadMUInt16(&packet[0]);
 	udpHdr->destPort = ReadMUInt16(&packet[2]);

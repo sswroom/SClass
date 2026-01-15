@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Data/Comparator.hpp"
-#include "Data/SyncArrayList.hpp"
+#include "Data/SyncArrayListObj.hpp"
 #include "Data/Compress/Inflater.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/ConsoleWriter.h"
@@ -53,10 +53,10 @@ private:
 	Bool threadToStop;
 	Sync::Event mainEvt;
 	ThreadStatus *stats;
-	Data::SyncArrayList<Text::String*> urlList;
+	Data::SyncArrayListObj<Text::String*> urlList;
 	Bool useComp;
 	Sync::Mutex filesMut;
-	Data::ArrayList<FileEntry*> filesList;
+	Data::ArrayListObj<FileEntry*> filesList;
 
 	static void ParseJSONObj(NN<ThreadStatus> stat, Text::String *url, Optional<Text::JSONBase> optobj, NN<Text::StringBuilderUTF8> tmpSb)
 	{
@@ -417,7 +417,7 @@ public:
 		this->filesList.Clear();
 	}
 
-	NN<const Data::ArrayList<FileEntry*>> GetFilesList()
+	NN<const Data::ArrayListObj<FileEntry*>> GetFilesList()
 	{
 		return this->filesList;
 	}
@@ -455,7 +455,7 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN 
 	console->WriteLine(sb.ToCString());
 	downloader->ClearStat();
 	FilesComparator comparator;
-	Data::ArrayList<CesiumDownloader::FileEntry*> filesList;
+	Data::ArrayListObj<CesiumDownloader::FileEntry*> filesList;
 	filesList.AddAll(downloader->GetFilesList());
 	Data::Sort::ArtificialQuickSort::Sort<CesiumDownloader::FileEntry*>(filesList, comparator);
 	

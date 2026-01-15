@@ -207,9 +207,9 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 						}
 						else
 						{
-							log->manuf = 0;
-							log->model = 0;
-							log->serialNum = 0;
+							log->manuf = nullptr;
+							log->model = nullptr;
+							log->serialNum = nullptr;
 						}
 						j = 3;
 						while (j-- > 0)
@@ -232,7 +232,7 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 						}
 						else
 						{
-							log->country = 0;
+							log->country = nullptr;
 						}
 						if (i >= 10)
 						{
@@ -258,12 +258,12 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 							}
 							else
 							{
-								log->ieBuff = 0;
+								log->ieBuff = nullptr;
 							}
 						}
 						else
 						{
-							log->ieBuff = 0;
+							log->ieBuff = nullptr;
 							log->ieLen = 0;
 						}
 						
@@ -394,7 +394,7 @@ Optional<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::Get(UInt64 iMAC)
 			return log;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 OSInt Net::WiFiLogFile::GetIndex(UInt64 iMAC)
@@ -509,7 +509,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 		}
 		else
 		{
-			log->ieBuff = 0;
+			log->ieBuff = nullptr;
 		}
 		DirectInsert(log);
 		lastIndex.Set(-1);

@@ -127,7 +127,7 @@ void __stdcall IO::Device::AXCAN::SerialThread(NN<Sync::Thread> thread)
 IO::Device::AXCAN::AXCAN(NN<CANHandler> hdlr) : cmdEvent(false), serialThread(SerialThread, this, CSTR("AXCAN"))
 {
 	this->hdlr = hdlr;
-	this->stm = 0;
+	this->stm = nullptr;
 	this->cmdResultCode = 0;
 }
 

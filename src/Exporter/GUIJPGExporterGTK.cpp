@@ -62,7 +62,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 	if (buff)
 	{
-		Optional<Media::RasterImage> srcImg = 0;
+		Optional<Media::RasterImage> srcImg = nullptr;
 		Media::ImageList *imgList;
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{

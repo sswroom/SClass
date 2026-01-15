@@ -413,7 +413,7 @@ UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, 
 	if (!this->buffSurface.SetTo(buffSurface))
 	{
 		this->surfaceMut.Unlock();
-		return 0;
+		return nullptr;
 	}
 	if (targetWidth == buffSurface->info.dispSize.x && targetHeight == buffSurface->info.dispSize.y)
 	{
@@ -424,7 +424,7 @@ UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, 
 		}
 	}
 	this->surfaceMut.Unlock();
-	return 0;
+	return nullptr;
 }
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
@@ -460,8 +460,8 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	
 	NEW_CLASSNN(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui->GetMonitorMgr(), colorSess));
 	this->inited = false;
-	this->primarySurface = 0;
-	this->buffSurface = 0;
+	this->primarySurface = nullptr;
+	this->buffSurface = nullptr;
 	this->dispSize = Math::Size2D<UOSInt>(0, 0);
 	this->bkBuffSize = Math::Size2D<UOSInt>(0, 0);
 	this->imgCopy = 0;
@@ -618,7 +618,7 @@ UInt32 UI::GUIDDrawControl::GetRefreshRate()
 
 Bool UI::GUIDDrawControl::IsSurfaceReady()
 {
-	return this->buffSurface != 0;
+	return this->buffSurface.NotNull();
 }
 
 void UI::GUIDDrawControl::SetRotateType(Media::RotateType rotType)

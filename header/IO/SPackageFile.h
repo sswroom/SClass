@@ -1,7 +1,7 @@
 #ifndef _SM_IO_SPACKAGEFILE
 #define _SM_IO_SPACKAGEFILE
 #include "Data/ByteBuffer.h"
-#include "Data/BTreeUTF8Map.hpp"
+#include "Data/BTreeStringMapObj.hpp"
 #include "IO/StreamData.h"
 #include "IO/MemoryStream.h"
 #include "IO/PackageFile.h"
@@ -20,7 +20,7 @@ namespace IO
 			UInt64 size;
 		} FileInfo;
 	private:
-		Data::BTreeUTF8Map<FileInfo*> fileMap;
+		Data::BTreeStringMapObj<FileInfo*> fileMap;
 		NN<IO::SeekableStream> stm;
 		Bool writeMode;
 		Sync::Mutex mut;

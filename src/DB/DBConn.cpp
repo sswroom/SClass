@@ -38,7 +38,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 	case DB::SQLType::MySQL:
 	{
 		OSInt i = 4;
-		Optional<DB::DBReader> tmpr = 0;
+		Optional<DB::DBReader> tmpr = nullptr;
 		NN<DB::DBReader> r;
 		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
 		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MySQL);
@@ -48,7 +48,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			tmpr = this->ExecuteReader(CSTRP(buff, ptr));
 		}
 		if (!tmpr.SetTo(r))
-			return 0;
+			return nullptr;
 
 		DB::TableDef *tab;
 
@@ -66,7 +66,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			}
 			else
 			{
-				tab->SetComments(0);
+				tab->SetComments(nullptr);
 			}
 			if (r->GetStr(16, buff, sizeof(buff)).NotNull())
 			{
@@ -74,7 +74,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			}
 			else
 			{
-				tab->SetAttr(0);
+				tab->SetAttr(nullptr);
 			}
 			tab->SetSQLType(DB::SQLType::MySQL);
 			tab->SetCharset(nullptr);
@@ -83,7 +83,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		else
 		{
 			this->CloseReader(r);
-			return 0;
+			return nullptr;
 		}
 		NN<DB::ColDef> col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
@@ -149,12 +149,12 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 	}
 	case DB::SQLType::Oracle:
 	{
-		return 0;
+		return nullptr;
 	}
 	case DB::SQLType::MSSQL:
 	{
 		Int32 i = 4;
-		Optional<DB::DBReader> tmpr = 0;
+		Optional<DB::DBReader> tmpr = nullptr;
 		NN<DB::DBReader> r;
 		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
 		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MSSQL);
@@ -168,13 +168,13 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			tmpr = this->ExecuteReader(CSTRP(buff, ptr));
 		}
 		if (!tmpr.SetTo(r))
-			return 0;
+			return nullptr;
 
 		DB::TableDef *tab;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		tab->SetEngine(nullptr);
-		tab->SetComments(0);
-		tab->SetAttr(0);
+		tab->SetComments(nullptr);
+		tab->SetAttr(nullptr);
 		tab->SetCharset(nullptr);
 		tab->SetSQLType(DB::SQLType::MSSQL);
 
@@ -226,7 +226,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		sb.AppendC(UTF8STRC(" and i.object_ID = OBJECT_ID('"));
 		sb.AppendOpt(tableName);
 		sb.AppendC(UTF8STRC("')"));
-		tmpr = 0;
+		tmpr = nullptr;
 		i = 4;
 		while (i-- > 0 && tmpr.IsNull())
 		{
@@ -266,7 +266,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 	}
 	case DB::SQLType::Access:
 	{
-		return 0;
+		return nullptr;
 	}
 	case DB::SQLType::SQLite:
 	{
@@ -276,7 +276,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		NN<DB::DBReader> r;
 		if (!this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
-			return 0;
+			return nullptr;
 		}
 		Text::StringBuilderUTF8 sb;
 		if (r->ReadNext())
@@ -346,13 +346,13 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		NN<DB::DBReader> r;
 		if (!this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
-			return 0;
+			return nullptr;
 		}
-		Data::FastStringMap<DB::ColDef*> colMap;
+		Data::FastStringMapObj<DB::ColDef*> colMap;
 		DB::TableDef *tab;
 		NN<DB::ColDef> col;
 		Bool hasGeometry = false;
-		Optional<Text::String> geometrySchema = 0;
+		Optional<Text::String> geometrySchema = nullptr;
 		Optional<Text::String> ops;
 		NN<Text::String> s;
 		UOSInt sizeCol;
@@ -787,7 +787,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 	case DB::SQLType::Unknown:
 	default:
 	{
-		return 0;
+		return nullptr;
 	}
 	}
 }

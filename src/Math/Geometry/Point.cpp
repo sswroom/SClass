@@ -125,7 +125,7 @@ Bool Math::Geometry::Point::HasArea() const
 	return false;
 }
 
-UOSInt Math::Geometry::Point::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+UOSInt Math::Geometry::Point::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	return 0;
 }

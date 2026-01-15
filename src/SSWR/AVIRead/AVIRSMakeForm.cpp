@@ -10,9 +10,9 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 	me->lbProgSource->ClearItems();
 	if (me->lbProg->GetSelectedItemTextNew().SetTo(progName))
 	{
-		Data::FastStringMap<Int32> objList;
-		Data::FastStringMap<Int32> liblist;
-		Data::FastStringMap<Int32> procList;
+		Data::FastStringMapNative<Int32> objList;
+		Data::FastStringMapNative<Int32> liblist;
+		Data::FastStringMapNative<Int32> procList;
 		Data::ArrayListStringNN headerList;
 		Int64 latestTime;
 		Bool progGroup;

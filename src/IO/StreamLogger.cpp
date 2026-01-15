@@ -12,7 +12,7 @@ IO::StreamLogger::StreamLogger(NN<IO::Stream> srcStream, Bool needRelease, Text:
 	}
 	else
 	{
-		this->readLog = 0;
+		this->readLog = nullptr;
 	}
 	if (writeLogPath.leng > 0)
 	{
@@ -20,7 +20,7 @@ IO::StreamLogger::StreamLogger(NN<IO::Stream> srcStream, Bool needRelease, Text:
 	}
 	else
 	{
-		this->writeLog = 0;
+		this->writeLog = nullptr;
 	}
 }
 
@@ -74,7 +74,7 @@ Optional<IO::StreamReadReq> IO::StreamLogger::BeginRead(const Data::ByteArray &b
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -116,7 +116,7 @@ Optional<IO::StreamWriteReq> IO::StreamLogger::BeginWrite(Data::ByteArrayR buff,
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 		if (useWS)
 		{
 			NN<Net::WebSocketClient> ws;
-			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 10000));
+			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:nullptr, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
 				ws.Delete();
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 		}
 		else
 		{
-			NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 30000));
+			NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:nullptr, sb.ToCString(), port, 0, 0, 30000));
 		}
 		if (client->IsError())
 		{
@@ -157,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 		else
 		{
 			client.Delete();
-			me->client = 0;
+			me->client = nullptr;
 			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
@@ -339,8 +339,8 @@ SSWR::AVIRead::AVIRMQTTSubscribeTestForm::AVIRMQTTSubscribeTestForm(Optional<UI:
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->cliCert = 0;
-	this->cliKey = 0;
+	this->cliCert = nullptr;
+	this->cliKey = nullptr;
 	this->totalCount = 0;
 	this->dispCount = 0;
 	this->lastDispTime = Data::Timestamp::UtcNow();
@@ -395,7 +395,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeTestForm::AVIRMQTTSubscribeTestForm(Optional<UI:
 	this->lblStatus = ui->NewLabel(*this, CSTR("Not Connected"));
 	this->lblStatus->SetRect(4, 148, 150, 23, false);
 
-	this->client = 0;
+	this->client = nullptr;
 
 	this->AddTimer(30000, OnPingTimerTick, this);
 	this->AddTimer(1000, OnTimerTick, this);

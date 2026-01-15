@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 				file = me->packList.GetItemNoCheck(i);
 				sptrEnd = file->GetName()->ConcatTo(sptr);
 				sptr2End = file->GetName()->ConcatTo(sptr2);
-				IO::FileUtil::MoveFile(CSTRP(sbuff2, sptr2End), CSTRP(sbuff, sptrEnd), IO::FileUtil::FileExistAction::Fail, 0, 0);
+				IO::FileUtil::MoveFile(CSTRP(sbuff2, sptr2End), CSTRP(sbuff, sptrEnd), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 			}
 
 			sptrEnd = sptr = me->txtDirName->GetText(sbuff).Or(sbuff);
@@ -340,7 +340,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(Optional<UI::GUIClient
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->filePath = 0;
+	this->filePath = nullptr;
 
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 424, 104, false);

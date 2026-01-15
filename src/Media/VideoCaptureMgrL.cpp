@@ -24,7 +24,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> d
 {
 	NN<DeviceInfo> devInfo;
 	UTF8Char sbuff[512];
-	Data::ArrayList<UInt32> devIdList;
+	Data::ArrayListNative<UInt32> devIdList;
 	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = this->clsData->v4lMgr->GetDeviceList(devIdList);
@@ -62,7 +62,7 @@ Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devTyp
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

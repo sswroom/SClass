@@ -43,7 +43,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MRGParser::ParseFileHdr(NN<IO::St
 
 	if (ReadUInt32(&hdr[0]) != 0x3067726D || ReadUInt32(&hdr[4]) != 0x31)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	startOfst = ReadUInt32(&hdr[8]);
@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MRGParser::ParseFileHdr(NN<IO::St
 		if (*(Int32*)&rec[68] != 0 || *(Int32*)&rec[72] != 0)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, rec, 64, 0);
 		currSize = *(UInt32*)&rec[64];

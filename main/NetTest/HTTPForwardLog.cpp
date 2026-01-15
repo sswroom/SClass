@@ -95,13 +95,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			NN<Net::WebServer::HTTPForwardHandler> hdlr;
 			Net::WebServer::WebListener *svr;
-			NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(clif, 0, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
+			NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(clif, nullptr, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
 			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("FwdLog"));
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("fwdLog"));
 			logger->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 			hdlr->HandleForwardRequest(OnForwardRequest, 0);
-			NEW_CLASS(svr, Net::WebServer::WebListener(clif, 0, hdlr, listenPort, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASS(svr, Net::WebServer::WebListener(clif, nullptr, hdlr, listenPort, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (!svr->IsError())
 			{
 				console->WriteLine(CSTR("HTTP Forwarding started"));

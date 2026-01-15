@@ -194,7 +194,7 @@ UnsafeArrayOpt<UTF8Char> Crypto::Hash::BruteForceAttack::GetCurrKey(UnsafeArray<
 		mutUsage.EndUse();
 		return key;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Crypto::Hash::BruteForceAttack::GetKeyLeng()
@@ -219,7 +219,7 @@ UnsafeArrayOpt<UTF8Char> Crypto::Hash::BruteForceAttack::GetResult(UnsafeArray<U
 {
 	if (this->resultBuff[0])
 		return Text::StrConcat(resultBuff, this->resultBuff);
-	return 0;
+	return nullptr;
 }
 
 Bool Crypto::Hash::BruteForceAttack::Start(UnsafeArray<const UTF8Char> hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng)

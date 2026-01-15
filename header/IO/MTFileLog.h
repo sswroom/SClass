@@ -17,7 +17,7 @@ namespace IO
 	{
 	private:
 		Sync::Mutex mut;
-		Data::ArrayList<Data::Timestamp> dateList;
+		Data::ArrayListNative<Data::Timestamp> dateList;
 		Data::ArrayListStringNN msgList;
 		Sync::Event evt;
 

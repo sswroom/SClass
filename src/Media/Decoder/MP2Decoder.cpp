@@ -524,15 +524,15 @@ unsigned long kjmp2_decode_frame(
 Media::Decoder::MP2Decoder::MP2Decoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
-	this->sourceAudio = 0;
+	this->sourceAudio = nullptr;
 	this->context = 0;
 	this->totalReadSize = 0;
-    this->readEvt = 0;
+    this->readEvt = nullptr;
 	sourceAudio->GetFormat(fmt);
     if (fmt.formatId != 0x50)
     {
         this->nChannel = 0;
-        this->sourceAudio = 0;
+        this->sourceAudio = nullptr;
         this->context = 0;
         this->blkSize = 0;
         return;
@@ -588,7 +588,7 @@ Bool Media::Decoder::MP2Decoder::Start(Optional<Sync::Event> evt, UOSInt blkSize
 	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(nullptr, blkSize);
 		this->readEvt = evt;
 		if (this->readEvt.SetTo(readEvt))
 			readEvt->Set();
@@ -604,7 +604,7 @@ void Media::Decoder::MP2Decoder::Stop()
 	{
 		sourceAudio->Stop();
 	}
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 }
 
 UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)

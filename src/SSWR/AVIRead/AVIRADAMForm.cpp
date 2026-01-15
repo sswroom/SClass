@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRADAMForm::StopStream(Bool clearUI)
 	if (this->stm.NotNull())
 	{
 		this->channel.Delete();
-		this->stm = 0;
+		this->stm = nullptr;
 		this->channelModule = 0;
 		if (clearUI)
 		{
@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(Optional<UI::GUIClientControl> parent,
 	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
-	this->stm = 0;
+	this->stm = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlMain = ui->NewPanel(*this);

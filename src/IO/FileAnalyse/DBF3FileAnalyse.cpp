@@ -86,7 +86,7 @@ void __stdcall IO::FileAnalyse::DBF3FileAnalyse::FreeCol(NN<DBFCol> col)
 IO::FileAnalyse::DBF3FileAnalyse::DBF3FileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("DBF3FileAnalyse"))
 {
 	UInt8 buff[32];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 32, BYTEARR(buff));
 	if (buff[0] != 0x3)
@@ -168,7 +168,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DBF3FileAnalyse::GetFram
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack) || !this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

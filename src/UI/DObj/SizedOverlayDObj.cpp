@@ -9,14 +9,14 @@ UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::C
 	this->deng = deng;
 	this->noRelease = false;
 	this->size = size;
-	this->clk = 0;
+	this->clk = nullptr;
 	this->resizer = resizer;
-	this->dispImg = 0;
+	this->dispImg = nullptr;
 	this->dispFrameNum = 0;
 	this->drawOfst = Math::Coord2DDbl(0, 0);
 	if (fileName.leng == 0)
 	{
-		this->imgList = 0;
+		this->imgList = nullptr;
 	}
 	else
 	{
@@ -127,7 +127,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 			}
 			else
 			{
-				this->dispImg = 0;
+				this->dispImg = nullptr;
 			}
 		}
 		if (this->dispImg.SetTo(img))

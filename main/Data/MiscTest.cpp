@@ -176,7 +176,7 @@ Int32 Test1()
 	return 0;
 }
 
-Bool InZone(Data::ArrayList<Double> *lats, Data::ArrayList<Double> *lons, Math::Coord2DDbl pos)
+Bool InZone(Data::ArrayListNative<Double> *lats, Data::ArrayListNative<Double> *lons, Math::Coord2DDbl pos)
 {
 	Double thisPtX;
 	Double thisPtY;
@@ -222,8 +222,8 @@ Int32 InPolygonTest()
 	Text::CStringNN lonStr = CSTR("114.08715410232,114.08588809966,114.09921331405,114.11195917129,114.11129398346,114.08721847534");
 	Double lat = 22.361138;
 	Double lon = 114.09073483333;
-	Data::ArrayList<Double> lats;
-	Data::ArrayList<Double> lons;
+	Data::ArrayListNative<Double> lats;
+	Data::ArrayListNative<Double> lons;
 	if (Text::StringTool::SplitAsDouble(latStr, ',', lats) && Text::StringTool::SplitAsDouble(lonStr, ',', lons))
 	{
 		printf("InPolygon = %d\r\n", InZone(&lats, &lons, Math::Coord2DDbl(lon, lat))?1:0);
@@ -273,7 +273,7 @@ Int32 RenameFileTest()
 							if (sptrEnd[0] != '.' && pt == IO::Path::PathType::Directory)
 							{
 								sptr2End = Text::StrConcatC(sptr2, sptrEnd, (UOSInt)(sptrEnd2 - sptrEnd));
-								IO::FileUtil::MoveDir(CSTRP(sbuff, sptrEnd2), CSTRP(sbuff2, sptr2End), IO::FileUtil::FileExistAction::Fail, 0, 0);
+								IO::FileUtil::MoveDir(CSTRP(sbuff, sptrEnd2), CSTRP(sbuff2, sptr2End), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 							}
 						}
 						IO::Path::FindFileClose(sess2);
@@ -791,7 +791,7 @@ Int32 FCMTest()
 		{
 			printf("Access Token Received\r\n");
 			Net::Google::GoogleFCMv1 fcm(clif, ssl, serviceAccount->GetProjectId()->ToCString());
-			if (fcm.SendMessage(accessToken->GetAccessToken()->ToCString(), devToken, message, 0))
+			if (fcm.SendMessage(accessToken->GetAccessToken()->ToCString(), devToken, message, nullptr))
 			{
 				printf("Message sent\r\n");
 			}
@@ -849,7 +849,7 @@ Int32 FGDBTest()
 		if (fgdb->GetTable(CSTR("PedestrianRoute")).SetTo(table))
 		{
 			printf("File Name: %s\r\n", table->GetFileName()->v.Ptr());
-			if (table->OpenReader(0, 0, 0, 0, 0).SetTo(r))
+			if (table->OpenReader(nullptr, 0, 0, 0, nullptr).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
@@ -1006,13 +1006,13 @@ void __stdcall MTDrawThread(NN<Sync::Thread> thread)
 			if (status->img1->GetImage(0, 0).SetTo(sImg))
 			{
 				sImg->info.atype = Media::AT_IGNORE_ALPHA;
-				if (status->drawEng->ConvImage(sImg, 0).SetTo(dimg2))
+				if (status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
 				{
 					dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UOSInt2Double((60 - dimg2->GetWidth()) >> 1), UOSInt2Double((60 - dimg2->GetHeight()) >> 1)));
 					status->drawEng->DeleteImage(dimg2);
 				}
 			}
-			if (status->img2->GetImage(0, 0).SetTo(sImg) && status->drawEng->ConvImage(sImg, 0).SetTo(dimg2))
+			if (status->img2->GetImage(0, 0).SetTo(sImg) && status->drawEng->ConvImage(sImg, nullptr).SetTo(dimg2))
 			{
 				dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UOSInt2Double((60 - dimg2->GetWidth()) >> 1), UOSInt2Double((60 - dimg2->GetHeight()) >> 1)));
 				status->drawEng->DeleteImage(dimg2);
@@ -1195,7 +1195,7 @@ Int32 OUICSVConv()
 	//https://standards-oui.ieee.org/oui/oui.csv
 	{
 		DB::CSVFile csv(CSTR("oui.csv"), 65001);
-		if (csv.QueryTableData(nullptr, CSTR("oui"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (csv.QueryTableData(nullptr, CSTR("oui"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			while (r->ReadNext())
 			{
@@ -1225,7 +1225,7 @@ Int32 OUICSVConv()
 	//https://standards-oui.ieee.org/oui28/mam.csv
 	{
 		DB::CSVFile csv(CSTR("mam.csv"), 65001);
-		if (csv.QueryTableData(nullptr, CSTR("mam"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (csv.QueryTableData(nullptr, CSTR("mam"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			while (r->ReadNext())
 			{
@@ -1264,7 +1264,7 @@ Int32 OUICSVConv()
 	//https://standards-oui.ieee.org/oui36/oui36.csv
 	{
 		DB::CSVFile csv(CSTR("oui36.csv"), 65001);
-		if (csv.QueryTableData(nullptr, CSTR("oui36"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (csv.QueryTableData(nullptr, CSTR("oui36"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			while (r->ReadNext())
 			{

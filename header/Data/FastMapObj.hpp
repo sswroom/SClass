@@ -1,15 +1,15 @@
 #ifndef _SM_DATA_FASTMAPOBJ
 #define _SM_DATA_FASTMAPOBJ
-#include "Data/ArrayListNative.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Data/ListMap.hpp"
-#include "Data/TwinItemObj.hpp"
+#include "Data/TwinItemNativeObj.hpp"
 
 namespace Data
 {
 	template <class T, class V> class FastMapObj : public ListMap<T, V>
 	{
 	protected:
-		Data::ArrayListNative<TwinItemObj<T, V>> values;
+		Data::ArrayListObj<TwinItemNativeObj<T, V>> values;
 
 	public:
 		FastMapObj();
@@ -48,12 +48,12 @@ namespace Data
 		if (i >= 0)
 		{
 			V oldVal = this->values.GetItem((UOSInt)i).value;
-            this->values.SetItem((UOSInt)i, TwinItemObj<T,V>(key, val));
+            this->values.SetItem((UOSInt)i, TwinItemNativeObj<T,V>(key, val));
 			return oldVal;
 		}
 		else
 		{
-			this->values.Insert((UOSInt)~i, TwinItemObj<T,V>(key, val));
+			this->values.Insert((UOSInt)~i, TwinItemNativeObj<T,V>(key, val));
 			return nullptr;
 		}
 	}

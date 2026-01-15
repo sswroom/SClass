@@ -47,7 +47,7 @@ SSWR::AVIRead::AVIRPostgreSQLForm::AVIRPostgreSQLForm(Optional<UI::GUIClientCont
 	this->SetText(CSTR("PostgreSQL Connection"));
 
 	this->core = core;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetNoResize(true);
 

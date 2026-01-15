@@ -131,7 +131,7 @@ Optional<Text::String> IO::EXEFile::GetImportName(UOSInt modIndex) const
 	{
 		return imp->moduleName.Ptr();
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex) const
@@ -151,7 +151,7 @@ Optional<Text::String> IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIn
 	{
 		return imp->funcs->GetItem(funcIndex);
 	}
-	return 0;
+	return nullptr;
 }
 
 void IO::EXEFile::AddExportFunc(Text::CStringNN funcName)
@@ -173,7 +173,7 @@ Optional<Text::String> IO::EXEFile::GetExportName(UOSInt index) const
 	{
 		return exp->funcName;
 	}
-	return 0;
+	return nullptr;
 }
 
 

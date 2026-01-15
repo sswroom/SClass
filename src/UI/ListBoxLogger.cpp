@@ -28,7 +28,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 		while (i < cnt)
 		{
 			me->tmpLogArr[i] = me->logArr[curr];
-			me->logArr[curr] = 0;
+			me->logArr[curr] = nullptr;
 			i++;
 			curr = (curr + 1) % me->maxLog;
 		}
@@ -119,12 +119,12 @@ UI::ListBoxLogger::ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UOS
 	this->tmpLogArr = MemAllocArr(Optional<Text::String>, this->maxLog);
 	this->logIndex = 0;
 	this->logCnt = 0;
-	this->timeFormat = 0;
-	this->txt = 0;
+	this->timeFormat = nullptr;
+	this->txt = nullptr;
 	i = this->maxLog;
 	while (i-- > 0)
 	{
-		this->logArr[i] = 0;
+		this->logArr[i] = nullptr;
 	}
 	this->tmr = frm->AddTimer(500, TimerTick, this);
 }

@@ -6,22 +6,22 @@
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polyline.h"
 
-Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
+Data::FastMapObj<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	NN<DB::DBConn> currDB;
 	NN<DB::DBReader> r;
 	this->currDB = currDB = this->conn->UseConn(mutUsage);
-	if (currDB->QueryTableData(nullptr, this->tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (currDB->QueryTableData(nullptr, this->tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
-		Data::FastMap<Int32, const UTF8Char **> *nameArr;
+		Data::FastMapObj<Int32, const UTF8Char **> *nameArr;
 		const UTF8Char **names;
 		UOSInt colCnt = this->colNames.GetCount();
 		UOSInt i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32FastMap<const UTF8Char **>());
+		NEW_CLASS(nameArr, Data::Int32FastMapObj<const UTF8Char **>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
@@ -47,13 +47,13 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 		}
 		currDB->CloseReader(r);
 		mutUsage.EndUse();
-		this->currDB = 0;
+		this->currDB = nullptr;
 		return nameArr;
 	}
 	else
 	{
 		mutUsage.EndUse();
-		this->currDB = 0;
+		this->currDB = nullptr;
 		return 0;
 	}
 }
@@ -68,8 +68,8 @@ void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text:
 	conn->UseObject();
 	this->conn = conn;
 	this->tableName = Text::String::New(tableName);
-	this->currDB = 0;
-	this->lastDB = 0;
+	this->currDB = nullptr;
+	this->lastDB = nullptr;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
 	this->max = Math::Coord2DDbl(0, 0);
 	this->min = Math::Coord2DDbl(0, 0);
@@ -81,7 +81,7 @@ void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text:
 	NN<DB::DBConn> currDB;
 	NN<DB::DBReader> r;
 	this->currDB = currDB = this->conn->UseConn(mutUsage);
-	if (currDB->QueryTableData(nullptr, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
+	if (currDB->QueryTableData(nullptr, tableName, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -184,7 +184,7 @@ void Map::ESRI::ESRIMDBLayer::Init(NN<DB::SharedDBConn> conn, UInt32 srid, Text:
 		currDB->CloseReader(r);
 	}
 	mutUsage.EndUse();
-	this->currDB = 0;
+	this->currDB = nullptr;
 }
 
 Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(NN<DB::SharedDBConn> conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
@@ -274,7 +274,7 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 	NN<NameArray> nnnameArr;
 	if (nameArr.SetTo(nnnameArr))
 	{
-		NN<Data::FastMap<Int32, const UTF8Char **>> names = NN<Data::FastMap<Int32, const UTF8Char **>>::ConvertFrom(nnnameArr);
+		NN<Data::FastMapObj<Int32, const UTF8Char **>> names = NN<Data::FastMapObj<Int32, const UTF8Char **>>::ConvertFrom(nnnameArr);
 		UOSInt i = names->GetCount();
 		UOSInt colCnt = this->colNames.GetCount();
 		UOSInt j;
@@ -296,8 +296,8 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 
 Bool Map::ESRI::ESRIMDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	NN<Data::FastMap<Int32, const UTF8Char **>> names;
-	if (!Optional<Data::FastMap<Int32, const UTF8Char **>>::ConvertFrom(nameArr).SetTo(names))
+	NN<Data::FastMapObj<Int32, const UTF8Char **>> names;
+	if (!Optional<Data::FastMapObj<Int32, const UTF8Char **>>::ConvertFrom(nameArr).SetTo(names))
 		return false;
 	const UTF8Char **nameStrs = names->Get((Int32)id);
 	if (nameStrs == 0)
@@ -320,7 +320,7 @@ UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRIMDBLayer::GetColumnName(UnsafeArray<UTF8
 	{
 		return colName->ConcatTo(buff);
 	}
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::ESRI::ESRIMDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -358,7 +358,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMDBLayer::GetNewVectorById(NN<
 	NN<Math::Geometry::Vector2D> vec;
 	if (this->objects.Get((Int32)id).SetTo(vec))
 		return vec->Clone();
-	return 0;
+	return nullptr;
 }
 
 void Map::ESRI::ESRIMDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
@@ -392,8 +392,8 @@ Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString sch
 		return r;
 	}
 	mutUsage.Delete();
-	this->currDB = 0;
-	return 0;
+	this->currDB = nullptr;
+	return nullptr;
 }
 
 Optional<DB::TableDef> Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
@@ -403,7 +403,7 @@ Optional<DB::TableDef> Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schema
 	this->currDB = currDB = this->conn->UseConn(mutUsage);
 	this->lastDB = this->currDB;
 	Optional<DB::TableDef> tab = currDB->GetTableDef(schemaName, tableName);
-	this->currDB = 0;
+	this->currDB = nullptr;
 	return tab;
 }
 
@@ -411,7 +411,7 @@ void Map::ESRI::ESRIMDBLayer::CloseReader(NN<DB::DBReader> r)
 {
 	NN<Map::ESRI::ESRIMDBReader> rdr = NN<Map::ESRI::ESRIMDBReader>::ConvertFrom(r);
 	rdr.Delete();
-	this->currDB = 0;
+	this->currDB = nullptr;
 }
 
 void Map::ESRI::ESRIMDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)

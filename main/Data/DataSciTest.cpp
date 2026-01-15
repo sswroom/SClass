@@ -39,7 +39,7 @@ Int32 TestPage27()
 	{
 		if (dfInfo->GetDataSet(CSTR("金額")).SetTo(ds))
 		{
-			Data::ArrayList<Data::TwinItem<Data::Timestamp, Double>> groupResult;
+			Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, Double>> groupResult;
 			ds->GroupKeyByMonth().Sum(groupResult);
 			NN<Data::ChartPlotter::Axis> axis;
 			Data::ChartPlotter chart(0);
@@ -70,7 +70,7 @@ Int32 TestPage28()
 	{
 		if (dfInfo->GetKeyDataSet().SetTo(ds))
 		{
-			Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> groupResult;
+			Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> groupResult;
 			ds->GroupKeyByMonth().Count(groupResult);
 			NN<Data::ChartPlotter::Axis> axis;
 			Data::ChartPlotter chart(0);
@@ -97,7 +97,7 @@ Int32 TestPage29()
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter1/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
 		Data::ArrayListStringNN strs;
-		Data::FastStringMap<UInt32> cnts;
+		Data::FastStringMapNative<UInt32> cnts;
 		Data::ArrayListUInt32 cnts2;
 		dfInfo->GetColumnDataStr(CSTR("顧客ID"), strs);
 		strs.ValueCounts(cnts);
@@ -123,7 +123,7 @@ Int32 TestPage29_2()
 		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
 		{
 			Data::ArrayListUInt32 cnts;
-			ds->ValueCounts(NN<Data::ArrayList<UInt32>>(cnts));
+			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
 			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("平均值:"))->F64(cnts.Mean())->ToCString());
 			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("中位數:"))->U32(cnts.Median())->ToCString());
 			console.WriteLine(Text::StringBuilderUTF8().Str(CSTR("最小值:"))->U32(cnts.Min())->ToCString());
@@ -147,7 +147,7 @@ Int32 TestPage31()
 		{
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 			Data::ArrayListUInt32 cnts;
-			ds->ValueCounts(NN<Data::ArrayList<UInt32>>(cnts));
+			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
 
 			NN<Data::ChartPlotter::Axis> axis;
 			Data::ChartPlotter chart(0);
@@ -190,7 +190,7 @@ Int32 TestPage37_2()
 		{
 			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 			Data::ArrayListUInt32 cnts;
-			ds->ValueCounts(NN<Data::ArrayList<UInt32>>(cnts));
+			ds->ValueCounts(NN<Data::ArrayListNative<UInt32>>(cnts));
 
 			NN<Data::ChartPlotter::Axis> axis;
 			Data::ChartPlotter chart(0);
@@ -212,7 +212,7 @@ void Page38AddChart(NN<Data::ChartPlotter> chart, NN<Data::TableData> dfInfo, NN
 	dfInfo->SetCondition(cond);
 	if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
 	{
-		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cnts;
+		Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> cnts;
 		ds->GroupKeyByMonth().Count(cnts);
 		chart->AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, UInt32>(cnts), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, UInt32>(cnts), lineColor);
 		ds.Delete();
@@ -386,7 +386,7 @@ Int32 TestPage42()
 		UOSInt rowCntPre = dfInfo->GetRowCount();
 		dfInfo->SetCondition(Data::QueryConditions::New()->TimeOnOrAfter(CSTR("日期"), targetDate));
 		UOSInt rowCntPost = dfInfo->GetRowCount();
-		dfInfo->SetCondition(0);
+		dfInfo->SetCondition(nullptr);
 		UOSInt rowCntAll = dfInfo->GetRowCount();
 		console.WriteLine(Text::StringBuilderUTF8().UOS(rowCntPre + rowCntPost)->AppendUTF8Char(' ')->UOS(rowCntAll)->ToCString());
 		dfInfo.Delete();
@@ -425,7 +425,7 @@ Int32 TestPage43()
 			{
 				preCnts[i] = 0;
 				postCnts[i] = 0;
-				labels[i] = 0;
+				labels[i] = nullptr;
 				if (ds2->GetKey(i, item))
 				{
 					NN<Text::String> id;
@@ -652,7 +652,7 @@ Int32 TestPage48()
 					{
 						if (item.GetAsNewString().SetTo(id))
 						{
-							cusName = 0;
+							cusName = nullptr;
 							vals[0] = id->ToCString();
 							if (dfInfo->GetFirstData(CSTR("住宿者姓名"), Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), id->ToCString()), item2))
 							{
@@ -707,7 +707,7 @@ Int32 TestPage53()
 	NN<Data::DataSet> ds2;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter2/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
-		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> x0;
+		Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> x0;
 		if (dfInfo->GetKeyDataSet().SetTo(ds))
 		{
 			ds->GroupKeyByMonth().Count(x0);
@@ -716,8 +716,8 @@ Int32 TestPage53()
 		Data::VariItem item;
 		UOSInt iRank = 1;
 		UOSInt jRank = 2;
-		Optional<Text::String> iId = 0;
-		Optional<Text::String> jId = 0;
+		Optional<Text::String> iId = nullptr;
+		Optional<Text::String> jId = nullptr;
 		NN<Text::String> s;
 		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
 		{
@@ -735,7 +735,7 @@ Int32 TestPage53()
 			dfInfo->SetCondition(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), s->ToCString()));
 			if (dfInfo->GetKeyDataSet().SetTo(ds))
 			{
-				Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cnts;
+				Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> cnts;
 				ds->GroupKeyByMonth().Count(cnts);
 				chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, UInt32>(cnts), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, UInt32>(cnts), 0xffff0000);
 				ds.Delete();
@@ -747,7 +747,7 @@ Int32 TestPage53()
 			dfInfo->SetCondition(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), s->ToCString()));
 			if (dfInfo->GetKeyDataSet().SetTo(ds))
 			{
-				Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cnts;
+				Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> cnts;
 				ds->GroupKeyByMonth().Count(cnts);
 				chart.AddLineChart(CSTR(""), Data::ChartPlotter::NewDataFromValue<Data::Timestamp, UInt32>(cnts), Data::ChartPlotter::NewDataFromKey<Data::Timestamp, UInt32>(cnts), 0xff000000);
 				ds.Delete();
@@ -779,7 +779,7 @@ Int32 TestPage54()
 	NN<Data::DataSet> ds2;
 	if (DB::CSVFile::LoadAsTableData(CSTR(DATAPATH "Chapter2/accomodation_info.csv"), 65001, 0, {tsCols, sizeof(tsCols) / sizeof(tsCols[0])}).SetTo(dfInfo))
 	{
-		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> x0;
+		Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> x0;
 		if (dfInfo->GetKeyDataSet().SetTo(ds))
 		{
 			ds->GroupKeyByMonth().Count(x0);
@@ -788,8 +788,8 @@ Int32 TestPage54()
 		Data::VariItem item;
 		UOSInt iRank = 1;
 		UOSInt jRank = 2;
-		Optional<Text::String> iId = 0;
-		Optional<Text::String> jId = 0;
+		Optional<Text::String> iId = nullptr;
+		Optional<Text::String> jId = nullptr;
 		NN<Text::String> s;
 		if (dfInfo->GetDataSet(CSTR("顧客ID")).SetTo(ds))
 		{
@@ -800,8 +800,8 @@ Int32 TestPage54()
 			ds2.Delete();
 			ds.Delete();
 		}
-		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cntsI;
-		Data::ArrayList<Data::TwinItem<Data::Timestamp, UInt32>> cntsJ;
+		Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> cntsI;
+		Data::ArrayListNative<Data::TwinItemNative<Data::Timestamp, UInt32>> cntsJ;
 		if (iId.SetTo(s))
 		{
 			dfInfo->SetCondition(Data::QueryConditions::New()->StrEquals(CSTR("顧客ID"), s->ToCString()));

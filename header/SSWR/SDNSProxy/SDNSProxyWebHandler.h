@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_SDNSPROXY_SDNSPROXYWEBHANDLER
 #define _SM_SSWR_SDNSPROXY_SDNSPROXYWEBHANDLER
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "IO/CyclicLogBuffer.h"
 #include "IO/LogTool.h"
 #include "Net/DNSProxy.h"
@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NN<Net::DNSProxy> proxy;
 			NN<IO::LogTool> log;
-			Data::FastStringMap<RequestHandler> reqMap;
+			Data::FastStringMapObj<RequestHandler> reqMap;
 			NN<IO::CyclicLogBuffer> logBuff;
 			SDNSProxyCore *core;
 

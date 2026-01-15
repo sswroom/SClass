@@ -17,21 +17,21 @@ void Media::Resizer::DeintResizerLR_C32::DestoryVertO()
 	if (this->oIndex.SetTo(oIndex))
 	{
 		MemFreeAArr(oIndex);
-		this->oIndex = 0;
+		this->oIndex = nullptr;
 	}
 	if (this->oWeight.SetTo(oWeight))
 	{
 		MemFreeAArr(oWeight);
-		this->oWeight = 0;
+		this->oWeight = nullptr;
 	}
 	NN<LanczosResizerLR_C32Action::VertFilter> vFilter;
 	if (this->oFilter.SetTo(vFilter))
 	{
 		this->action->DestroyVertFilter(vFilter);
-		this->oFilter = 0;
+		this->oFilter = nullptr;
 	}
-	osSize = 0;
-	osStep = 0;
+	this->osSize = 0;
+	this->osStep = 0;
 }
 
 void Media::Resizer::DeintResizerLR_C32::DestoryVertE()
@@ -41,21 +41,21 @@ void Media::Resizer::DeintResizerLR_C32::DestoryVertE()
 	if (this->eIndex.SetTo(eIndex))
 	{
 		MemFreeAArr(eIndex);
-		this->eIndex = 0;
+		this->eIndex = nullptr;
 	}
 	if (this->eWeight.SetTo(eWeight))
 	{
 		MemFreeAArr(eWeight);
-		this->eWeight = 0;
+		this->eWeight = nullptr;
 	}
 	NN<LanczosResizerLR_C32Action::VertFilter> vFilter;
 	if (this->eFilter.SetTo(vFilter))
 	{
 		this->action->DestroyVertFilter(vFilter);
-		this->eFilter = 0;
+		this->eFilter = nullptr;
 	}
-	esSize = 0;
-	esStep = 0;
+	this->esSize = 0;
+	this->esStep = 0;
 }
 
 Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::Resizer::LanczosResizerLR_C32(hnTap, vnTap, destColor, colorSess, srcAlphaType, srcRefLuminance, pf), Media::DeinterlacingResizer(srcAlphaType)
@@ -63,18 +63,18 @@ Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTa
 	this->osSize = 0;
 	this->odSize = 0;
 	this->osStep = 0;
-	this->oIndex = 0;
-	this->oWeight = 0;
+	this->oIndex = nullptr;
+	this->oWeight = nullptr;
 	this->oTap = 0;
-	this->oFilter = 0;
+	this->oFilter = nullptr;
 
 	this->esSize = 0;
 	this->edSize = 0;
 	this->esStep = 0;
-	this->eIndex = 0;
-	this->eWeight = 0;
+	this->eIndex = nullptr;
+	this->eWeight = nullptr;
 	this->eTap = 0;
-	this->eFilter = 0;
+	this->eFilter = nullptr;
 }
 
 Media::Resizer::DeintResizerLR_C32::~DeintResizerLR_C32()

@@ -104,7 +104,7 @@ void UI::DObj::LabelDObj::SetText(Text::CString txt)
 	if (this->txt.SetTo(nnthisTxt) && (!txt.SetTo(nntxt) || nntxt.leng == 0))
 	{
 		nnthisTxt->Release();
-		this->txt = 0;
+		this->txt = nullptr;
 		this->txtChg = true;
 	}
 	else if (this->txt.SetTo(nnthisTxt) && nnthisTxt->Equals(nntxt.v, nntxt.leng))

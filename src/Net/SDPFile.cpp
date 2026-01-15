@@ -18,21 +18,21 @@ void Net::SDPFile::InitSDP()
 	this->buffSize = 0;
 
 	this->version = 0;
-	this->sessName = 0;
-	this->userName = 0;
-	this->sessId = 0;
-	this->sessVer = 0;
-	this->userAddrType = 0;
-	this->userAddrHost = 0;
+	this->sessName = nullptr;
+	this->userName = nullptr;
+	this->sessId = nullptr;
+	this->sessVer = nullptr;
+	this->userAddrType = nullptr;
+	this->userAddrHost = nullptr;
 	this->startTime = -1;
 	this->endTime = -1;
-	this->sessTool = 0;
-	this->sessType = 0;
+	this->sessTool = nullptr;
+	this->sessType = nullptr;
 	this->sessSend = false;
 	this->sessRecv = true;
-	this->sessCharset = 0;
-	this->sessControl = 0;
-	this->reqUserAgent = 0;
+	this->sessCharset = nullptr;
+	this->sessControl = nullptr;
+	this->reqUserAgent = nullptr;
 }
 
 Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
@@ -45,7 +45,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[7];
-	Optional<Data::ArrayListStrUTF8> optcurrMedia = 0;
+	Optional<Data::ArrayListStrUTF8> optcurrMedia = nullptr;
 	NN<Data::ArrayListStrUTF8> currMedia;
 	IO::MemoryReadingStream mstm(this->buff, this->buffSize);
 	Text::UTF8Reader reader(mstm);

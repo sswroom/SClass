@@ -10,7 +10,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 	this->srid = 0;
 	this->srsOrigin = Math::Vector3(NAN, NAN, NAN);
 	this->multijson = false;
-	this->jsonFile = 0;
+	this->jsonFile = nullptr;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	IO::PackageFile::PackObjectType pot;

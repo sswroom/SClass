@@ -103,7 +103,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 		cairo_ps_surface_set_size(surface, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
 
 //		wprintf(L"Printing page size: %lf, %lf\r\n", paperWidth, paperHeight);
-		img = me->eng->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(Double2OSInt(paperWidth * 72.0), Double2OSInt(paperHeight * 72.0)), 0);
+		img = me->eng->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(Double2OSInt(paperWidth * 72.0), Double2OSInt(paperHeight * 72.0)), nullptr);
 		img->SetHDPI(72.0);
 		img->SetVDPI(72.0);
 		hasMorePage = me->hdlr->PrintPage(img);
@@ -143,7 +143,7 @@ Media::CUPSPrintDocument::CUPSPrintDocument(NN<Text::String> printerName, NN<Med
 {
 	this->eng = eng;
 	this->hdlr = hdlr;
-	this->docName = 0;
+	this->docName = nullptr;
 	this->started = false;
 	this->running = false;
 	this->printerName = printerName;
@@ -217,8 +217,8 @@ UOSInt Media::Printer::GetPrinterCount()
 UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index)
 {
 	if (index < 0)
-		return 0;
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+		return nullptr;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	cups_dest_t *dests;
 	int cnt = cupsGetDests(&dests);
 	if (index < (UOSInt)cnt)
@@ -266,7 +266,7 @@ Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<PrintHandler> hdlr,
 	if (doc->IsError())
 	{
 		DEL_CLASS(doc);
-		return 0;
+		return nullptr;
 	}
 	doc->Start();
 	return doc;

@@ -50,5 +50,5 @@ UnsafeArrayOpt<UTF8Char> Manage::EnvironmentVar::GetEnvValue(UnsafeArray<UTF8Cha
 	{
 		return Text::StrConcat(buff, (const UTF8Char*)v);
 	}
-	return 0;
+	return nullptr;
 }

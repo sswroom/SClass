@@ -45,7 +45,7 @@ UOSInt IO::FileAnalyse::ASN1FileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ASN1FileAnalyse::GetFrameDetail(UOSInt index)
 {
 	if (index != 0)
-		return 0;
+		return nullptr;
 	Data::ByteBuffer buff((UOSInt)this->fd->GetDataSize());
 	this->fd->GetRealData(0, buff.GetSize(), buff);
 	NN<IO::FileAnalyse::FrameDetail> frame;

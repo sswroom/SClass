@@ -455,7 +455,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 		{
 			locSvc.Delete();
 		}
-		me->locSvc = 0;
+		me->locSvc = nullptr;
 		me->locSvcRel = false;
 		me->txtGPS->SetText(CSTR("Not opened"));
 	}
@@ -484,8 +484,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 		Sync::MutexUsage mutUsage(me->captureMut);
 		me->captureWriter.Delete();
 		me->captureFS.Delete();
-		me->captureWriter = 0;
-		me->captureFS = 0;
+		me->captureWriter = nullptr;
+		me->captureFS = nullptr;
 		mutUsage.EndUse();
 		me->btnGPS->SetEnabled(true);
 	}
@@ -525,7 +525,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 		if (fs->IsError())
 		{
 			fs.Delete();
-			me->captureFS = 0;
+			me->captureFS = nullptr;
 			isError = true;
 		}
 		else
@@ -771,16 +771,16 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 	this->SetText(CSTR("Wifi Capture"));
 
 	this->core = core;
-	this->motion = 0;
+	this->motion = nullptr;
 	this->gpsChg = false;
 	this->lastTimeTick = 0;
 	this->currGPSTime = Data::TimeInstant(0, 0);
 	this->currPos = Math::Coord2DDbl(0, 0);
 	this->currAlt = 0;
-	this->locSvc = 0;
+	this->locSvc = nullptr;
 	this->locSvcRel = false;
-	this->captureFS = 0;
-	this->captureWriter = 0;
+	this->captureFS = nullptr;
+	this->captureWriter = nullptr;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -935,7 +935,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 		{
 			locSvc.Delete();
 		}
-		this->locSvc = 0;
+		this->locSvc = nullptr;
 		this->locSvcRel = false;
 	}
 	this->captureWriter.Delete();

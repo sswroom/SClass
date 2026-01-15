@@ -1006,7 +1006,7 @@ Bool Net::OSSocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
 	return ret;
 }
 
-UOSInt Net::OSSocketFactory::GetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
+UOSInt Net::OSSocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
 	IO::FileStream fs(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -1698,7 +1698,7 @@ Bool Net::OSSocketFactory::AdapterEnable(Text::CStringNN adapterName, Bool enabl
 #endif
 }
 
-UOSInt Net::OSSocketFactory::GetBroadcastAddrs(NN<Data::ArrayList<UInt32>> addrs)
+UOSInt Net::OSSocketFactory::GetBroadcastAddrs(NN<Data::ArrayListNative<UInt32>> addrs)
 {
 	return 0;
 }

@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt32.h"
 #include "IO/Console.h"
 #include "IO/FileStream.h"
@@ -2280,7 +2279,7 @@ Optional<Map::MapDrawLayer> Map::MapConfig2::GetDrawLayer(Text::CStringNN name, 
 		errWriter->Write(CSTR("Error in loading "));
 		errWriter->WriteLine(name);
 		cip.Delete();
-		return 0;
+		return nullptr;
 	}
 	layerList->Add(cip);
 	return cip;
@@ -2305,7 +2304,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 	NN<Map::MapDrawLayer> lyr = lyrs->lyr;
 
 #ifndef NOSCH
-	sch->SetDrawType(lyr, 0, 0, lyrs->img, UOSInt2Double(lyrImg->GetWidth()) * 0.5, UOSInt2Double(lyrImg->GetHeight()) * 0.5, isLayerEmpty);
+	sch->SetDrawType(lyr, nullptr, nullptr, lyrs->img, UOSInt2Double(lyrImg->GetWidth()) * 0.5, UOSInt2Double(lyrImg->GetHeight()) * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	Data::ArrayListInt64 arri;
@@ -2339,12 +2338,12 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, NN<MapLayerStyle> lyr
 			imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
 			imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
 	#ifndef NOSCH
-			sch->SetDrawType(lyr, 0, 0, dimg, UOSInt2Double(gimg->GetWidth()) * 0.5, UOSInt2Double(gimg->GetHeight()) * 0.5, isLayerEmpty);
+			sch->SetDrawType(lyr, nullptr, nullptr, dimg, UOSInt2Double(gimg->GetWidth()) * 0.5, UOSInt2Double(gimg->GetHeight()) * 0.5, isLayerEmpty);
 	#endif
 		}
 		else
 		{
-			dimg = 0;
+			dimg = nullptr;
 		}
 	}
 	else
@@ -2655,7 +2654,7 @@ UInt32 Map::MapConfig2::NewLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel
 		labels[j].label->Release();
 		if (labels[j].points.SetTo(ptPtr))
 			MemFreeAArr(ptPtr);
-		labels[j].points = 0;
+		labels[j].points = nullptr;
 		labels[j].priority = priority;
 		return j;
 	}
@@ -2664,8 +2663,8 @@ UInt32 Map::MapConfig2::NewLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel
 		i = labelCnt.Get();
 		labelCnt.Set(i + 1);
 		labels[i].priority = priority;
-		//labels[i].label = 0;
-		labels[i].points = 0;
+		//labels[i].label = nullptr;
+		labels[i].points = nullptr;
 		return i;
 	}
 }
@@ -2770,7 +2769,7 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 					labels[i].totalSize = UOSInt2Double(nPoint);
 					labels[i].nPoints = 0;
 					labels[i].shapeType = 1;
-					labels[i].points = 0;
+					labels[i].points = nullptr;
 					labels[i].flags = flags;
 					labels[i].xOfst = xOfst;
 					labels[i].yOfst = yOfst;
@@ -3021,7 +3020,7 @@ Bool Map::MapConfig2::AddLabel(UnsafeArray<MapLabels2> labels, UInt32 maxLabel, 
 			labels[i].flags = flags;
 
 			labels[i].label = Text::String::New(labelt);
-			labels[i].points = 0;
+			labels[i].points = nullptr;
 
 			toUpdate = 1;
 		}
@@ -3916,9 +3915,9 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 
 	this->drawEng = eng;
 	this->inited = false;
-	this->lines = 0;
-	this->fonts = 0;
-	this->drawList = 0;
+	this->lines = nullptr;
+	this->fonts = nullptr;
+	this->drawList = nullptr;
 
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fstm.IsError())
@@ -3927,9 +3926,9 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 		this->nLine = 0;
 		this->nFont = 0;
 		this->nStr = 0;
-		this->lines = 0;
-		this->fonts = 0;
-		this->drawList = 0;
+		this->lines = nullptr;
+		this->fonts = nullptr;
+		this->drawList = nullptr;
 	}
 	else
 	{
@@ -3963,12 +3962,12 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 				i = this->nLine;
 				while (i-- > 0)
 				{
-					lines[i] = 0;
+					lines[i] = nullptr;
 				}
 				i = this->nFont;
 				while (i-- > 0)
 				{
-					fonts[i] = 0;
+					fonts[i] = nullptr;
 				}
 				NEW_CLASSOPT(this->drawList, Data::ArrayListNN<MapLayerStyle>());
 
@@ -4058,7 +4057,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 						currLayer->drawType = 6;
 						currLayer->minScale = Text::StrToInt32(strs[2].v);
 						currLayer->maxScale = Text::StrToInt32(strs[3].v);
-						currLayer->img = 0;
+						currLayer->img = nullptr;
 						currLayer->lyr = lyr;
 						currLayer->style = Text::StrToUInt32(strs[4].v);
 						currLayer->bkColor = 0;
@@ -4085,7 +4084,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 						currLayer->drawType = 7;
 						currLayer->minScale = Text::StrToInt32(strs[2].v);
 						currLayer->maxScale = Text::StrToInt32(strs[3].v);
-						currLayer->img = 0;
+						currLayer->img = nullptr;
 						currLayer->lyr = lyr;
 						currLayer->style = Text::StrToUInt32(strs[4].v);
 						currLayer->bkColor = ToColor(strs[5].v);
@@ -4116,7 +4115,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 						currLayer->drawType = 9;
 						currLayer->minScale = Text::StrToInt32(strs[2].v);
 						currLayer->maxScale = Text::StrToInt32(strs[3].v);
-						currLayer->img = 0;
+						currLayer->img = nullptr;
 						currLayer->lyr = lyr;
 						currLayer->priority = Text::StrToInt32(strs[4].v);
 						currLayer->style = Text::StrToUInt32(strs[5].v);
@@ -4138,7 +4137,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 				currLayer->drawType = 10;
 				currLayer->minScale = Text::StrToInt32(strs[2].v);
 				currLayer->maxScale = Text::StrToInt32(strs[3].v);
-				currLayer->img = 0;
+				currLayer->img = nullptr;
 				{
 					NN<IO::ParsedObject> obj;
 					{
@@ -4156,7 +4155,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 									{
 										if (img->ToB8G8R8A8())
 										{
-											currLayer->img = this->drawEng->ConvImage(img, 0);
+											currLayer->img = this->drawEng->ConvImage(img, nullptr);
 											obj.Delete();
 										}
 										else
@@ -4227,7 +4226,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 					}
 					else
 					{
-						area->data = 0;
+						area->data = nullptr;
 					}
 					this->areaList.Add(area);
 				}
@@ -4295,7 +4294,7 @@ Map::MapConfig2::~MapConfig2()
 			}
 		}
 		MemFreeArr(lines);
-		this->lines = 0;
+		this->lines = nullptr;
 	}
 	if (this->fonts.SetTo(fonts))
 	{
@@ -4315,7 +4314,7 @@ Map::MapConfig2::~MapConfig2()
 			}
 		}
 		MemFreeNN(fonts);
-		this->fonts = 0;
+		this->fonts = nullptr;
 	}
 
 	if (this->drawList.SetTo(drawList))
@@ -4353,21 +4352,21 @@ Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NN<Media::DrawImage> img, UI
 	NN<Data::ArrayListNN<Map::MapLineStyle>> thisLines;
 	if (lineStyle >= this->nLine || !this->lines.SetTo(lines))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!lines[lineStyle].SetTo(thisLines))
-		return 0;
+		return nullptr;
 	NN<Map::MapLineStyle> thisLine;
 	if (!thisLines->GetItem(lineLayer).SetTo(thisLine))
-		return 0;
+		return nullptr;
 
 	if (thisLine->lineType == 0)
 	{
-		return img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, 0, 0);
+		return img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, nullptr, 0);
 	}
 	else if (thisLine->lineType == 1)
 	{
-		return img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, 0, 0);
+		return img->NewPenARGB(thisLine->color, thisLine->lineWidth * img->GetHDPI() / 96.0, nullptr, 0);
 	}
 	else if (thisLine->lineType == 2)
 	{
@@ -4407,7 +4406,7 @@ Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NN<Media::DrawImage> img, UI
 		MemFree(pattern);
 		return pen;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OutParam<Bool> isLayerEmpty, NN<Map::MapScheduler> mapSch, Optional<Media::ImageResizer> resizer, UnsafeArrayOpt<UTF8Char> slowLayer, OptOut<Double> slowTime)
@@ -4416,11 +4415,11 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 	NN<Data::ArrayListNN<Map::MapLayerStyle>> drawList;
 	if (!this->drawList.SetTo(drawList) || !this->fonts.SetTo(fonts))
 	{
-		return 0;
+		return nullptr;
 	}
 	//Manage::HiResClock clk;
-	UnsafeArrayOpt<UTF8Char> retPtr = 0;
-	UnsafeArrayOpt<const UTF8Char> maxName = 0;
+	UnsafeArrayOpt<UTF8Char> retPtr = nullptr;
+	UnsafeArrayOpt<const UTF8Char> maxName = nullptr;
 	Double thisSpd = 0;
 	Double maxSpd = 0;
 	UInt32 index;
@@ -4459,7 +4458,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 #endif
 
 	brush = img->NewBrushARGB(this->bgColor);
-	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, brush);
+	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, brush);
 	img->DelBrush(brush);
 
 	myArrs = MemAllocArr(Optional<Data::ArrayListNN<MapFontStyle>>, this->nFont);
@@ -4497,11 +4496,11 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 				}
 				else if (fnt->fontType == 2)
 				{
-					fnt2->other = img->NewPenARGB(fnt->color, fnt->thick * img->GetHDPI() / 96.0, 0, 0).Ptr();
+					fnt2->other = img->NewPenARGB(fnt->color, fnt->thick * img->GetHDPI() / 96.0, nullptr, 0).Ptr();
 				}
 				else if (fnt->fontType == 4)
 				{
-					f = 0;
+					f = nullptr;
 					l = j + 1;
 					while (l < k)
 					{
@@ -4533,7 +4532,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 		}
 		else
 		{
-			myArrs[i] = 0;
+			myArrs[i] = nullptr;
 		}
 	}
 
@@ -4557,7 +4556,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 #ifdef NOSCH
 					Data::ArrayList<Map::DrawObjectL*> drawArr;
 #else
-					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), 0, 0, 0, isLayerEmpty);
+					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), nullptr, 0, 0, isLayerEmpty);
 #endif
 
 					session = lyr->BeginGetObject();
@@ -4638,7 +4637,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 						index2 = 1;
 						while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
 						{
-							mapSch->DrawNextType(pen, 0);
+							mapSch->DrawNextType(pen, nullptr);
 						}
 					}
 					mapSch->WaitForFinish();
@@ -4657,7 +4656,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 #ifdef NOSCH
 					Data::ArrayList<Map::DrawObjectL*> drawArr;
 #else
-					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), 0, 0, 0, 0, isLayerEmpty);
+					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), nullptr, nullptr, 0, 0, isLayerEmpty);
 #endif
 
 					session = lyr->BeginGetObject();
@@ -4716,7 +4715,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 						index2 = 1;
 						while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
 						{
-							mapSch->DrawNextType(pen, 0);
+							mapSch->DrawNextType(pen, nullptr);
 						}
 					}
 					mapSch->WaitForFinish();

@@ -217,7 +217,7 @@ Optional<IO::I2CChannel> IO::Device::BME280::CreateDefChannel(Int32 i2cBusNo)
 	if (channel->IsError())
 	{
 		DEL_CLASS(channel);
-		return 0;
+		return nullptr;
 	}
 	return channel;
 }

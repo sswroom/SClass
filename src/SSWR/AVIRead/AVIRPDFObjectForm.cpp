@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 		}
 		else
 		{
-			me->pbImage->SetImage(0, false);
+			me->pbImage->SetImage(nullptr, false);
 		}
 		Text::StringBuilderUTF8 sb;
 		obj->ToString(sb);
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnStreamHexClicked(AnyType user
 	NN<IO::StreamData> stmData;
 	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->GetData().SetTo(stmData))
 	{
-		me->core->OpenHex(stmData, 0);
+		me->core->OpenHex(stmData, nullptr);
 	}
 }
 

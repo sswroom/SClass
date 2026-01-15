@@ -101,7 +101,7 @@ void __stdcall IO::FileAnalyse::OSMPBFFileAnalyse::FreePackInfo(NN<PackInfo> pac
 IO::FileAnalyse::OSMPBFFileAnalyse::OSMPBFFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("OSMPBFFA"))
 {
 	UInt8 buff[128];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128)
 	{
@@ -186,12 +186,12 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::OSMPBFFileAnalyse::GetFr
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (index >= this->packs.GetCount())
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<PackInfo> pack = this->packs.GetItemNoCheck(index);
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

@@ -37,14 +37,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::St
 {
 	if (hdr[0] != 0xff || hdr[1] != 0xd8 || fd->GetDataSize() >= 104857600)
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt fileLen = (UOSInt)fd->GetDataSize();
 	UInt8 *buff = MemAlloc(UInt8, fileLen);
 	if (fd->GetRealData(0, fileLen, Data::ByteArray(buff, fileLen)) != fileLen)
 	{
 		MemFree(buff);
-		return 0;
+		return nullptr;
 	}
 	
 	NN<Media::StaticImage> img;
@@ -52,14 +52,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::St
 	if (!jpgDecoder.DecodeImage(Data::ByteArrayR(buff, fileLen)).SetTo(img))
 	{
 		MemFree(buff);
-		return 0;
+		return nullptr;
 	}
 	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	imgList->AddImage(img, 0);
 	{
 		IO::StmData::MemoryDataRef fd(buff, fileLen);
-		Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, 0);
+		Media::JPEGFile::ParseJPEGHeader(fd, img, imgList, nullptr);
 	}
 	MemFree(buff);
 	return imgList;

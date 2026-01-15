@@ -43,7 +43,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::
 	UInt8 sector[2048];
 	UOSInt sectorSize;
 	if (pobj->GetParserType() != IO::ParserType::SectorData)
-		return 0;
+		return nullptr;
 
 	cdData = 0;
 	data = NN<IO::SectorData>::ConvertFrom(pobj);
@@ -60,7 +60,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UInt32 sectorNum9660 = 16;
@@ -69,12 +69,12 @@ Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::
 	if (!data->ReadSector(16, BYTEARR(sector)))
 	{
 		SDEL_CLASS(cdData);
-		return 0;
+		return nullptr;
 	}
 	if (ReadMInt32(&sector[0]) != 0x01434430 && ReadMInt32(&sector[4]) != 0x30310100)
 	{
 		SDEL_CLASS(cdData);
-		return 0;
+		return nullptr;
 	}
 	UInt32 currSector = 17;
 	while (data->ReadSector(currSector, BYTEARR(sector)))

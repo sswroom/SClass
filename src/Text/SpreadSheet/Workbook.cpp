@@ -14,11 +14,11 @@ const UInt32 Text::SpreadSheet::Workbook::defPalette[56] = {
 
 Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject(CSTR("Untitled"))
 {
-	this->author = 0;
-	this->lastAuthor = 0;
-	this->company = 0;
-	this->createTime = 0;
-	this->modifyTime = 0;
+	this->author = nullptr;
+	this->lastAuthor = nullptr;
+	this->company = nullptr;
+	this->createTime = nullptr;
+	this->modifyTime = nullptr;
 	this->version = 0;
 	this->windowTopX = 0;
 	this->windowTopY = 0;
@@ -28,7 +28,7 @@ Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject(CSTR("Untitled"))
 
 	MemCopyNO(this->palette, defPalette, sizeof(defPalette));
 
-	this->NewCellStyle(0, HAlignment::Unknown, VAlignment::Bottom, CSTR("general"));
+	this->NewCellStyle(nullptr, HAlignment::Unknown, VAlignment::Bottom, CSTR("general"));
 	this->NewFont(CSTR("Arial"), 10.0, false)->SetFamily(FontFamily::Swiss);
 	this->NewFont(CSTR("Arial"), 10.0, false);
 	this->NewFont(CSTR("Arial"), 10.0, false);
@@ -121,7 +121,7 @@ void Text::SpreadSheet::Workbook::SetAuthor(UnsafeArrayOpt<const UTF8Char> autho
 	}
 	else
 	{
-		this->author = 0;
+		this->author = nullptr;
 	}
 }
 
@@ -138,7 +138,7 @@ void Text::SpreadSheet::Workbook::SetLastAuthor(UnsafeArrayOpt<const UTF8Char> l
 	}
 	else
 	{
-		this->lastAuthor = 0;
+		this->lastAuthor = nullptr;
 	}
 }
 
@@ -155,7 +155,7 @@ void Text::SpreadSheet::Workbook::SetCompany(UnsafeArrayOpt<const UTF8Char> comp
 	}
 	else
 	{
-		this->company = 0;
+		this->company = nullptr;
 	}
 }
 
@@ -478,7 +478,7 @@ Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetWorksheet
 		if (sheet->GetName()->Equals(name.v, name.leng))
 			return sheet;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Text::SpreadSheet::Workbook::GetFontCount() const

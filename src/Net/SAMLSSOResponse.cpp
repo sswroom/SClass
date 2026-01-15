@@ -6,19 +6,19 @@ Net::SAMLSSOResponse::SAMLSSOResponse(ResponseError error, Text::CStringNN error
 	this->error = error;
 	this->errorMessage = Text::String::New(errorMessage);
 	this->statusCode = SAMLStatusCode::Unknown;
-	this->rawResponse = 0;
-	this->decResponse = 0;
-	this->id = 0;
-	this->sessionIndex = 0;
-	this->issuer = 0;
-	this->audience = 0;
+	this->rawResponse = nullptr;
+	this->decResponse = nullptr;
+	this->id = nullptr;
+	this->sessionIndex = nullptr;
+	this->issuer = nullptr;
+	this->audience = nullptr;
 	this->notBefore = 0;
 	this->notOnOrAfter = 0;
-	this->nameID = 0;
-	this->name = 0;
-	this->givenname = 0;
-	this->surname = 0;
-	this->emailAddress = 0;
+	this->nameID = nullptr;
+	this->name = nullptr;
+	this->givenname = nullptr;
+	this->surname = nullptr;
+	this->emailAddress = nullptr;
 }
 
 Net::SAMLSSOResponse::~SAMLSSOResponse()

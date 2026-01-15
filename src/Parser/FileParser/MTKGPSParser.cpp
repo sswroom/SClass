@@ -35,16 +35,16 @@ Optional<IO::ParsedObject> Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO:
 {
 	if (!fd->GetFullFileName()->EndsWith(UTF8STRC(".bin")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadNUInt32(&hdr[508]) != 0xBBBBBBBB)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen == 0 || fileLen > 8388608 || (fileLen & 0xffff) != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UOSInt i;
@@ -52,9 +52,9 @@ Optional<IO::ParsedObject> Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO:
 	Data::ByteBuffer fileBuff((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
 	{
-		return 0;
+		return nullptr;
 	}
-	NEW_CLASSNN(trk, Map::GPSTrack(fd->GetFullFileName(), true, 0, 0));
+	NEW_CLASSNN(trk, Map::GPSTrack(fd->GetFullFileName(), true, 0, nullptr));
 	i = 0;
 	while (i < fileLen)
 	{
@@ -69,5 +69,5 @@ Optional<IO::ParsedObject> Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO:
 		return trk;
 	}
 	trk.Delete();
-	return 0;
+	return nullptr;
 }

@@ -75,7 +75,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509FileList::GetNewCert(UOSInt i
 		}
 		index -= cnt;
 	}
-	return 0;
+	return nullptr;
 }
 
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509FileList::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
@@ -131,7 +131,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509FileList::CreateX509Cert() co
 {
 	NN<Crypto::Cert::X509File> file;
 	if (!this->fileList.GetItem(0).SetTo(file))
-		return 0;
+		return nullptr;
 	return NN<Crypto::Cert::X509Cert>::ConvertFrom(file->Clone());
 }
 

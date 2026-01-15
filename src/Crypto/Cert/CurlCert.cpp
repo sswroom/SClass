@@ -89,7 +89,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 		}
 		slist = slist->next;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Crypto::Cert::CurlCert::ToString(NN<Text::StringBuilderUTF8> sb) const

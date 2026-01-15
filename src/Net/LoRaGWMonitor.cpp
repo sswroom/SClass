@@ -38,7 +38,7 @@ Net::LoRaGWMonitor::LoRaGWMonitor(NN<Net::SocketFactory> sockf, UInt16 port, GWM
 	}
 	else
 	{
-		this->socMon = 0;
+		this->socMon = nullptr;
 	}
 }
 

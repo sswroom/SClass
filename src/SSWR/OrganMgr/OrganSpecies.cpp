@@ -6,14 +6,14 @@
 SSWR::OrganMgr::OrganSpecies::OrganSpecies()
 {
 	this->speciesId = 0;
-	this->cName = 0;
-	this->eName = 0;
-	this->sName = 0;
+	this->cName = nullptr;
+	this->eName = nullptr;
+	this->sName = nullptr;
 	this->groupId = 0;
-	this->desc = 0;
-	this->dirName = 0;
-	this->photo = 0;
-	this->idKey = 0;
+	this->desc = nullptr;
+	this->dirName = nullptr;
+	this->photo = nullptr;
+	this->idKey = nullptr;
 	this->isDefault = 0;
 	this->flags = 0;
 	this->photoId = 0;

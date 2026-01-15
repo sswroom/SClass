@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 		return;
 	NN<const Net::MACInfo::MACEntry> entry;
 	Text::CString name = me->macList.GetEntry(log->mac64Int).SetTo(entry)?Text::CString(entry->name, entry->nameLen):nullptr;
-	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
+	SSWR::AVIRead::AVIRMACManagerEntryForm frm(nullptr, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Text::String> name = frm.GetNameNew();
@@ -174,7 +174,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 			else
 			{
 				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
-				if (cstr.v == 0)
+				if (cstr.v.IsNull())
 				{
 					this->lvContent->SetSubItem(l, 6, CSTR("?"));
 				}

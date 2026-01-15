@@ -298,12 +298,12 @@ NN<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::EmailAddres
 
 Net::Email::EmailMessage::EmailMessage()
 {
-	this->fromAddr = 0;
-	this->content = 0;
+	this->fromAddr = nullptr;
+	this->content = nullptr;
 	this->contentLen = 0;
-	this->contentType = 0;
-	this->signCert = 0;
-	this->signKey = 0;
+	this->contentType = nullptr;
+	this->signCert = nullptr;
+	this->signKey = nullptr;
 }
 
 Net::Email::EmailMessage::~EmailMessage()
@@ -572,12 +572,12 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt64 len = fs.GetLength();
 	if (len > 104857600)
 	{
-		return 0;
+		return nullptr;
 	}
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -588,7 +588,7 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	{
 		MemFreeArr(attachment->content);
 		MemFreeNN(attachment);
-		return 0;
+		return nullptr;
 	}
 	attachment->createTime = 0;
 	attachment->modifyTime = 0;

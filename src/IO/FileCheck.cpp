@@ -30,7 +30,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 
 	if (!Crypto::Hash::HashCreator::CreateHash(chkType).SetTo(hash))
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::ActiveStreamReader reader(CheckData, &readSess, 1048576);
@@ -45,7 +45,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 			DEL_CLASS(fchk);
 			fs.Delete();
 			hash.Delete();
-			return 0;
+			return nullptr;
 		}
 		else
 		{
@@ -76,7 +76,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 				}
 				DEL_CLASS(fchk);
 				hash.Delete();
-				return 0;
+				return nullptr;
 			}
 			fs.Delete();
 			if (progress.SetTo(nnprogress))

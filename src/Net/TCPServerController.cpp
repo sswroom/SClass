@@ -74,7 +74,7 @@ Net::TCPServerController::TCPServerController(NN<Net::SocketFactory> sockf, NN<I
 	this->maxBuffSize = maxBuffSize;
 	this->hdlr = hdlr;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(timeoutSec, EventHdlr, DataHdlr, this, workerCnt, TimeoutHdlr));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, 0, port, log, ConnHdlr, this, prefix, autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, nullptr, port, log, ConnHdlr, this, prefix, autoStart));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);
@@ -123,7 +123,7 @@ Optional<Net::TCPClient> Net::TCPServerController::GetClient(UOSInt index, OutPa
 	NN<Net::TCPServerController::ClientData> data;
 	NN<Net::TCPClient> cli;
 	if (!this->cliMgr->GetClient(index, cliData).SetTo(cli))
-		return 0;
+		return nullptr;
 	data = cliData.GetNN<Net::TCPServerController::ClientData>();
 	cliObj.Set(data->cliObj);
 	return cli;

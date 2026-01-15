@@ -10,13 +10,13 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(AnyType userObj)
 	if (me->listener.SetTo(listener))
 	{
 		listener.Delete();
-		me->listener = 0;
+		me->listener = nullptr;
 		me->txtCANBus->SetText(CSTR(""));
 		me->btnCANBus->SetText(CSTR("Open"));
 	}
 	else
 	{
-		SSWR::AVIRead::AVIRSelCANForm dlg(0, me->ui, me->core, me->ssl, me->c9r.GetCANHandler());
+		SSWR::AVIRead::AVIRSelCANForm dlg(nullptr, me->ui, me->core, me->ssl, me->c9r.GetCANHandler());
 		if (dlg.ShowDialog(me) == DR_OK && dlg.GetListener().SetTo(listener))
 		{
 			me->listener = listener;
@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(Optional<UI::GUIClientControl> par
 	this->SetText(CSTR("BYD C9R"));
 
 	this->core = core;
-	this->listener = 0;
+	this->listener = nullptr;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

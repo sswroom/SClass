@@ -83,7 +83,7 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const
 
 UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -120,7 +120,7 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVect
 {
 	NN<UserFileInfo> ufile;
 	if (!this->userFileList->GetItem((UOSInt)id).SetTo(ufile))
-		return 0;
+		return nullptr;
 	Math::Geometry::Point *pt;
 	NN<Text::String> s;
 	if (ufile->locType != LocType::PhotoExif && ufile->locType != LocType::UserInput)

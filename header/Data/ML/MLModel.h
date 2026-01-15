@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_ML_MLMODEL
 #define _SM_DATA_ML_MLMODEL
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListArr.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Text/StringBuilderUTF8.h"
 namespace Data
 {
@@ -13,7 +13,7 @@ namespace Data
 			virtual ~MLModel(){}
 
 			virtual void PredictMulti(NN<Data::ArrayListArr<UnsafeArray<Double>>> historyData, UOSInt historySize, NN<Data::ArrayListArr<Double>> predictData) = 0;
-			virtual void Predict(UnsafeArray<UnsafeArray<Double>> historyData, UOSInt historySize, NN<Data::ArrayList<Double>> predictData) = 0;
+			virtual void Predict(UnsafeArray<UnsafeArray<Double>> historyData, UOSInt historySize, NN<Data::ArrayListNative<Double>> predictData) = 0;
 		};
 	}
 }

@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRMDNSForm::DNSRecordRecv(AnyType userData, NN<c
 	{
 		NEW_CLASSNN(dev, DeviceInfo());
 		dev->ip = Text::String::NewP(sbuff, sptr);
-		dev->name = 0;
+		dev->name = nullptr;
 		me->devMap.PutC(CSTRP(sbuff, sptr), dev);
 		me->devUpdated = true;
 	}
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRMDNSForm::OnDevSelChg(AnyType userData)
 	if (me->lbDev->GetSelectedItem().GetOpt<DeviceInfo>().SetTo(dev))
 	{
 		me->currDev = dev;
-		me->currSvc = 0;
+		me->currSvc = nullptr;
 		me->DisplayServices();
 	}
 }
@@ -290,8 +290,8 @@ SSWR::AVIRead::AVIRMDNSForm::AVIRMDNSForm(Optional<UI::GUIClientControl> parent,
 
 	this->devUpdated = false;
 	this->svcUpdated = false;
-	this->currDev = 0;
-	this->currSvc = 0;
+	this->currDev = nullptr;
+	this->currSvc = nullptr;
 	NEW_CLASSNN(this->mdns, Net::MDNSClient(core->GetSocketFactory(), DNSRecordRecv, this));
 	if (this->mdns->IsError())
 	{

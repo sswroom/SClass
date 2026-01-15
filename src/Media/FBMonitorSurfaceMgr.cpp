@@ -5,8 +5,8 @@
 
 Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Optional<Media::MonitorMgr> monMgr, NN<Media::ColorManagerSess> colorSess)
 {
-	this->monMgr = 0;
-	this->colorMgr = 0;
+	this->monMgr = nullptr;
+	this->colorMgr = nullptr;
 	this->colorSess = colorSess;
 }
 
@@ -14,7 +14,7 @@ Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(NN<Media::MonitorMgr> monMgr, NN
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
-	this->colorSess = 0;
+	this->colorSess = nullptr;
 }
 
 Media::FBMonitorSurfaceMgr::~FBMonitorSurfaceMgr()
@@ -50,7 +50,7 @@ Optional<const Media::ColorProfile> Media::FBMonitorSurfaceMgr::GetMonitorColor(
 	{
 		return &colorSess->GetRGBParam()->monProfile;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Media::FBMonitorSurfaceMgr::Is10BitColor(Optional<MonitorHandle> hMonitor)
@@ -95,22 +95,22 @@ UOSInt Media::FBMonitorSurfaceMgr::GetMonitorCount()
 Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
 {
 	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
+	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(nullptr), this->GetMonitorDPI(nullptr)));
 	return surface;
 }
 
 Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreatePrimarySurface(Optional<MonitorHandle> hMon, Optional<ControlHandle> clipWindow, Media::RotateType rotateType)
 {
-	Media::FBSurface *surface = 0;
+	Media::FBSurface *surface = nullptr;
 	NEW_CLASS(surface, Media::FBSurface(hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon), rotateType));
-	if (surface == 0)
+	if (surface == nullptr)
 	{
-		return 0;
+		return nullptr;
 	}
 	else if (surface->IsError())
 	{
 		DEL_CLASS(surface);
-		return 0;
+		return nullptr;
 	}
 	return surface;
 }
@@ -118,7 +118,7 @@ Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreatePrimarySurface
 Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(Optional<MonitorHandle> hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType)
 {
 	NN<Media::MonitorSurface> pSurface;
-	if (this->CreatePrimarySurface(hMon, 0, rotateType).SetTo(pSurface))
+	if (this->CreatePrimarySurface(hMon, nullptr, rotateType).SetTo(pSurface))
 	{
 		NN<Media::MonitorSurface> bSurface;
 		if (this->CreateSurface(pSurface->info.dispSize, pSurface->info.storeBPP).SetTo(bSurface))

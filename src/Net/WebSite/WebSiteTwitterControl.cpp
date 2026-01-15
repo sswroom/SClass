@@ -14,7 +14,7 @@ Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(NN<Net::TCPClientFact
 	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
-	this->userAgent = 0;
+	this->userAgent = nullptr;
 }
 
 Net::WebSite::WebSiteTwitterControl::~WebSiteTwitterControl()

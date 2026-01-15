@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(AnyType user
 	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	UOSInt newStyle = me->env->AddFontStyle(CSTR("Unnamed"), CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
 
-	SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, newStyle);
+	SSWR::AVIRead::AVIRGISFontEditForm frm(nullptr, me->ui, me->core, me->env, me->eng, newStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->fontStyle = newStyle;
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(AnyType use
 	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	if (me->fontStyle < me->env->GetFontStyleCount())
 	{
-		SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, me->fontStyle);
+		SSWR::AVIRead::AVIRGISFontEditForm frm(nullptr, me->ui, me->core, me->env, me->eng, me->fontStyle);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->fsFonts->Redraw();

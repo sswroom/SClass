@@ -19,10 +19,10 @@ Map::MapLayerData::MapLayerData(Text::CStringNN filePath)
 	UnsafeArray<UTF8Char> sptrEnd;
 
 	str = filePath.ConcatTo(fileName);
-	this->cipFile = 0;
-	this->cixFile = 0;
-	this->ciuFile = 0;
-	this->blkFile = 0;
+	this->cipFile = nullptr;
+	this->cixFile = nullptr;
+	this->ciuFile = nullptr;
+	this->blkFile = nullptr;
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".cip"));
 	NEW_CLASSNN(this->cipFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
@@ -51,7 +51,7 @@ Map::MapLayerData::~MapLayerData()
 
 Bool Map::MapLayerData::IsError() const
 {
-	return this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0;
+	return this->cixFile.IsNull() || this->ciuFile.IsNull() || this->cipFile.IsNull() || this->blkFile.IsNull();
 }
 
 Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
@@ -73,7 +73,7 @@ Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	UInt8 *strRec;
 	Int32 *hdr;
 	Int32 ofst;
-	if (!this->cixFile.SetTo(cixFile) || !this->ciuFile.SetTo(ciuFile) || !this->cipFile.SetTo(cipFile) || this->blkFile == 0)
+	if (!this->cixFile.SetTo(cixFile) || !this->ciuFile.SetTo(ciuFile) || !this->cipFile.SetTo(cipFile) || this->blkFile.IsNull())
 		return false;
 	sfile = UnsafeArray<Int32>::ConvertFrom(ciuFile);
 	blkCnt = *sfile++;
@@ -244,7 +244,7 @@ Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	Int32 j;
 	Int32 k = 0;
 
-	if (!this->cixFile.SetTo(cixFile) || !this->ciuFile.SetTo(ciuFile) || !this->cipFile.SetTo(cipFile) || this->blkFile == 0)
+	if (!this->cixFile.SetTo(cixFile) || !this->ciuFile.SetTo(ciuFile) || !this->cipFile.SetTo(cipFile) || this->blkFile.IsNull())
 		return false;
 	sfile = UnsafeArray<Int32>::ConvertFrom(ciuFile);
 	blkCnt = *sfile++;

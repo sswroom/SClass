@@ -166,7 +166,7 @@ void SSWR::AVIRead::AVIRStreamLatencyForm::StopStream()
 		}
 		this->threadToStop = false;
 		stm.Delete();
-		this->stm = 0;
+		this->stm = nullptr;
 		this->txtStream->SetText(CSTR("-"));
 		this->btnStream->SetText(CSTR("&Open"));
 		this->remoteClosed = false;
@@ -181,7 +181,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 	
 	this->core = core;
 	this->siLabDriver = this->core->GetSiLabDriver();
-	this->stm = 0;
+	this->stm = nullptr;
 	this->threadToStop = false;
 	this->threadRunning = false;
 	this->sentCnt = 0;
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLatency = this->tcMain->AddTabPage(CSTR("Latency (ms)"));
-	this->rlcLatency = ui->NewRealtimeLineChart(this->tpLatency, this->core->GetDrawEngine(), 1, 256, 1000, 0);
+	this->rlcLatency = ui->NewRealtimeLineChart(this->tpLatency, this->core->GetDrawEngine(), 1, 256, 1000, nullptr);
 	this->rlcLatency->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));

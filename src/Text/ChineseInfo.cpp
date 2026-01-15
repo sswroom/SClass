@@ -197,7 +197,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	return true;
 }
 
-Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, Data::ArrayList<UInt32> *relatedChars)
+Bool Text::ChineseInfo::GetRelatedChars(UInt32 charCode, Data::ArrayListNative<UInt32> *relatedChars)
 {
 	UInt8 buff[256];
 	UInt64 startOfst = ((UInt64)charCode) << 8;

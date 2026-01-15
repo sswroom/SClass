@@ -135,7 +135,7 @@ UnsafeArrayOpt<UTF8Char> Net::WhoisRecord::GetNetworkName(UnsafeArray<UTF8Char> 
 			return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Net::WhoisRecord::GetCountryCode(UnsafeArray<UTF8Char> buff)
@@ -152,7 +152,7 @@ UnsafeArrayOpt<UTF8Char> Net::WhoisRecord::GetCountryCode(UnsafeArray<UTF8Char> 
 			return Text::StrTrimC(buff, (UOSInt)(sptr - buff));
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UInt32 Net::WhoisRecord::GetStartIP()

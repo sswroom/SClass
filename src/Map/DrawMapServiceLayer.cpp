@@ -39,7 +39,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 					mutUsage.BeginUse();
 					if (me->dispId == thisId)
 					{
-						NEW_CLASSOPT(me->dispImage, Media::SharedImage(imgList, 0));
+						NEW_CLASSOPT(me->dispImage, Media::SharedImage(imgList, nullptr));
 						me->dispImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
@@ -57,7 +57,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 						me->lastBounds = bounds;
 						me->lastSize = size;
 						me->lastDPI = dpi;
-						NEW_CLASSOPT(me->lastImage, Media::SharedImage(imgList, 0));
+						NEW_CLASSOPT(me->lastImage, Media::SharedImage(imgList, nullptr));
 						me->lastImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
@@ -88,26 +88,26 @@ void Map::DrawMapServiceLayer::ClearDisp()
 		this->lastId = this->dispId;
 		this->lastImage = this->dispImage;
 		this->lastImageURL = this->dispImageURL;
-		this->dispImage = 0;
-		this->dispImageURL = 0;
+		this->dispImage = nullptr;
+		this->dispImageURL = nullptr;
 	}
 }
 
-Map::DrawMapServiceLayer::DrawMapServiceLayer(NN<Map::DrawMapService> mapService) : Map::MapDrawLayer(mapService->GetName(), 0, 0, mapService->GetCoordinateSystem()->Clone())
+Map::DrawMapServiceLayer::DrawMapServiceLayer(NN<Map::DrawMapService> mapService) : Map::MapDrawLayer(mapService->GetName(), 0, nullptr, mapService->GetCoordinateSystem()->Clone())
 {
 	this->mapService = mapService;
 	this->dispBounds = mapService->GetInitBounds();
 	this->dispSize = Math::Size2DDbl(640, 480);
 	this->dispDPI = 96.0;
 	this->dispId = 0;
-	this->dispImage = 0;
-	this->dispImageURL = 0;
+	this->dispImage = nullptr;
+	this->dispImageURL = nullptr;
 	this->lastBounds = this->dispBounds;
 	this->lastSize = this->dispSize;
 	this->lastDPI = this->dispDPI;
 	this->lastId = 0;
-	this->lastImage = 0;
-	this->lastImageURL = 0;
+	this->lastImage = nullptr;
+	this->lastImageURL = nullptr;
 
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -233,7 +233,7 @@ UnsafeArrayOpt<UTF8Char> Map::DrawMapServiceLayer::GetColumnName(UnsafeArray<UTF
 	case 0:
 		return Text::StrConcatC(buff, UTF8STRC("id"));
 	}
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -316,7 +316,7 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 		NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
 		return vec;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Map::DrawMapServiceLayer::GetGeomCol() const
@@ -334,7 +334,7 @@ Bool Map::DrawMapServiceLayer::CanQuery()
 	return this->mapService->CanQuery();
 }
 
-Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }

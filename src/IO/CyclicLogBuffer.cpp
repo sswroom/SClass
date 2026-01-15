@@ -16,10 +16,10 @@ IO::CyclicLogBuffer::~CyclicLogBuffer()
 	UOSInt i = 0;
 	while (i < this->buffSize)
 	{
-		if (this->logBuff[i] == 0)
+		if (this->logBuff[i].IsNull())
 			break;
 		MemFreeArr(this->logBuff[i]);
-		this->logBuff[i] = 0;
+		this->logBuff[i] = nullptr;
 		i++;
 	}
 	MemFreeArr(this->logBuff);

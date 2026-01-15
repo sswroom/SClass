@@ -209,8 +209,8 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(Optional<UI::GUIClientCont
 	{
 		this->caCerts.Add(NN<Crypto::Cert::X509Cert>::ConvertFrom(it.Next()->Clone()));
 	}
-	this->cert = 0;
-	this->key = 0;
+	this->cert = nullptr;
+	this->key = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->HandleFormClosed(OnFormClosed, this);
 

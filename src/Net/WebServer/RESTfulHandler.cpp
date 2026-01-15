@@ -45,7 +45,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NN<Text::JSONBuilder> json, NN<DB
 			}
 			else
 			{
-				json->ObjectAddStrUTF8(sb.ToCString(), 0);
+				json->ObjectAddStrUTF8(sb.ToCString(), nullptr);
 			}
 			break;
 		case DB::DBRow::DT_VECTOR:

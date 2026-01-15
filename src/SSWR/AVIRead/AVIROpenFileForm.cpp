@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(Optional<UI::GUIClientControl>
 	this->SetText(CSTR("Open File"));
 	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
-	this->fileName = 0;
+	this->fileName = nullptr;
 	this->parserType = IO::ParserType::Unknown;
 	this->core = core;
 	this->t = t;

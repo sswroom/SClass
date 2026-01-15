@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::St
 	const UInt8 *ptr;
 
 	if (hdr[0] != 0x8c || hdr[1] != 0x80)
-		return 0;
+		return nullptr;
 
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	ptr = &hdr[2];

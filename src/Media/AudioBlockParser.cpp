@@ -34,5 +34,5 @@ Optional<Media::AudioBlockParser> Media::AudioBlockParser::CreateParser(NN<IO::S
 		NEW_CLASS(parser, Media::BlockParser::MP2BlockParser());
 		return parser;
 	}
-	return 0;
+	return nullptr;
 }

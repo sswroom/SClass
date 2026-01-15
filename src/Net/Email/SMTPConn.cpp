@@ -97,7 +97,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult(OptOut<UnsafeArrayOpt<UTF8Char>> msgR
 		this->evt.Wait(1000);
 	}
 	msgRetEnd.Set(this->msgRet);
-	this->msgRet = 0;
+	this->msgRet = nullptr;
 	if (this->statusChg)
 	{
 		return this->lastStatus;
@@ -111,7 +111,7 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::TCPClientFactory> clif, Optional<Net::SSL
 	this->threadStarted = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	this->msgRet = 0;
+	this->msgRet = nullptr;
 	this->statusChg = false;
 	this->maxSize = 0;
 	this->authLogin = false;

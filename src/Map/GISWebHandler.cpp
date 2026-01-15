@@ -119,9 +119,9 @@ UOSInt Map::GISWebHandler::AddAsset(NN<Map::MapDrawLayer> layer)
 Optional<Map::GISWebService::GISWorkspace> Map::GISWebHandler::AddWorkspace(Text::CStringNN name, Text::CStringNN uri)
 {
 	if (this->ws.GetC(name).NotNull())
-		return 0;
+		return nullptr;
 	if (!uri.StartsWith(CSTR("http://")) && !uri.StartsWith(CSTR("https://")))
-		return 0;
+		return nullptr;
 	NN<GISWebService::GISWorkspace> ws = MemAllocNN(GISWebService::GISWorkspace);
 	ws->name = Text::String::New(name);
 	ws->uri = Text::String::New(uri);

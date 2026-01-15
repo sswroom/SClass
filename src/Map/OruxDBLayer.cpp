@@ -21,7 +21,7 @@ Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerNam
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = sourceName.ConcatTo(sbuff);
-	this->db = 0;
+	this->db = nullptr;
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OruxMapsImages.db"));
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
@@ -246,7 +246,7 @@ UOSInt Map::OruxDBLayer::GetColumnCnt() const
 
 UnsafeArrayOpt<UTF8Char> Map::OruxDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -292,10 +292,10 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 {
 	NN<DB::DBConn> db;
 	if (!this->db.SetTo(db))
-		return 0;
+		return nullptr;
 	NN<Map::OruxDBLayer::LayerInfo> lyr;
 	if (!this->layerMap.Get(this->currLayer).SetTo(lyr))
-		return 0;
+		return nullptr;
 	DB::SQLBuilder sql(DB::SQLType::SQLite, false, 0);
 	Int32 x;
 	Int32 y;
@@ -309,8 +309,8 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 	sql.AppendInt32((Int32)this->currLayer);
 	NN<DB::DBReader> r;
 	if (!db->ExecuteReader(sql.ToCString()).SetTo(r))
-		return 0;
-	Optional<Media::ImageList> imgList = 0;
+		return nullptr;
+	Optional<Media::ImageList> imgList = nullptr;
 	if (r->ReadNext())
 	{
 		UOSInt size = r->GetBinarySize(0);
@@ -332,7 +332,7 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 		Double n;
 		Double projY1;
 		Double projY2;
-		NEW_CLASSNN(shImg, Media::SharedImage(nnimgList, 0));
+		NEW_CLASSNN(shImg, Media::SharedImage(nnimgList, nullptr));
 		x1 = lyr->mapMin.x + (lyr->mapMax.x - lyr->mapMin.x) * x / lyr->max.x;
 		projY1 = lyr->projYMax - (lyr->projYMax - lyr->projYMin) * y / lyr->max.y;
 		projY2 = projY1 - (lyr->projYMax - lyr->projYMin) / lyr->max.y;
@@ -346,7 +346,7 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -367,7 +367,7 @@ Optional<DB::DBReader> Map::OruxDBLayer::QueryTableData(Text::CString schemaName
 	{
 		return db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::TableDef> Map::OruxDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
@@ -377,7 +377,7 @@ Optional<DB::TableDef> Map::OruxDBLayer::GetTableDef(Text::CString schemaName, T
 	{
 		return db->GetTableDef(schemaName, tableName);
 	}
-	return 0;
+	return nullptr;
 }
 
 void Map::OruxDBLayer::CloseReader(NN<DB::DBReader> r)

@@ -39,7 +39,7 @@ namespace Math
 			virtual void MultiplyCoordinatesXY(Double v);
 			virtual UOSInt GetPointCount() const;
 			virtual Bool HasArea() const;
-			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const;
+			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const;
 			virtual Math::Coord2DDbl GetDisplayCenter() const;
 
 			NN<Text::String> GetString() const;

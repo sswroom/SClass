@@ -33,7 +33,7 @@
 
 UI::GTK::GTKCore::GTKCore()
 {
-	this->monMgr = 0;
+	this->monMgr = nullptr;
 	GdkScreen *screen = gdk_screen_get_default();
 	GtkCssProvider *provider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(provider, "combobox, button, entry {min-height: 0px; min-width: 0px; padding: 0px; margin: 0px}", -1, 0);

@@ -59,13 +59,13 @@ Optional<IO::ParsedObject> Parser::FileParser::QTParser::ParseFileHdr(NN<IO::Str
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	while (true)
 	{
 		if (fd->GetRealData(ofst, 16, BYTEARR(buff)) < 8)
-			return 0;
+			return nullptr;
 		size = ReadMUInt32(&buff[0]);
 		if (size == 1)
 		{
@@ -73,7 +73,7 @@ Optional<IO::ParsedObject> Parser::FileParser::QTParser::ParseFileHdr(NN<IO::Str
 		}
 		if (size == 0 || ofst + size > endOfst)
 		{
-			return 0;
+			return nullptr;
 		}
 		if (*(Int32*)&buff[4] == *(Int32*)"free")
 		{
@@ -100,11 +100,11 @@ Optional<IO::ParsedObject> Parser::FileParser::QTParser::ParseFileHdr(NN<IO::Str
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 		ofst += size;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::MediaFile> Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt64 size)
@@ -127,7 +127,7 @@ Optional<Media::MediaFile> Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::St
 		if (fd->GetRealData(ofst + i, 8, BYTEARR(hdr)) != 8)
 		{
 			file.Delete();
-			return 0;
+			return nullptr;
 		}
 		atomSize = ReadMUInt32(&hdr[0]);
 		if (atomSize < 8 || i + atomSize > size)
@@ -193,7 +193,7 @@ Optional<Media::MediaFile> Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::St
 	if (file->GetStream(0, 0).IsNull())
 	{
 		file.Delete();
-		return 0;
+		return nullptr;
 	}
 	return file;
 }
@@ -207,12 +207,12 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::
 	Int32 sampleSkip = 0;
 	Int32 delay = 0;
 	UInt32 mediaTimeScale = mvTimeScale;
-	Optional<Media::MediaSource> src = 0;
+	Optional<Media::MediaSource> src = nullptr;
 	i = 8;
 	while (i < size)
 	{
 		if (fd->GetRealData(ofst + i, 8, BYTEARR(hdr)) != 8)
-			return 0;
+			return nullptr;
 		atomSize = ReadMUInt32(&hdr[0]);
 		if (atomSize < 8 || i + atomSize > size)
 		{
@@ -289,13 +289,13 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::
 	UInt8 buff[256];
 	UInt32 atomSize;
 	UInt32 timeScale = timeScaleOut.Get();
-	Optional<Media::MediaSource> src = 0;
+	Optional<Media::MediaSource> src = nullptr;
 	Media::MediaType mtyp = Media::MEDIA_TYPE_UNKNOWN;
 	i = 8;
 	while (i < size)
 	{
 		if (fd->GetRealData(ofst + i, 8, BYTEARR(hdr)) != 8)
-			return 0;
+			return nullptr;
 		atomSize = ReadMUInt32(&hdr[0]);
 		if (atomSize < 8 || i + atomSize > size)
 		{
@@ -362,12 +362,12 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseMinfAtom(NN<IO::
 	UInt8 hdr[8];
 //	UInt8 buff[256];
 	UInt32 atomSize;
-	Optional<Media::MediaSource> src = 0;
+	Optional<Media::MediaSource> src = nullptr;
 	i = 8;
 	while (i < size)
 	{
 		if (fd->GetRealData(ofst + i, 8, BYTEARR(hdr)) != 8)
-			return 0;
+			return nullptr;
 		atomSize = ReadMUInt32(&hdr[0]);
 		if (atomSize < 8 || i + atomSize > size)
 		{
@@ -410,7 +410,7 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 	Data::ByteBuffer dataBuff2(0);
 	Data::ByteArray buff = BYTEARR(dataBuff);
 	UInt32 atomSize;
-	Optional<Media::MediaSource> src = 0;
+	Optional<Media::MediaSource> src = nullptr;
 	Media::AudioFormat afmt;
 	Media::FrameInfo frInfo;
 //	Int32 frameCnt = 0;
@@ -454,7 +454,7 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 	while (i < size)
 	{
 		if (fd->GetRealData(ofst + i, 8, BYTEARR(hdr)) != 8)
-			return 0;
+			return nullptr;
 		atomSize = ReadMUInt32(&hdr[0]);
 		if (atomSize < 8 || i + atomSize > size)
 		{
@@ -1332,7 +1332,7 @@ Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::
 			UInt64 currChOfst;
 			UInt32 currSampleSize;
 
-			Data::FastMap<UInt32, Int32> keyMap;
+			Data::FastMapNative<UInt32, Int32> keyMap;
 			keyMap.Put(0, 1);
 
 			Media::FileVideoSource *fsrc;

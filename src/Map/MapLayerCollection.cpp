@@ -49,7 +49,7 @@ Optional<Map::MapDrawLayer> Map::MapLayerCollection::RemoveAt(UOSInt index)
 		lyr->RemoveUpdatedHandler(InnerUpdated, this);
 		return lyr;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Map::MapLayerCollection::Clear()
@@ -302,7 +302,7 @@ Bool Map::MapLayerCollection::GetString(NN<Text::StringBuilderUTF8> sb, Optional
 		maxId = lyr->GetObjectIdMax();
 		if (id >= currId && id <= currId + maxId)
 		{
-			return lyr->GetString(sb, 0, id - currId, strIndex);
+			return lyr->GetString(sb, nullptr, id - currId, strIndex);
 		}
 		currId += maxId + 1;
 	}
@@ -316,7 +316,7 @@ UOSInt Map::MapLayerCollection::GetColumnCnt() const
 
 UnsafeArrayOpt<UTF8Char> Map::MapLayerCollection::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::MapLayerCollection::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -387,7 +387,7 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerCollection::GetNewVectorById(NN<
 	Int64 currId = 0;
 	Int64 maxId;
 	NN<Map::MapDrawLayer> lyr;
-	Optional<Math::Geometry::Vector2D> vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())

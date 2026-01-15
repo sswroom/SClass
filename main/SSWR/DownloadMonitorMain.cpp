@@ -16,12 +16,12 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASS(core, SSWR::DownloadMonitor::DownMonCore());
 		if (core->IsError())
 		{
-			ui->ShowMsgOK(CSTR("Error in initializing the core"), CSTR("Download Monitor"), 0);
+			ui->ShowMsgOK(CSTR("Error in initializing the core"), CSTR("Download Monitor"), nullptr);
 		}
 		else
 		{
 			SSWR::DownloadMonitor::DownMonMainForm *frm;
-			NEW_CLASS(frm, SSWR::DownloadMonitor::DownMonMainForm(0, ui, core));
+			NEW_CLASS(frm, SSWR::DownloadMonitor::DownMonMainForm(nullptr, ui, core));
 			frm->SetExitOnClose(true);
 			frm->Show();
 			ui->Run();

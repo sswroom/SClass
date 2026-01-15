@@ -25,7 +25,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	IO::PacketAnalyse::LinkType linkType;
 	Optional<Socket> optSoc;
 	linkType = IO::PacketAnalyse::LinkType::Null;
-	optSoc = 0;
+	optSoc = nullptr;
 	if (sockf.CreateRAWSocket().SetTo(soc))
 	{
 		linkType = IO::PacketAnalyse::LinkType::Ethernet;

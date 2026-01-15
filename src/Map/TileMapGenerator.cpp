@@ -108,7 +108,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, NN<Ma
 	params.tileX = x;
 	params.tileY = y;
 	params.labelType = 0;
-	params.dbStream = 0;
+	params.dbStream = nullptr;
 
 	if (geng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_ALPHA_ALL_FF).SetTo(dimg2))
 	{

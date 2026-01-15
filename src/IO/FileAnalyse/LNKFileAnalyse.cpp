@@ -126,7 +126,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("LNKFileAnalyse"))
 {
 	UInt8 buff[40];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 40, BYTEARR(buff));
 	if (ReadUInt32(&buff[0]) != 0x4C || ReadUInt32(&buff[4]) != 0x00021401 || ReadUInt32(&buff[8]) != 0 || ReadUInt32(&buff[12]) != 0xC0 || ReadUInt32(&buff[16]) != 0x46000000)
@@ -201,9 +201,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;
 	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));

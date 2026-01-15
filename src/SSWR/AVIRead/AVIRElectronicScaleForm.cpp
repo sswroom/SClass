@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 				NN<Media::DrawBrush> b;
 				NN<Media::DrawFont> f;
 				b = img->NewBrushARGB(0xffffffff);
-				img->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
+				img->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), nullptr, b);
 				img->DelBrush(b);
 
 				Double fontHeight;
@@ -204,7 +204,7 @@ void SSWR::AVIRead::AVIRElectronicScaleForm::StopStream()
 		}
 		this->threadToStop = false;
 		stm.Delete();
-		this->stm = 0;
+		this->stm = nullptr;
 		this->txtStream->SetText(CSTR("-"));
 		this->btnStream->SetText(CSTR("&Open"));
 		this->remoteClosed = false;
@@ -218,8 +218,8 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(Optional<UI::GUI
 	
 	this->core = core;
 	this->eng = this->core->GetDrawEngine();
-	this->dimg = 0;
-	this->stm = 0;
+	this->dimg = nullptr;
+	this->stm = nullptr;
 	this->threadToStop = false;
 	this->threadRunning = false;
 	this->currWeight = 0;
@@ -254,7 +254,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(Optional<UI::GUI
 	this->pbsDisplay->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpHistory = this->tcMain->AddTabPage(CSTR("History"));
-	this->rlcHistory = ui->NewRealtimeLineChart(this->tpHistory, this->core->GetDrawEngine(), 1, 500, 100, 0);
+	this->rlcHistory = ui->NewRealtimeLineChart(this->tpHistory, this->core->GetDrawEngine(), 1, 500, 100, nullptr);
 	this->rlcHistory->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->AddTimer(100, OnTimerTick, this);
@@ -267,7 +267,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::~AVIRElectronicScaleForm()
 	if (this->dimg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
-		this->dimg = 0;
+		this->dimg = nullptr;
 	}
 }
 

@@ -11,7 +11,7 @@
 
 IO::ViewFileBuffer::ViewFileBuffer(const UTF8Char *fileName)
 {
-	this->filePtr = 0;
+	this->filePtr = nullptr;
 
 	this->fileHandle = (void*)(OSInt)open((const Char*)fileName, O_RDWR);
 	if ((OSInt)this->fileHandle < 0)
@@ -41,7 +41,7 @@ UnsafeArrayOpt<UInt8> IO::ViewFileBuffer::GetPointer()
 {
 	if ((OSInt)this->fileHandle < 0 || (OSInt)this->mapHandle < 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	return (UInt8*)mapHandle;
 }

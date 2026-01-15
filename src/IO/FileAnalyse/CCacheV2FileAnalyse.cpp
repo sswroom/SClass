@@ -72,7 +72,7 @@ void __stdcall IO::FileAnalyse::CCacheV2FileAnalyse::ParseThread(NN<Sync::Thread
 IO::FileAnalyse::CCacheV2FileAnalyse::CCacheV2FileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("CCacheV2FileAnalyse"))
 {
 	UInt8 buff[64];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 64, BYTEARR(buff));
 	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
@@ -152,9 +152,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::CCacheV2FileAnalyse::Get
 	NN<IO::FileAnalyse::CCacheV2FileAnalyse::TagInfo> tag;
 	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));

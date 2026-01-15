@@ -59,7 +59,7 @@ void Media::VideoSource::SetProp(Int32 propName, UnsafeArray<const UInt8> propBu
 	UInt8 *prop;
 	if (this->propBuffs == 0)
 	{
-		NEW_CLASS(this->propBuffs, Data::ArrayList<UInt8*>());
+		NEW_CLASS(this->propBuffs, Data::ArrayListObj<UInt8*>());
 		NEW_CLASS(this->propNames, Data::ArrayListInt32());
 		NEW_CLASS(this->propSizes, Data::ArrayListUInt32());
 	}

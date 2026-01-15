@@ -41,13 +41,13 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 	NN<IO::PackageFile> nnpkgFile;
 
 	if (ReadMInt32(&hdr[0]) != 0x000001ba)
-		return 0;
+		return nullptr;
 
 
 	if ((hdr[4] & 0xf0) == 0x20) //MPG1
 	{
 		if (ReadMInt32(&hdr[12]) != 0x000001bb)
-			return 0;
+			return nullptr;
 
 		////////////////////////////
 		//return 0;
@@ -60,7 +60,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 		Int32 i = (hdr[13] & 7);
 		Int64 currOfst = 14 + i;
 		if (ReadMInt32(&hdr[(OSInt)currOfst]) != 0x000001bb)
-			return 0;
+			return nullptr;
 
 		if (fd->GetFullName()->EndsWithICase(UTF8STRC("_1.vob")))
 		{
@@ -129,6 +129,6 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

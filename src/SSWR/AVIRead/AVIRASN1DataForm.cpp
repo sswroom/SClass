@@ -597,7 +597,7 @@ Optional<Crypto::Cert::X509Key> SSWR::AVIRead::AVIRASN1DataForm::GetNewKey()
 	case Crypto::Cert::X509File::FileType::PKCS12:
 	case Crypto::Cert::X509File::FileType::CRL:
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 

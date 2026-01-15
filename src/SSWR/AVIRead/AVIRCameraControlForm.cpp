@@ -13,7 +13,7 @@
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
-	Data::ArrayList<UOSInt> selIndices;
+	Data::ArrayListNative<UOSInt> selIndices;
 	me->lvFiles->GetSelectedIndices(&selIndices);
 	if (selIndices.GetCount() <= 0)
 	{
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 				if (file->fileTimeTicks)
 				{
 					dt.SetTicks(file->fileTimeTicks);
-					fs.SetFileTimes(0, 0, &dt);
+					fs.SetFileTimes(nullptr, nullptr, &dt);
 				}
 			}
 			if (!succ)
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 					if (file->fileTimeTicks)
 					{
 						dt.SetTicks(file->fileTimeTicks);
-						fs.SetFileTimes(0, 0, &dt);
+						fs.SetFileTimes(nullptr, nullptr, &dt);
 					}
 				}
 				if (!succ)

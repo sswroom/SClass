@@ -55,7 +55,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 		Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 		if (csConv.IsNull())
 		{
-			csConv = Media::CS::CSConverter::NewConverter(frInfo->fourcc, frInfo->storeBPP, frInfo->pf, frInfo->color, 0, 32, Media::PF_B8G8R8A8, srgb, frInfo->yuvType, 0);
+			csConv = Media::CS::CSConverter::NewConverter(frInfo->fourcc, frInfo->storeBPP, frInfo->pf, frInfo->color, 0, 32, Media::PF_B8G8R8A8, srgb, frInfo->yuvType, nullptr);
 		}
 		if (exporter == 0)
 		{
@@ -85,7 +85,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
+			exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, nullptr);
 		}		
 	}
 	lastCnt = thisCnt;
@@ -93,7 +93,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 
 Optional<Media::VideoCapturer> OpenCapture(UOSInt defIndex)
 {
-	Optional<Media::VideoCapturer> capture = 0;
+	Optional<Media::VideoCapturer> capture = nullptr;
 	NN<Media::VideoCapturer> nncapture;
 	Media::VideoCaptureMgr *videoCap;
 	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
@@ -188,7 +188,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	preferedWidth = 0;
 	preferedHeight = 0;
 	frameSkip = 0;
-	csConv = 0;
+	csConv = nullptr;
 	exporter = 0;
 
 	NN<IO::ConfigFile> cfg;

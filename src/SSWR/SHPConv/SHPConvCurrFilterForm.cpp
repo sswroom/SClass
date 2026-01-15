@@ -5,7 +5,7 @@
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(AnyType userObj)
 {
 	NN<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
-	SSWR::SHPConv::SHPConvAddFilterForm frm(0, me->ui, me->dbf, me->deng);
+	SSWR::SHPConv::SHPConvAddFilterForm frm(nullptr, me->ui, me->dbf, me->deng);
 	NN<MapFilter> filter;
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK && frm.GetFilter().SetTo(filter))
 	{

@@ -4,12 +4,12 @@
 
 SSWR::OrganWeb::OrganWebSession::OrganWebSession()
 {
-	this->sess = 0;
+	this->sess = nullptr;
 }
 
 SSWR::OrganWeb::OrganWebSession::OrganWebSession(Optional<Net::WebServer::WebSession> sess)
 {
-	this->sess = 0;
+	this->sess = nullptr;
 	this->Use(sess);
 }
 
@@ -30,7 +30,7 @@ void SSWR::OrganWeb::OrganWebSession::EndUse()
 	if (this->sess.SetTo(sess))
 	{
 		sess->EndUse();
-		this->sess = 0;
+		this->sess = nullptr;
 	}
 }
 

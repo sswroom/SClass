@@ -126,14 +126,14 @@ Optional<Net::Email::EmailTemplate> Net::Email::EmailTemplate::LoadFromFile(Text
 {
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
-		return 0;
+		return nullptr;
 	Text::StringBuilderUTF8 sbSubject;
 	Text::StringBuilderUTF8 sbContent;
 	Text::UTF8Reader reader(fs);
 	while (true)
 	{
 		if (!reader.ReadLine(sbSubject, 2048))
-			return 0;
+			return nullptr;
 		if (reader.IsLineBreak())
 			break;
 	}
@@ -144,5 +144,5 @@ Optional<Net::Email::EmailTemplate> Net::Email::EmailTemplate::LoadFromFile(Text
 		NEW_CLASSNN(tpl, Net::Email::EmailTemplate(sbSubject.ToCString(), sbContent.ToCString(), htmlContent));
 		return tpl;
 	}
-	return 0;
+	return nullptr;
 }

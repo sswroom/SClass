@@ -383,7 +383,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
 	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
-	me->dbgFrm = 0;
+	me->dbgFrm = nullptr;
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnVideoEnd(AnyType userObj)
@@ -542,7 +542,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->qMode = qMode;
 	this->pbEnd = false;
-	this->listener = 0;
+	this->listener = nullptr;
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
@@ -570,7 +570,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 		this->SetText(CSTR("HQMP3"));
 	}
 #endif
-	this->playlist = 0;
+	this->playlist = nullptr;
 
 	NN<UI::GUIMenu> mnu;
 	NN<UI::GUIMenu> mnu2;
@@ -785,7 +785,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 	player->SetEndHandler(OnVideoEnd, this);
 	this->CloseFile();
 
-	this->dbgFrm = 0;
+	this->dbgFrm = nullptr;
 	this->AddTimer(30, OnTimerTick, this);
 }
 
@@ -821,7 +821,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_FILE_OPEN:
 		{
-			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::MediaFile);
+			SSWR::AVIRead::AVIROpenFileForm dlg(nullptr, this->ui, this->core, IO::ParserType::MediaFile);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = dlg.GetFileName();
@@ -854,7 +854,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILE_CAPTURE_DEVICE:
 		{
-			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRCaptureDevForm dlg(nullptr, this->ui, this->core);
 			NN<Media::VideoCapturer> capture;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
@@ -872,7 +872,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_PLAYLIST:
 		if (this->currPBC.SetTo(currPBC))
 		{
-			SSWR::AVIRead::AVIRHQMPPlaylistForm dlg(0, this->ui, this->core, this->playlist);
+			SSWR::AVIRead::AVIRHQMPPlaylistForm dlg(nullptr, this->ui, this->core, this->playlist);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				currPBC->StopPlayback();
@@ -885,14 +885,14 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_FILE_MON_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm dlg(0, this->ui, this->core, this->GetHMonitor());
+			SSWR::AVIRead::AVIRColorSettingForm dlg(nullptr, this->ui, this->core, this->GetHMonitor());
 			dlg.ShowDialog(this);
 		}
 		break;
 	case MNU_FILE_AUDIO_DEV:
 		if (this->player.SetTo(player))
 		{
-			SSWR::AVIRead::AVIRSetAudioForm dlg(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSetAudioForm dlg(nullptr, this->ui, this->core);
 			dlg.ShowDialog(this);
 			player->SwitchAudio(0);
 		}
@@ -901,7 +901,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		if (this->dbgFrm.IsNull())
 		{
 			NN<UI::GUIForm> frm;
-			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 444, ui));
+			NEW_CLASSNN(frm, UI::GUIForm(nullptr, 320, 444, ui));
 			this->dbgFrm = frm;
 			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
@@ -921,7 +921,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			NN<Media::MediaPlayerWebInterface> hdlr;
 			NN<Net::WebServer::WebListener> listener;
 			NEW_CLASSNN(hdlr, Media::MediaPlayerWebInterface(*this, true));
-			NEW_CLASSNN(listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), 0, hdlr, 8080, 10, 1, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASSNN(listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), nullptr, hdlr, 8080, 10, 1, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (listener->IsError())
 			{
 				listener.Delete();

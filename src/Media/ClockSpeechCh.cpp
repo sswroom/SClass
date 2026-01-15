@@ -10,7 +10,7 @@ void Media::ClockSpeechCh::AppendWAV(NN<Media::AudioConcatSource> source, NN<Par
 	NN<IO::ParsedObject> pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		if (!parser->ParseFile(fd, 0, IO::ParserType::MediaFile).SetTo(pobj))
+		if (!parser->ParseFile(fd, nullptr, IO::ParserType::MediaFile).SetTo(pobj))
 			return;
 	}
 

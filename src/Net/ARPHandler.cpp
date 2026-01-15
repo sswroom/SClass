@@ -144,7 +144,7 @@ Net::ARPHandler::~ARPHandler()
 		}
 		MemFree(this->threadStats);
 	}
-	this->soc = 0;
+	this->soc = nullptr;
 
 	SDEL_CLASS(this->ctrlEvt);
 	Text::StrDelNew(this->ifName);

@@ -38,7 +38,7 @@ UInt32 __stdcall Net::LoRaGateway::PullThread(AnyType userObj)
 			}
 			evt.Wait(1000);
 		}
-		me->threadEvt = 0;
+		me->threadEvt = nullptr;
 	}
 	me->mainEvt.Set();
 	return 0;
@@ -69,7 +69,7 @@ Bool Net::LoRaGateway::SendStatData()
 	return this->SendPushData(sb.ToString(), sb.GetLength());
 }
 
-Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, NN<IO::LogTool> log) : udp(sockf, 0, 0, nullptr, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
+Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, NN<IO::LogTool> log) : udp(sockf, nullptr, 0, nullptr, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
 {
 	this->svrAddr = svrAddr.Ptr()[0];
 	this->svrPort = svrPort;
@@ -80,7 +80,7 @@ Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::Socket
 	this->lastPullTime = Data::Timestamp(0);
 	this->lastStatTime = Data::Timestamp(0);
 	this->threadToStop = false;
-	this->threadEvt = 0;
+	this->threadEvt = nullptr;
 	this->hasPos = false;
 	this->lat = 0;
 	this->lon = 0;

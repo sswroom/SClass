@@ -45,7 +45,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(UnsafeArr
 			}
 			else
 			{
-				newStrs[k] = 0;
+				newStrs[k] = nullptr;
 			}
 			k++;
 		}
@@ -56,7 +56,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(UnsafeArr
 		k = this->strCnt;
 		while (i < k)
 		{
-			newStrs[i] = 0;
+			newStrs[i] = nullptr;
 			i++;
 		}
 	}
@@ -95,7 +95,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::Str
 			}
 			else
 			{
-				newStrs[k] = 0;
+				newStrs[k] = nullptr;
 			}
 			k++;
 		}
@@ -106,7 +106,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::Str
 		k = this->strCnt;
 		while (i < k)
 		{
-			newStrs[i] = 0;
+			newStrs[i] = nullptr;
 			i++;
 		}
 	}
@@ -145,7 +145,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::PSt
 			}
 			else
 			{
-				newStrs[k] = 0;
+				newStrs[k] = nullptr;
 			}
 			k++;
 		}
@@ -156,7 +156,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::PSt
 		k = this->strCnt;
 		while (i < k)
 		{
-			newStrs[i] = 0;
+			newStrs[i] = nullptr;
 			i++;
 		}
 	}
@@ -197,7 +197,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(NN<Data::
 			}
 			else
 			{
-				newStrs[k] = 0;
+				newStrs[k] = nullptr;
 			}
 			k++;
 		}
@@ -208,7 +208,7 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(NN<Data::
 		k = this->strCnt;
 		while (i < k)
 		{
-			newStrs[i] = 0;
+			newStrs[i] = nullptr;
 			i++;
 		}
 	}
@@ -375,7 +375,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayList<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayListT<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -591,7 +591,7 @@ UOSInt Map::VectorLayer::GetColumnCnt() const
 UnsafeArrayOpt<UTF8Char> Map::VectorLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex >= this->strCnt)
-		return 0;
+		return nullptr;
 	NN<Text::String> name = this->colNames[colIndex];
 	return name->ConcatTo(buff);
 }
@@ -682,7 +682,7 @@ Optional<Math::Geometry::Vector2D> Map::VectorLayer::GetNewVectorById(NN<Map::Ge
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

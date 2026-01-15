@@ -13,7 +13,7 @@ UnsafeArrayOpt<UTF8Char> Net::NetBIOSUtil::GetName(UnsafeArray<UTF8Char> sbuff, 
 		c2 = *nbName++;
 		if (c1 < 65 || c1 >= 81 || c2 < 65 || c2 >= 81)
 		{
-			return 0;
+			return nullptr;
 		}
 		*sbuff++ = (UTF8Char)(((c1 - 65) << 4) | (c2 - 65));
 	}

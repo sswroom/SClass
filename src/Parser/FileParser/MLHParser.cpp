@@ -53,7 +53,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MLHParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> sptr;
 
 	if (!Text::StrEquals(&hdr[0], U8STR("MLH ENCODE 1.04  (C) MAEHASHI")))
-		return 0;
+		return nullptr;
 
 //	fileSize = ReadUInt32(&hdr[32]);
 	fileCnt = ReadUInt32(&hdr[36]);

@@ -329,7 +329,7 @@ Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 src
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Text::CStringNN Media::CS::CSConverter::GetFormatName(UInt32 format)

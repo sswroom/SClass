@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientCont
 	}
 	else
 	{
-		this->destPrevImg = 0;
+		this->destPrevImg = nullptr;
 	}
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	

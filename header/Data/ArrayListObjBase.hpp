@@ -3,6 +3,7 @@
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/ArrayCollection.hpp"
+#include "Data/ArrayListUtil.hpp"
 #include "Data/List.hpp"
 
 namespace Data

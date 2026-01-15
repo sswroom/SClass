@@ -31,8 +31,8 @@ void __stdcall IO::SystemInfoLog::FreeDriverInfo(NN<DriverInfo> driverInfo)
 
 IO::SystemInfoLog::SystemInfoLog(Text::CStringNN sourceName) : IO::ParsedObject(sourceName)
 {
-	this->osName = 0;
-	this->osVer = 0;
+	this->osName = nullptr;
+	this->osVer = nullptr;
 	this->osLocale = 0;
 	this->architecture = 0;
 	this->productType = 0;

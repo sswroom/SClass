@@ -77,7 +77,7 @@ UInt64 IO::StmData::BlockStreamData::GetDataSize() const
 
 UnsafeArrayOpt<const UInt8> IO::StmData::BlockStreamData::GetPointer() const
 {
-	return 0;
+	return nullptr;
 }
 
 NN<IO::StreamData> IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UInt64 length)

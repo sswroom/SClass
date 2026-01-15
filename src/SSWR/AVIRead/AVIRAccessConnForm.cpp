@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(Optional<UI::GUIClientCont
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblFileName = ui->NewLabel(*this, CSTR("File Name"));

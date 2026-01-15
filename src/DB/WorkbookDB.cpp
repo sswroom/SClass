@@ -17,7 +17,7 @@ public:
 	{
 		this->sheet = sheet;
 		this->tabDef = tabDef;
-		this->row = 0;
+		this->row = nullptr;
 		this->currIndex = initOfst;
 		this->maxIndex = maxOfst;
 	}
@@ -32,11 +32,11 @@ public:
 		this->currIndex++;
 		if (this->currIndex > maxIndex)
 		{
-			this->row = 0;
+			this->row = nullptr;
 			return false;
 		}
 		this->row = this->sheet->GetItem(this->currIndex);
-		return this->row != 0;
+		return this->row.NotNull();
 	}
 
 	virtual UOSInt ColCount()
@@ -77,7 +77,7 @@ public:
 		NN<Text::String> cellValue;
 		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
-			return 0;
+			return nullptr;
 		}
 		return Text::StrUTF8_WChar(buff, cellValue->v, 0);
 	}
@@ -100,7 +100,7 @@ public:
 		NN<Text::String> cellValue;
 		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
-			return 0;
+			return nullptr;
 		}
 		return cellValue->Clone();
 	}
@@ -111,7 +111,7 @@ public:
 		NN<Text::String> cellValue;
 		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
-			return 0;
+			return nullptr;
 		}
 		return cellValue->ConcatToS(buff, buffSize);
 	}
@@ -174,7 +174,7 @@ public:
 
 	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -212,7 +212,7 @@ public:
 		{
 			return col->GetColName()->ConcatTo(buff);
 		}
-		return 0;
+		return nullptr;
 	}
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
@@ -269,11 +269,11 @@ Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, 
 	NN<DB::TableDef> tabDef;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!GetTableDef(schemaName, tableName).SetTo(tabDef))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<WorkbookReader> r;
 	UOSInt endOfst;
@@ -298,7 +298,7 @@ Optional<DB::TableDef> DB::WorkbookDB::GetTableDef(Text::CString schemaName, Tex
 	NN<Text::SpreadSheet::Worksheet> sheet;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
 	{
-		return 0;
+		return nullptr;
 	}
 	DB::TableDef *tabDef;
 	NN<DB::ColDef> col;

@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 	UInt32 leng;
 
 	if (hdr.ReadNI32(0) != *(Int32*)"AFS")
-		return 0;
+		return nullptr;
 	sbuff[0] = 'A';
 	sbuff[1] = 'F';
 	sbuff[2] = 'S';
@@ -73,7 +73,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::St
 		if (ofst == 0 || leng == 0)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		pf->AddData(fd, ofst, leng, IO::PackFileItem::HeaderType::No, {sbuff, 8}, 0, 0, 0, 0);
 		i++;

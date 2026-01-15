@@ -11,7 +11,7 @@ Data::ArrayListInt64::ArrayListInt64(UOSInt capacity) : Data::SortableArrayListN
 {
 }
 
-NN<Data::ArrayList<Int64>> Data::ArrayListInt64::Clone() const
+NN<Data::ArrayListNative<Int64>> Data::ArrayListInt64::Clone() const
 {
 	NN<Data::ArrayListInt64> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListInt64(this->capacity));
@@ -44,7 +44,7 @@ void Data::ArrayListInt64::AddRangeI32(UnsafeArray<Int32> arr, UOSInt cnt)
 	this->objCnt += cnt;
 }
 
-void Data::ArrayListInt64::AddRangeI32(NN<const Data::ArrayList<Int32>> arr)
+void Data::ArrayListInt64::AddRangeI32(NN<const Data::ArrayListNative<Int32>> arr)
 {
 	UOSInt i;
 	UOSInt j;

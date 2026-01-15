@@ -22,7 +22,7 @@
 
 Parser::FileParser::JSONParser::JSONParser()
 {
-	this->parsers = 0;
+	this->parsers = nullptr;
 }
 
 Parser::FileParser::JSONParser::~JSONParser()
@@ -69,7 +69,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::S
 		fileType = 2;
 	}
 	if (fileType == 0)
-		return 0;
+		return nullptr;
 	UInt64 fileOfst;
 	if (hdr[0] == '{' || hdr[0] == '[')
 	{
@@ -81,7 +81,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::S
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt buffSize = (UOSInt)(fd->GetDataSize() - fileOfst);
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
@@ -89,11 +89,11 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::S
 	Optional<Text::JSONBase> fileJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, buffSize));
 	MemFree(fileBuff);
 
-	Optional<IO::ParsedObject> pobj = 0;
+	Optional<IO::ParsedObject> pobj = nullptr;
 	NN<Text::JSONBase> nnfileJSON;
 	if (!fileJSON.SetTo(nnfileJSON))
 	{
-		return 0;
+		return nullptr;
 	}
 
 	if (fileType == 2 && nnfileJSON->GetType() == Text::JSONType::Object)
@@ -123,7 +123,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 		}
 		else if (jbase->Equals(CSTR("FeatureCollection")))
 		{
-			Optional<Math::CoordinateSystem> csys = 0;
+			Optional<Math::CoordinateSystem> csys = nullptr;
 			NN<Math::CoordinateSystem> nncsys;
 			NN<Text::JSONBase> crs;
 			if (jobj->GetObjectValue(CSTR("crs")).SetTo(crs) && crs->GetType() == Text::JSONType::Object)
@@ -268,7 +268,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 	NN<Text::JSONArray> dataArr;
 	if (!GetDataArray(fileJSON).SetTo(dataArr))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<DB::JSONDB> db;
 	NEW_CLASSNN(db, DB::JSONDB(sourceName, layerName, dataArr));
@@ -297,7 +297,7 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 			{
 				NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
 				Data::ArrayListA<Double> ptList;
-				Data::ArrayList<Double> zList;
+				Data::ArrayListNative<Double> zList;
 				Bool hasZ = false;
 				NN<Text::JSONArray> pt;
 				UOSInt i = 0;
@@ -392,7 +392,7 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 						Double *ptArr;
 						ptArr = ptList.GetArr(i).Ptr();
 						Math::Geometry::LineString *pl;
-						NEW_CLASS(pl, Math::Geometry::LineString(srid, (Math::Coord2DDbl*)ptArr, i >> 1, 0, 0));
+						NEW_CLASS(pl, Math::Geometry::LineString(srid, (Math::Coord2DDbl*)ptArr, i >> 1, nullptr, nullptr));
 						return pl;
 					}
 				}
@@ -403,9 +403,9 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 			if (obj->GetObjectValue(CSTR("coordinates")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
 				NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
-				Data::ArrayList<Double> ptList;
-				Data::ArrayList<Double> altList;
-				Data::ArrayList<UInt32> partList;
+				Data::ArrayListNative<Double> ptList;
+				Data::ArrayListNative<Double> altList;
+				Data::ArrayListNative<UInt32> partList;
 				Bool hasData = false;
 				Bool hasAlt = false;
 				NN<Text::JSONArray> ptArr;
@@ -520,9 +520,9 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 					if (pgCoords->GetArrayValue(pgIndex).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 					{
 						NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
-						Data::ArrayList<Double> ptList;
-						Data::ArrayList<Double> altList;
-						Data::ArrayList<UInt32> partList;
+						Data::ArrayListNative<Double> ptList;
+						Data::ArrayListNative<Double> altList;
+						Data::ArrayListNative<UInt32> partList;
 						Bool hasData = false;
 						NN<Text::JSONArray> ptArr;
 						NN<Text::JSONArray> pt;
@@ -642,7 +642,7 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 			printf("JSONParser: GeoJSON unknown type: %s\r\n", sType->v.Ptr());
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::JSONArray> Parser::FileParser::JSONParser::GetDataArray(NN<Text::JSONBase> fileJSON)
@@ -654,7 +654,7 @@ Optional<Text::JSONArray> Parser::FileParser::JSONParser::GetDataArray(NN<Text::
 	}
 	else if (type != Text::JSONType::Object)
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::String *arrayName = 0;
 	NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(fileJSON);
@@ -672,13 +672,13 @@ Optional<Text::JSONArray> Parser::FileParser::JSONParser::GetDataArray(NN<Text::
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 	}
 	if (arrayName == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	return Optional<Text::JSONArray>::ConvertFrom(obj->GetObjectValue(arrayName->ToCString()));
 }

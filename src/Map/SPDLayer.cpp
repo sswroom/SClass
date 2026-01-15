@@ -178,8 +178,8 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Op
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		Data::ArrayList<UTF16Char *> *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayList<UTF16Char *>());
+		Data::ArrayListObj<UTF16Char *> *tmpArr;
+		NEW_CLASS(tmpArr, Data::ArrayListObj<UTF16Char *>());
 		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -298,8 +298,8 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optio
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		Data::ArrayList<UTF16Char *> *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayList<UTF16Char *>());
+		Data::ArrayListObj<UTF16Char *> *tmpArr;
+		NEW_CLASS(tmpArr, Data::ArrayListObj<UTF16Char *>());
 		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -389,8 +389,8 @@ UOSInt Map::SPDLayer::GetRecordCnt() const
 
 void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	NN<Data::ArrayList<UTF16Char *>> tmpArr;
-	if (Optional<Data::ArrayList<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr))
+	NN<Data::ArrayListObj<UTF16Char *>> tmpArr;
+	if (Optional<Data::ArrayListObj<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr))
 	{
 		UOSInt i = tmpArr->GetCount();
 		while (i-- > 0)
@@ -403,8 +403,8 @@ void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 
 Bool Map::SPDLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	NN<Data::ArrayList<UTF16Char*>> tmpArr;
-	if (!Optional<Data::ArrayList<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr) || strIndex != 0)
+	NN<Data::ArrayListObj<UTF16Char*>> tmpArr;
+	if (!Optional<Data::ArrayListObj<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr) || strIndex != 0)
 	{
 		return false;
 	}
@@ -433,7 +433,7 @@ UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -646,7 +646,7 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 		MemFree(ptOfsts);
 	}
 	MemFree(points);
-	return 0;
+	return nullptr;
 }
 
 UOSInt Map::SPDLayer::GetGeomCol() const

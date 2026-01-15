@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Core/ByteTool_C.h"
+#include "Data/ArrayListNative.hpp"
 #include "IO/RAWMonitor.h"
 #include "IO/FileAnalyse/PCapngFileAnalyse.h"
 #include "Net/PacketAnalyzer.h"
@@ -15,8 +16,8 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> 
 	UInt32 thisSize;
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	UInt8 packetHdr[16];
-	Data::ArrayList<UInt16> linkTypeList;
-	Data::ArrayList<Int8> resList;
+	Data::ArrayListNative<UInt16> linkTypeList;
+	Data::ArrayListNative<Int8> resList;
 	if (!me->fd.SetTo(fd))
 	{
 		return;
@@ -132,7 +133,7 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> 
 IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NN<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapngFileAnaly"))
 {
 	UInt8 buff[16];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->isBE = false;
 	if (fd->GetRealData(0, 16, BYTEARR(buff)) != 16)
@@ -858,11 +859,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 	NN<IO::StreamData> fd;
 	if (index >= this->blockList.GetCount())
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!this->fd.SetTo(fd))
 	{
-		return 0;
+		return nullptr;
 	}
 	block = this->blockList.GetItemNoCheck(index);
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(block->ofst, block->blockLength));

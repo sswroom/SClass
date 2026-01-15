@@ -46,7 +46,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 				{
 					if (stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false).SetTo(imgList))
 					{
-						NEW_CLASSNN(shimg, Media::SharedImage(imgList, 0));
+						NEW_CLASSNN(shimg, Media::SharedImage(imgList, nullptr));
 						cimg->img = shimg;
 						cimg->isFinish = true;
 						
@@ -319,8 +319,8 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
-	nameArr.Set(0);
-	Data::ArrayList<Math::Coord2D<Int32>> idArr;
+	nameArr.Set(nullptr);
+	Data::ArrayListT<Math::Coord2D<Int32>> idArr;
 	retCnt = this->tileMap->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90)), idArr);
 	UOSInt i = 0;
 	while (i < retCnt)
@@ -341,8 +341,8 @@ UOSInt Map::TileMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
-	nameArr.Set(0);
-	Data::ArrayList<Math::Coord2D<Int32>> idArr;
+	nameArr.Set(nullptr);
+	Data::ArrayListT<Math::Coord2D<Int32>> idArr;
 	retCnt = this->tileMap->GetTileImageIDs(level, rect.ToDouble() / mapRate, idArr);
 	UOSInt i = 0;
 	while (i < retCnt)
@@ -364,8 +364,8 @@ UOSInt Map::TileMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Opt
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
-	nameArr.Set(0);
-	Data::ArrayList<Math::Coord2D<Int32>> idArr;
+	nameArr.Set(nullptr);
+	Data::ArrayListT<Math::Coord2D<Int32>> idArr;
 	retCnt = this->tileMap->GetTileImageIDs(level, rect, idArr);
 	UOSInt i = 0;
 	while (i < retCnt)
@@ -439,7 +439,7 @@ UnsafeArrayOpt<UTF8Char> Map::TileMapLayer::GetColumnName(UnsafeArray<UTF8Char> 
 	case 2:
 		return Text::StrConcatC(buff, UTF8STRC("url"));
 	}
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -524,7 +524,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 	{
 		cimg = this->lastImgs.GetItemNoCheck((UOSInt)i);
 		if (!cimg->img.SetTo(shimg))
-			return 0;
+			return nullptr;
 		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId).Or(sbuff);
 		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
@@ -532,7 +532,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 
 	if (this->IsCaching(level, id))
 	{
-		return 0;
+		return nullptr;
 	}
 	imgList = this->tileMap->LoadTileImage(level, tileId, this->parsers, bounds, true);
 	if (imgList.SetTo(nnimgList))
@@ -544,7 +544,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		cimg->level = level;
 		cimg->isFinish = true;
 		cimg->isCancel = false;
-		NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, 0));
+		NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, nullptr));
 		cimg->img = shimg;
 
 		Sync::MutexUsage mutUsage(this->lastMut);
@@ -565,7 +565,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		cimg->level = level;
 		cimg->isFinish = false;
 		cimg->isCancel = false;
-		cimg->img = 0;
+		cimg->img = nullptr;
 		AddTask(cimg);
 
 		Sync::MutexUsage mutUsage(this->lastMut);
@@ -573,7 +573,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		this->lastImgs.Insert(k, cimg);
 		mutUsage.EndUse();
 
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -592,7 +592,7 @@ Bool Map::TileMapLayer::CanQuery()
 	return this->tileMap->CanQuery();
 }
 
-Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	return this->tileMap->QueryInfos(coord, level, vecList, valueOfstList, nameList, valueList);

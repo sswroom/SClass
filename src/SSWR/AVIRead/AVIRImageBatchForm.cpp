@@ -41,12 +41,12 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 		me->dispImage.Delete();
 		me->previewImage.Delete();
 		me->filteredImage.Delete();
-		me->pbMain->SetImage(0, false);
+		me->pbMain->SetImage(nullptr, false);
 	}
 	else
 	{
 		Optional<Media::StaticImage> img = me->icMain->LoadImage(nnfileName);
-		me->pbMain->SetImage(0, false);
+		me->pbMain->SetImage(nullptr, false);
 		me->dispImage.Delete();
 		me->previewImage.Delete();
 		me->filteredImage.Delete();
@@ -222,7 +222,7 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 	this->prgMain->ProgressStart(CSTR("Loading"), fileCnt);
 	this->icMain->SetFolder(folder->ToCString());
 	this->lblFolder->SetText(folder->ToCString());
-	this->pbMain->SetImage(0, false);
+	this->pbMain->SetImage(nullptr, false);
 	this->dispImage.Delete();
 	this->previewImage.Delete();
 	this->filteredImage.Delete();
@@ -253,9 +253,9 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 
 	this->core = core;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
-	this->dispImage = 0;
-	this->previewImage = 0;
-	this->filteredImage = 0;
+	this->dispImage = nullptr;
+	this->previewImage = nullptr;
+	this->filteredImage = nullptr;
 	this->selCnt = 0;
 	this->initPos = false;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);

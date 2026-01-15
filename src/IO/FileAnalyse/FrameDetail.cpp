@@ -25,8 +25,8 @@ IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt64 size)
 {
 	this->ofst = ofst;
 	this->size = size;
-	this->devrivedBuff = 0;
-	this->devrivedAnalyse = 0;
+	this->devrivedBuff = nullptr;
+	this->devrivedAnalyse = nullptr;
 }
 
 IO::FileAnalyse::FrameDetail::~FrameDetail()
@@ -106,7 +106,7 @@ Optional<IO::FileAnalyse::FileAnalyser>	IO::FileAnalyse::FrameDetail::CreateDevr
 	NN<IO::FileAnalyse::FileAnalyserCreator> analyseCreator;
 	if (!this->devrivedAnalyse.SetTo(analyseCreator) || !this->devrivedBuff.SetTo(devrivedBuff))
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::StmData::MemoryDataRef memData(devrivedBuff->AsByteArray());
 	return analyseCreator->Create(memData);

@@ -2,7 +2,6 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
-#include "Data/ArrayList.hpp"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Net/HTTPClient.h"
@@ -35,12 +34,12 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, O
 		UnsafeArray<UInt8> gooPrivKeyArr;
 		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, nngooPrivKey->leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey->ToCString(), gooPrivKeyArr);
-		this->gooKey = 0;
+		this->gooKey = nullptr;
 	}
 	else
 	{
-		this->gooCliId = 0;
-		this->gooPrivKey = 0;
+		this->gooCliId = nullptr;
+		this->gooPrivKey = nullptr;
 		this->gooPrivKeyLeng = 0;
 		this->gooKey = Text::String::CopyOrNull(gooKey);
 	}
@@ -63,12 +62,12 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, O
 		UnsafeArray<UInt8> gooPrivKeyArr;
 		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, gooPrivKey.leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), gooPrivKeyArr);
-		this->gooKey = 0;
+		this->gooKey = nullptr;
 	}
 	else
 	{
-		this->gooCliId = 0;
-		this->gooPrivKey = 0;
+		this->gooCliId = nullptr;
+		this->gooPrivKey = nullptr;
 		this->gooKey = Text::String::NewOrNull(gooKey);
 	}
 	this->lastSrchDate.SetCurrTimeUTC();
@@ -81,7 +80,7 @@ Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 	if (this->gooPrivKey.SetTo(gooPrivKey))
 	{
 		MemFreeArr(gooPrivKey);
-		this->gooPrivKey = 0;
+		this->gooPrivKey = nullptr;
 	}
 	OPTSTR_DEL(this->gooKey);
 }
@@ -229,11 +228,11 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
-			return 0;
+			return nullptr;
 	}
 	NN<Text::Locale::LocaleEntry> ent;
 	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
-		return 0;
+		return nullptr;
 	return SearchName(buff, buffSize, pos, {ent->shortName, ent->shortNameLen});
 }
 
@@ -244,11 +243,11 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::CacheName(UnsafeArray<U
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
-			return 0;
+			return nullptr;
 	}
 	NN<Text::Locale::LocaleEntry> ent;
 	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
-		return 0;
+		return nullptr;
 	return SearchName(buff, buffSize, pos, {ent->shortName, ent->shortNameLen});
 }
 

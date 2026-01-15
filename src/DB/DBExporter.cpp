@@ -21,20 +21,20 @@ Optional<Data::Class> DB::DBExporter::CreateTableClass(NN<DB::ReadingDB> db, Tex
 	}
 
 	NN<DB::DBReader> r;
-	if (db->QueryTableData(schema, tableName, 0, 0, 1, nullptr, 0).SetTo(r))
+	if (db->QueryTableData(schema, tableName, nullptr, 0, 1, nullptr, nullptr).SetTo(r))
 	{
 		NN<Data::Class> cls = r->CreateClass();
 		db->CloseReader(r);
 		return cls;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool DB::DBExporter::GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::Stream> outStm)
 {
 	DB::SQLBuilder sql(sqlType, axisAware, 0);
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(schema, tableName, 0, 0, 0, nullptr, cond).SetTo(r))
+	if (!db->QueryTableData(schema, tableName, nullptr, 0, 0, nullptr, cond).SetTo(r))
 	{
 		return false;
 	}
@@ -56,7 +56,7 @@ Bool DB::DBExporter::GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlTyp
 Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, Text::CStringNN nullText, NN<IO::Stream> outStm, UInt32 codePage)
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(schema, tableName, 0, 0, 0, nullptr, cond).SetTo(r))
+	if (!db->QueryTableData(schema, tableName, nullptr, 0, 0, nullptr, cond).SetTo(r))
 	{
 		return false;
 	}
@@ -177,7 +177,7 @@ Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, 
 		return false;
 	}
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(schema, tableName, 0, 0, 0, nullptr, cond).SetTo(r))
+	if (!db->QueryTableData(schema, tableName, nullptr, 0, 0, nullptr, cond).SetTo(r))
 	{
 		if (sbError.SetTo(sb))
 		{
@@ -219,7 +219,7 @@ Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, 
 Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::Stream> outStm, UInt32 codePage)
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(schema, tableName, 0, 0, 0, nullptr, cond).SetTo(r))
+	if (!db->QueryTableData(schema, tableName, nullptr, 0, 0, nullptr, cond).SetTo(r))
 	{
 		return false;
 	}
@@ -305,7 +305,7 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::Stream> outStm, UInt32 codePage)
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(schema, tableName, 0, 0, 0, nullptr, cond).SetTo(r))
+	if (!db->QueryTableData(schema, tableName, nullptr, 0, 0, nullptr, cond).SetTo(r))
 	{
 		return false;
 	}
@@ -420,7 +420,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 	NN<Text::StringBuilderUTF8> sb;
 	Optional<DB::TableDef> table = db->GetTableDef(schema, tableName);
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(schema, tableName, 0, 0, 0, nullptr, cond).SetTo(r))
+	if (!db->QueryTableData(schema, tableName, nullptr, 0, 0, nullptr, cond).SetTo(r))
 	{
 		if (sbError.SetTo(sb))
 		{
@@ -522,7 +522,7 @@ Bool DB::DBExporter::GenerateXLSX(NN<DB::ReadingDB> db, Text::CString schema, Te
 		return false;
 
 	Exporter::XLSXExporter exporter;
-	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, 0);
+	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, nullptr);
 }
 
 Bool DB::DBExporter::GenerateExcelXML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::SeekableStream> outStm, Optional<Text::StringBuilderUTF8> sbError)
@@ -533,7 +533,7 @@ Bool DB::DBExporter::GenerateExcelXML(NN<DB::ReadingDB> db, Text::CString schema
 		return false;
 
 	Exporter::ExcelXMLExporter exporter;
-	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, 0);
+	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, nullptr);
 }
 
 Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CString schema, NN<IO::Stream> outStm, UInt32 codePage)
@@ -566,7 +566,7 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 	while (it.HasNext())
 	{
 		NN<Text::String> tableName = it.Next();
-		if (db->QueryTableData(nullptr, tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (db->QueryTableData(nullptr, tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			UOSInt ind = tableName->LastIndexOf('\\');
 			sptr = Text::StrConcatC(Text::XML::ToAttrText(Text::StrConcatC(lineBuff1, UTF8STRC(" <Worksheet ss:Name=")), &tableName->v[ind + 1]), UTF8STRC(">"));

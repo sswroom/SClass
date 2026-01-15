@@ -19,7 +19,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 	NN<Text::String> sourceName;
 
 	if (layerCnt <= 0 || !layers->GetItem(0).SetTo(lyr))
-		return 0;
+		return nullptr;
 
 	Map::DrawLayerType lyrType = lyr->GetLayerType();
 	sourceName = lyr->GetSourceNameObj();
@@ -28,21 +28,21 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 	while (i-- > 0)
 	{
 		if (!layers->GetItem(i).SetTo(lyr) || lyr->GetLayerType() != lyrType)
-			return 0;
+			return nullptr;
 	}
 
 	Data::ArrayListStrUTF8 names;
 	Data::ArrayListICaseStrUTF8 nameIndex;
-	Data::ArrayList<DB::DBUtil::ColType> colTypeArr;
-	Data::ArrayList<UOSInt> nameSizes;
-	Data::ArrayList<UOSInt> nameDPs;
+	Data::ArrayListNative<DB::DBUtil::ColType> colTypeArr;
+	Data::ArrayListNative<UOSInt> nameSizes;
+	Data::ArrayListNative<UOSInt> nameDPs;
 	DB::ColDef colDef(CSTR(""));
 	NN<DB::DBReader> r;
 
 	i = 0;
 	while (i < layerCnt)
 	{
-		if (layers->GetItem(i).SetTo(lyr) && lyr->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (layers->GetItem(i).SetTo(lyr) && lyr->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			k = r->ColCount();
 			j = 0;
@@ -126,7 +126,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 		l = names.GetCount();
 		while (l-- > 0)
 		{
-			namesArr[l] = 0;
+			namesArr[l] = nullptr;
 			ofsts[l] = INVALID_INDEX;
 		}
 
@@ -165,7 +165,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 				while (j-- > 0)
 				{
 					if (ofsts[j] == INVALID_INDEX)
-						namesArr[j] = 0;
+						namesArr[j] = nullptr;
 					else
 						namesArr[j] = &sb.v[ofsts[j]];
 				}

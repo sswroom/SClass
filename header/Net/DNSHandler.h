@@ -1,6 +1,6 @@
 #ifndef _SM_NET_DNSHANDLER
 #define _SM_NET_DNSHANDLER
-#include "Data/ICaseBTreeUTF8Map.hpp"
+#include "Data/ICaseBTreeStringMapObj.hpp"
 #include "Manage/HiResClock.h"
 #include "Net/DNSClient.h"
 #include "Sync/Mutex.h"
@@ -21,9 +21,9 @@ namespace Net
 	private:
 		Net::DNSClient dnsCli;
 		Sync::Mutex reqv4Mut;
-		Data::ICaseBTreeUTF8Map<DomainStatus*> reqv4Map;
+		Data::ICaseBTreeStringMapObj<DomainStatus*> reqv4Map;
 		Sync::Mutex reqv6Mut;
-		Data::ICaseBTreeUTF8Map<DomainStatus*> reqv6Map;
+		Data::ICaseBTreeStringMapObj<DomainStatus*> reqv6Map;
 
 	public:
 		DNSHandler(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> serverAddr, NN<IO::LogTool> log);

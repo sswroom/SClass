@@ -15,7 +15,7 @@ void __stdcall Net::WSDiscoveryClient::PacketHdlr(NN<const Net::SocketUtil::Addr
 Net::WSDiscoveryClient::WSDiscoveryClient(NN<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
-	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, 0, 0, nullptr, PacketHdlr, this, log, nullptr, 1, false));
+	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, nullptr, 0, nullptr, PacketHdlr, this, log, nullptr, 1, false));
 }
 
 Net::WSDiscoveryClient::~WSDiscoveryClient()

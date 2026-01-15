@@ -9,7 +9,7 @@ Media::ImgFilter::BGImgFilter::BGImgFilter()
 	this->toCreateBG = false;
 
 	this->bgFormat = 0;
-	this->bgData = 0;
+	this->bgData = nullptr;
 	this->bgWidth = 0;
 	this->bgHeight = 0;
 }
@@ -20,7 +20,7 @@ Media::ImgFilter::BGImgFilter::~BGImgFilter()
 	if (this->bgData.SetTo(bgData))
 	{
 		MemFreeAArr(bgData);
-		this->bgData = 0;
+		this->bgData = nullptr;
 	}
 }
 
@@ -34,7 +34,7 @@ void Media::ImgFilter::BGImgFilter::ProcessImage(UnsafeArray<UInt8> imgData, UIn
 		if (this->bgData.SetTo(bgData))
 		{
 			MemFreeAArr(bgData);
-			this->bgData = 0;
+			this->bgData = nullptr;
 		}
 		imgSize = 0;
 

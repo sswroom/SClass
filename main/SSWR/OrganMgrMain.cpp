@@ -27,14 +27,14 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				UI::GUIForm::DialogResult dr;
 				{
-					SSWR::OrganMgr::OrganSelCategoryForm cateFrm(0, ui, env);
-					dr = cateFrm.ShowDialog(0);
+					SSWR::OrganMgr::OrganSelCategoryForm cateFrm(nullptr, ui, env);
+					dr = cateFrm.ShowDialog(nullptr);
 				}
 
 				if (dr == UI::GUIForm::DR_OK)
 				{
 					SSWR::OrganMgr::OrganMainForm *frm;
-					NEW_CLASS(frm, SSWR::OrganMgr::OrganMainForm(ui, 0, env));
+					NEW_CLASS(frm, SSWR::OrganMgr::OrganMainForm(ui, nullptr, env));
 					frm->SetExitOnClose(true);
 					frm->Show();
 					ui->Run();
@@ -42,15 +42,15 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			else if (env.GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_CONFIG)
 			{
-				ui->ShowMsgOK(CSTR("Please prepare the config file"), CSTR("Error"), 0);
+				ui->ShowMsgOK(CSTR("Please prepare the config file"), CSTR("Error"), nullptr);
 			}
 			else if (env.GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_DB)
 			{
-				ui->ShowMsgOK(CSTR("Cannot connect to the database"), CSTR("Error"), 0);
+				ui->ShowMsgOK(CSTR("Cannot connect to the database"), CSTR("Error"), nullptr);
 			}
 			else
 			{
-				ui->ShowMsgOK(CSTR("Unknown error occurs"), CSTR("Error"), 0);
+				ui->ShowMsgOK(CSTR("Unknown error occurs"), CSTR("Error"), nullptr);
 			}
 			ui.Delete();
 		}

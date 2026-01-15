@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, ui, core));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Text::PString sarr[2];
 			if (cfg->GetValue(CSTR("DNS")).SetTo(s))
 			{
-				Data::ArrayList<UInt32> dnsList;
+				Data::ArrayListNative<UInt32> dnsList;
 				Text::StringBuilderUTF8 sb;
 				sb.Append(s);
 				sarr[1] = sb;

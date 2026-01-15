@@ -91,7 +91,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NN<Net::WebServer::WebReque
 Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> hdlr)
 {
 	NN<SSWR::VAMS::VAMSBTWebHandler> me = NN<SSWR::VAMS::VAMSBTWebHandler>::ConvertFrom(hdlr);
-	Data::ArrayList<Int32> progList;
+	Data::ArrayListNative<Int32> progList;
 	me->btList->GetProgList(progList);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;

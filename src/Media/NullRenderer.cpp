@@ -77,11 +77,11 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(AnyType obj)
 
 Media::NullRenderer::NullRenderer()
 {
-	this->audsrc = 0;
+	this->audsrc = nullptr;
 	this->playing = false;
 	this->endHdlr = 0;
 	this->buffTime = 0;
-	this->clk = 0;
+	this->clk = nullptr;
 	this->sampleCnt = 0;
 }
 
@@ -89,7 +89,7 @@ Media::NullRenderer::~NullRenderer()
 {
 	if (this->audsrc.NotNull())
 	{
-		BindAudio(0);
+		BindAudio(nullptr);
 	}
 }
 
@@ -105,7 +105,7 @@ Bool Media::NullRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	{
 		Stop();
 	}
-	this->audsrc = 0;
+	this->audsrc = nullptr;
 	NN<Media::AudioSource> nnaudsrc;
 	if (!audsrc.SetTo(nnaudsrc))
 		return false;

@@ -13,7 +13,7 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	}
 	else
 	{
-		this->ent.internalName = 0;
+		this->ent.internalName = nullptr;
 	}
 	this->ent.name = Text::StrSCopyNew(ent->name);
 	this->ent.description = Text::StrSCopyNew(ent->description);
@@ -58,7 +58,7 @@ UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetName(UnsafeArray<UTF8Char> buff
 	UnsafeArray<const UTF8Char> nns;
 	if (this->ent.name.SetTo(nns))
 		return Text::StrConcat(buff, nns);
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDescription(UnsafeArray<UTF8Char> buff)
@@ -66,7 +66,7 @@ UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDescription(UnsafeArray<UTF8Cha
 	UnsafeArray<const UTF8Char> nns;
 	if (this->ent.description.SetTo(nns))
 		return Text::StrConcat(buff, nns);
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDNSSuffix(UnsafeArray<UTF8Char> buff)
@@ -74,7 +74,7 @@ UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDNSSuffix(UnsafeArray<UTF8Char>
 	UnsafeArray<const UTF8Char> nns;
 	if (this->ent.dnsSuffix.SetTo(nns))
 		return Text::StrConcat(buff, nns);
-	return 0;
+	return nullptr;
 }
 
 UInt32 Net::ConnectionInfo::GetIPAddress(UOSInt index)

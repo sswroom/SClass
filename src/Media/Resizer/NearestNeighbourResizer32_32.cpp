@@ -15,8 +15,8 @@ Media::Resizer::NearestNeighbourResizer32_32::NearestNeighbourResizer32_32() : M
 	this->lastswidth = 0;
 	this->lastdheight = 0;
 	this->lastdwidth = 0;
-	this->xindex = 0;
-	this->yindex = 0;
+	this->xindex = nullptr;
+	this->yindex = nullptr;
 }
 
 Media::Resizer::NearestNeighbourResizer32_32::~NearestNeighbourResizer32_32()
@@ -26,12 +26,12 @@ Media::Resizer::NearestNeighbourResizer32_32::~NearestNeighbourResizer32_32()
 	if (this->xindex.SetTo(xindex))
 	{
 		MemFreeArr(xindex);
-		this->xindex = 0;
+		this->xindex = nullptr;
 	}
 	if (this->yindex.SetTo(yindex))
 	{
 		MemFreeArr(yindex);
-		this->yindex = 0;
+		this->yindex = nullptr;
 	}
 }
 
@@ -132,7 +132,7 @@ Optional<Media::StaticImage> Media::Resizer::NearestNeighbourResizer32_32::Proce
 	Media::StaticImage *newImage;
 	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
 	{
-		return 0;
+		return nullptr;
 	}
 	Math::Size2D<UOSInt> targetSize = this->targetSize;
 	if (targetSize.x == 0)

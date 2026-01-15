@@ -315,9 +315,9 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(Optional<UI::GUIClientControl> par
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->caCert = 0;
-	this->key = 0;
-	this->csr = 0;
+	this->caCert = nullptr;
+	this->key = nullptr;
+	this->csr = nullptr;
 
 	this->lblKey = ui->NewLabel(*this, CSTR("Key"));
 	this->lblKey->SetRect(4, 4, 100, 23, false);

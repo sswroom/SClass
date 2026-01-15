@@ -310,7 +310,7 @@ UOSInt Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, 
 
 void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert)
 {
-	cert.Set(0);
+	cert.Set(nullptr);
 	if (buff[0] == 21 && packetSize == 7)
 	{
 		sb->AppendC(UTF8STRC("Server Alert: Level = "));

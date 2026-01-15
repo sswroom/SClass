@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnSourceUDPPacket(NN<cons
 	if (me->stopping)
 		return;
 	NN<UDPSession> sess;
-	Optional<UDPSession> selSess = 0;
+	Optional<UDPSession> selSess = nullptr;
 	Sync::MutexUsage mutUsage(me->sessMut);
 	UOSInt i = me->sessList.GetCount();
 	while (i-- > 0)
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnSourceUDPPacket(NN<cons
 		sess->me = me;
 		sess->displayed = false;
 		sess->sessCreatedTime = sess->lastDataTime;
-		NEW_CLASSNN(sess->targetUDP, Net::UDPServer(me->sockf, 0, 0, 0, OnTargetUDPPacket, sess, me->log, 0, 2, true));
+		NEW_CLASSNN(sess->targetUDP, Net::UDPServer(me->sockf, nullptr, 0, 0, OnTargetUDPPacket, sess, me->log, 0, 2, true));
 		me->sessList.Add(sess);
 	}
 	sess->targetUDP->SendTo(sess->targetAddr, sess->targetPort, data.Arr(), data.GetSize());
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPLoadBalancerForm::OnStartClicked(AnyType us
 		me->ui->ShowMsgOK(CSTR("Timeout invalid"), TITLE, me);
 		return;
 	}
-	NEW_CLASSNN(udp, Net::UDPServer(me->sockf, 0, port, 0, OnSourceUDPPacket, me, me->log, 0, 4, true));
+	NEW_CLASSNN(udp, Net::UDPServer(me->sockf, nullptr, port, 0, OnSourceUDPPacket, me, me->log, 0, 4, true));
 	if (udp->IsError())
 	{
 		udp.Delete();
@@ -220,7 +220,7 @@ SSWR::AVIRead::AVIRUDPLoadBalancerForm::AVIRUDPLoadBalancerForm(Optional<UI::GUI
 	this->stopping = false;
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->sourceUDP = 0;
+	this->sourceUDP = nullptr;
 	this->nextTarget = 0;
 	this->dispNextTarget = INVALID_INDEX;
 	this->sessTimeout = 30000;

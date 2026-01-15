@@ -11,7 +11,7 @@ Media::VOBAC3StreamSource::VOBAC3StreamSource(NN<Media::MediaStreamControl> pbc)
 	this->pbc = pbc;
 	this->fmt.formatId = 0x2000;
 	this->fmt.bitRate = 0;
-	this->pbEvt = 0;
+	this->pbEvt = nullptr;
 
 	this->dataBuff = 0;
 	this->buffSize = 0;
@@ -95,7 +95,7 @@ Bool Media::VOBAC3StreamSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 void Media::VOBAC3StreamSource::Stop()
 {
 	this->pbc->StopAudio();
-	this->pbEvt = 0;
+	this->pbEvt = nullptr;
 }
 
 UOSInt Media::VOBAC3StreamSource::ReadBlock(Data::ByteArray blk)

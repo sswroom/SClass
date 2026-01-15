@@ -126,7 +126,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 UI::GTK::GTKPictureBox::GTKPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIPictureBox(ui, parent, eng, hasBorder, allowResize)
 {
 	this->pixbuf = 0;
-	this->tmpImage = 0;
+	this->tmpImage = nullptr;
 	this->gtkImage = gtk_image_new_from_pixbuf(0);
 	this->eventBox = gtk_event_box_new ();
 	gtk_container_add(GTK_CONTAINER(this->eventBox), this->gtkImage);

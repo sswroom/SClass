@@ -17,9 +17,9 @@
 Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Optional<Text::String> layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->codePage = codePage;
-	this->currTrackName = 0;
-	this->extraParser = 0;
-	this->tmpRecord = 0;
+	this->currTrackName = nullptr;
+	this->extraParser = nullptr;
+	this->tmpRecord = nullptr;
 	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
 	this->hasAltitude = hasAltitude;
 	this->currUnsorted = false;
@@ -28,9 +28,9 @@ Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 co
 Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->codePage = codePage;
-	this->currTrackName = 0;
-	this->extraParser = 0;
-	this->tmpRecord = 0;
+	this->currTrackName = nullptr;
+	this->extraParser = nullptr;
+	this->tmpRecord = nullptr;
 	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
 	this->hasAltitude = hasAltitude;
 	this->currUnsorted = false;
@@ -74,7 +74,7 @@ Map::GPSTrack::~GPSTrack()
 	if (this->tmpRecord.SetTo(tmpRecord))
 	{
 		MemFreeAArr(tmpRecord);
-		this->tmpRecord = 0;
+		this->tmpRecord = nullptr;
 	}
 	OPTSTR_DEL(this->currTrackName);
 }
@@ -268,7 +268,7 @@ UnsafeArrayOpt<UTF8Char> Map::GPSTrack::GetColumnName(UnsafeArray<UTF8Char> buff
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -362,12 +362,12 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 	UnsafeArray<Math::Coord2DDbl> ptPtr;
 	UnsafeArray<Double> altList;
 	if (id < 0)
-		return 0;
+		return nullptr;
 	Sync::MutexUsage mutUsage(this->recMut);
 	if ((UInt64)id > this->currTracks.GetCount())
 	{
 		mutUsage.EndUse();
-		return 0;
+		return nullptr;
 	}
 	else if ((UInt64)id == this->currTracks.GetCount())
 	{
@@ -433,7 +433,7 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 		else
 		{
 			mutUsage.EndUse();
-			return 0;
+			return nullptr;
 		}
 	}
 	else
@@ -622,14 +622,14 @@ void Map::GPSTrack::NewTrack()
 		this->currRecs.Clear();
 		this->currTimes.Clear();
 		this->currTracks.Add(rec);
-		this->currTrackName = 0;
+		this->currTrackName = nullptr;
 		this->currUnsorted = false;
 		mutUsage.EndUse();
 		UnsafeArray<GPSRecordFull> tmpRecord;
 		if (this->tmpRecord.SetTo(tmpRecord))
 		{
 			MemFreeAArr(tmpRecord);
-			this->tmpRecord = 0;
+			this->tmpRecord = nullptr;
 		}
 	}
 }
@@ -687,7 +687,7 @@ UOSInt Map::GPSTrack::AddRecord(NN<Map::GPSTrack::GPSRecord3> rec)
 	NN<Map::GPSTrack::GPSRecordFull> newRec;
 	newRec = MemAllocANN(Map::GPSTrack::GPSRecordFull);
 	MemCopyNO(newRec.Ptr(), rec.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
-	newRec->extraData = 0;
+	newRec->extraData = nullptr;
 	newRec->extraDataSize = 0;
 	Int64 currTime = rec->recTime.ToTicks();
 	UOSInt i = this->currTimes.GetCount();
@@ -701,7 +701,7 @@ UOSInt Map::GPSTrack::AddRecord(NN<Map::GPSTrack::GPSRecord3> rec)
 	if (this->tmpRecord.SetTo(tmpRecord))
 	{
 		MemFreeAArr(tmpRecord);
-		this->tmpRecord = 0;
+		this->tmpRecord = nullptr;
 	}
 	mutUsage.EndUse();
 	
@@ -750,7 +750,7 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 		if (this->tmpRecord.SetTo(tmpRecord))
 		{
 			MemFreeAArr(tmpRecord);
-			this->tmpRecord = 0;
+			this->tmpRecord = nullptr;
 		}
 		mutUsage.EndUse();
 		return true;
@@ -818,7 +818,7 @@ Optional<Text::String> Map::GPSTrack::GetTrackName(UOSInt index)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 }
@@ -906,11 +906,11 @@ UOSInt Map::GPSTrack::GetTrackCnt()
 UnsafeArrayOpt<Map::GPSTrack::GPSRecordFull> Map::GPSTrack::GetTrack(UOSInt index, OutParam<UOSInt> recordCnt)
 {
 	if (this->currTracks.GetCount() < index)
-		return 0;
+		return nullptr;
 	if (this->currTracks.GetCount() == index)
 	{
 		if (this->currTimes.GetCount() == 0)
-			return 0;
+			return nullptr;
 		UOSInt i = this->currTimes.GetCount();
 		recordCnt.Set(i);
 		UnsafeArray<GPSRecordFull> tmpRecord;
@@ -1032,11 +1032,11 @@ UnsafeArrayOpt<const UInt8> Map::GPSTrack::GetExtraData(UOSInt trackIndex, UOSIn
 {
 	NN<GPSRecordFull> rec;
 	if (this->currTracks.GetCount() < trackIndex)
-		return 0;
+		return nullptr;
 	if (this->currTracks.GetCount() == trackIndex)
 	{
 		if (this->currTimes.GetCount() <= recIndex)
-			return 0;
+			return nullptr;
 		Sync::MutexUsage mutUsage(this->recMut);
 		rec = this->currRecs.GetItemNoCheck(recIndex);		
 		dataSize.Set(rec->extraDataSize);
@@ -1046,7 +1046,7 @@ UnsafeArrayOpt<const UInt8> Map::GPSTrack::GetExtraData(UOSInt trackIndex, UOSIn
 	{
 		NN<Map::GPSTrack::TrackRecord> rec = this->currTracks.GetItemNoCheck(trackIndex);
 		if (rec->nRecords <= recIndex)
-			return 0;
+			return nullptr;
 		dataSize.Set(rec->records[recIndex].extraDataSize);
 		return rec->records[recIndex].extraData;
 	}
@@ -1111,7 +1111,7 @@ Map::GPSDataReader::GPSDataReader(NN<Map::GPSTrack> gps)
 {
 	this->gps = gps;
 	this->currRow = -1;
-	this->currRec = 0;
+	this->currRec = nullptr;
 }
 
 Map::GPSDataReader::~GPSDataReader()
@@ -1238,7 +1238,7 @@ Int64 Map::GPSDataReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRec.IsNull())
-		return 0;
+		return nullptr;
 	if (colIndex == 0)
 	{
 		UTF8Char sbuff[32];
@@ -1253,7 +1253,7 @@ UnsafeArrayOpt<WChar> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray<WC
 	{
 		return Text::StrDoubleW(buff, this->GetDblOrNAN(colIndex));
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Map::GPSDataReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -1276,13 +1276,13 @@ Optional<Text::String> Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 	{
 		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->currRec.IsNull())
-		return 0;
+		return nullptr;
 	if (colIndex == 0)
 	{
 		return GetTimestamp(0).ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
@@ -1295,7 +1295,7 @@ UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray
 	{
 		return Text::StrDouble(buff, this->GetDblOrNAN(colIndex));
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::Timestamp Map::GPSDataReader::GetTimestamp(UOSInt colIndex)
@@ -1397,9 +1397,9 @@ Optional<Math::Geometry::Vector2D> Map::GPSDataReader::GetVector(UOSInt colIndex
 {
 	NN<GPSTrack::GPSRecordFull> currRec;
 	if (!this->currRec.SetTo(currRec))
-		return 0;
+		return nullptr;
 	if (colIndex != 1)
-		return 0;
+		return nullptr;
 	Math::Geometry::Point *pt;
 	if (this->gps->GetHasAltitude())
 	{
@@ -1422,7 +1422,7 @@ UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetName(UOSInt colIndex, UnsafeArra
 	Text::CStringNN cstr;
 	if (GetName(colIndex, this->gps->GetHasAltitude()).SetTo(cstr))
 		return cstr.ConcatTo(buff);
-	return 0;
+	return nullptr;
 }
 
 Bool Map::GPSDataReader::IsNull(UOSInt colIndex)

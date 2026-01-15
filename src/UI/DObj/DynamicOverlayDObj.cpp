@@ -9,7 +9,7 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NN<Media::DrawEngine> deng, Tex
 	this->deng = deng;
 	if (fileName1.leng == 0)
 	{
-		this->bmp1 = 0;
+		this->bmp1 = nullptr;
 	}
 	else
 	{
@@ -18,7 +18,7 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NN<Media::DrawEngine> deng, Tex
 
 	if (fileName2.leng == 0)
 	{
-		this->bmp2 = 0;
+		this->bmp2 = nullptr;
 	}
 	else
 	{
@@ -35,18 +35,18 @@ UI::DObj::DynamicOverlayDObj::~DynamicOverlayDObj()
 	if (this->bmp1.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmp1 = 0;
+		this->bmp1 = nullptr;
 	}
 	if (this->bmp2.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmp2 = 0;
+		this->bmp2 = nullptr;
 	}
 }
 
 Bool UI::DObj::DynamicOverlayDObj::IsChanged()
 {
-	if (this->bmp1 != 0 && this->bmp2 != 0)
+	if (this->bmp1.NotNull() && this->bmp2.NotNull())
 	{
 		return true;
 	}

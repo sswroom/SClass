@@ -28,7 +28,7 @@ void __stdcall IO::BTCapturer::CheckThread(NN<Sync::Thread> thread)
 
 IO::BTCapturer::BTCapturer(Bool autoStore) : thread(CheckThread, this, CSTR("BTCapturer"))
 {
-	this->lastFileName = 0;
+	this->lastFileName = nullptr;
 	this->autoStore = autoStore;
 	this->bt = IO::BTScanner::CreateScanner();
 	if (this->bt.NotNull())

@@ -59,7 +59,7 @@ Optional<IO::Stream> Map::HKTrafficLayer2::OpenURLStream()
 			return fs;
 		}
 		DEL_CLASS(fs);
-		return 0;
+		return nullptr;
 	}
 	else
 	{
@@ -82,7 +82,7 @@ Optional<IO::Stream> Map::HKTrafficLayer2::OpenURLStream()
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 			else
@@ -96,7 +96,7 @@ Optional<IO::Stream> Map::HKTrafficLayer2::OpenURLStream()
 			return cli;
 		}
 		cli.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -115,7 +115,7 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<N
 	if(rn2->GetDB().SetTo(db))
 	{
 		NN<DB::DBReader> r;
-		if (db->QueryTableData(nullptr, CSTR("CENTERLINE"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (db->QueryTableData(nullptr, CSTR("CENTERLINE"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			UOSInt shapeCol = INVALID_INDEX;
 			UOSInt idCol = INVALID_INDEX;
@@ -359,7 +359,7 @@ UOSInt Map::HKTrafficLayer2::GetColumnCnt() const
 UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer2::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::HKTrafficLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const

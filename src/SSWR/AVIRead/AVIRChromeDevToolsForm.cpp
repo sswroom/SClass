@@ -387,9 +387,9 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->core = core;
 	this->clif = core->GetTCPClientFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
-	this->devTools = 0;
-	this->targets = 0;
-	this->protocol = 0;
+	this->devTools = nullptr;
+	this->targets = nullptr;
+	this->protocol = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlPort = ui->NewPanel(*this);

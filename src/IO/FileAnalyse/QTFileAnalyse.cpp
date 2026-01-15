@@ -103,7 +103,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("QTFileAnalyse"))
 {
 	UInt8 buff[8];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->maxLev = 0;
 	fd->GetRealData(0, 8, BYTEARR(buff));
@@ -885,9 +885,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 	UOSInt l;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	frame->AddStrS(0, 4, CSTR("Type"), (const UTF8Char*)&pack->packType);

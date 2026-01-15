@@ -160,7 +160,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				{
 					ProgressHandler progress;
 					IO::StmData::FileData fd({cmdLines[1], cmdLen}, false);
-					if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::FileCheck)).SetTo(fileChk))
+					if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, nullptr, IO::ParserType::FileCheck)).SetTo(fileChk))
 					{
 						console->WriteLine(CSTR("Error in parsing the file"));
 					}
@@ -173,7 +173,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						j = fileChk->GetCount();
 						while (i < j)
 						{
-							fileChk->CheckEntryHash(i, hash, progress, 0);
+							fileChk->CheckEntryHash(i, hash, progress, nullptr);
 						}
 						showHelp = false;
 						fileChk.Delete();
@@ -196,7 +196,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					sb.AppendC(cmdLines[1], cmdLen);
 					sb.AppendC(UTF8STRC(".sfv"));
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					exporter.ExportFile(fs, sb.ToCString(), nnfileChk, 0);
+					exporter.ExportFile(fs, sb.ToCString(), nnfileChk, nullptr);
 					nnfileChk.Delete();
 					showHelp = false;
 				}

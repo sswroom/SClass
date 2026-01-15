@@ -124,7 +124,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CStr
 		defInfo->fileName = 0;
 		defInfo->lineNum = 0;
 		defInfo->defineVal = Text::String::NewOrNull(defVal);
-		defInfo->defineParam = 0;
+		defInfo->defineParam = nullptr;
 		defInfo->undefined = false;
 		this->defines.PutC(defName, defInfo);
 		return true;
@@ -213,7 +213,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CStr
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendOpt(defInfo->defineVal);
-			if (defInfo->defineParam != 0)
+			if (defInfo->defineParam.NotNull())
 			{
 				Text::StringBuilderUTF8 sb1;
 				Text::StringBuilderUTF8 sb2;

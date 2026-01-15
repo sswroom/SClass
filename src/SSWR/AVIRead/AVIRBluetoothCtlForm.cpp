@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTSca
 	}
 }
 
-UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, NN<Data::FastMap<UInt64, UInt32>> statusMap, UOSInt baseIndex)
+UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, NN<Data::FastMapNative<UInt64, UInt32>> statusMap, UOSInt baseIndex)
 {
 	UOSInt i;
 	UOSInt j;

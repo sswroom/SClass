@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 
 	if (hdr[0] != 'G' || hdr[1] != 'I' || hdr[2] != 'F')
 	{
-		return 0;
+		return nullptr;
 	}
 	if (hdr[3] == '8' && hdr[4] == '7' && hdr[5] == 'a')
 	{
@@ -58,7 +58,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UOSInt i;

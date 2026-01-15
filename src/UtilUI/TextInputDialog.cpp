@@ -25,7 +25,7 @@ UtilUI::TextInputDialog::TextInputDialog(Optional<UI::GUIClientControl> parent, 
 	this->SetText(title);
 	this->SetNoResize(true);
 	this->monMgr = monMgr;
-	this->retInput = 0;
+	this->retInput = nullptr;
 
 	this->lblMessage = ui->NewLabel(*this, message);
 	this->lblMessage->SetRect(4, 4, 300, 23, false);

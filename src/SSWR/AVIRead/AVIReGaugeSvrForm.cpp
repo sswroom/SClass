@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 			NN<Net::WebServer::WebListener> svr;
 			NEW_CLASSNN(dirHdlr, Net::WebServer::EGaugeHandler());
 			dirHdlr->HandleEGaugeData(OnEGaugeData, me);
-			NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+			NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), nullptr, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 			if (svr->IsError())
 			{
 				valid = false;
@@ -104,11 +104,11 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(Optional<UI::GUIClientContro
 	this->core = core;
 	this->SetText(CSTR("eGauge Server"));
 	this->SetFont(nullptr, 8.25, false);
-	this->svr = 0;
-	this->log = 0;
-	this->dirHdlr = 0;
-	this->logger = 0;
-	this->reqLast = 0;
+	this->svr = nullptr;
+	this->log = nullptr;
+	this->dirHdlr = nullptr;
+	this->logger = nullptr;
+	this->reqLast = nullptr;
 	this->reqUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

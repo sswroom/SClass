@@ -92,7 +92,7 @@ void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NN<Sync::Thread> thr
 
 IO::FileAnalyse::TXTFileAnalyse::TXTFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("TXTFileAnalyse"))
 {
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->fileSize = fd->GetDataSize();
 	this->fd = fd->GetPartialData(0, this->fileSize).Ptr();
@@ -156,9 +156,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineOfsts.GetCount();
 	if (index >= cnt)
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	UInt64 lineOfst = this->lineOfsts.GetItem(index);
 	UOSInt size;
 	if (index == cnt - 1)

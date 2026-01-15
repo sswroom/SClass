@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 						entry->mac64Int = macInt;
 						entry->rssi = irssi;
 						entry->name = Text::String::CopyOrNull(name);
-						entry->remark = 0;
+						entry->remark = nullptr;
 						me->dataMap.Put(macInt, entry);
 					}
 				}
@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(AnyType userObj)
 		return;
 	}
 	NN<Net::MQTTStaticClient> cli;
-	NEW_CLASSNN(cli, Net::MQTTStaticClient(me->core->GetTCPClientFactory(), 0, sbHost.ToCString(), port, nullptr, nullptr, false, OnMQTTMessage, me, 30, 0));
+	NEW_CLASSNN(cli, Net::MQTTStaticClient(me->core->GetTCPClientFactory(), nullptr, sbHost.ToCString(), port, nullptr, nullptr, false, OnMQTTMessage, me, 30, nullptr));
 	if (cli->ChannelFailure())
 	{
 		me->ui->ShowMsgOK(CSTR("Error in connecting to MQTT server"), CSTR("EasyWay EW-DTU01"), me);
@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(Optional<UI::GUIClientControl> p
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->cli = 0;
+	this->cli = nullptr;
 	this->dataChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

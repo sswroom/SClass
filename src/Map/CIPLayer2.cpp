@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/FastMapObj.hpp"
 #include "Data/Sort/ArtificialQuickSort_C.h"
 #include "DB/ColDef.h"
 #include "IO/BufferedInputStream.h"
@@ -43,8 +44,8 @@ Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerNa
 	this->blks = 0;
 	this->ids = 0;
 	this->maxTextSize = 0;
-	this->lastObjs = 0;
-	this->currObjs = 0;
+	this->lastObjs = nullptr;
+	this->currObjs = nullptr;
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::String::NewP(fname, sptr);
 
@@ -216,8 +217,8 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 	
 	if (nameArr.IsNotNull())
 	{
-		Data::FastMap<Int32, UTF16Char*> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
+		Data::FastMapObj<Int32, UTF16Char*> *tmpArr;
+		NEW_CLASS(tmpArr, Data::Int32FastMapObj<UTF16Char*>());
 		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -365,8 +366,8 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Opti
 	l = 0;
 	if (nameArr.IsNotNull())
 	{
-		Data::FastMap<Int32, UTF16Char*> *tmpArr;
-		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
+		Data::FastMapObj<Int32, UTF16Char*> *tmpArr;
+		NEW_CLASS(tmpArr, Data::Int32FastMapObj<UTF16Char*>());
 		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -489,8 +490,8 @@ UOSInt Map::CIPLayer2::GetRecordCnt() const
 
 void Map::CIPLayer2::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	NN<Data::FastMap<Int32, UTF16Char*>> tmpMap;
-	if (Optional<Data::FastMap<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap))
+	NN<Data::FastMapObj<Int32, UTF16Char*>> tmpMap;
+	if (Optional<Data::FastMapObj<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap))
 	{
 		UOSInt i = tmpMap->GetCount();
 		while (i-- > 0)
@@ -503,8 +504,8 @@ void Map::CIPLayer2::ReleaseNameArr(Optional<NameArray> nameArr)
 
 Bool Map::CIPLayer2::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	NN<Data::FastMap<Int32, UTF16Char*>> tmpMap;;
-	if (!Optional<Data::FastMap<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap) || strIndex != 0)
+	NN<Data::FastMapObj<Int32, UTF16Char*>> tmpMap;;
+	if (!Optional<Data::FastMapObj<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap) || strIndex != 0)
 	{
 		return false;
 	}
@@ -533,7 +534,7 @@ UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buf
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -633,17 +634,17 @@ Optional<Map::CIPLayer2::CIPFileObject> Map::CIPLayer2::GetFileObject(NN<GetObje
 		}
 	}
 	if (!this->currObjs.SetTo(objs))
-		return 0;
+		return nullptr;
 	if (objs->Get(id).SetTo(obj))
 		return obj;
 	if (id > this->maxId)
-		return 0;
+		return nullptr;
 
 	UInt32 ofst = this->ofsts[2 + (id << 1)];
 	cip->SeekFromBeginning(ofst);
 	if (cip->Read(Data::ByteArray((UInt8*)buff, 8)) != 8)
 	{
-		return 0;
+		return nullptr;
 	}
 	obj = MemAllocNN(Map::CIPLayer2::CIPFileObject);
 	obj->id = buff[0];
@@ -723,7 +724,7 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	NN<Map::CIPLayer2::CIPFileObject> fobj;
 	if (!this->GetFileObject(session, (Int32)id).SetTo(fobj))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (this->lyrType == Map::DRAW_LAYER_POINT)
 	{
@@ -733,7 +734,7 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	}
 	else if (fobj->ptOfstArr == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
@@ -799,7 +800,7 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 		}
 		return pg;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Map::CIPLayer2::GetGeomCol() const

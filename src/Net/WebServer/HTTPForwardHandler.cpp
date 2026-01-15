@@ -17,13 +17,13 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NN<Net::TCPClientFactory>
 {
 	this->clif = clif;
 	this->ssl = ssl;
-	this->forceHost = 0;
+	this->forceHost = nullptr;
 	this->fwdType = fwdType;
 	this->reqHdlr = 0;
 	this->reqHdlrObj = 0;
 	this->forwardAddrs.Add(Text::String::New(forwardURL));
 	this->nextURL = 0;
-	this->log = 0;
+	this->log = nullptr;
 	this->logContent = false;
 }
 
@@ -98,11 +98,11 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 	Text::String *svrHost = 0;
 	UInt16 svrPort = 0;
 	Text::String *fwdFor = 0;
-	UnsafeArrayOpt<const UTF8Char> fwdPrefix = 0;
-	UnsafeArrayOpt<const UTF8Char> fwdHost = 0;
-	UnsafeArrayOpt<const UTF8Char> fwdProto = 0;
-	UnsafeArrayOpt<const UTF8Char> fwdPort = 0;
-	UnsafeArrayOpt<const UTF8Char> fwdSsl = 0;
+	UnsafeArrayOpt<const UTF8Char> fwdPrefix = nullptr;
+	UnsafeArrayOpt<const UTF8Char> fwdHost = nullptr;
+	UnsafeArrayOpt<const UTF8Char> fwdProto = nullptr;
+	UnsafeArrayOpt<const UTF8Char> fwdPort = nullptr;
+	UnsafeArrayOpt<const UTF8Char> fwdSsl = nullptr;
 	it = hdrNames.Iterator();
 	while (it.HasNext())
 	{
@@ -141,7 +141,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 
 	if (this->fwdType == ForwardType::Normal)
 	{
-		if (fwdProto == 0)
+		if (fwdProto.IsNull())
 		{
 			if (req->IsSecure())
 			{
@@ -152,14 +152,14 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 				cli->AddHeaderC(CSTR("X-Forwarded-Proto"), CSTR("http"));
 			}
 		}
-		if (fwdSsl == 0)
+		if (fwdSsl.IsNull())
 		{
 			if (req->IsSecure())
 			{
 				cli->AddHeaderC(CSTR("X-Forwarded-Ssl"), CSTR("on"));
 			}
 		}
-		if (fwdHost == 0)
+		if (fwdHost.IsNull())
 		{
 			if (svrHost)
 			{
@@ -176,7 +176,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRe
 		sbHeader.AppendC(buff, (UOSInt)(sptr - buff));
 		cli->AddHeaderC(CSTR("X-Forwarded-For"), sbHeader.ToCString());
 
-		if (fwdPort == 0 && svrPort != 0)
+		if (fwdPort.IsNull() && svrPort != 0)
 		{
 			sptr = Text::StrUInt16(buff, svrPort);
 			cli->AddHeaderC(CSTR("X-Forwarded-Port"), {buff, (UOSInt)(sptr - buff)});

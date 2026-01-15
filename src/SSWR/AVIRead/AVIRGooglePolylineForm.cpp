@@ -28,7 +28,7 @@ SSWR::AVIRead::AVIRGooglePolylineForm::AVIRGooglePolylineForm(Optional<UI::GUICl
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->polyline = 0;
+	this->polyline = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPolylineText = ui->NewLabel(*this, CSTR("Polyline Text"));

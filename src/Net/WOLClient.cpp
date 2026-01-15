@@ -11,7 +11,7 @@ Net::WOLClient::WOLClient(NN<Net::SocketFactory> sockf, UInt32 adapterIP, NN<IO:
 {
 	this->sockf = sockf;
 	this->adapterIP = Net::SocketUtil::IPv4ToBroadcast(adapterIP);
-	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, 0, 0, nullptr, PacketHdlr, this, log, nullptr, 1, false));
+	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, nullptr, 0, nullptr, PacketHdlr, this, log, nullptr, 1, false));
 	this->svr->SetBroadcast(true);
 }
 

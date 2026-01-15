@@ -1038,20 +1038,20 @@ void Media::Resizer::LanczosResizerLR_C32::DestoryHori()
 	if (this->hIndex.SetTo(hIndex))
 	{
 		MemFreeAArr(hIndex);
-		this->hIndex = 0;
+		this->hIndex = nullptr;
 	}
 	if (this->hWeight.SetTo(hWeight))
 	{
 		MemFreeAArr(hWeight);
-		this->hWeight = 0;
+		this->hWeight = nullptr;
 	}
 	NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> hFilter;
 	if (this->hFilter.SetTo(hFilter))
 	{
 		this->action->DestroyHoriFilter(hFilter);
-		this->hFilter = 0;
+		this->hFilter = nullptr;
 	}
-	hsSize = 0;
+	this->hsSize = 0;
 }
 
 void Media::Resizer::LanczosResizerLR_C32::DestoryVert()
@@ -1061,21 +1061,21 @@ void Media::Resizer::LanczosResizerLR_C32::DestoryVert()
 	if (this->vIndex.SetTo(vIndex))
 	{
 		MemFreeAArr(vIndex);
-		this->vIndex = 0;
+		this->vIndex = nullptr;
 	}
 	if (this->vWeight.SetTo(vWeight))
 	{
 		MemFreeAArr(vWeight);
-		this->vWeight = 0;
+		this->vWeight = nullptr;
 	}
 	NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> vFilter;
 	if (this->vFilter.SetTo(vFilter))
 	{
 		this->action->DestroyVertFilter(vFilter);
-		this->vFilter = 0;
+		this->vFilter = nullptr;
 	}
-	vsSize = 0;
-	vsStep = 0;
+	this->vsSize = 0;
+	this->vsStep = 0;
 }
 
 Media::Resizer::LanczosResizerLR_C32::LanczosResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::ImageResizer(srcAlphaType), destColor(destColor)
@@ -1093,31 +1093,31 @@ Media::Resizer::LanczosResizerLR_C32::LanczosResizerLR_C32(UOSInt hnTap, UOSInt 
 	}
 	else
 	{
-		this->colorSess = 0;
+		this->colorSess = nullptr;
 	}
-	this->rgbTable = 0;
+	this->rgbTable = nullptr;
 #ifdef USE_OPENCL
 	NEW_CLASSNN(this->action, Media::Resizer::LanczosResizerLR_C32_OCL());
 #else
 	NEW_CLASSNN(this->action, Media::Resizer::LanczosResizerLR_C32_CPU());
 #endif
 
-	hsSize = 0;
-	hsOfst = 0;
-	hdSize = 0;
-	hIndex = 0;
-	hWeight = 0;
-	hTap = 0;
-	hFilter = 0;
+	this->hsSize = 0;
+	this->hsOfst = 0;
+	this->hdSize = 0;
+	this->hIndex = nullptr;
+	this->hWeight = nullptr;
+	this->hTap = 0;
+	this->hFilter = nullptr;
 
-	vsSize = 0;
-	vsOfst = 0;
-	vdSize = 0;
-	vsStep = 0;
-	vIndex = 0;
-	vWeight = 0;
-	vTap = 0;
-	vFilter = 0;
+	this->vsSize = 0;
+	this->vsOfst = 0;
+	this->vdSize = 0;
+	this->vsStep = 0;
+	this->vIndex = nullptr;
+	this->vWeight = nullptr;
+	this->vTap = 0;
+	this->vFilter = nullptr;
 }
 
 Media::Resizer::LanczosResizerLR_C32::~LanczosResizerLR_C32()
@@ -1190,12 +1190,12 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 			{
 				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
-			hsSize = swidth;
-			hdSize = dwidth;
-			hsOfst = xOfst;
+			this->hsSize = swidth;
+			this->hdSize = dwidth;
+			this->hsOfst = xOfst;
 			this->hIndex = hIndex = prm.index;
 			this->hWeight = hWeight = prm.weight;
-			hTap = prm.tap;
+			this->hTap = prm.tap;
 			hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->hFilter = hFilter;
 		}
@@ -1212,13 +1212,13 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 			{
 				SetupInterpolationParameterV(this->vnTap, sheight, siHeight, dheight, prm, (OSInt)dwidth << 3, yOfst);
 			}
-			vsSize = sheight;
-			vdSize = dheight;
-			vsOfst = yOfst;
-			vsStep = (OSInt)dwidth << 3;
+			this->vsSize = sheight;
+			this->vdSize = dheight;
+			this->vsOfst = yOfst;
+			this->vsStep = (OSInt)dwidth << 3;
 			this->vIndex = vIndex = prm.index;
 			this->vWeight = vWeight = prm.weight;
-			vTap = prm.tap;
+			this->vTap = prm.tap;
 			vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->vFilter = vFilter;
 		}
@@ -1231,7 +1231,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 		if (dwidth < this->hnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst || !this->hFilter.SetTo(hFilter) || !this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight))
+		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst || !this->hFilter.SetTo(hFilter) || !this->hIndex.SetTo(hIndex) || !this->hWeight.SetTo(hWeight))
 		{
 			DestoryHori();
 
@@ -1243,12 +1243,12 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 			{
 				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
-			hsSize = swidth;
-			hdSize = dwidth;
-			hsOfst = xOfst;
+			this->hsSize = swidth;
+			this->hdSize = dwidth;
+			this->hsOfst = xOfst;
 			this->hIndex = hIndex = prm.index;
 			this->hWeight = hWeight = prm.weight;
-			hTap = prm.tap;
+			this->hTap = prm.tap;
 			hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->hFilter = hFilter;
 		}
@@ -1260,7 +1260,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 		if (dheight < this->vnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst || !this->vFilter.SetTo(vFilter) || !this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight))
+		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != sbpl || this->vsOfst != yOfst || !this->vFilter.SetTo(vFilter) || !this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight))
 		{
 			DestoryVert();
 
@@ -1272,13 +1272,13 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 			{
 				SetupInterpolationParameterV(this->vnTap, sheight, siHeight, dheight, prm, sbpl, yOfst);
 			}
-			vsSize = sheight;
-			vdSize = dheight;
-			vsOfst = yOfst;
-			vsStep = sbpl;
+			this->vsSize = sheight;
+			this->vdSize = dheight;
+			this->vsOfst = yOfst;
+			this->vsStep = sbpl;
 			this->vIndex = vIndex = prm.index;
 			this->vWeight = vWeight = prm.weight;
-			vTap = prm.tap;
+			this->vTap = prm.tap;
 			vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 			this->vFilter = vFilter;
 		}
@@ -1324,7 +1324,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerLR_C32::ProcessToNewP
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
 	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
-		return 0;
+		return nullptr;
 	Math::Size2D<UOSInt> targeSize = this->targetSize;
 	if (targeSize.x == 0)
 	{

@@ -15,7 +15,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 	UOSInt lonIndex = INVALID_INDEX;
 	UOSInt nameIndex = INVALID_INDEX;
 	UTF8Char sbuff[2048];
-	Data::ArrayList<UnsafeArrayOpt<const UTF8Char>> colNames;
+	Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>> colNames;
 	NN<IO::Reader> reader;
 	if (codePage == 65001)
 	{

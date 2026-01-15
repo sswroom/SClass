@@ -6,13 +6,13 @@
 SSWR::OrganMgr::OrganGroup::OrganGroup()
 {
 	this->groupId = 0;
-	this->cName = 0;
-	this->eName = 0;
+	this->cName = nullptr;
+	this->eName = nullptr;
 	this->groupType = 0;
-	this->desc = 0;
+	this->desc = nullptr;
 	this->photoGroup = 0;
 	this->photoSpecies = 0;
-	this->idKey = 0;
+	this->idKey = nullptr;
 	this->isDefault = 0;
 	this->adminOnly = false;
 }

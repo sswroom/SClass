@@ -10,7 +10,7 @@ Net::WebServer::SiteRootHandler::~SiteRootHandler()
 	if (this->faviconBuff.SetTo(faviconBuff))
 	{
 		MemFreeArr(faviconBuff);
-		this->faviconBuff = 0;
+		this->faviconBuff = nullptr;
 	}
 }
 
@@ -46,7 +46,7 @@ Bool Net::WebServer::SiteRootHandler::ProcessRequest(NN<Net::WebServer::WebReque
 Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CStringNN faviconPath)
 {
 	UnsafeArray<UInt8> faviconBuff;
-	this->faviconBuff = 0;
+	this->faviconBuff = nullptr;
 	this->faviconSize = 0;
 	IO::FileStream fs(faviconPath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())

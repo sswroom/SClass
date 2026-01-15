@@ -49,10 +49,10 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 	UInt64 fileLen = fd->GetDataSize();
 
 	if (!Text::StrStartsWithC(&hdr[0], 16, UTF8STRC("SZS100__")))
-		return 0;
+		return nullptr;
 	fileCnt = ReadInt32(&hdr[12]);
 	if (fileCnt <= 0)
-		return 0;
+		return nullptr;
 	Text::Encoding enc(932);
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	ofst = 16;
@@ -67,7 +67,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 		if (fileOfst < minOfst || (fileOfst + fileSize) > fileLen)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(sbuff, fileBuff, 256, 0);
 		Text::StrReplace(sbuff, ';', '\\');

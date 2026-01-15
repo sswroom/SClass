@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 		}
 
 		NN<Net::MQTTConn> client;
-		NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), 0, sb.ToCString(), (UInt16)port, 0, 0, 30000));
+		NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), nullptr, sb.ToCString(), (UInt16)port, 0, 0, 30000));
 		if (client->IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in connecting to server"), CSTR("Error"), me);
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 		else
 		{
 			client.Delete();
-			me->client = 0;
+			me->client = nullptr;
 			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
@@ -337,7 +337,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 			{
 				NN<Media::DrawBrush> b;
 				b = gimg->NewBrushARGB(0xffffffff);
-				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 				gimg->DelBrush(b);
 			}
 			else
@@ -396,8 +396,8 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClie
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->currTopic = 0;
-	this->dispImg = 0;
+	this->currTopic = nullptr;
+	this->dispImg = nullptr;
 
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -478,7 +478,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClie
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
-	this->client = 0;
+	this->client = nullptr;
 
 	this->AddTimer(30000, OnPingTimerTick, this);
 	this->AddTimer(1000, OnTimerTick, this);
@@ -506,7 +506,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 	if (this->dispImg.SetTo(img))
 	{
 		this->core->GetDrawEngine()->DeleteImage(img);
-		this->dispImg = 0;
+		this->dispImg = nullptr;
 	}
 }
 

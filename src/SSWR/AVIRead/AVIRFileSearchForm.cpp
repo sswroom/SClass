@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(AnyType userObj,
 	if (!me->lvFiles->GetItem(itemIndex).GetOpt<Text::String>().SetTo(filePath))
 		return;
 	NN<UtilUI::TextViewerForm> frm;
-	NEW_CLASSNN(frm, UtilUI::TextViewerForm(0, me->ui, me->core->GetMonitorMgr(), me->core->GetDrawEngine(), me->core->GetCurrCodePage()));
+	NEW_CLASSNN(frm, UtilUI::TextViewerForm(nullptr, me->ui, me->core->GetMonitorMgr(), me->core->GetDrawEngine(), me->core->GetCurrCodePage()));
 	me->core->ShowForm(frm);
 	if (frm->LoadFile(filePath))
 	{

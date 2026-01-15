@@ -52,7 +52,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::TCPClientFactory clif(sockf);
 	NN<Net::WebServer::WebStandardHandler> hdlr;
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(path, true, 65536, true));
-	NEW_CLASS(svr, Net::WebServer::WebListener(clif, 0, hdlr, port, 120, 1, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(svr, Net::WebServer::WebListener(clif, nullptr, hdlr, port, 120, 1, 8, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!svr->IsError())
 	{
 		progCtrl->WaitForExit(progCtrl);

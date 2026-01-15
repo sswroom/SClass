@@ -184,7 +184,7 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("JPGFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 0xff || buff[1] != 0xd8)
@@ -554,7 +554,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag) || !this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);

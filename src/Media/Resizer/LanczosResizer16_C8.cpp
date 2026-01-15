@@ -427,14 +427,14 @@ void Media::Resizer::LanczosResizer16_C8::DestoryHori()
 	if (this->hIndex.SetTo(hIndex))
 	{
 		MemFreeAArr(hIndex);
-		this->hIndex = 0;
+		this->hIndex = nullptr;
 	}
 	if (this->hWeight.SetTo(hWeight))
 	{
 		MemFreeAArr(hWeight);
-		this->hWeight = 0;
+		this->hWeight = nullptr;
 	}
-	hsSize = 0;
+	this->hsSize = 0;
 }
 
 void Media::Resizer::LanczosResizer16_C8::DestoryVert()
@@ -444,15 +444,15 @@ void Media::Resizer::LanczosResizer16_C8::DestoryVert()
 	if (this->vIndex.SetTo(vIndex))
 	{
 		MemFreeAArr(vIndex);
-		this->vIndex = 0;
+		this->vIndex = nullptr;
 	}
 	if (this->vWeight.SetTo(vWeight))
 	{
 		MemFreeAArr(vWeight);
-		this->vWeight = 0;
+		this->vWeight = nullptr;
 	}
-	vsSize = 0;
-	vsStep = 0;
+	this->vsSize = 0;
+	this->vsStep = 0;
 }
 
 Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
@@ -466,7 +466,7 @@ Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vn
 	this->hnTap = hnTap << 1;
 	this->vnTap = vnTap << 1;
 	this->rgbChanged = true;
-	this->rgbTable = 0;
+	this->rgbTable = nullptr;
 	NN<Media::ColorManagerSess> nncolorSess;
 	if (colorSess.SetTo(nncolorSess))
 	{
@@ -475,7 +475,7 @@ Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vn
 	}
 	else
 	{
-		this->colorSess = 0;
+		this->colorSess = nullptr;
 	}
 
 	this->params = MemAllocArr(TaskParam, this->nThread);
@@ -487,24 +487,24 @@ Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vn
 	}
 	NEW_CLASSNN(this->ptask, Sync::ParallelTask(this->nThread, false));
 
-	hsSize = 0;
-	hsOfst = 0;
-	hdSize = 0;
-	hIndex = 0;
-	hWeight = 0;
-	hTap = 0;
+	this->hsSize = 0;
+	this->hsOfst = 0;
+	this->hdSize = 0;
+	this->hIndex = nullptr;
+	this->hWeight = nullptr;
+	this->hTap = 0;
 
-	vsSize = 0;
-	vsOfst = 0;
-	vdSize = 0;
-	vsStep = 0;
-	vIndex = 0;
-	vWeight = 0;
-	vTap = 0;
+	this->vsSize = 0;
+	this->vsOfst = 0;
+	this->vdSize = 0;
+	this->vsStep = 0;
+	this->vIndex = nullptr;
+	this->vWeight = nullptr;
+	this->vTap = 0;
 
-	buffW = 0;
-	buffH = 0;
-	buffPtr = 0;
+	this->buffW = 0;
+	this->buffH = 0;
+	this->buffPtr = nullptr;
 }
 
 Media::Resizer::LanczosResizer16_C8::~LanczosResizer16_C8()
@@ -519,13 +519,13 @@ Media::Resizer::LanczosResizer16_C8::~LanczosResizer16_C8()
 		colorSess->RemoveHandler(*this);
 	}
 	this->ptask.Delete();
-	i = nThread;
+	i = this->nThread;
 	while (i-- > 0)
 	{
 		if (this->params[i].tmpbuff.SetTo(tmpbuff))
 		{
 			MemFreeAArr(tmpbuff);
-			this->params[i].tmpbuff = 0;
+			this->params[i].tmpbuff = nullptr;
 			this->params[i].tmpbuffSize = 0;
 		}
 	}
@@ -536,7 +536,7 @@ Media::Resizer::LanczosResizer16_C8::~LanczosResizer16_C8()
 	if (this->buffPtr.SetTo(buffPtr))
 	{
 		MemFreeAArr(buffPtr);
-		this->buffPtr = 0;
+		this->buffPtr = nullptr;
 	}
 	if (this->rgbTable.SetTo(rgbTable))
 	{
@@ -625,7 +625,7 @@ void Media::Resizer::LanczosResizer16_C8::Resize(UnsafeArray<const UInt8> src, O
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
 			buffW = dwidth;
 			buffH = siHeight;
@@ -671,11 +671,11 @@ void Media::Resizer::LanczosResizer16_C8::Resize(UnsafeArray<const UInt8> src, O
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
-			buffW = dwidth;
-			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
+			this->buffW = dwidth;
+			this->buffH = siHeight;
+			this->buffPtr = buffPtr = MemAllocA(UInt8, this->buffW * this->buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
@@ -710,16 +710,16 @@ void Media::Resizer::LanczosResizer16_C8::Resize(UnsafeArray<const UInt8> src, O
 			this->vWeight = vWeight = prm.weight;
 			vTap = prm.tap;
 		}
-		if ((UOSInt)siHeight != buffH || ((UOSInt)siWidth != buffW) || !this->buffPtr.SetTo(buffPtr))
+		if ((UOSInt)siHeight != this->buffH || ((UOSInt)siWidth != this->buffW) || !this->buffPtr.SetTo(buffPtr))
 		{
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
-			buffW = siWidth;
-			buffH = siHeight;
-			this->buffPtr = buffPtr = MemAllocA(UInt8, buffW * buffH << 3);
+			this->buffW = siWidth;
+			this->buffH = siHeight;
+			this->buffPtr = buffPtr = MemAllocA(UInt8, this->buffW * this->buffH << 3);
 		}
 		if (this->srcAlphaType == Media::AT_ALPHA)
 		{
@@ -829,7 +829,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizer16_C8::ProcessToNewPa
 	Media::StaticImage *newImage;
 	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
 	{
-		return 0;
+		return nullptr;
 	}
 	Math::Size2D<UOSInt> targetSize = this->targetSize;
 	if (targetSize.x == 0)

@@ -16,7 +16,7 @@ IO::LogFileManager::~LogFileManager()
 	this->logPath->Release();
 }
 
-void IO::LogFileManager::QueryLogMonths(NN<Data::ArrayList<UInt32>> months)
+void IO::LogFileManager::QueryLogMonths(NN<Data::ArrayListNative<UInt32>> months)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -41,7 +41,7 @@ void IO::LogFileManager::QueryLogMonths(NN<Data::ArrayList<UInt32>> months)
 	}
 }
 
-void IO::LogFileManager::QueryLogByMonth(NN<Data::ArrayList<UInt32>> dates, UInt32 month)
+void IO::LogFileManager::QueryLogByMonth(NN<Data::ArrayListNative<UInt32>> dates, UInt32 month)
 {
 	if (month <= 200000 || month > 999912)
 	{
@@ -78,7 +78,7 @@ Optional<IO::Stream> IO::LogFileManager::OpenLogFile(UInt32 date)
 {
 	if (date <= 20000100 || date > 99991231)
 	{
-		return 0;
+		return nullptr;
 	}
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -93,7 +93,7 @@ Optional<IO::Stream> IO::LogFileManager::OpenLogFile(UInt32 date)
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
-		return 0;
+		return nullptr;
 	}
 	return fs;
 }

@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISGROUPQUERYFORM
 #define _SM_SSWR_AVIREAD_AVIRGISGROUPQUERYFORM
+#include "Data/ArrayListNative.hpp"
 #include "Map/MapEnv.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRMapNavigator.h"
@@ -25,7 +26,7 @@ namespace SSWR
 
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
-			Data::ArrayList<UOSInt> queryValueOfstList;
+			Data::ArrayListNative<UOSInt> queryValueOfstList;
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayListNN<Text::String> queryValueList;
 

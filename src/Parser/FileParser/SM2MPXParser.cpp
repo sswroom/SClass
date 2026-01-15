@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 
 	if (ReadUInt32(&hdr[0]) != 0x4D324D53 || ReadUInt32(&hdr[4]) != 0x30315850)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UInt32 cnt = ReadUInt32(&hdr[8]);
@@ -51,7 +51,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 	UInt32 lastOfst;
 	if (cnt * 20 != endOfst - 32 || ReadUInt32(&hdr[28]) != 32)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UInt32 thisOfst;
@@ -68,7 +68,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 		if (thisOfst < lastOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 
 		sptr = enc.UTF8FromBytes(name, rec, 12, 0);

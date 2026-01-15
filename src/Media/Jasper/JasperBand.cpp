@@ -4,7 +4,7 @@
 Media::Jasper::JasperBand::JasperBand()
 {
 	this->height = INVALID_INDEX;
-	this->splitType = 0;
+	this->splitType = nullptr;
 }
 
 Media::Jasper::JasperBand::~JasperBand()

@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	NN<IO::Path::FindFileSession> sess;
 	csess.succ = true;
-	csess.errMsg = 0;
+	csess.errMsg = nullptr;
 	Text::CStringNN ext;
 	if (me->radFormatWebP->IsSelected())
 	{
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 	{
 		me->ui->ShowMsgOK(errMsg->ToCString(), CSTR("Image Batch Convert"), me);
 		errMsg->Release();
-		csess.errMsg = 0;
+		csess.errMsg = nullptr;
 	}
 }
 
@@ -203,7 +203,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 		this->threadEvt.Wait(1000);
 	}
 	MemFreeArr(threadStates);
-	this->threadStates = 0;
+	this->threadStates = nullptr;
 }
 
 void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(NN<ConvertSess> sess, Text::CStringNN srcFile, Text::CStringNN destFile)
@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(Optional<UI::GUICl
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->nThreads = 0;
-	this->threadStates = 0;
+	this->threadStates = nullptr;
 
 	this->lblDir = ui->NewLabel(*this, CSTR("Folder"));
 	this->lblDir->SetRect(0, 0, 100, 23, false);

@@ -97,8 +97,8 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnHexClicked(AnyType userObj)
 			{
 				IO::StmData::MemoryDataCopy fd(decBuff, buffSize);
 				NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
-				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, me->ui, me->core));
-				frm->SetData(fd, 0);
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(nullptr, me->ui, me->core));
+				frm->SetData(fd, nullptr);
 				me->core->ShowForm(frm);
 			}
 			MemFree(decBuff);

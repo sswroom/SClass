@@ -1,6 +1,5 @@
 #ifndef _SM_MAP_MAPSEARCH
 #define _SM_MAP_MAPSEARCH
-#include "Data/ArrayList.hpp"
 #include "Map/MapLayerData.h"
 #include "Map/MapSearchManager.h"
 #include "Text/CString.h"

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
-#include "Data/StringUTF8Map.hpp"
+#include "Data/StringMapNative.hpp"
 #include "IO/Path.h"
 #include "IO/VirtualPackageFileFast.h"
 #include "Parser/ParserList.h"
@@ -15,9 +15,9 @@
 Parser::FileParser::ZIPParser::ZIPParser()
 {
 	this->codePage = 65001;
-	this->parsers = 0;
-	this->encFact = 0;
-	this->browser = 0;
+	this->parsers = nullptr;
+	this->encFact = nullptr;
+	this->browser = nullptr;
 }
 
 Parser::FileParser::ZIPParser::~ZIPParser()
@@ -93,7 +93,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 
 	if (ReadInt32(&hdr[0]) != 0x04034b50)
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<IO::VirtualPackageFile> pf;
 	IO::VirtualPackageFile *pf2;
@@ -101,7 +101,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
-	Data::StringUTF8Map<UInt64> ofsts;
+	Data::StringMapNative<UInt64> ofsts;
 	UOSInt ui;
 	Bool parseFile = true;
 	dt.ToLocalTime();
@@ -192,7 +192,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	{
 		ZIPInfoEntry *zipInfo;
 		ZIPInfoEntry *zipInfo2;
-		Data::StringUTF8Map<ZIPInfoEntry*> zipInfos;
+		Data::StringMapObj<ZIPInfoEntry*> zipInfos;
 
 		printf("ZIPParser: Scan file\r\n");
 		fd->GetRealData(fileSize - 22, 22, BYTEARR(buff));
@@ -224,13 +224,13 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 						zipInfo->commentSize = ReadUInt16(&buff[32]);
 						if (flags & 0x800)
 						{
-							Text::StrConcatC(sbuff, &buff[46], zipInfo->fnameSize);
+							sptr = Text::StrConcatC(sbuff, &buff[46], zipInfo->fnameSize);
 						}
 						else
 						{
-							enc.UTF8FromBytes(sbuff, &buff[46], zipInfo->fnameSize, 0);
+							sptr = enc.UTF8FromBytes(sbuff, &buff[46], zipInfo->fnameSize, 0);
 						}
-						zipInfo2 = zipInfos.Put(sbuff, zipInfo);
+						zipInfo2 = zipInfos.Put(CSTRP(sbuff, sptr), zipInfo);
 						if (zipInfo2)
 						{
 							MemFree(zipInfo2);
@@ -255,7 +255,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 			if (currOfst >= fileSize)
 			{
 				pf.Delete();
-				return 0;
+				return nullptr;
 			}
 			fd->GetRealData(currOfst, 512, BYTEARR(buff));
 			if (ReadInt32(buff) == 0x04034b50)
@@ -309,7 +309,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 				if (buff[30 + fnameSize - 1] == '/')
 				{
 					sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize - 1, 0);
-					zipInfo = zipInfos.Get(sbuff);
+					zipInfo = zipInfos.Get(CSTRP(sbuff, sptrEnd));
 					if (zipInfo && (zipInfo->compSize != 0xffffffff))
 					{
 						dataSize = zipInfo->compSize;
@@ -352,8 +352,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 				{
 					IO::PackFileItem::CompressInfo compInfo;
 					sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize, 0);
-					ofsts.Put(sbuff, currOfst + 30 + fnameSize + extraSize);
-					zipInfo = zipInfos.Get(sbuff);
+					ofsts.Put(CSTRP(sbuff, sptrEnd), currOfst + 30 + fnameSize + extraSize);
+					zipInfo = zipInfos.Get(CSTRP(sbuff, sptrEnd));
 					if (zipInfo && (zipInfo->compSize != 0xffffffff))
 					{
 						dataSize = zipInfo->compSize;
@@ -450,7 +450,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 				break;
 			}
 		}
-		NN<const Data::ArrayList<ZIPInfoEntry*>> zipInfoList = zipInfos.GetValues();
+		NN<const Data::ArrayListObj<ZIPInfoEntry*>> zipInfoList = zipInfos.GetValues();
 		ui = zipInfoList->GetCount();
 		while (ui-- > 0)
 		{

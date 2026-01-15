@@ -9,7 +9,7 @@ Media::VOBLPCMStreamSource::VOBLPCMStreamSource(NN<Media::MediaStreamControl> pb
 {
 	this->pbc = pbc;
 	this->fmt.FromAudioFormat(fmt);
-	this->pbEvt = 0;
+	this->pbEvt = nullptr;
 
 	this->buffSize = this->fmt.bitRate >> 2;
 	this->dataBuff = MemAlloc(UInt8, this->buffSize);
@@ -67,7 +67,7 @@ Bool Media::VOBLPCMStreamSource::Start(Optional<Sync::Event> evt, UOSInt blkSize
 void Media::VOBLPCMStreamSource::Stop()
 {
 	this->pbc->StopAudio();
-	this->pbEvt = 0;
+	this->pbEvt = nullptr;
 }
 
 UOSInt Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)

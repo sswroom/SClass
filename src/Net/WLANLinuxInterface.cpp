@@ -283,9 +283,9 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 				bss.phyId = (UInt32)retVal;
 				bss.phyType = 0;
 				bss.rssi = 0;
-				bss.devManuf = 0;
-				bss.devModel = 0;
-				bss.devSN = 0;
+				bss.devManuf = nullptr;
+				bss.devModel = nullptr;
+				bss.devSN = nullptr;
 				bss.country[0] = 0;
 				i = WLAN_OUI_CNT;
 				while (i-- > 0)
@@ -316,9 +316,9 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 				bss.phyId = (UInt32)retVal;
 				bss.phyType = 0;
 				bss.rssi = 0;
-				bss.devManuf = 0;
-				bss.devModel = 0;
-				bss.devSN = 0;
+				bss.devManuf = nullptr;
+				bss.devModel = nullptr;
+				bss.devSN = nullptr;
 				bss.country[0] = 0;
 				i = WLAN_OUI_CNT;
 				while (i-- > 0)

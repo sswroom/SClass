@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("Forward URL must be started with http:// or https://"), CSTR("HTTP Forwarder"), me);
 		return;
 	}
-	Optional<Net::SSLEngine> ssl = 0;
+	Optional<Net::SSLEngine> ssl = nullptr;
 
 	if (me->chkSSL->IsChecked())
 	{
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userOb
 					logPath = CSTR("log/fwd");
 				else
 					logPath = CSTR("log\\fwd");
-				fwdLog->AddFileLog(logPath, IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, 0, 0);
+				fwdLog->AddFileLog(logPath, IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, nullptr, 0);
 				fwdHdlr->SetLog(fwdLog, me->chkLogContent->IsChecked());
 			}
 			if (!svr->Start())
@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -156,11 +156,11 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(Optional<UI::GUIClie
 	this->SetText(CSTR("HTTP Forwarder"));
 	this->SetFont(nullptr, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->sslCert = 0;
-	this->sslKey = 0;
-	this->svr = 0;
-	this->fwdLog = 0;
-	this->fwdHdlr = 0;
+	this->sslCert = nullptr;
+	this->sslKey = nullptr;
+	this->svr = nullptr;
+	this->fwdLog = nullptr;
+	this->fwdHdlr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));

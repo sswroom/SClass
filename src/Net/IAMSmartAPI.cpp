@@ -65,7 +65,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 	if (encLeng != jsonMsg.leng + 16)
 	{
 		MemFreeArr(msgBuff);
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64;
@@ -94,7 +94,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 #if defined(VERBOSE)
 		printf("Status is not OK\r\n");
 #endif
-		return 0;
+		return nullptr;
 	}
 	NN<Text::JSONBase> json;
 	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength() - 1)).SetTo(json))
@@ -102,7 +102,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 #if defined(VERBOSE)
 		printf("Response is not JSON\r\n");
 #endif
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> s;
 	if (!json->GetValueString(CSTR("message")).SetTo(s) || !s->Equals(CSTR("SUCCESS")))
@@ -111,7 +111,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 		printf("Response is not success\r\n");
 #endif
 		json->EndUse();
-		return 0;
+		return nullptr;
 	}
 	if (!json->GetValueString(CSTR("content")).SetTo(s))
 	{
@@ -119,7 +119,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 		printf("Response content not found\r\n");
 #endif
 		json->EndUse();
-		return 0;
+		return nullptr;
 	}
 
 	msgBuff = MemAllocArr(UInt8, s->leng);
@@ -131,7 +131,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 		printf("Response content too short\r\n");
 #endif
 		MemFreeArr(msgBuff);
-		return 0;
+		return nullptr;
 	}
 	if (ReadMUInt32(&msgBuff[0]) != 12)
 	{
@@ -139,7 +139,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 		printf("Response content IV not found\r\n");
 #endif
 		MemFreeArr(msgBuff);
-		return 0;
+		return nullptr;
 	}
 	UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, msgLeng - 32 + 1);
 	aes.SetIV(&msgBuff[4]);
@@ -151,7 +151,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 		printf("Decrypted length not valid\r\n");
 #endif
 		MemFreeArr(decBuff);
-		return 0;
+		return nullptr;
 	}
 	decBuff[decLeng] = 0;
 #if defined(VERBOSE)
@@ -172,7 +172,7 @@ Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, T
 {
 	NN<Text::JSONBase> addr;
 	if (!json->GetValue(path).SetTo(addr))
-		return 0;
+		return nullptr;
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
 	if (addr->GetValue(CSTR("ChiPremisesAddress")).SetTo(json))
@@ -306,7 +306,7 @@ Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, T
 			return Text::String::New(sb.ToCString());
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Net::IAMSmartAPI::IAMSmartAPI(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret)
@@ -584,24 +584,24 @@ Bool Net::IAMSmartAPI::GetProfiles(NN<TokenInfo> token, Text::CStringNN eMEField
 	NN<Text::JSONBase> json;
 	if (!this->PostEncReq(sbURL.ToCString(), cek, jsonMsg.Build()).SetTo(json))
 		return false;
-	profiles->hkid = 0;
+	profiles->hkid = nullptr;
 	profiles->hkidChk = 0;
-	profiles->prefix = 0;
-	profiles->enName = 0;
-	profiles->chName = 0;
-	profiles->chNameVerfied = 0;
+	profiles->prefix = nullptr;
+	profiles->enName = nullptr;
+	profiles->chName = nullptr;
+	profiles->chNameVerfied = nullptr;
 	profiles->birthDate = 0;
 	profiles->gender = 0;
 	profiles->maritalStatus = 0;
-	profiles->homeTelNumber = 0;
-	profiles->homeTelNumberICC = 0;
-	profiles->officeTelNumber = 0;
-	profiles->officeTelNumberICC = 0;
-	profiles->mobileTelNumber = 0;
-	profiles->mobileTelNumberICC = 0;
-	profiles->emailAddress = 0;
-	profiles->residentialAddress = 0;
-	profiles->postalAddress = 0;
+	profiles->homeTelNumber = nullptr;
+	profiles->homeTelNumberICC = nullptr;
+	profiles->officeTelNumber = nullptr;
+	profiles->officeTelNumberICC = nullptr;
+	profiles->mobileTelNumber = nullptr;
+	profiles->mobileTelNumberICC = nullptr;
+	profiles->emailAddress = nullptr;
+	profiles->residentialAddress = nullptr;
+	profiles->postalAddress = nullptr;
 	profiles->educationLevel = 0;
 	NN<Text::String> s;
 	profiles->hkid = json->GetValueNewString(CSTR("idNo.Identification"));

@@ -15,7 +15,7 @@ void __stdcall Map::HKSpeedLimit::FreeRoute(NN<RouteInfo> route)
 
 void Map::HKSpeedLimit::FreeIndex()
 {
-	NN<Data::ArrayList<Int32>> index;
+	NN<Data::ArrayListNative<Int32>> index;
 	UOSInt i = this->indexMap.GetCount();
 	while (i-- > 0)
 	{
@@ -29,7 +29,7 @@ void Map::HKSpeedLimit::BuildIndex()
 {
 	NN<RouteInfo> route;
 	UOSInt i;
-	NN<Data::ArrayList<Int32>> index;
+	NN<Data::ArrayListNative<Int32>> index;
 	Int32 x;
 	Int32 y;
 	Int32 minX;
@@ -57,7 +57,7 @@ void Map::HKSpeedLimit::BuildIndex()
 					key = (((Int64)x) << 32) | (UInt32)y;
 					if (!this->indexMap.Get(key).SetTo(index))
 					{
-						NEW_CLASSNN(index, Data::ArrayList<Int32>());
+						NEW_CLASSNN(index, Data::ArrayListNative<Int32>());
 						this->indexMap.Put(key, index);
 					}
 					index->Add(route->routeId);
@@ -85,7 +85,7 @@ void Map::HKSpeedLimit::BuildIndex()
 					key = (((Int64)x) << 32) | (UInt32)y;
 					if (!this->indexMap.Get(key).SetTo(index))
 					{
-						NEW_CLASSNN(index, Data::ArrayList<Int32>());
+						NEW_CLASSNN(index, Data::ArrayListNative<Int32>());
 						this->indexMap.Put(key, index);
 					}
 					index->Add(route->routeId);
@@ -97,10 +97,10 @@ void Map::HKSpeedLimit::BuildIndex()
 	}
 }
 
-void Map::HKSpeedLimit::AppendRouteIds(NN<Data::ArrayList<Int32>> routeList, Int32 x, Int32 y)
+void Map::HKSpeedLimit::AppendRouteIds(NN<Data::ArrayListNative<Int32>> routeList, Int32 x, Int32 y)
 {
 	Int64 key = (((Int64)x) << 32) | (UInt32)y;
-	NN<Data::ArrayList<Int32>> index;
+	NN<Data::ArrayListNative<Int32>> index;
 	if (this->indexMap.Get(key).SetTo(index))
 	{
 		routeList->AddAll(index);
@@ -114,12 +114,12 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 	NN<RouteInfo> route;
 	UOSInt i;
 	this->dataCsys = roadNetwork->CreateCoordinateSystem();
-	this->reqCsys = 0;
+	this->reqCsys = nullptr;
 	NN<DB::ReadingDB> fgdb;
 	if (roadNetwork->GetDB().SetTo(fgdb))
 	{
 		NN<DB::DBReader> r;
-		if (fgdb->QueryTableData(nullptr, CSTR("CENTERLINE"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (fgdb->QueryTableData(nullptr, CSTR("CENTERLINE"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			UOSInt objIdCol = INVALID_INDEX;
 			UOSInt routeIdCol = INVALID_INDEX;
@@ -167,7 +167,7 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 		}
 		if (this->routeMap.GetCount() > 0)
 		{
-			if (fgdb->QueryTableData(nullptr, CSTR("SPEED_LIMIT"), 0, 0, 0, nullptr, 0).SetTo(r))
+			if (fgdb->QueryTableData(nullptr, CSTR("SPEED_LIMIT"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
 				UOSInt routeIdCol = INVALID_INDEX;
 				UOSInt spdLimitCol = INVALID_INDEX;
@@ -235,7 +235,7 @@ Optional<const Map::HKSpeedLimit::RouteInfo> Map::HKSpeedLimit::GetNearestRoute(
 	{
 		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
 	}
-	Data::ArrayList<Int32> routeList;
+	Data::ArrayListNative<Int32> routeList;
 	UOSInt i;
 	NN<RouteInfo> route;
 	Int32 minRouteId = -1;
@@ -298,7 +298,7 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 	{
 		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
 	}
-	Data::ArrayList<Int32> routeList;
+	Data::ArrayListNative<Int32> routeList;
 	UOSInt i;
 	NN<RouteInfo> route;
 	Double thisDist;

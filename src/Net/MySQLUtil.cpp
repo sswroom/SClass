@@ -69,7 +69,7 @@ UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencInt(UnsafeArray<UInt8> buff, UInt
 
 UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencStrC(UnsafeArray<UInt8> buff, UnsafeArrayOpt<const UTF8Char> s, UOSInt len)
 {
-	if (s == 0)
+	if (s.IsNull())
 	{
 		buff[0] = 0;
 		return buff + 1;

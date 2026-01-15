@@ -32,7 +32,7 @@ namespace SSWR
 			NN<AVIRMapNavigator> navi;
 			NN<Math::CoordinateSystem> csys;
 
-			Data::ArrayList<Double> ptList;
+			Data::ArrayListNative<Double> ptList;
 			Math::Coord2DDbl lastMapPos;
 			Double pathDist;
 			Double dispDist;

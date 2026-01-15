@@ -18,7 +18,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 	else
 	{
-		this->zArr = 0;
+		this->zArr = nullptr;
 	}
 	if (hasM)
 	{
@@ -26,7 +26,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 	else
 	{
-		this->mArr = 0;
+		this->mArr = nullptr;
 	}
 }
 
@@ -44,7 +44,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coor
 	}
 	else
 	{
-		this->zArr = 0;
+		this->zArr = nullptr;
 	}
 	if (mArr.SetTo(arr))
 	{
@@ -53,7 +53,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coor
 	}
 	else
 	{
-		this->mArr = 0;
+		this->mArr = nullptr;
 	}
 }
 
@@ -564,7 +564,7 @@ Bool Math::Geometry::LineString::HasArea() const
 	return false;
 }
 
-UOSInt Math::Geometry::LineString::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+UOSInt Math::Geometry::LineString::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	if (this->nPoint < 2)
 		return 0;
@@ -601,7 +601,7 @@ Math::Coord2DDbl Math::Geometry::LineString::GetDisplayCenter() const
 {
 	Math::RectAreaDbl bounds = this->GetBounds();
 	Math::Coord2DDbl pt = bounds.GetCenter();
-	Data::ArrayList<Double> xList;
+	Data::ArrayListNative<Double> xList;
 	this->CalcHIntersacts(pt.y, xList);
 	if (xList.GetCount() == 0)
 	{
@@ -788,7 +788,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 	{
 		if (minId == this->nPoint - 1 || minId == 0 || minId == (UOSInt)-1)
 		{
-			return 0;
+			return nullptr;
 		}
 		
 		oldPoints = this->pointArr;
@@ -803,7 +803,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 		}
 		else
 		{
-			newZ = 0;
+			newZ = nullptr;
 		}
 		if (oldM.SetTo(oldArr))
 		{
@@ -812,7 +812,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 		}
 		else
 		{
-			newM = 0;
+			newM = nullptr;
 		}
 		l = minId + 1;
 		while (l-- > 0)
@@ -868,7 +868,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 		}
 		else
 		{
-			newZ = 0;
+			newZ = nullptr;
 		}
 		if (oldM.SetTo(oldArr))
 		{
@@ -878,7 +878,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Ma
 		}
 		else
 		{
-			newM = 0;
+			newM = nullptr;
 		}
 		l = minId + 1;
 		while (l-- > 0)
@@ -1103,7 +1103,7 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> i
 Optional<Math::Geometry::Polygon> Math::Geometry::LineString::CreatePolygonByDist(Double dist) const
 {
 	if (this->nPoint < 2)
-		return 0;
+		return nullptr;
 
 	Data::ArrayListDbl outPoints;
 	Double lastPtX = 0;
@@ -1250,7 +1250,7 @@ NN<Math::Geometry::Polyline> Math::Geometry::LineString::CreatePolyline() const
 Optional<Math::Geometry::LineString> Math::Geometry::LineString::JoinLines(NN<Data::ArrayListNN<LineString>> lines)
 {
 	if (lines->GetCount() == 0)
-		return 0;
+		return nullptr;
 	Bool hasZ = true;
 	Bool hasM = true;
 	UOSInt nPoints = 0;
@@ -1308,7 +1308,7 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::JoinLines(NN<Da
 			sb.ClearStr();
 			writer.ToText(sb, lines->GetItemNoCheck(i - 1));
 			printf("LineString.JoinLines: last line: %s\r\n", sb.v.Ptr());*/
-			return 0;
+			return nullptr;
 		}
 		i++;
 	}

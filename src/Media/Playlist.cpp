@@ -25,8 +25,8 @@ void __stdcall Media::Playlist::FreeEntry(NN<PlaylistEntry> ent)
 Media::Playlist::Playlist(Text::CStringNN sourceName, NN<Parser::ParserList> parsers) : IO::ParsedObject(sourceName)
 {
 	this->parsers = parsers;
-	this->player = 0;
-	this->currFile = 0;
+	this->player = nullptr;
+	this->currFile = nullptr;
 	this->playing = false;
 }
 
@@ -35,9 +35,9 @@ Media::Playlist::~Playlist()
 	NN<Media::MediaPlayer> player;
 	if (this->player.SetTo(player))
 	{
-		player->LoadMedia(0);
-		player->SetEndHandler(0, 0);
-		this->player = 0;
+		player->LoadMedia(nullptr);
+		player->SetEndHandler(nullptr, nullptr);
+		this->player = nullptr;
 	}
 	this->currFile.Delete();
 	this->entries.FreeAll(FreeEntry);
@@ -90,7 +90,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 			}
 			else
 			{
-				ent->artist = 0;
+				ent->artist = nullptr;
 			}
 			ent->timeStart = chap->GetChapterTime(i);
 			ent->timeEnd = nextTime;
@@ -105,7 +105,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 		ent->fileName = Text::String::New(fileName.v, fileName.leng);
 		i = Text::StrLastIndexOfCharC(fileName.v, fileName.leng, IO::Path::PATH_SEPERATOR);
 		ent->title = Text::String::New(&fileName.v[i + 1], fileName.leng - i - 1);
-		ent->artist = 0;
+		ent->artist = nullptr;
 		ent->timeStart = 0;
 		ent->timeEnd = -1;
 		this->entries.Add(ent);
@@ -144,7 +144,7 @@ Bool Media::Playlist::AppendPlaylist(NN<Media::Playlist> playlist)
 		}
 		else
 		{
-			ent->artist = 0;
+			ent->artist = nullptr;
 		}
 		ent->timeStart = plent->timeStart;
 		ent->timeEnd = plent->timeEnd;
@@ -168,7 +168,7 @@ Optional<Text::String> Media::Playlist::GetTitle(UOSInt index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
-		return 0;
+		return nullptr;
 	return ent->title;
 }
 
@@ -176,7 +176,7 @@ Optional<Text::String> Media::Playlist::GetArtist(UOSInt index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
-		return 0;
+		return nullptr;
 	return ent->artist;
 }
 
@@ -184,7 +184,7 @@ Optional<Text::String> Media::Playlist::GetFileName(UOSInt index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))
-		return 0;
+		return nullptr;
 	return ent->fileName;
 }
 
@@ -210,7 +210,7 @@ void Media::Playlist::SetPlayer(Optional<Media::MediaPlayer> player)
 	if (this->player.SetTo(nnplayer))
 	{
 		nnplayer->SetEndHandler(0, 0);
-		this->player = 0;
+		this->player = nullptr;
 	}
 	this->player = player;
 	if (this->player.SetTo(nnplayer))
@@ -226,7 +226,7 @@ Bool Media::Playlist::OpenItem(UOSInt index)
 	if (!this->entries.GetItem(index).SetTo(ent) || !this->player.SetTo(player))
 		return false;
 
-	player->LoadMedia(0);
+	player->LoadMedia(nullptr);
 	this->currFile.Delete();
 	{
 		IO::StmData::FileData fd(ent->fileName, false);

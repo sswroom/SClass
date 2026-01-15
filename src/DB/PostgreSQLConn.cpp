@@ -107,7 +107,7 @@ public:
 		this->GetVariItem(colIndex, item);
 		if (item.GetItemType() == Data::VariItem::ItemType::Null)
 		{
-			return 0;
+			return nullptr;
 		}
 		else if (item.GetItemType() == Data::VariItem::ItemType::CStr)
 		{
@@ -393,7 +393,7 @@ public:
 		}
 		case 1005: //_int2
 		{
-			Data::ArrayList<Int16> arr;
+			Data::ArrayListNative<Int16> arr;
 			Int16 v;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
@@ -423,7 +423,7 @@ public:
 		}
 		case 1028: //_oid
 		{
-			Data::ArrayList<Int32> arr;
+			Data::ArrayListNative<Int32> arr;
 			Int32 v;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
@@ -453,7 +453,7 @@ public:
 		}
 		case 1016: //_int8
 		{
-			Data::ArrayList<Int64> arr;
+			Data::ArrayListNative<Int64> arr;
 			Int64 v;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
@@ -483,7 +483,7 @@ public:
 		}
 		case 1021: //_float4
 		{
-			Data::ArrayList<Single> arr;
+			Data::ArrayListNative<Single> arr;
 			Double dv;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
@@ -532,7 +532,7 @@ public:
 		}
 		case 22: //int2vector
 		{
-			Data::ArrayList<Int16> arr;
+			Data::ArrayListNative<Int16> arr;
 			Int16 v;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
@@ -557,7 +557,7 @@ public:
 		}
 		case 30: //oidvector
 		{
-			Data::ArrayList<Int32> arr;
+			Data::ArrayListNative<Int32> arr;
 			Int32 v;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
@@ -624,7 +624,7 @@ public:
 		{
 			return Text::StrConcat(buff, (const UTF8Char*)name);
 		}
-		return 0;
+		return nullptr;
 	}
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
@@ -777,7 +777,7 @@ void DB::PostgreSQLConn::InitConnection()
 
 DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Optional<Text::String> uid, Optional<Text::String> pwd, NN<Text::String> database, NN<IO::LogTool> log) : DBConn(server)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->conn = 0;
 	this->tzQhr = 0;
 	this->log = log;
@@ -794,7 +794,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Optiona
 
 DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CStringNN database, NN<IO::LogTool> log) : DBConn(server)
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->conn = 0;
 	this->tzQhr = 0;
 	this->log = log;
@@ -817,7 +817,7 @@ DB::PostgreSQLConn::~PostgreSQLConn()
 	this->database->Release();
 	OPTSTR_DEL(this->uid);
 	OPTSTR_DEL(this->pwd);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 DB::SQLType DB::PostgreSQLConn::GetSQLType() const
@@ -910,7 +910,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 	this->lastDataError = false;
 	if (this->clsData->conn == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	PGresult *res = PQexec(this->clsData->conn, (const char*)sql.v.Ptr());
 	ExecStatusType status = PQresultStatus(res);
@@ -927,7 +927,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 		printf("PostgreSQL: Error: %s\r\n", errMsg);
 #endif
 		PQclear(res);
-		return 0;
+		return nullptr;
 	}
 	return NEW_CLASS_D(PostgreSQLReader(res, this->tzQhr, *this));
 }
@@ -965,7 +965,7 @@ Optional<DB::DBTransaction> DB::PostgreSQLConn::BeginTransaction()
 {
 	if (this->isTran)
 	{
-		return 0;
+		return nullptr;
 	}
 	this->ExecuteNonQuery(CSTR("BEGIN"));
 	this->isTran = true;
@@ -1294,7 +1294,7 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverNam
 	if (conn->IsConnError())
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
@@ -1308,7 +1308,7 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName
 	if (conn->IsConnError())
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));

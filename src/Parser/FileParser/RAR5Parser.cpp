@@ -70,7 +70,7 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 
 	if (ReadInt32(&hdr[0]) != 0x21726152 || ReadInt32(&hdr[4]) != 0x0001071A)
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::VirtualPackageFile *pf;
 	Data::DateTime dt;
@@ -85,14 +85,14 @@ Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::S
 		if (iVal >= 1048576 * 2)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		headerSize = (UInt32)(iVal + (UOSInt)(buffPtr - buff));
 		buffPtr = ReadVInt(buffPtr, &iVal);
 		if (iVal > 5)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		headerType = (UInt32)iVal;
 		buffPtr = ReadVInt(buffPtr, &iVal);

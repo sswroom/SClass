@@ -21,7 +21,7 @@
 Exporter::KMLExporter::KMLExporter()
 {
 	this->codePage = 65001;
-	this->encFact = 0;
+	this->encFact = nullptr;
 }
 
 Exporter::KMLExporter::~KMLExporter()

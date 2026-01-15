@@ -8,7 +8,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::D
 	this->deng = deng;
 	this->noRelease = true;
 	this->bmp = bmp;
-	this->imgList = 0;
+	this->imgList = nullptr;
 	this->frameDelay = 500;
 	this->clk = 0;
 }
@@ -17,11 +17,11 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fil
 {
 	this->deng = deng;
 	this->noRelease = false;
-	this->bmp = 0;
+	this->bmp = nullptr;
 	this->clk = 0;
 	if (fileName.leng == 0)
 	{
-		this->imgList = 0;
+		this->imgList = nullptr;
 	}
 	else
 	{
@@ -43,7 +43,7 @@ UI::DObj::OverlayDObj::~OverlayDObj()
 	else if (this->bmp.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmp = 0;
+		this->bmp = nullptr;
 	}
 	else if (this->imgList.NotNull())
 	{

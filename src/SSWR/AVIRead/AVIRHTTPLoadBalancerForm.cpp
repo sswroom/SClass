@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnStartClick(AnyType use
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
-	Optional<Net::SSLEngine> ssl = 0;
+	Optional<Net::SSLEngine> ssl = nullptr;
 	UOSInt i;
 	UOSInt j;
 	if (me->targets.GetCount() <= 0)
@@ -209,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnTimerTick(AnyType user
 	if (i != me->lastAccessIndex)
 	{
 		Data::ArrayListNN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> logs;
-		Data::ArrayList<UOSInt> logIndex;
+		Data::ArrayListNative<UOSInt> logIndex;
 		NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage;
@@ -271,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnAccessSelChg(AnyType u
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalancerForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalancerForm>();
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->sslCert.Delete();
@@ -332,12 +332,12 @@ SSWR::AVIRead::AVIRHTTPLoadBalancerForm::AVIRHTTPLoadBalancerForm(Optional<UI::G
 	this->SetText(TITLE);
 	this->SetFont(nullptr, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->sslCert = 0;
-	this->sslKey = 0;
-	this->svr = 0;
-	this->log = 0;
-	this->fwdHdlr = 0;
-	this->logger = 0;
+	this->sslCert = nullptr;
+	this->sslKey = nullptr;
+	this->svr = nullptr;
+	this->log = nullptr;
+	this->fwdHdlr = nullptr;
+	this->logger = nullptr;
 	this->lastAccessIndex = 0;
 	this->lastStatus.connCnt = 0;
 	this->lastStatus.currConn = 0;

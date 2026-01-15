@@ -17,7 +17,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::DTSBlockParser::ParseStrea
 	stmData->GetRealData(0, 16, BYTEARR(buff));
 	if (*(Int32*)&buff[0] != 0x180FE7F || (buff[4] & 0xfc) != 0xfc)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 nblks = (UInt32)(((buff[4] & 1) << 6) + (buff[5] >> 2));
 	UInt32 fsize = (UInt32)(((buff[5] & 3) << 12) + (buff[6] << 4) + (buff[7] >> 4));
@@ -115,7 +115,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::DTSBlockParser::ParseStrea
 	{
 		if (*(Int32*)&buff[0] != 0x180FE7F || (buff[4] & 0xfc) != 0xfc)
 		{
-			return 0;
+			return nullptr;
 		}
 
 		nblks = (UInt32)(((buff[4] & 1) << 6) + (buff[5] >> 2));

@@ -145,5 +145,5 @@ Optional<Text::UnicodeCharacterData::UnicodeData> Text::UnicodeCharacterData::Ge
 			return data;
 		}
 	}
-	return 0;
+	return nullptr;
 }

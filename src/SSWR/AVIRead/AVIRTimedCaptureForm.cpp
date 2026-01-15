@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 	}
 	else
 	{
-		me->currCapture = 0;
+		me->currCapture = nullptr;
 	}
 	me->cboFormat->ClearItems();
 	NN<Media::VideoCapturer> currCapture;
@@ -187,11 +187,11 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			me->frameCnt = 0;
 			me->saveCnt = 0;
 			Media::ColorProfile dProfile(Media::ColorProfile::CPT_SRGB);
-			me->csConv = Media::CS::CSConverter::NewConverter(cfmt->fourcc, cfmt->bpp, me->videoInfo.pf, me->videoInfo.color, 0, 32, Media::PF_B8G8R8A8, dProfile, Media::ColorProfile::YUVT_UNKNOWN, 0);
+			me->csConv = Media::CS::CSConverter::NewConverter(cfmt->fourcc, cfmt->bpp, me->videoInfo.pf, me->videoInfo.color, 0, 32, Media::PF_B8G8R8A8, dProfile, Media::ColorProfile::YUVT_UNKNOWN, nullptr);
 			if (me->csConv.IsNull() == 0)
 			{
 				timedImageList.Delete();
-				me->timedImageList = 0;
+				me->timedImageList = nullptr;
 				return;
 			}
 			if (currCapture->Start())
@@ -208,7 +208,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			{
 				me->csConv.Delete();
 				timedImageList.Delete();
-				me->timedImageList = 0;
+				me->timedImageList = nullptr;
 			}
 		}
 	}
@@ -290,8 +290,8 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->csConv = 0;
-	this->timedImageList = 0;
+	this->csConv = nullptr;
+	this->timedImageList = nullptr;
 	this->isStarted = false;
 	this->frameCnt = 0;
 	this->saveCnt = 0;
@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	this->txtSaveCnt->SetRect(104, 28, 100, 23, false);
 
 	NEW_CLASSNN(this->captureMgr, Media::VideoCaptureMgr());
-	this->currCapture = 0;
+	this->currCapture = nullptr;
 	this->captureMgr->GetDeviceList(this->devInfoList);
 	UOSInt cnt = this->devInfoList.GetCount();
 	if (cnt == 0)

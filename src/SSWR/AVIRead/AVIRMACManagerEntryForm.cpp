@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUI
 	}
 	Data::Sort::ArtificialQuickSortFunc<NN<Net::MACInfo::MACEntry>>::Sort(macListSort, MACCompare, 0, (OSInt)j - 1);
 	this->cboName->BeginUpdate();
-	lastMAC = 0;
+	lastMAC = nullptr;
 	i = 0;
 	while (i < j)
 	{

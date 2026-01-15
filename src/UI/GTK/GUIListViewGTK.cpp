@@ -479,7 +479,7 @@ UOSInt UI::GUIListView::GetSelectedIndex()
 	}
 }
 
-UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices)
+UOSInt UI::GUIListView::GetSelectedIndices(Data::ArrayListNative<UOSInt> *selIndices)
 {
 	UOSInt ret = 0;
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
@@ -517,7 +517,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetSelectedItemText(UnsafeArray<UTF8Ch
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
 		return this->GetItemText(buff, i);
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> UI::GUIListView::GetSelectedItemTextNew()
@@ -525,7 +525,7 @@ Optional<Text::String> UI::GUIListView::GetSelectedItemTextNew()
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
 		return this->GetItemTextNew(i);
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
@@ -533,7 +533,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
-		return 0;
+		return nullptr;
 	return Text::StrConcatC(buff, r->txt->v, r->txt->leng);
 }
 
@@ -542,7 +542,7 @@ Optional<Text::String> UI::GUIListView::GetItemTextNew(UOSInt index)
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
-		return 0;
+		return nullptr;
 	return r->txt->Clone();
 }
 

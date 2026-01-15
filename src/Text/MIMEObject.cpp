@@ -29,7 +29,7 @@ Optional<Text::MIMEObject> Text::MIMEObject::ParseFromData(NN<IO::StreamData> da
 	UOSInt buffSize;
 	if (data->GetDataSize() > 104857600)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (contentType.leng == 0)
 	{
@@ -94,7 +94,7 @@ Optional<Text::MIMEObject> Text::MIMEObject::ParseFromFile(Text::CStringNN fileN
 	IO::StmData::FileData fd(fileName, false);
 	if (fd.GetDataSize() <= 0)
 	{
-		obj = 0;
+		obj = nullptr;
 	}
 	else
 	{

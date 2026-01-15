@@ -587,7 +587,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcBookUnselect(NN<Net::We
 	me->ParseRequestEnv(req, resp, env, false);
 	if (env.user.SetTo(user) && user->userType == UserType::Admin)
 	{
-		me->env->BookSelect(0);
+		me->env->BookSelect(nullptr);
 	}
 	return me->ResponseJSON(req, resp, 0, CSTR("{}"));
 }
@@ -1065,7 +1065,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 				msg = CSTR("Not GPS Track");
 			}
 		}
-		else if (!me->env->UserfileAdd(mutUsage, user->id, user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, (location->leng == 0)?0:Optional<Text::String>(location)))
+		else if (!me->env->UserfileAdd(mutUsage, user->id, user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, (location->leng == 0)?nullptr:Optional<Text::String>(location)))
 		{
 			msg = CSTR("Userfile problem");
 			succ = false;

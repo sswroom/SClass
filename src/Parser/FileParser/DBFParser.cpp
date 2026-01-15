@@ -42,30 +42,30 @@ Optional<IO::ParsedObject> Parser::FileParser::DBFParser::ParseFileHdr(NN<IO::St
 	UInt8 hdr2;
 	if (((*(UInt16*)&hdr[8]) & 31) != 1)
 	{
-		return 0;
+		return nullptr;
 	}
 	
 	if (fd->GetRealData((UOSInt)ReadUInt16(&hdr[8]) - 1, 1, Data::ByteArray(&hdr2, 1)) != 1)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (hdr2 != 0xd)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt16 leng = *(UInt16*)&hdr[10];
 	UInt32 nRecs = *(UInt32*)&hdr[4];
 	if (leng > 4096)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (nRecs == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (nRecs * (UInt64)leng + *(UInt16*)&hdr[8] > fd->GetDataSize())
 	{
-		return 0;
+		return nullptr;
 	}
 
 	DB::DBFFile *pf;

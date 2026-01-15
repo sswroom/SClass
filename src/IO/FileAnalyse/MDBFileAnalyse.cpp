@@ -47,7 +47,7 @@ void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MDBFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadInt32(buff) != 0x00000100)
@@ -144,9 +144,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 	UInt8 decBuff[128];
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	fd->GetRealData(pack->fileOfst, pack->packSize, BYTEARR(packBuff));

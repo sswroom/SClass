@@ -81,7 +81,7 @@ Net::SyslogServer::SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text:
 	this->redirLog = redirLog;
 	this->logHdlr = 0;
 	this->logHdlrObj = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, port, nullptr, OnUDPPacket, this, log, CSTR("UDP: "), 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, nullptr, port, nullptr, OnUDPPacket, this, log, CSTR("UDP: "), 2, false));
 }
 
 Net::SyslogServer::~SyslogServer()

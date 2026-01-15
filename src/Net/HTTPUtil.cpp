@@ -9,7 +9,7 @@ Optional<IO::Stream> Net::HTTPUtil::DownloadAndOpen(NN<Net::TCPClientFactory> cl
 	if (fs->IsError())
 	{
 		fs.Delete();
-		return 0;
+		return nullptr;
 	}
 	if (Net::HTTPClient::LoadContent(clif, ssl, url, NN<IO::Stream>(fs), maxSize))
 	{
@@ -17,7 +17,7 @@ Optional<IO::Stream> Net::HTTPUtil::DownloadAndOpen(NN<Net::TCPClientFactory> cl
 		return fs;
 	}
 	fs.Delete();
-	return 0;
+	return nullptr;
 }
 
 Bool Net::HTTPUtil::DownloadFile(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Text::CStringNN fileName, UInt64 maxSize)

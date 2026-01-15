@@ -178,7 +178,7 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayListNative<UOSInt>> ports, Data::ArrayListNative<SerialPortType> *portTypes)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -267,7 +267,7 @@ UOSInt IO::SerialPort::GetBTPort()
 UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum)
 {
 	if (portNum <= 0)
-		return 0;
+		return nullptr;
 	if (portNum <= 32)
 	{
 		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyS")), portNum - 1);
@@ -286,7 +286,7 @@ UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff,
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -449,7 +449,7 @@ UOSInt IO::SerialPort::Write(Data::ByteArrayR buff)
 
 Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	return 0;
+	return nullptr;
 }
 
 UOSInt IO::SerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
@@ -466,7 +466,7 @@ Optional<IO::StreamWriteReq> IO::SerialPort::BeginWrite(Data::ByteArrayR buff, N
 {
 	evt->Set();
 	if (this->handle == 0)
-		return 0;
+		return nullptr;
 	return (IO::StreamWriteReq*)Write(buff);
 }
 

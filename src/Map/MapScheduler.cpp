@@ -165,7 +165,7 @@ void Map::MapScheduler::DrawPoint(NN<Math::Geometry::Point> pt)
 		Math::Coord2DDbl pts;
 		pts = this->map->MapXYToScnXY(pt->GetCenter());
 		Double scale = this->img->GetHDPI() / 72;
-		this->img->DrawRect(pts - 6 * scale, Math::Size2DDbl(13 * scale, 13 * scale), 0, this->b);
+		this->img->DrawRect(pts - 6 * scale, Math::Size2DDbl(13 * scale, 13 * scale), nullptr, this->b);
 	}
 }
 
@@ -225,7 +225,7 @@ void Map::MapScheduler::DrawPolyline(NN<Math::Geometry::Polyline> pl)
 
 	if (pl->HasColor())
 	{
-		NN<Media::DrawPen> p = this->img->NewPenARGB(pl->GetColor(), nnp->GetThick(), 0 ,0);
+		NN<Media::DrawPen> p = this->img->NewPenARGB(pl->GetColor(), nnp->GetThick(), nullptr ,0);
 		it = pl->Iterator();
 		while (it.HasNext())
 		{
@@ -333,7 +333,7 @@ void Map::MapScheduler::DrawMultiSurface(NN<Math::Geometry::MultiSurface> ms)
 
 void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 {
-	Data::ArrayList<UInt32> ptOfst;
+	Data::ArrayListNative<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
 	NN<Math::Geometry::Vector2D> vec;
@@ -396,9 +396,9 @@ Map::MapScheduler::MapScheduler()
 	this->map = 0;
 	this->lyr = 0;
 	this->img = 0;
-	this->p = 0;
-	this->b = 0;
-	this->ico = 0;
+	this->p = nullptr;
+	this->b = nullptr;
+	this->ico = nullptr;
 	this->dt = ThreadState::Drawing;
 	this->toStop = false;
 	this->threadRunning = false;
@@ -466,20 +466,20 @@ void Map::MapScheduler::DrawNextType(Optional<Media::DrawPen> p, Optional<Media:
 	if (this->b.SetTo(nnb))
 	{
 		this->img->DelBrush(nnb);
-		this->b = 0;
+		this->b = nullptr;
 	}
 	NN<Media::DrawPen> nnp;
 	if (this->p.SetTo(nnp))
 	{
 		this->img->DelPen(nnp);
-		this->p = 0;
+		this->p = nullptr;
 	}
 	this->p = p;
 	this->b = b;
 	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskFinish = false;
 	this->isFirst = false;
-	this->tasks.Add(0);
+	this->tasks.Add(nullptr);
 	mutUsage.EndUse();
 	this->taskEvt.Set();
 }
@@ -494,13 +494,13 @@ void Map::MapScheduler::WaitForFinish()
 	if (this->b.SetTo(b))
 	{
 		this->img->DelBrush(b);
-		this->b = 0;
+		this->b = nullptr;
 	}
 	NN<Media::DrawPen> p;
 	if (this->p.SetTo(p))
 	{
 		this->img->DelPen(p);
-		this->p = 0;
+		this->p = nullptr;
 	}
 	this->dt = ThreadState::Clearing;
 	this->taskEvt.Set();

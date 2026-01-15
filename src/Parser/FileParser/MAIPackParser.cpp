@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 
 	if (ReadUInt32(&hdr[0]) != 0x0A49414D || ReadUInt32(&hdr[4]) != fd->GetDataSize() || ReadUInt32(&hdr[12]) != 0x100)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	hdrEnd = ReadUInt32(&hdr[8]) * 24 + 16;
@@ -64,7 +64,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 		if (thisOfst != fileOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, recbuff, 16, 0);
 		pf->AddData(fd, thisOfst, thisSize, IO::PackFileItem::HeaderType::No, CSTRP(name, sptr), 0, 0, 0, 0);

@@ -96,7 +96,7 @@ Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Tex
 			return reader;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
@@ -245,7 +245,7 @@ Int64 DB::MongoDBReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (colIndex != 0)
-		return 0;
+		return nullptr;
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
@@ -255,7 +255,7 @@ UnsafeArrayOpt<WChar> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<WCh
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -279,7 +279,7 @@ Bool DB::MongoDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 Optional<Text::String> DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex != 0)
-		return 0;
+		return nullptr;
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
@@ -289,14 +289,14 @@ Optional<Text::String> DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
 UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (colIndex != 0)
-		return 0;
+		return nullptr;
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
@@ -306,7 +306,7 @@ UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -337,7 +337,7 @@ UOSInt DB::MongoDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 
 Optional<Math::Geometry::Vector2D> DB::MongoDBReader::GetVector(UOSInt colIndex)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool DB::MongoDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -358,7 +358,7 @@ OSInt DB::MongoDBReader::GetRowChanged()
 UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex != 0)
-		return 0;
+		return nullptr;
 	return Text::StrConcatC(buff, UTF8STRC("Data"));
 }
 

@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	NN<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
 	Text::StringBuilderUTF8 sb;
 	NN<Net::SSLEngine> ssl;
-	Optional<Crypto::Cert::X509Key> key = 0;
+	Optional<Crypto::Cert::X509Key> key = nullptr;
 	NN<IO::ParsedObject> pobj;
 	me->txtKey->GetText(sb);
 	if (sb.GetLength() == 0)

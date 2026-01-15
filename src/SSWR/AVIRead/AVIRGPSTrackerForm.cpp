@@ -281,8 +281,8 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 	this->relLocSvc = toRelease;
 	this->recUpdated = false;
 	this->recSateCnt = 0;
-	this->gpsTrk = 0;
-	this->mapNavi = 0;
+	this->gpsTrk = nullptr;
+	this->mapNavi = nullptr;
 	this->lastPos = Math::Coord2DDbl(0, 0);
 	this->dist = 0;
 	this->lastDown = true;

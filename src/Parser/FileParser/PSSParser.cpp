@@ -49,7 +49,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	Bool v1;
 
 	if (*(Int32*)&hdr[0] != (Int32)0xba010000)
-		return 0;
+		return nullptr;
 	if ((hdr[4] & 0xc0) == 0x40)
 	{
 		v1 = false;
@@ -60,7 +60,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	UnsafeArray<UTF8Char> sptr;
 	Bool valid = true;
@@ -98,7 +98,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		currOfst = 14 + i;
 	}
 	if (*(Int32*)&hdr[(UOSInt)currOfst] != (Int32)0xbb010000)
-		return 0;
+		return nullptr;
 
 	if (fd->GetFullFileName()->EndsWithICase(UTF8STRC("_1.vob")))
 	{
@@ -683,7 +683,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 			formats[i].Delete();
 		}
 		SDEL_CLASS(concatFile);
-		return 0;
+		return nullptr;
 	}
 	Media::MediaFile *file;
 	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));

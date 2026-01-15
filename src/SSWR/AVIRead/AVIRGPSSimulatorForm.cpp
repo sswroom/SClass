@@ -280,7 +280,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClient
 	this->SetNoResize(true);
 	this->currPos = Math::Coord2DDbl(0, 0);
 	this->speed = 50;
-	this->stm = 0;
+	this->stm = nullptr;
 	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 
 	this->lblStreamType = ui->NewLabel(*this, CSTR("Stream Type"));

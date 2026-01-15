@@ -43,7 +43,7 @@ IO::ParserType Parser::FileParser::SQLiteParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!Text::StrStartsWithC(&hdr[0], 32, UTF8STRC("SQLite format 3")))
-		return 0;
+		return nullptr;
 	if (fd->IsFullFile())
 	{
 		NN<DB::SQLiteFile> pf;
@@ -103,7 +103,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO:
 		else
 		{
 			IO::Path::DeleteFile(sbuff);
-			return 0;
+			return nullptr;
 		}
 	}
 }

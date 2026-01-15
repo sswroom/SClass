@@ -70,7 +70,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyTy
 		NN<Map::TileMap> tileMap = me->lyr->GetTileMap();
 		UOSInt maxLevel = tileMap->GetMaxLevel();
 		UOSInt currLyr = tileMap->GetMinLevel();
-		Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
+		Data::ArrayListT<Math::Coord2D<Int32>> imgIdList;
 		UOSInt cnt = 0;
 		while (currLyr <= maxLevel)
 		{
@@ -228,7 +228,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> w
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt currLyr;
-	Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
+	Data::ArrayListT<Math::Coord2D<Int32>> imgIdList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt;
@@ -483,7 +483,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUI
 		this->threadStat[i].threadStat = 0;
 		this->threadStat[i].lyrId = 0;
 		this->threadStat[i].imageId = 0;
-		this->threadStat[i].writer = 0;
+		this->threadStat[i].writer = nullptr;
 		this->threadStat[i].tileMap = this->lyr->GetTileMap();
 		Sync::ThreadUtil::Create(ProcThread, &this->threadStat[i]);
 		i++;

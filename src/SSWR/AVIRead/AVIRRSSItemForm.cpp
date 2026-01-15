@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 	if (browser->GetData(CSTRP(sbuff, sptr), false, sbuff).SetTo(fd))
 	{
 		NN<Media::ImageList> imgList;
-		if (Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFile(fd, 0, IO::ParserType::ImageList)).SetTo(imgList))
+		if (Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFile(fd, nullptr, IO::ParserType::ImageList)).SetTo(imgList))
 		{
 			fd.Delete();
 			imgList->ToStaticImage(0);
@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 
 	this->core = core;
 	this->rssItem = rssItem;
-	this->currImg = 0;
+	this->currImg = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);

@@ -43,7 +43,7 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(AnyType userObj)
 							if (me->cmdResBuff.SetTo(nncmdResBuff))
 							{
 								me->cmdResEnd = Text::StrConcatC(nncmdResBuff, &readBuff[cmdStart], i - cmdStart);
-								me->cmdResBuff = 0;
+								me->cmdResBuff = nullptr;
 								me->cmdEvt.Set();
 							}
 						}
@@ -98,19 +98,19 @@ NN<IO::Stream> IO::AdvantechASCIIChannel::GetStream() const
 UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::SendCommand(UnsafeArray<UTF8Char> replyBuff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	if (!this->threadRunning)
-		return 0;
+		return nullptr;
 	Text::StrConcatC(replyBuff, cmd, cmdLen);
 	replyBuff[cmdLen] = 13;
 	Sync::MutexUsage mutUsage(this->cmdResMut);
 	this->stm->Write(Data::ByteArrayR(replyBuff, cmdLen + 1));
 	this->cmdResBuff = replyBuff;
-	this->cmdResEnd = 0;
+	this->cmdResEnd = nullptr;
 	mutUsage.EndUse();
 	this->cmdEvt.Wait(CMDTIMEOUT);
 	mutUsage.BeginUse();
 	UnsafeArrayOpt<UTF8Char> ret = this->cmdResEnd;
-	this->cmdResBuff = 0;
-	this->cmdResEnd = 0;
+	this->cmdResBuff = nullptr;
+	this->cmdResEnd = nullptr;
 	return ret;
 }
 
@@ -138,7 +138,7 @@ UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::GetFirmwareVer(UnsafeArray<U
 	{
 		return Text::StrConcatC(firmwareBuff, sbuff + 3, (UOSInt)(sptr - sbuff - 3));
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::GetModuleName(UnsafeArray<UTF8Char> moduleBuff, UInt8 addr)
@@ -152,7 +152,7 @@ UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::GetModuleName(UnsafeArray<UT
 	{
 		return Text::StrConcatC(moduleBuff, sbuff + 3, (UOSInt)(sptr - sbuff - 3));
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool IO::AdvantechASCIIChannel::GetConfigStatus(UInt8 addr, NN<ADAMConfig> config)

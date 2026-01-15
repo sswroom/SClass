@@ -189,7 +189,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 	Text::PString str2;
 	UOSInt i;
 	NN<IO::SMake::ConfigItem> cfg;
-	Optional<IO::SMake::ProgramItem> prog = 0;
+	Optional<IO::SMake::ProgramItem> prog = nullptr;
 	NN<ProgramItem> nnprog;
 	Text::UTF8Reader reader(fs);
 	sb.ClearStr();
@@ -351,9 +351,9 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 						}
 						else
 						{
-							nnprog->srcFile = 0;
+							nnprog->srcFile = nullptr;
 						}
-						nnprog->compileCfg = 0;
+						nnprog->compileCfg = nullptr;
 						nnprog->compiled = false;
 						this->progMap.PutNN(nnprog->name, nnprog);
 						prog = nnprog;
@@ -376,13 +376,13 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 						nnprog->name = Text::String::New(str1.ToCString());
 						if (str2.v[0])
 						{
-							nnprog->srcFile = Text::String::New(str2.ToCString()).Ptr();
+							nnprog->srcFile = Text::String::New(str2.ToCString());
 						}
 						else
 						{
-							nnprog->srcFile = 0;
+							nnprog->srcFile = nullptr;
 						}
-						nnprog->compileCfg = 0;
+						nnprog->compileCfg = nullptr;
 						nnprog->compiled = false;
 						this->progMap.PutNN(nnprog->name, nnprog);
 						prog = nnprog;
@@ -561,9 +561,9 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 	return str1;
 }
 
-Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
-	NN<Data::FastStringMap<Int32>> libList,
-	NN<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseSource(NN<Data::FastStringMapNative<Int32>> objList,
+	NN<Data::FastStringMapNative<Int32>> libList,
+	NN<Data::FastStringMapNative<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	Text::CStringNN sourceFile,
@@ -783,9 +783,9 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 	return true;
 }
 
-Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
-	NN<Data::FastStringMap<Int32>> libList,
-	NN<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseHeader(NN<Data::FastStringMapNative<Int32>> objList,
+	NN<Data::FastStringMapNative<Int32>> libList,
+	NN<Data::FastStringMapNative<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	NN<Text::String> headerFile,
@@ -888,7 +888,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 	return false;
 }
 
-Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> objectFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb)
+Bool IO::SMake::ParseObject(NN<Data::FastStringMapNative<Int32>> objList, NN<Data::FastStringMapNative<Int32>> libList, NN<Data::FastStringMapNative<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> objectFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb)
 {
 	if (!objectFile->EndsWith(UTF8STRC(".o")))
 	{
@@ -975,9 +975,9 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 	}
 }
 
-Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
-	NN<Data::FastStringMap<Int32>> libList,
-	NN<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMapNative<Int32>> objList,
+	NN<Data::FastStringMapNative<Int32>> libList,
+	NN<Data::FastStringMapNative<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	OutParam<Bool> progGroup,
@@ -1095,9 +1095,9 @@ void IO::SMake::CompileObject(NN<Text::String> cmd)
 
 Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest, Text::CString parentName)
 {
-	Data::FastStringMap<Int32> libList;
-	Data::FastStringMap<Int32> objList;
-	Data::FastStringMap<Int32> procList;
+	Data::FastStringMapNative<Int32> libList;
+	Data::FastStringMapNative<Int32> objList;
+	Data::FastStringMapNative<Int32> procList;
 	NN<IO::Writer> messageWriter;
 	Int64 latestTime = 0;
 	Int64 thisTime;
@@ -1128,13 +1128,13 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 
 	Text::StringBuilderUTF8 sb;
 
-	if (!this->ParseProgInternal(objList, libList, procList, 0, latestTime, progGroup, prog, sb))
+	if (!this->ParseProgInternal(objList, libList, procList, nullptr, latestTime, progGroup, prog, sb))
 	{
 		return false;
 	}
 	if (progGroup)
 	{
-		Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+		Data::FastStringNativeKeyIterator<Int32> iterator = objList.KeyIterator();
 		while (iterator.HasNext())
 		{
 			NN<Text::String> objName = iterator.Next();
@@ -1182,7 +1182,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 	}
 	
 	IO::Path::CreateDirectory(CSTR(OBJECTPATH));
-	Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+	Data::FastStringNativeKeyIterator<Int32> iterator = objList.KeyIterator();
 	while (iterator.HasNext())
 	{
 		NN<Text::String> objName = iterator.Next();
@@ -1488,7 +1488,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 		{
 			sb.Append(cfg->value);
 		}
-		Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
+		Data::FastStringNativeKeyIterator<Int32> iterator = objList.KeyIterator();
 		while (iterator.HasNext())
 		{
 			sb.AppendUTF8Char(' ');
@@ -1656,7 +1656,7 @@ void IO::SMake::SetErrorMsg(Text::CStringNN msg)
 IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer> messageWriter) : IO::ParsedObject(cfgFile)
 {
 	NEW_CLASSNN(this->tasks, Sync::ParallelTask(threadCnt, false));
-	this->errorMsg = 0;
+	this->errorMsg = nullptr;
 	this->error = false;
 	this->asyncMode = false;
 	UOSInt i = cfgFile.LastIndexOf(IO::Path::PATH_SEPERATOR);
@@ -1676,8 +1676,8 @@ IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, Optional<IO::Writer>
 		this->basePath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	this->messageWriter = messageWriter;
-	this->cmdWriter = 0;
-	this->debugObj = 0;
+	this->cmdWriter = nullptr;
+	this->debugObj = nullptr;
 
 	this->LoadConfigFile(cfgFile);
 }
@@ -1750,7 +1750,7 @@ void IO::SMake::ClearStatus()
 
 Bool IO::SMake::IsLoadFailed() const
 {
-	return this->errorMsg != 0;
+	return this->errorMsg.NotNull();
 }
 
 Bool IO::SMake::HasError() const
@@ -1853,7 +1853,7 @@ NN<const Data::ArrayListNN<IO::SMake::ConfigItem>> IO::SMake::GetConfigList() co
 
 Bool IO::SMake::HasProg(Text::CStringNN progName) const
 {
-	return this->progMap.GetC(progName) != 0;
+	return this->progMap.GetC(progName).NotNull();
 }
 
 Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
@@ -1874,9 +1874,9 @@ Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
 	}
 }
 
-Bool IO::SMake::ParseProg(NN<Data::FastStringMap<Int32>> objList,
-	NN<Data::FastStringMap<Int32>> libList,
-	NN<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseProg(NN<Data::FastStringMapNative<Int32>> objList,
+	NN<Data::FastStringMapNative<Int32>> libList,
+	NN<Data::FastStringMapNative<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	OutParam<Bool> progGroup,

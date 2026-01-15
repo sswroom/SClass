@@ -316,7 +316,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 						j = retryCnt;
 						while (true)
 						{
-							if (runner.BeginTest(browser, mobile, 0, url, options).SetTo(sess))
+							if (runner.BeginTest(browser, mobile, nullptr, url, options).SetTo(sess))
 							{
 								if (!runner.RunTest(sess, test, url, OnTestStep, &logStm))
 								{

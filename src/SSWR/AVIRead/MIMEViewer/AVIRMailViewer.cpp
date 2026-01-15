@@ -55,7 +55,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 
 	this->pnlContent = ui->NewPanel(ctrl);
 	this->pnlContent->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->viewer = 0;
+	this->viewer = nullptr;
 	NN<Text::MIMEObject> content;
 	if (this->mail->GetRAWContent().SetTo(content))
 	{

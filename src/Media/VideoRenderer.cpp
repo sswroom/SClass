@@ -137,7 +137,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 			imgList.AddImage(simg, 0);
 			Exporter::PNGExporter exporter;
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
+			exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, nullptr);
 			csconv.Delete();
 		}
 	}
@@ -1640,7 +1640,7 @@ void Media::VideoRenderer::StopThreads()
 	this->threadToStop = true;
 	if (this->playing)
 	{
-		SetVideo(0);
+		SetVideo(nullptr);
 	}
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -1831,7 +1831,7 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 	this->outputBpp = 0;
 	this->outputPf = Media::PF_UNKNOWN;
 	this->manualDeint = false;
-	this->video = 0;
+	this->video = nullptr;
 	this->hasAudio = false;
 	this->frameDispCnt = 0;
 	this->frameSkipBeforeProc = 0;
@@ -1861,7 +1861,7 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 	this->cropTop = 0;
 	this->cropRight = 0;
 	this->cropBottom = 0;
-	this->dispClk = 0;
+	this->dispClk = nullptr;
 
 	this->playing = false;
 	this->captureFrame = false;
@@ -1892,10 +1892,10 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 		this->buffs[i].isEmpty = true;
 		this->buffs[i].isProcessing = false;
 		this->buffs[i].isOutputReady = false;
-		this->buffs[i].srcBuff = 0;
+		this->buffs[i].srcBuff = nullptr;
 		this->buffs[i].frameTime = 0;
 		this->buffs[i].discontTime = false;
-		this->buffs[i].destSurface = 0;
+		this->buffs[i].destSurface = nullptr;
 		this->buffs[i].destSize = Math::Size2D<UOSInt>(0, 0);
 	}
 	this->tstats = MemAlloc(ThreadStat, this->threadCnt);
@@ -1906,7 +1906,7 @@ Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Me
 		this->tstats[i].resizer = 0;
 		this->tstats[i].dresizer = 0;
 		this->tstats[i].procType = 0;
-		this->tstats[i].csconv = 0;
+		this->tstats[i].csconv = nullptr;
 		this->tstats[i].lrBuff = 0;
 		this->tstats[i].lrSize = 0;
 		this->tstats[i].diBuff = 0;
@@ -2010,7 +2010,7 @@ void Media::VideoRenderer::SetVideo(Optional<Media::VideoSource> video)
 	///////////////////////////////////////
 	this->playing = false;
 	this->dispMut.LockWrite();
-	this->dispClk = 0;
+	this->dispClk = nullptr;
 	this->dispMut.UnlockWrite();
 
 	this->VideoBeginLoad();
@@ -2029,9 +2029,9 @@ void Media::VideoRenderer::SetVideo(Optional<Media::VideoSource> video)
 	}
 	else
 	{
-		this->ivtc.SetSourceVideo(0);
-		this->autoCrop.SetSourceVideo(0);
-		this->uvOfst.SetSourceVideo(0);
+		this->ivtc.SetSourceVideo(nullptr);
+		this->autoCrop.SetSourceVideo(nullptr);
+		this->uvOfst.SetSourceVideo(nullptr);
 	}
 //	this->forseFT = false;
 	i = this->allBuffCnt;
@@ -2041,7 +2041,7 @@ void Media::VideoRenderer::SetVideo(Optional<Media::VideoSource> video)
 		{
 			MemFreeAArr(srcBuff);
 		}
-		this->buffs[i].srcBuff = 0;
+		this->buffs[i].srcBuff = nullptr;
 	}
 	this->VideoEndLoad();
 
@@ -2054,10 +2054,10 @@ void Media::VideoRenderer::SetVideo(Optional<Media::VideoSource> video)
 		UOSInt frameSize;
  		if (!nnvideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, frameSize))
 		{
-			this->video = 0;
-			this->ivtc.SetSourceVideo(0);
-			this->autoCrop.SetSourceVideo(0);
-			this->uvOfst.SetSourceVideo(0);
+			this->video = nullptr;
+			this->ivtc.SetSourceVideo(nullptr);
+			this->autoCrop.SetSourceVideo(nullptr);
+			this->uvOfst.SetSourceVideo(nullptr);
 			return;
 		}
 
@@ -2139,7 +2139,7 @@ void Media::VideoRenderer::StopPlay()
 
 		this->ClearBuff();
 		this->dispMut.LockWrite();
-		this->dispClk = 0;
+		this->dispClk = nullptr;
 		this->dispMut.UnlockWrite();
 	}
 }

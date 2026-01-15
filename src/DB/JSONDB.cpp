@@ -17,7 +17,7 @@ public:
 	{
 		this->data = data;
 		this->tab = tab;
-		this->obj = 0;
+		this->obj = nullptr;
 		this->nextIndex = ofst;
 		this->endOfst = endOfst;
 	}
@@ -29,7 +29,7 @@ public:
 
 	virtual Bool ReadNext()
 	{
-		this->obj = 0;
+		this->obj = nullptr;
 		if (this->nextIndex >= this->endOfst)
 			return false;
 		NN<Text::JSONBase> obj;
@@ -77,10 +77,10 @@ public:
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
-			return 0;
+			return nullptr;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
-			return 0;
+			return nullptr;
 		NN<Text::String> s;
 		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
@@ -92,7 +92,7 @@ public:
 			s->Release();
 			return buff;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -122,10 +122,10 @@ public:
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
-			return 0;
+			return nullptr;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
-			return 0;
+			return nullptr;
 		return obj->GetValueNewString(col->GetColName()->ToCString());
 	}
 
@@ -133,10 +133,10 @@ public:
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
-			return 0;
+			return nullptr;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
-			return 0;
+			return nullptr;
 		NN<Text::String> s;
 		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
@@ -148,7 +148,7 @@ public:
 			s->Release();
 			return buff;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
@@ -201,7 +201,7 @@ public:
 
 	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -225,7 +225,7 @@ public:
 	{
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
-			return 0;
+			return nullptr;
 		return col->GetColName()->ConcatTo(buff);
 	}
 
@@ -281,14 +281,14 @@ Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text
 		NEW_CLASSNN(r, JSONDBReader(tabDef, this->data, ofst, endOfst));
 		return r;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	DB::TableDef *tab;
 	if (!tableName.Equals(this->layerName->ToCString()))
-		return 0;
+		return nullptr;
 	NEW_CLASS(tab, DB::TableDef(schemaName, this->layerName->ToCString()));
 	NN<Text::JSONBase> json;
 	if (this->data->GetArrayValue(0).SetTo(json) && json->GetType() == Text::JSONType::Object)

@@ -18,16 +18,16 @@ Map::HKRoadNetwork2::HKRoadNetwork2(Text::CStringNN fgdbPath, Optional<Math::Arc
 	if (IO::Path::GetPathType(fgdbPath) == IO::Path::PathType::Directory)
 	{
 		IO::DirectoryPackage pkg(fgdbPath);
-		this->fgdb = Optional<DB::ReadingDB>::ConvertFrom(parser.ParseObject(pkg, 0, IO::ParserType::ReadingDB));
+		this->fgdb = Optional<DB::ReadingDB>::ConvertFrom(parser.ParseObject(pkg, nullptr, IO::ParserType::ReadingDB));
 	}
 	else
 	{
 		Parser::FileParser::ZIPParser zipParser;
 		IO::StmData::FileData fd(fgdbPath, false);
 		NN<IO::PackageFile> pkg;
-		if (Optional<IO::PackageFile>::ConvertFrom(zipParser.ParseFile(fd, 0, IO::ParserType::PackageFile)).SetTo(pkg))
+		if (Optional<IO::PackageFile>::ConvertFrom(zipParser.ParseFile(fd, nullptr, IO::ParserType::PackageFile)).SetTo(pkg))
 		{
-			this->fgdb = Optional<DB::ReadingDB>::ConvertFrom(parser.ParseObject(pkg, 0, IO::ParserType::ReadingDB));
+			this->fgdb = Optional<DB::ReadingDB>::ConvertFrom(parser.ParseObject(pkg, nullptr, IO::ParserType::ReadingDB));
 			pkg.Delete();
 		}
 	}
@@ -68,7 +68,7 @@ Optional<Map::HKSpeedLimit> Map::HKRoadNetwork2::CreateSpeedLimit()
 	{
 		return NEW_CLASS_D(Map::HKSpeedLimit(*this));
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
@@ -76,7 +76,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	NN<DB::ReadingDB> fgdb;
 	if (!this->fgdb.SetTo(fgdb))
 	{
-		return 0;
+		return nullptr;
 	}
 	
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
@@ -88,7 +88,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	NN<DB::DBReader> r;
-	if (fgdb->QueryTableData(nullptr, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (fgdb->QueryTableData(nullptr, CSTR("VEHICLE_RESTRICTION"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		UTF8Char sbuff[256];
 		UnsafeArray<UTF8Char> sptr;
@@ -172,12 +172,12 @@ Optional<Map::HKTrafficLayer2> Map::HKRoadNetwork2::CreateTrafficLayer(NN<Net::T
 	{
 		return NEW_CLASS_D(Map::HKTrafficLayer2(clif, ssl, encFact, *this));
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 {
-	Optional<Map::ShortestPath3D> ret = 0;
+	Optional<Map::ShortestPath3D> ret = nullptr;
 	NN<Map::ShortestPath3D> shortestPath;
 	NN<DB::ReadingDB> fgdb;
 	NN<DB::DBReader> r;
@@ -186,7 +186,7 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 	UnsafeArray<UTF8Char> sptr;
 	if (this->fgdb.SetTo(fgdb))
 	{
-		if (fgdb->QueryTableData(nullptr, CSTR("CENTERLINE"), 0, 0, 0, 0, 0).SetTo(r))
+		if (fgdb->QueryTableData(nullptr, CSTR("CENTERLINE"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			UOSInt routeIdCol = INVALID_INDEX;
 			UOSInt travelDirCol = INVALID_INDEX;
@@ -223,7 +223,7 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 						while (i-- > 0)
 						{
 							if (i == shapeCol)
-								properties[i] = 0;
+								properties[i] = nullptr;
 							else
 								properties[i] = r->GetNewStr(i);
 						}
@@ -244,7 +244,7 @@ Optional<Map::ShortestPath3D> Map::HKRoadNetwork2::CreateShortestPath()
 
 			if (ret.SetTo(shortestPath))
 			{
-				if (fgdb->QueryTableData(nullptr, CSTR("INTERSECTION"), 0, 0, 0, 0, 0).SetTo(r))
+				if (fgdb->QueryTableData(nullptr, CSTR("INTERSECTION"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 				{
 					UOSInt id1 = INVALID_INDEX;
 					UOSInt id2 = INVALID_INDEX;

@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRSudokuImportForm::AVIRSudokuImportForm(Optional<UI::GUIClient
 
 	this->core = core;
 	this->outputBoard = board;
-	this->currImage = 0;
+	this->currImage = nullptr;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

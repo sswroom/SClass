@@ -20,7 +20,7 @@ void Media::AFilter::AudioSampleRipper::ResetStatus()
 Media::AFilter::AudioSampleRipper::AudioSampleRipper(NN<Media::AudioSource> sourceAudio, UInt32 sampleCount) : Media::AudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
-	this->soundBuff = 0;
+	this->soundBuff = nullptr;
 	this->nChannel = 0;
 	this->bitCount = 0;
 	sourceAudio->GetFormat(fmt);
@@ -39,7 +39,7 @@ Media::AFilter::AudioSampleRipper::~AudioSampleRipper()
 	if (this->soundBuff.SetTo(soundBuff))
 	{
 		MemFreeArr(soundBuff);
-		this->soundBuff = 0;
+		this->soundBuff = nullptr;
 	}
 }
 

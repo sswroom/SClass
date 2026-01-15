@@ -5,10 +5,10 @@
 
 void Media::Jasper::JasperReport::InitValues()
 {
-	this->queryString = 0;
-	this->title = 0;
-	this->uuid = 0;
-	this->reportName = 0;
+	this->queryString = nullptr;
+	this->title = nullptr;
+	this->uuid = nullptr;
+	this->reportName = nullptr;
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
 	Double pWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, paperSize.GetWidthMM());
 	Double pHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_PIXEL, paperSize.GetHeightMM());

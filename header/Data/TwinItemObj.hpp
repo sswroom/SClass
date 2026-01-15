@@ -21,6 +21,12 @@ namespace Data
 			this->value = nullptr;
 		}
 
+		TwinItemObj(std::nullptr_t)
+		{
+			this->key = nullptr;
+			this->value = nullptr;
+		}
+
 		Bool operator==(TwinItemObj<T,V> item)
 		{
 			return this->key == item.key;

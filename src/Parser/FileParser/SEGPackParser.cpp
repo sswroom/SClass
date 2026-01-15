@@ -41,12 +41,12 @@ Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO
 	UInt32 fileOfst;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("SEG")))
-		return 0;
+		return nullptr;
 
 	UInt32 hdrSize = ReadUInt32(&hdr[0]);
 	if (hdrSize == 0 || hdrSize >= (fd->GetDataSize() - 4) || hdrSize > 1048576)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -66,17 +66,17 @@ Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO
 		if (*(Int32*)&buff[buffOfst + 4] != 0 || packSize > 80 || packSize <= 17 || thisOfst != fileOfst || packSize + buffOfst > hdrSize)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		if (buff[buffOfst + packSize - 1] != 0)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		if (Text::StrCharCnt(&buff[buffOfst + 16]) != packSize - 17)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		
 		sptr = enc.UTF8FromBytes(name, &buff[buffOfst + 16], packSize - 17, 0);

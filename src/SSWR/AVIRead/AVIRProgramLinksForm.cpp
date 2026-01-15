@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnCreateClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
-	SSWR::AVIRead::AVIRProgramLinksCreateForm frm(0, me->ui, me->core, me->progMgr);
+	SSWR::AVIRead::AVIRProgramLinksCreateForm frm(nullptr, me->ui, me->core, me->progMgr);
 	if (frm.ShowDialog(me))
 	{
 		me->UpdateLinkList();

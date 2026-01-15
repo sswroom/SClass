@@ -61,7 +61,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
-		foundName = 0;
+		foundName = nullptr;
 		Sync::MutexUsage mutUsage(me->fileMut);
 		i = 0;
 		j = me->fileNames.GetCount();
@@ -824,7 +824,7 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NN<Data::ArrayListStringNN> file
 			while (it.HasNext())
 			{
 				s = it.Next();
-				if (!this->packFile->CopyFrom(s->ToCString(), 0, 0))
+				if (!this->packFile->CopyFrom(s->ToCString(), nullptr, 0))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.Append(CSTR("Failed to copy "));
@@ -930,11 +930,11 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 
 	this->core = core;
 	this->packFile = packFile;
-	this->initSel = 0;
+	this->initSel = nullptr;
 	if (this->packFile->GetFileType() == IO::PackageFileType::Directory)
 	{
 		this->packNeedDelete = true;
-		this->rootPackFile = 0;
+		this->rootPackFile = nullptr;
 	}
 	else
 	{
@@ -953,13 +953,13 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->readCurrFile = nullptr;
 	this->readFileCnt = 0;
 	this->statusFileChg = false;
-	this->statusFile = 0;
+	this->statusFile = nullptr;
 	this->statusFileSize = 0;
 	this->statusDispSize = (UOSInt)-1;
 	this->statusDispSpd = -1;
 	this->statusBNT = IO::ActiveStreamReader::BottleNeckType::Unknown;
 	this->statusDispBNT = IO::ActiveStreamReader::BottleNeckType::Unknown;
-	this->progName = 0;
+	this->progName = nullptr;
 	this->progStarted = false;
 	this->progUpdated = false;
 	this->progEnd = false;
@@ -1045,7 +1045,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->txtStatusTimeLeft = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtStatusTimeLeft->SetRect(760, 24, 100, 23, false);
 	this->txtStatusTimeLeft->SetReadOnly(true);
-	this->rlcStatus = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000, 0);
+	this->rlcStatus = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000, nullptr);
 	this->rlcStatus->SetRect(0, 0, 100, 360, false);
 	this->rlcStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspStatus = ui->NewVSplitter(this->tpStatus, 3, true);
@@ -1115,7 +1115,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_COPYTO:
 		{
-			Data::ArrayList<UOSInt> selIndices;
+			Data::ArrayListNative<UOSInt> selIndices;
 			this->lvFiles->GetSelectedIndices(&selIndices);
 			UOSInt i = selIndices.GetCount();
 			if (i > 0)
@@ -1187,7 +1187,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					else
 					{
 						NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
-						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(nullptr, this->ui, this->core));
 						frm->SetData(fd, IO::FileAnalyse::FileAnalyser::AnalyseFile(fd));
 						fd.Delete();
 						this->core->ShowForm(frm);
@@ -1237,7 +1237,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 							return;
 						}
 						NN<UtilUI::TextViewerForm> frm;
-						NEW_CLASSNN(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), 0));
+						NEW_CLASSNN(frm, UtilUI::TextViewerForm(nullptr, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), 0));
 						frm->LoadStreamData(fd);
 						fd.Delete();
 						this->core->ShowForm(frm);

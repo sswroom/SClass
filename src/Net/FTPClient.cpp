@@ -8,10 +8,10 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	UnsafeArrayOpt<UTF8Char> userName = 0;
-	UnsafeArrayOpt<UTF8Char> password = 0;
+	UnsafeArrayOpt<UTF8Char> userName = nullptr;
+	UnsafeArrayOpt<UTF8Char> password = nullptr;
 	UnsafeArray<UTF8Char> host;
-	UnsafeArrayOpt<UTF8Char> port = 0;
+	UnsafeArrayOpt<UTF8Char> port = nullptr;
 	UnsafeArray<UTF8Char> nns;
 	UTF8Char c;
 	sptr = url.ConcatTo(sbuff);
@@ -20,7 +20,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 	this->host = 0;
 	this->path = 0;
 	this->conn = 0;
-	this->cli2 = 0;
+	this->cli2 = nullptr;
 	this->codePage = codePage;
 
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP://")))
@@ -117,7 +117,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 			userName = host;
 			password = port;
 			host = sptr;
-			port = 0;
+			port = nullptr;
 		}
 	}
 }

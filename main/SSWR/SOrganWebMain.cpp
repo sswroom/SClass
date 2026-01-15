@@ -24,7 +24,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		Int32 unorganizedGroupId = 0;
 		Net::OSSocketFactory sockf(true);
 		Net::TCPClientFactory clif(sockf);
-		Optional<Net::SSLEngine> ssl = 0;
+		Optional<Net::SSLEngine> ssl = nullptr;
 		IO::LogTool log;
 		NN<Text::String> s;
 		Text::CStringNN osmCacheDir;
@@ -99,7 +99,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			else
 			{
-				db = 0;
+				db = nullptr;
 			}
 			UInt16 port;
 			if (!cfg->GetValue(CSTR("SvrPort")).SetTo(s) || !s->ToUInt16(port))

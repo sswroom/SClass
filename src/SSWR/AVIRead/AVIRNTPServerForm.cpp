@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(AnyType userObj)
 	if (me->svr.SetTo(svr))
 	{
 		svr.Delete();
-		me->svr = 0;
+		me->svr = nullptr;
 		me->txtTimeServer->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		return;
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(Optional<UI::GUIClientContro
 	this->core = core;
 	this->SetText(CSTR("NTP Server"));
 	this->SetFont(nullptr, 8.25, false);
-	this->svr = 0;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);

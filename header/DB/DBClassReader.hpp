@@ -1,6 +1,7 @@
 #ifndef _SM_DB_DBCLASSREADER
 #define _SM_DB_DBCLASSREADER
 #include "Data/NamedClass.hpp"
+#include "Data/StringMapNative.hpp"
 #include "DB/DBReader.h"
 
 namespace DB
@@ -32,7 +33,7 @@ namespace DB
 		UTF8Char sbuff[256];
 		UTF8Char sbuff2[256];
 		UnsafeArray<UTF8Char> sptr;
-		Data::StringMap<UOSInt> colMap2;
+		Data::StringMapNative<UOSInt> colMap2;
 		Bool clsValid = true;
 		UOSInt i = 0;
 		UOSInt j = this->reader->ColCount();
@@ -100,7 +101,7 @@ namespace DB
 			}
 			return o;
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> Bool DBClassReader<T>::ReadNext(NN<T> obj)

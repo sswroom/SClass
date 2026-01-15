@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LUTParser::ParseFileHdr(NN<IO::St
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"3DLT" || ReadInt32(&hdr[4]) != 1 || ReadInt32(&hdr[84]) != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 inputBpp = ReadUInt32(&hdr[48]);
 	UInt32 outputBpp = ReadUInt32(&hdr[64]);
@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LUTParser::ParseFileHdr(NN<IO::St
 //	Int32 outpLev = (1 << outputBpp);
 	if (inpLev * inpLev * inpLev * 3 * (outputBpp >> 3) != lutSize)
 	{
-		return 0;
+		return nullptr;
 	}
 	Media::LUT::DataFormat fmt;
 	Media::LUT *lut;
@@ -65,7 +65,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LUTParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	

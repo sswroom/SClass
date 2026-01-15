@@ -170,7 +170,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 				{
 					Sync::MutexUsage mutUsage(me->cliMut);
 					me->cli.Delete();
-					me->cli = 0;
+					me->cli = nullptr;
 					mutUsage.EndUse();
 					me->recvEvt.Wait(1000);
 				}
@@ -198,7 +198,7 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(Optional<UI::GUIClientContro
 	this->lastTime = 0;
 	this->lastSendSize = 0;
 	this->lastRecvSize = 0;
-	this->cli = 0;
+	this->cli = nullptr;
 	this->connected = false;
 	this->toStop = false;
 	this->procRunning = false;

@@ -115,12 +115,12 @@ Map::DBAssistedReverseGeocoderPL::~DBAssistedReverseGeocoderPL()
 
 UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	UnsafeArray<UTF8Char> nnsptr;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 	if (keyx == 0 && keyy == 0)
-		return 0;
+		return nullptr;
 
 	Text::String *addr;
 	NN<LCIDInfo> lcidInfo;
@@ -146,7 +146,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArra
 	while (i-- > 0)
 	{
 		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
-		if (sptr == 0 || buff[0] == 0)
+		if (sptr.IsNull() || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
 		}
@@ -191,7 +191,7 @@ UnsafeArrayOpt<UTF8Char> Map::DBAssistedReverseGeocoderPL::SearchName(UnsafeArra
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

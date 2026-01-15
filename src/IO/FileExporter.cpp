@@ -28,7 +28,7 @@ UOSInt IO::FileExporter::GetParamCnt()
 
 Optional<IO::FileExporter::ParamData> IO::FileExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
-	return 0;
+	return nullptr;
 }
 
 void IO::FileExporter::DeleteParam(Optional<ParamData> param)
@@ -62,7 +62,7 @@ Bool IO::FileExporter::SetParamBool(Optional<ParamData> param, UOSInt index, Boo
 
 UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Int32 IO::FileExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
@@ -77,7 +77,7 @@ Int32 IO::FileExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
 
 UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool IO::FileExporter::GetParamBool(Optional<ParamData> param, UOSInt index)

@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(AnyType us
 			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
-		Optional<Net::SSLEngine> ssl = 0;
+		Optional<Net::SSLEngine> ssl = nullptr;
 		Bool sslConn = me->chkPOP3SSL->IsChecked();
 		NN<Crypto::Cert::X509Cert> pop3SSLCert;
 		NN<Crypto::Cert::X509File> pop3SSLKey;
@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType us
 			me->ui->ShowMsgOK(CSTR("Please enter valid Batch Upload path"), CSTR("Error"), me);
 			return;
 		}
-		Optional<Net::SSLEngine> ssl = 0;
+		Optional<Net::SSLEngine> ssl = nullptr;
 		NN<Crypto::Cert::X509Cert> gcisSSLCert;
 		NN<Crypto::Cert::X509File> gcisSSLKey;
 		if (!me->gcisSSLCert.SetTo(gcisSSLCert) || !me->gcisSSLKey.SetTo(gcisSSLKey))
@@ -181,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType us
 		{
 			gcisListener.Delete();
 			gcisHdlr.Delete();
-			me->gcisListener = 0;
+			me->gcisListener = nullptr;
 		}
 		else
 		{
@@ -228,11 +228,11 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType use
 		}
 		else
 		{
-			mail = 0;
+			mail = nullptr;
 		}
 		if (mail.SetTo(nnmail))
 		{
-			SSWR::AVIRead::AVIRMIMEViewerForm frm(0, me->ui, me->core, nnmail);
+			SSWR::AVIRead::AVIRMIMEViewerForm frm(nullptr, me->ui, me->core, nnmail);
 			frm.ShowDialog(me);
 		}
 		else
@@ -364,7 +364,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPCertKeyClicked(AnyType 
 		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when SMTP server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->smtpSSL, me->smtpSSLCert, me->smtpSSLKey, me->smtpCACerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->smtpSSL, me->smtpSSLCert, me->smtpSSLKey, me->smtpCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -391,7 +391,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3CertKeyClicked(AnyType 
 		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when POP3 server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->pop3SSL, me->pop3SSLCert, me->pop3SSLKey, me->pop3CACerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->pop3SSL, me->pop3SSLCert, me->pop3SSLKey, me->pop3CACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -418,7 +418,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISCertKeyClicked(AnyType 
 		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when GCIS server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->gcisSSL, me->gcisSSLCert, me->gcisSSLKey, me->gcisCACerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->gcisSSL, me->gcisSSLCert, me->gcisSSLKey, me->gcisCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -517,18 +517,18 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientCo
 	this->core = core;
 	this->clif = core->GetTCPClientFactory();
 	this->smtpSSL = Net::SSLEngineFactory::Create(this->clif, true);
-	this->smtpSSLCert = 0;
-	this->smtpSSLKey = 0;
-	this->smtpSvr = 0;
+	this->smtpSSLCert = nullptr;
+	this->smtpSSLKey = nullptr;
+	this->smtpSvr = nullptr;
 	this->pop3SSL = Net::SSLEngineFactory::Create(this->clif, true);
-	this->pop3SSLCert = 0;
-	this->pop3SSLKey = 0;
-	this->pop3Svr = 0;
+	this->pop3SSLCert = nullptr;
+	this->pop3SSLKey = nullptr;
+	this->pop3Svr = nullptr;
 	this->gcisSSL = Net::SSLEngineFactory::Create(this->clif, true);
-	this->gcisSSLCert = 0;
-	this->gcisSSLKey = 0;
-	this->gcisListener = 0;
-	this->gcisHdlr = 0;
+	this->gcisSSLCert = nullptr;
+	this->gcisSSLKey = nullptr;
+	this->gcisListener = nullptr;
+	this->gcisHdlr = nullptr;
 	this->totalSize = 0;
 	this->recvSize = 0;
 	this->smtpType = Net::Email::SMTPConn::ConnType::Plain;
@@ -685,9 +685,9 @@ UOSInt SSWR::AVIRead::AVIREmailServerForm::GetMessageStat(Int32 userId, OutParam
 	return stat.unreadCount;
 }
 
-Bool SSWR::AVIRead::AVIREmailServerForm::GetUnreadList(Int32 userId, NN<Data::ArrayList<UInt32>> unreadList)
+Bool SSWR::AVIRead::AVIREmailServerForm::GetUnreadList(Int32 userId, NN<Data::ArrayListNative<UInt32>> unreadList)
 {
-	Data::ArrayList<UOSInt> unreadIndices;
+	Data::ArrayListNative<UOSInt> unreadIndices;
 	Optional<Text::String> userName = this->GetUserName(userId);
 	this->store->GetUnreadIndices(OPTSTR_CSTR(userName), unreadIndices);
 	UOSInt i = 0;

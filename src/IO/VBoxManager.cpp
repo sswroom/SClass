@@ -36,8 +36,8 @@ UOSInt IO::VBoxManager::GetVMList(NN<Data::ArrayListNN<VMId>> vms)
 
 IO::VBoxManager::VBoxManager()
 {
-	this->progPath = 0;
-	this->version = 0;
+	this->progPath = nullptr;
+	this->version = nullptr;
 	Text::StringBuilderUTF8 sb;
 	Manage::Process::ExecuteProcess(CSTR("vboxmanage --version"), sb);
 	if (sb.leng > 0)

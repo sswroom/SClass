@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userO
 			UnsafeArray<const UTF8Char> sarr[2];
 			sarr[0] = U8STR("Name");
 			sarr[1] = U8STR("Value");
-			SSWR::AVIRead::AVIRTableMsgForm frm(0, me->ui, me->core, sb.ToCString(), 2, sarr);
+			SSWR::AVIRead::AVIRTableMsgForm frm(nullptr, me->ui, me->core, sb.ToCString(), 2, sarr);
 			driver->GetKeys(CSTR(""), keys);
 			Data::ArrayIterator<NN<Text::String>> it = keys.Iterator();
 			while (it.HasNext())
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(Optional<UI::GUIClientControl> p
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblDriver = ui->NewLabel(*this, CSTR("Driver"));

@@ -12,7 +12,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (parser.ParseFilePath(fileName).SetTo(pobj))
 	{
 		Exporter::WebPExporter exporter;
-		exporter.ExportNewFile(outName, pobj, 0);
+		exporter.ExportNewFile(outName, pobj, nullptr);
 		pobj.Delete();
 	}
 	return 0;

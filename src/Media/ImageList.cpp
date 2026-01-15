@@ -8,15 +8,15 @@
 
 Media::ImageList::ImageList(NN<Text::String> name) : IO::ParsedObject(name)
 {
-	this->author = 0;
-	this->imgName = 0;
+	this->author = nullptr;
+	this->imgName = nullptr;
 	this->thermoPtr = 0;
 }
 
 Media::ImageList::ImageList(Text::CStringNN fileName) : IO::ParsedObject(fileName)
 {
-	this->author = 0;
-	this->imgName = 0;
+	this->author = nullptr;
+	this->imgName = nullptr;
 	this->thermoPtr = 0;
 }
 

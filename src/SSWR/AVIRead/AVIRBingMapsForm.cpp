@@ -35,7 +35,7 @@ SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(Optional<UI::GUIClientControl>
 
 	this->core = core;
 	this->ssl = ssl;
-	this->tileMap = 0;
+	this->tileMap = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblKey = ui->NewLabel(*this, CSTR("Key"));

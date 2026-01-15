@@ -203,7 +203,7 @@ void __stdcall IO::FileAnalyse::MapsforgeFileAnalyse::ParseThread(NN<Sync::Threa
 IO::FileAnalyse::MapsforgeFileAnalyse::MapsforgeFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MapsforgeFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (!Text::StrStartsWithC(buff, 256, UTF8STRC("mapsforge binary OSM")))
@@ -301,7 +301,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MapsforgeFileAnalyse::Ge
 	UOSInt j;
 	UOSInt k;
 	if (!this->packs.GetItem(index).SetTo(pack) || !this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	packBuff = MemAllocArr(UInt8, pack->packSize);
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

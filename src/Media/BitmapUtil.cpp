@@ -32,7 +32,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Bool inv = true;

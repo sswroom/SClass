@@ -36,11 +36,11 @@ Optional<IO::ParsedObject> Parser::FileParser::NMEAParser::ParseFileHdr(NN<IO::S
 	if (fd->GetFullName()->EndsWithICase(UTF8STRC(".LOG")))
 	{
 		if (!Text::StrStartsWithC(&hdr[0], 32, UTF8STRC("@Olympus/")) || hdr[20] != 13 || hdr[21] != 10)
-			return 0;
+			return nullptr;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::StreamDataStream stm(fd, 22, fd->GetDataSize() - 22);

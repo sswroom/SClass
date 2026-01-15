@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 #include "Crypto/Hash/CRC32RC.h"
+#include "Data/ArrayListObj.hpp"
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "IO/Path.h"
@@ -23,7 +24,7 @@ private:
 	};
 
 	IO::LogTool myLog;
-	Data::ArrayList<ProgInfo*> progList;
+	Data::ArrayListObj<ProgInfo*> progList;
 	Net::OSSocketFactory sockf;
 	Net::UDPServer udp;
 	Crypto::Hash::CRC32RC crc;
@@ -219,7 +220,7 @@ private:
 	}
 
 public:
-	ProcMonitorCore() : sockf(false), udp(sockf, 0, 0, nullptr, OnUDPPacket, this, myLog, CSTR(""), 1, true)
+	ProcMonitorCore() : sockf(false), udp(sockf, nullptr, 0, nullptr, OnUDPPacket, this, myLog, CSTR(""), 1, true)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Log"));

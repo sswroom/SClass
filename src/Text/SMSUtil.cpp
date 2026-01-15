@@ -382,11 +382,11 @@ UnsafeArrayOpt<UTF16Char> Text::SMSUtil::TrimGSMText(UnsafeArray<UTF16Char> dest
 		}
 		else if (c >= 0x400)
 		{
-			return 0;
+			return nullptr;
 		}
 		else if ((v = Text::SMSUtil::text2gsm[c]) == 0xFFFF)
 		{
-			return 0;
+			return nullptr;
 		}
 		if (v >= 0x100)
 		{

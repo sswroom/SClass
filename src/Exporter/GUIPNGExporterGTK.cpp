@@ -54,7 +54,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 	if (buff)
 	{
-		Optional<Media::RasterImage> srcImg = 0;
+		Optional<Media::RasterImage> srcImg = nullptr;
 		NN<Media::RasterImage> nnimg;
 		Media::ImageList *imgList;
 		UInt8 *pngBuff;

@@ -45,7 +45,7 @@ Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, NN<Text::StringBuilderU
 
 Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS12::GetNewCert(UOSInt index)
 {
-	return 0;
+	return nullptr;
 }
 
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const

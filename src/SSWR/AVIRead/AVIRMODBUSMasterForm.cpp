@@ -567,10 +567,10 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
-	this->devStm = 0;
-	this->stm = 0;
-	this->modbus = 0;
-	this->modbusCtrl = 0;
+	this->devStm = nullptr;
+	this->stm = nullptr;
+	this->modbus = nullptr;
+	this->modbusCtrl = nullptr;
 	this->recvUpdated = false;
 	this->sendUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

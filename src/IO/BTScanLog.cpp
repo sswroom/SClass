@@ -442,6 +442,6 @@ void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8
 	}
 	else
 	{
-		rec->name = 0;
+		rec->name = nullptr;
 	}
 }

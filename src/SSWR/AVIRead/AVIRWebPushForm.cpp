@@ -117,7 +117,7 @@ SSWR::AVIRead::AVIRWebPushForm::AVIRWebPushForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->clif = this->core->GetTCPClientFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->key = 0;
+	this->key = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPrivateKey = ui->NewLabel(*this, CSTR("Private Key"));

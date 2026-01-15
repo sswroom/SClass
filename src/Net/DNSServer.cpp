@@ -45,7 +45,7 @@ void Net::DNSServer::InitServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO
 	this->reqHdlr = 0;
 	this->reqObj = 0;
 
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, log, nullptr, 4, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, log, nullptr, 4, false));
 	this->svr->SetBuffSize(65536);
 }
 

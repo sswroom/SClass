@@ -1182,9 +1182,9 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 
 void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, OutParam<Optional<Text::String>> manuf, OutParam<Optional<Text::String>> model, OutParam<Optional<Text::String>> serialNum)
 {
-	Optional<Text::String> outManuf = 0;
-	Optional<Text::String> outModel = 0;
-	Optional<Text::String> outSerialNum = 0;
+	Optional<Text::String> outManuf = nullptr;
+	Optional<Text::String> outModel = nullptr;
+	Optional<Text::String> outSerialNum = nullptr;
 	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	UnsafeArray<const UInt8> endPtr = iebuff + ieLen;

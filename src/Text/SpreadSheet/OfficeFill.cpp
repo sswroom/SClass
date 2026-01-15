@@ -26,7 +26,7 @@ Optional<Text::SpreadSheet::OfficeColor> Text::SpreadSheet::OfficeFill::GetColor
 NN<Text::SpreadSheet::OfficeFill> Text::SpreadSheet::OfficeFill::NewSolidFill()
 {
 	NN<OfficeFill> fill;
-	NEW_CLASSNN(fill, Text::SpreadSheet::OfficeFill(FillType::SolidFill, 0));
+	NEW_CLASSNN(fill, Text::SpreadSheet::OfficeFill(FillType::SolidFill, nullptr));
 	return fill;
 }
 

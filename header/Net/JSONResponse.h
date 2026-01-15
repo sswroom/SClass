@@ -145,11 +145,11 @@ namespace Net
 				if (!t->IsValid())
 				{
 					t.Delete();
-					return 0;
+					return nullptr;
 				}
 				return t;
 			}
-			return 0;
+			return nullptr;
 		}
 
 		UOSInt GetCount() const
@@ -328,7 +328,7 @@ namespace Net
 #define JSONRESP_GETINT64(name, funcName, defVal) Int64 funcName() const { Int64 v; if (!this->json->GetValueAsInt64(CSTR(name), v)) return defVal; return v; }
 #define JSONRESP_GETBOOL(name, funcName) Bool funcName() const { return this->json->GetValueAsBool(CSTR(name)); }
 #define JSONRESP_GETOBJ(name, funcName, clsName) Optional<clsName> funcName() const { NN<ObjectField> f; if (Optional<ObjectField>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return Optional<clsName>::ConvertFrom(f->GetValue()); return nullptr; }
-#define JSONRESP_GETARRAY_DOUBLE(name, funcName) Optional<const Data::ArrayList<Double>> funcName() const { NN<ArrayNativeField<Double>> f; if (Optional<ArrayNativeField<Double>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return nullptr; }
+#define JSONRESP_GETARRAY_DOUBLE(name, funcName) Optional<const Data::ArrayListNative<Double>> funcName() const { NN<ArrayNativeField<Double>> f; if (Optional<ArrayNativeField<Double>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return nullptr; }
 #define JSONRESP_GETARRAY_STR(name, funcName) Optional<const Data::ArrayListStringNN> funcName() const { NN<ArrayStrField> f; if (Optional<ArrayStrField>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return nullptr; }
 #define JSONRESP_GETARRAY_OBJ(name, funcName, clsName) Optional<const Data::ArrayListNN<clsName>> funcName() const { NN<ArrayNNField<clsName>> f; if (Optional<ArrayNNField<clsName>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return nullptr; }
 

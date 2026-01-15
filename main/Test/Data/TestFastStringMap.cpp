@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Data/BTreeMap.hpp"
-#include "Data/FastStringMap.hpp"
+//#include "Data/BTreeMapNative.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Data/StringHashMap.hpp"
-#include "Data/StringMap.hpp"
+#include "Data/StringMapNative.hpp"
 #include "Text/MyString.h"
 
 #include <stdio.h>
@@ -11,9 +11,9 @@
 #define DATACNT 10000
 Int32 MyMain(NN<Core::ProgControl> progCtrl)
 {
-//	Data::StringMap<UInt32> map;
-	Data::FastStringMap<UInt32> map;
-//	Data::BTreeMap<UInt32> map;
+//	Data::StringMapNative<UInt32> map;
+	Data::FastStringMapNative<UInt32> map;
+//	Data::BTreeMapNative<UInt32> map;
 //	Data::StringHashMap<UInt32> map;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;

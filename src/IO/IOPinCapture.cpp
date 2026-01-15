@@ -13,7 +13,7 @@ void IO::IOPinCapture::FreeCaptureData(NN<CaptureBuff> buff)
 	MemFreeNN(buff);
 }
 
-UOSInt IO::IOPinCapture::AddCaptureData(NN<Data::ArrayList<Double>> times, NN<Data::ArrayList<Int32>> isHigh, NN<CaptureBuff> buff)
+UOSInt IO::IOPinCapture::AddCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh, NN<CaptureBuff> buff)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -37,7 +37,7 @@ IO::IOPinCapture::IOPinCapture(NN<IO::IOPin> pin)
 {
 	this->pin = pin;
 	this->capBuff = MemAllocNN(CaptureBuff);
-	this->capBuff->prevBuff = 0;
+	this->capBuff->prevBuff = nullptr;
 	this->capBuff->thisBuffSize = 64;
 	this->capBuff->thisDataCnt = 0;
 	this->capBuff->times = MemAllocArr(Double, 64);
@@ -179,7 +179,7 @@ UnsafeArray<UTF8Char> IO::IOPinCapture::GetName(UnsafeArray<UTF8Char> buff)
 	return this->pin->GetName(Text::StrConcatC(buff, UTF8STRC("IOPinCapture - ")));
 }
 
-UOSInt IO::IOPinCapture::GetCaptureData(NN<Data::ArrayList<Double>> times, NN<Data::ArrayList<Int32>> isHigh)
+UOSInt IO::IOPinCapture::GetCaptureData(NN<Data::ArrayListNative<Double>> times, NN<Data::ArrayListNative<Int32>> isHigh)
 {
 	return this->AddCaptureData(times, isHigh, this->capBuff);
 }

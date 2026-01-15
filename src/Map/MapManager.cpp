@@ -35,12 +35,12 @@ Optional<Map::MapDrawLayer> Map::MapManager::LoadLayer(Text::CStringNN fileName,
 	{
 		IO::StmData::FileData fd(fileName, false);
 		if (!parsers->ParseFile(fd).SetTo(pobj))
-			return 0;
+			return nullptr;
 	}
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		pobj.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<Map::MapDrawLayer> lyr;
 	lyr = NN<Map::MapDrawLayer>::ConvertFrom(pobj);

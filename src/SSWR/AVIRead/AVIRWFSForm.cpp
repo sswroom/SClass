@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWFSURL->GetText(sb);
 	me->wfs.Delete();
-	NEW_CLASSNN(wfs, Map::WebFeatureService(me->core->GetTCPClientFactory(), 0, me->core->GetEncFactory(), sb.ToCString(), (Map::WebFeatureService::Version)me->cboWFSVersion->GetSelectedItem().GetOSInt()));
+	NEW_CLASSNN(wfs, Map::WebFeatureService(me->core->GetTCPClientFactory(), nullptr, me->core->GetEncFactory(), sb.ToCString(), (Map::WebFeatureService::Version)me->cboWFSVersion->GetSelectedItem().GetOSInt()));
 	me->wfs = wfs;
 	if (wfs->IsError())
 	{
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnFeatureSelChg(AnyType userObj)
 SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->core = core;
-	this->wfs = 0;
+	this->wfs = nullptr;
 	this->SetText(CSTR("Web Feature Service"));
 	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
@@ -108,5 +108,5 @@ Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRWFSForm::LoadLayer()
 	NN<Map::WebFeatureService> wfs;
 	if (this->wfs.SetTo(wfs))
 		return wfs->LoadAsLayer();
-	return 0;
+	return nullptr;
 }

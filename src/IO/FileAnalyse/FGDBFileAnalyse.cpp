@@ -99,9 +99,9 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> th
 IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FGDBFileAnalyse"))
 {
 	UInt8 buff[40];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
-	this->tableInfo = 0;
+	this->tableInfo = nullptr;
 	fd->GetRealData(0, 40, BYTEARR(buff));
 	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
 	{
@@ -119,7 +119,7 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 	if (this->tableInfo.SetTo(tableInfo))
 	{
 		Map::ESRI::FileGDBUtil::FreeTableInfo(tableInfo);
-		this->tableInfo = 0;
+		this->tableInfo = nullptr;
 	}
 	this->fd.Delete();
 	this->tags.MemFreeAll();
@@ -182,9 +182,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));

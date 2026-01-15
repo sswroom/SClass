@@ -48,7 +48,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), UTF8STRC(".shp"));
 
 				IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				shpExp.ExportFile(fs, CSTRP(sbuff2, sptr2), lyr, 0);
+				shpExp.ExportFile(fs, CSTRP(sbuff2, sptr2), lyr, nullptr);
 			}
 			i++;
 		}

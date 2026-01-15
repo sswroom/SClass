@@ -136,8 +136,8 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 	{
 		if (nodeText->Equals(UTF8STRC("property")))
 		{
-			Optional<Text::String> name = 0;
-			Optional<Text::String> value = 0;
+			Optional<Text::String> name = nullptr;
+			Optional<Text::String> value = nullptr;
 			NN<Text::String> nameStr;
 			NN<Text::String> valueStr;
 			i = 0;
@@ -171,7 +171,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 		}
 		else if (nodeText->Equals(UTF8STRC("import")))
 		{
-			Optional<Text::String> value = 0;
+			Optional<Text::String> value = nullptr;
 			NN<Text::String> valueStr;
 			i = 0;
 			j = reader->GetAttribCount();
@@ -204,8 +204,8 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 		}
 		else if (nodeText->Equals(UTF8STRC("parameter")))
 		{
-			Optional<Text::String> name = 0;
-			Optional<Text::String> className = 0;
+			Optional<Text::String> name = nullptr;
+			Optional<Text::String> className = nullptr;
 			NN<Text::String> nameStr;
 			NN<Text::String> classNameStr;
 			i = 0;
@@ -322,13 +322,13 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text:
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{
 		printf("JasperXML: non element in ParseBand\r\n");
-		return 0;
+		return nullptr;
 	}
 	if (!reader->GetNodeTextNN()->Equals(UTF8STRC("band")))
 	{
 		printf("JasperXML: unknown element in ParseBand: (%s)\r\n", reader->GetNodeTextNN()->v.Ptr());
 		reader->SkipElement();
-		return 0;
+		return nullptr;
 	}
 
 	NN<Media::Jasper::JasperBand> band;
@@ -382,33 +382,33 @@ Optional<Media::Jasper::JasperElement> Media::Jasper::JasperXML::ParseElement(NN
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{
 		printf("JasperXML: non element in ParseElement\r\n");
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> nodeName = reader->GetNodeTextNN();
 	if (nodeName->Equals(UTF8STRC("staticText")))
 	{
 		reader->SkipElement();
-		return 0;
+		return nullptr;
 	}
 	else if (nodeName->Equals(UTF8STRC("textField")))
 	{
 		reader->SkipElement();
-		return 0;
+		return nullptr;
 	}
 	else if (nodeName->Equals(UTF8STRC("line")))
 	{
 		reader->SkipElement();
-		return 0;
+		return nullptr;
 	}
 	else if (nodeName->Equals(UTF8STRC("image")))
 	{
 		reader->SkipElement();
-		return 0;
+		return nullptr;
 	}
 	else
 	{
 		printf("JasperXML: unknown element in ParseElement: (%s)\r\n", nodeName->v.Ptr());
 		reader->SkipElement();
-		return 0;
+		return nullptr;
 	}
 }

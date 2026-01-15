@@ -53,9 +53,9 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			cfg.Delete();
 		}
-		Optional<Net::WiFiCapturer> wifiCapturer = 0;
-		Optional<IO::BTCapturer> btCapturer = 0;
-		Optional<IO::GSMCellCapturer> gsmCapturer = 0;
+		Optional<Net::WiFiCapturer> wifiCapturer = nullptr;
+		Optional<IO::BTCapturer> btCapturer = nullptr;
+		Optional<IO::GSMCellCapturer> gsmCapturer = nullptr;
 		NN<Net::WiFiCapturer> nnwifiCapturer;
 		NN<IO::BTCapturer> nnbtCapturer;
 		NN<IO::GSMCellCapturer> nngsmCapturer;
@@ -135,7 +135,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			{
 				Net::WebServer::CapturerWebHandler webHdlr(wifiCapturer, btCapturer, radioLogger);
 				webHdlr.SetGSMCapturer(gsmCapturer);
-				Net::WebServer::WebListener listener(clif, 0, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true);
+				Net::WebServer::WebListener listener(clif, nullptr, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 				if (listener.IsError())
 				{
 					sb.AppendC(UTF8STRC("Error in starting web server at port "));

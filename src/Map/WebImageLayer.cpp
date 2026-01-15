@@ -80,7 +80,7 @@ OSInt Map::WebImageLayer::GetImageStatIndex(Int32 id)
 Optional<Map::WebImageLayer::ImageStat> Map::WebImageLayer::GetImageStat(Int32 id)
 {
 	OSInt ind;
-	Optional<Map::WebImageLayer::ImageStat> stat = 0;
+	Optional<Map::WebImageLayer::ImageStat> stat = nullptr;
 	Sync::RWMutexUsage mutUsage(this->loadedMut, false);
 	ind = this->GetImageStatIndex(id);
 	if (ind >= 0)
@@ -95,7 +95,7 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 #if defined(VERBOSE)
 	printf("WebImageLayer: loading %s\r\n", stat->url->v);
 #endif
-	stat->data = this->browser->GetData(stat->url->ToCString(), false, 0);
+	stat->data = this->browser->GetData(stat->url->ToCString(), false, nullptr);
 	NN<IO::StreamData> fd;
 	if (!stat->data.SetTo(fd))
 	{
@@ -513,7 +513,7 @@ UOSInt Map::WebImageLayer::GetColumnCnt() const
 UnsafeArrayOpt<UTF8Char> Map::WebImageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	if (colIndex > 0)
-		return 0;
+		return nullptr;
 	return Text::StrConcatC(buff, UTF8STRC("Name"));
 }
 
@@ -582,7 +582,7 @@ Optional<Math::Geometry::Vector2D> Map::WebImageLayer::GetNewVectorById(NN<GetOb
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -623,8 +623,8 @@ void Map::WebImageLayer::AddImage(Text::CString name, Text::CStringNN url, Int32
 	NEW_CLASSNN(stat, ImageStat());
 	stat->id = this->nextId++;
 	stat->url = Text::String::New(url);
-	stat->simg = 0;
-	stat->data = 0;
+	stat->simg = nullptr;
+	stat->data = nullptr;
 	stat->name = Text::String::NewOrNull(name);
 	stat->timeStart = timeStartTS;
 	stat->timeEnd = timeEndTS;

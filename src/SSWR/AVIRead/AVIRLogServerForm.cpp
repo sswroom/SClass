@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 	if (me->svr.SetTo(svr))
 	{
 		svr.Delete();
-		me->svr = 0;
+		me->svr = nullptr;
 		me->txtPort->SetReadOnly(false);
 	}
 	else
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 				{
 					me->ui->ShowMsgOK(CSTR("Error in starting LogServer"), CSTR("Error"), me);
 					svr.Delete();
-					me->svr = 0;
+					me->svr = nullptr;
 				}
 			}
 		}
@@ -141,7 +141,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(Optional<UI::GUIClientContro
 	this->core = core;
 	this->SetText(CSTR("Log Server"));
 	this->SetFont(nullptr, 8.25, false);
-	this->svr = 0;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->currIP = 0;

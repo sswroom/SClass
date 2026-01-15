@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
 #define _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapObj.hpp"
 #include "IO/Writer.h"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebStandardHandler.h"
@@ -16,7 +16,7 @@ namespace SSWR
 			typedef Bool (CALLBACKFUNC RequestHandler)(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		private:
 			SSWR::SMonitor::SMonitorCore *core;
-			Data::FastStringMap<RequestHandler> *reqMap;
+			Data::FastStringMapObj<RequestHandler> *reqMap;
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
 
 			static Bool __stdcall OnSessDeleted(NN<Net::WebServer::WebSession> sess, AnyType userObj);

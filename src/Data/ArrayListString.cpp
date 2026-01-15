@@ -3,15 +3,15 @@
 #include "Data/ArrayListString.h"
 #include "Text/MyString.h"
 
-Data::ArrayListString::ArrayListString() : Data::SortableArrayList<Optional<Text::String>>()
+Data::ArrayListString::ArrayListString() : Data::SortableArrayListObj<Optional<Text::String>>()
 {
 }
 
-Data::ArrayListString::ArrayListString(UOSInt capacity) : Data::SortableArrayList<Optional<Text::String>>(capacity)
+Data::ArrayListString::ArrayListString(UOSInt capacity) : Data::SortableArrayListObj<Optional<Text::String>>(capacity)
 {
 }
 
-NN<Data::ArrayList<Optional<Text::String>>> Data::ArrayListString::Clone() const
+NN<Data::ArrayListObj<Optional<Text::String>>> Data::ArrayListString::Clone() const
 {
 	NN<Data::ArrayListString> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListString(this->capacity));

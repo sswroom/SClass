@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ID3Parser::ParseFileHdr(NN<IO::St
 {
 	UInt32 headerSize;
 	if (hdr[0] != 'I' || hdr[1] != 'D' || hdr[2] != '3')
-		return 0;
+		return nullptr;
 	
 	headerSize = ReadUSInt32(&hdr[6]);
 	NN<Media::AudioBlockSource> src;
@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ID3Parser::ParseFileHdr(NN<IO::St
 	else
 	{
 		data.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 

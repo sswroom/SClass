@@ -561,7 +561,7 @@ void Map::MapServerHandler::AddLayer(NN<Map::MapDrawLayer> layer)
 Map::MapServerHandler::MapServerHandler(NN<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
-	this->cesiumScenePath = 0;
+	this->cesiumScenePath = nullptr;
 	this->cesiumMinError = 0;
 	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->AddService(CSTR("/getlayers"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayersFunc);

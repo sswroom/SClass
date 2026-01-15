@@ -6,22 +6,22 @@
 #include "Math/Math_C.h"
 #include "Math/WKTWriter.h"
 
-Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> Map::FileGDBLayer::ReadNameArr()
+Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> Map::FileGDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage;
 	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
 	NN<DB::DBReader> r;
-	if (currDB->QueryTableData(nullptr, tableName->ToCString(), 0, 0, 0, 0, 0).SetTo(r))
+	if (currDB->QueryTableData(nullptr, tableName->ToCString(), nullptr, 0, 0, 0, nullptr).SetTo(r))
 	{
-		Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
+		Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
 		UOSInt colCnt = this->colNames.GetCount();
 		UOSInt i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32FastMap<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
+		NEW_CLASS(nameArr, Data::Int32FastMapObj<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
@@ -31,7 +31,7 @@ Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> M
 			{
 				if (i == this->shapeCol)
 				{
-					names[i] = 0;
+					names[i] = nullptr;
 				}
 				else if (r->GetStr(i, sbuff, sizeof(sbuff)).SetTo(sptr))
 				{
@@ -39,7 +39,7 @@ Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> M
 				}
 				else
 				{
-					names[i] = 0;
+					names[i] = nullptr;
 				}
 				i++;
 			}
@@ -52,7 +52,7 @@ Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> M
 	else
 	{
 		mutUsage.EndUse();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -62,7 +62,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 	conn->UseObject();
 	this->conn = conn;
 	this->tableName = Text::String::New(tableName);
-	this->lastDB = 0;
+	this->lastDB = nullptr;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
 	this->minPos = Math::Coord2DDbl(0, 0);
 	this->maxPos = Math::Coord2DDbl(0, 0);
@@ -74,7 +74,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
 	this->tabDef = currDB->GetTableDef(nullptr, tableName);
 	NN<DB::DBReader> r;
-	if (currDB->QueryTableData(nullptr, tableName, 0, 0, 0, 0, 0).SetTo(r))
+	if (currDB->QueryTableData(nullptr, tableName, nullptr, 0, 0, 0, nullptr).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -90,7 +90,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 				NN<Text::String> prj;
 				if (colDef.GetAttr().SetTo(prj) && prj->v[0])
 				{
-					Optional<Math::CoordinateSystem> csys2 = 0;
+					Optional<Math::CoordinateSystem> csys2 = nullptr;
 					NN<Math::CoordinateSystem> nncsys2;
 					if (prj->StartsWith(UTF8STRC("EPSG:")))
 					{
@@ -246,8 +246,8 @@ UOSInt Map::FileGDBLayer::GetRecordCnt() const
 
 void Map::FileGDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	NN<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
-	if (Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
+	NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
+	if (Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
 	{
 		UOSInt i = names->GetCount();
 		UOSInt colCnt = this->colNames.GetCount();
@@ -286,13 +286,13 @@ Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameA
 			return false;
 		}
 	}
-	NN<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
-	if (!Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
+	NN<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
+	if (!Optional<Data::FastMapObj<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
 		return false;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
 	if (!names->Get((Int32)id).SetTo(nameStrs))
 		return false;
-	if (nameStrs[strIndex] == 0)
+	if (nameStrs[strIndex].IsNull())
 		return false;
 	sb->AppendSlow(nameStrs[strIndex]);
 	return true;
@@ -310,7 +310,7 @@ UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> 
 	{
 		return Text::StrConcatC(buff, colName->v, colName->leng);
 	}
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -355,9 +355,9 @@ Optional<Math::Geometry::Vector2D> Map::FileGDBLayer::GetNewVectorById(NN<GetObj
 	NN<Math::Geometry::Vector2D> vec;
 	if (this->objects.Get((Int32)id).SetTo(vec))
 	{
-		return vec->Clone().Ptr();
+		return vec->Clone();
 	}
-	return 0;
+	return nullptr;
 }
 
 void Map::FileGDBLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
@@ -390,7 +390,7 @@ Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaNam
 		return r;
 	}
 	mutUsage.Delete();
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::TableDef> Map::FileGDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)

@@ -22,7 +22,7 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 	this->userAgent = Text::String::CopyOrNull(userAgent);
 	this->channelId = Text::String::New(channelId);
 	this->log = log;
-	this->chDesc = 0;
+	this->chDesc = nullptr;
 	this->timeout = 30000;
 
 	Net::RSS *rss;
@@ -75,13 +75,13 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 			NN<Text::String> s2;
 			nns = Text::String::New(sb.ToString(), sb.GetLength());
 			s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
-			snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), 0);
+			snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), nullptr);
 			nns->Release();
 			s2->Release();
 		}
 		else
 		{
-			snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, Text::String::OrEmpty(item->description), item->link, item->imgURL, 0);
+			snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, Text::String::OrEmpty(item->description), item->link, item->imgURL, nullptr);
 		}
 		this->itemMap.Put(item->guid, snsItem);
 	}
@@ -210,13 +210,13 @@ Bool Net::SNS::SNSRSS::Reload()
 					NN<Text::String> s2;
 					nns = Text::String::New(sb.ToString(), sb.GetLength());
 					s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
-					snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), 0);
+					snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), nullptr);
 					nns->Release();
 					s2->Release();
 				}
 				else
 				{
-					snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, Text::String::OrEmpty(item->description), item->link, item->imgURL, 0);
+					snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, Text::String::OrEmpty(item->description), item->link, item->imgURL, nullptr);
 				}
 				this->itemMap.Put(item->guid, snsItem);
 				changed = true;

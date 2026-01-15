@@ -97,7 +97,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NN<IO::StreamData> jsonFD, NN<IO
 	Text::StringBuilderUTF8 sb;
 	Text::JSText::JSONWellFormat(jsonBuff.Arr(), jsonLen, 0, sb);
 	this->txtJSON->SetText(sb.ToCString());
-	this->hfvBinBuff->LoadData(binBuffFD, 0);
+	this->hfvBinBuff->LoadData(binBuffFD, nullptr);
 	jsonFD.Delete();
 	return true;
 }
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(Optional<UI::GUIClientContro
 	this->lblBinBuff = ui->NewLabel(this->pnlBinBuff, CSTR("Binary Buffer"));
 	this->lblBinBuff->SetRect(0, 0, 100, 23, false);
 	this->lblBinBuff->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASSNN(this->hfvBinBuff, UI::GUIHexFileView(ui, this->pnlBinBuff, this->core->GetDrawEngine(), 0));
+	NEW_CLASSNN(this->hfvBinBuff, UI::GUIHexFileView(ui, this->pnlBinBuff, this->core->GetDrawEngine(), nullptr));
 	this->hfvBinBuff->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->HandleDropFiles(OnFileDrop, this);

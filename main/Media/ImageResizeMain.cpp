@@ -55,7 +55,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sb.Append(srcFile);
 			console.WriteLine(sb.ToCString());
 		}
-		else if (!Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::ImageList)).SetTo(imgList))
+		else if (!Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(fd, nullptr, IO::ParserType::ImageList)).SetTo(imgList))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in parsing srcFile: "));
@@ -69,7 +69,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Optional<Media::StaticImage> newImg;
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 			{
-				Media::Resizer::LanczosResizerRGB_C8 resizer(4, 4, simg->info.color, simg->info.color, 0, simg->info.atype);
+				Media::Resizer::LanczosResizerRGB_C8 resizer(4, 4, simg->info.color, simg->info.color, nullptr, simg->info.atype);
 				resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
 				if (!resizer.IsSupported(simg->info))
 				{
@@ -79,7 +79,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			}
 			else
 			{
-				newImg = 0;
+				newImg = nullptr;
 			}
 			imgList.Delete();
 			if (newImg.SetTo(simg))
@@ -88,7 +88,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				NEW_CLASSNN(imgList, Media::ImageList(destFile));
 				imgList->AddImage(simg, 0);
 				IO::FileStream fs(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				if (exporter.ExportFile(fs, destFile, imgList, 0))
+				if (exporter.ExportFile(fs, destFile, imgList, nullptr))
 				{
 					ret = 0;
 				}

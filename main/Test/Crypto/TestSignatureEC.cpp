@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
-	Optional<Crypto::Cert::X509File> x509 = 0;
+	Optional<Crypto::Cert::X509File> x509 = nullptr;
 	NN<Crypto::Cert::X509File> nnx509;
 	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl))

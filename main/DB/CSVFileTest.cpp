@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			DB::CSVFile csv(stm, 65001);
 
 			NN<DB::DBReader> rdr;
-			if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(rdr))
+			if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(rdr))
 			{
 				Int32 rowCnt = 0;
 				while (rdr->ReadNext())

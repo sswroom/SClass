@@ -16,7 +16,7 @@ UI::DObj::ButtonDObj::ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileN
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
 	{
-		this->bmpUnclick = 0;
+		this->bmpUnclick = nullptr;
 	}
 	else
 	{
@@ -25,7 +25,7 @@ UI::DObj::ButtonDObj::ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileN
 
 	if (fileNameClicked.leng == 0)
 	{
-		this->bmpClicked = 0;
+		this->bmpClicked = nullptr;
 	}
 	else
 	{
@@ -48,12 +48,12 @@ UI::DObj::ButtonDObj::~ButtonDObj()
 	if (this->bmpUnclick.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmpUnclick = 0;
+		this->bmpUnclick = nullptr;
 	}
 	if (this->bmpClicked.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmpClicked = 0;
+		this->bmpClicked = nullptr;
 	}
 	DEL_CLASS(this->rnd);
 }
@@ -74,7 +74,7 @@ Bool UI::DObj::ButtonDObj::IsChanged()
 	{
 		return true;
 	}
-	else if (this->bmpUnclick != 0 && this->bmpClicked != 0)
+	else if (this->bmpUnclick.NotNull() && this->bmpClicked.NotNull())
 	{
 		return true;
 	}

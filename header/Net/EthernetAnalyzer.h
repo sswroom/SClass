@@ -252,7 +252,7 @@ namespace Net
 		NN<const Data::ReadingListNN<IPLogInfo>> IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
-		UOSInt TCP4SYNGetList(NN<Data::ArrayListT<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
+		UOSInt TCP4SYNGetList(NN<Data::ArrayListNative<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
 		NN<Data::FastMapNN<UInt32, BandwidthStat>> BandwidthGetAll(NN<Sync::MutexUsage> mutUsage);
 
 		Bool PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid

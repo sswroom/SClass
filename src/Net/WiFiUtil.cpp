@@ -93,5 +93,5 @@ UnsafeArrayOpt<UTF8Char> Net::WiFiUtil::GuessDeviceType(UnsafeArray<UTF8Char> sb
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }

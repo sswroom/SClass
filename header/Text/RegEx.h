@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_REGEX
 #define _SM_TEXT_REGEX
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNative.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -145,7 +145,7 @@ namespace Text
 		{
 		private:
 			Bool notMatch;
-			Data::ArrayList<UTF32Char> charList;
+			Data::ArrayListNative<UTF32Char> charList;
 		public:
 			BracketExpression(Bool notMatch) { this->notMatch = notMatch; }
 			virtual ~BracketExpression() {}

@@ -236,7 +236,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::SIMCOMGetNetworkAPN(UnsafeArray<UT
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool IO::Device::SIM7000::NetSetMultiIP(Bool multiIP)
@@ -389,7 +389,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::NetGetIFAddr(UnsafeArray<UTF8Char>
 	return this->SendStringCommandDirect(addr, UTF8STRC("AT+CIFSR"), 1000);
 }
 
-Bool IO::Device::SIM7000::NetGetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
+Bool IO::Device::SIM7000::NetGetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
 	Data::ArrayListStringNN resList;
 	if (this->SendStringCommand(resList, UTF8STRC("AT+CDNSCFG?"), 3000))

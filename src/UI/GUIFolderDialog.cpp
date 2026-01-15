@@ -3,8 +3,8 @@
 
 UI::GUIFolderDialog::GUIFolderDialog()
 {
-	this->dirName = 0;
-	this->message = 0;
+	this->dirName = nullptr;
+	this->message = nullptr;
 }
 
 UI::GUIFolderDialog::~GUIFolderDialog()

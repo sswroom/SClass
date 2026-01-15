@@ -245,7 +245,7 @@ Net::RTSPClient::RTSPClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host
 	this->cliData->reqReply = 0;
 	this->cliData->reqReplySize = 0;
 	this->cliData->reqStrs = 0;
-	this->cliData->cli = 0;
+	this->cliData->cli = nullptr;
 	this->cliData->host = Text::String::New(host);
 	this->cliData->port = port;
 
@@ -278,7 +278,7 @@ Net::RTSPClient::~RTSPClient()
 	}
 }
 
-Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8Char *> *options)
+Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayListObj<const UTF8Char *> *options)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -398,7 +398,7 @@ UnsafeArrayOpt<UTF8Char> Net::RTSPClient::SetupRTP(UnsafeArray<UTF8Char> sessIdO
 
 	Bool succ = this->WaitForReply();
 
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	if (succ && this->cliData->reqReplyStatus == 200)
 	{
 		ret = this->cliData->reqStrs->ConcatTo(sessIdOut);

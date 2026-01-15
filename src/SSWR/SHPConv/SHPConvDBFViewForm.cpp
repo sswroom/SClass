@@ -20,8 +20,8 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 	UOSInt k;
 	UOSInt l;
 	UOSInt m;
-	Data::ArrayList<const UTF8Char*> dbCols;
-	Data::ArrayList<UInt32> dbCols2;
+	Data::ArrayListObj<const UTF8Char*> dbCols;
+	Data::ArrayListNative<UInt32> dbCols2;
 
 	eng->ParseLabelStr(lbl, &dbCols, &dbCols2);
 	this->lvDBF->AddColumn(CSTR("Output"), 120);

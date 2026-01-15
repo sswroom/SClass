@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(Optional<UI::GUIClientControl> p
 	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
 
-	this->icc = 0;
+	this->icc = nullptr;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

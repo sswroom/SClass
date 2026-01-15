@@ -68,7 +68,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8
 	UInt8 dataBuff2[256];
 	Bool sent;
 	UOSInt retryCnt = 0;
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
@@ -90,7 +90,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8
 			cli->Write(Data::ByteArrayR(dataBuff2, this->protocol.BuildPacket(dataBuff2, 0, 0, dataBuff, 12, 0)));
 			sent = true;
 		}
-		sptr = 0;
+		sptr = nullptr;
 		if (sent)
 		{
 			OSInt i = 10;
@@ -110,7 +110,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8
 		this->reqResult = false;
 		retryCnt++;
 	}
-	this->reqBuff = 0;
+	this->reqBuff = nullptr;
 	mutUsage.EndUse();
 	return sptr;
 }
@@ -121,7 +121,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8C
 	UInt8 dataBuff2[256];
 	Bool sent;
 	UOSInt retryCnt = 0;
-	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = nullptr;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
@@ -143,7 +143,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8C
 			cli->Write(Data::ByteArrayR(dataBuff2, this->protocol.BuildPacket(dataBuff2, 2, 0, dataBuff, 12, 0)));
 			sent = true;
 		}
-		sptr = 0;
+		sptr = nullptr;
 		if (sent)
 		{
 			OSInt i = 10;
@@ -163,7 +163,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8C
 		this->reqResult = false;
 		retryCnt++;
 	}
-	this->reqBuff = 0;
+	this->reqBuff = nullptr;
 	mutUsage.EndUse();
 	return sptr;}
 

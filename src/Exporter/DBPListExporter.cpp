@@ -54,7 +54,7 @@ Bool Exporter::DBPListExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		return false;
 	}
 
-	Optional<Text::String> name = 0;
+	Optional<Text::String> name = nullptr;
 	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
@@ -62,7 +62,7 @@ Bool Exporter::DBPListExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	return DB::DBExporter::GeneratePList(db, nullptr, Text::String::OrEmpty(name)->ToCString(), 0, stm, this->codePage);
+	return DB::DBExporter::GeneratePList(db, nullptr, Text::String::OrEmpty(name)->ToCString(), nullptr, stm, this->codePage);
 }
 
 UOSInt Exporter::DBPListExporter::GetParamCnt()
@@ -130,7 +130,7 @@ Bool Exporter::DBPListExporter::SetParamSel(Optional<ParamData> param, UOSInt in
 
 UnsafeArrayOpt<UTF8Char> Exporter::DBPListExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Int32 Exporter::DBPListExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
@@ -160,7 +160,7 @@ UnsafeArrayOpt<UTF8Char> Exporter::DBPListExporter::GetParamSelItems(Optional<Pa
 		{
 			return name->ConcatTo(buff);
 		}
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }

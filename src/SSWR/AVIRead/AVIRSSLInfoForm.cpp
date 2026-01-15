@@ -272,8 +272,8 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->currCerts = 0;
-	this->packetBuff = 0;
+	this->currCerts = nullptr;
+	this->packetBuff = nullptr;
 	this->packetSize = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

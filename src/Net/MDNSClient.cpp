@@ -39,7 +39,7 @@ Net::MDNSClient::MDNSClient(NN<Net::SocketFactory> sockf, DNSAnswerHandler hdlr,
 	this->sockf = sockf;
 	this->hdlr = hdlr;
 	this->hdlrObj = hdlrObj;
-	NEW_CLASSNN(this->udp, Net::UDPServer(sockf, 0, 5353, 0, OnUDPPacket, this, log, 0, 4, true));
+	NEW_CLASSNN(this->udp, Net::UDPServer(sockf, nullptr, 5353, 0, OnUDPPacket, this, log, 0, 4, true));
 	this->udp->AddMulticastIP(Net::SocketUtil::GetIPAddr(CSTR("224.0.0.251")));
 }
 

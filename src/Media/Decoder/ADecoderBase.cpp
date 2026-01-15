@@ -3,7 +3,7 @@
 
 Media::Decoder::ADecoderBase::ADecoderBase()
 {
-	this->sourceAudio = 0;
+	this->sourceAudio = nullptr;
 }
 
 Media::Decoder::ADecoderBase::~ADecoderBase()
@@ -15,7 +15,7 @@ UnsafeArrayOpt<UTF8Char> Media::Decoder::ADecoderBase::GetSourceName(UnsafeArray
 	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
         return sourceAudio->GetSourceName(buff);
-	return 0;
+	return nullptr;
 }
 
 Bool Media::Decoder::ADecoderBase::CanSeek()

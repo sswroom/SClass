@@ -75,7 +75,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseSeq(UnsafeArray<const UInt8> 
 {
 	UOSInt len;
 	if (pduEnd - pdu < 2)
-		return 0;
+		return nullptr;
 	type.Set(pdu[0]);
 	if (pdu[1] < 0x80)
 	{
@@ -104,11 +104,11 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseSeq(UnsafeArray<const UInt8> 
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	if (pdu + len > pduEnd)
 	{
-		return 0;
+		return nullptr;
 	}
 	seqEnd.Set(pdu + len);
 	return pdu;
@@ -117,9 +117,9 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseSeq(UnsafeArray<const UInt8> 
 UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseUInt32(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt32> val)
 {
 	if (pduEnd - pdu < 3)
-		return 0;
+		return nullptr;
 	if (pdu[0] != 2)
-		return 0;
+		return nullptr;
 	if (pdu[1] == 1)
 	{
 		val.Set(pdu[2]);
@@ -142,7 +142,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseUInt32(UnsafeArray<const UInt
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -150,9 +150,9 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseString(UnsafeArray<const UInt
 {
 	UOSInt len;
 	if (pduEnd - pdu < 2)
-		return 0;
+		return nullptr;
 	if (pdu[0] != 4)
-		return 0;
+		return nullptr;
 	if (pdu[1] < 0x80)
 	{
 		len = pdu[1];
@@ -180,11 +180,11 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseString(UnsafeArray<const UInt
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	if (pdu + len > pduEnd)
 	{
-		return 0;
+		return nullptr;
 	}
 	sb->AppendC(pdu, len);
 	return pdu + len;
@@ -193,9 +193,9 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseString(UnsafeArray<const UInt
 UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseChoice(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt32> val)
 {
 	if (pduEnd - pdu < 3)
-		return 0;
+		return nullptr;
 	if (pdu[0] != 10)
-		return 0;
+		return nullptr;
 	if (pdu[1] == 1)
 	{
 		val.Set(pdu[2]);
@@ -218,7 +218,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseChoice(UnsafeArray<const UInt
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -249,12 +249,12 @@ Bool Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR pdu, NN<Data::DateTime>
 
 Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level)
 {
-	return PDUToString(pdu, pduEnd, sb, level, 0, 0);
+	return PDUToString(pdu, pduEnd, sb, level, 0, nullptr);
 }
 
 Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level, OptOut<UnsafeArray<const UInt8>> pduNext)
 {
-	return PDUToString(pdu, pduEnd, sb, level, pduNext, 0);
+	return PDUToString(pdu, pduEnd, sb, level, pduNext, nullptr);
 }
 
 Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level, OptOut<UnsafeArray<const UInt8>> pduNext, Optional<ASN1Names> names)
@@ -788,7 +788,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 	UOSInt ofst;
 	if (!UnsafeArrayOpt<const UTF8Char>::ConvertFrom(cpath).SetTo(path) || path[0] == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	size = Text::StrIndexOfChar(path, '.');
 	if (size == INVALID_INDEX)
@@ -804,12 +804,12 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	if (cnt == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	while (pdu < pduEnd)
@@ -818,15 +818,15 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 		ofst = PDUParseLen(pdu, 1, size, itemLen);
 		if (ofst > size)
 		{
-			return 0;
+			return nullptr;
 		}
 		else if (ofst + itemLen > size)
 		{
-			return 0;
+			return nullptr;
 		}
 		else if (pdu[0] == 0 && pdu[1] == 0)
 		{
-			return 0;
+			return nullptr;
 		}
 
 		cnt--;
@@ -842,7 +842,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 						UnsafeArray<const UInt8> pduNext;
 						if (!PDUDSizeEnd(&pdu[ofst], pduEnd, pduNext))
 						{
-							return 0;
+							return nullptr;
 						}
 						len.SetNoCheck((UOSInt)(pduNext - &pdu[ofst]));
 					}
@@ -869,7 +869,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 		{
 			if (!PDUDSizeEnd(&pdu[ofst], pduEnd, pdu))
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		else
@@ -877,7 +877,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 			pdu += ofst + itemLen;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UOSInt> len, OptOut<ItemType> itemType)
@@ -887,7 +887,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> p
 	UnsafeArray<const UInt8> pduOut;
 	if (!PDUGetItemRAW(pdu, pduEnd, path, len, itemOfst).SetTo(pduOut))
 	{
-		return 0;
+		return nullptr;
 	}
 	itemType.Set((ItemType)pduOut[0]);
 	return pduOut + itemOfst;

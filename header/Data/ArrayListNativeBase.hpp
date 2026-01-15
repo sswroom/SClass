@@ -3,6 +3,7 @@
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/ArrayCollection.hpp"
+#include "Data/ArrayListUtil.hpp"
 #include "Data/List.hpp"
 
 namespace Data
@@ -33,6 +34,7 @@ namespace Data
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
+		void AddAll(NN<const ArrayCollection<T>> arr);
 		virtual UnsafeArray<T> GetArr(OutParam<UOSInt> arraySize) const;
 		virtual UnsafeArray<T> Arr() const;
 		T Pop();
@@ -138,6 +140,18 @@ namespace Data
 		}
 	}
 
+	template <class T> void ArrayListNativeBase<T>::AddAll(NN<const ArrayCollection<T>> arr)
+	{
+		UOSInt i = 0;
+		UOSInt j = arr->GetCount();
+		UnsafeArray<T> arr2 = arr->Arr();
+		while (i < j)
+		{
+			this->Add(arr2[i]);
+			i++;
+		}
+	}
+
 	template <class T> UnsafeArray<T> ArrayListNativeBase<T>::GetArr(OutParam<UOSInt> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
@@ -176,10 +190,4 @@ namespace Data
 	}
 }
 
-#define LIST_CALL_FUNC(list, func) { UOSInt i = (list)->GetCount(); while (i-- > 0) func((list)->GetItem(i)); }
-#define LIST_FREE_FUNC(list, func) { LIST_CALL_FUNC(list, func); (list)->Clear(); }
-#define LIST_FREE_STRING(list) { UOSInt i = (list)->GetCount(); while (i-- > 0) (list)->GetItem(i)->Release(); (list)->Clear(); }
-#define LIST_FREE_STRING_NO_CLEAR(list) { UOSInt i = (list)->GetCount(); while (i-- > 0) (list)->GetItem(i)->Release(); }
-#define NNLIST_FREE_STRING(list) { UOSInt i = (list)->GetCount(); while (i-- > 0) (list)->GetItemNoCheck(i)->Release(); (list)->Clear(); }
-#define NNLIST_CALL_FUNC(list, func) { UOSInt i = (list)->GetCount(); while (i-- > 0) func((list)->GetItemNoCheck(i)); }
 #endif

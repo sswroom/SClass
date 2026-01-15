@@ -46,13 +46,13 @@ IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 Optional<IO::IOPin> IO::VirtualIOPinMgr::CreatePin(UInt32 pinNum)
 {
 	if (pinNum >= this->pinCnt)
-		return 0;
+		return nullptr;
 	IO::IOPin *pin;
 	NEW_CLASS(pin, IO::VirtualIOPin(this->pins[pinNum]));
 	return pin;
 }
 
-UOSInt IO::VirtualIOPinMgr::GetAvailablePins(Data::ArrayList<Int32> *pinList)
+UOSInt IO::VirtualIOPinMgr::GetAvailablePins(NN<Data::ArrayListNative<Int32>> pinList)
 {
 	UOSInt i = 0;
 	UOSInt j = this->pinCnt;

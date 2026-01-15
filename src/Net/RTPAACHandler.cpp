@@ -45,7 +45,7 @@ Net::RTPAACHandler::RTPAACHandler(Int32 payloadType, UInt32 freq, UInt32 nChanne
 	this->payloadType = payloadType;
 	this->freq = freq;
 	this->nChannel = nChannel;
-	this->evt = 0;
+	this->evt = nullptr;
 	this->aacm = AACM_UNKNOWN;
 	this->streamType = 0;
 	this->profileId = 0;
@@ -250,7 +250,7 @@ Bool Net::RTPAACHandler::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 
 void Net::RTPAACHandler::Stop()
 {
-	this->evt = 0;
+	this->evt = nullptr;
 	SDEL_CLASS(this->dataEvt);
 }
 

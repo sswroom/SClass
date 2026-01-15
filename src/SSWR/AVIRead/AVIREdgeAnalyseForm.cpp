@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIREdgeAnalyseForm::OnWebHookClicked(AnyType user
 		me->ui->ShowMsgOK(CSTR("Please enter valid port"), TITLE, me);
 		return;
 	}
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, me->webHookHdlr, port, 60, 1, 4, CSTR("EdgeAnalyse/1.0"), false, Net::WebServer::KeepAlive::Always, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), nullptr, me->webHookHdlr, port, 60, 1, 4, CSTR("EdgeAnalyse/1.0"), false, Net::WebServer::KeepAlive::Always, true));
 	if (listener->IsError())
 	{
 		me->ui->ShowMsgOK(CSTR("Error in listening port"), TITLE, me);
@@ -226,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIREdgeAnalyseForm::FreeRecord(NN<EdgeRecord> rec
 SSWR::AVIRead::AVIREdgeAnalyseForm::AVIREdgeAnalyseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->webHookListener = 0;
+	this->webHookListener = nullptr;
 	NEW_CLASSNN(this->webHookHdlr, EdgeAnalyseHandler(*this));
 	this->SetText(TITLE);
 	this->SetFont(nullptr, 8.25, false);

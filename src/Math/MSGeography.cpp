@@ -17,7 +17,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 {
 	if (buffSize < 6)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 srid = ReadUInt32(&buffPtr[0]);
 	srIdOut.Set(srid);
@@ -27,7 +27,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 		{
 			if (buffSize < 22)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::Point *pt;
 			NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14])));
@@ -37,7 +37,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 		{
 			if (buffSize < 30)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::Point *pt;
 			NEW_CLASS(pt, Math::Geometry::PointZ(srid, ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]), ReadDouble(&buffPtr[22])));
@@ -54,44 +54,44 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			UOSInt ind;
 			if (buffSize < 10)
 			{
-				return 0;
+				return nullptr;
 			}
 			nPoints = ReadUInt32(&buffPtr[6]);
 			pointPtr = &buffPtr[10];
 			ind = 10 + nPoints * 16;
 			if (buffSize < ind + 4)
 			{
-				return 0;
+				return nullptr;
 			}
 			nFigures = ReadUInt32(&buffPtr[ind]);
 			figurePtr = &buffPtr[ind + 4];
 			ind += 4 + nFigures * 5;
 			if (buffSize < ind + 4)
 			{
-				return 0;
+				return nullptr;
 			}
 			nShapes = ReadUInt32(&buffPtr[ind]);
 			shapePtr = &buffPtr[ind + 4];
 			if (buffSize < ind + 4 + nShapes * 9)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (shapePtr[8] == 1)
 			{
 				if (nShapes != 1)
 				{
 					printf("MSGeography: Type 4-1 must be single shape\r\n");
-					return 0;
+					return nullptr;
 				}
 				if (nPoints == 0)
 				{
 					printf("MSGeography: Point empty\r\n");
-					return 0;
+					return nullptr;
 				}
 				else if (nPoints != 1)
 				{
 					printf("MSGeography: Type 4-1 must be single point\r\n");
-					return 0;
+					return nullptr;
 				}
 				Math::Geometry::Point *pt;
 				NEW_CLASS(pt, Math::Geometry::Point(srid, ReadDouble(&pointPtr[0]), ReadDouble(&pointPtr[8])));
@@ -102,7 +102,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				if (nShapes != 1)
 				{
 					printf("MSGeography: Type 4-2 must be single shape\r\n");
-					return 0;
+					return nullptr;
 				}
 				Math::Geometry::Polyline *pl;
 				NN<Math::Geometry::LineString> lineString;
@@ -158,7 +158,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				if (nShapes != 1)
 				{
 					printf("MSGeography: Type 4-3 must be single shape\r\n");
-					return 0;
+					return nullptr;
 				}
 				Math::Geometry::Polygon *pg;
 				NN<Math::Geometry::LinearRing> lr;
@@ -310,34 +310,34 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			UOSInt ind;
 			if (buffSize < 10)
 			{
-				return 0;
+				return nullptr;
 			}
 			nPoints = ReadUInt32(&buffPtr[6]);
 			pointPtr = &buffPtr[10];
 			ind = 10 + nPoints * 24;
 			if (buffSize < ind + 4)
 			{
-				return 0;
+				return nullptr;
 			}
 			nFigures = ReadUInt32(&buffPtr[ind]);
 			figurePtr = &buffPtr[ind + 4];
 			ind += 4 + nFigures * 5;
 			if (buffSize < ind + 4)
 			{
-				return 0;
+				return nullptr;
 			}
 			nShapes = ReadUInt32(&buffPtr[ind]);
 			shapePtr = &buffPtr[ind + 4];
 			if (buffSize < ind + 4 + nShapes * 9)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (shapePtr[8] == 2)
 			{
 				if (nShapes != 1)
 				{
 					printf("MSGeography: Type 5-2, Multi shape not supported\r\n");
-					return 0;
+					return nullptr;
 				}
 				Math::Geometry::LineString *pl;
 				UOSInt i;
@@ -372,7 +372,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				if (nShapes != 1)
 				{
 					printf("MSGeography: Type 5-3, Multi shape not supported\r\n");
-					return 0;
+					return nullptr;
 				}
 				Math::Geometry::Polygon *pg;
 				NN<Math::Geometry::LinearRing> lr;
@@ -552,34 +552,34 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			UOSInt ind;
 			if (buffSize < 10)
 			{
-				return 0;
+				return nullptr;
 			}
 			nPoints = ReadUInt32(&buffPtr[6]);
 			pointPtr = &buffPtr[10];
 			ind = 10 + nPoints * 32;
 			if (buffSize < ind + 4)
 			{
-				return 0;
+				return nullptr;
 			}
 			nFigures = ReadUInt32(&buffPtr[ind]);
 			figurePtr = &buffPtr[ind + 4];
 			ind += 4 + nFigures * 5;
 			if (buffSize < ind + 4)
 			{
-				return 0;
+				return nullptr;
 			}
 			nShapes = ReadUInt32(&buffPtr[ind]);
 			shapePtr = &buffPtr[ind + 4];
 			if (buffSize < ind + 4 + nShapes * 9)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (shapePtr[8] == 2)
 			{
 				if (nShapes != 1)
 				{
 					printf("MSGeography: Type 7-2, Multi shape not supported\r\n");
-					return 0;
+					return nullptr;
 				}
 				Math::Geometry::LineString *pl;
 				UOSInt i;
@@ -736,7 +736,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			if (buffSize < 38)
 			{
 				printf("MSGeography: Type 20, buffSize too short: %d\r\n", (UInt32)buffSize);
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, false, false));
@@ -750,7 +750,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 		{
 			if (buffSize < 54)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, false));
@@ -768,14 +768,14 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 		else if (buffPtr[5] == 23) // LineString ZM
 		{
 			if (buffSize < 70)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, true));
@@ -796,7 +796,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 		else
@@ -809,5 +809,5 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 #endif
 		}
 	}
-	return 0;
+	return nullptr;
 }

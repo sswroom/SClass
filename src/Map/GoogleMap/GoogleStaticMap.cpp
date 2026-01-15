@@ -3,7 +3,6 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
 #include "Data/DateTime.h"
-#include "Data/ArrayList.hpp"
 #include "IO/Stream.h"
 #include "Map/GoogleMap/GoogleStaticMap.h"
 #include "Net/SocketFactory.h"
@@ -30,12 +29,12 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif,
 		UnsafeArray<UInt8> gooPrivKeyArr;
 		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, nngooPrivKey->leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey->ToCString(), gooPrivKeyArr);
-		this->gooKey = 0;
+		this->gooKey = nullptr;
 	}
 	else
 	{
-		this->gooCliId = 0;
-		this->gooPrivKey = 0;
+		this->gooCliId = nullptr;
+		this->gooPrivKey = nullptr;
 		this->gooKey = Text::String::CopyOrNull(gooKey);
 	}
 }
@@ -54,12 +53,12 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif,
 		UnsafeArray<UInt8> gooPrivKeyArr;
 		this->gooPrivKey = gooPrivKeyArr = MemAllocArr(UInt8, nngooPrivKey.leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey, gooPrivKeyArr);
-		this->gooKey = 0;
+		this->gooKey = nullptr;
 	}
 	else
 	{
-		this->gooCliId = 0;
-		this->gooPrivKey = 0;
+		this->gooCliId = nullptr;
+		this->gooPrivKey = nullptr;
 		this->gooKey = Text::String::NewOrNull(gooKey);
 	}
 }
@@ -71,7 +70,7 @@ Map::GoogleMap::GoogleStaticMap::~GoogleStaticMap()
 	if (this->gooPrivKey.SetTo(gooPrivKey))
 	{
 		MemFreeArr(gooPrivKey);
-		this->gooPrivKey = 0;
+		this->gooPrivKey = nullptr;
 	}
 	OPTSTR_DEL(this->gooKey);
 }

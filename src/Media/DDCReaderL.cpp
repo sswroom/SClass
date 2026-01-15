@@ -178,7 +178,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 
 Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 {
-	this->edid = 0;
+	this->edid = nullptr;
 	this->edidSize = 0;
 	this->hMon = hMon;
 	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), &edidSize);	
@@ -186,9 +186,9 @@ Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 
 Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 {
-	this->edid = 0;
+	this->edid = nullptr;
 	this->edidSize = 0;
-	this->hMon = 0;
+	this->hMon = nullptr;
 	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), &edidSize);	
 }
 
@@ -197,7 +197,7 @@ Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UOSInt edidSize)
 	UnsafeArray<UInt8> edidTmp;
 	this->edid = edidTmp = MemAllocArr(UInt8, edidSize);
 	this->edidSize = edidSize;
-	this->hMon = 0;
+	this->hMon = nullptr;
 	MemCopyNO(edidTmp.Ptr(), edid.Ptr(), edidSize);
 }
 
@@ -207,7 +207,7 @@ Media::DDCReader::~DDCReader()
 	if (this->edid.SetTo(edid))
 	{
 		MemFreeArr(edid);
-		this->edid = 0;
+		this->edid = nullptr;
 	}
 }
 

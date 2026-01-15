@@ -46,7 +46,7 @@ void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NN<Sync::Thread> th
 IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NN<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapFileAnalyse"))
 {
 	UInt8 buff[24];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->isBE = false;
 	if (fd->GetRealData(0, 24, BYTEARR(buff)) != 24)
@@ -263,7 +263,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFram
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
 	NN<IO::FileAnalyse::FrameDetail> frame;
@@ -314,7 +314,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFram
 	UInt32 psize;
 	if (index > this->ofstList.GetCount())
 	{
-		return 0;
+		return nullptr;
 	}
 	Sync::MutexUsage mutUsage(this->dataMut);
 	ofst = this->ofstList.GetItem(index - 1);

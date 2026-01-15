@@ -138,7 +138,7 @@ AdsbMovementstatistics::AdsbMovementstatistics()
 	this->callsign = 0;
 	this->latitude = 0;
 	this->longitude = 0;
-	this->geolocation = 0;
+	this->geolocation = nullptr;
 	this->insideHkfir = 0;
 	this->insideAerodrome = 0;
 	this->insideApp = 0;
@@ -248,7 +248,7 @@ Optional<Math::Geometry::Vector2D> AdsbMovementstatistics::GetGeolocation() cons
 void AdsbMovementstatistics::SetGeolocation(Optional<Math::Geometry::Vector2D> geolocation)
 {
 	this->geolocation.Delete();
-	this->geolocation = geolocation.IsNull()?Optional<Math::Geometry::Vector2D>(0):geolocation.OrNull()->Clone();
+	this->geolocation = geolocation.IsNull()?Optional<Math::Geometry::Vector2D>(nullptr):geolocation.OrNull()->Clone();
 }
 
 Bool AdsbMovementstatistics::GetInsideHkfir() const
@@ -601,7 +601,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, false, database, uid, pwd, log, CSTR("DB: ")).SetTo(db))
 	{
 		NN<DB::DBReader> r;
-		if (db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			Manage::HiResClock clk;
 			NN<Data::NamedClass<FlightHoldingsPeriod>> cls;

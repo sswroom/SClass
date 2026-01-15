@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MP2Parser::ParseFileHdr(NN<IO::St
 {
 	if (hdr[0] != 0xff || (hdr[1] & 0xfe) != 0xfc)
 	{
-		return 0;
+		return nullptr;
 	}
 	
 	NN<Media::AudioBlockSource> src;
@@ -49,6 +49,6 @@ Optional<IO::ParsedObject> Parser::FileParser::MP2Parser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

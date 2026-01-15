@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(AnyType userOb
 	else
 	{
 		svr.Delete();
-		me->svr = 0;
+		me->svr = nullptr;
 		me->txtPort->SetReadOnly(false);
 	}
 }
@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(Optional<UI::GUIClientCo
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->svr = 0;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlRequest = ui->NewPanel(*this);

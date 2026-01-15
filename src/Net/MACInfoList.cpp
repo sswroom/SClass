@@ -98,7 +98,7 @@ Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntry(UInt64 macInt)
 	{
 		return this->dataList.GetItem((UOSInt)si);
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntryOUI(const UInt8 *oui)
@@ -117,7 +117,7 @@ Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntryOUI(const UInt8
 	{
 		return this->dataList.GetItem((UOSInt)si);
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CStringNN name)

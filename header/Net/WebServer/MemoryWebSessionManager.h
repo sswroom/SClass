@@ -46,7 +46,7 @@ namespace Net
 			Optional<WebSession> GetSession(Int64 sessId);
 			void DeleteSession(Int64 sessId);
 
-			void GetSessionIds(NN<Data::ArrayList<Int64>> sessIds);
+			void GetSessionIds(NN<Data::ArrayListNative<Int64>> sessIds);
 		};
 	}
 }

@@ -23,7 +23,7 @@ namespace Net
 		Optional<Net::SSLEngine> ssl;
 		UInt16 kaSeconds;
 		Sync::Mutex hdlrMut;
-		Data::ArrayList<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
+		Data::ArrayListObj<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
 		Data::ArrayListNN<ClientInfo> cliList;
 		
 		static void __stdcall FreeClient(NN<ClientInfo> cliInfo);

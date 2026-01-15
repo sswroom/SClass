@@ -5,9 +5,9 @@ Net::SAMLLogoutRequest::SAMLLogoutRequest(ProcessError error, Text::CStringNN er
 {
 	this->error = error;
 	this->errorMessage = Text::String::New(errorMessage);
-	this->rawResponse = 0;
-	this->id = 0;
-	this->nameId = 0;
+	this->rawResponse = nullptr;
+	this->id = nullptr;
+	this->nameId = nullptr;
 	this->sessionIndex = 0;
 }
 

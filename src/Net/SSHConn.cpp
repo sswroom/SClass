@@ -27,7 +27,7 @@ Net::SSHConn::SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16
 	this->clsData->handshakeRet = 0;
 	this->clsData->authen = false;
 	this->clsData->blocking = true;
-	this->cli = 0;
+	this->cli = nullptr;
 	this->lastError = 0;
 #if defined(VERBOSE)
 	printf("SSHConn: session create %s\r\n", this->clsData->session?"succeed":"failed");
@@ -160,7 +160,7 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 		if (!this->sockf->GetRemoteAddr(nnsourceSoc, addr, port))
-			return 0;
+			return nullptr;
 		Net::SocketUtil::GetAddrName(sbuff, addr);
 		channel = libssh2_channel_direct_tcpip_ex(this->clsData->session, (const Char*)remoteHost.v.Ptr(), remotePort, (const Char*)sbuff, port);
 	}
@@ -181,7 +181,7 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 #if defined(VERBOSE)
 	printf("SSHConn: Remote connect error: %d (%s)\r\n", this->lastError, Net::SSHManager::ErrorGetName(this->lastError).v);
 #endif
-		return 0;
+		return nullptr;
 	}
 	libssh2_channel_set_blocking(channel, 0);
 #if defined(VERBOSE)
@@ -265,6 +265,6 @@ void Net::SSHConn::Close()
 	{
 		cli->Close();
 		cli.Delete();
-		this->cli = 0;
+		this->cli = nullptr;
 	}
 }

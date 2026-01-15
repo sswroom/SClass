@@ -54,16 +54,16 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 	UInt16 fileType;
 
 	if (ReadUInt16(&hdr[0]) != 0)
-		return 0;
+		return nullptr;
 	fileType = ReadUInt16(&hdr[2]);
 	if (fileType != 1 && fileType != 2)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	icoCnt = ReadUInt16(&hdr[4]);
 	if (icoCnt > 16 || icoCnt < 1)
-		return 0;
+		return nullptr;
 
 	nextOfst = 6 + (icoCnt << 4);
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
@@ -82,7 +82,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 		if (nextOfst != ReadUInt32(&icoImageHdr[12]) || thisSize > 1572904)
 		{
 			DEL_CLASS(imgList);
-			return 0;
+			return nullptr;
 		}
 
 		Data::ByteBuffer imgBuff(thisSize);
@@ -90,7 +90,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 		if (ReadUInt32(&imgBuff[0]) != 40 || ReadUInt32(&imgBuff[4]) != imgWidth || ReadUInt32(&imgBuff[8]) != (imgHeight << 1))
 		{
 			DEL_CLASS(imgList);
-			return 0;
+			return nullptr;
 		}
 		pal = &imgBuff[40];
 		bitCnt = ReadUInt16(&imgBuff[14]);
@@ -115,7 +115,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				if (thisSize != (dataSize + dataAdd) * imgHeight * 2 + 40 + 8)
 				{
 					DEL_CLASS(imgList);
-					return 0;
+					return nullptr;
 				}
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 2, Media::PF_PAL_1_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -170,7 +170,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				if (thisSize != (imgByteSize + imgByteAdd + maskByteSize + maskByteAdd) * imgHeight + 40 + 64)
 				{
 					DEL_CLASS(imgList);
-					return 0;
+					return nullptr;
 				}
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 5, Media::PF_PAL_4_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -224,7 +224,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				if (thisSize != (imgWidth + imgByteAdd + maskByteSize + maskByteAdd) * imgHeight + 40 + 1024)
 				{
 					DEL_CLASS(imgList);
-					return 0;
+					return nullptr;
 				}
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 9, Media::PF_PAL_8_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -278,7 +278,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				if ((OSInt)thisSize != ((OSInt)imgWidth * 3 + (OSInt)imgByteAdd + maskByteSize + maskByteAdd) * (OSInt)imgHeight + 40)
 				{
 					DEL_CLASS(imgList);
-					return 0;
+					return nullptr;
 				}
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -344,7 +344,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				if (thisSize != (UInt32)((imgWidth * 4) * imgHeight + 40) && thisSize != (imgWidth * 4 + maskByteSize + maskByteAdd) * imgHeight + 40)
 				{
 					DEL_CLASS(imgList);
-					return 0;
+					return nullptr;
 				}
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -354,7 +354,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			break;
 		default:
 			DEL_CLASS(imgList);
-			return 0;
+			return nullptr;
 		}
 		if (fileType == 2)
 		{

@@ -17,7 +17,7 @@ namespace Map
 		NN<Map::GeoPackage> gpkg;
 		NN<Map::GeoPackage::ContentInfo> layerContent;
 		Optional<DB::TableDef> tabDef;
-		Data::ArrayList<Optional<Math::Geometry::Vector2D>> vecList;
+		Data::ArrayListObj<Optional<Math::Geometry::Vector2D>> vecList;
 		UOSInt geomCol;
 		MixedData mixedData;
 

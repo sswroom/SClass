@@ -123,13 +123,13 @@ UnsafeArrayOpt<UTF8Char> IO::Device::QuectelGSMModemController::QuectelGetICCID(
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+QCCID"), 1000).SetTo(sptr))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+QCCID: ")))
 	{
 		return Text::StrConcatC(iccid, &sbuff[8], (UOSInt)(sptr - &sbuff[8]));
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt IO::Device::QuectelGSMModemController::QuectelQueryServingCell(UnsafeArray<ServingCell> cell)

@@ -4,19 +4,19 @@
 
 Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp()
 {
-	this->fill = 0;
-	this->lineStyle = 0;
+	this->fill = nullptr;
+	this->lineStyle = nullptr;
 }
 
 Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(Optional<OfficeFill> fill)
 {
 	this->fill = fill;
-	this->lineStyle = 0;
+	this->lineStyle = nullptr;
 }
 
 Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(Optional<OfficeLineStyle> lineStyle)
 {
-	this->fill = 0;
+	this->fill = nullptr;
 	this->lineStyle = lineStyle;
 }
 

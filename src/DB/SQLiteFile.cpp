@@ -21,7 +21,7 @@ void DB::SQLiteFile::Init()
 	sqlite3 *db;
 	Int32 ret;
 	this->delOnClose = false;
-	this->lastErrMsg = 0;
+	this->lastErrMsg = nullptr;
 	db = 0;
 	sqlite3_initialize();
 	ret = sqlite3_open_v2((const Char*)fileName->v.Ptr(), &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
@@ -161,13 +161,13 @@ Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 			this->lastDataError = DE_EXEC_SQL_ERROR;
 			OPTSTR_DEL(this->lastErrMsg);
 			this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db.p));
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -214,7 +214,7 @@ Optional<DB::DBTransaction> DB::SQLiteFile::BeginTransaction()
 	{
 		return (DB::DBTransaction*)-1;
 	}
-	return 0;
+	return nullptr;
 }
 
 void DB::SQLiteFile::Commit(NN<DB::DBTransaction> tran)
@@ -337,7 +337,7 @@ Optional<Math::Geometry::Vector2D> DB::SQLiteFile::GPGeometryParse(UnsafeArray<c
 {
 	if (buffSize < 8 || buff[0] != 'G' || buff[1] != 'P')
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UOSInt ofst;
@@ -359,12 +359,12 @@ Optional<Math::Geometry::Vector2D> DB::SQLiteFile::GPGeometryParse(UnsafeArray<c
 		ofst = 72;
 		break;
 	default:
-		return 0;
+		return nullptr;
 	}
 
 	if (buffSize <= ofst)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 srsId;
 	if (buff[3] & 1)
@@ -386,7 +386,7 @@ Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(NN<Text::String> fileName, NN<
 	if (conn->IsError())
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DBTool(conn, true, log, logPrefix));
@@ -400,7 +400,7 @@ Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NN<I
 	if (conn->IsError())
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DBTool(conn, true, log, logPrefix));
@@ -476,7 +476,7 @@ UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<WCha
 #else
 	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 	if (outp == 0)
-		return 0;
+		return nullptr;
 	else
 	{
 		return Text::StrUTF16_UTF32(buff, (const UTF16Char*)outp);
@@ -487,10 +487,10 @@ UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<WCha
 Optional<Text::String> DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex >= this->colCnt)
-		return 0;
+		return nullptr;
 	Text::StringBuilderUTF8 sb;
 	if (!this->GetStr(colIndex, sb))
-		return 0;
+		return nullptr;
 	return Text::String::New(sb.ToCString());
 }
 
@@ -549,7 +549,7 @@ UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<U
 {
 	const UTF8Char *outp = (const UTF8Char*)sqlite3_column_text((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 	if (outp == 0)
-		return 0;
+		return nullptr;
 	else
 		return Text::StrConcatS(buff, outp, buffSize);
 }
@@ -597,12 +597,12 @@ Optional<Math::Geometry::Vector2D> DB::SQLiteReader::GetVector(UOSInt colIndex)
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -637,7 +637,7 @@ UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetName(UOSInt colIndex, UnsafeArray<
 {
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt.p, (int)colIndex);
 	if (name == 0)
-		return 0;
+		return nullptr;
 	return Text::StrConcat(buff, (const UTF8Char*)name);
 }
 

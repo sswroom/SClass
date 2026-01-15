@@ -45,7 +45,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 {
 	NN<Text::String> fileName = fd->GetFullName();
 	if (!fileName->EndsWithICase(UTF8STRC(".pfs")))
-		return 0;
+		return nullptr;
 
 	UInt32 hdrSize;
 	UTF8Char sbuff[256];
@@ -56,11 +56,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 
 	if (hdr[0] != 'p' || hdr[1] != 'f' || hdr[2] != '2')
 	{
-		return 0;
+		return nullptr;
 	}
 	hdrSize = ReadUInt32(&hdr[3]);
 	if (hdrSize > fd->GetDataSize() - 7)
-		return 0;
+		return nullptr;
 	Data::ByteBuffer records(hdrSize - 8);
 	fd->GetRealData(15, hdrSize - 8, records);
 	IO::VirtualPackageFile *pf = 0;
@@ -80,7 +80,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 	if (fileCnt != ReadInt32(&hdr[11]))
 	{
 		DEL_CLASS(pf);
-		return 0;
+		return nullptr;
 	}
 	return pf;
 }

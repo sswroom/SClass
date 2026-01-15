@@ -50,7 +50,7 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".")))
 				{
 					dataMode = false;
-					me->msgData = 0;
+					me->msgData = nullptr;
 					me->statusChg = true;
 					me->evt.Set();
 				}
@@ -121,7 +121,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(OptOut<Un
 		this->evt.Wait(1000);
 	}
 	msgRetEnd.Set(this->msgRet);
-	this->msgRet = 0;
+	this->msgRet = nullptr;
 	if (this->statusChg)
 	{
 		return this->lastStatus;
@@ -135,7 +135,7 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSL
 	this->threadStarted = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	this->msgRet = 0;
+	this->msgRet = nullptr;
 	this->msgToDataMode = false;
 	this->statusChg = false;
 	this->maxSize = 0;

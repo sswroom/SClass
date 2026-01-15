@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 	else
 	{
 		Text::CString cpuModel = Manage::CPUDB::X86CPUNameToModel(CSTRP(sbuff, sptr));
-		if (cpuModel.v == 0)
+		if (cpuModel.v.IsNull())
 		{
 			Int32 respStatus;
 			Text::StringBuilderUTF8 sbData;

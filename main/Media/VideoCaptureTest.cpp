@@ -43,7 +43,7 @@ void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArra
 		}
 		{
 			IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			exporter.ExportFile(fs, fileName, imgList, 0);
+			exporter.ExportFile(fs, fileName, imgList, nullptr);
 		}
 	}
 	frameCnt--;
@@ -92,13 +92,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 
 	frameCnt = 150;
-	converter = 0;
+	converter = nullptr;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(colorMgr, Media::ColorManager());
 	NEW_CLASS(mgr, Media::VideoCaptureMgr());
 
-	colorSess = colorMgr->CreateSess(0);
+	colorSess = colorMgr->CreateSess(nullptr);
 	cnt = mgr->GetDeviceList(devList);
 	if (cnt > 0)
 	{

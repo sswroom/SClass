@@ -18,7 +18,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::MP2BlockParser::ParseStrea
 	stmData->GetRealData(0, 7, BYTEARR(buff));
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfc)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt8 bitrateIndex = (buff[2] & 0xF0) >> 4;
 	UInt8 samplingFrequency = ((buff[2] & 0xC) >> 2);

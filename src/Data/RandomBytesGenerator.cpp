@@ -6,7 +6,7 @@
 
 Data::RandomBytesGenerator::RandomBytesGenerator()
 {
-	this->random = 0;
+	this->random = nullptr;
 }
 
 Data::RandomBytesGenerator::~RandomBytesGenerator()

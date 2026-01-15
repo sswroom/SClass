@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 			}
 		}
 		MemFreeArr(names);
-		this->names = 0;
+		this->names = nullptr;
 	}
 }
 
@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	this->track = track;
 	this->navi = navi;
 	this->currTrackId = 0;
-	this->names = 0;
+	this->names = nullptr;
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -455,7 +455,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 				this->names = names = MemAllocArr(Optional<Text::String>, this->namesCnt = recCnt);
 				while (recCnt-- > 0)
 				{
-					names[recCnt] = 0;
+					names[recCnt] = nullptr;
 				}
 				this->threadToStop = false;
 				this->threadRunning = false;

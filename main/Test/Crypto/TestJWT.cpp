@@ -28,7 +28,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	param.SetSubject(s.Ptr());
 	s->Release();
 	param.SetIssuedAt(1516239022);
-	Data::StringMap<const UTF8Char*> payload;
+	Data::StringMapObj<const UTF8Char*> payload;
 	payload.Put(CSTR("name"), (const UTF8Char*)"John Doe");
 	jwt->Generate(sb, payload, param);
 	if (!sb.Equals(UTF8STRC("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8")))
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	DEL_CLASS(jwt);
 	
 	NN<Crypto::Token::JWToken> token;
-	if (!Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8"), 0).SetTo(token))
+	if (!Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8"), nullptr).SetTo(token))
 	{
 		ssl.Delete();
 		return 2;
@@ -51,8 +51,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		ssl.Delete();
 		return 3;
 	}
-	NN<Data::StringMap<Text::String*>> result;
-	if (!token->ParsePayload(param, false, 0).SetTo(result))
+	NN<Data::StringMapObj<Text::String*>> result;
+	if (!token->ParsePayload(param, false, nullptr).SetTo(result))
 	{
 		token.Delete();
 		ssl.Delete();
@@ -93,7 +93,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	else
 	{
-		Optional<Crypto::Cert::X509Key> key = 0;
+		Optional<Crypto::Cert::X509Key> key = nullptr;
 		NN<Crypto::Cert::X509Key> nnkey;
 		NN<Text::String> s = Text::String::New(CSTR("JWTRSAPub.key"));
 		Crypto::Cert::X509File *x509;// = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArray(keyBuff, keySize), s);
@@ -135,7 +135,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		}
 		if (key.SetTo(nnkey) && (nnkey->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA || nnkey->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSAPublic))
 		{
-			if (Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.NHVaYe26MbtOYhSKkoKYdFVomg4i8ZJd8_-RU8VNbftc4TSMb4bXP3l3YlNWACwyXPGffz5aXHc6lty1Y2t4SWRqGteragsVdZufDn5BlnJl9pdR_kdVFUsra2rWKEofkZeIC4yWytE58sMIihvo9H1ScmmVwBcQP6XETqYd0aSHp1gOa9RdUPDvoXQ5oqygTqVtxaDr6wUFKrKItgBMzWIdNZ6y7O9E0DhEPTbE9rfBo6KTFsHAZnMg4k68CDp2woYIaXbmYTWcvbzIuHO7_37GT79XdIwkm95QJ7hYC9RiwrV7mesbY4PAahERJawntho0my942XheVLmGwLMBkQ"), 0).SetTo(token))
+			if (Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.NHVaYe26MbtOYhSKkoKYdFVomg4i8ZJd8_-RU8VNbftc4TSMb4bXP3l3YlNWACwyXPGffz5aXHc6lty1Y2t4SWRqGteragsVdZufDn5BlnJl9pdR_kdVFUsra2rWKEofkZeIC4yWytE58sMIihvo9H1ScmmVwBcQP6XETqYd0aSHp1gOa9RdUPDvoXQ5oqygTqVtxaDr6wUFKrKItgBMzWIdNZ6y7O9E0DhEPTbE9rfBo6KTFsHAZnMg4k68CDp2woYIaXbmYTWcvbzIuHO7_37GT79XdIwkm95QJ7hYC9RiwrV7mesbY4PAahERJawntho0my942XheVLmGwLMBkQ"), nullptr).SetTo(token))
 			{
 				if (!token->SignatureValid(ssl, nnkey->GetASN1Buff(), nnkey->GetASN1BuffSize(), nnkey->GetKeyType()))
 				{

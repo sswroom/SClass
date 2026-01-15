@@ -37,5 +37,5 @@ Optional<IO::Stream> IO::DeviceInfo::CreateStream()
 /*	IO::DeviceStream *stm;
 	NEW_CLASS(stm, IO::DeviceStream(this->name));
 	return stm;*/
-	return 0;
+	return nullptr;
 }

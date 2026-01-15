@@ -86,7 +86,7 @@ Bool IO::VirtualPackageFile::AddData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 
 	item->headerType = headerType;
 	item->fullFd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	item->name = Text::String::New(name);
-	item->pobj = 0;
+	item->pobj = nullptr;
 	item->compInfo = 0;
 	item->modTime = modTime;
 	item->accTime = accTime;
@@ -137,7 +137,7 @@ Bool IO::VirtualPackageFile::AddCompData(NN<IO::StreamData> fd, UInt64 ofst, UIn
 	item->dataLength = dataLength;
 	item->fullFd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
 	item->name = Text::String::New(name);
-	item->pobj = 0;
+	item->pobj = nullptr;
 	item->compInfo = MemAlloc(PackFileItem::CompressInfo, 1);
 	MemCopyNO(item->compInfo, compInfo, sizeof(PackFileItem::CompressInfo));
 	if (compInfo->compExtras)
@@ -193,7 +193,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceData(NN<StreamData> fd, UInt64 ofst, UI
 			item->dataLength = dataLength;
 			item->headerType = headerType;
 			item->fullFd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-			item->pobj = 0;
+			item->pobj = nullptr;
 			item->compInfo = 0;
 			item->modTime = modTime;
 			item->accTime = accTime;
@@ -248,7 +248,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceCompData(NN<StreamData> fd, UInt64 ofst
 			item->dataLength = dataLength;
 			item->headerType = headerType;
 			item->fullFd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
-			item->pobj = 0;
+			item->pobj = nullptr;
 			item->compInfo = MemAlloc(PackFileItem::CompressInfo, 1);
 			MemCopyNO(item->compInfo, compInfo, sizeof(PackFileItem::CompressInfo));
 			if (compInfo->compExtras)
@@ -299,7 +299,7 @@ Optional<IO::PackageFile> IO::VirtualPackageFile::GetPackFile(Text::CStringNN na
 	IO::PackFileItem *item = this->pkgFiles.GetC(name);
 	if (item)
 		return Optional<IO::PackageFile>::ConvertFrom(item->pobj);
-	return 0;
+	return nullptr;
 }
 
 Bool IO::VirtualPackageFile::MergePackage(NN<IO::PackageFile> pkg)
@@ -399,7 +399,7 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UnsafeA
 		{
 			nameLen = (UOSInt)(sptr - name - 1);
 			if (nameLen <= 0)
-				return 0;
+				return nullptr;
 			return this->GetItemByName({name, nameLen});
 		}
 		else if (c == '/' || c == '\\')
@@ -409,27 +409,27 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UnsafeA
 			NN<const IO::PackFileItem> item;
 			if (!this->GetItemByName({sbuff, nameLen}).SetTo(item))
 			{
-				return 0;
+				return nullptr;
 			}
 			if (sptr[0] == 0)
 				return item;
 			if (item->itemType != IO::PackFileItem::PackItemType::ParsedObject || !item->pobj.SetTo(pobj))
 			{
-				return 0;
+				return nullptr;
 			}
 			if (pobj->GetParserType() != IO::ParserType::PackageFile)
 			{
-				return 0;
+				return nullptr;
 			}
 			NN<IO::PackageFile> pf = NN<IO::PackageFile>::ConvertFrom(pobj);
 			if (pf->GetFileType() != PackageFileType::Virtual)
 			{
-				return 0;
+				return nullptr;
 			}
 			return NN<IO::VirtualPackageFile>::ConvertFrom(pf)->GetPackFileItem(sptr);
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UOSInt index) const
@@ -505,7 +505,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 #if defined(VERBOSE)
 			printf("VirtualPackageFile: Error in creating decompressor\r\n");
 #endif
-			return 0;
+			return nullptr;
 		}
 		if (!Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod).SetTo(hash))
 		{
@@ -513,7 +513,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 			printf("VirtualPackageFile: Error in creating hash\r\n");
 #endif
 			decomp.Delete();
-			return 0;
+			return nullptr;
 		}
 #if defined(VERBOSE)
 		printf("VirtualPackageFile: Data pos %llx, size = %llx\r\n", GetPItemDataOfst(item), item->dataLength);
@@ -565,7 +565,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 		if (diff)
 		{
 			IO::Path::DeleteFile(sbuff);
-			return 0;
+			return nullptr;
 		}
 		else
 		{
@@ -581,7 +581,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -593,7 +593,7 @@ Optional<IO::PackageFile> IO::VirtualPackageFile::GetPItemPack(NN<const PackFile
 		needRelease.Set(false);
 		return Optional<IO::PackageFile>::ConvertFrom(item->pobj);
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::ArrayIterator<NN<IO::PackFileItem>> IO::VirtualPackageFile::PackFileIterator() const
@@ -620,7 +620,7 @@ UnsafeArrayOpt<UTF8Char> IO::VirtualPackageFile::GetItemName(UnsafeArray<UTF8Cha
 	if (!this->items.GetItem(index).SetTo(item))
 	{
 		*sbuff = 0;
-		return 0;
+		return nullptr;
 	}
 	return item->name->ConcatTo(sbuff);
 }
@@ -630,7 +630,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(UOSInt index)
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
 		return GetPItemStmDataNew(item);
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(Text::CStringNN name) const
@@ -638,7 +638,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetItemStmDataNew(Text::CString
 	UOSInt index = GetItemIndex(name);
 	if (index == INVALID_INDEX)
 	{
-		return 0;
+		return nullptr;
 	}
 	return this->GetItemStmDataNew(index);
 }
@@ -648,7 +648,7 @@ Optional<IO::PackageFile> IO::VirtualPackageFile::GetItemPack(UOSInt index, OutP
 	NN<IO::PackFileItem> item;
 	if (this->items.GetItem(index).SetTo(item))
 		return GetPItemPack(item, needRelease);
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::ParsedObject> IO::VirtualPackageFile::GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const
@@ -663,12 +663,12 @@ Optional<IO::ParsedObject> IO::VirtualPackageFile::GetItemPObj(UOSInt index, Out
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1021,10 +1021,10 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CStringNN 
 {
 	if (fileName.IndexOf(':') != INVALID_INDEX)
 	{
-		return 0;
+		return nullptr;
 	}
 
-	Optional<IO::StreamData> retFD = 0;
+	Optional<IO::StreamData> retFD = nullptr;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
@@ -1073,7 +1073,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CStringNN 
 			{
 				DEL_CLASS(pf);
 			}
-			return 0;
+			return nullptr;
 		}
 		j = sb.IndexOf('/');
 	}

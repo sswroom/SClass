@@ -145,7 +145,7 @@ Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::Ge
 {
 	Int64 sessId = this->GetSessId(req);
 	if (sessId == 0)
-		return 0;
+		return nullptr;
 	NN<Net::WebServer::MemoryWebSession> sess;
 	if (Optional<Net::WebServer::MemoryWebSession>::ConvertFrom(this->GetSession(sessId)).SetTo(sess))
 	{
@@ -157,11 +157,11 @@ Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::Ge
 		if (!sess->RequestValid(req->GetBrowser(), req->GetOS(), sb.ToCString()))
 		{
 			sess->EndUse();
-			return 0;
+			return nullptr;
 		}
 		return NN<Net::WebServer::WebSession>(sess);
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
@@ -197,7 +197,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::W
 	NN<MemoryWebSession> nnsess;
 	if (sessId != 0)
 	{
-		sess = 0;
+		sess = nullptr;
 		Sync::MutexUsage mutUsage(this->mut);
 		i = this->sessIds.SortedIndexOf(sessId);
 		if (i >= 0)
@@ -278,7 +278,7 @@ Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::Ge
 {
 	Optional<Net::WebServer::WebSession> sess;
 	OSInt i;
-	sess = 0;
+	sess = nullptr;
 	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedIndexOf(sessId);
 	if (i >= 0)
@@ -298,7 +298,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 	OSInt i;
 	Optional<Net::WebServer::MemoryWebSession> sess;
 	NN<MemoryWebSession> nnsess;
-	sess = 0;
+	sess = nullptr;
 	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedIndexOf(sessId);
 	if (i >= 0)
@@ -316,7 +316,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 	}
 }
 
-void Net::WebServer::MemoryWebSessionManager::GetSessionIds(NN<Data::ArrayList<Int64>> sessIds)
+void Net::WebServer::MemoryWebSessionManager::GetSessionIds(NN<Data::ArrayListNative<Int64>> sessIds)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	sessIds->AddAll(this->sessIds);

@@ -15,7 +15,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 		if (conn->IsConnected())
 			return conn;
 		DEL_CLASS(conn);
-		return 0;
+		return nullptr;
 	}
 	else
 	{
@@ -24,7 +24,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 		if (!GetDriverNameNew().SetTo(driverName))
 		{
 			log->LogMessage(CSTR("No suitable MSSQL driver found"), IO::LogHandler::LogLevel::Raw);
-			return 0;
+			return nullptr;
 		}
 		if (port == 0)
 		{
@@ -107,7 +107,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 				conn->GetLastErrorMsg(sb);
 			}
 			DEL_CLASS(conn);
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -127,7 +127,7 @@ Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, 
 	else
 	{
 		log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -137,7 +137,7 @@ Optional<Text::String> DB::MSSQLConn::GetDriverNameNew()
 	{
 		return Text::String::New(UTF8STRC("FreeTDS (Native)"));
 	}
-	Optional<Text::String> driverName = 0;
+	Optional<Text::String> driverName = nullptr;
 	NN<Text::String> driver;
 	Data::ArrayListStringNN driverList;
 	DB::ODBCConn::GetDriverList(driverList);

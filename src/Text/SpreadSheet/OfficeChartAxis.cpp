@@ -7,9 +7,9 @@ Text::SpreadSheet::OfficeChartAxis::OfficeChartAxis(AxisType axisType, AxisPosit
 {
 	this->axisType = axisType;
 	this->axisPos = axisPos;
-	this->title = 0;
-	this->shapeProp = 0;
-	this->majorGridProp = 0;
+	this->title = nullptr;
+	this->shapeProp = nullptr;
+	this->majorGridProp = nullptr;
 	this->tickLblPos = TickLabelPosition::NextTo;
 	this->crosses = AxisCrosses::AutoZero;
 }

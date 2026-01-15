@@ -32,7 +32,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	}
 	{
 		oriStm.SeekFromBeginning(0);
-		Data::Compress::DeflateStream dstm(oriStm, oriStm.GetLength(), 0, Data::Compress::DeflateStream::CompLevel::MaxCompression, true);
+		Data::Compress::DeflateStream dstm(oriStm, oriStm.GetLength(), nullptr, Data::Compress::DeflateStream::CompLevel::MaxCompression, true);
 		dstm.ReadToEnd(srcStm, 65536);
 	}
 	{
@@ -50,7 +50,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	{
 		IO::MemoryStream tmpStm;
 		oriStm.SeekFromBeginning(0);
-		Data::Compress::Deflater dstm(oriStm, oriStm.GetLength(), 0, Data::Compress::Deflater::CompLevel::BestCompression, true);
+		Data::Compress::Deflater dstm(oriStm, oriStm.GetLength(), nullptr, Data::Compress::Deflater::CompLevel::BestCompression, true);
 		dstm.ReadToEnd(tmpStm, 65536);
 		srcSize3 = (UOSInt)tmpStm.GetLength();
 		if (srcSize3 > 0)

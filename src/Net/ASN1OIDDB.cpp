@@ -20981,5 +20981,5 @@ Optional<const Net::ASN1OIDDB::OIDInfo> Net::ASN1OIDDB::OIDGetEntry(Data::ByteAr
 			return oid;
 		}
 	}
-	return 0;
+	return nullptr;
 }

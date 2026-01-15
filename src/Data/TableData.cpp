@@ -8,7 +8,7 @@ Data::TableData::TableData(NN<DB::ReadingDB> db, Bool needRelease, Text::CString
 	this->needRelease = needRelease;
 	this->schemaName = Text::String::NewOrNull(schemaName);
 	this->tableName = Text::String::New(tableName);
-	this->cond = 0;
+	this->cond = nullptr;
 }
 
 Data::TableData::~TableData()
@@ -22,7 +22,7 @@ Data::TableData::~TableData()
 
 Optional<DB::DBReader> Data::TableData::GetTableData()
 {
-	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), 0, 0, 0, 0, this->cond);
+	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), nullptr, 0, 0, 0, this->cond);
 }
 
 Optional<DB::DBReader> Data::TableData::GetTableData(NN<Data::QueryConditions> cond)
@@ -32,7 +32,7 @@ Optional<DB::DBReader> Data::TableData::GetTableData(NN<Data::QueryConditions> c
 	{
 		cond->And(NN<Conditions::BooleanObject>::ConvertFrom(tabCond->GetRootCond()->Clone()));
 	}
-	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), 0, 0, 0, 0, cond);
+	return this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString(), nullptr, 0, 0, 0, cond);
 }
 
 Bool Data::TableData::GetColumnDataStr(Text::CStringNN columnName, NN<Data::ArrayListStringNN> str)
@@ -75,7 +75,7 @@ Optional<Data::DataSet> Data::TableData::GetDataSet(Text::CStringNN columnName)
 	NN<DB::DBReader> r;
 	if (!this->GetTableData().SetTo(r))
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt keyCol = INVALID_INDEX;
 	UOSInt valueCol = INVALID_INDEX;
@@ -95,7 +95,7 @@ Optional<Data::DataSet> Data::TableData::GetDataSet(Text::CStringNN columnName)
 				else
 				{
 					this->CloseReader(r);
-					return 0;
+					return nullptr;
 				}
 			}
 			if (colDef.GetColName()->Equals(columnName))
@@ -108,7 +108,7 @@ Optional<Data::DataSet> Data::TableData::GetDataSet(Text::CStringNN columnName)
 	if (keyCol == INVALID_INDEX || valueCol == INVALID_INDEX)
 	{
 		this->CloseReader(r);
-		return 0;
+		return nullptr;
 	}
 	Data::VariItem keyItem;
 	Data::VariItem valItem;
@@ -138,7 +138,7 @@ Optional<Data::DataSet> Data::TableData::GetKeyDataSet()
 	NN<DB::DBReader> r;
 	if (!this->GetTableData().SetTo(r))
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt keyCol = INVALID_INDEX;
 	DB::ColDef colDef(CSTR(""));
@@ -157,7 +157,7 @@ Optional<Data::DataSet> Data::TableData::GetKeyDataSet()
 				else
 				{
 					this->CloseReader(r);
-					return 0;
+					return nullptr;
 				}
 			}
 		}
@@ -166,7 +166,7 @@ Optional<Data::DataSet> Data::TableData::GetKeyDataSet()
 	if (keyCol == INVALID_INDEX)
 	{
 		this->CloseReader(r);
-		return 0;
+		return nullptr;
 	}
 	Data::VariItem keyItem;
 	Data::VariItem valItem;

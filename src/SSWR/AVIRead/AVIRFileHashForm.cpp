@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(AnyType userObj)
 UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
-	Optional<FileStatus> status = 0;
+	Optional<FileStatus> status = nullptr;
 	NN<FileStatus> nnstatus;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -159,7 +159,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 						exporter->SetCodePage(me->core->GetCurrCodePage());
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							exporter->ExportFile(fs, CSTRP(sbuff, sptr), fchk, 0);
+							exporter->ExportFile(fs, CSTRP(sbuff, sptr), fchk, nullptr);
 						}
 						DEL_CLASS(exporter);
 					}
@@ -176,7 +176,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 				nnstatus->status = 3;
 			}
 			me->fileListChg = true;
-			status = 0;
+			status = nullptr;
 		}
 		else
 		{
@@ -192,7 +192,7 @@ void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CStringNN fileName)
 	NN<FileStatus> status;
 	Sync::MutexUsage mutUsage(this->fileMut);
 	status = MemAllocNN(FileStatus);
-	status->fchk = 0;
+	status->fchk = nullptr;
 	status->status = 0;
 	status->fileName = Text::String::New(fileName);
 	this->fileList.Add(status);
@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(Optional<UI::GUIClientControl>
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->progName = 0;
+	this->progName = nullptr;
 	this->progNameChg = false;
 	this->progLastCount = 0;
 	this->progCurr = 0;
@@ -331,7 +331,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(Optional<UI::GUIClientControl>
 	this->prgFile = ui->NewProgressBar(this->pnlStatus, 0);
 	this->prgFile->SetRect(0, 0, 100, 24, false);
 	this->prgFile->SetDockType(UI::GUIControl::DOCK_BOTTOM);
- 	this->rlcSpeed = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 350, 500, 0);
+ 	this->rlcSpeed = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 350, 500, nullptr);
 	this->rlcSpeed->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->pnlTasks = ui->NewPanel(this->tpTasks);

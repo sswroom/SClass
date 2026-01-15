@@ -91,7 +91,7 @@ UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::SearchName(UnsafeArray<UTF8Char> buff, 
 		}
 	}
 	if (!file.SetTo(tmpFile))
-		return 0;
+		return nullptr;
 	return tmpFile->cfg->GetStreetName(buff, buffSize, pos);
 }
 

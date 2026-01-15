@@ -25,15 +25,15 @@ Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit d
 	this->yInch = Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_INCH, y);
 	this->wInch = Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_INCH, w);
 	this->hInch = Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_INCH, h);
-	this->titleText = 0;
-	this->shapeProp = 0;
+	this->titleText = nullptr;
+	this->shapeProp = nullptr;
 	this->hasLegend = false;
 	this->legendPos = LegendPos::Bottom;
 	this->legendOverlay = false;
 	this->displayBlankAs = BlankAs::Default;
 	this->chartType = ChartType::Unknown;
-	this->categoryAxis = 0;
-	this->valueAxis = 0;
+	this->categoryAxis = nullptr;
+	this->valueAxis = nullptr;
 }
 
 Text::SpreadSheet::OfficeChart::~OfficeChart()

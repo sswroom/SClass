@@ -15,7 +15,7 @@ Map::ESRI::FileGDBDir::FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> syst
 	this->pkg = pkg->Clone();
 	this->prjParser = prjParser;
 	NN<FileGDBReader> reader;
-	if (!Optional<FileGDBReader>::ConvertFrom(systemCatalog->OpenReader(0, 0, 0, nullptr, 0)).SetTo(reader))
+	if (!Optional<FileGDBReader>::ConvertFrom(systemCatalog->OpenReader(nullptr, 0, 0, nullptr, nullptr)).SetTo(reader))
 	{
 		systemCatalog.Delete();
 		return;
@@ -69,7 +69,7 @@ Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schem
 #if defined(VERBOSE)
 		printf("FileGDBDir: QueryTableData failed in getting table: %s\r\n", tableName.v.Ptr());
 #endif
-		return 0;
+		return nullptr;
 	}
 	if (ordering.leng == 0)
 	{
@@ -86,12 +86,12 @@ Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaNa
 	NN<FileGDBTable> table;
 	if (!this->GetTable(tableName).SetTo(table))
 	{
-		return 0;
+		return nullptr;
 	}
 	DB::TableDef *tab;
 	NN<DB::DBReader> r;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	if (table->OpenReader(0, 0, 0, nullptr, 0).SetTo(r))
+	if (table->OpenReader(nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		tab->ColFromReader(r);
 		this->CloseReader(r);
@@ -100,7 +100,7 @@ Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaNa
 	else
 	{
 		DEL_CLASS(tab);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -128,7 +128,7 @@ Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringN
 	Int32 id = this->tableMap.GetC(name);
 	if (id == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<FileGDBTable> table;
 	if (this->tables.GetC(name).SetTo(table))
@@ -170,7 +170,7 @@ Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringN
 	}
 #endif
 	indexFD.Delete();
-	return 0;
+	return nullptr;
 }
 
 Optional<Map::ESRI::FileGDBDir> Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg)
@@ -181,7 +181,7 @@ Optional<Map::ESRI::FileGDBDir> Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFil
 	if (!pkg->GetItemStmDataNew(CSTR("a00000001.gdbtable")).SetTo(tableFD))
 	{
 		SDEL_CLASS(indexFD);
-		return 0;
+		return nullptr;
 	}
 	NN<Math::ArcGISPRJParser> prjParser;
 	NEW_CLASSNN(prjParser, Math::ArcGISPRJParser());
@@ -192,14 +192,14 @@ Optional<Map::ESRI::FileGDBDir> Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFil
 	{
 		table.Delete();
 		prjParser.Delete();
-		return 0;
+		return nullptr;
 	}
 	NN<FileGDBDir> dir;
 	NEW_CLASSNN(dir, FileGDBDir(pkg, table, prjParser));
 	if (dir->IsError())
 	{
 		dir.Delete();
-		return 0;
+		return nullptr;
 	}
 	return dir;
 }

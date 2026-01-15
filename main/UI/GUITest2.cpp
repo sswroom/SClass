@@ -10,7 +10,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
 		UI::GUIForm *frm;
-		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
+		NEW_CLASS(frm, UI::GUIForm(nullptr, 640, 480, core));
 		frm->SetText(CSTR("Test 2 - Simple Form"));
 		frm->SetExitOnClose(true);
 		frm->Show();

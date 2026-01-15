@@ -78,8 +78,8 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString us
 	this->clsData->respHeaders = &this->headers;
 	NEW_CLASS(this->clsData->respData, IO::MemoryStream());
 	this->clsData->contLen = 0x7fffffff;
-	this->clsData->certs = 0;
-	this->cliHost = 0;
+	this->clsData->certs = nullptr;
+	this->cliHost = nullptr;
 	this->writing = false;
 	this->buffSize = 0;
 //	this->timeOutMS = 5000;
@@ -462,7 +462,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		{
 			UOSInt len = sbForm->GetLength();
 			this->AddContentLength(len);
-			this->sbForm = 0;
+			this->sbForm = nullptr;
 			this->Write(sbForm->ToByteArray());
 			sbForm.Delete();
 		}
@@ -576,5 +576,5 @@ Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }

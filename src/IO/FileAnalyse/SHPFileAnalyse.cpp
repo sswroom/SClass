@@ -85,7 +85,7 @@ void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SHPFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadMInt32(buff) != 9994 || ReadInt32(&buff[28]) != 1000 || (ReadMUInt32(&buff[24]) << 1) != fd->GetDataSize())
@@ -159,9 +159,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Packet ")), index);

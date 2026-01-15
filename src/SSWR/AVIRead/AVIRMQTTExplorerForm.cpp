@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 		if (useWS)
 		{
 			NN<Net::WebSocketClient> ws;
-			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
+			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:nullptr, sb.ToCString(), port, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
 			if (ws->IsDown())
 			{
 				ws.Delete();
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 		}
 		else
 		{
-			NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 30000));
+			NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:nullptr, sb.ToCString(), port, 0, 0, 30000));
 		}
 		if (client->IsError())
 		{
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 		else
 		{
 			client.Delete();
-			me->client = 0;
+			me->client = nullptr;
 			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
@@ -475,7 +475,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 			{
 				NN<Media::DrawBrush> b;
 				b = gimg->NewBrushARGB(0xffffffff);
-				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 				gimg->DelBrush(b);
 			}
 			else
@@ -554,10 +554,10 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClient
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->currTopic = 0;
-	this->dispImg = 0;
-	this->cliCert = 0;
-	this->cliKey = 0;
+	this->currTopic = nullptr;
+	this->dispImg = nullptr;
+	this->cliCert = nullptr;
+	this->cliKey = nullptr;
 
 	this->pnlConnect = ui->NewPanel(*this);
 	this->pnlConnect->SetRect(0, 0, 100, 103, false);
@@ -648,7 +648,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClient
 	this->logger = UI::ListBoxLogger::CreateUI(*this, this->ui, this->tpLog, 500, false);
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
-	this->client = 0;
+	this->client = nullptr;
 
 	this->AddTimer(30000, OnPingTimerTick, this);
 	this->AddTimer(1000, OnTimerTick, this);
@@ -667,7 +667,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 	if (this->dispImg.SetTo(img))
 	{
 		this->core->GetDrawEngine()->DeleteImage(img);
-		this->dispImg = 0;
+		this->dispImg = nullptr;
 	}
 	this->ssl.Delete();
 }

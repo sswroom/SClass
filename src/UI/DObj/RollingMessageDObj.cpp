@@ -26,8 +26,8 @@ UI::DObj::RollingMessageDObj::RollingMessageDObj(NN<Media::DrawEngine> deng, Mat
 	this->lastRollPos = -1;
 	this->startTime.SetCurrTimeUTC();
 	this->nextMsgId = 1;
-	this->lastMessage = 0;
-	this->thisMessage = 0;
+	this->lastMessage = nullptr;
+	this->thisMessage = nullptr;
 	this->nextMsgIndex = 0;
 	this->lastMsgOfst = 0;
 }
@@ -94,7 +94,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 				{
 					this->FreeMessage(msg);
 				}
-				this->lastMessage = 0;
+				this->lastMessage = nullptr;
 			}
 			else if (msg->img.SetTo(img))
 			{
@@ -162,7 +162,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 				if (currPos >= (OSInt)w)
 				{
 					this->lastMessage = this->thisMessage;
-					this->thisMessage = 0;
+					this->thisMessage = nullptr;
 					this->lastMsgOfst = 0;
 					if (this->msgMap.GetCount() == 0)
 					{
@@ -249,7 +249,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(Text::CStringNN message)
 	msg = MemAllocNN(MessageInfo);
 	msg->id = Sync::Interlocked::IncrementU32(this->nextMsgId);
 	msg->message = Text::String::New(message);
-	msg->img = 0;
+	msg->img = nullptr;
 	msg->deleted = false;
 	Sync::MutexUsage mutUsage(this->msgMut);
 	this->msgMap.Put(msg->id, msg);
@@ -262,7 +262,7 @@ UInt32 UI::DObj::RollingMessageDObj::AddMessage(NN<Text::String> message)
 	msg = MemAllocNN(MessageInfo);
 	msg->id = Sync::Interlocked::IncrementU32(this->nextMsgId);
 	msg->message = message->Clone();
-	msg->img = 0;
+	msg->img = nullptr;
 	msg->deleted = false;
 	Sync::MutexUsage mutUsage(this->msgMut);
 	this->msgMap.Put(msg->id, msg);
@@ -294,12 +294,12 @@ void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 	if (this->lastMessage.SetTo(msg) && msg->img.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		msg->img = 0;
+		msg->img = nullptr;
 	}
 	if (this->thisMessage.SetTo(msg) && msg->img.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		msg->img = 0;
+		msg->img = nullptr;
 	}
 	UOSInt i = this->msgMap.GetCount();
 	while (i-- > 0)
@@ -308,7 +308,7 @@ void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 		if (msg->img.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
-			msg->img = 0;
+			msg->img = nullptr;
 		}
 	}
 	this->size = size;

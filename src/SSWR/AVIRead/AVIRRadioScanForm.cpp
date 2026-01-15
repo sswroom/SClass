@@ -777,7 +777,7 @@ Bool SSWR::AVIRead::AVIRRadioScanForm::CloseCellular()
 		this->cellularModem.Delete();
 		this->cellularChannel.Delete();
 		this->cellularPort.Delete();
-		this->cellularHuawei = 0;
+		this->cellularHuawei = nullptr;
 		return true;
 	}
 	return false;
@@ -1108,32 +1108,32 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->lvDashboard->SetSubItem(3, 1, CSTR("Idle"));
 	this->lvDashboard->SetSubItem(3, 2, CSTR("0"));
 
-	this->wlanInterf = 0;
+	this->wlanInterf = nullptr;
 	this->wlanScan = 0;
 	this->wlanLastTime = 0;
-	this->bt = 0;
+	this->bt = nullptr;
 	this->btUpdated = false;
 	this->btMinTime = 0;
-	this->locSvc = 0;
+	this->locSvc = nullptr;
 	this->gnssRecUpdated = false;
 	this->gnssLastUpdateTime = Data::DateTimeUtil::GetCurrTimeMillis();
-	this->cellularPort = 0;
-	this->cellularChannel = 0;
-	this->cellularModem = 0;
-	this->cellularHuawei = 0;
+	this->cellularPort = nullptr;
+	this->cellularChannel = nullptr;
+	this->cellularModem = nullptr;
+	this->cellularHuawei = nullptr;
 	this->cellularToStop = false;
 	this->cellularRunning = false;
 	this->cellularInitStrs = false;
-	this->cellularModemManu = 0;
-	this->cellularModemModel = 0;
-	this->cellularModemVer = 0;
-	this->cellularIMEI = 0;
-	this->cellularICCID = 0;
+	this->cellularModemManu = nullptr;
+	this->cellularModemModel = nullptr;
+	this->cellularModemVer = nullptr;
+	this->cellularIMEI = nullptr;
+	this->cellularICCID = nullptr;
 	this->cellularTECharsetUpd = false;
-	this->cellularTECharset = 0;
+	this->cellularTECharset = nullptr;
 	this->cellularSIMChanged = false;
 	this->cellularSIMInfoUpdated = false;
-	this->cellularIMSI = 0;
+	this->cellularIMSI = nullptr;
 	this->cellularRegNetUpdated = false;
 	this->cellularRegNetN = IO::GSMModemController::NetworkResult::Disable;
 	this->cellularRegNetStat = IO::GSMModemController::RegisterStatus::Unknown;
@@ -1143,8 +1143,8 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->cellularSignalUpdated = false;
 	this->cellularSignalQuality = IO::GSMModemController::RSSI::RSSI_UNKNOWN;
 	this->cellularOperUpdated = false;
-	this->cellularPLMN = 0;
-	this->cellularOperName = 0;
+	this->cellularPLMN = nullptr;
+	this->cellularOperName = nullptr;
 	this->cellularOperNextTime = Data::Timestamp::UtcNow();
 	this->cellularCellsUpdated = false;
 

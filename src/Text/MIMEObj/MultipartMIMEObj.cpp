@@ -90,7 +90,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	Text::String *contType = hdrMap.GetC(CSTR("Content-Type"));
 	if (contType)
 	{
-		Optional<Text::MIMEObject> obj = 0;
+		Optional<Text::MIMEObject> obj = nullptr;
 		NN<Text::MIMEObject> nnobj;
 		Text::String *tenc = hdrMap.GetC(CSTR("Content-Transfer-Encoding"));
 		if (tenc)
@@ -297,7 +297,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MultipartMIMEObj::GetPartContent(UOSIn
 {
 	NN<MIMEMessage> part;
 	if (!this->parts.GetItem(partIndex).SetTo(part))
-		return 0;
+		return nullptr;
 	return part->GetContent();
 }
 
@@ -332,7 +332,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Text::CStringNN currPart = contentType;
@@ -410,7 +410,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 		{
 			j = currPart.IndexOf(';');
 			if (j == INVALID_INDEX)
-				return 0;
+				return nullptr;
 			j++;
 		}
 	}

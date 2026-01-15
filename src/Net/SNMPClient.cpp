@@ -52,12 +52,12 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(NN<const Net::SocketUtil::AddressIn
 
 Net::SNMPClient::SNMPClient(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
-	this->scanList = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, nullptr, OnSNMPPacket, this, log, nullptr, 1, false));
+	this->scanList = nullptr;
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, 0, nullptr, OnSNMPPacket, this, log, nullptr, 1, false));
 	this->reqId = 1;
 	this->hasResp = true;
 	this->respStatus = Net::SNMPUtil::ES_NOERROR;
-	this->respList = 0;
+	this->respList = nullptr;
 }
 
 Net::SNMPClient::~SNMPClient()
@@ -104,7 +104,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NN<const Net::Socket
 	this->respEvt.Clear();
 	this->svr->SendTo(agentAddr, 161, buff, buffSize);
 	this->respEvt.Wait(5000);
-	this->respList = 0;
+	this->respList = nullptr;
 	ret = this->respStatus;
 	this->hasResp = true;
 
@@ -147,7 +147,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NN<const Net::So
 	this->respEvt.Clear();
 	this->svr->SendTo(agentAddr, 161, buff, buffSize);
 	this->respEvt.Wait(5000);
-	this->respList = 0;
+	this->respList = nullptr;
 	ret = this->respStatus;
 	this->hasResp = true;
 
@@ -161,7 +161,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NN<const Net::SocketUtil::Add
 	Net::SNMPUtil::ErrorStatus ret;
 	Data::ArrayListNN<Net::SNMPUtil::BindingItem> thisList;
 	NN<Net::SNMPUtil::BindingItem> item;
-	Optional<Net::SNMPUtil::BindingItem> lastItem = 0;
+	Optional<Net::SNMPUtil::BindingItem> lastItem = nullptr;
 	NN<Net::SNMPUtil::BindingItem> nnlastItem;
 	ret = this->V1GetNextRequest(agentAddr, community, oidText, thisList);
 	if (ret != Net::SNMPUtil::ES_NOERROR)
@@ -243,7 +243,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> 
 	}
 	Sync::ThreadUtil::SleepDur(timeout);
 	scanMutUsage.BeginUse();
-	this->scanList = 0;
+	this->scanList = nullptr;
 	scanMutUsage.EndUse();
 	mutUsage.EndUse();
 	return addrList->GetCount() - initCnt;

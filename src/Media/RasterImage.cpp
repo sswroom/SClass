@@ -7,7 +7,7 @@
 
 Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize)
 {
-	this->exif = 0;
+	this->exif = nullptr;
 	this->hasHotSpot = false;
 	this->hotSpotX = 0;
 	this->hotSpotY = 0;
@@ -26,12 +26,12 @@ Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize)
 	this->info.rotateType = Media::RotateType::None;
 	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info.ftype = Media::FT_NON_INTERLACE;
-	this->pal = 0;
+	this->pal = nullptr;
 }
 
 Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
 {
-	this->exif = 0;
+	this->exif = nullptr;
 	this->hasHotSpot = false;
 	this->hotSpotX = 0;
 	this->hotSpotY = 0;
@@ -110,7 +110,7 @@ Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSI
 			this->info.byteSize = storeSize.y * (this->info.byteSize >> 3);
 		}
 	}
-	this->pal = 0;
+	this->pal = nullptr;
 	if (this->info.fourcc == 0)
 	{
 		if (pf == Media::PF_PAL_1_A1)

@@ -53,7 +53,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		return false;
 	}
 
-	Optional<Text::String> name = 0;
+	Optional<Text::String> name = nullptr;
 	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
@@ -61,7 +61,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	return DB::DBExporter::GenerateHTML(db, nullptr, Text::String::OrEmpty(name)->ToCString(), 0, stm, this->codePage);
+	return DB::DBExporter::GenerateHTML(db, nullptr, Text::String::OrEmpty(name)->ToCString(), nullptr, stm, this->codePage);
 }
 
 UOSInt Exporter::DBHTMLExporter::GetParamCnt()
@@ -129,7 +129,7 @@ Bool Exporter::DBHTMLExporter::SetParamSel(Optional<ParamData> param, UOSInt ind
 
 UnsafeArrayOpt<UTF8Char> Exporter::DBHTMLExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Int32 Exporter::DBHTMLExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
@@ -159,7 +159,7 @@ UnsafeArrayOpt<UTF8Char> Exporter::DBHTMLExporter::GetParamSelItems(Optional<Par
 		{
 			return name->ConcatTo(buff);
 		}
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }

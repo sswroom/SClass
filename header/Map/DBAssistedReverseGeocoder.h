@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_DBASSISTEDREVERSEGEOCODER
 #define _SM_MAP_DBASSISTEDREVERSEGEOCODER
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListNN.hpp"
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"

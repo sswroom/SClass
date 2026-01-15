@@ -486,7 +486,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType 
 			me->navi->RedrawMap();
 		}
 	}
-	me->navi->SetSelectedVector(0);
+	me->navi->SetSelectedVector(nullptr);
 	me->downType = 0;
 	return UI::EventState::ContinueEvent;
 }
@@ -1112,7 +1112,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClient
 SSWR::AVIRead::AVIRGISEditImageForm::~AVIRGISEditImageForm()
 {
 	this->navi->HideMarker();
-	this->navi->SetSelectedVector(0);
+	this->navi->SetSelectedVector(nullptr);
 	this->navi->UnhandleMapMouse(this);
 }
 

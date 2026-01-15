@@ -19,7 +19,7 @@ void TestEmpty()
 	wb.AddWorksheet(CSTR("Sheet1"));
 	wb.AddWorksheet(CSTR("Sheet2"));
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -91,7 +91,7 @@ void TestChart()
 	}
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -117,7 +117,7 @@ void TestCols()
 	}
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -142,7 +142,7 @@ void TestColWidth()
 	sheet->SetColWidth(8, 75.75, Math::Unit::Distance::DU_POINT);
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));
@@ -171,7 +171,7 @@ void TestBorder()
 	sheet->SetCellInt32(1, 3, normalStyle.Ptr(), 8);
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, nullptr))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine(CSTR("Error in writing to file"));

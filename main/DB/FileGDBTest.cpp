@@ -235,7 +235,7 @@ Lamppost::Lamppost()
 	this->rotation = 0;
 	this->routeno = 0;
 	this->secondSt = 0;
-	this->shape = 0;
+	this->shape = nullptr;
 	this->shielded = 0;
 	this->solarLtg = 0;
 	this->specMate = 0;
@@ -743,7 +743,7 @@ Optional<Math::Geometry::Vector2D> Lamppost::GetShape()
 void Lamppost::SetShape(Optional<Math::Geometry::Vector2D> shape)
 {
 	this->shape.Delete();
-	this->shape = shape.IsNull()?Optional<Math::Geometry::Vector2D>(0):shape.OrNull()->Clone();
+	this->shape = shape.IsNull()?Optional<Math::Geometry::Vector2D>(nullptr):shape.OrNull()->Clone();
 }
 
 Text::String* Lamppost::GetShielded()
@@ -947,13 +947,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (Map::ESRI::FileGDBDir::OpenDir(dir).SetTo(fileGDB))
 	{
 		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<const UTF8Char*> colNames;
+		Data::ArrayListObj<const UTF8Char*> colNames;
 		colNames.Add((const UTF8Char*)"OBJECTID");
 		colNames.Add((const UTF8Char*)"Shape");
 		Data::QueryConditions cond;
 		cond.Int32Equals(CSTR("OBJECTID"), 40);
 		NN<DB::DBReader> r;
-/*		if (r.Set(fileGDB->QueryTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0)))//&cond);
+/*		if (r.Set(fileGDB->QueryTableData((const UTF8Char*)"LAMPPOST", &colNames, nullptr, 10, (const UTF8Char*)"OBJECTID desc", nullptr)))//&cond);
 		{
 			while (r->ReadNext())
 			{
@@ -968,7 +968,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 		NN<Data::NamedClass<Lamppost>> cls = Lamppost().CreateClass();
 
-		if (fileGDB->QueryTableData(nullptr, CSTR("LAMPPOST"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (fileGDB->QueryTableData(nullptr, CSTR("LAMPPOST"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			Double t1;
 			Double t2;
@@ -996,7 +996,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
-			if (csv->QueryTableData(nullptr, CSTR("Lamppost"), 0, 0, 0, nullptr, 0).SetTo(r))
+			if (csv->QueryTableData(nullptr, CSTR("Lamppost"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
 				clk.Start();
 				{

@@ -1,6 +1,5 @@
 #ifndef _SM_DB_MONGODB
 #define _SM_DB_MONGODB
-#include "Data/ArrayList.hpp"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/LogTool.h"

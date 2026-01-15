@@ -33,24 +33,24 @@ Optional<IO::ParsedObject> Parser::FileParser::CCacheV2Parser::ParseFileHdr(NN<I
 {
 	if (!fd->GetFullFileName()->EndsWith(CSTR(".bundle")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadUInt32(&hdr[0]) != 3)
-		return 0;
+		return nullptr;
 	if (ReadUInt64(&hdr[24]) != fd->GetDataSize())
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadUInt32(&hdr[40]) != 0x20014)
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<IO::VirtualPackageFile> pkg;
 	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	if (!ParseAppend(fd, hdr, pkg, 0, 0))
 	{
 		pkg.Delete();
-		return 0;
+		return nullptr;
 	}
 	return pkg;
 }
@@ -82,7 +82,7 @@ Bool Parser::FileParser::CCacheV2Parser::ParseAppend(NN<IO::StreamData> fd, Data
 	UOSInt j;
 	while (i < 128)
 	{
-		rowPkg = 0;
+		rowPkg = nullptr;
 		j = 0;
 		while (j < 128)
 		{

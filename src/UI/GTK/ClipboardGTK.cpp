@@ -20,7 +20,7 @@ UI::Clipboard::~Clipboard()
 }
 
 
-UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayList<UInt32>> dataTypes)
+UOSInt UI::Clipboard::GetDataFormats(NN<Data::ArrayListNative<UInt32>> dataTypes)
 {
 	if (!this->succ)
 		return 0;
@@ -67,10 +67,10 @@ Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
-	Optional<Data::ByteBuffer> ret = 0;
+	Optional<Data::ByteBuffer> ret = nullptr;
 	if (fmtId >= 128)
 	{
 		GdkAtom *targets;
@@ -93,7 +93,7 @@ Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else if (fmtId == 1)
@@ -109,7 +109,7 @@ Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else if (fmtId == 2)
@@ -137,10 +137,10 @@ Optional<Data::ByteBuffer> UI::Clipboard::GetDataRAW(UInt32 fmtId)
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UI::Clipboard::FilePasteType UI::Clipboard::GetDataFiles(NN<Data::ArrayListStringNN> fileNames)

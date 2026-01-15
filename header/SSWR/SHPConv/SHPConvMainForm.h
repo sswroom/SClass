@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_SHPCONV_SHPCONVMAINFORM
 #define _SM_SSWR_SHPCONV_SHPCONVMAINFORM
+#include "Data/ArrayListObj.hpp"
 #include "DB/DBFFile.h"
 #include "IO/ProgressHandler.h"
 #include "Media/DrawEngine.h"
@@ -31,7 +32,7 @@ namespace SSWR
 			{
 				Int32 blockX;
 				Int32 blockY;
-				Data::ArrayListT<StrRecord*> *records;
+				Data::ArrayListObj<StrRecord*> *records;
 			} Block;
 
 			static Text::CStringNN typeName[];

@@ -37,7 +37,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUI
 	UOSInt i;
 	UOSInt j;
 	UInt32 fmt;
-	Data::ArrayList<UInt32> formats;
+	Data::ArrayListNative<UInt32> formats;
 	this->clipboard->GetDataFormats(formats);
 	i = 0;
 	j = formats.GetCount();

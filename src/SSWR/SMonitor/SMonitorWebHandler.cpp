@@ -287,7 +287,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::S
 	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	NN<Net::WebServer::WebSession> sess;
-	UnsafeArrayOpt<const UTF8Char> msg = 0;
+	UnsafeArrayOpt<const UTF8Char> msg = nullptr;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		sess->EndUse();
@@ -329,7 +329,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::S
 	WriteHeaderEnd(writer);
 	writer->WriteLine(CSTR("<body onload=\"document.getElementById('user').focus()\">"));
 	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
-	me->WriteMenu(writer, 0);
+	me->WriteMenu(writer, nullptr);
 	writer->WriteLine(CSTR("</td><td><center>"));
 	writer->WriteLine(CSTR("<form name=\"loginForm\" method=\"POST\" action=\"login\">"));
 	writer->WriteLine(CSTR("<input type=\"hidden\" name=\"action\" value=\"login\"/>"));
@@ -1056,7 +1056,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		{
 			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
@@ -1411,7 +1411,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 			{
 				f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 				b = dimg->NewBrushARGB(0xffffffff);
-				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 				dimg->DelBrush(b);
 				b = dimg->NewBrushARGB(0xff000000);
 				dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);
@@ -1435,7 +1435,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 
 		NEW_CLASSNN(mstm, IO::MemoryStream());
 		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
+		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, nullptr);
 		DEL_CLASS(exporter);
 		imgList.Delete();
 
@@ -1675,7 +1675,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		{
 			f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+			dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Sensor not found"), f, b);
@@ -1763,7 +1763,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 			{
 				f = dimg->NewFontPx(CSTR("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 				b = dimg->NewBrushARGB(0xffffffff);
-				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+				dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 				dimg->DelBrush(b);
 				b = dimg->NewBrushARGB(0xff000000);
 				dimg->DrawString(Math::Coord2DDbl(0, 0), sb.ToCString(), f, b);
@@ -1786,7 +1786,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 
 		IO::MemoryStream mstm;
 		NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
+		exporter->ExportFile(mstm, CSTR("temp.png"), imgList, nullptr);
 		DEL_CLASS(exporter);
 		imgList.Delete();
 
@@ -2284,7 +2284,7 @@ Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NN<Net::WebServer::WebRe
 SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::SMonitorCore *core)
 {
 	this->core = core;
-	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
+	NEW_CLASS(this->reqMap, Data::FastStringMapObj<RequestHandler>());
 	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/monitor"), OnSessDeleted, this, 60000, OnSessCheck, this, CSTR("SMonSessId")));
 	this->reqMap->PutC(CSTR(""), DefaultReq);
 	this->reqMap->PutC(CSTR("/index"), IndexReq);

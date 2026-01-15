@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(NN<BTStatus> btStatus)
 	UOSInt k;
 	NN<IO::BTController::BTDevice> dev;
 	this->ClearGUIDs();
-	this->currDev = 0;
+	this->currDev = nullptr;
 	this->lvDevice->ClearItems();
 	i = 0;
 	j = btStatus->devList->GetCount();
@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 	NN<BTStatus> btStatus;
 	Text::CStringNN cstr;
 	Text::StringBuilderUTF8 sb;
-	this->currDev = 0;
+	this->currDev = nullptr;
 
 	IO::BTManager btMgr;
 	btMgr.CreateControllers(btList);

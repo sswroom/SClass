@@ -19,7 +19,7 @@ IO::BitReaderLSB::BitReaderLSB(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 	this->buffSize = buffSize;
 	this->currBytePos = 0;
 	this->currBitPos = 0;
-	this->stm = 0;
+	this->stm = nullptr;
 }
 
 IO::BitReaderLSB::~BitReaderLSB()

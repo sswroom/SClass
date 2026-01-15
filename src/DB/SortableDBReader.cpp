@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/StringMapObj.hpp"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Data/FieldComparator.h"
 #include "DB/ColDef.h"
@@ -10,10 +11,10 @@ Optional<Data::VariItem> DB::SortableDBReader::GetItem(UOSInt colIndex)
 {
 	NN<Data::VariObject> obj;
 	if (!this->objList.GetItem(this->currIndex).SetTo(obj))
-		return 0;
+		return nullptr;
 	NN<DB::ColDef> col;
 	if (!this->cols.GetItem(colIndex).SetTo(col))
-		return 0;
+		return nullptr;
 	return obj->GetItem(col->GetColName()->v);
 }
 
@@ -29,7 +30,7 @@ DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schem
 	if (!colNames.SetTo(nncolNames) || nncolNames->GetCount() == 0)
 	{
 		NN<DB::DBReader> r;
-		if (!db->QueryTableData(schemaName, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
+		if (!db->QueryTableData(schemaName, tableName, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			return;
 		}
@@ -90,12 +91,12 @@ DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schem
 			}
 		}
 		NN<DB::DBReader> r;
-		if (!db->QueryTableData(schemaName, tableName, &dbColNames, 0, 0, nullptr, 0).SetTo(r))
+		if (!db->QueryTableData(schemaName, tableName, &dbColNames, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			return;
 		}
 
-		Data::StringMap<DB::ColDef*> tmpCols;
+		Data::StringMapObj<DB::ColDef*> tmpCols;
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
@@ -133,7 +134,7 @@ DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schem
 			i++;
 		}
 
-		NN<const Data::ArrayList<DB::ColDef *>> colList = tmpCols.GetValues();
+		NN<const Data::ArrayListObj<DB::ColDef *>> colList = tmpCols.GetValues();
 		i = colList->GetCount();
 		while (i-- > 0)
 		{
@@ -319,7 +320,7 @@ UnsafeArrayOpt<WChar> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArray<
 	{
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 	}
-	return 0;
+	return nullptr;
 }
 Bool DB::SortableDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
@@ -339,7 +340,7 @@ Optional<Text::String> DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 	{
 		return Text::String::New(sb.ToCString());
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
@@ -349,7 +350,7 @@ UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArr
 	{
 		return Text::StrConcatS(buff, sb.ToString(), buffSize);
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::Timestamp DB::SortableDBReader::GetTimestamp(UOSInt colIndex)
@@ -446,7 +447,7 @@ Optional<Math::Geometry::Vector2D> DB::SortableDBReader::GetVector(UOSInt colInd
 	{
 		return item->GetItemValue().vector->Clone();
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -489,7 +490,7 @@ UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetName(UOSInt colIndex, UnsafeAr
 		NN<Text::String> colName = col->GetColName();
 		return Text::StrConcatC(buff, colName->v, colName->leng);
 	}
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)

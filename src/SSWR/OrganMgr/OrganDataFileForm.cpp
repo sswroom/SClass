@@ -31,7 +31,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFilesDblClk(AnyType userObj,
 		return;
 	if (dataFile->fileType == 1)
 	{
-		OrganTimeAdjForm frm(0, me->ui, me->env, dataFile);
+		OrganTimeAdjForm frm(nullptr, me->ui, me->env, dataFile);
 		frm.ShowDialog(me);
 	}
 }

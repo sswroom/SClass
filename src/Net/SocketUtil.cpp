@@ -75,7 +75,7 @@ UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff
 	{
 		*buff = 0;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<WChar> Net::SocketUtil::GetAddrName(UnsafeArray<WChar> buff, NN<const AddressInfo> addr)
@@ -148,7 +148,7 @@ UnsafeArrayOpt<WChar> Net::SocketUtil::GetAddrName(UnsafeArray<WChar> buff, NN<c
 	{
 		*buff = 0;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff, NN<const AddressInfo> addr, UInt16 port)
@@ -162,13 +162,13 @@ UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff
 	{
 		*buff++ = '[';
 		if (!GetAddrName(buff, addr).SetTo(buff))
-			return 0;
+			return nullptr;
 		*buff++ = ']';
 		*buff++ = ':';
 		return Text::StrUInt32(buff, port);
 	}
 	*buff = 0;
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<WChar> Net::SocketUtil::GetAddrName(UnsafeArray<WChar> buff, NN<const AddressInfo> addr, UInt16 port)
@@ -187,7 +187,7 @@ UnsafeArrayOpt<WChar> Net::SocketUtil::GetAddrName(UnsafeArray<WChar> buff, NN<c
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

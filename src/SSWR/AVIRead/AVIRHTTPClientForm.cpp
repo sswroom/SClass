@@ -26,7 +26,7 @@
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
-	SSWR::AVIRead::AVIRUserAgentSelForm frm(0, me->ui, me->core, me->userAgent->ToCString());
+	SSWR::AVIRead::AVIRUserAgentSelForm frm(nullptr, me->ui, me->core, me->userAgent->ToCString());
 	if (frm.ShowDialog(me))
 	{
 		me->userAgent->Release();
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	UTF8Char sbuffLocal[512];
 	UnsafeArray<UTF8Char> sbuff = sbuffLocal;
-	UnsafeArrayOpt<UTF8Char> sbuffPtr = 0;
+	UnsafeArrayOpt<UTF8Char> sbuffPtr = nullptr;
 	UOSInt sbuffLen = sizeof(sbuffLocal);
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
@@ -113,9 +113,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 			}
 			sb.Append(sb2);
 		}
-		me->reqBody = 0;
+		me->reqBody = nullptr;
 		me->reqBodyLen = 0;
-		me->reqBodyType = 0;
+		me->reqBodyType = nullptr;
 	}
 	else if (me->fileList.GetCount() == 1 && me->cboPostFormat->GetSelectedIndex() == 2)
 	{
@@ -135,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		}
 		else
 		{
-			me->reqBodyType = 0;
+			me->reqBodyType = nullptr;
 		}
 	}
 	else if (me->fileList.GetCount() > 0)
@@ -415,7 +415,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(AnyType userO
 	NN<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 	UnsafeArray<UTF8Char> sbuff;
 	UTF8Char sbuffLocal[512];
-	UnsafeArrayOpt<UTF8Char> sbuffPtr = 0;
+	UnsafeArrayOpt<UTF8Char> sbuffPtr = nullptr;
 	me->txtDataStr->GetText(sb);
 	me->ClearParams();
 	me->lvReqData->ClearItems();
@@ -526,7 +526,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(AnyType us
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -577,18 +577,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 			currOSClient = me->reqOSClient;
 			currHeaders = me->reqHeaders;
 			currAllowComp = me->reqAllowComp;
-			me->reqURL = 0;
-			me->reqBody = 0;
+			me->reqURL = nullptr;
+			me->reqBody = nullptr;
 			me->reqBodyLen = 0;
-			me->reqBodyType = 0;
-			me->reqUserName = 0;
-			me->reqPassword = 0;
-			me->reqHeaders = 0;
+			me->reqBodyType = nullptr;
+			me->reqUserName = nullptr;
+			me->reqPassword = nullptr;
+			me->reqHeaders = nullptr;
 			me->reqAllowComp = false;
 			
 			NN<Net::HTTPClient> cli;
 			me->respTimeStart = Data::Timestamp::Now();
-			cli = Net::HTTPClient::CreateClient(me->core->GetTCPClientFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
+			cli = Net::HTTPClient::CreateClient(me->core->GetTCPClientFactory(), currOSClient?nullptr:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 			NN<Crypto::Cert::X509Cert> cliCert;
 			NN<Crypto::Cert::X509File> cliKey;
 			if (me->cliCert.SetTo(cliCert) && me->cliKey.SetTo(cliKey))
@@ -830,7 +830,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 			if (currBody.SetTo(nncurrBody))
 			{
 				MemFreeArr(nncurrBody);
-				currBody = 0;
+				currBody = nullptr;
 			}
 			OPTSTR_DEL(currBodyType);
 			OPTSTR_DEL(currUserName);
@@ -958,7 +958,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 			i++;
 		}
 		me->txtCert->SetText(Text::String::OrEmpty(me->respCertText)->ToCString());
-		me->btnCert->SetEnabled(me->respCert != 0);
+		me->btnCert->SetEnabled(me->respCert.NotNull());
 		me->respChanged = false;
 		me->tcMain->SetSelectedIndex(1);
 	}
@@ -1036,7 +1036,7 @@ Optional<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> SSWR::AVIRead::AVIRHTTPC
 	i = Text::StrIndexOfCharC(cookieValue, sarr[0].leng, '=');
 	if (i == INVALID_INDEX)
 	{
-		return 0;
+		return nullptr;
 	}
 	while (cnt == 2)
 	{
@@ -1132,7 +1132,7 @@ Optional<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> SSWR::AVIRead::AVIRHTTPC
 		}
 		else
 		{
-			cookie->path = 0;
+			cookie->path = nullptr;
 		}
 		cookie->secure = secure;
 		cookie->expireTime = expiryTime;
@@ -1145,7 +1145,7 @@ Optional<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> SSWR::AVIRead::AVIRHTTPC
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1159,7 +1159,7 @@ UnsafeArrayOpt<UTF8Char> SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UnsafeA
 	UOSInt i;
 	UOSInt j;
 	NN<Text::String> cpath;
-	UnsafeArrayOpt<UTF8Char> cookiePtr = 0;
+	UnsafeArrayOpt<UTF8Char> cookiePtr = nullptr;
 	UnsafeArray<UTF8Char> nncookiePtr;
 	UnsafeArray<UTF8Char> pathPtr;
 	UnsafeArray<UTF8Char> pathPtrEnd;
@@ -1221,20 +1221,20 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	Net::HTTPClient::PrepareSSL(this->ssl);
 	this->respChanged = false;
-	this->cliCert = 0;
-	this->cliKey = 0;
-	this->reqURL = 0;
-	this->reqBody = 0;
+	this->cliCert = nullptr;
+	this->cliKey = nullptr;
+	this->reqURL = nullptr;
+	this->reqBody = nullptr;
 	this->reqBodyLen = 0;
-	this->reqBodyType = 0;
-	this->reqUserName = 0;
-	this->reqPassword = 0;
-	this->reqHeaders = 0;
-	this->respContType = 0;
-	this->respReqURL = 0;
-	this->respData = 0;
-	this->respCertText = 0;
-	this->respCert = 0;
+	this->reqBodyType = nullptr;
+	this->reqUserName = nullptr;
+	this->reqPassword = nullptr;
+	this->reqHeaders = nullptr;
+	this->respContType = nullptr;
+	this->respReqURL = nullptr;
+	this->respData = nullptr;
+	this->respCertText = nullptr;
+	this->respCert = nullptr;
 	this->userAgent = Text::String::New(UTF8STRC("SSWR/1.0"));
 	this->respSvrAddr.addrType = Net::AddrType::Unknown;
 	

@@ -40,7 +40,7 @@ Optional<IO::Watchdog> IO::Watchdog::Create()
 		return wd;
 	DEL_CLASS(wd);
 
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::Watchdog> IO::Watchdog::Create(Int32 devNum)
@@ -51,7 +51,7 @@ Optional<IO::Watchdog> IO::Watchdog::Create(Int32 devNum)
 		return wd;
 	DEL_CLASS(wd);
 
-	return 0;
+	return nullptr;
 }
 
 

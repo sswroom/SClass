@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 	Optional<Text::String> schemaName = me->lbSchema->GetSelectedItemTextNew();
 	
 
-	Optional<DB::TableDef> tabDef = 0;
+	Optional<DB::TableDef> tabDef = nullptr;
 	NN<DB::TableDef> nntabDef;
 	Optional<DB::DBReader> tmpr;
 	NN<DB::DBReader> r;
@@ -78,13 +78,13 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 	{
 		tabDef = dbt->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, nullptr, 0);
+		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), nullptr, 0, MAX_ROW_CNT, nullptr, nullptr);
 	}
 	else
 	{
 		tabDef = me->db->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
-		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, nullptr, 0);
+		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), nullptr, 0, MAX_ROW_CNT, nullptr, nullptr);
 		if (tmpr.SetTo(r) && tabDef.IsNull())
 		{
 			tabDef = r->GenTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
@@ -550,10 +550,10 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->db = db;
 	this->needRelease = needRelease;
-	this->dbt = 0;
-	this->debugWriter = 0;
-	this->logHdlr = 0;
-	this->currCond = 0;
+	this->dbt = nullptr;
+	this->debugWriter = nullptr;
+	this->logHdlr = nullptr;
+	this->currCond = nullptr;
 	if (db->IsFullConn())
 	{
 #if defined(VERBOSE)
@@ -669,7 +669,7 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 	{
 		dbt->ReleaseDatabaseNames(this->dbNames);
 		dbt.Delete();
-		this->dbt = 0;
+		this->dbt = nullptr;
 	}
 	else if (this->needRelease)
 	{
@@ -769,11 +769,11 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CHART_LINE:
 		if (this->lbTable->GetSelectedItemText(sbuff).SetTo(sptr))
 		{
-			Optional<Data::ChartPlotter> chart = 0;
+			Optional<Data::ChartPlotter> chart = nullptr;
 			NN<Data::ChartPlotter> nnchart;
 			{
 				Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
-				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
+				SSWR::AVIRead::AVIRLineChartForm frm(nullptr, this->ui, this->core, this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 				OPTSTR_DEL(schemaName);
 				if (frm.ShowDialog(this) == DR_OK)
 				{
@@ -783,7 +783,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			if (chart.SetTo(nnchart))
 			{
 				NN<SSWR::AVIRead::AVIRChartForm> chartFrm;
-				NEW_CLASSNN(chartFrm, SSWR::AVIRead::AVIRChartForm(0, this->ui, this->core, nnchart));
+				NEW_CLASSNN(chartFrm, SSWR::AVIRead::AVIRChartForm(nullptr, this->ui, this->core, nnchart));
 				this->core->ShowForm(chartFrm);
 			}
 		}
@@ -833,7 +833,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
 				Text::StringBuilderUTF8 sb;
-				DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, 0, this->db);
+				DB::JavaDBUtil::ToJavaEntity(sb, schemaName, tableName, nullptr, this->db);
 				tableName->Release();
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 			}
@@ -870,7 +870,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			NN<Text::String> tableName;
 			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBExportForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString());
+				SSWR::AVIRead::AVIRDBExportForm dlg(nullptr, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString());
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}
@@ -901,7 +901,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			NN<Text::String> tableName;
 			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
 			{
-				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), *this);
+				SSWR::AVIRead::AVIRDBCheckChgForm dlg(nullptr, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), *this);
 				dlg.ShowDialog(this);
 				tableName->Release();
 			}
@@ -917,7 +917,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt colIndex = this->lvTable->GetSelectedIndex();
 				if (colIndex != INVALID_INDEX)
 				{
-					SSWR::AVIRead::AVIRDBGenEnumForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), colIndex);
+					SSWR::AVIRead::AVIRDBGenEnumForm dlg(nullptr, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), colIndex);
 					dlg.ShowDialog(this);
 				}
 				else
@@ -965,6 +965,6 @@ Optional<DB::ReadingDB> SSWR::AVIRead::AVIRDBForm::OpenDataSource(UOSInt index)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

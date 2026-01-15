@@ -7,8 +7,8 @@ DB::DBManagerCtrl::DBManagerCtrl(NN<IO::LogTool> log, NN<Net::TCPClientFactory> 
 	this->log = log;
 	this->clif = clif;
 	this->parsers = parsers;
-	this->connStr = 0;
-	this->db = 0;
+	this->connStr = nullptr;
+	this->db = nullptr;
 	this->status = ConnStatus::NotConnected;
 }
 

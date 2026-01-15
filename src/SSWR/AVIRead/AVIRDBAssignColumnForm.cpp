@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnCancelClicked(AnyType us
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayList<UOSInt>> colInd, NN<Data::ArrayListStringNN> colStr) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayListNative<UOSInt>> colInd, NN<Data::ArrayListStringNN> colStr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("DB Assign Column"));
@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 	this->dataFileTz = dataFileTz;
 	this->colInd = colInd;
 	this->colStr = colStr;
-	this->colsItem = 0;
+	this->colsItem = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlButtons = ui->NewPanel(*this);
@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 		i++;
 	}
 
-	if (this->dataFile->QueryTableData(this->schema, this->table, 0, 0, 1, nullptr, 0).SetTo(r))
+	if (this->dataFile->QueryTableData(this->schema, this->table, nullptr, 0, 1, nullptr, nullptr).SetTo(r))
 	{
 		k = 0;
 		l = r->ColCount();
@@ -169,7 +169,7 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::~AVIRDBAssignColumnForm()
 	if (this->colsItem.SetTo(colsItem))
 	{
 		MemFreeArr(colsItem);
-		this->colsItem = 0;
+		this->colsItem = nullptr;
 	}
 }
 

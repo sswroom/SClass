@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListObj.hpp"
 #include "Manage/ProcessExecution.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,7 +22,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
 	UnsafeArray<const UTF8Char> cptr = cmdLine.v;
-	Data::ArrayList<UTF8Char *> args;
+	Data::ArrayListObj<UTF8Char *> args;
 	Bool argStart = false;
 
 	UOSInt cmdLen = cmdLine.leng;

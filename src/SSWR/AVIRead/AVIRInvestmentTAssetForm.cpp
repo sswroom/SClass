@@ -212,7 +212,7 @@ SSWR::AVIRead::AVIRInvestmentTAssetForm::AVIRInvestmentTAssetForm(Optional<UI::G
 
 	this->core = core;
 	this->mgr = mgr;
-	this->ent = 0;
+	this->ent = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblStartDate = ui->NewLabel(*this, CSTR("Start Date"));

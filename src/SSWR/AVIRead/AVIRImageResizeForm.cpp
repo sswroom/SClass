@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Invalid input"), CSTR("Error"), me);
 		return;
 	}
-	Media::Resizer::LanczosResizerRGB_C8 rgbResizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, me->srcImg->info.atype);
+	Media::Resizer::LanczosResizerRGB_C8 rgbResizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, nullptr, me->srcImg->info.atype);
 	if (rgbResizer.IsSupported(me->srcImg->info))
 	{
 		rgbResizer.SetSrcPixelFormat(me->srcImg->info.pf, me->srcImg->pal);
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 	}
 	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
-		Media::Resizer::LanczosResizer16_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, me->srcImg->info.atype);
+		Media::Resizer::LanczosResizer16_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, nullptr, me->srcImg->info.atype);
 		resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 		resizer.SetTargetSize(outSize);
 		me->outImg = resizer.ProcessToNew(me->srcImg);
@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(Optional<UI::GUIClientCo
 
 	this->core = core;
 	this->srcImg = srcImg->CreateStaticImage();
-	this->outImg = 0;
+	this->outImg = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->lblOriW = ui->NewLabel(*this, CSTR("Ori Width"));

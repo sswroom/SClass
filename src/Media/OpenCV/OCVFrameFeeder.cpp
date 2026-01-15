@@ -38,7 +38,7 @@ Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(NN<Media::OpenCV::OCVObjectDetecto
 {
 	this->frameInput = frameInput;
 	this->src = src;
-	this->decoder = 0;
+	this->decoder = nullptr;
 	this->frameSkip = 0;
 	this->preferedFormat = 0;
 	this->preferedWidth = 0;

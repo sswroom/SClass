@@ -21,6 +21,7 @@ UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool
 	this->time = time;
 
 	UTF8Char sbuff[128];
+	UnsafeArray<UTF8Char> sptr;
 	GList *list = gdk_drag_context_list_targets((GdkDragContext*)context);
 	if (list)
 	{
@@ -35,14 +36,14 @@ UI::GTK::GTKDropData::GTKDropData(void *widget, void *context, UInt32 time, Bool
 			const char *csptr = gdk_atom_name(target);
 			if (csptr)
 			{
-				Text::StrConcat(sbuff, (const UTF8Char*)csptr);
+				sptr = Text::StrConcat(sbuff, (const UTF8Char*)csptr);
 			}
 			else
 			{
-				Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Format ")), (OSInt)target);
+				sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Format ")), (OSInt)target);
 			}
 //			printf("%s\r\n", sbuff);
-			this->targetMap.Put(sbuff, (OSInt)target);
+			this->targetMap.Put(CSTRP(sbuff, sptr), (OSInt)target);
 
 			if (readData)
 			{
@@ -82,12 +83,17 @@ UOSInt UI::GTK::GTKDropData::GetCount()
 
 UnsafeArrayOpt<const UTF8Char> UI::GTK::GTKDropData::GetName(UOSInt index)
 {
-	return this->targetMap.GetKey(index);
+	NN<Text::String> key;
+	if (this->targetMap.GetKey(index).SetTo(key))
+	{
+		return key->v.Ptr();
+	}
+	return nullptr;
 }
 
 Bool UI::GTK::GTKDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb)
 {
-	OSInt fmt = this->targetMap.Get(name);
+	OSInt fmt = this->targetMap.Get(Text::CStringNN::FromPtr(name));
 	if (fmt == 0)
 		return false;
 	NN<Text::String> txt;

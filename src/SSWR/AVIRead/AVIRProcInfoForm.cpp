@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(AnyType us
 	if (me->currProcObj.SetTo(currProcObj) && me->currProcRes.SetTo(currProcRes))
 	{
 		UInt32 threadId = (UInt32)me->lvDetThread->GetItem(index).GetUOSInt();
-		SSWR::AVIRead::AVIRThreadInfoForm frm(0, me->ui, me->core, currProcObj, currProcRes, threadId);
+		SSWR::AVIRead::AVIRThreadInfoForm frm(nullptr, me->ui, me->core, currProcObj, currProcRes, threadId);
 		frm.ShowDialog(me);
 	}
 }
@@ -498,7 +498,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 	else
 	{
 		Manage::Process proc(this->currProc, false);
-		Data::ArrayList<Manage::Process::HandleInfo> handleList;
+		Data::ArrayListNative<Manage::Process::HandleInfo> handleList;
 		Manage::Process::HandleInfo hinfo;
 		UTF8Char sbuff[20];
 		UnsafeArray<UTF8Char> sptr;
@@ -542,8 +542,8 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(Optional<UI::GUIClientControl>
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->currProc = 0;
-	this->currProcObj = 0;
-	this->currProcRes = 0;
+	this->currProcObj = nullptr;
+	this->currProcRes = nullptr;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
 	this->tcMain = ui->NewTabControl(*this);
@@ -708,26 +708,26 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(Optional<UI::GUIClientControl>
 	this->grpDetChartCPU = ui->NewGroupBox(this->tpDetChart, CSTR("CPU"));
 	this->grpDetChartCPU->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCPU->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->rlcDetChartCPU = ui->NewRealtimeLineChart(this->grpDetChartCPU, this->core->GetDrawEngine(), 1, 600, 300, 0);
+	this->rlcDetChartCPU = ui->NewRealtimeLineChart(this->grpDetChartCPU, this->core->GetDrawEngine(), 1, 600, 300, nullptr);
 	this->rlcDetChartCPU->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->rlcDetChartCPU->SetUnit(CSTR("%"));
 	this->vspDetChartCPU = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartPage = ui->NewGroupBox(this->tpDetChart, CSTR("Paged(R)/Non-Paged(B) Pool"));
 	this->grpDetChartPage->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartPage->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->rlcDetChartPage = ui->NewRealtimeLineChart(this->grpDetChartPage, this->core->GetDrawEngine(), 2, 600, 300, 0);
+	this->rlcDetChartPage = ui->NewRealtimeLineChart(this->grpDetChartPage, this->core->GetDrawEngine(), 2, 600, 300, nullptr);
 	this->rlcDetChartPage->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->vspDetChartPage = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartCount = ui->NewGroupBox(this->tpDetChart, CSTR("GDI(R)/User(B)/Handle(G) Count"));
 	this->grpDetChartCount->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCount->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->rlcDetChartCount = ui->NewRealtimeLineChart(this->grpDetChartCount, this->core->GetDrawEngine(), 3, 600, 300, 0);
+	this->rlcDetChartCount = ui->NewRealtimeLineChart(this->grpDetChartCount, this->core->GetDrawEngine(), 3, 600, 300, nullptr);
 	this->rlcDetChartCount->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->vspDetChartCount = ui->NewVSplitter(this->tpDetChart, 3, false);
 	this->grpDetChartWS = ui->NewGroupBox(this->tpDetChart, CSTR("WS(R)/Page File(B)"));
 	this->grpDetChartWS->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartWS->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->rlcDetChartWS = ui->NewRealtimeLineChart(this->grpDetChartWS, this->core->GetDrawEngine(), 2, 600, 300, 0);
+	this->rlcDetChartWS = ui->NewRealtimeLineChart(this->grpDetChartWS, this->core->GetDrawEngine(), 2, 600, 300, nullptr);
 	this->rlcDetChartWS->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->AddTimer(1000, OnTimerTick, this);

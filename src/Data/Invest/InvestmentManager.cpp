@@ -36,7 +36,7 @@ NN<Data::Invest::Currency> Data::Invest::InvestmentManager::LoadCurrency(UInt32 
 	sb.Append(CSTR(".csv"));
 	DB::CSVFile csv(sb.ToCString(), 65001);
 	NN<DB::DBReader> r;
-	if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+	if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		Int64 ts;
 		Double val;
@@ -69,7 +69,7 @@ Bool Data::Invest::InvestmentManager::LoadAsset(NN<Asset> ass)
 	sb.Append(CSTR(".csv"));
 	DB::CSVFile csv(sb.ToCString(), 65001);
 	NN<DB::DBReader> r;
-	if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+	if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		Int64 ts;
 		Double val;
@@ -210,7 +210,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 	{
 		DB::CSVFile csv(sb.ToCString(), 65001);
 		NN<DB::DBReader> r;
-		if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+		if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			NN<Asset> ass;
 			NN<Text::String> currency;
@@ -251,7 +251,7 @@ Data::Invest::InvestmentManager::InvestmentManager(Text::CStringNN path)
 	{
 		DB::CSVFile csv(sb.ToCString(), 65001);
 		NN<DB::DBReader> r;
-		if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+		if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			TradeType type;
 			while (r->ReadNext())
@@ -520,7 +520,7 @@ Bool Data::Invest::InvestmentManager::SaveTransactions() const
 Bool Data::Invest::InvestmentManager::CurrencyImport(NN<Currency> curr, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt, Bool invert) const
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+	if (!db->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
 	UOSInt colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
@@ -611,7 +611,7 @@ Bool Data::Invest::InvestmentManager::UpdateCurrency(NN<Currency> curr, Data::Ti
 	return true;
 }
 
-void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList, OptOut<Double> initValue)
+void Data::Invest::InvestmentManager::CurrencyCalcValues(NN<Currency> curr, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayListNative<Double>> valueList, OptOut<Double> initValue)
 {
 	TradeDetailComparator comparator;
 	Data::Sort::ArtificialQuickSort::Sort<NN<TradeDetail>>(curr->trades, comparator);
@@ -746,7 +746,7 @@ Optional<Data::Invest::Asset> Data::Invest::InvestmentManager::AddAsset(NN<Text:
 Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+	if (!db->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
 	UOSInt colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
@@ -805,7 +805,7 @@ Bool Data::Invest::InvestmentManager::AssetImport(NN<Asset> ass, NN<DB::ReadingD
 Bool Data::Invest::InvestmentManager::AssetImportDiv(NN<Asset> ass, NN<DB::ReadingDB> db, UOSInt timeCol, UOSInt valueCol, DateFormat fmt) const
 {
 	NN<DB::DBReader> r;
-	if (!db->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, nullptr).SetTo(r))
+	if (!db->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		return false;
 	UOSInt colCnt = r->ColCount();
 	if (timeCol >= colCnt || valueCol >= colCnt)
@@ -908,7 +908,7 @@ Double Data::Invest::InvestmentManager::AssetGetAmount(NN<Asset> ass, Data::Time
 	return total;
 }
 
-void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayList<Double>> valueList, OptOut<Double> initValue)
+void Data::Invest::InvestmentManager::AssetCalcValues(NN<Asset> ass, Data::Date startDate, Data::Date endDate, NN<Data::ArrayListTS> dateList, NN<Data::ArrayListNative<Double>> valueList, OptOut<Double> initValue)
 {
 	Data::DateTimeUtil::Weekday wd = startDate.GetWeekday();
 	if (wd == Data::DateTimeUtil::Weekday::Saturday)

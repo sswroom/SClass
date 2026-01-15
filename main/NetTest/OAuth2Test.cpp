@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::TCPClientFactory clif(sockf);
 	NEW_CLASSNN(oauth2Hdlr, Net::WebServer::OAuth2Handler(CSTR("/auth"), CSTR("/token"), CSTR("/userinfo")));
 	NEW_CLASSNN(hdlr, Net::WebServer::PrintLogWebHandler(oauth2Hdlr, console));
-	NEW_CLASS(listener, Net::WebServer::WebListener(clif, 0, hdlr, 8889, 30, 1, 4, CSTR("OAuthTest/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(listener, Net::WebServer::WebListener(clif, nullptr, hdlr, 8889, 30, 1, 4, CSTR("OAuthTest/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!listener->IsError())
 	{
 		console.WriteLine(CSTR("OAuth2 Test running at port 8889"));

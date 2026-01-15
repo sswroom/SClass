@@ -160,7 +160,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent,
 	this->SetText(CSTR("ANPR"));
 
 	this->core = core;
-	this->currImg = 0;
+	this->currImg = nullptr;
 	this->selectMode = ActionType::None;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->anpr.SetResultHandler(OnANPRResult, this);

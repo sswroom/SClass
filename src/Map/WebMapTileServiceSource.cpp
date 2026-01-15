@@ -89,8 +89,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 	UOSInt i;
 	Text::PString sarr[3];
 	NEW_CLASSNN(layer, TileLayer());
-	layer->title = 0;
-	layer->id = 0;
+	layer->title = nullptr;
+	layer->id = nullptr;
 	while (reader->NextElementName().SetTo(name))
 	{
 		if (name->Equals(UTF8STRC("ows:Title")))
@@ -178,9 +178,9 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 		}
 		else if (name->Equals(UTF8STRC("ResourceURL")))
 		{
-			Optional<Text::XMLAttrib> formatAttr = 0;
-			Optional<Text::XMLAttrib> resourceTypeAttr = 0;
-			Optional<Text::XMLAttrib> templateAttr = 0;
+			Optional<Text::XMLAttrib> formatAttr = nullptr;
+			Optional<Text::XMLAttrib> resourceTypeAttr = nullptr;
+			Optional<Text::XMLAttrib> templateAttr = nullptr;
 			NN<Text::XMLAttrib> nnformatAttr;
 			NN<Text::XMLAttrib> nnresourceTypeAttr;
 			NN<Text::XMLAttrib> nntemplateAttr;
@@ -376,7 +376,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 	else
 	{
 		this->ReleaseTileMatrixSet(set);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -553,7 +553,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 	else
 	{
 		this->ReleaseTileMatrixDefSet(set);
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -561,7 +561,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrix> Map::WebMapTileServiceSource:
 {
 	NN<TileMatrixSet> currSet;
 	if (!this->currSet.SetTo(currSet))
-		return 0;
+		return nullptr;
 	return currSet->tiles.GetItem(level);
 }
 
@@ -617,11 +617,11 @@ Map::WebMapTileServiceSource::WebMapTileServiceSource(NN<Net::TCPClientFactory> 
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->wmtsURL = Text::String::New(wmtsURL);
-	this->currLayer = 0;
-	this->currDef = 0;
-	this->currResource = 0;
-	this->currResourceInfo = 0;
-	this->currSet = 0;
+	this->currLayer = nullptr;
+	this->currDef = nullptr;
+	this->currResource = nullptr;
+	this->currResourceInfo = nullptr;
+	this->currSet = nullptr;
 	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->LoadXML();
 	UTF8Char sbuff[512];
@@ -776,10 +776,10 @@ Map::TileMap::ImageType Map::WebMapTileServiceSource::GetImageType() const
 
 Bool Map::WebMapTileServiceSource::CanQuery() const
 {
-	return this->currResourceInfo != 0;
+	return this->currResourceInfo.NotNull();
 }
 
-Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
+Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
 {
 	NN<TileMatrixDefSet> currDef;
 	NN<TileMatrixSet> currSet;
@@ -852,7 +852,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 	return false;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
+UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	NN<TileMatrix> tileMatrix;
 	NN<TileMatrixDef> tileMatrixDef;
@@ -906,7 +906,7 @@ Optional<Media::ImageList> Map::WebMapTileServiceSource::LoadTileImage(UOSInt le
 			fd.Delete();
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::WebMapTileServiceSource::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
@@ -929,7 +929,7 @@ UnsafeArrayOpt<UTF8Char> Map::WebMapTileServiceSource::GetTileImageURL(UnsafeArr
 		sptrEnd = Text::StrReplaceC(sbuff, sptrEnd, UTF8STRC("{style}"), UTF8STRC("generic"));
 		return sbuff;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Map::WebMapTileServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
@@ -973,7 +973,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 	NN<ResourceURL> currResource;
 	NN<TileLayer> currLayer;
 	if (!this->GetTileMatrix(level).SetTo(tileMatrix) || !this->currDef.SetTo(currDef) || !this->currSet.SetTo(currSet) || !this->currResource.SetTo(currResource) || !this->currLayer.SetTo(currLayer) || !currDef->tiles.GetItem(level).SetTo(tileMatrixDef))
-		return 0;
+		return nullptr;
 	Double x1 = tileId.x * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
 	Double y1 = tileMatrixDef->origin.y - tileId.y * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileHeight);
 	Double x2 = (tileId.x + 1) * tileMatrixDef->unitPerPixel * UOSInt2Double(tileMatrixDef->tileWidth) + tileMatrixDef->origin.x;
@@ -982,7 +982,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y2), Math::Coord2DDbl(x2, y1));
 	bounds.Set(b);
 	if (!currSet->bounds.OverlapOrTouch(b))
-		return 0;
+		return nullptr;
 
 #if defined(VERBOSE)
 	printf("Loading Tile %d %d %d\r\n", (UInt32)level, imgX, imgY);
@@ -1007,7 +1007,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 		{
 			currTime.SetCurrTimeUTC();
 			currTime.AddDay(-7);
-			((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, 0, 0);
+			((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, nullptr, nullptr);
 			if (dt.CompareTo(currTime) > 0)
 			{
 				it.Set(currResource->imgType);
@@ -1022,7 +1022,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 	}
 
 	if (localOnly)
-		return 0;
+		return nullptr;
 
 	UTF8Char tmpBuff[32];
 	UnsafeArray<UTF8Char> tmpPtr;
@@ -1053,7 +1053,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 	{
 		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
-		fs.SetFileTimes(&dt, 0, 0);
+		fs.SetFileTimes(&dt, nullptr, nullptr);
 	}
 	else if (status >= 200 && status < 300)
 	{
@@ -1065,12 +1065,12 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 			if (cli->GetLastModified(dt))
 			{
 				currTime.SetCurrTimeUTC();
-				fs.SetFileTimes(&currTime, 0, &dt);
+				fs.SetFileTimes(&currTime, nullptr, &dt);
 			}
 			else
 			{
 				currTime.SetCurrTimeUTC();
-				fs.SetFileTimes(&currTime, 0, 0);
+				fs.SetFileTimes(&currTime, nullptr, nullptr);
 			}
 		}
 	}
@@ -1083,7 +1083,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 		return fd.Ptr();
 	}
 	fd.Delete();
-	return 0;
+	return nullptr;
 }
 
 Bool Map::WebMapTileServiceSource::SetLayer(UOSInt index)
@@ -1118,7 +1118,7 @@ Bool Map::WebMapTileServiceSource::SetResourceTileType(UOSInt index)
 	NN<TileLayer> currLayer;
 	if (!this->currLayer.SetTo(currLayer))
 		return false;
-	this->currResource = 0;
+	this->currResource = nullptr;
 	NN<ResourceURL> resource;
 	UOSInt i = 0;
 	UOSInt j = currLayer->resourceURLs.GetCount();
@@ -1144,7 +1144,7 @@ Bool Map::WebMapTileServiceSource::SetResourceInfoType(UOSInt index)
 	NN<TileLayer> currLayer;
 	if (!this->currLayer.SetTo(currLayer))
 		return false;
-	this->currResourceInfo = 0;
+	this->currResourceInfo = nullptr;
 	NN<ResourceURL> resource;
 	UOSInt i = 0;
 	UOSInt j = currLayer->resourceURLs.GetCount();
@@ -1170,7 +1170,7 @@ Bool Map::WebMapTileServiceSource::SetResourceInfoType(Text::CStringNN name)
 	NN<TileLayer> currLayer;
 	if (!this->currLayer.SetTo(currLayer))
 		return false;
-	this->currResourceInfo = 0;
+	this->currResourceInfo = nullptr;
 	NN<ResourceURL> resource;
 	UOSInt i = 0;
 	UOSInt j = currLayer->resourceURLs.GetCount();

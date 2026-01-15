@@ -33,7 +33,7 @@ Net::NTPClient::NTPClient(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogT
 {
 	this->sockf = sockf;
 	this->resultTime = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, nullptr, PacketHdlr, this, log, nullptr, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, port, nullptr, PacketHdlr, this, log, nullptr, 1, false));
 }
 
 Net::NTPClient::~NTPClient()

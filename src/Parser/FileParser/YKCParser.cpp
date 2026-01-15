@@ -50,20 +50,20 @@ Optional<IO::ParsedObject> Parser::FileParser::YKCParser::ParseFileHdr(NN<IO::St
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".YKC")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[0]) != 0x30434b59 || ReadInt32(&hdr[4]) != 0x3130)
-		return 0;
+		return nullptr;
 	if (ReadUInt32(&hdr[8]) != 24)
-		return 0;
+		return nullptr;
 	recOfst = ReadUInt32(&hdr[16]);
 	recSize = ReadUInt32(&hdr[20]);
 	if (recOfst + recSize != fd->GetDataSize())
-		return 0;
+		return nullptr;
 	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(recOfst, recSize, recBuff) != recSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -81,7 +81,7 @@ Optional<IO::ParsedObject> Parser::FileParser::YKCParser::ParseFileHdr(NN<IO::St
 		if (fileOfst != nextOfst || fnameSize == 0 || fnameSize >= 256)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		fd->GetRealData(fnameOfst, fnameSize, BYTEARR(fnameBuff));
 		sptr = enc.UTF8FromBytes(fileName, fnameBuff, fnameSize, 0);

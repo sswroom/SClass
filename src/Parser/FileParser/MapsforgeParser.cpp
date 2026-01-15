@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MapsforgeParser::ParseFileHdr(NN<
 {
 	if (!Text::StrStartsWithC(hdr.Arr(), 20, UTF8STRC("mapsforge binary OSM")) || ReadMUInt64(&hdr[28]) != fd->GetDataSize())
 	{
-		return 0;
+		return nullptr;
 	}
 
 	NN<Map::OSM::OSMData> osmData;
@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MapsforgeParser::ParseFileHdr(NN<
 	{
 		MemFreeArr(hdrBuff);
 		osmData.Delete();
-		return 0;
+		return nullptr;
 	}
 
 	osmData->SetOSMBase(Data::Timestamp::FromEpochMS(ReadMInt64(&hdrBuff[12]), Data::DateTimeUtil::GetLocalTzQhr()));

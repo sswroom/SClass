@@ -196,7 +196,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		console->WriteLine(sb.ToCString());
 		writer->WriteLine(sb.ToCString());
 
-		Optional<const Manage::CPUDB::CPUSpec> cpuSpec = 0;
+		Optional<const Manage::CPUDB::CPUSpec> cpuSpec = nullptr;
 		NN<const Manage::CPUDB::CPUSpec> nncpuSpec;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Model: "));
@@ -1691,7 +1691,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, 0, Media::AT_IGNORE_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, nullptr, Media::AT_IGNORE_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1731,7 +1731,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, 0, Media::AT_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, color, color, nullptr, Media::AT_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1808,7 +1808,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("CSConv: CSRGB16_LRGBC"));
 			writer->WriteLine(CSTR("CSConv: CSRGB16_LRGBC"));
-			NEW_CLASS(csconv, Media::CS::CSRGB16_LRGBC(64, Media::PF_LE_B16G16R16A16, false, color, color, 0));
+			NEW_CLASS(csconv, Media::CS::CSRGB16_LRGBC(64, Media::PF_LE_B16G16R16A16, false, color, color, nullptr));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1858,7 +1858,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, 0, Media::AT_ALPHA, 300, Media::PF_B8G8R8A8));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, nullptr, Media::AT_ALPHA, 300, Media::PF_B8G8R8A8));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1899,7 +1899,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, 0, Media::AT_IGNORE_ALPHA, 300, Media::PF_B8G8R8A8));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, color, nullptr, Media::AT_IGNORE_ALPHA, 300, Media::PF_B8G8R8A8));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -1965,7 +1965,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, 0, Media::AT_IGNORE_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_IGNORE_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -2006,7 +2006,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, 0, Media::AT_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, nullptr, Media::AT_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -2193,7 +2193,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				{
 					Net::OSSocketFactory sockf(false);
 					Net::TCPClientFactory clif(sockf);
-					cli = Net::HTTPClient::CreateConnect(clif, 0, CSTR("http://sswroom.no-ip.org:5080/benchmark/upload"), Net::WebUtil::RequestMethod::HTTP_POST, false);
+					cli = Net::HTTPClient::CreateConnect(clif, nullptr, CSTR("http://sswroom.no-ip.org:5080/benchmark/upload"), Net::WebUtil::RequestMethod::HTTP_POST, false);
 					cli->AddContentType(CSTR("text/plain"));
 					cli->AddContentLength(fileSize);
 					cli->Write(txtBuff.WithSize((UOSInt)fileSize));

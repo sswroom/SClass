@@ -68,7 +68,7 @@ void __stdcall Net::NetBIOSScanner::FreeAnswer(NN<NameAnswer> ans)
 
 Net::NetBIOSScanner::NetBIOSScanner(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, nullptr, OnUDPPacket, this, log, nullptr, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, nullptr, 0, nullptr, OnUDPPacket, this, log, nullptr, 2, false));
 	this->hdlr = 0;
 	if (!this->svr->IsError())
 	{

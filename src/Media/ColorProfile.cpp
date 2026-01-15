@@ -499,24 +499,24 @@ void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NN<Math::Matrix3> 
 
 Media::ColorProfile::ColorProfile()
 {
-	this->rawICC = 0;
+	this->rawICC = nullptr;
 }
 
 Media::ColorProfile::ColorProfile(NN<const ColorProfile> profile)
 {
-	this->rawICC = 0;
+	this->rawICC = nullptr;
 	this->Set(profile);
 }
 
 Media::ColorProfile::ColorProfile(CommonProfileType cpt)
 {
-	this->rawICC = 0;
+	this->rawICC = nullptr;
 	this->SetCommonProfile(cpt);
 }
 
 Media::ColorProfile::ColorProfile(const ColorProfile &profile)
 {
-	this->rawICC = 0;
+	this->rawICC = nullptr;
 	this->Set(profile);
 }
 
@@ -526,7 +526,7 @@ Media::ColorProfile::~ColorProfile()
 	if (this->rawICC.SetTo(rawICC))
 	{
 		MemFreeArr(rawICC);
-		this->rawICC = 0;
+		this->rawICC = nullptr;
 	}
 }
 
@@ -845,7 +845,7 @@ void Media::ColorProfile::SetRAWICC(UnsafeArrayOpt<const UInt8> iccData)
 	if (this->rawICC.SetTo(icc))
 	{
 		MemFreeArr(icc);
-		this->rawICC = 0;
+		this->rawICC = nullptr;
 	}
 	if (iccData.SetTo(icc))
 	{

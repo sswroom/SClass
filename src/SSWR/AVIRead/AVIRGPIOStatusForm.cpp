@@ -36,7 +36,7 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientCont
 	this->SetText(CSTR("GPIO Status"));
 
 	this->core = core;
-	this->states = 0;
+	this->states = nullptr;
 	NEW_CLASSNN(this->ctrl, IO::GPIOControl());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRGPIOStatusForm::~AVIRGPIOStatusForm()
 	if (this->states.SetTo(states))
 	{
 		MemFreeArr(states);
-		this->states = 0;
+		this->states = nullptr;
 	}
 }
 

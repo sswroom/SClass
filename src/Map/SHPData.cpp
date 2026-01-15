@@ -16,7 +16,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, UInt32 codePage, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, UInt32 codePage, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, nullptr, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -27,13 +27,13 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	UOSInt i;
 	Map::SHPData::RecHdr *rec;
 
-	this->dbf = 0;
-	this->shpData = 0;
-	this->ptX = 0;
-	this->ptY = 0;
-	this->ptZ = 0;
-	this->recs = 0;
-	this->recsMut = 0;
+	this->dbf = nullptr;
+	this->shpData = nullptr;
+	this->ptX = nullptr;
+	this->ptY = nullptr;
+	this->ptZ = nullptr;
+	this->recs = nullptr;
+	this->recsMut = nullptr;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
 	this->mapRate = 10000000.0;
 
@@ -122,8 +122,8 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	if (*(Int32*)&shpHdr[32] == 1)
 	{
 		this->layerType = Map::DRAW_LAYER_POINT;
-		NEW_CLASS(ptX, Data::ArrayListDbl());
-		NEW_CLASS(ptY, Data::ArrayListDbl());
+		NEW_CLASS(this->ptX, Data::ArrayListDbl());
+		NEW_CLASS(this->ptY, Data::ArrayListDbl());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
 			currOfst += 8;
@@ -147,7 +147,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	else if (*(Int32*)&shpHdr[32] == 3)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE;
-		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -164,7 +164,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->vec = 0;
+					rec->vec = nullptr;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -173,21 +173,21 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				}
 				else
 				{
-					this->recs->Add(0);
+					this->recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(0);
+				this->recs->Add(nullptr);
 			}
 		}		
 	}
 	else if (*(Int32*)&shpHdr[32] == 5)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
-		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -204,7 +204,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->vec = 0;
+					rec->vec = nullptr;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -213,14 +213,14 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				}
 				else
 				{
-					this->recs->Add(0);
+					this->recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(0);
+				this->recs->Add(nullptr);
 			}
 		}		
 	}
@@ -255,7 +255,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 	else if (*(Int32*)&shpHdr[32] == 13)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE3D;
-		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -272,7 +272,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->vec = 0;
+					rec->vec = nullptr;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -281,21 +281,21 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				}
 				else
 				{
-					this->recs->Add(0);
+					this->recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(0);
+				this->recs->Add(nullptr);
 			}
 		}		
 	}
 	else if (*(Int32*)&shpHdr[32] == 15)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
-		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
+		NEW_CLASS(this->recs, Data::ArrayListObj<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -312,7 +312,7 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 					rec->y1 = ReadDouble(&shpBuff[12]);
 					rec->x2 = ReadDouble(&shpBuff[20]);
 					rec->y2 = ReadDouble(&shpBuff[28]);
-					rec->vec = 0;
+					rec->vec = nullptr;
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
@@ -321,14 +321,14 @@ Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, 
 				}
 				else
 				{
-					this->recs->Add(0);
+					this->recs->Add(nullptr);
 				}
 				currOfst += fileLen << 1;
 			}
 			else
 			{
 				currOfst += fileLen << 1;
-				this->recs->Add(0);
+				this->recs->Add(nullptr);
 			}
 		}		
 	}
@@ -604,7 +604,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	NN<IO::StreamData> shpData;
 	if (!this->shpData.SetTo(shpData))
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UInt32 srid = this->csys->GetSRID();
@@ -613,7 +613,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Math::Geometry::Point *pt;
 		if (id <= 0 || (UInt64)id > this->ptX->GetCount())
 		{
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(pt, Math::Geometry::Point(srid, this->ptX->GetItem((UOSInt)id - 1), this->ptY->GetItem((UOSInt)id - 1)));
 		return pt;
@@ -623,7 +623,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Math::Geometry::PointZ *pt;
 		if (id <= 0 || (UInt64)id > this->ptX->GetCount())
 		{
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(pt, Math::Geometry::PointZ(srid, this->ptX->GetItem((UOSInt)id - 1), this->ptY->GetItem((UOSInt)id - 1), this->ptZ->GetItem((UOSInt)id - 1)));
 		return pt;
@@ -633,14 +633,14 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Math::Geometry::Polygon *pg;
 		Sync::MutexUsage mutUsage(mut);
 		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
-			return 0;
+			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
 		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
-		pg->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
+		pg->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, nullptr, nullptr);
 		MemFreeA(pointList);
 		MemFree(ptOfstList);
 		rec->vec = pg->Clone();
@@ -651,14 +651,14 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
 		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
-			return 0;
+			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
 		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
-		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
+		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, nullptr, nullptr);
 		MemFreeA(pointList);
 		MemFree(ptOfstList);
 		rec->vec = pl->Clone();
@@ -669,7 +669,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
 		if (!this->recs->GetItem((UOSInt)id - 1).SetTo(rec))
-			return 0;
+			return nullptr;
 		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
@@ -678,7 +678,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
 		shpData->GetRealData(rec->endOfst - (rec->nPoint << 3), rec->nPoint << 3, Data::ByteArray((UInt8*)zList, rec->nPoint << 3));
-		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, zList, 0);
+		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, zList, nullptr);
 		MemFree(zList);
 		MemFreeA(pointList);
 		MemFree(ptOfstList);
@@ -687,7 +687,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

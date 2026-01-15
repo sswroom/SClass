@@ -128,7 +128,7 @@ UInt64 IO::StmData::ConcatStreamData::GetDataSize() const
 
 UnsafeArrayOpt<const UInt8> IO::StmData::ConcatStreamData::GetPointer() const
 {
-	return 0;
+	return nullptr;
 }
 
 NN<IO::StreamData> IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, UInt64 length)

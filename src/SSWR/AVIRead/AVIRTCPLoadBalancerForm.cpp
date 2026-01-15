@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPLoadBalancerForm::OnStartClicked(AnyType us
 		me->ui->ShowMsgOK(CSTR("Timeout invalid"), TITLE, me);
 		return;
 	}
-	NEW_CLASSNN(svr, Net::TCPServer(me->sockf, 0, port, me->log, OnClientConnect, me, CSTR("SVR: "), true));
+	NEW_CLASSNN(svr, Net::TCPServer(me->sockf, nullptr, port, me->log, OnClientConnect, me, CSTR("SVR: "), true));
 	if (svr->IsV4Error())
 	{
 		svr.Delete();
@@ -297,7 +297,7 @@ SSWR::AVIRead::AVIRTCPLoadBalancerForm::AVIRTCPLoadBalancerForm(Optional<UI::GUI
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->sourceSvr = 0;
+	this->sourceSvr = nullptr;
 	this->nextTarget = 0;
 	this->dispNextTarget = INVALID_INDEX;
 	this->sessTimeout = 30000;

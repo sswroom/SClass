@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(Optional<UI::GUIClie
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->capture = 0;
+	this->capture = nullptr;
 	this->currCnt = (UInt64)-1;
 	this->currDataSize = (UInt64)-1;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

@@ -79,7 +79,7 @@ template<typename T> Optional<T> Data::SyncCircularBuffNN<T>::Get()
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->getIndex == this->putIndex)
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<T> ret = this->buff[this->getIndex];
 	this->getIndex = (this->getIndex + 1) & (this->capacity - 1);

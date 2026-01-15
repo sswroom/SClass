@@ -144,8 +144,8 @@ Int64 Media::HTRecFile::HTRecReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	UTF8Char sbuff[40];
-	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)
-		return 0;
+	if (GetStr(colIndex, sbuff, sizeof(sbuff)).IsNull())
+		return nullptr;
 	return Text::StrUTF8_WChar(buff, sbuff, 0);
 }
 
@@ -164,7 +164,7 @@ Optional<Text::String> Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (!GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
-		return 0;
+		return nullptr;
 	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 }
 
@@ -267,12 +267,12 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, 
 //				return Text::StrConcat(buff, L"Is HUMI Alarm");
 			}
 		}
-		return 0;
+		return nullptr;
 	}
 	else
 	{
 		if (nextRow > this->recCount)
-			return 0;
+			return nullptr;
 		if (colIndex == 0)
 		{
 			return Text::StrUOSInt(buff, this->nextRow);
@@ -291,7 +291,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, 
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -424,7 +424,7 @@ UOSInt Media::HTRecFile::HTRecReader::GetBinary(UOSInt colIndex, UnsafeArray<UIn
 
 Optional<Math::Geometry::Vector2D> Media::HTRecFile::HTRecReader::GetVector(UOSInt colIndex)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -436,7 +436,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex,
 {
 	Text::CStringNN s;
 	if (!GetName(colIndex, this->setting).SetTo(s))
-		return 0;
+		return nullptr;
 	return s.ConcatTo(buff);
 }
 
@@ -579,8 +579,8 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 	this->time1TS = 0;
 	this->time2TS = 0;
 	this->time3TS = 0;
-	this->serialNo = 0;
-	this->testName = 0;
+	this->serialNo = nullptr;
+	this->testName = nullptr;
 	if (stmData->GetRealData(0, 96, BYTEARR(buff)) != 96)
 	{
 		return;
@@ -679,7 +679,7 @@ Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName
 		NEW_CLASSNN(reader, HTRecReader(this, false));
 		return reader;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
@@ -789,7 +789,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::GetSerialNo(UnsafeArray<UTF8Char> sbu
 	UnsafeArray<const UTF8Char> nns;
 	if (this->serialNo.SetTo(nns))
 		return Text::StrConcat(sbuff, nns);
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Media::HTRecFile::GetTestName(UnsafeArray<UTF8Char> sbuff)
@@ -797,7 +797,7 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::GetTestName(UnsafeArray<UTF8Char> sbu
 	UnsafeArray<const UTF8Char> nns;
 	if (this->testName.SetTo(nns))
 		return Text::StrConcat(sbuff, nns);
-	return 0;
+	return nullptr;
 }
 
 Data::Timestamp Media::HTRecFile::GetAdjStartTime()

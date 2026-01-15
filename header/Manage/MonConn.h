@@ -2,7 +2,7 @@
 #define _SM_MANAGE_MONCONN
 #include "AnyType.h"
 #include "Data/DateTime.h"
-#include "Data/SyncArrayList.hpp"
+#include "Data/SyncArrayListObj.hpp"
 #include "IO/ConsoleWriter.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClientFactory.h"
@@ -25,7 +25,7 @@ namespace Manage
 		static void ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType, UInt16 *cmdSeq, UInt8** cmdData);
 
 	private:
-		Data::SyncArrayList<UInt8*> cmdList;
+		Data::SyncArrayListObj<UInt8*> cmdList;
 		EventHandler hdlr;
 		Bool ConnRRunning;
 		Bool ConnTRunning;

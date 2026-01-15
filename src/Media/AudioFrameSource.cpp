@@ -14,7 +14,7 @@ Media::AudioFrameSource::AudioFrameSource(NN<IO::StreamData> fd, NN<const Media:
 	this->data = fd->GetPartialData(0, fd->GetDataSize());
 	this->maxBlockSize = 0;
 	this->name = name->Clone();
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readBlock = 0;
 	this->readBlockOfst = 0;
 
@@ -36,7 +36,7 @@ Media::AudioFrameSource::AudioFrameSource(NN<IO::StreamData> fd, NN<const Media:
 	this->data = fd->GetPartialData(0, fd->GetDataSize());
 	this->maxBlockSize = 0;
 	this->name = Text::String::New(name);
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readBlock = 0;
 	this->readBlockOfst = 0;
 
@@ -127,7 +127,7 @@ Bool Media::AudioFrameSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 void Media::AudioFrameSource::Stop()
 {
 	this->readBlock = 0;
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 }
 
 UOSInt Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)

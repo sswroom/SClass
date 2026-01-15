@@ -1,7 +1,6 @@
 #ifndef _SM_IO_RS232GPIO
 #define _SM_IO_RS232GPIO
 #include "AnyType.h"
-#include "Data/ArrayList.hpp"
 #include "IO/GPIOControl.h"
 #include "IO/Stream.h"
 #include "Sync/Event.h"

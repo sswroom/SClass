@@ -78,7 +78,7 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NN<IO::FileAnalyse::Fram
 
 IO::FileAnalyse::SSLFileAnalyse::SSLFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SSLFileAnalyse"))
 {
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 
 	this->fd = fd->GetPartialData(0, fd->GetDataSize()).Ptr();
@@ -147,9 +147,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrame
 	NN<PackInfo> pack;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	UOSInt i;
 	UOSInt j;

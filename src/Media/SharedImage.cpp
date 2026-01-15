@@ -18,7 +18,7 @@ Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Optional<Data::Arr
 	UOSInt imgCnt = imgList->GetCount();
 	NEW_CLASSNN(this->imgStatus, ImageStatus());
 	this->imgStatus->imgList = imgList;
-	this->imgStatus->prevList = 0;
+	this->imgStatus->prevList = nullptr;
 	this->imgStatus->useCnt = 1;
 	this->imgStatus->imgIndex = 0;
 	this->imgStatus->imgDelay = 0;
@@ -116,7 +116,7 @@ Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Doub
 	}
 	NN<Media::StaticImage> currImg;
 	UOSInt i;
-	Optional<Media::StaticImage> minImg = 0;
+	Optional<Media::StaticImage> minImg = nullptr;
 	UOSInt minWidth = 0;
 	i = nnprevList->GetCount();
 	while (i-- > 0)

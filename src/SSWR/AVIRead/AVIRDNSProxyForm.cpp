@@ -722,7 +722,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateDNSList()
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	Data::ArrayList<UInt32> ipList;
+	Data::ArrayListNative<UInt32> ipList;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
@@ -762,7 +762,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->currServer = 0;
-	this->currTarget = 0;
+	this->currTarget = nullptr;
 
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -1137,7 +1137,7 @@ Bool SSWR::AVIRead::AVIRDNSProxyForm::IsError()
 	return this->proxy->IsError();
 }
 
-void SSWR::AVIRead::AVIRDNSProxyForm::SetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
+void SSWR::AVIRead::AVIRDNSProxyForm::SetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
 	UOSInt i;
 	UOSInt j;

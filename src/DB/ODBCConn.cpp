@@ -371,10 +371,10 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DB
 	this->connStr = 0;
 	this->connHand = 0;
 	this->envHand = 0;
-	this->dsn = 0;
-	this->uid = 0;
-	this->pwd = 0;
-	this->schema = 0;
+	this->dsn = nullptr;
+	this->uid = nullptr;
+	this->pwd = nullptr;
+	this->schema = nullptr;
 	this->enableDebug = false;
 	this->tzQhr = 0;
 	this->forceTz = false;
@@ -392,10 +392,10 @@ DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<I
 	this->connStr = 0;
 	this->connHand = 0;
 	this->envHand = 0;
-	this->dsn = 0;
-	this->uid = 0;
-	this->pwd = 0;
-	this->schema = 0;
+	this->dsn = nullptr;
+	this->uid = nullptr;
+	this->pwd = nullptr;
+	this->schema = nullptr;
 	this->enableDebug = false;
 	this->tzQhr = 0;
 	this->forceTz = false;
@@ -636,7 +636,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	if (this->connHand == 0)
 	{
 		this->lastDataError = DE_NO_CONN;
-		return 0;
+		return nullptr;
 	}
 	if (lastStmtHand)
 	{
@@ -651,7 +651,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
 		this->lastDataError = DE_INIT_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 
 	#if _WCHAR_SIZE == 2
@@ -666,7 +666,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 
 	ret = SQLExecute(hStmt);
@@ -676,7 +676,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 	this->lastDataError = DE_NO_ERROR;
 
@@ -857,7 +857,7 @@ void DB::ODBCConn::Reconnect()
 Optional<DB::DBTransaction> DB::ODBCConn::BeginTransaction()
 {
 	if (isTran)
-		return 0;
+		return nullptr;
 
 	SQLUINTEGER mode;
 	mode = SQL_AUTOCOMMIT_OFF;
@@ -873,7 +873,7 @@ Optional<DB::DBTransaction> DB::ODBCConn::BeginTransaction()
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -951,7 +951,7 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	if (this->connHand == 0)
 	{
 		this->lastDataError = DE_CONN_ERROR;
-		return 0;
+		return nullptr;
 	}
 	if (lastStmtHand)
 	{
@@ -965,7 +965,7 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
 		this->lastDataError = DE_INIT_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 	ret = SQLTablesW(hStmt, 0, 0, 0, 0, 0, 0, (SQLWCHAR*)L"TABLE", SQL_NTS );
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO && ret != SQL_NO_DATA)
@@ -973,7 +973,7 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 		this->lastStmtHand = hStmt;
 		this->lastStmtState = 0;
 		this->lastDataError = DE_EXEC_SQL_ERROR;
-		return 0;
+		return nullptr;
 	}
 	this->lastDataError = DE_NO_ERROR;
 
@@ -1160,7 +1160,7 @@ UOSInt DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
-	return 0;
+	return nullptr;
 #else
 	NN<IO::ConfigFile> cfg;
 	if (IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001).SetTo(cfg))
@@ -1169,7 +1169,7 @@ Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 		cfg.Delete();
 		return cfgRet;
 	}
-	return 0;
+	return nullptr;
 #endif
 }
 
@@ -1186,7 +1186,7 @@ Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Optional<T
 	else
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1203,7 +1203,7 @@ Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CStri
 	else
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1827,9 +1827,9 @@ UnsafeArrayOpt<WChar> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<WChar>
 {
 	UTF8Char sbuff[64];
 	if (colIndex >= this->colCnt)
-		return 0;
+		return nullptr;
 	if (this->colDatas[colIndex].isNull)
-		return 0;
+		return nullptr;
 	switch (this->colDatas[colIndex].colType)
 	{
 	case DB::DBUtil::CT_UTF8Char:
@@ -1859,7 +1859,7 @@ UnsafeArrayOpt<WChar> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<WChar>
 		((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(sbuff);
 		return Text::StrUTF8_WChar(buff, sbuff, 0);
 	case DB::DBUtil::CT_Binary:
-		return 0;
+		return nullptr;
 	case DB::DBUtil::CT_Vector:
 		{
 			NN<Math::Geometry::Vector2D> vec;;
@@ -1870,12 +1870,12 @@ UnsafeArrayOpt<WChar> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<WChar>
 				vec.Delete();
 			}
 		}
-		return 0;
+		return nullptr;
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool DB::ODBCReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -1946,9 +1946,9 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	if (colIndex >= this->colCnt)
-		return 0;
+		return nullptr;
 	if (this->colDatas[colIndex].isNull)
-		return 0;
+		return nullptr;
 	switch (this->colDatas[colIndex].colType)
 	{
 	case DB::DBUtil::CT_UTF8Char:
@@ -1989,7 +1989,7 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 		sptr = ((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(sbuff);
 		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Binary:
-		return 0;
+		return nullptr;
 	case DB::DBUtil::CT_Vector:
 		{
 			NN<Math::Geometry::Vector2D> vec;
@@ -2002,20 +2002,20 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 				return Text::String::New(sb.ToString(), sb.GetLength());
 			}
 		}
-		return 0;
+		return nullptr;
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (colIndex >= this->colCnt)
-		return 0;
+		return nullptr;
 	if (this->colDatas[colIndex].isNull)
-		return 0;
+		return nullptr;
 	switch (this->colDatas[colIndex].colType)
 	{
 	case DB::DBUtil::CT_UTF8Char:
@@ -2047,7 +2047,7 @@ UnsafeArrayOpt<UTF8Char> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<UTF
 	case DB::DBUtil::CT_Date:
 		return ((Data::Timestamp*)this->colDatas[colIndex].colData)->ToString(buff);
 	case DB::DBUtil::CT_Binary:
-		return 0;
+		return nullptr;
 	case DB::DBUtil::CT_Vector:
 		{
 			NN<Math::Geometry::Vector2D> vec;
@@ -2060,12 +2060,12 @@ UnsafeArrayOpt<UTF8Char> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<UTF
 				return Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 			}
 		}
-		return 0;
+		return nullptr;
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::Timestamp DB::ODBCReader::GetTimestamp(UOSInt colIndex)
@@ -2293,9 +2293,9 @@ UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 Optional<Math::Geometry::Vector2D> DB::ODBCReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex >= this->colCnt)
-		return 0;
+		return nullptr;
 	if (this->colDatas[colIndex].isNull)
-		return 0;
+		return nullptr;
 	if (this->conn->GetSQLType() == DB::SQLType::MSSQL)
 	{
 		if (this->colDatas[colIndex].colType == DB::DBUtil::CT_Binary || this->colDatas[colIndex].colType == DB::DBUtil::CT_Vector)
@@ -2307,10 +2307,10 @@ Optional<Math::Geometry::Vector2D> DB::ODBCReader::GetVector(UOSInt colIndex)
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool DB::ODBCReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)

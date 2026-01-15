@@ -121,7 +121,7 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(Optional<UI::GUIClientControl
         this->txtID->SetReadOnly(true);
         this->txtName->SetReadOnly(true);
         this->currIndex = 0;
-        this->currRec = 0;
+        this->currRec = nullptr;
 	}
     else
 	{

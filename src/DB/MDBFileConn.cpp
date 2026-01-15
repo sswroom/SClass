@@ -192,7 +192,7 @@ Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN
 	else
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -209,7 +209,7 @@ Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NN<
 	else
 	{
 		conn.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 #endif

@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->oriCSys = csys;
-	this->outCSys = 0;
+	this->outCSys = nullptr;
 
 	this->pnlBounds = ui->NewPanel(*this);
 	this->pnlBounds->SetRect(0, 0, 100, 51, false);
@@ -117,7 +117,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	this->SetCancelButton(this->btnCancel);
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<Math::CoordinateSystemManager::GeoCoordSysType> gcsysList;
+	Data::ArrayListNative<Math::CoordinateSystemManager::GeoCoordSysType> gcsysList;
 	Data::ArrayListArr<const UTF8Char> pcsysList;
 	Math::CoordinateSystemManager::GetGeogCoordinateSystems(gcsysList);
 	Math::CoordinateSystemManager::GetProjCoordinateSystemNames(pcsysList);

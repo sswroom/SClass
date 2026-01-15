@@ -230,7 +230,7 @@ Net::IPScanDetector::~IPScanDetector()
 		}
 		MemFree(this->threadStats);
 	}
-	this->soc = 0;
+	this->soc = nullptr;
 
 	NN<Net::IPScanDetector::AdapterStatus> adapter;
 	i = this->adapterMap.GetCount();

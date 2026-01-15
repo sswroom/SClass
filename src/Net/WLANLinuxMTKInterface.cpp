@@ -200,9 +200,9 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(NN<Data::ArrayListNN<Net::Wireless
 					bss.phyId = (UInt32)retVal;
 					bss.linkQuality = Text::StrToUInt32(cols[4].v);
 					bss.freq = 0;
-					bss.devManuf = 0;
-					bss.devModel = 0;
-					bss.devSN = 0;
+					bss.devManuf = nullptr;
+					bss.devModel = nullptr;
+					bss.devSN = nullptr;
 					bss.country[0] = 0;
 					ui = WLAN_OUI_CNT;
 					while (ui-- > 0)

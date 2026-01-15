@@ -69,30 +69,30 @@ DB::ColDef::ColDef(Text::CStringNN colName)
 {
 	this->colName = Text::String::New(colName);
 	this->colType = DB::DBUtil::CT_Unknown;
-	this->nativeType = 0;
+	this->nativeType = nullptr;
 	this->colSize = 0;
 	this->notNull = false;
 	this->pk = false;
 	this->autoInc = AutoIncType::None;
 	this->autoIncStartIndex = 1;
 	this->autoIncStep = 1;
-	this->defVal = 0;
-	this->attr = 0;
+	this->defVal = nullptr;
+	this->attr = nullptr;
 }
 
 DB::ColDef::ColDef(NN<Text::String> colName)
 {
 	this->colName = colName->Clone();
 	this->colType = DB::DBUtil::CT_Unknown;
-	this->nativeType = 0;
+	this->nativeType = nullptr;
 	this->colSize = 0;
 	this->notNull = false;
 	this->pk = false;
 	this->autoInc = AutoIncType::None;
 	this->autoIncStartIndex = 1;
 	this->autoIncStep = 1;
-	this->defVal = 0;
-	this->attr = 0;
+	this->defVal = nullptr;
+	this->attr = nullptr;
 }
 
 DB::ColDef::~ColDef()

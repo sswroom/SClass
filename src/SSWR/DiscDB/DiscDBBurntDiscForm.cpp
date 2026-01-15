@@ -504,9 +504,9 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	UOSInt j;
 	MovieCols *anime = MemAlloc(MovieCols, 1);
 	anime->type = Text::String::New(UTF8STRC("TV"));
-	anime->remark = 0;
-	anime->chapter = 0;
-	anime->aspectRatio = 0;
+	anime->remark = nullptr;
+	anime->chapter = nullptr;
+	anime->aspectRatio = nullptr;
 	Text::StrReplaceW(fname, '_', ' ');
 	chapterTitle[0] = 0;
 	while (true)
@@ -689,7 +689,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 				}
 				if (i == INVALID_INDEX)
 				{
-					anime->chapter = 0;
+					anime->chapter = nullptr;
 				}
 				else
 				{
@@ -711,7 +711,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 					j = Text::StrIndexOfW(mainTitle, L"0");
 					if (j == INVALID_INDEX)
 					{
-						anime->chapter = 0;
+						anime->chapter = nullptr;
 					}
 					else
 					{
@@ -736,7 +736,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	}
 	else
 	{
-		anime->chapterTitle = 0;
+		anime->chapterTitle = nullptr;
 	}
 	if (anime->remark.SetTo(nns))
 	{
@@ -748,7 +748,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		fname[0] = 0;
 
 	}
-	anime->remark = 0;
+	anime->remark = nullptr;
 	if ((i = Text::StrIndexOfW(fname, L"(")) != INVALID_INDEX && (j = Text::StrIndexOfW(fname, L")")) != INVALID_INDEX)
 	{
 		fname[j] = 0;
@@ -769,7 +769,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		}
 		else
 		{
-			anime->remark = 0;
+			anime->remark = nullptr;
 		}
 	}
 	if (anime->type->Equals(UTF8STRC("TV")))
@@ -846,7 +846,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(AnyType userOb
 		}
 		me->lbFileName->ClearItems();
 		me->fileList.FreeAll(BurntFileFree);
-		me->selectedFile = 0;
+		me->selectedFile = nullptr;
 		me->pnlFile->SetEnabled(false);
 		me->SearchSubDir(sbBasePath.ToString(), (const UTF8Char*)"", 50000000000LL);
 		i = Text::StrLastIndexOfCharC(sbBasePath.ToString(), sbBasePath.GetLength(), IO::Path::PATH_SEPERATOR);
@@ -864,7 +864,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(AnyType userO
 	{
 		if (!me->UpdateFileInfo(selectedFile))
 		{
-			me->selectedFile = 0;
+			me->selectedFile = nullptr;
 			me->lbFileName->SetSelectedIndex(me->fileList.IndexOf(selectedFile));
 			return;
 		}
@@ -1147,7 +1147,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(AnyType userOb
 		me->txtDiscId->Focus();
 		return;
 	}
-	if (me->env->GetBurntDisc(sbDVDId.ToCString()) != 0)
+	if (me->env->GetBurntDisc(sbDVDId.ToCString()).NotNull())
 	{
 		me->ui->ShowMsgOK(CSTR("Disc Id already found in database"), CSTR("Burnt Disc"), me);
 		me->txtDiscId->Focus();
@@ -1196,7 +1196,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnRemoveFileClicked(AnyType us
 	UOSInt i = me->lbFileName->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		me->selectedFile = 0;
+		me->selectedFile = nullptr;
 		me->lbFileName->RemoveItem(i);
 		me->BurntFileFree(me->fileList.GetItemNoCheck(i));
 		me->fileList.RemoveAt(i);
@@ -1325,7 +1325,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientCon
 	this->SetFont(nullptr, 8.25, false);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
-	this->selectedFile = 0;
+	this->selectedFile = nullptr;
 
 	this->pnlTop = ui->NewPanel(*this);
 	this->pnlTop->SetRect(0, 0, 624, 121, false);

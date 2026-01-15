@@ -12,6 +12,6 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/keys/server.crt");
 
 	IO::StmData::FileData fd(fileName, false);
-	parser.ParseFile(fd, 0, IO::ParserType::ASN1Data);
+	parser.ParseFile(fd, nullptr, IO::ParserType::ASN1Data);
 	return 0;
 }

@@ -283,7 +283,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj,
 		if (me->devMap.Get(devId).SetTo(dev))
 		{
 			me->devMut.UnlockRead();
-			SSWR::AVIRead::AVIRSNBHandlerForm frm(0, me->ui, me->core, dev->handType);
+			SSWR::AVIRead::AVIRSNBHandlerForm frm(nullptr, me->ui, me->core, dev->handType);
 			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 			{
 				dev->handType = frm.GetHandleType();

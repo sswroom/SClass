@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "IO/FileStream.h"
 #include "IO/StreamReader.h"
 #include "Map/MapSearch.h"
@@ -25,7 +24,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> ma
 	NN<Text::String> baseDir;
 
 
-	this->baseDir = 0;
+	this->baseDir = nullptr;
 	this->concatType = 0;
 	this->layersArr = MemAllocArr(NN<Data::ArrayListNN<Map::MapSearchLayerInfo>>, MAPSEARCH_LAYER_TYPES);
 	i = MAPSEARCH_LAYER_TYPES;
@@ -74,7 +73,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> ma
 				lyr->searchType = layerType;
 				lyr->searchDist = 0;
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
-				lyr->searchStr = 0;
+				lyr->searchStr = nullptr;
 				lyr->strIndex = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
@@ -94,7 +93,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> ma
 				lyr->searchType = layerType;
 				lyr->searchDist = layerDist;
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
-				lyr->searchStr = 0;
+				lyr->searchStr = nullptr;
 				lyr->strIndex = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
@@ -116,7 +115,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, NN<Map::MapSearchManager> ma
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
 				if (strs[4].v[0] == 0)
 				{
-					lyr->searchStr = 0;
+					lyr->searchStr = nullptr;
 				}
 				else
 				{
@@ -184,7 +183,7 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, UnsafeArray<Text::
 	{
 		posNear = Math::Coord2DDbl(0, 0);
 		resType = 0;
-		sptr = 0;
+		sptr = nullptr;
 		minDist = 63781370;
 
 		j = this->layersArr[i]->GetCount();
@@ -276,7 +275,7 @@ Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, UnsafeArray<Text::
 
 UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff, UnsafeArray<Text::PString> strArrs, Int32 concatType)
 {
-	UnsafeArrayOpt<UTF8Char> outptr = 0;
+	UnsafeArrayOpt<UTF8Char> outptr = nullptr;
 	UnsafeArray<UTF8Char> nnoutptr;
 	UOSInt i = 0;
 	UTF8Char sbufftmp[128];
@@ -294,7 +293,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff,
 	if (!outptr.SetTo(nnoutptr))
 	{
 		*buff = 0;
-		return 0;
+		return nullptr;
 	}
 	Int32 langType = 0;
 	while (*nnoutptr)

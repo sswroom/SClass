@@ -293,7 +293,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(NN<Net::TCPClient> cli, AnyType u
 		#if defined(VERBOSE)
 		printf("Client disconnected\r\n");
 		#endif
-		NN<const Data::ArrayList<const UTF8Char*>> attrList = data->attrMap->GetValues();
+		NN<const Data::ArrayListObj<const UTF8Char*>> attrList = data->attrMap->GetValues();
 		i = attrList->GetCount();
 		while (i-- > 0)
 		{
@@ -607,11 +607,11 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 									r->GetColDef(j, col);
 									sbuff[3] = seqId++;
 									sptr = Net::MySQLUtil::AppendLenencStrC(&sbuff[4], UTF8STRC("def")); //catalog
-									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //schema
-									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //table
-									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //org_table
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, nullptr, 0); //schema
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, nullptr, 0); //table
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, nullptr, 0); //org_table
 									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UnsafeArray<const UTF8Char>(col.GetColName()->v), col.GetColName()->leng); //name
-									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //org_name
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, nullptr, 0); //org_name
 
 									sptr = Net::MySQLUtil::AppendLenencInt(sptr, 12);
 									WriteInt16(&sptr[0], data->clientCS);
@@ -837,7 +837,7 @@ Net::MySQLServer::MySQLServer(NN<Net::SocketFactory> sockf, Optional<Net::Socket
 	if (svr->IsV4Error())
 	{
 		svr.Delete();
-		this->svr = 0;
+		this->svr = nullptr;
 	}
 	else
 	{

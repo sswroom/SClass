@@ -233,7 +233,7 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 				else if (nodeName->Equals(UTF8STRC("BoundingBox")))
 				{
 					crs = MemAllocANN(LayerCRS);
-					crs->name = 0;
+					crs->name = nullptr;
 					crs->swapXY = false;
 					i = reader->GetAttribCount();
 					while (i-- > 0)
@@ -330,10 +330,10 @@ Map::WebMapService::WebMapService(NN<Net::TCPClientFactory> clif, Optional<Net::
 	this->encFact = encFact;
 	this->envCsys = envCsys;
 	this->wmsURL = Text::String::New(wmsURL);
-	this->version = 0;
+	this->version = nullptr;
 	this->infoType = 0;
 	this->mapImageType = 0;
-	this->currCRS = 0;
+	this->currCRS = nullptr;
 	this->layer = 0;
 	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->LoadXML(version);
@@ -412,7 +412,7 @@ Bool Map::WebMapService::CanQuery() const
 	return this->layers.GetItem(this->layer).SetTo(layer) && layer->queryable;
 }
 
-Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	NN<LayerInfo> layer;
 	NN<Text::String> imgFormat;
@@ -558,7 +558,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 	NN<LayerInfo> layer;
 	NN<LayerCRS> currCRS;
 	if (!this->layers.GetItem(this->layer).SetTo(layer) || !this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat) || !this->currCRS.SetTo(currCRS))
-		return 0;
+		return nullptr;
 	if (currCRS->swapXY)
 	{
 		bounds.min = bounds.min.SwapXY();
@@ -623,7 +623,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 #endif
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
-	Optional<Media::ImageList> ret = 0;
+	Optional<Media::ImageList> ret = nullptr;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
@@ -637,27 +637,27 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		if (imgFormat->StartsWith(UTF8STRC("image/png")))
 		{
 			Parser::FileParser::PNGParser parser;
-			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, nullptr, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->StartsWith(UTF8STRC("image/geotiff")) || imgFormat->StartsWith(UTF8STRC("image/tiff")))
 		{
 			Parser::FileParser::TIFFParser parser;
-			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, nullptr, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/gif")))
 		{
 			Parser::FileParser::GIFParser parser;
-			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, nullptr, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/jpeg")))
 		{
 			Parser::FileParser::GUIImgParser parser;
-			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, nullptr, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/bmp")))
 		{
 			Parser::FileParser::BMPParser parser;
-			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, nullptr, IO::ParserType::ImageList));
 		}
 		else
 		{

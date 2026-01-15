@@ -296,7 +296,7 @@ UOSInt UI::GTK::GTKListBox::GetSelectedIndex()
 	return (UInt32)gtk_list_box_row_get_index(row);
 }
 
-Bool UI::GTK::GTKListBox::GetSelectedIndices(NN<Data::ArrayList<UInt32>> indices)
+Bool UI::GTK::GTKListBox::GetSelectedIndices(NN<Data::ArrayListNative<UInt32>> indices)
 {
 	GList *list = gtk_list_box_get_selected_rows((GtkListBox*)this->listbox);
 	GList *curr = list;
@@ -321,7 +321,7 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetSelectedItemText(UnsafeArray<UT
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	return GetItemText(buff, currSel);
 }
 
@@ -329,7 +329,7 @@ Optional<Text::String> UI::GTK::GTKListBox::GetSelectedItemTextNew()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	return GetItemTextNew(currSel);
 }
 
@@ -337,7 +337,7 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetItemText(UnsafeArray<UTF8Char> 
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
-		return 0;
+		return nullptr;
 	return Text::StrConcatC(buff, item->txt->v, item->txt->leng);
 }
 
@@ -355,7 +355,7 @@ Optional<Text::String> UI::GTK::GTKListBox::GetItemTextNew(UOSInt index)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
-		return 0;
+		return nullptr;
 	return item->txt->Clone();
 }
 

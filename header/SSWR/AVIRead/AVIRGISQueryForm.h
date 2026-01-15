@@ -89,7 +89,7 @@ namespace SSWR
 
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
-			Data::ArrayList<UOSInt> queryValueOfstList;
+			Data::ArrayListNative<UOSInt> queryValueOfstList;
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayListNN<Text::String> queryValueList;
 

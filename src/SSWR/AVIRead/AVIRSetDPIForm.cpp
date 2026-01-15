@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawFont> f;
 	NN<Media::DrawPen> p;
-	this->pbPreview->SetImage(0);
+	this->pbPreview->SetImage(nullptr);
 	this->pimg.Delete();
 	usz = this->pbPreview->GetSizeP();
 	eng = this->core->GetDrawEngine();
@@ -127,11 +127,11 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		if (eng->CreateImage32(usz, Media::AT_ALPHA_ALL_FF).SetTo(gimg))
 		{
 			b = gimg->NewBrushARGB(0xffffffff);
-			gimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), nullptr, b);
 			gimg->DelBrush(b);
 
 			f = gimg->NewFontPx(CSTR("Arial"), 12 * UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
-			p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
+			p = gimg->NewPenARGB(0xff000000, 1, nullptr, 0);
 			b = gimg->NewBrushARGB(0xff000000);
 			currV = 0;
 			sz = gimg->GetTextSize(f, CSTR("0"));
@@ -172,7 +172,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> par
 	this->SetFont(nullptr, 8.25, false);
 	this->SetText(CSTR("Set Monitor DPI"));
 
-	this->pimg = 0;
+	this->pimg = nullptr;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

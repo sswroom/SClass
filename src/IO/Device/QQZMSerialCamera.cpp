@@ -97,7 +97,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 							}
 							else
 							{
-								me->imgBuff = 0;
+								me->imgBuff = nullptr;
 							}
 						}
 					}
@@ -178,7 +178,7 @@ IO::Device::QQZMSerialCamera::QQZMSerialCamera(NN<IO::Stream> stm, UInt8 cameraI
 	this->cameraId = cameraId;
 	this->toRelease = toRelease;
 
-	this->imgBuff = 0;
+	this->imgBuff = nullptr;
 	this->imgNextPacket = 0;
 	this->imgSize = 0;
 
@@ -203,7 +203,7 @@ IO::Device::QQZMSerialCamera::~QQZMSerialCamera()
 	if (this->imgBuff.SetTo(imgBuff))
 	{
 		MemFreeArr(imgBuff);
-		this->imgBuff = 0;
+		this->imgBuff = nullptr;
 	}
 	if (this->toRelease)
 	{
@@ -245,7 +245,7 @@ Bool IO::Device::QQZMSerialCamera::CapturePhoto(NN<IO::Stream> outStm)
 		this->imgNextPacket = -1;
 		outStm->Write(Data::ByteArrayR(imgBuff, this->imgSize));
 		MemFreeArr(imgBuff);
-		this->imgBuff = 0;
+		this->imgBuff = nullptr;
 		return true;
 	}
 	else

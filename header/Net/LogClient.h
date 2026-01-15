@@ -2,6 +2,7 @@
 #define _SM_NET_LOGCLIENT
 #include "AnyType.h"
 #include "Data/ArrayListInt64.h"
+#include "Data/ArrayListObj.hpp"
 #include "Data/ArrayListStringNN.h"
 #include "IO/LogTool.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
@@ -22,7 +23,7 @@ namespace Net
 		UInt16 port;
 
 		Sync::Mutex mut;
-		Data::ArrayList<Data::Timestamp> dateList;
+		Data::ArrayListObj<Data::Timestamp> dateList;
 		Data::ArrayListStringNN msgList;
 
 		Int64 lastSendTime;

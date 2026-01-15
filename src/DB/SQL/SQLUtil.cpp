@@ -4,7 +4,7 @@
 UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UTF8Char> sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
 {
 	sb->ClearStr();
-	UnsafeArrayOpt<const UTF8Char> strStart = 0;
+	UnsafeArrayOpt<const UTF8Char> strStart = nullptr;
 	UnsafeArray<const UTF8Char> nns;
 	UTF8Char endChar = 0;
 	UTF8Char escChar = 0;
@@ -124,5 +124,5 @@ Optional<Data::VariItem> DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::S
 	{
 		return Data::VariItem::NewF64(dblVal);
 	}
-	return 0;
+	return nullptr;
 }

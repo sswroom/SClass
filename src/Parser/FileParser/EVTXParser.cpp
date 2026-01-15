@@ -40,7 +40,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::S
 {
 	if (hdr.ReadNU64(0) != *(UInt64*)"ElfFile" || ReadUInt32(&hdr[32]) != 128 || ReadUInt16(&hdr[40]) != 4096)
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::StringLogFile *logFile;
 	UInt64 ofst = 4096;

@@ -365,8 +365,8 @@ void Net::TFTPServer::ReleaseSess(NN<SessionInfo> sess)
 Net::TFTPServer::TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CStringNN path)
 {
 	this->log = log;
-	this->svr = 0;
-	this->dataSvr = 0;
+	this->svr = nullptr;
+	this->dataSvr = nullptr;
 	this->threadRunning = false;
 	this->threadToStop = false;
 	Text::StringBuilderUTF8 sb;
@@ -377,18 +377,18 @@ Net::TFTPServer::TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::Lo
 	}
 	this->path = Text::String::New(sb.ToString(), sb.GetLength());
 	NN<Net::UDPServer> svr;
-	NEW_CLASSNN(svr, Net::UDPServer(sockf, 0, 0, nullptr, OnDataPacket, this, log, CSTR("TFTP: "), 2, false));
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, nullptr, 0, nullptr, OnDataPacket, this, log, CSTR("TFTP: "), 2, false));
 	if (svr->IsError())
 	{
 		svr.Delete();
-		this->dataSvr = 0;
+		this->dataSvr = nullptr;
 	}
 	this->dataSvr = svr;
-	NEW_CLASSNN(svr, Net::UDPServer(sockf, 0, port, nullptr, OnCommandPacket, this, log, CSTR("TFTP: "), 2, false));
+	NEW_CLASSNN(svr, Net::UDPServer(sockf, nullptr, port, nullptr, OnCommandPacket, this, log, CSTR("TFTP: "), 2, false));
 	if (svr->IsError())
 	{
 		svr.Delete();
-		this->svr = 0;
+		this->svr = nullptr;
 	}
 	this->svr = svr;
 	if (this->dataSvr.NotNull() && this->svr.NotNull())

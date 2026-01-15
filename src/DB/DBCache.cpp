@@ -14,7 +14,7 @@ Optional<DB::DBCache::TableInfo> DB::DBCache::GetTableInfo(Text::CStringNN table
 	NN<DB::TableDef> def;
 	if (!this->model->GetTable(tableName).SetTo(def))
 	{
-		return 0;
+		return nullptr;
 	}
 	table = MemAllocNN(DB::DBCache::TableInfo);
 	table->tableName = Text::String::New(tableName);
@@ -58,7 +58,7 @@ Optional<DB::DBCache::TableInfo> DB::DBCache::GetTableInfo(NN<DB::TableDef> tabl
 			return table;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 DB::DBCache::DBCache(NN<DB::DBModel> model, NN<DB::DBTool> db)
@@ -178,7 +178,7 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CStringNN tableName, Int64 pk)
 	}
 	DB::DBRow *row = 0;
 	DB::SQLBuilder sql(this->db);
-	DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, 0);
+	DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, nullptr);
 	sql.AppendCmdC(CSTR(" where "));
 	sql.AppendCol(col->GetColName()->v);
 	sql.AppendCmdC(CSTR(" = "));

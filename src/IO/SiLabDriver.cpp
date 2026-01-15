@@ -205,7 +205,7 @@ UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceSN(UInt32 devId, UnsafeArray<
 	{
 		return Text::StrConcat(buff, (const UTF8Char*)cbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceDesc(UInt32 devId, UnsafeArray<UTF8Char> buff)
@@ -215,7 +215,7 @@ UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceDesc(UInt32 devId, UnsafeArra
 	{
 		return Text::StrConcat(buff, (const UTF8Char*)cbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceLink(UInt32 devId, UnsafeArray<UTF8Char> buff)
@@ -225,7 +225,7 @@ UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceLink(UInt32 devId, UnsafeArra
 	{
 		return Text::StrConcat(buff, (const UTF8Char*)cbuff);
 	}
-	return 0;
+	return nullptr;
 }
 
 IO::Stream *IO::SiLabDriver::OpenPort(UInt32 devId, UInt32 baudRate)

@@ -7,19 +7,19 @@
 
 Net::RSSItem::RSSItem(NN<Text::XMLNode> itemNode)
 {
-	this->objectId = 0;
-	this->title = 0;
-	this->link = 0;
-	this->guid = 0;
-	this->description = 0;
+	this->objectId = nullptr;
+	this->title = nullptr;
+	this->link = nullptr;
+	this->guid = nullptr;
+	this->description = nullptr;
 	this->descHTML = false;
-	this->author = 0;
-	this->category = 0;
-	this->comments = 0;
-	this->enclosure = 0;
+	this->author = nullptr;
+	this->category = nullptr;
+	this->comments = nullptr;
+	this->enclosure = nullptr;
 	this->pubDate = 0;
-	this->source = 0;
-	this->imgURL = 0;
+	this->source = nullptr;
+	this->imgURL = nullptr;
 	this->lat = Math::GetNAN();
 	this->lon = Math::GetNAN();
 
@@ -204,19 +204,19 @@ Net::RSSItem::RSSItem(NN<Text::XMLNode> itemNode)
 
 Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 {
-	this->objectId = 0;
-	this->title = 0;
-	this->link = 0;
-	this->guid = 0;
-	this->description = 0;
+	this->objectId = nullptr;
+	this->title = nullptr;
+	this->link = nullptr;
+	this->guid = nullptr;
+	this->description = nullptr;
 	this->descHTML = false;
-	this->author = 0;
-	this->category = 0;
-	this->comments = 0;
-	this->enclosure = 0;
+	this->author = nullptr;
+	this->category = nullptr;
+	this->comments = nullptr;
+	this->enclosure = nullptr;
 	this->pubDate = 0;
-	this->source = 0;
-	this->imgURL = 0;
+	this->source = nullptr;
+	this->imgURL = nullptr;
 	this->lat = Math::GetNAN();
 	this->lon = Math::GetNAN();
 
@@ -434,17 +434,17 @@ Optional<Text::String> Net::RSSItem::GetId()
 Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	this->isError = true;
-	this->title = 0;
-	this->link = 0;
-	this->description = 0;
-	this->language = 0;
-	this->copyright = 0;
-	this->managingEditor = 0;
-	this->webMaster = 0;
+	this->title = nullptr;
+	this->link = nullptr;
+	this->description = nullptr;
+	this->language = nullptr;
+	this->copyright = nullptr;
+	this->managingEditor = nullptr;
+	this->webMaster = nullptr;
 	this->pubDate = 0;
 	this->lastBuildDate = 0;
-	this->generator = 0;
-	this->docs = 0;
+	this->generator = nullptr;
+	this->docs = nullptr;
 	this->ttl = 0;
 
 	NN<IO::ParsedObject> pobj;

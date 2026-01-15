@@ -905,7 +905,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::GSMModemController::PDPContext> ctx;
-	Data::UInt32FastMap<UOSInt> dataMap;
+	Data::UInt32FastMapNative<UOSInt> dataMap;
 	UOSInt i = 0;
 	UOSInt j = ctxList.GetCount();
 	UOSInt k;
@@ -1028,9 +1028,9 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 		modem.Delete();
 		this->channel.Delete();
 		port.Delete();
-		this->modem = 0;
-		this->port = 0;
-		this->huawei = 0;
+		this->modem = nullptr;
+		this->port = nullptr;
+		this->huawei = nullptr;
 
 		if (updateUI)
 		{
@@ -1047,22 +1047,22 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->SetText(CSTR("GSM Modem"));
 	this->SetFont(nullptr, 8.25, false);
 	this->core = core;
-	this->modem = 0;
-	this->channel = 0;
-	this->port = 0;
-	this->huawei = 0;
+	this->modem = nullptr;
+	this->channel = nullptr;
+	this->port = nullptr;
+	this->huawei = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->signalUpdated = false;
 	this->signalQuality = IO::GSMModemController::RSSI_UNKNOWN;
 	this->operUpdated = false;
-	this->operName = 0;
-	this->initStrs = 0;
-	this->initModemManu = 0;
-	this->initModemModel = 0;
-	this->initModemVer = 0;
-	this->initIMEI = 0;
-	this->huaweiICCID = 0;
+	this->operName = nullptr;
+	this->initStrs = false;
+	this->initModemManu = nullptr;
+	this->initModemModel = nullptr;
+	this->initModemVer = nullptr;
+	this->initIMEI = nullptr;
+	this->huaweiICCID = nullptr;
 	this->huaweiSysInfoUpdated = false;;
 	this->huaweiSysInfoSrvStatus = IO::Device::HuaweiGSMModemController::ServiceStatus::NoServices;
 	this->huaweiSysInfoSrvDomain = IO::Device::HuaweiGSMModemController::ServiceDomain::NoServices;
@@ -1073,11 +1073,11 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->huaweiSysInfoSubMode = IO::Device::HuaweiGSMModemController::SubMode::NoService;
 	this->huaweiSIMType = IO::Device::HuaweiGSMModemController::SIMCardType::NoCard;
 	this->huaweiCSQUpdated = false;
-	this->cfgTECharset = 0;
+	this->cfgTECharset = nullptr;
 	this->cfgTECharsetUpd = false;
 	this->simChanged = false;
 	this->simInfoUpdated = false;
-	this->simIMSI = 0;
+	this->simIMSI = nullptr;
 	this->regNetUpdated = false;
 	this->regNetN = IO::GSMModemController::NetworkResult::Disable;
 	this->regNetCI = 0;
@@ -1085,13 +1085,13 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->regNetStat = IO::GSMModemController::RegisterStatus::NotRegistered;
 	this->regNetACT = IO::GSMModemController::AccessTech::GSM;
 	this->operNextTime = Data::Timestamp::UtcNow();
-	this->huaweiVersion.biosDateTime = 0;
-	this->huaweiVersion.exts = 0;
-	this->huaweiVersion.extd = 0;
-	this->huaweiVersion.exth = 0;
-	this->huaweiVersion.exts = 0;
-	this->huaweiVersion.cfg = 0;
-	this->huaweiVersion.ini = 0;
+	this->huaweiVersion.biosDateTime = nullptr;
+	this->huaweiVersion.exts = nullptr;
+	this->huaweiVersion.extd = nullptr;
+	this->huaweiVersion.exth = nullptr;
+	this->huaweiVersion.exts = nullptr;
+	this->huaweiVersion.cfg = nullptr;
+	this->huaweiVersion.ini = nullptr;
 	this->huaweiVersionUpdated = false;
 
 	this->pnlDevice = ui->NewPanel(*this);
@@ -1116,7 +1116,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	this->rlcRSSI = ui->NewRealtimeLineChart(this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000, 0);
+	this->rlcRSSI = ui->NewRealtimeLineChart(this->tpInfo, this->core->GetDrawEngine(), 5, 360, 10000, nullptr);
 	this->rlcRSSI->SetRect(0, 0, 100, 100, false);
 	this->rlcRSSI->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->pnlInfo = ui->NewPanel(this->tpInfo);
@@ -1484,8 +1484,8 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	Data::ArrayList<UOSInt> ports;
-	Data::ArrayList<IO::SerialPort::SerialPortType> portTypes;
+	Data::ArrayListNative<UOSInt> ports;
+	Data::ArrayListNative<IO::SerialPort::SerialPortType> portTypes;
 	if (IO::SerialPort::GetAvailablePorts(ports, &portTypes))
 	{
 		UTF8Char sbuff[256];

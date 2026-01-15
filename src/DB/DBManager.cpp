@@ -240,7 +240,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				}
 			}
 			NN<Text::String> s;
-			db = 0;
+			db = nullptr;
 			if (s.Set(dsn))
 			{
 				db = DB::ODBCConn::CreateDBTool(s, uid, pwd, schema, log, DBPREFIX).OrNull();
@@ -271,9 +271,9 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		Text::StringBuilderUTF8 sb;
 		NN<Text::String> nnserver;
 		Text::String *server = 0;
-		Optional<Text::String> uid = 0;
+		Optional<Text::String> uid = nullptr;
 		NN<Text::String> nnuid;
-		Optional<Text::String> pwd = 0;
+		Optional<Text::String> pwd = nullptr;
 		NN<Text::String> nnpwd;
 		Text::String *schema = 0;
 		UOSInt cnt;
@@ -314,7 +314,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		}
 		else
 		{
-			db = 0;
+			db = nullptr;
 		}
 		
 		SDEL_STRING(server);
@@ -606,7 +606,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			return nndb;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderUTF8> sbOut)

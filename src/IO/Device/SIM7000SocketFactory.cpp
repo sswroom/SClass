@@ -63,7 +63,7 @@ IO::Device::SIM7000SocketFactory::SIM7000SocketFactory(NN<IO::Device::SIM7000> m
 {
 	this->modem = modem;
 	this->needRelease = needRelease;
-	this->apn = 0;
+	this->apn = nullptr;
 	this->modem->SetReceiveHandler(OnReceiveData, this);
 	OSInt i = 8;
 	while (i-- > 0)
@@ -166,12 +166,12 @@ Bool IO::Device::SIM7000SocketFactory::NetworkEnd()
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateTCPSocketv4()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateTCPSocketv6()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateUDPSocketv4()
@@ -189,37 +189,37 @@ Optional<Socket> IO::Device::SIM7000SocketFactory::CreateUDPSocketv4()
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateUDPSocketv6()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateICMPIPv4Socket(UInt32 ip)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateUDPRAWv4Socket(UInt32 ip)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateRAWIPv4Socket(UInt32 ip)
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateARPSocket()
 {
-	return 0;
+	return nullptr;
 }
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::CreateRAWSocket()
 {
-	return 0;
+	return nullptr;
 }
 
 void IO::Device::SIM7000SocketFactory::DestroySocket(NN<Socket> socket)
@@ -295,7 +295,7 @@ Bool IO::Device::SIM7000SocketFactory::SocketListen(NN<Socket> socket)
 
 Optional<Socket> IO::Device::SIM7000SocketFactory::SocketAccept(NN<Socket> socket)
 {
-	return 0;
+	return nullptr;
 }
 
 Int32 IO::Device::SIM7000SocketFactory::SocketGetLastError()
@@ -378,7 +378,7 @@ UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(NN<Socket> socket, UnsafeAr
 
 Optional<Net::SocketRecvSess> IO::Device::SIM7000SocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
 {
-	return 0;
+	return nullptr;
 }
 
 UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
@@ -529,7 +529,7 @@ Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(UnsafeArray<const Char> h
 
 Bool IO::Device::SIM7000SocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
 {
-	Data::ArrayList<UInt32> dnsList;
+	Data::ArrayListNative<UInt32> dnsList;
 	if (this->modem->NetGetDNSList(dnsList))
 	{
 		Net::SocketUtil::SetAddrInfoV4(addr, dnsList.GetItem(0));
@@ -538,7 +538,7 @@ Bool IO::Device::SIM7000SocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo
 	return false;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::GetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
+UOSInt IO::Device::SIM7000SocketFactory::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
 	UOSInt i = dnsList->GetCount();
 	if (this->modem->NetGetDNSList(dnsList))
@@ -567,10 +567,10 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Ne
 	{
 		Net::ConnectionInfo::ConnectionEntry ent;
 		ent.index = 0;
-		ent.internalName = 0;
-		ent.name = 0;
-		ent.description = 0;
-		ent.dnsSuffix = 0;
+		ent.internalName = nullptr;
+		ent.name = nullptr;
+		ent.description = nullptr;
+		ent.dnsSuffix = nullptr;
 		ent.ipaddr.Add(Net::SocketUtil::GetIPAddr(CSTRP(sbuff, sptr)));
 		ent.defGW = 0;
 		ent.dhcpSvr = 0;

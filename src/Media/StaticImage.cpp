@@ -152,7 +152,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP1_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 3, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -167,7 +167,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP2_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 2, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -182,7 +182,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP4_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 1, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -197,7 +197,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP8_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -400,7 +400,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP1_A1_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -414,7 +414,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP2_A1_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -428,7 +428,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP4_A1_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -442,7 +442,7 @@ Bool Media::StaticImage::ToB8G8R8A8()
 		ImageUtil_ConvP8_A1_B8G8R8A8(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -477,7 +477,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP1_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 3, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -492,7 +492,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP2_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 2, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -507,7 +507,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP4_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 1, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -522,7 +522,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP8_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -729,7 +729,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP1_A1_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -743,7 +743,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP2_A1_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -757,7 +757,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP4_A1_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -771,7 +771,7 @@ Bool Media::StaticImage::ToB16G16R16A16()
 		ImageUtil_ConvP8_A1_B16G16R16A16(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, pal.Ptr());
 		MemFreeAArr(this->data);
 		MemFreeArr(pal);
-		this->pal = 0;
+		this->pal = nullptr;
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);

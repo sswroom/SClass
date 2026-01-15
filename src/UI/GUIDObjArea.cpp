@@ -187,9 +187,9 @@ UI::GUIDObjArea::GUIDObjArea(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN
 {
 	this->deng = deng;
 	this->colorSess = colorSess;
-	this->dobjHdlr = 0;
+	this->dobjHdlr = nullptr;
 	this->drawUpdated = false;
-	this->currDrawImg = 0;
+	this->currDrawImg = nullptr;
 	this->HandleSizeChanged(OnUpdateSize, this);
 	this->displayThread.Start();
 	this->processThread.Start();
@@ -207,7 +207,7 @@ UI::GUIDObjArea::~GUIDObjArea()
 	if (this->currDrawImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->currDrawImg = 0;
+		this->currDrawImg = nullptr;
 	}
 }
 
@@ -235,7 +235,7 @@ void UI::GUIDObjArea::OnSurfaceCreated()
 	if (this->currDrawImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->currDrawImg = 0;
+		this->currDrawImg = nullptr;
 	}
 	this->currDrawImg = this->deng->CreateImage32(this->dispSize, Media::AT_IGNORE_ALPHA);
 	this->drawUpdated = false;

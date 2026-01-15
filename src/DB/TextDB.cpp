@@ -16,7 +16,7 @@ private:
 public:
 	TextDBReader(NN<DB::TextDB::DBData> data)
 	{
-		this->row = 0;
+		this->row = nullptr;
 		this->index = 0;
 		this->data = data;
 	}
@@ -78,11 +78,11 @@ public:
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
 		if (!this->row.SetTo(row))
-			return 0;
+			return nullptr;
 		if (colIndex >= this->data->colList.GetCount())
-			return 0;
+			return nullptr;
 		if (!row[colIndex].SetTo(s))
-			return 0;
+			return nullptr;
 		return Text::StrUTF8_WChar(buff, s->v, 0);
 	}
 
@@ -105,11 +105,11 @@ public:
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
 		if (!this->row.SetTo(row))
-			return 0;
+			return nullptr;
 		if (colIndex >= this->data->colList.GetCount())
-			return 0;
+			return nullptr;
 		if (!row[colIndex].SetTo(s))
-			return 0;
+			return nullptr;
 		return s->Clone();
 	}
 
@@ -118,11 +118,11 @@ public:
 		UnsafeArray<Optional<Text::String>> row;
 		NN<Text::String> s;
 		if (!this->row.SetTo(row))
-			return 0;
+			return nullptr;
 		if (colIndex >= this->data->colList.GetCount())
-			return 0;
+			return nullptr;
 		if (!row[colIndex].SetTo(s))
-			return 0;
+			return nullptr;
 		return Text::StrConcatS(buff, s->v, buffSize);
 	}
 
@@ -199,7 +199,7 @@ public:
 
 	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -227,7 +227,7 @@ public:
 		{
 			return name->ConcatTo(buff);
 		}
-		return 0;
+		return nullptr;
 	}
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
@@ -266,7 +266,7 @@ public:
 
 DB::TextDB::TextDB(Text::CStringNN sourceName) : DB::ReadingDB(sourceName)
 {
-	this->currDB = 0;
+	this->currDB = nullptr;
 }
 
 DB::TextDB::~TextDB()
@@ -318,7 +318,7 @@ Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text
 	NN<DBData> data;
 	if (!this->dbMap.GetC(tableName).SetTo(data))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<DB::DBReader> reader;
 	NEW_CLASSNN(reader, TextDBReader(data));
@@ -330,7 +330,7 @@ Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::C
 	NN<DBData> data;
 	if (!this->dbMap.GetC(tableName).SetTo(data))
 	{
-		return 0;
+		return nullptr;
 	}
 	DB::TableDef *tab;
 	NN<DB::ColDef> colDef;
@@ -410,7 +410,7 @@ Bool DB::TextDB::AddTable(Text::CStringNN tableName, UnsafeArray<Text::CStringNN
 	return true;
 }
 
-Bool DB::TextDB::AddTableData(NN<Data::ArrayList<Optional<Text::String>>> valList)
+Bool DB::TextDB::AddTableData(NN<Data::ArrayListObj<Optional<Text::String>>> valList)
 {
 	NN<DBData> currDB;
 	if (!this->currDB.SetTo(currDB))

@@ -11,7 +11,7 @@ Media::MPAStreamSource::MPAStreamSource(NN<Media::MediaStreamControl> pbc)
 	this->pbc = pbc;
 	this->fmt.formatId = 0;
 	this->fmt.bitRate = 0;
-	this->pbEvt = 0;
+	this->pbEvt = nullptr;
 
 	this->dataBuff = 0;
 	this->buffSize = 0;
@@ -182,7 +182,7 @@ void Media::MPAStreamSource::Stop()
 {
 //	this->pbc->StopPlay();
 	this->streamStarted = false;
-	this->pbEvt = 0;
+	this->pbEvt = nullptr;
 }
 
 UOSInt Media::MPAStreamSource::ReadBlock(Data::ByteArray blk)

@@ -18,7 +18,7 @@ DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
 	data->log = log;
-	data->connStr = 0;
+	data->connStr = nullptr;
 }
 
 void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
@@ -191,7 +191,7 @@ Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, T
 Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
-	return 0;
+	return nullptr;
 }
 
 /*DB::DBReader *DB::OLEDBConn::ExecuteReader(const WChar *sql)
@@ -282,7 +282,7 @@ void DB::OLEDBConn::CloseReader(NN<DBReader> r)
 
 Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 {
-	return 0;
+	return nullptr;
 }
 
 void DB::OLEDBConn::Commit(NN<DB::DBTransaction> tran)

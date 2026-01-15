@@ -251,8 +251,8 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(Optional<UI::GUIClientCo
 	this->imgTimeoutTick = 0;
 	this->core = core;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
-	this->imgList = 0;
-	this->pkgFile = 0;
+	this->imgList = nullptr;
+	this->pkgFile = nullptr;
 	this->allowEnlarge = false;
 	this->hideCursor = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -317,7 +317,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_IMAGE_RENAME:
 		if (this->imgList.SetTo(imgList))
 		{
-			SSWR::AVIRead::AVIRFileRenameForm frm(0, this->ui, this->core, imgList->GetSourceNameObj());
+			SSWR::AVIRead::AVIRFileRenameForm frm(nullptr, this->ui, this->core, imgList->GetSourceNameObj());
 			if (frm.ShowDialog(this))
 			{
 				imgList->SetSourceName(frm.GetFileName());
@@ -340,7 +340,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MON_COLOR:
 		{
-			SSWR::AVIRead::AVIRColorSettingForm frm(0, this->ui, this->core, this->GetHMonitor());
+			SSWR::AVIRead::AVIRColorSettingForm frm(nullptr, this->ui, this->core, this->GetHMonitor());
 			frm.ShowDialog(this);
 		}
 		break;
@@ -364,7 +364,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 			imgList->ToString(sbImg);
 			sbTitle.AppendC(UTF8STRC("Image info for "));
 			sbTitle.Append(imgList->GetSourceNameObj());
-			SSWR::AVIRead::AVIRStringMsgForm frm(0, this->ui, this->core, sbTitle.ToCString(), sbImg.ToCString());
+			SSWR::AVIRead::AVIRStringMsgForm frm(nullptr, this->ui, this->core, sbTitle.ToCString(), sbImg.ToCString());
 			frm.ShowDialog(this);
 		}
 		break;
@@ -391,7 +391,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> img
 	UnsafeArray<UTF8Char> sptr2;
 	UOSInt i;
 	UOSInt j;
-	this->pbImage->SetImage(0, false);
+	this->pbImage->SetImage(nullptr, false);
 	this->imgList.Delete();
 	if (!sameDir)
 	{

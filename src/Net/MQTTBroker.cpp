@@ -892,7 +892,7 @@ AnyType Net::MQTTBroker::StreamCreated(NN<IO::Stream> stm)
 	data->cliData = this->protoHdlr.CreateStreamData(stm);
 	data->keepAlive = 0;
 	data->connected = false;
-	data->cliId = 0;
+	data->cliId = nullptr;
 	return data;
 }
 
@@ -1051,7 +1051,7 @@ Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Boo
 	listener->ssl = ssl;
 	listener->listener = 0;
 	NEW_CLASS(listener->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(listener->svr, Net::TCPServer(this->clif->GetSocketFactory(), 0, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
+	NEW_CLASS(listener->svr, Net::TCPServer(this->clif->GetSocketFactory(), nullptr, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
 	if (listener->svr->IsV4Error())
 	{
 		DEL_CLASS(listener->svr);
@@ -1072,7 +1072,7 @@ Bool Net::MQTTBroker::AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, B
 {
 	NN<Listener> listener = MemAllocNN(Listener);
 	listener->me = this;
-	listener->ssl = 0;
+	listener->ssl = nullptr;
 	listener->cliMgr = 0;
 	listener->svr = 0;
 	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->clif, ssl, this->wsHdlr, port, 60, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));

@@ -27,7 +27,7 @@ Optional<Media::RasterImage> Media::ImageGen::Gradian32ImageGen::GenerateImage(N
 	UInt8 vv;
 	UOSInt bpl;
 	if (size.x < 16 || size.y < 16)
-		return 0;
+		return nullptr;
 //	Media::CS::TransferFunc *rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParam());
 //	Media::CS::TransferFunc *gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParam());
 //	Media::CS::TransferFunc *bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParam());

@@ -3,17 +3,17 @@
 #include "Data/ArrayListStrFast.h"
 #include "Text/MyString.h"
 
-Data::ArrayListStrFast::ArrayListStrFast() : Data::SortableArrayList<Text::String*>()
+Data::ArrayListStrFast::ArrayListStrFast() : Data::SortableArrayListObj<Text::String*>()
 {
 }
 
-Data::ArrayListStrFast::ArrayListStrFast(UOSInt capacity) : Data::SortableArrayList<Text::String*>(capacity)
+Data::ArrayListStrFast::ArrayListStrFast(UOSInt capacity) : Data::SortableArrayListObj<Text::String*>(capacity)
 {
 }
 
-NN<Data::ArrayList<Text::String*>> Data::ArrayListStrFast::Clone() const
+NN<Data::ArrayListObj<Text::String*>> Data::ArrayListStrFast::Clone() const
 {
-	NN<Data::ArrayList<Text::String*>> newArr;
+	NN<Data::ArrayListObj<Text::String*>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrFast(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

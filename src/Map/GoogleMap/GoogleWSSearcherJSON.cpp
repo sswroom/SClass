@@ -22,10 +22,10 @@ Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NN<Net::TCPClientFact
 	this->lastIsError = 0;
 	this->srchCnt = 0;
 	this->lastSrchDate.SetCurrTimeUTC();
-	this->gooCliId = 0;
-	this->gooPrivKey = 0;
+	this->gooCliId = nullptr;
+	this->gooPrivKey = nullptr;
 	this->gooPrivKeyLeng = 0;
-	this->gooAPIKey = 0;
+	this->gooAPIKey = nullptr;
 }
 
 Map::GoogleMap::GoogleWSSearcherJSON::~GoogleWSSearcherJSON()
@@ -35,7 +35,7 @@ Map::GoogleMap::GoogleWSSearcherJSON::~GoogleWSSearcherJSON()
 	if (this->gooPrivKey.SetTo(gooPrivKey))
 	{
 		MemFreeArr(gooPrivKey);
-		this->gooPrivKey = 0;
+		this->gooPrivKey = nullptr;
 	}
 	OPTSTR_DEL(this->gooAPIKey);
 }
@@ -47,7 +47,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Optional<Text::Stri
 	if (this->gooPrivKey.SetTo(gooPrivKeyArr))
 	{
 		MemFreeArr(gooPrivKeyArr);
-		this->gooPrivKey = 0;
+		this->gooPrivKey = nullptr;
 	}
 	this->gooPrivKeyLeng = 0;
 	NN<Text::String> nngooCliId;
@@ -69,7 +69,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::CString gooCl
 	if (this->gooPrivKey.SetTo(gooPrivKeyArr))
 	{
 		MemFreeArr(gooPrivKeyArr);
-		this->gooPrivKey = 0;
+		this->gooPrivKey = nullptr;
 	}
 	this->gooPrivKeyLeng = 0;
 	Text::CStringNN nngooCliId;
@@ -290,11 +290,11 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
-			return 0;
+			return nullptr;
 	}
 	NN<Text::Locale::LocaleEntry> ent;
 	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
-		return 0;
+		return nullptr;
 	return SearchName(buff, buffSize, pos, ent->shortName);
 }
 
@@ -305,11 +305,11 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UnsafeA
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
-			return 0;
+			return nullptr;
 	}
 	NN<Text::Locale::LocaleEntry> ent;
 	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
-		return 0;
+		return nullptr;
 	return SearchName(buff, buffSize, pos, ent->shortName);
 }
 

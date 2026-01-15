@@ -137,7 +137,7 @@ Bool Math::Geometry::Ellipse::HasArea() const
 	return true;
 }
 
-UOSInt Math::Geometry::Ellipse::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+UOSInt Math::Geometry::Ellipse::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	if (y >= this->tl.y && y < this->tl.y + this->size.y)
 	{

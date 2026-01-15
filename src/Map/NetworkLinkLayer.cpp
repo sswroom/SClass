@@ -87,13 +87,13 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 
 void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 {
-	Optional<IO::StreamData> data = 0;
+	Optional<IO::StreamData> data = nullptr;
 	if (link->viewFormat.IsNull())
 	{
 #if defined(VERBOSE)
 		printf("NetworkLnkLayer: Loading URL: %s\r\n", link->url->v);
 #endif
-		data = this->browser->GetData(link->url->ToCString(), true, 0);
+		data = this->browser->GetData(link->url->ToCString(), true, nullptr);
 	}
 	else
 	{
@@ -126,7 +126,7 @@ void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 #if defined(VERBOSE)
 		printf("NetworkLnkLayer: Loading URL: %s\r\n", sb.ToString());
 #endif
-		data = this->browser->GetData(sb.ToCString(), true, 0);
+		data = this->browser->GetData(sb.ToCString(), true, nullptr);
 	}
 	NN<IO::StreamData> fd;
 	if (data.SetTo(fd))
@@ -531,7 +531,7 @@ Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<N
 			maxId = innerLayer->GetObjectIdMax();
 			if (id >= currId && id <= currId + maxId)
 			{
-				return innerLayer->GetString(sb, 0, id - currId, strIndex);
+				return innerLayer->GetString(sb, nullptr, id - currId, strIndex);
 			}
 			currId += maxId + 1;
 		}
@@ -547,7 +547,7 @@ UOSInt Map::NetworkLinkLayer::GetColumnCnt() const
 
 UnsafeArrayOpt<UTF8Char> Map::NetworkLinkLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::NetworkLinkLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -660,7 +660,7 @@ Optional<Math::Geometry::Vector2D> Map::NetworkLinkLayer::GetNewVectorById(NN<Ge
 	UOSInt j;
 	Int64 currId = 0;
 	Int64 maxId;
-	Optional<Math::Geometry::Vector2D> vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	i = 0;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	j = this->links.GetCount();
@@ -797,7 +797,7 @@ UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, T
 	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.v, sb.GetEndPtr(), url).Or(sb.v));
 	NN<LinkInfo> link;
 	NEW_CLASSNN(link, LinkInfo());
-	link->innerLayer = 0;
+	link->innerLayer = nullptr;
 	link->innerLayerType = Map::DRAW_LAYER_UNKNOWN;
 	link->url = Text::String::New(sb.ToCString());
 	link->layerName = Text::String::NewOrNull(name);

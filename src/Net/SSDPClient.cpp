@@ -126,7 +126,7 @@ void __stdcall Net::SSDPClient::SSDPDeviceFree(NN<SSDPDevice> dev)
 Net::SSDPClient::SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log)
 {
 	this->userAgent = Text::String::NewOrNull(userAgent);
-	NEW_CLASSNN(this->udp, Net::UDPServer(sockf, 0, 0, nullptr, OnPacketRecv, this, log, nullptr, 2, false));
+	NEW_CLASSNN(this->udp, Net::UDPServer(sockf, nullptr, 0, nullptr, OnPacketRecv, this, log, nullptr, 2, false));
 	this->udp->SetBroadcast(true);
 }
 

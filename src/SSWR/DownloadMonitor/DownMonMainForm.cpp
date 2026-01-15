@@ -150,7 +150,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyType userObj)
 {
 	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
-	Data::ArrayList<UInt32> formats;
+	Data::ArrayListNative<UInt32> formats;
 	UOSInt i;
 	UOSInt j;
 	UInt32 fmtId = (UInt32)-1;
@@ -159,9 +159,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 	UnsafeArray<const UTF8Char> url;
 	UOSInt urlLen;
 	Text::PString sarr[2];
-	Data::ArrayList<const UTF8Char *> urlStrList;
-	Data::ArrayList<UOSInt> urlLenList;
-	Data::ArrayList<const UTF8Char *> descList;
+	Data::ArrayListObj<const UTF8Char *> urlStrList;
+	Data::ArrayListNative<UOSInt> urlLenList;
+	Data::ArrayListObj<const UTF8Char *> descList;
 	UI::Clipboard clipboard(me->GetHandle());
 	clipboard.GetDataFormats(formats);
 	i = formats.GetCount();

@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IPACParser::ParseFileHdr(NN<IO::S
 
 	if (ReadUInt32(&hdr[0]) != 0x43415049)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	recCnt = ReadUInt32(&hdr[4]);
@@ -63,7 +63,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IPACParser::ParseFileHdr(NN<IO::S
 		if (startOfst != currOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(name, rec, 32, 0);
 		currSize = ReadUInt32(&rec[40]);

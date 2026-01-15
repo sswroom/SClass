@@ -106,8 +106,8 @@ IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(NN<IO::StreamData> fd) : threa
 {
 	NN<Data::ByteOrder> bo;
 	UInt8 buff[256];
-	this->fd = 0;
-	this->bo = 0;
+	this->fd = nullptr;
+	this->bo = nullptr;
 	this->pauseParsing = false;
 
 	fd->GetRealData(0, 256, BYTEARR(buff));
@@ -220,9 +220,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 	NN<IO::StreamData> fd;
 	NN<Data::ByteOrder> bo;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd) || !this->bo.SetTo(bo))
-		return 0;
+		return nullptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	switch (pack->packType)
 	{

@@ -581,7 +581,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutPar
 	UOSInt size = this->BuildIFrameHeader(this->frameBuff, true);
 	this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 	Math::Size2D<UOSInt> oriSize = info->dispSize;
-	Media::H264Parser::GetFrameInfo(this->frameBuff, size, info, 0);
+	Media::H264Parser::GetFrameInfo(this->frameBuff, size, info, nullptr);
 	info->dispSize = oriSize;
 	maxFrameSize.Set(this->maxFrameSize);
 	info->fourcc = ReadNUInt32((const UInt8*)"h264");

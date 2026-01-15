@@ -58,7 +58,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<
 
 	if (!Text::StrEquals(&hdr[0], U8STR("MajiroArcV3.000")))
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 fileCnt = ReadUInt32(&hdr[16]);
 	UInt32 fileNameOfst = ReadUInt32(&hdr[20]);

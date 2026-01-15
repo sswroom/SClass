@@ -50,18 +50,18 @@ Optional<IO::ParsedObject> Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(N
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
 	{
-		return 0;
+		return nullptr;
 	}
 	recCnt = ReadUInt32(&hdr[0]);
 	if (recCnt == 0 || recCnt >= 65536)
-		return 0;
+		return nullptr;
 	if (fd->GetDataSize() <= recCnt * 272)
-		return 0;
+		return nullptr;
 	
 	Data::ByteBuffer recBuff(recCnt * 272);
 	if (fd->GetRealData(4, recCnt * 272, recBuff) != recCnt * 272)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -79,7 +79,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(N
 		if (recOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		filePtr = &recBuff[j];
 		while (*filePtr++);

@@ -67,16 +67,16 @@ Media::PhotoInfo::PhotoInfo(NN<IO::StreamData> fd)
 	NN<Text::XMLDocument> nnxmf;
 	UInt32 width;
 	UInt32 height;
-	this->make = 0;
-	this->model = 0;
-	this->photoDate = 0;
+	this->make = nullptr;
+	this->model = nullptr;
+	this->photoDate = nullptr;
 	this->width = 0;
 	this->height = 0;
 	this->fNumber = 0;
 	this->expTime = 0;
 	this->isoRating = 0;
 	this->focalLength = 0;
-	this->lens = 0;
+	this->lens = nullptr;
 	this->succ = false;
 
 	if (Media::JPEGFile::ParseJPEGHeaders(fd, exif, xmf, icc, width, height) || Parser::FileParser::HEIFParser::ParseHeaders(fd, exif, xmf, icc, width, height))

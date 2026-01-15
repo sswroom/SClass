@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkgFile));
 		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, parsers));
 		Exporter::OruxMapExporter exporter;
-		exporter.ExportNewFile(destFile, mapLyr, 0);
+		exporter.ExportNewFile(destFile, mapLyr, nullptr);
 		mapLyr.Delete();
 	}
 	parsers.Delete();

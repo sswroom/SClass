@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLogSel(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 	{
 		me->svr.Delete();
 		me->samlSvc.Delete();
-		me->samlHdlr = 0;
+		me->samlHdlr = nullptr;
 		me->txtPort->SetReadOnly(false);
 		me->btnSSLCert->SetEnabled(true);
 		me->txtHost->SetReadOnly(false);
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
-	Optional<Net::SSLEngine> ssl = 0;
+	Optional<Net::SSLEngine> ssl = nullptr;
 	NN<Crypto::Cert::X509Cert> sslCert;
 	NN<Crypto::Cert::X509File> sslKey;
 
@@ -371,7 +371,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 		}
 
 		respNew->Release();
-		me->respNew = 0;
+		me->respNew = nullptr;
 	}
 }
 
@@ -466,11 +466,11 @@ Optional<Crypto::Cert::X509Key> SSWR::AVIRead::AVIRSAMLTestForm::CreateSAMLKey()
 {
 	NN<Net::SAMLHandler> samlHdlr;
 	if (!this->samlHdlr.SetTo(samlHdlr))
-		return 0;
+		return nullptr;
 	NN<Crypto::Cert::X509PrivKey> key;
 	if (samlHdlr->GetKey().SetTo(key))
 		return key->CreateKey();
-	return 0;
+	return nullptr;
 }
 
 SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -479,12 +479,12 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->SetText(CSTR("SAML Test"));
 	this->SetFont(nullptr, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->sslCert = 0;
-	this->sslKey = 0;
-	this->svr = 0;
-	this->respNew = 0;
-	this->samlCfg = 0;
-	this->samlHdlr = 0;
+	this->sslCert = nullptr;
+	this->sslKey = nullptr;
+	this->svr = nullptr;
+	this->respNew = nullptr;
+	this->samlCfg = nullptr;
+	this->samlHdlr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
@@ -653,7 +653,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::~AVIRSAMLTestForm()
 {
 	this->svr.Delete();
 	this->samlSvc.Delete();
-	this->samlHdlr = 0;
+	this->samlHdlr = nullptr;
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 	this->ssl.Delete();

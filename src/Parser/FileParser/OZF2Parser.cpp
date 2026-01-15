@@ -60,23 +60,23 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 	fileSize = fd->GetDataSize();
 	if (fileSize > 0xffffffffLL)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt16(&hdr[0]) != 0x7778)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt16(&hdr[6]) != 64)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt16(&hdr[8]) != 1)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[14]) != 40)
 	{
-		return 0;
+		return nullptr;
 	}
 	imgWidth = ReadUInt32(&hdr[18]);
 	imgHeight = ReadUInt32(&hdr[22]);

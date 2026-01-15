@@ -7,7 +7,7 @@ NN<Map::GeoPackageLayer::StringSession> Map::GeoPackageLayer::StringSessCreate()
 {
 	NN<StringSession> sess = MemAllocNN(StringSession);
 	NN<DB::DBReader> r;
-	sess->r = this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), 0, 0, 0, nullptr, 0);
+	sess->r = this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr);
 	if (sess->r.SetTo(r) && r->ReadNext())
 	{
 		sess->thisId = 0;
@@ -30,7 +30,7 @@ Bool Map::GeoPackageLayer::StringSessGoRow(NN<StringSession> sess, UOSInt index)
 	{
 		if (sess->r.SetTo(r))
 			this->gpkg->CloseReader(r);
-		sess->r = this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), 0, index, 0, nullptr, 0);
+		sess->r = this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), nullptr, index, 0, nullptr, nullptr);
 		if (sess->r.SetTo(r) && r->ReadNext())
 		{
 			sess->thisId = index;
@@ -84,7 +84,7 @@ Map::GeoPackageLayer::GeoPackageLayer(NN<Map::GeoPackage> gpkg, NN<Map::GeoPacka
 		if (this->geomCol != INVALID_INDEX)
 		{
 			NN<DB::DBReader> r;
-			if (this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), 0, 0, 0, nullptr, 0).SetTo(r))
+			if (this->gpkg->QueryTableData(nullptr, this->layerContent->tableName->ToCString(), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
@@ -259,10 +259,10 @@ UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Cha
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))
-		return 0;
+		return nullptr;
 	NN<DB::ColDef> col;
 	if (!tabDef->GetCol(colIndex).SetTo(col))
-		return 0;
+		return nullptr;
 	return col->GetColName()->ConcatTo(buff);
 }
 
@@ -315,7 +315,7 @@ Optional<Math::Geometry::Vector2D> Map::GeoPackageLayer::GetNewVectorById(NN<Get
 	NN<Math::Geometry::Vector2D> vec;
 	if (this->vecList.GetItem((UOSInt)id).SetTo(vec))
 		return vec->Clone();
-	return 0;
+	return nullptr;
 }
 
 UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)

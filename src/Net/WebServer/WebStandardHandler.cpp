@@ -124,9 +124,9 @@ Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer:
 
 Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
-	this->allowOrigin = 0;
-	this->contentSecurityPolicy = 0;
-	this->upgradeInsecureURL = 0;
+	this->allowOrigin = nullptr;
+	this->contentSecurityPolicy = nullptr;
+	this->upgradeInsecureURL = nullptr;
 }
 
 Net::WebServer::WebStandardHandler::~WebStandardHandler()

@@ -65,13 +65,13 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 			{
 				ptList.Add(ptList.GetItem(0));
 			}
-			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Arr(), ptList.GetCount(), 0, 0));
+			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Arr(), ptList.GetCount(), nullptr, nullptr));
 			pg->AddGeometry(lr);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
 			UnsafeArray<const Math::Coord2DDbl> ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
-			NEW_CLASSNN(lr, LinearRing(this->srid, ptArr, nPoint, 0, 0));
+			NEW_CLASSNN(lr, LinearRing(this->srid, ptArr, nPoint, nullptr, nullptr));
 			pg->AddGeometry(lr);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)

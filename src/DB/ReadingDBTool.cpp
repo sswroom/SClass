@@ -47,10 +47,10 @@ void DB::ReadingDBTool::AddLogMsgC(Text::CStringNN msg, IO::LogHandler::LogLevel
 DB::ReadingDBTool::ReadingDBTool(NN<DB::DBConn> db, Bool needRelease, NN<IO::LogTool> log, Text::CString logPrefix) : ReadingDB(db->GetSourceNameObj())
 {
 	this->db = db;
-	this->currDBName = 0;
+	this->currDBName = nullptr;
 	this->needRelease = needRelease;
 	this->log = log;
-	this->lastReader = 0;
+	this->lastReader = nullptr;
 	this->readerCnt = 0;
 	this->readerFail = 0;
 	this->openFail = 0;
@@ -431,14 +431,14 @@ Optional<DB::DBReader> DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 
 		if (trig)
 			trig(sqlCmd, DB::ReadingDBTool::ReaderTrigger);
-		return 0;
+		return nullptr;
 	}
 }
 
 void DB::ReadingDBTool::CloseReader(NN<DB::DBReader> r)
 {
 	this->db->CloseReader(r);
-	this->lastReader = 0;
+	this->lastReader = nullptr;
 	this->readerCnt = 0;
 }
 
@@ -629,7 +629,7 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 		{
 			this->db->Reconnect();
 		}
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1022,7 +1022,7 @@ Bool DB::ReadingDBTool::GetDBCollation(Text::CStringNN databaseName, NN<Collatio
 	return false;
 }
 
-UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars)
+UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars)
 {
 	UOSInt ret = 0;
 	NN<DB::DBReader> r;
@@ -1034,7 +1034,7 @@ UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayList<Data::TwinItem<Optiona
 			while (r->ReadNext())
 			{
 				if (r->GetNewStr(0).SetTo(name))
-					vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(name, r->GetNewStr(1)));
+					vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(name, r->GetNewStr(1)));
 				ret++;
 			}
 			this->CloseReader(r);
@@ -1046,32 +1046,32 @@ UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayList<Data::TwinItem<Optiona
 		{
 			if (r->ReadNext())
 			{
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("CONNECTIONS")), r->GetNewStr(0)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("CPU_BUSY")), r->GetNewStr(1)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("IDLE")), r->GetNewStr(2)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("IO_BUSY")), r->GetNewStr(3)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("PACKET_ERRORS")), r->GetNewStr(4)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("PACK_RECEIVED")), r->GetNewStr(5)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("PACK_SENT")), r->GetNewStr(6)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TIMETICKS")), r->GetNewStr(7)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TOTAL_ERRORS")), r->GetNewStr(8)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TOTAL_READ")), r->GetNewStr(9)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TOTAL_WRITE")), r->GetNewStr(10)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("DATEFIRST")), r->GetNewStr(11)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("DBTS")), r->GetNewStr(12)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("LANGID")), r->GetNewStr(13)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("LANGUAGE")), r->GetNewStr(14)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("LOCK_TIMEOUT")), r->GetNewStr(15)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("MAX_CONNECTIONS")), r->GetNewStr(16)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("MAX_PRECISION")), r->GetNewStr(17)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("NESTLEVEL")), r->GetNewStr(18)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("OPTIONS")), r->GetNewStr(19)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("REMSERVER")), r->GetNewStr(20)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("SERVERNAME")), r->GetNewStr(21)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("SERVICENAME")), r->GetNewStr(22)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("SPID")), r->GetNewStr(23)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TEXTSIZE")), r->GetNewStr(24)));
-				vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("VERSION")), r->GetNewStr(25)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("CONNECTIONS")), r->GetNewStr(0)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("CPU_BUSY")), r->GetNewStr(1)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("IDLE")), r->GetNewStr(2)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("IO_BUSY")), r->GetNewStr(3)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("PACKET_ERRORS")), r->GetNewStr(4)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("PACK_RECEIVED")), r->GetNewStr(5)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("PACK_SENT")), r->GetNewStr(6)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TIMETICKS")), r->GetNewStr(7)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TOTAL_ERRORS")), r->GetNewStr(8)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TOTAL_READ")), r->GetNewStr(9)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TOTAL_WRITE")), r->GetNewStr(10)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("DATEFIRST")), r->GetNewStr(11)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("DBTS")), r->GetNewStr(12)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("LANGID")), r->GetNewStr(13)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("LANGUAGE")), r->GetNewStr(14)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("LOCK_TIMEOUT")), r->GetNewStr(15)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("MAX_CONNECTIONS")), r->GetNewStr(16)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("MAX_PRECISION")), r->GetNewStr(17)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("NESTLEVEL")), r->GetNewStr(18)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("OPTIONS")), r->GetNewStr(19)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("REMSERVER")), r->GetNewStr(20)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("SERVERNAME")), r->GetNewStr(21)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("SERVICENAME")), r->GetNewStr(22)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("SPID")), r->GetNewStr(23)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("TEXTSIZE")), r->GetNewStr(24)));
+				vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(Text::String::New(CSTR("VERSION")), r->GetNewStr(25)));
 				ret = 26;
 			}
 			this->CloseReader(r);
@@ -1085,7 +1085,7 @@ UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayList<Data::TwinItem<Optiona
 			while (r->ReadNext())
 			{
 				if (r->GetNewStr(0).SetTo(name))
-					vars->Add(Data::TwinItem<Optional<Text::String>, Optional<Text::String>>(name, r->GetNewStr(1)));
+					vars->Add(Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>(name, r->GetNewStr(1)));
 				ret++;
 			}
 			this->CloseReader(r);
@@ -1094,9 +1094,9 @@ UOSInt DB::ReadingDBTool::GetVariables(NN<Data::ArrayList<Data::TwinItem<Optiona
 	return ret;
 }
 
-void DB::ReadingDBTool::FreeVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars)
+void DB::ReadingDBTool::FreeVariables(NN<Data::ArrayListObj<Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>>>> vars)
 {
-	Data::TwinItem<Optional<Text::String>, Optional<Text::String>> item = vars->GetItem(0);
+	Data::TwinItemObj<Optional<Text::String>, Optional<Text::String>> item = vars->GetItem(0);
 	UOSInt i = vars->GetCount();
 	while (i-- > 0)
 	{
@@ -1147,7 +1147,7 @@ UOSInt DB::ReadingDBTool::GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>
 				conn->dbName = r->GetNewStr(6);
 				conn->cmd = r->GetNewStr(7);
 				conn->timeUsed = 0;
-				conn->sql = 0;
+				conn->sql = nullptr;
 				conns->Add(conn);
 				ret++;
 			}

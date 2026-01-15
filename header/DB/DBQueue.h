@@ -1,6 +1,5 @@
 #ifndef _SM_DB_DBQUEUE
 #define _SM_DB_DBQUEUE
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListNN.hpp"
 #include "DB/DBTool.h"
 #include "Sync/Event.h"
@@ -75,7 +74,7 @@ namespace DB
 			AnyType userData;
 			AnyType userData2;
 
-			SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
+			SQLGroup(Data::ArrayListObj<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLGroup();
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -111,11 +110,11 @@ namespace DB
 
 	private:
 		Optional<DBTool> db1;
-		Data::ArrayList<DB::DBHandler *> dbList;
+		Data::ArrayListObj<DB::DBHandler *> dbList;
 
 	public:
-		Data::ArrayList<IDBCmd*> **sqlList;
-		Data::ArrayList<IDBCmd**> **sqlList2;
+		Data::ArrayListObj<IDBCmd*> **sqlList;
+		Data::ArrayListObj<IDBCmd**> **sqlList2;
 
 	public:
 		UInt64 sqlCnt;

@@ -320,7 +320,7 @@ Data::Sort::BitonicSort::BitonicSort()
 	mainThread.state = 1;
 	NEW_CLASSNN(mainThread.evt, Sync::Event(true));
 	UOSInt i = this->threadCnt;
-	Optional<ThreadStat> lastThread = 0;
+	Optional<ThreadStat> lastThread = nullptr;
 	while (i-- > 0)
 	{
 		this->threads[i].me = *this;

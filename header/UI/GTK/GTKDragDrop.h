@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GTK_GTKDRAGDROP
 #define _SM_UI_GTK_GTKDRAGDROP
 #include "Data/FastMapNN.hpp"
-#include "Data/StringUTF8Map.hpp"
+#include "Data/StringMapNative.hpp"
 #include "Text/String.h"
 #include "UI/GUIControl.h"
 #include <gtk/gtk.h>
@@ -16,7 +16,7 @@ namespace UI
 			void *widget;
 			void *context;
 			UInt32 time;
-			Data::StringUTF8Map<OSInt> targetMap;
+			Data::StringMapNative<OSInt> targetMap;
 			Data::FastMapNN<Int32, Text::String> targetText;
 
 			static void AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF16Char> s, UOSInt slen);

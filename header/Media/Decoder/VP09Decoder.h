@@ -17,7 +17,7 @@ namespace Media
 				UOSInt fullFrameSize;
 			} VP9FrameInfo;
 
-			Data::ArrayList<VP9FrameInfo*> frameList;
+			Data::ArrayListObj<VP9FrameInfo*> frameList;
 			Bool finfoMode;
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);

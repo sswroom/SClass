@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 	if (me->arpHdlr.SetTo(arpHdlr) && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		arpHdlr.Delete();
-		me->arpHdlr = 0;
+		me->arpHdlr = nullptr;
 		me->targetAddr.addrType = Net::AddrType::Unknown;
 		me->chkRepeat->SetEnabled(true);
 		me->txtTarget->SetReadOnly(false);
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 			{
 				reqEvt->Wait(1000);
 				arpHdlr.Delete();
-				me->arpHdlr = 0;
+				me->arpHdlr = nullptr;
 				if (me->requested)
 				{
 					me->log.LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
@@ -98,10 +98,10 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 			else
 			{
 				arpHdlr.Delete();
-				me->arpHdlr = 0;
+				me->arpHdlr = nullptr;
 				me->log.LogMessage(CSTR("Ping: Cannot send request to target"), IO::LogHandler::LogLevel::Command);
 			}
-			me->reqEvt = 0;
+			me->reqEvt = nullptr;
 			reqEvt.Delete();
 		}
 	}
@@ -131,8 +131,8 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	this->SetText(CSTR("ARP Ping"));
 
 	this->core = core;
-	this->arpHdlr = 0;
-	this->reqEvt = 0;
+	this->arpHdlr = nullptr;
+	this->reqEvt = nullptr;
 	this->sockf = core->GetSocketFactory();
 	this->targetAddr.addrType = Net::AddrType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -156,7 +156,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	this->btnPing = ui->NewButton(this->pnlRequest, CSTR("&Ping"));
 	this->btnPing->SetRect(104, 76, 75, 23, false);
 	this->btnPing->HandleButtonClick(OnPingClicked, this);
-	this->rlcPing = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 1, 600, 1000, 0);
+	this->rlcPing = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 1, 600, 1000, nullptr);
 	this->rlcPing->SetRect(0, 0, 100, 100, false);
 	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->rlcPing->SetUnit(CSTR("ms"));

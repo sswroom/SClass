@@ -29,13 +29,13 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 	UOSInt maxFrameSize;
 	vsrc->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)
-		return 0;
+		return nullptr;
 
 	Data::ArrayListUInt32 suppCSList;
 	Media::CS::CSConverter::GetSupportedCS(suppCSList);
 	if (suppCSList.IndexOf(frameInfo.fourcc) != INVALID_INDEX)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (Core::DecodeVideo(vsrc).SetTo(decoder))
 	{
@@ -112,5 +112,5 @@ Optional<Media::VideoSource> Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<
 		return decoder;
 	}
 	decoder.Delete();
-	return 0;
+	return nullptr;
 }

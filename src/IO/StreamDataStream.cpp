@@ -63,7 +63,7 @@ void IO::StreamDataStream::CancelRead(NN<IO::StreamReadReq> reqData)
 
 Optional<IO::StreamWriteReq> IO::StreamDataStream::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	return 0;
+	return nullptr;
 }
 
 UOSInt IO::StreamDataStream::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)

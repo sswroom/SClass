@@ -6,7 +6,7 @@
 
 Parser::ObjParser::ITMParser::ITMParser()
 {
-	this->parsers = 0;
+	this->parsers = nullptr;
 }
 
 Parser::ObjParser::ITMParser::~ITMParser()
@@ -40,9 +40,9 @@ Optional<IO::ParsedObject> Parser::ObjParser::ITMParser::ParseObject(NN<IO::Pars
 {
 	NN<Parser::ParserList> parsers;
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
-		return 0;
+		return nullptr;
 	if (!this->parsers.SetTo(parsers))
-		return 0;
+		return nullptr;
 	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -79,5 +79,5 @@ Optional<IO::ParsedObject> Parser::ObjParser::ITMParser::ParseObject(NN<IO::Pars
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }

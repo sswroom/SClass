@@ -39,12 +39,12 @@ void Net::HTTPProxyClient::AddProxyAuthen()
 	}
 }
 
-Net::HTTPProxyClient::HTTPProxyClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(clif, 0, userAgent, true)
+Net::HTTPProxyClient::HTTPProxyClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(clif, nullptr, userAgent, true)
 {
 	this->proxyIP = proxyIP;
 	this->proxyPort = proxyPort;
-	this->proxyUser = 0;
-	this->proxyPwd = 0;
+	this->proxyUser = nullptr;
+	this->proxyPwd = nullptr;
 }
 
 Net::HTTPProxyClient::~HTTPProxyClient()

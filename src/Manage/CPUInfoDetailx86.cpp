@@ -43,7 +43,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 	{
 		this->cpuModel = Manage::CPUDB::X86CPUNameToModel(CSTRP(sbuff, sptr));
 	}
-	if (this->cpuModel.v == 0)
+	if (this->cpuModel.v.IsNull())
 	{
 		Manage::CPUDB::CPUSpecX86 *cpuSpec = Manage::CPUDB::GetCPUSpecX86(this->brand, this->familyId, this->model, this->steppingId);
 		if (cpuSpec)

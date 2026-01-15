@@ -15,7 +15,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 			if (bmpBuff->GetWidth() != scnSize.x && bmpBuff->GetHeight() != scnSize.y)
 			{
 				this->deng->DeleteImage(bmpBuff);
-				this->bmpBuff = 0;
+				this->bmpBuff = nullptr;
 			}
 		}
 		if (this->bmpBuff.IsNull())
@@ -42,7 +42,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 			}
 			else
 			{
-				this->bmpBuff = 0;
+				this->bmpBuff = nullptr;
 			}
 		}
 		if (this->bmpBuff.SetTo(bmpBuff))
@@ -53,7 +53,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 	else
 	{
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 		dimg->DelBrush(b);
 	}
 }
@@ -61,7 +61,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 UI::DObj::ImageDObjHandler::ImageDObjHandler(NN<Media::DrawEngine> deng, Text::CStringNN fileName, Optional<Media::ColorSess> colorSess) : UI::DObj::DObjHandler(deng)
 {
 	this->bmpBkg = this->deng->LoadImage(fileName);
-	this->bmpBuff = 0;
+	this->bmpBuff = nullptr;
 	this->bgColor = 0xff000000;
 	this->colorSess = colorSess;
 }
@@ -72,12 +72,12 @@ UI::DObj::ImageDObjHandler::~ImageDObjHandler()
 	if (this->bmpBkg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmpBkg = 0;
+		this->bmpBkg = nullptr;
 	}
 	if (this->bmpBuff.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->bmpBuff = 0;
+		this->bmpBuff = nullptr;
 	}
 }
 

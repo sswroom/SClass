@@ -46,11 +46,11 @@ gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer da
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xff000000);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), OSInt2Double(height)), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), OSInt2Double(height)), nullptr, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xffcccccc);
 		UOSInt range = clsData->max - clsData->min;
-		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((UOSInt)height * (clsData->currPos - clsData->min) / range)), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), UOSInt2Double((UOSInt)height * clsData->pageSize / range)), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((UOSInt)height * (clsData->currPos - clsData->min) / range)), Math::Size2DDbl(OSInt2Double(clsData->scrollSize), UOSInt2Double((UOSInt)height * clsData->pageSize / range)), nullptr, b);
 		dimg->DelBrush(b);
 		me->deng->DeleteImage(dimg);
 	}

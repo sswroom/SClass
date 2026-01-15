@@ -39,7 +39,7 @@ Optional<Media::AudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringN
 
 Media::AudioDevice::AudioDevice()
 {
-	this->currRenderer = 0;
+	this->currRenderer = nullptr;
 }
 
 Media::AudioDevice::~AudioDevice()
@@ -82,7 +82,7 @@ Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 
 void Media::AudioDevice::ClearDevices()
 {
-	BindAudio(0);
+	BindAudio(nullptr);
 	this->rendererList.DeleteAll();
 }
 
@@ -94,7 +94,7 @@ Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::Aud
 	NN<Media::AudioSource> nnaudsrc;
 	if (this->rendererList.GetCount() == 0)
 	{
-		NEW_CLASSNN(renderer, Media::ALSARenderer(0));
+		NEW_CLASSNN(renderer, Media::ALSARenderer(nullptr));
 		if (renderer->IsError())
 		{
 			renderer.Delete();
@@ -106,11 +106,11 @@ Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::Aud
 	}
 	if (this->currRenderer.SetTo(renderer))
 	{
-		renderer->BindAudio(0);
-		this->currRenderer = 0;
+		renderer->BindAudio(nullptr);
+		this->currRenderer = nullptr;
 	}
 	if (!audsrc.SetTo(nnaudsrc))
-		return 0;
+		return nullptr;
 	i = 0;
 	j = this->rendererList.GetCount();
 	while (i < j)
@@ -120,7 +120,7 @@ Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::Aud
 		{
 			if (renderer->IsError())
 			{
-				renderer->BindAudio(0);
+				renderer->BindAudio(nullptr);
 			}
 			else
 			{

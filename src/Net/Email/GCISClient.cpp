@@ -35,7 +35,7 @@ Net::Email::GCISClient::GCISClient(NN<Net::TCPClientFactory> clif, Optional<Net:
 	this->notifyURL = Text::String::New(notifyURL);
 	this->cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(cert->Clone());
 	this->key = NN<Crypto::Cert::X509File>::ConvertFrom(key->Clone());
-	this->svrCert = 0;
+	this->svrCert = nullptr;
 }
 
 Net::Email::GCISClient::~GCISClient()

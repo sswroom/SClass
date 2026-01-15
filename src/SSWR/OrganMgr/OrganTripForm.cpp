@@ -125,7 +125,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(AnyType userObj)
 {
 	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
 	
-	OrganLocationForm frm(0, me->ui, me->env, OrganLocationForm::SM_CHILD, me->locId);
+	OrganLocationForm frm(nullptr, me->ui, me->env, OrganLocationForm::SM_CHILD, me->locId);
 	if (frm.ShowDialog(me) == DR_OK)
 	{
 		Location *selVal = frm.GetSelVal();

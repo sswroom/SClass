@@ -26,7 +26,7 @@ IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(NN<IO::Pa
 		return IO::FileExporter::SupportType::NotSupported;
 	}
 	NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
-	if (file->GetStream(1, 0) != 0)
+	if (file->GetStream(1, 0).NotNull())
 		return IO::FileExporter::SupportType::NotSupported;
 	NN<Media::MediaSource> stm;
 	if (!file->GetStream(0, 0).SetTo(stm))
@@ -60,7 +60,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	UInt8 *buff;
 	NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
-	if (file->GetStream(1, 0) != 0)
+	if (file->GetStream(1, 0).NotNull())
 		return false;
 	NN<Media::MediaSource> src;
 	if (!file->GetStream(0, 0).SetTo(src))

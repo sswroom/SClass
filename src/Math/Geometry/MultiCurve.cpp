@@ -60,14 +60,14 @@ Optional<Math::Geometry::Vector2D> Math::Geometry::MultiCurve::ToSimpleShape() c
 			{
 				printf("Error: MultiCurve SimpleShape is not polygon\r\n");
 				newObj.Delete();
-				return 0;
+				return nullptr;
 			}
 		}
 		else
 		{
 			printf("Error: Error in MultiCurve converting to simple shape\r\n");
 			newObj.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
 	return newObj;

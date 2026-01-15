@@ -30,7 +30,7 @@ Net::OpenSSLClient::OpenSSLClient(NN<Net::SocketFactory> sockf, void *ssl, NN<So
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
-	this->clsData->remoteCerts = 0;
+	this->clsData->remoteCerts = nullptr;
 	this->clsData->shutdown = false;
 
 	STACK_OF(X509) *certs = SSL_get_peer_cert_chain(this->clsData->ssl);
@@ -80,7 +80,7 @@ Net::OpenSSLClient::~OpenSSLClient()
 			cert.Delete();
 		}
 		certList.Delete();
-		this->clsData->remoteCerts = 0;
+		this->clsData->remoteCerts = nullptr;
 	}
 	SSL_free(this->clsData->ssl);
 	MemFree(this->clsData);
@@ -215,7 +215,7 @@ Optional<Crypto::Cert::Certificate> Net::OpenSSLClient::GetRemoteCert()
 	if (this->clsData->remoteCerts.SetTo(certs))
 		return certs->GetItem(0);
 	else
-		return 0;
+		return nullptr;
 }
 
 Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::OpenSSLClient::GetRemoteCerts()

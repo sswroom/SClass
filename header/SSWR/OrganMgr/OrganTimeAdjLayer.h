@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANTIMEADJLAYER
 #define _SM_SSWR_ORGANMGR_ORGANTIMEADJLAYER
 
-#include "Data/StringMap.hpp"
+#include "Data/StringMapNative.hpp"
 #include "Map/GPSTrack.h"
 #include "Map/MapDrawLayer.h"
 #include "SSWR/OrganMgr/OrganEnv.h"
@@ -15,7 +15,7 @@ namespace SSWR
 		private:
 			NN<Map::GPSTrack> gpsTrk;
 			NN<Data::ArrayListNN<UserFileInfo>> userFileList;
-			Data::StringMap<Int32> cameraMap;
+			Data::StringMapNative<Int32> cameraMap;
 		public:
 			OrganTimeAdjLayer(NN<Map::GPSTrack> gpsTrk, NN<Data::ArrayListNN<UserFileInfo>> userFileList);
 			virtual ~OrganTimeAdjLayer();

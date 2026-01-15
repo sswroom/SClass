@@ -795,7 +795,7 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, Text::CString val)
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
-	if (val.v == 0)
+	if (val.v.IsNull())
 	{
 		this->sb.AppendC(UTF8STRC("null"));
 	}
@@ -984,7 +984,7 @@ Bool Text::JSONBuilder::ObjectAddNull(Text::CStringNN name)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Optional<Data::ArrayList<Int32>> i32Arr)
+Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Optional<Data::ArrayListNative<Int32>> i32Arr)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -995,7 +995,7 @@ Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Optional<Data:
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->AppendStr(name);
-	NN<Data::ArrayList<Int32>> nni32Arr;
+	NN<Data::ArrayListNative<Int32>> nni32Arr;
 	if (!i32Arr.SetTo(nni32Arr))
 	{
 		this->sb.AppendC(UTF8STRC(":null"));

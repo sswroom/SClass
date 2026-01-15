@@ -10,7 +10,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::MQTTFailoverClient *cli;
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
-	NEW_CLASS(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, clif, 0, 30));
+	NEW_CLASS(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, clif, nullptr, 30));
 	cli->AddClient(CSTR("127.0.0.1"), 1883, nullptr, nullptr, false);
 	cli->AddClient(CSTR("127.0.0.1"), 1884, nullptr, nullptr, false);
 	Data::DateTime dt;

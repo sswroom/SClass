@@ -77,13 +77,13 @@ OSInt Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
 Optional<DB::DBReader> Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
-	return 0;
+	return nullptr;
 }
 
 Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(UnsafeArray<const WChar> sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
-	return 0;
+	return nullptr;
 }
 
 Bool Win32::WMIQuery::IsLastDataError()
@@ -93,7 +93,7 @@ Bool Win32::WMIQuery::IsLastDataError()
 
 Optional<DB::DBTransaction> Win32::WMIQuery::BeginTransaction()
 {
-	return 0;
+	return nullptr;
 }
 
 void Win32::WMIQuery::Commit(NN<DB::DBTransaction> tran)

@@ -11,18 +11,18 @@
 Media::LPCMSource::LPCMSource(NN<Text::String> name)
 {
 	this->format.Clear();
-	this->data = 0;
+	this->data = nullptr;
 	this->name = name->Clone();
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 
 Media::LPCMSource::LPCMSource(Text::CStringNN name)
 {
 	this->format.Clear();
-	this->data = 0;
+	this->data = nullptr;
 	this->name = Text::String::New(name);
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 
@@ -39,7 +39,7 @@ Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length,
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
 	this->name = name->Clone();
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 
@@ -48,7 +48,7 @@ Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length,
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
 	this->name = Text::String::New(name);
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 
@@ -151,7 +151,7 @@ Bool Media::LPCMSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 
 void Media::LPCMSource::Stop()
 {
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 

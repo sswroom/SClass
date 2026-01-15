@@ -134,7 +134,7 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(Optional<UI::GUIClientControl> parent, N
 	this->core = core;
 	this->ssl = ssl;
 	this->envCsys = envCsys;
-	this->wms = 0;
+	this->wms = nullptr;
 	this->SetText(CSTR("Web Map Service"));
 	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
@@ -205,6 +205,6 @@ void SSWR::AVIRead::AVIRWMSForm::SetURL(Text::CStringNN url)
 Optional<Map::DrawMapService> SSWR::AVIRead::AVIRWMSForm::GetDrawMapService()
 {
 	Optional<Map::DrawMapService> mapService = this->wms;
-	this->wms = 0;
+	this->wms = nullptr;
 	return mapService;
 }

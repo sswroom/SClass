@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 		break;
 	}
 	NN<Net::WebServer::WebListener> listener;
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, hdlr, port, 120, 1, 8, CSTR("SSWR_OSM_Cache/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), nullptr, hdlr, port, 120, 1, 8, CSTR("SSWR_OSM_Cache/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 	}
 
 	NN<SSWR::AVIRead::AVIROSMCacheForm> frm;
-	NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMCacheForm(0, me->ui, me->core, listener, hdlr));
+	NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMCacheForm(nullptr, me->ui, me->core, listener, hdlr));
 	me->core->ShowForm(frm);
 	me->Close();
 }

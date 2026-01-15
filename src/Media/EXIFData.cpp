@@ -1900,7 +1900,7 @@ Bool Media::EXIFData::RemoveLargest()
 	return true;
 }
 
-UOSInt Media::EXIFData::GetExifIds(NN<Data::ArrayList<UInt32>> idArr) const
+UOSInt Media::EXIFData::GetExifIds(NN<Data::ArrayListNative<UInt32>> idArr) const
 {
 	UOSInt cnt = this->exifMap.GetCount();
 	UOSInt i = 0;
@@ -1937,9 +1937,9 @@ UnsafeArrayOpt<UInt16> Media::EXIFData::GetExifUInt16(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
-		return 0;
+		return nullptr;
 	if (item->type != ET_UINT16)
-		return 0;
+		return nullptr;
 	if (item->cnt > 2)
 	{
 		return item->dataBuff.GetArray<UInt16>();
@@ -1954,9 +1954,9 @@ UnsafeArrayOpt<UInt32> Media::EXIFData::GetExifUInt32(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
-		return 0;
+		return nullptr;
 	if (item->type != ET_UINT32)
-		return 0;
+		return nullptr;
 	if (item->cnt > 1)
 	{
 		return item->dataBuff.GetArray<UInt32>();
@@ -1971,9 +1971,9 @@ Optional<Media::EXIFData> Media::EXIFData::GetExifSubexif(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
-		return 0;
+		return nullptr;
 	if (item->type != ET_SUBEXIF)
-		return 0;
+		return nullptr;
 	return item->dataBuff.GetOpt<Media::EXIFData>();
 }
 
@@ -1981,9 +1981,9 @@ UnsafeArrayOpt<UInt8> Media::EXIFData::GetExifOther(UInt32 id) const
 {
 	NN<Media::EXIFData::EXIFItem> item;
 	if (!this->exifMap.Get(id).SetTo(item))
-		return 0;
+		return nullptr;
 	if (item->type != ET_OTHER)
-		return 0;
+		return nullptr;
 	return item->dataBuff.GetArray<UInt8>();
 }
 
@@ -2629,7 +2629,7 @@ void Media::EXIFData::SetHeight(UInt32 height)
 
 Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const
 {
-	Data::ArrayList<UInt32> exifIds;
+	Data::ArrayListNative<UInt32> exifIds;
 	NN<Media::EXIFData::EXIFItem> exItem;
 	UOSInt i;
 	UOSInt j;
@@ -2653,7 +2653,7 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 		{
 			if (exItem->type == Media::EXIFData::ET_SUBEXIF)
 			{
-				Data::ArrayList<UInt32> subExIds;
+				Data::ArrayListNative<UInt32> subExIds;
 				UOSInt i2;
 				UOSInt j2;
 				UInt32 v2;
@@ -4555,11 +4555,11 @@ void Media::EXIFData::GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> en
 
 Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt8> buff, UOSInt buffSize) const
 {
-	Optional<Media::EXIFData> ret = 0;
+	Optional<Media::EXIFData> ret = nullptr;
 	if (Text::StrEquals(buff, U8STR("Panasonic")))
 	{
 		Data::ByteOrderLSB bo;
-		ret = ParseIFD(&buff[12], buffSize - 12, bo, 0, Media::EXIFData::EM_PANASONIC, 0);
+		ret = ParseIFD(&buff[12], buffSize - 12, bo, 0, Media::EXIFData::EM_PANASONIC, nullptr);
 		return ret;
 	}
 	else if (Text::StrEquals(buff, U8STR("OLYMPUS")))
@@ -4574,7 +4574,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt
 	else if (Text::StrEquals(buff, U8STR("OLYMP")))
 	{
 		Data::ByteOrderLSB bo;
-		ret = ParseIFD(&buff[8], buffSize - 8, bo, 0, Media::EXIFData::EM_OLYMPUS, 0);
+		ret = ParseIFD(&buff[8], buffSize - 8, bo, 0, Media::EXIFData::EM_OLYMPUS, nullptr);
 		return ret;
 	}
 	else if (Text::StrEquals(buff, U8STR("Nikon")))
@@ -4592,13 +4592,13 @@ Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt
 	else if (Text::StrEquals(buff, U8STR("QVC")))
 	{
 		Data::ByteOrderMSB bo;
-		ret = ParseIFD(&buff[6], buffSize - 6, bo, 0, Media::EXIFData::EM_CASIO2, 0);
+		ret = ParseIFD(&buff[6], buffSize - 6, bo, 0, Media::EXIFData::EM_CASIO2, nullptr);
 		return ret;
 	}
 	else if (Text::StrEquals(buff, U8STR("SANYO")))
 	{
 		Data::ByteOrderLSB bo;
-		ret = ParseIFD(&buff[8], buffSize - 8, bo, 0, Media::EXIFData::EM_SANYO, 0);
+		ret = ParseIFD(&buff[8], buffSize - 8, bo, 0, Media::EXIFData::EM_SANYO, nullptr);
 		return ret;
 	}
 	else if (Text::StrEquals(buff, U8STR("Apple iOS")))
@@ -4606,11 +4606,11 @@ Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt
 		if (buff[12] == 'M' && buff[13] == 'M')
 		{
 			Data::ByteOrderMSB bo;
-			ret = ParseIFD(&buff[14], buffSize - 14, bo, 0, Media::EXIFData::EM_APPLE, 0);
+			ret = ParseIFD(&buff[14], buffSize - 14, bo, 0, Media::EXIFData::EM_APPLE, nullptr);
 		}
 		else
 		{
-			ret = 0;
+			ret = nullptr;
 		}
 		return ret;
 	}
@@ -4622,19 +4622,19 @@ Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt
 			if (maker.Equals(UTF8STRC("Canon")))
 			{
 				Data::ByteOrderLSB bo;
-				ret = ParseIFD(buff, buffSize, bo, 0, Media::EXIFData::EM_CANON, 0);
+				ret = ParseIFD(buff, buffSize, bo, 0, Media::EXIFData::EM_CANON, nullptr);
 				return ret;
 			}
 			else if (maker.Equals(UTF8STRC("CASIO")))
 			{
 				Data::ByteOrderMSB bo;
-				ret = ParseIFD(buff, buffSize, bo, 0, Media::EXIFData::EM_CASIO1, 0);
+				ret = ParseIFD(buff, buffSize, bo, 0, Media::EXIFData::EM_CASIO1, nullptr);
 				return ret;
 			}
 			else if (maker.Equals(UTF8STRC("FLIR Systems AB")))
 			{
 				Data::ByteOrderLSB bo;
-				ret = ParseIFD(buff, buffSize, bo, 0, Media::EXIFData::EM_FLIR, 0);
+				ret = ParseIFD(buff, buffSize, bo, 0, Media::EXIFData::EM_FLIR, nullptr);
 				return ret;
 			}
 		}
@@ -5244,14 +5244,14 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 	UInt32 fcnt;
 	if (fd->GetRealData(ofst, 2, BYTEARR(ifdBuff)) != 2)
 	{
-		return 0;
+		return nullptr;
 	}
 	ifdCnt = bo->GetUInt16(ifdBuff);
 
 	Data::ByteBuffer ifdEntries(readSize = ifdCnt * 12 + 4);
 	if (fd->GetRealData(ofst + 2, readSize, ifdEntries) != readSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UInt32 j;
@@ -5478,14 +5478,14 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 	UInt64 fcnt;
 	if (fd->GetRealData(ofst, 8, BYTEARR(ifdBuff)) != 8)
 	{
-		return 0;
+		return nullptr;
 	}
 	ifdCnt = bo->GetUInt64(ifdBuff);
 
 	Data::ByteBuffer ifdEntries(readSize = ifdCnt * 20 + 8);
 	if (fd->GetRealData(ofst + 8, readSize, ifdEntries) != readSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UOSInt j;
@@ -6072,7 +6072,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseExifJPG(UnsafeArray<const UInt8>
 	{
 		return ParseExifDirect(buff + 10, buffSize - 10);
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::EXIFData> Media::EXIFData::ParseExifDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize)
@@ -6088,7 +6088,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseExifDirect(UnsafeArray<const UIn
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	Bool valid = true;
 	if (bo->GetUInt16(&buff[2]) != 42)
@@ -6099,7 +6099,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseExifDirect(UnsafeArray<const UIn
 	{
 		valid = false;
 	}
-	Optional<Media::EXIFData> ret = 0;
+	Optional<Media::EXIFData> ret = nullptr;
 	if (valid)
 	{
 		ret = ParseIFD(&buff[8], buffSize - 8, bo, 0, Media::EXIFData::EM_STANDARD, &buff[0]);

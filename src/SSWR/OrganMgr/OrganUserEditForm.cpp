@@ -44,7 +44,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(AnyType userObj)
 	{
 		if (sb2.GetLength() == 0)
 		{
-			if (me->env->ModifyWebUser(user->id, sb1.ToString(), 0, sb3.ToString()))
+			if (me->env->ModifyWebUser(user->id, sb1.ToString(), nullptr, sb3.ToString()))
 			{
 				me->SetDialogResult(UI::GUIForm::DR_OK);
 			}

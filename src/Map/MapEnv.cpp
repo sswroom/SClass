@@ -127,7 +127,7 @@ Map::MapEnv::MapEnv(Text::CStringNN fileName, UInt32 bgColor, NN<Math::Coordinat
 	this->minScale = 10;
 
 	this->AddLineStyle();
-	this->AddLineStyleLayer(0, 0xff000000, 1, 0, 0);
+	this->AddLineStyleLayer(0, 0xff000000, 1, nullptr, 0);
 }
 
 Map::MapEnv::~MapEnv()
@@ -135,7 +135,7 @@ Map::MapEnv::~MapEnv()
 	UOSInt i = this->mapLayers.GetCount();
 	while (i-- > 0)
 	{
-		RemoveItem(0, i);
+		RemoveItem(nullptr, i);
 	}
 
 	NN<const Data::ArrayListNN<ImageInfo>> imgs = this->images.GetValues();
@@ -218,7 +218,7 @@ UOSInt Map::MapEnv::AddLineStyle()
 	if (cnt == 0)
 	{
 		NEW_CLASSNN(style, Map::MapEnv::LineStyle());
-		style->name = 0;
+		style->name = nullptr;
 		return this->lineStyles.Add(style);
 	}
 	else
@@ -229,7 +229,7 @@ UOSInt Map::MapEnv::AddLineStyle()
 			return cnt - 1;
 		}
 		NEW_CLASSNN(style, Map::MapEnv::LineStyle());
-		style->name = 0;
+		style->name = nullptr;
 		return this->lineStyles.Add(style);
 	}
 }
@@ -254,7 +254,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapEnv::GetLineStyleName(UOSInt index, UnsafeArray
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<LineStyle> style;
 	style = this->lineStyles.GetItemNoCheck(index);
@@ -265,7 +265,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapEnv::GetLineStyleName(UOSInt index, UnsafeArray
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -293,7 +293,7 @@ Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, Un
 	}
 	else
 	{
-		layer->pattern = 0;
+		layer->pattern = nullptr;
 		layer->npattern = 0;
 	}
 	style->layers.Add(layer);
@@ -331,7 +331,7 @@ Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, 
 	}
 	else
 	{
-		layer->pattern = 0;
+		layer->pattern = nullptr;
 		layer->npattern = 0;
 	}
 	return true;
@@ -456,11 +456,11 @@ UnsafeArrayOpt<UTF8Char> Map::MapEnv::GetFontStyleName(UOSInt index, UnsafeArray
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Map::MapEnv::FontStyle> style;
 	if (!this->fontStyles.GetItem(index).SetTo(style))
-		return 0;
+		return nullptr;
 	NN<Text::String> s;
 	if (style->styleName.SetTo(s))
 		return s->ConcatTo(buff);
-	return 0;
+	return nullptr;
 }
 
 Bool Map::MapEnv::RemoveFontStyle(UOSInt index)
@@ -608,7 +608,7 @@ UOSInt Map::MapEnv::AddLayer(Optional<Map::MapEnv::GroupItem> group, NN<Map::Map
 		}
 		lyr->fontType = FontType::GlobalStyle;
 		lyr->fontStyle = this->defFontStyle;
-		lyr->fontName = 0;
+		lyr->fontName = nullptr;
 		lyr->fontSizePt = 9.0;
 		lyr->fontColor = 0xff000000;
 		lyr->maxScale = 2000000000;
@@ -1111,7 +1111,7 @@ Optional<Media::StaticImage> Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> 
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> parserList)
@@ -1268,13 +1268,13 @@ UOSInt Map::MapEnv::GetLayersOfType(NN<Data::ArrayListNN<Map::MapDrawLayer>> lay
 void Map::MapEnv::AddUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	this->AddGroupUpdatedHandler(0, hdlr, obj);
+	this->AddGroupUpdatedHandler(nullptr, hdlr, obj);
 }
 
 void Map::MapEnv::RemoveUpdatedHandler(Map::MapDrawLayer::UpdatedHandler hdlr, AnyType obj)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	this->RemoveGroupUpdatedHandler(0, hdlr, obj);
+	this->RemoveGroupUpdatedHandler(nullptr, hdlr, obj);
 }
 
 Int64 Map::MapEnv::GetTimeEndTS(Optional<Map::MapEnv::GroupItem> group) const
@@ -1420,7 +1420,7 @@ Optional<Map::MapDrawLayer> Map::MapEnv::GetFirstLayer(Optional<Map::MapEnv::Gro
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Map::MapEnv::GetLayersInGroup(Optional<Map::MapEnv::GroupItem> group, NN<Data::ArrayListNN<Map::MapDrawLayer>> layers) const
@@ -1524,7 +1524,7 @@ Bool Map::MapEnv::GetLayerBounds(Optional<Map::MapEnv::GroupItem> group, UOSInt 
 NN<Map::MapView> Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 {
 	NN<Map::MapDrawLayer> baseLayer;
-	if (GetFirstLayer(0).SetTo(baseLayer))
+	if (GetFirstLayer(nullptr).SetTo(baseLayer))
 	{
 		return baseLayer->CreateMapView(scnSize);
 	}

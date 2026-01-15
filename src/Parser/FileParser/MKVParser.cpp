@@ -39,7 +39,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ParseFileHdr(NN<IO::St
 	UInt64 dataSize;
 	UInt32 segmId;
 	if (ReadMInt32(&hdr[0]) != 0x1a45dfa3)
-		return 0;
+		return nullptr;
 	status.buffSize = 256;
 	status.nextReadOfst = 256;
 	status.fd = fd;
@@ -47,15 +47,15 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ParseFileHdr(NN<IO::St
 	status.currOfst = 4;
 	MemCopyNO(buff, &hdr[0], 256);
 	if (ReadDataSize(status, dataSize) == 0)
-		return 0;
+		return nullptr;
 	if (ReadHeader(status, dataSize) == 0)
-		return 0;
+		return nullptr;
 	segmId = 0;
 	ReadID(status, segmId);
 	if (segmId != 0x18538067)
-		return 0;
+		return nullptr;
 	if (ReadDataSize(status, dataSize) == 0)
-		return 0;
+		return nullptr;
 	Optional<IO::ParsedObject> pobj = ReadSegment(status, dataSize);
 	return pobj;
 }
@@ -385,7 +385,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ReadSegment(NN<MKVStat
 		{
 			if (pobj)
 				DEL_CLASS(pobj);
-			return 0;
+			return nullptr;
 		}
 		dataSize -= readSize;
 		readSize = ReadDataSize(status, elementSize);
@@ -393,7 +393,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ReadSegment(NN<MKVStat
 		{
 			if (pobj)
 				DEL_CLASS(pobj);
-			return 0;
+			return nullptr;
 		}
 		dataSize -= readSize;
 		switch (hdrId)
@@ -428,7 +428,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ReadSegment(NN<MKVStat
 		{
 			if (pobj)
 				DEL_CLASS(pobj);
-			return 0;
+			return nullptr;
 		}
 	}
 	return pobj;

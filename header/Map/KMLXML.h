@@ -1,5 +1,6 @@
 #ifndef _SM_MAP_KMLXML
 #define _SM_MAP_KMLXML
+#include "Data/ArrayListT.hpp"
 #include "Data/ICaseStringMapObj.hpp"
 #include "Map/GPSTrack.h"
 #include "Map/MapDrawLayer.h"
@@ -31,10 +32,10 @@ namespace Map
 		static Optional<Map::MapDrawLayer> ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile);
 	private:
 		static Optional<Map::MapDrawLayer> ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMapObj<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF, Bool rootKml);
-		static void ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles);
-		static Optional<Map::MapDrawLayer> ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF);
-		static Optional<Math::Geometry::Vector2D> ParseKMLVector(NN<Text::XMLReader> reader, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListStringNN> colValues, NN<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos);
-		static void ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayListA<Math::Coord2DDbl>> coordList, NN<Data::ArrayList<Double>> altList);
+		static void ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPSTrack> lyr, Data::StringMapObj<KMLStyle*> *styles);
+		static Optional<Map::MapDrawLayer> ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMapObj<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF);
+		static Optional<Math::Geometry::Vector2D> ParseKMLVector(NN<Text::XMLReader> reader, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListStringNN> colValues, NN<Data::ArrayListT<Map::VectorLayer::ColInfo>> colInfos);
+		static void ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayListA<Math::Coord2DDbl>> coordList, NN<Data::ArrayListNative<Double>> altList);
 	};
 }
 #endif

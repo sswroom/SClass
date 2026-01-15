@@ -122,7 +122,7 @@ SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(Optional<UI::GUIClie
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->lyr = 0;
+	this->lyr = nullptr;
 
 	this->lblRoadRoute = ui->NewLabel(*this, CSTR("Road Route"));
 	this->lblRoadRoute->SetRect(4, 4, 150, 23, false);

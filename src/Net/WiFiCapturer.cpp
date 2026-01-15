@@ -159,10 +159,10 @@ void __stdcall Net::WiFiCapturer::ScanThread(NN<Sync::Thread> thread)
 
 Net::WiFiCapturer::WiFiCapturer() : thread(ScanThread, this, CSTR("WiFiCapturer"))
 {
-	this->lastFileName = 0;
-	this->interf = 0;
-	this->hdlr = 0;
-	this->hdlrObj = 0;
+	this->lastFileName = nullptr;
+	this->interf = nullptr;
+	this->hdlr = nullptr;
+	this->hdlrObj = nullptr;
 	this->lastScanTime = 0;
 }
 

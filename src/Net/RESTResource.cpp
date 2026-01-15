@@ -52,7 +52,7 @@ Net::RESTResource::RESTResource(NN<Net::TCPClientFactory> clif, Optional<Net::SS
 	this->clif = clif;
 	this->ssl = ssl;
 	this->url = Text::String::New(url);
-	this->cli = 0;
+	this->cli = nullptr;
 	this->timeout = 0;
 }
 
@@ -85,7 +85,7 @@ NN<Net::RESTResource> Net::RESTResource::CreateSubResource(Text::CStringNN subPa
 
 Net::WebStatus::StatusCode Net::RESTResource::Get(Text::CStringNN command, NN<IO::Stream> respStm)
 {
-	return this->DoRequest(command, Net::WebUtil::RequestMethod::HTTP_GET, 0, respStm);
+	return this->DoRequest(command, Net::WebUtil::RequestMethod::HTTP_GET, nullptr, respStm);
 }
 
 Net::WebStatus::StatusCode Net::RESTResource::Post(Text::CStringNN command, NN<RESTParam> param, NN<IO::Stream> respStm)

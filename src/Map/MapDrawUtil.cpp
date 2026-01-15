@@ -6,7 +6,7 @@ Bool Map::MapDrawUtil::DrawPoint(NN<Math::Geometry::Point> pt, NN<Media::DrawIma
 {
 	Math::Coord2DDbl coord = view->MapXYToScnXY(pt->GetCenter()) + ofst;
 	NN<Media::DrawBrush> b2 = img->NewBrushARGB(0xffff0000);
-	img->DrawRect(coord - 8, Math::Size2DDbl(17, 17), 0, b2);
+	img->DrawRect(coord - 8, Math::Size2DDbl(17, 17), nullptr, b2);
 	img->DelBrush(b2);
 	return true;
 }
@@ -128,7 +128,7 @@ Bool Map::MapDrawUtil::DrawMultiSurface(NN<Math::Geometry::MultiSurface> ms, NN<
 
 Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
-	Data::ArrayList<UInt32> ptOfst;
+	Data::ArrayListNative<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
 	NN<Math::Geometry::Vector2D> vec;

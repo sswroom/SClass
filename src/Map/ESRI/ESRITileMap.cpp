@@ -125,7 +125,7 @@ Bool Map::ESRI::ESRITileMap::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
+Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
 {
 	return this->esriMap->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
@@ -136,7 +136,7 @@ void Map::ESRI::ESRITileMap::SetDispSize(Math::Size2DDbl size, Double dpi)
 	this->dispDPI = dpi;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
+UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	Int32 i;
@@ -193,7 +193,7 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 	NN<IO::ParsedObject> pobj;
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
-		return 0;
+		return nullptr;
 	UOSInt tileWidth = this->esriMap->TileGetWidth();
 	UOSInt tileHeight = this->esriMap->TileGetHeight();
 	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
@@ -205,8 +205,7 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 	bounds.Set(b);
 	if (!b.OverlapOrTouch(this->esriMap->GetBounds()))
-		return 0;
-
+		return nullptr;
 
 	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -234,7 +233,7 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 	}
 
 	if (localOnly)
-		return 0;
+		return nullptr;
 
 	this->esriMap->TileLoadToFile(CSTRP(filePath, filePathEnd), level, tileId.x, tileId.y);
 	IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
@@ -249,7 +248,7 @@ Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, M
 			pobj.Delete();
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRITileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
@@ -269,7 +268,7 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level,
 	IO::StmData::FileData *fd;
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
-		return 0;
+		return nullptr;
 	UOSInt tileWidth = this->esriMap->TileGetWidth();
 	UOSInt tileHeight = this->esriMap->TileGetHeight();
 	Math::Coord2DDbl origin = this->esriMap->TileGetOrigin();
@@ -281,7 +280,7 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level,
 	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 	bounds.Set(b);
 	if (!b.OverlapOrTouch(this->esriMap->GetBounds()))
-		return 0;
+		return nullptr;
 
 	sptr = this->cacheDir->ConcatTo(filePath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -302,7 +301,7 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level,
 	DEL_CLASS(fd);
 
 	if (localOnly)
-		return 0;
+		return nullptr;
 
 	this->esriMap->TileLoadToFile(CSTRP(filePath, sptr), level, tileId.x, tileId.y);
 	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(sptr - filePath)}, false));
@@ -312,5 +311,5 @@ Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level,
 		return fd;
 	}
 	DEL_CLASS(fd);
-	return 0;
+	return nullptr;
 }

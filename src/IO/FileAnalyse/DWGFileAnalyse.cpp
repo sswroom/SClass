@@ -122,7 +122,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("DWGFileAnalyse"))
 {
 	UInt8 buff[8];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->fileVer = 0;
 	fd->GetRealData(0, 6, BYTEARR(buff));
@@ -216,9 +216,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	UInt8 buff[128];
 	Data::UUID uuid;

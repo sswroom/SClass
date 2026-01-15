@@ -160,16 +160,16 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
-	this->v4threadStats = 0;
-	this->v6threadStats = 0;
+	this->v4threadStats = nullptr;
+	this->v6threadStats = nullptr;
 	this->recvCnt = 0;
 	UOSInt i;
 
 	this->sockf = sockf;
 	this->logPrefix = Text::String::NewOrNull(logPrefix);
 	this->hdlr = {hdlr, userData};
-	this->logFileR = 0;
-	this->logFileS = 0;
+	this->logFileR = nullptr;
+	this->logFileS = nullptr;
 	this->msgLog = msgLog;
 	this->msgPrefix = Text::String::NewOrNull(msgPrefix);
 	this->port = port;
@@ -195,7 +195,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil
 				if (!this->sockf->SocketBind(soc, &addrAny, port))
 				{
 					this->sockf->DestroySocket(soc);
-					this->socV6 = 0;
+					this->socV6 = nullptr;
 				}
 			}
 			succ = true;
@@ -205,20 +205,20 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil
 			if (this->socV4.SetTo(soc))
 			{
 				this->sockf->DestroySocket(soc);
-				this->socV4 = 0;
+				this->socV4 = nullptr;
 			}
 			if (this->socV6.SetTo(soc))
 			{
 				this->sockf->DestroySocket(soc);
-				this->socV6 = 0;
+				this->socV6 = nullptr;
 			}
 		}
 	}
 	else
 	{
 		this->addrType = nnbindAddr->addrType;
-		this->socV4 = 0;
-		this->socV6 = 0;
+		this->socV4 = nullptr;
+		this->socV6 = nullptr;
 		if (this->addrType == Net::AddrType::IPv4)
 		{
 			this->socV4 = this->sockf->CreateUDPSocketv4();
@@ -233,7 +233,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil
 			else if (this->socV4.SetTo(soc))
 			{
 				this->sockf->DestroySocket(soc);
-				this->socV4 = 0;
+				this->socV4 = nullptr;
 			}
 		}
 		else if (this->addrType == Net::AddrType::IPv6)
@@ -250,7 +250,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil
 			else if (this->socV6.SetTo(soc))
 			{
 				this->sockf->DestroySocket(soc);
-				this->socV6 = 0;
+				this->socV6 = nullptr;
 			}
 
 		}
@@ -395,8 +395,8 @@ Net::UDPServer::~UDPServer()
 			MemFreeArr(v6threadStats);
 		}
 	}
-	this->socV4 = 0;
-	this->socV6 = 0;
+	this->socV4 = nullptr;
+	this->socV6 = nullptr;
 
 	this->logFileS.Delete();
 	this->logFileR.Delete();

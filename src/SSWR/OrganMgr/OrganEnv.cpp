@@ -146,7 +146,7 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	this->cateIsFullDir = false;
 	this->bookIds = 0;
 	this->bookObjs = 0;
-	this->gpsTrk = 0;
+	this->gpsTrk = nullptr;
 	this->gpsUserId = 0;
 	this->errType = ERR_NONE;
 
@@ -430,7 +430,7 @@ Optional<SSWR::OrganMgr::Trip> SSWR::OrganMgr::OrganEnv::TripGet(Int32 userId, c
 {
 	OSInt i = this->TripGetIndex(ts);
 	if (i < 0)
-		return 0;
+		return nullptr;
 	else
 		return this->trips.GetItem((UOSInt)i);
 }
@@ -470,7 +470,7 @@ Optional<SSWR::OrganMgr::Location> SSWR::OrganMgr::OrganEnv::LocationGet(Int32 l
 {
 	OSInt i = LocationGetIndex(locId);
 	if (i < 0)
-		return 0;
+		return nullptr;
 	else
 		return this->locs.GetItem((UOSInt)i);
 }
@@ -561,7 +561,7 @@ Optional<Text::String> SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const 
 		Data::Timestamp ts2 = ts.ClearTimeLocal();
 		Data::Timestamp ts3 = ts2.AddDay(1);
 		{
-			OrganTripForm frm(0, ui, *this);
+			OrganTripForm frm(nullptr, ui, *this);
 			sb.AppendC(UTF8STRC("Trip not found at "));
 			sb.AppendTSNoZone(ts);
 			frm.SetText(sb.ToCString());
@@ -574,12 +574,12 @@ Optional<Text::String> SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const 
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -608,7 +608,7 @@ Optional<Media::EXIFData> SSWR::OrganMgr::OrganEnv::ParseJPGExif(Text::CStringNN
 
 Optional<Media::EXIFData> SSWR::OrganMgr::OrganEnv::ParseTIFExif(Text::CStringNN fileName)
 {
-	return 0;
+	return nullptr;
 	//////////////////////////////////
 }
 

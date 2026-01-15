@@ -97,7 +97,7 @@ void Math::BigIntUtil::LSBMul(UnsafeArray<UOSInt> destBuff, UnsafeArray<const UO
 {
 	Bool neg = false;
 	UnsafeArray<UOSInt> tmpBuff;
-	UnsafeArrayOpt<UOSInt> soriBuff = 0;
+	UnsafeArrayOpt<UOSInt> soriBuff = nullptr;
 	UnsafeArray<UOSInt> sBuff;
 	UOSInt i;
 	UOSInt v;

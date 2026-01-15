@@ -35,7 +35,7 @@ SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(Optional<UI::GUIClientControl> parent, N
 {
 	this->core = core;
 	this->ssl = ssl;
-	this->tms = 0;
+	this->tms = nullptr;
 	this->SetText(CSTR("Tile Map Service"));
 	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
@@ -71,6 +71,6 @@ void SSWR::AVIRead::AVIRTMSForm::OnMonitorChanged()
 Optional<Map::TileMap> SSWR::AVIRead::AVIRTMSForm::GetTileMap()
 {
 	Optional<Map::TileMap> tile = this->tms;
-	this->tms = 0;
+	this->tms = nullptr;
 	return tile;
 }

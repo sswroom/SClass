@@ -78,11 +78,11 @@ NN<Net::LoRaMonitorCore::GWInfo> Net::LoRaMonitorCore::GetGWOrCreate(UInt64 gweu
 	}
 	gw = MemAllocNN(GWInfo);
 	gw->gweui = gweui;
-	gw->name = 0;
-	gw->model = 0;
-	gw->sn = 0;
-	gw->imei = 0;
-	gw->location = 0;
+	gw->name = nullptr;
+	gw->model = nullptr;
+	gw->sn = nullptr;
+	gw->imei = nullptr;
+	gw->location = nullptr;
 	gw->lastSeenTime = Data::Timestamp::UtcNow();
 	gw->updated = false;
 	gw->lastDataBegin = 0;
@@ -163,7 +163,7 @@ void Net::LoRaMonitorCore::LoadDB()
 void Net::LoRaMonitorCore::SaveGWList()
 {
 	DB::SQLBuilder sql(this->db->GetSQLType(), false, this->db->GetTzQhr());
-	Optional<DB::DBTransaction> tran = 0;
+	Optional<DB::DBTransaction> tran = nullptr;
 	NN<DB::DBTransaction> nntran;
 	Sync::MutexUsage mutUsage(this->gwMut);
 	NN<Net::LoRaMonitorCore::GWInfo> gw;
@@ -217,15 +217,15 @@ Net::LoRaMonitorCore::LoRaMonitorCore(NN<Net::SocketFactory> sockf, UInt16 loraP
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
 	NEW_CLASSNN(this->handler, LoRaMonitorHandler(*this, CSTRP(sbuff, sptr)));
-	this->listener = 0;
+	this->listener = nullptr;
 	this->s = this->sockf->CreateRAWSocket();
 	NN<Net::WebServer::WebListener> listener;
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, Optional<Net::SSLEngine>(0), this->handler, uiPort, 120, 1, 4, CSTR("LoRaMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, Optional<Net::SSLEngine>(nullptr), this->handler, uiPort, 120, 1, 4, CSTR("LoRaMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
-		this->listener = 0;
-		this->socMon = 0;
+		this->listener = nullptr;
+		this->socMon = nullptr;
 	}
 	else
 	{
@@ -237,7 +237,7 @@ Net::LoRaMonitorCore::LoRaMonitorCore(NN<Net::SocketFactory> sockf, UInt16 loraP
 		}
 		else
 		{
-			this->socMon = 0;
+			this->socMon = nullptr;
 		}
 	}
 }

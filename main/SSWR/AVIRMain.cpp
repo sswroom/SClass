@@ -60,7 +60,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (Core::ProgControl::CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		argv = progCtrl->GetCommandLines(progCtrl, argc);
@@ -71,7 +71,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			while (i < argc)
 			{
 				IO::StmData::FileData fd({argv[i], Text::StrCharCnt(argv[i])}, false);
-				core->LoadData(fd, 0);
+				core->LoadData(fd, nullptr);
 
 				i++;
 			}

@@ -49,7 +49,7 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 	NN<Media::MediaSource> msrc;
 	NN<Media::AudioSource> adecoder;
 	NN<Media::VideoSource> vdecoder;
-	Data::ArrayList<DecodeStatus*> statusList;
+	Data::ArrayListObj<DecodeStatus*> statusList;
 	Bool isEnd;
 	UOSInt i = 0;
 	Int32 syncTime;
@@ -65,8 +65,8 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 		status->sampleCnt = 0;
 		status->lastSampleTime = 0;
 		status->isEnd = false;
-		status->adecoder = 0;
-		status->vdecoder = 0;
+		status->adecoder = nullptr;
+		status->vdecoder = nullptr;
 		status->renderer = 0;
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
@@ -89,7 +89,7 @@ Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 				NEW_CLASS(status->renderer, Media::NullRenderer());
 				status->renderer->BindAudio(adecoder);
 				status->renderer->SetEndNotify(OnAudioEnd, status);
-				status->renderer->AudioInit(0);
+				status->renderer->AudioInit(nullptr);
 			}
 			else
 			{

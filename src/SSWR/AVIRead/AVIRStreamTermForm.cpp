@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::StopStream(Bool clearUI)
 		}
 		this->threadToStop = false;
 		stm.Delete();
-		this->stm = 0;
+		this->stm = nullptr;
 		if (clearUI)
 		{
 			this->txtStream->SetText(CSTR("-"));
@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(Optional<UI::GUIClientCont
 	
 	this->core = core;
 	this->siLabDriver = this->core->GetSiLabDriver();
-	this->stm = 0;
+	this->stm = nullptr;
 	this->threadToStop = false;
 	this->threadRunning = false;
 	this->recvUpdated = false;

@@ -32,7 +32,7 @@ void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(AnyType userObj, UInt32 text
 void __stdcall UtilUI::TextViewerForm::OnSearchClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
 	NN<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
-	me->srchFrm = 0;
+	me->srchFrm = nullptr;
 }
 
 UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr, NN<Media::DrawEngine> deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
@@ -42,7 +42,7 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 	this->SetText(CSTR("Text Viewer"));
 
 	this->monMgr = monMgr;
-	this->srchFrm = 0;
+	this->srchFrm = nullptr;
 	this->pnlStatus = ui->NewPanel(*this);
 	this->pnlStatus->SetRect(0, 0, 100, 24, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -50,7 +50,7 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 	this->txtStatus->SetRect(0, 0, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASSNN(this->txtView, UI::GUITextFileView(ui, *this, deng, 0));
+	NEW_CLASSNN(this->txtView, UI::GUITextFileView(ui, *this, deng, nullptr));
 	this->txtView->SetCodePage(codePage);
 	this->txtView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->HandleDropFiles(OnFileDrop, this);
@@ -108,7 +108,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_EDIT_GOTO:
 		{
-			UtilUI::TextGotoDialog gotoDlg(0, this->ui, this->monMgr);
+			UtilUI::TextGotoDialog gotoDlg(nullptr, this->ui, this->monMgr);
 			gotoDlg.SetLineNumber(this->txtView->GetTextPosY() + 1);
 			if (gotoDlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -183,7 +183,7 @@ Bool UtilUI::TextViewerForm::OpenSearch(Text::CString txt)
 	}
 	else
 	{
-		NEW_CLASSNN(srchFrm, UtilUI::TextSearchForm(0, this->ui, this->monMgr, *this));
+		NEW_CLASSNN(srchFrm, UtilUI::TextSearchForm(nullptr, this->ui, this->monMgr, *this));
 		this->srchFrm = srchFrm;
 		srchFrm->HandleFormClosed(OnSearchClosed, this);
 		if (txt.leng > 0)

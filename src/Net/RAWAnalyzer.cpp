@@ -34,14 +34,14 @@ Net::RAWAnalyzer::RAWAnalyzer(NN<Net::TCPClientFactory> clif, UInt16 infoPort, O
 {
 	this->clif = clif;
 	NEW_CLASSNN(this->analyzer, Net::EthernetAnalyzer(errWriter, atype, CSTR("RAWAnalyzer"))); 
-	this->listener = 0;
-	this->rawSock = 0;
+	this->listener = nullptr;
+	this->rawSock = nullptr;
 	this->threadCnt = 0;
 	this->threadToStop = false;
 
 	NEW_CLASSNN(this->webHdlr, Net::EthernetWebHandler(this->analyzer));
 	NN<Net::WebServer::WebListener> listener;
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, 0, this->webHdlr, infoPort, 120, 1, 8, CSTR("NetRAWCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, nullptr, this->webHdlr, infoPort, 120, 1, 8, CSTR("NetRAWCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
@@ -73,7 +73,7 @@ Net::RAWAnalyzer::~RAWAnalyzer()
 		{
 			Sync::SimpleThread::Sleep(1);
 		}
-		this->rawSock = 0;
+		this->rawSock = nullptr;
 	}
 
 	this->listener.Delete();

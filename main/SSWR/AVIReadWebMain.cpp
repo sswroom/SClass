@@ -26,7 +26,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	hdlr2->HandlePath(CSTR("/@sswroom/sswr"), hdlr, true);
 	{
 		IO::ConsoleWriter console;
-		Net::WebServer::WebListener listener(clif, 0, baseHdlr, 5080, 60, 2, 8, CSTR("AVIReadWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true);
+		Net::WebServer::WebListener listener(clif, nullptr, baseHdlr, 5080, 60, 2, 8, CSTR("AVIReadWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 		if (!listener.IsError())
 		{
 			console.WriteLine(CSTR("AVIReadWeb started"));

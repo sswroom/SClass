@@ -38,7 +38,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		if (this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(gimg))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
-			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 			gimg->DelBrush(b);
 			b = gimg->NewBrushARGB(0xffffffff);
 			f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
@@ -71,13 +71,13 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 			i = this->audSrc->ReadSample(currSample, sz.x, buff);
 			
 			b = gimg->NewBrushARGB(0xff000000);
-			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 			gimg->DelBrush(b);
 
 			channelH = sz.y / this->format.nChannels / 2;
 			if (channelH > 0)
 			{
-				p = gimg->NewPenARGB(0xffffffff, 1, 0, 0);
+				p = gimg->NewPenARGB(0xffffffff, 1, nullptr, 0);
 				if (this->format.bitpersample == 16)
 				{
 					if (i != sz.x)
@@ -139,7 +139,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		if (this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(gimg))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
-			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 			gimg->DelBrush(b);
 			b = gimg->NewBrushARGB(0xffffffff);
 			f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			i = this->audSrc->ReadSample(currSample - FFTSAMPLE + 1, FFTSAMPLE + FFTAVG - 1, buff);
 			
 			b = gimg->NewBrushARGB(0xff000000);
-			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 			gimg->DelBrush(b);
 
 			UnsafeArray<Double> freqData;
@@ -184,20 +184,20 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 
 				if (i == 0)
 				{
-					p = gimg->NewPenARGB(0xffff0000, 1, 0, 0);
+					p = gimg->NewPenARGB(0xffff0000, 1, nullptr, 0);
 				}
 				else if (i == 1)
 				{
-					p = gimg->NewPenARGB(0xff0000ff, 1, 0, 0);
+					p = gimg->NewPenARGB(0xff0000ff, 1, nullptr, 0);
 				}
 				else if (i == 2)
 				{
-					p = gimg->NewPenARGB(0xff00ff00, 1, 0, 0);
+					p = gimg->NewPenARGB(0xff00ff00, 1, nullptr, 0);
 				}
 				else
 				{
 					Data::RandomOS rand;
-					p = gimg->NewPenARGB((UInt32)rand.NextInt30() | 0xff000000, 1, 0, 0);
+					p = gimg->NewPenARGB((UInt32)rand.NextInt30() | 0xff000000, 1, nullptr, 0);
 				}
 
 				Double rVal;
@@ -247,8 +247,8 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->audSrc = audSrc;
 	this->eng = core->GetDrawEngine();
-	this->sampleImg = 0;
-	this->fftImg = 0;
+	this->sampleImg = nullptr;
+	this->fftImg = nullptr;
 	this->audSrc->GetFormat(this->format);
 
 	NN<UI::GUIMenu> mnu;

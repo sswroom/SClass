@@ -48,13 +48,13 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 
 	if (ReadUInt32(&hdr[0]) != 0xBC614E)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	extCnt = ReadUInt32(&hdr[4]);
 	if (extCnt <= 0 || extCnt > 64)
 	{
-		return 0;
+		return nullptr;
 	}
 	extOfst = 12 * extCnt + 8;
 	Data::ByteBuffer extHdrs(12 * extCnt);
@@ -84,14 +84,14 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 		if (ReadUInt32(&extHdrs[buffOfst + 4]) != extOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 
 		recCnt = ReadUInt32(&extHdrs[buffOfst + 8]);
 		if (recCnt <= 0 || recCnt > 65536)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		Data::ByteBuffer recHdrs(recCnt << 4);
 		fd->GetRealData(extOfst, recCnt << 4, recHdrs);
@@ -103,7 +103,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 			if (ReadUInt32(&recHdrs[recOfst + 12]) != fileOfst)
 			{
 				DEL_CLASS(pf);
-				return 0;
+				return nullptr;
 			}
 			
 			sptr = Text::StrConcatC(name, &recHdrs[recOfst], 8);

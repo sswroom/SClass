@@ -50,34 +50,34 @@ Optional<IO::ParsedObject> Parser::FileParser::AOSParser::ParseFileHdr(NN<IO::St
 
 	if (!fd->GetFullName()->EndsWith(UTF8STRC(".AOS")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[0]) != 0)
-		return 0;
+		return nullptr;
 	dataOfst = ReadUInt32(&hdr[4]);
 	recSize = ReadUInt32(&hdr[8]);
 	if (recSize % 40 != 0 || dataOfst > fd->GetDataSize())
-		return 0;
+		return nullptr;
 	if (dataOfst - recSize != 273)
-		return 0;
+		return nullptr;
 	if (fd->GetRealData(0, 273, BYTEARR(hdrBuff)) != 273)
-		return 0;
+		return nullptr;
 	Text::Encoding enc(932);
 	sptr = enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
 	if (!fd->GetFullName()->EndsWith(fileName, (UOSInt)(sptr - fileName)))
 	{
-		return 0;
+		return nullptr;
 	}
 	recCnt = recSize / 40;
 	if (recCnt == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(273, recSize, recBuff) != recSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -93,7 +93,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AOSParser::ParseFileHdr(NN<IO::St
 		if (fileOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);
 		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);

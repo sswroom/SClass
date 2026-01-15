@@ -185,7 +185,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -202,7 +202,7 @@ namespace Data
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 

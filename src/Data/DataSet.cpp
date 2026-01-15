@@ -58,7 +58,7 @@ void Data::DataSet::AddItem(const VariItem& key, const VariItem& value)
 	this->itemCnt = i + 1;
 }
 
-void Data::DataSet::ValueCounts(NN<Data::ArrayList<UInt32>> result) const
+void Data::DataSet::ValueCounts(NN<Data::ArrayListNative<UInt32>> result) const
 {
 	struct ValueItem
 	{

@@ -402,15 +402,15 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 Optional<IO::ParsedObject> Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (ReadNInt32(&hdr[4]) != *(Int32*)"ftyp" || (ReadNInt32(&hdr[8]) != *(Int32*)"mif1" && ReadNInt32(&hdr[8]) != *(Int32*)"heic"))
-		return 0;
+		return nullptr;
 	
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 100 || fileLen > 104857600)
-		return 0;
+		return nullptr;
 	Data::ByteBuffer fileBuff((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
 	{
-		return 0;
+		return nullptr;
 	}
 	Media::ImageList *imgList = 0;
 	heif_context *ctx = heif_context_alloc();
@@ -489,9 +489,9 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 		if (nImages == 1)
 		{
 			heif_context_get_primary_image_handle(ctx, &imgHdlr);
-			xmf.Set(0);
-			icc.Set(0);
-			exif.Set(0);
+			xmf.Set(nullptr);
+			icc.Set(nullptr);
+			exif.Set(nullptr);
 #if LIBHEIF_HAVE_VERSION(1, 4, 0)
 			width.Set((UInt32)heif_image_handle_get_ispe_width(imgHdlr));
 			height.Set((UInt32)heif_image_handle_get_ispe_height(imgHdlr));

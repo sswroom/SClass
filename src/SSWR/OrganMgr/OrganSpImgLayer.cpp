@@ -102,7 +102,7 @@ UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeAr
 	{
 		return Text::StrConcatC(buff, UTF8STRC("Descript"));
 	}
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -153,7 +153,7 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganSpImgLayer::GetNewVector
 {
 	NN<UserFileInfo> ufile;
 	if (!this->objList.GetItem((UOSInt)id).SetTo(ufile))
-		return 0;
+		return nullptr;
 	UInt32 srid = this->csys->GetSRID();
 	Math::Geometry::Point *pt;
 	NEW_CLASS(pt, Math::Geometry::Point(srid, ufile->lon, ufile->lat));

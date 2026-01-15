@@ -36,13 +36,13 @@ IO::ParserType Parser::FileParser::IS2Parser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (fd->GetDataSize() < 204)
-		return 0;
+		return nullptr;
 
 	if (hdr[0] != 1 || hdr[1] != 2 || hdr[2] != 2 || hdr[3] != 0)
-		return 0;
+		return nullptr;
 
 	if (ReadInt32(&hdr[4]) != 4 || ReadInt32(&hdr[8]) != 20)
-		return 0;
+		return nullptr;
 
 	UInt32 totalSize = 204;
 	UInt32 currSize;
@@ -57,7 +57,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 		i += 8;
 	}
 	if (totalSize != fd->GetDataSize())
-		return 0;
+		return nullptr;
 	Bool valid = true;
 	UOSInt currOfst = 204;
 	Int32 currType;
@@ -253,7 +253,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 	if (!valid)
 	{
 		DEL_CLASS(imgList);
-		return 0;
+		return nullptr;
 	}
 
 	return imgList;

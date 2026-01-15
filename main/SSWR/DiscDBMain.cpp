@@ -21,22 +21,22 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 		if (env.GetErrorType() == SSWR::DiscDB::DiscDBEnv::ERR_NONE)
 		{
 			SSWR::DiscDB::DiscDBMainForm *frm;
-			NEW_CLASS(frm, SSWR::DiscDB::DiscDBMainForm(ui, 0, &env));
+			NEW_CLASS(frm, SSWR::DiscDB::DiscDBMainForm(ui, nullptr, &env));
 			frm->SetExitOnClose(true);
 			frm->Show();
 			ui->Run();
 		}
 		else if (env.GetErrorType() == SSWR::DiscDB::DiscDBEnv::ERR_CONFIG)
 		{
-			ui->ShowMsgOK(CSTR("Please prepare the config file"), CSTR("Error"), 0);
+			ui->ShowMsgOK(CSTR("Please prepare the config file"), CSTR("Error"), nullptr);
 		}
 		else if (env.GetErrorType() == SSWR::DiscDB::DiscDBEnv::ERR_DB)
 		{
-			ui->ShowMsgOK(CSTR("Cannot connect to the database"), CSTR("Error"), 0);
+			ui->ShowMsgOK(CSTR("Cannot connect to the database"), CSTR("Error"), nullptr);
 		}
 		else
 		{
-			ui->ShowMsgOK(CSTR("Unknown error occurs"), CSTR("Error"), 0);
+			ui->ShowMsgOK(CSTR("Unknown error occurs"), CSTR("Error"), nullptr);
 		}
 		ui.Delete();
 	}

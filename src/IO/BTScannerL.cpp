@@ -20,5 +20,5 @@ Optional<IO::BTScanner> IO::BTScanner::CreateScanner()
 		return bt;
 	}
 	bt.Delete();
-	return 0;
+	return nullptr;
 }

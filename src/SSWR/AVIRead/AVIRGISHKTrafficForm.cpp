@@ -71,7 +71,7 @@ SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(Optional<UI::GUIClient
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->lyr = 0;
+	this->lyr = nullptr;
 
 	this->lblRoadCenterline = ui->NewLabel(*this, CSTR("Centerline"));
 	this->lblRoadCenterline->SetRect(4, 4, 100, 23, false);

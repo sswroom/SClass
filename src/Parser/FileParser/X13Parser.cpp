@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Parser::FileParser::X13Parser::ParseFileHdr(NN<IO::St
 
 	if (ReadUInt32(&hdr[0]) != 0x4B434150 || (ReadUInt32(&hdr[4]) + ReadUInt32(&hdr[8])) != fd->GetDataSize() || (ReadUInt32(&hdr[8]) & 63) != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;

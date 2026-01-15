@@ -88,7 +88,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PrivKey::CreateKey() const
 	KeyType keyType = GetKeyType();
 	if (keyType == KeyType::Unknown)
 	{
-		return 0;
+		return nullptr;
 	}
 	Net::ASN1Util::ItemType itemType;
 	UOSInt keyDataLen;
@@ -99,7 +99,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PrivKey::CreateKey() const
 		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), Data::ByteArrayR(keyData, keyDataLen), keyType));
 		return key;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Crypto::Cert::X509PrivKey::GetKeyId(const Data::ByteArray &keyId) const
@@ -157,7 +157,7 @@ Optional<Crypto::Cert::X509PrivKey> Crypto::Cert::X509PrivKey::CreateFromKey(NN<
 		keyPDU.BeginSequence();
 		keyPDU.AppendInt32(1);
 		if (!key->GetECPrivate(keyBuffLen).SetTo(keyBuff))
-			return 0;
+			return nullptr;
 		keyPDU.AppendOctetString(keyBuff, keyBuffLen);
 		if (key->GetECPublic(keyBuffLen).SetTo(keyBuff))
 		{
@@ -178,6 +178,6 @@ Optional<Crypto::Cert::X509PrivKey> Crypto::Cert::X509PrivKey::CreateFromKey(NN<
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

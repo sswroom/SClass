@@ -43,7 +43,7 @@ void IO::DirectoryPackage::Init()
 	UInt64 fileSize;
 	FileItem item;
 	NN<IO::Path::FindFileSession> sess;
-	this->parent = 0;
+	this->parent = nullptr;
 	if (this->dirName->leng > 0)
 	{
 		sptr = this->dirName->ConcatTo(sbuff);
@@ -151,7 +151,7 @@ UnsafeArrayOpt<UTF8Char> IO::DirectoryPackage::GetItemName(UnsafeArray<UTF8Char>
 {
 	UOSInt i;
 	if (this->files.GetCount() <= index)
-		return 0;
+		return nullptr;
 	NN<Text::String> fileName = this->files.GetItem(index).fileName;
 	i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
@@ -160,7 +160,7 @@ UnsafeArrayOpt<UTF8Char> IO::DirectoryPackage::GetItemName(UnsafeArray<UTF8Char>
 Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) const
 {
 	if (this->files.GetCount() <= index)
-		return 0;
+		return nullptr;
 	NN<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
@@ -171,14 +171,14 @@ Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) c
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
 Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UOSInt index, OutParam<Bool> needDelete) const
 {
 	if (this->files.GetCount() <= index)
-		return 0;
+		return nullptr;
 	NN<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::Directory)
@@ -191,7 +191,7 @@ Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UOSInt index, OutPar
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -451,7 +451,7 @@ Bool IO::DirectoryPackage::CopyTo(UOSInt index, Text::CStringNN destPath, Bool f
 
 Optional<IO::StreamData> IO::DirectoryPackage::OpenStreamData(Text::CStringNN fileName) const
 {
-	return 0;
+	return nullptr;
 }
 
 Bool IO::DirectoryPackage::HasParent() const

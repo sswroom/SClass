@@ -245,8 +245,8 @@ Media::Resizer::LanczosResizerLR_C32_CPU::LanczosResizerLR_C32_CPU()
 	NEW_CLASSNN(this->ptask, Sync::ParallelTask(this->nThread, false));
 
 	this->buffSize = 0;
-	this->buffPtr = 0;
-	this->rgbTable = 0;
+	this->buffPtr = nullptr;
+	this->rgbTable = nullptr;
 }
 
 Media::Resizer::LanczosResizerLR_C32_CPU::~LanczosResizerLR_C32_CPU()
@@ -257,7 +257,7 @@ Media::Resizer::LanczosResizerLR_C32_CPU::~LanczosResizerLR_C32_CPU()
 	if (this->buffPtr.SetTo(buffPtr))
 	{
 		MemFreeAArr(buffPtr);
-		this->buffPtr = 0;
+		this->buffPtr = nullptr;
 	}
 }
 
@@ -272,7 +272,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(Unsafe
 		if (this->buffPtr.SetTo(buffPtr))
 		{
 			MemFreeAArr(buffPtr);
-			this->buffPtr = 0;
+			this->buffPtr = nullptr;
 		}
 		this->buffSize = (sheight * dwidth << 3);
 		this->buffPtr = buffPtr = MemAllocA64(UInt8, buffSize);
@@ -290,7 +290,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(Unsafe
 		if (this->buffPtr.SetTo(buffPtr))
 		{
 			MemFreeAArr(buffPtr);
-			this->buffPtr = 0;
+			this->buffPtr = nullptr;
 		}
 		this->buffSize = (sheight * dwidth << 3);
 		this->buffPtr = buffPtr = MemAllocA64(UInt8, buffSize);

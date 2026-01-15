@@ -866,14 +866,14 @@ void Media::Resizer::LanczosResizerH8_8::DestoryHori()
 	if (this->hIndex.SetTo(hIndex))
 	{
 		MemFreeAArr(hIndex);
-		this->hIndex = 0;
+		this->hIndex = nullptr;
 	}
 	if (this->hWeight.SetTo(hWeight))
 	{
 		MemFreeAArr(hWeight);
-		this->hWeight = 0;
+		this->hWeight = nullptr;
 	}
-	hsSize = 0;
+	this->hsSize = 0;
 }
 
 void Media::Resizer::LanczosResizerH8_8::DestoryVert()
@@ -883,15 +883,15 @@ void Media::Resizer::LanczosResizerH8_8::DestoryVert()
 	if (this->vIndex.SetTo(vIndex))
 	{
 		MemFreeAArr(vIndex);
-		this->vIndex = 0;
+		this->vIndex = nullptr;
 	}
 	if (this->vWeight.SetTo(vWeight))
 	{
 		MemFreeAArr(vWeight);
-		this->vWeight = 0;
+		this->vWeight = nullptr;
 	}
-	vsSize = 0;
-	vsStep = 0;
+	this->vsSize = 0;
+	this->vsStep = 0;
 }
 
 Media::Resizer::LanczosResizerH8_8::LanczosResizerH8_8(UOSInt hnTap, UOSInt vnTap, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType)
@@ -915,24 +915,24 @@ Media::Resizer::LanczosResizerH8_8::LanczosResizerH8_8(UOSInt hnTap, UOSInt vnTa
 	}
 	NEW_CLASSNN(this->ptask, Sync::ParallelTask(this->nThread, false));
 
-	hsSize = 0;
-	hsOfst = 0;
-	hdSize = 0;
-	hIndex = 0;
-	hWeight = 0;
-	hTap = 0;
+	this->hsSize = 0;
+	this->hsOfst = 0;
+	this->hdSize = 0;
+	this->hIndex = nullptr;
+	this->hWeight = nullptr;
+	this->hTap = 0;
 
-	vsSize = 0;
-	vsOfst = 0;
-	vdSize = 0;
-	vsStep = 0;
-	vIndex = 0;
-	vWeight = 0;
-	vTap = 0;
+	this->vsSize = 0;
+	this->vsOfst = 0;
+	this->vdSize = 0;
+	this->vsStep = 0;
+	this->vIndex = nullptr;
+	this->vWeight = nullptr;
+	this->vTap = 0;
 
-	buffW = 0;
-	buffH = 0;
-	buffPtr = 0;
+	this->buffW = 0;
+	this->buffH = 0;
+	this->buffPtr = nullptr;
 	this->hTime = 0;
 	this->vTime = 0;
 }
@@ -948,7 +948,7 @@ Media::Resizer::LanczosResizerH8_8::~LanczosResizerH8_8()
 	if (this->buffPtr.SetTo(buffPtr))
 	{
 		MemFreeAArr(buffPtr);
-		this->buffPtr = 0;
+		this->buffPtr = nullptr;
 	}
 }
 
@@ -989,12 +989,12 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UnsafeArray<const UInt8> src, OS
 			{
 				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 4, xOfst);
 			}
-			hsSize = swidth;
-			hdSize = dwidth;
-			hsOfst = xOfst;
+			this->hsSize = swidth;
+			this->hdSize = dwidth;
+			this->hsOfst = xOfst;
 			this->hIndex = hIndex = prm.index;
 			this->hWeight = hWeight = prm.weight;
-			hTap = prm.tap;
+			this->hTap = prm.tap;
 		}
 
 		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != sbpl || this->vsOfst != yOfst || !this->vIndex.SetTo(vIndex) || !this->vWeight.SetTo(vWeight))
@@ -1009,25 +1009,25 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UnsafeArray<const UInt8> src, OS
 			{
 				SetupInterpolationParameterV(this->vnTap, sheight, siHeight, dheight, prm, sbpl, yOfst);
 			}
-			vsSize = sheight;
-			vdSize = dheight;
-			vsOfst = yOfst;
-			vsStep = sbpl;
+			this->vsSize = sheight;
+			this->vdSize = dheight;
+			this->vsOfst = yOfst;
+			this->vsStep = sbpl;
 			this->vIndex = vIndex = prm.index;
 			this->vWeight = vWeight = prm.weight;
-			vTap = prm.tap;
+			this->vTap = prm.tap;
 		}
 		
-		if (dheight != buffH || (siWidth != buffW) || !this->buffPtr.SetTo(buffPtr))
+		if (dheight != this->buffH || (siWidth != this->buffW) || !this->buffPtr.SetTo(buffPtr))
 		{
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
-			buffW = siWidth;
-			buffH = dheight;
-			this->buffPtr = buffPtr = MemAllocA64(UInt8, buffW * buffH << 3);
+			this->buffW = siWidth;
+			this->buffH = dheight;
+			this->buffPtr = buffPtr = MemAllocA64(UInt8, this->buffW * this->buffH << 3);
 		}
 		if (dheight < 16)
 		{
@@ -1058,23 +1058,23 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UnsafeArray<const UInt8> src, OS
 			{
 				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 4, xOfst);
 			}
-			hsSize = swidth;
-			hdSize = dwidth;
-			hsOfst = xOfst;
+			this->hsSize = swidth;
+			this->hdSize = dwidth;
+			this->hsOfst = xOfst;
 			this->hIndex = hIndex = prm.index;
 			this->hWeight = hWeight = prm.weight;
-			hTap = prm.tap;
+			this->hTap = prm.tap;
 		}
-		if (dheight != buffH || (siWidth != buffW) || !this->buffPtr.SetTo(buffPtr))
+		if (dheight != this->buffH || (siWidth != this->buffW) || !this->buffPtr.SetTo(buffPtr))
 		{
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
-			buffW = siWidth;
-			buffH = dheight;
-			this->buffPtr = buffPtr = MemAllocA64(UInt8, buffW * buffH << 3);
+			this->buffW = siWidth;
+			this->buffH = dheight;
+			this->buffPtr = buffPtr = MemAllocA64(UInt8, this->buffW * this->buffH << 3);
 		}
 		if (sheight < 16)
 		{
@@ -1114,11 +1114,11 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UnsafeArray<const UInt8> src, OS
 			if (this->buffPtr.SetTo(buffPtr))
 			{
 				MemFreeAArr(buffPtr);
-				this->buffPtr = 0;
+				this->buffPtr = nullptr;
 			}
-			buffW = siWidth;
-			buffH = dheight;
-			this->buffPtr = buffPtr = MemAllocA64(UInt8, buffW * buffH << 3);
+			this->buffW = siWidth;
+			this->buffH = dheight;
+			this->buffPtr = buffPtr = MemAllocA64(UInt8, this->buffW * this->buffH << 3);
 		}
 		if (dheight < 16)
 		{
@@ -1173,7 +1173,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerH8_8::ProcessToNewPar
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
 	if (srcImage->GetImageType() != Media::RasterImage::ImageType::Static || !IsSupported(srcImage->info))
-		return 0;
+		return nullptr;
 	Math::Size2D<UOSInt> targetSize = this->targetSize;
 	if (targetSize.x == 0)
 	{

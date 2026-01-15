@@ -233,7 +233,7 @@ Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSy
 #if defined(VERBOSE)
 	printf("SRGetSpatialRef(%d) not found\r\n", epsgId);
 #endif
-	return 0;
+	return nullptr;
 }
 
 Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSystemManager::SRGetSpatialRefPrev(UInt32 epsgId)
@@ -258,13 +258,13 @@ Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSy
 			{
 				return &srInfoList[k - 1];
 			}
-			return 0;
+			return nullptr;
 		}
 	}
 #if defined(VERBOSE)
 	printf("SRGetSpatialRefPrev(%d) not found\r\n", epsgId);
 #endif
-	return 0;
+	return nullptr;
 }
 
 Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSystemManager::SRGetSpatialRefNext(UInt32 epsgId)
@@ -290,13 +290,13 @@ Optional<const Math::CoordinateSystemManager::SpatialRefInfo> Math::CoordinateSy
 			{
 				return &srInfoList[k + 1];
 			}
-			return 0;
+			return nullptr;
 		}
 	}
 #if defined(VERBOSE)
 	printf("SRGetSpatialRefNext(%d) not found\r\n", epsgId);
 #endif
-	return 0;
+	return nullptr;
 }
 
 Optional<const Math::CoordinateSystemManager::SpheroidInfo> Math::CoordinateSystemManager::SRGetSpheroid(UInt32 epsgId)
@@ -323,7 +323,7 @@ Optional<const Math::CoordinateSystemManager::SpheroidInfo> Math::CoordinateSyst
 #if defined(VERBOSE)
 	printf("SRGetSpheroid(%d) not found\r\n", epsgId);
 #endif
-	return 0;
+	return nullptr;
 }
 
 Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemManager::SRGetDatum(UInt32 epsgId)
@@ -350,7 +350,7 @@ Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemM
 #if defined(VERBOSE)
 	printf("SRGetDatum(%d) not found\r\n", epsgId);
 #endif
-	return 0;
+	return nullptr;
 }
 
 Optional<const Math::CoordinateSystemManager::GeogcsSRInfo> Math::CoordinateSystemManager::SRGetGeogcsInfo(UInt32 epsgId)
@@ -377,7 +377,7 @@ Optional<const Math::CoordinateSystemManager::GeogcsSRInfo> Math::CoordinateSyst
 #if defined(VERBOSE)
 	printf("SRGetGeogcsInfo(%d) not found\r\n", epsgId);
 #endif
-	return 0;	
+	return nullptr;
 }
 
 Optional<const Math::CoordinateSystemManager::ProjcsSRInfo> Math::CoordinateSystemManager::SRGetProjcsInfo(UInt32 epsgId)
@@ -404,7 +404,7 @@ Optional<const Math::CoordinateSystemManager::ProjcsSRInfo> Math::CoordinateSyst
 #if defined(VERBOSE)
 	printf("SRGetProjcsInfo(%d) not found\r\n", epsgId);
 #endif
-	return 0;	
+	return nullptr;
 }
 
 Bool Math::CoordinateSystemManager::SRAxisReversed(UInt32 epsgId)
@@ -429,7 +429,7 @@ Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSys(UIn
 	NN<const Math::CoordinateSystemManager::SpatialRefInfo> info;
 	if (SRGetSpatialRef(epsgId).SetTo(info))
 	{
-		Optional<Math::CoordinateSystem> csys = 0;
+		Optional<Math::CoordinateSystem> csys = nullptr;
 		if (info->srType == SRT_PROJCS)
 		{
 			csys = SRCreateProjCSys(epsgId);
@@ -443,7 +443,7 @@ Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSys(UIn
 #if defined(VERBOSE)
 	printf("Unsupported SRID:%d\r\n", epsgId);
 #endif
-	return 0;
+	return nullptr;
 }
 
 NN<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSysOrDef(UInt32 epsgId)
@@ -460,12 +460,12 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::SRCreat
 	NN<const Math::CoordinateSystemManager::ProjcsSRInfo> projcs;
 	if (!SRGetProjcsInfo(epsgId).SetTo(projcs))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Math::GeographicCoordinateSystem> gcsys;
 	if (!SRCreateGeogCSys(projcs->geogcsSRID).SetTo(gcsys))
 	{
-		return 0;
+		return nullptr;
 	}
 	Math::ProjectedCoordinateSystem *csys;
 	UTF8Char sbuff[32];
@@ -487,7 +487,7 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::SRCreat
 		return csys;
 	}
 	gcsys.Delete();
-	return 0;
+	return nullptr;
 }
 
 Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::SRCreateGeogCSys(UInt32 epsgId)
@@ -495,17 +495,17 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::SRCrea
 	NN<const Math::CoordinateSystemManager::GeogcsSRInfo> geogcs;
 	if (!SRGetGeogcsInfo(epsgId).SetTo(geogcs))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<const Math::CoordinateSystemManager::DatumInfo> datum;
 	if (!SRGetDatum(geogcs->datum).SetTo(datum))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<const Math::CoordinateSystemManager::SpheroidInfo> spheroid;
 	if (!SRGetSpheroid(datum->spheroid).SetTo(spheroid))
 	{
-		return 0;
+		return nullptr;
 	}
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -551,7 +551,7 @@ Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromName(T
 	{
 		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84).v);
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Text::CStringNN name)
@@ -591,7 +591,7 @@ Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemM
 			return datumList[k];
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, Optional<const Math::CoordinateSystemManager::DatumInfo> datum, Text::CStringNN name, NN<Math::EarthEllipsoid> ee, Optional<const SpheroidInfo> spheroid)
@@ -654,7 +654,7 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateP
 {
 	Text::CStringNN name;
 	if (!Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst).SetTo(name))
-		return 0;
+		return nullptr;
 	return CreateProjCoordinateSystem(name, name.v);
 }
 
@@ -673,11 +673,11 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateP
 	Math::ProjectedCoordinateSystem *csys = 0;
 	if (!GetProjCoordinateSystemInfo(projName).SetTo(coord))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!Math::CoordinateSystemManager::CreateGeogCoordinateSystem(sourceName, (const UTF8Char*)coord->geoName).SetTo(gcs))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected)
 	{
@@ -694,7 +694,7 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateP
 	return csys;
 }
 
-UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(NN<Data::ArrayList<ProjCoordSysType>> csysList)
+UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(NN<Data::ArrayListNative<ProjCoordSysType>> csysList)
 {
 	UOSInt initCnt = csysList->GetCount();
 	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
@@ -741,7 +741,7 @@ Optional<const Math::CoordinateSystemManager::ProjectedCSysInfo> Math::Coordinat
 			return &pcsysList[k];
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 
@@ -757,12 +757,12 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::Create
 	NN<const Math::CoordinateSystemManager::GeographicCSysInfo> coord;
 	if (!GetGeogCoordinateSystemInfo(geoName).SetTo(coord))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<const Math::CoordinateSystemManager::DatumInfo> datum;
 	if (!GetDatumInfoByName((const UTF8Char*)coord->datumName).SetTo(datum))
 	{
-		return 0;
+		return nullptr;
 	}
 	Math::EarthEllipsoid ellipsoid(coord->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
@@ -771,7 +771,7 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::Create
 	return csys;
 }
 
-UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(NN<Data::ArrayList<GeoCoordSysType>> csysList)
+UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(NN<Data::ArrayListNative<GeoCoordSysType>> csysList)
 {
 	UOSInt initCnt = csysList->GetCount();
 	csysList->Add(GCST_WGS84);
@@ -801,7 +801,7 @@ Optional<const Math::CoordinateSystemManager::GeographicCSysInfo> Math::Coordina
 			return &csysList[k];
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateWGS84Csys()

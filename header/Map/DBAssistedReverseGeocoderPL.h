@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_DBASSISTEDREVERSEGEOCODERPL
 #define _SM_MAP_DBASSISTEDREVERSEGEOCODERPL
 #include "Data/ArrayListNN.hpp"
-#include "Data/BTreeMap.hpp"
+#include "Data/BTreeMapObj.hpp"
 #include "Data/Comparator.hpp"
 #include "Data/FastMapNN.hpp"
 #include "DB/DBTool.h"
@@ -40,7 +40,7 @@ namespace Map
 		UOSInt nextCoder;
 		NN<DB::DBTool> conn;
 		NN<IO::Writer> errWriter;
-		Data::BTreeMap<Text::String *> strMap;
+		Data::BTreeMapObj<Text::String *> strMap;
 		Data::FastMapNN<UInt32, LCIDInfo> lcidMap;
 		Sync::Mutex mut;
 	public:

@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::B3DMParser::ParseFileHdr(NN<IO::S
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	if (ReadNInt32(&hdr[0]) != *(Int32*)"b3dm" || ReadUInt32(&hdr[8]) != fd->GetDataSize())
-		return 0;
+		return nullptr;
 
 	UInt32 version = ReadUInt32(&hdr[4]);
 	UInt32 featureTableJSONByteLength = ReadUInt32(&hdr[12]);
@@ -45,24 +45,24 @@ Optional<IO::ParsedObject> Parser::FileParser::B3DMParser::ParseFileHdr(NN<IO::S
 
 	if (version != 1)
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt ofst = 28;
 	if (featureTableJSONByteLength != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (featureTableBinaryByteLength != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (batchTableJSONByteLength != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (batchTableBinaryByteLength != 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;

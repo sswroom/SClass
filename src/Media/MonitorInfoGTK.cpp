@@ -83,15 +83,15 @@ Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 		else
 		{
 			this->name = Text::String::New(UTF8STRC("Monitor"));
-			this->monId = 0;
+			this->monId = nullptr;
 		}
-		this->desc = 0;
+		this->desc = nullptr;
 	}
 	else
 	{
 		this->name = Text::String::New(UTF8STRC("Monitor"));
-		this->desc = 0;
-		this->monId = 0;
+		this->desc = nullptr;
+		this->monId = nullptr;
 	}
 }
 

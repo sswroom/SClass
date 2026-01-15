@@ -292,7 +292,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 					}
 					else
 					{
-						dimg = 0;
+						dimg = nullptr;
 					}
 					if (dimg.SetTo(simg))
 					{
@@ -490,7 +490,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 			{
 				Data::ByteBuffer buff(buffSize);
 				fs.Read(buff);
-				fs.GetFileTimes(0, 0, &dt2);
+				fs.GetFileTimes(nullptr, nullptr, &dt2);
 				resp->AddDefHeaders(req);
 				resp->AddContentLength(buffSize);
 				resp->AddContentType(CSTR("image/jpeg"));
@@ -599,7 +599,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 				}
 				else
 				{
-					dimg = 0;
+					dimg = nullptr;
 				}
 				if (dimg.SetTo(simg))
 				{
@@ -623,7 +623,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					if (user.SetTo(nnuser) && nnuser->watermark->leng > 0)
 					{
 						NN<Media::DrawImage> gimg;
-						if (this->env->GetDrawEngine()->ConvImage(simg, 0).SetTo(gimg))
+						if (this->env->GetDrawEngine()->ConvImage(simg, nullptr).SetTo(gimg))
 						{
 							if ((imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
 							{
@@ -904,7 +904,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 					}
 					else
 					{
-						dimg = 0;
+						dimg = nullptr;
 					}
 					if (dimg.SetTo(simg))
 					{
@@ -985,7 +985,7 @@ SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(NN<Net::WebServ
 {
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, destProfile, this->env->GetColorSess().Ptr(), Media::AT_IGNORE_ALPHA, 0, Media::PF_B8G8R8A8));
-	this->csconv = 0;
+	this->csconv = nullptr;
 	this->csconvFCC = 0;
 	this->csconvBpp = 0;
 	this->csconvPF = Media::PF_UNKNOWN;

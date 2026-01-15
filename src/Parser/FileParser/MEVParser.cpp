@@ -13,8 +13,8 @@
 
 Parser::FileParser::MEVParser::MEVParser()
 {
-	this->parsers = 0;
-	this->mapMgr = 0;
+	this->parsers = nullptr;
+	this->mapMgr = nullptr;
 }
 
 Parser::FileParser::MEVParser::~MEVParser()
@@ -79,13 +79,13 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	UOSInt j;
 	
 	if (!this->parsers.SetTo(parsers))
-		return 0;
+		return nullptr;
 	if (!this->mapMgr.SetTo(mapMgr))
-		return 0;
+		return nullptr;
 	currPos = 12;
 	if (*(Int32*)&hdr[0] != *(Int32*)"SMEv" || ReadUInt32(&hdr[4]) != 0x81c0fe1a)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UInt32 initSize = ReadUInt32(&hdr[8]);
@@ -116,7 +116,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	*wptr2 = 0;
 	if (wptr == wbuff && wptr2 == wbuff2)
 	{
-		optwptr2 = 0;
+		optwptr2 = nullptr;
 	}
 	else
 	{
@@ -142,7 +142,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 		}
 		else
 		{
-			dirArr[i] = 0;
+			dirArr[i] = nullptr;
 		}
 		currPos += 8;
 		i++;
@@ -224,7 +224,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	env->SetDefLineStyle(defLineStyle);
 	env->SetDefFontStyle(defFontStyle);
 
-	ReadItems(fd, env, itemCnt, currPos, 0, dirArr, imgFileArr, parsers, mapMgr);
+	ReadItems(fd, env, itemCnt, currPos, nullptr, dirArr, imgFileArr, parsers, mapMgr);
 
 	i = dirCnt;
 	while (i-- > 0)

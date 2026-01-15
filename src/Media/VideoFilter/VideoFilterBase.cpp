@@ -66,7 +66,7 @@ UnsafeArrayOpt<UTF8Char> Media::VideoFilter::VideoFilterBase::GetSourceName(Unsa
 	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 		return srcVideo->GetSourceName(buff);
-	return 0;
+	return nullptr;
 }
 
 void Media::VideoFilter::VideoFilterBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
@@ -115,7 +115,7 @@ Bool Media::VideoFilter::VideoFilterBase::Init(FrameCallback cb, FrameChangeCall
 	this->videoCb = cb;
 	this->fcCb = fcCb;
 	this->userData = userData;
-	return this->srcVideo != 0;
+	return this->srcVideo.NotNull();
 }
 
 Bool Media::VideoFilter::VideoFilterBase::Start()
@@ -172,7 +172,7 @@ Data::Duration Media::VideoFilter::VideoFilterBase::SeekToTime(Data::Duration ti
 	{
 		return srcVideo->SeekToTime(time);
 	}
-	return false;
+	return 0;
 }
 
 Bool Media::VideoFilter::VideoFilterBase::IsRealTimeSrc()

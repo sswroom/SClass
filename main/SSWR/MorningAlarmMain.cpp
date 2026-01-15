@@ -2,7 +2,6 @@
 
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ArrayListInt32.h"
 #include "Data/DateTime.h"
 #include "Data/RandomOS.h"
@@ -81,7 +80,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		if (Optional<Media::MediaFile>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::MediaFile)).SetTo(file))
+		if (Optional<Media::MediaFile>::ConvertFrom(parser.ParseFile(fd, nullptr, IO::ParserType::MediaFile)).SetTo(file))
 		{
 			stmList.Add(file);
 			i++;

@@ -148,9 +148,9 @@ void Net::BandwidthLogger::BandwidthStatTime(NN<Net::EthernetAnalyzer::Bandwidth
 Net::BandwidthLogger::BandwidthLogger(NN<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
-	this->socMon = 0;
-	this->fs = 0;
-	this->stm = 0;
+	this->socMon = nullptr;
+	this->fs = nullptr;
+	this->stm = nullptr;
 	this->logBeginTime = 0;
 	NN<Socket> s;
 	if (sockf->CreateRAWSocket().SetTo(s))
@@ -246,5 +246,5 @@ Optional<Text::String> Net::BandwidthLogger::GetIPName(UInt32 ip, NN<Sync::Mutex
 	{
 		return res->name;
 	}
-	return 0;
+	return nullptr;
 }

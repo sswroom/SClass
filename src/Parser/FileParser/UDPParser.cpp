@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::UDPParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::UDPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("UDP")))
-		return 0;
+		return nullptr;
 
 	if (hdr[0] == 0xaa && hdr[1] == 0xbb)
 	{
@@ -42,6 +42,6 @@ Optional<IO::ParsedObject> Parser::FileParser::UDPParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

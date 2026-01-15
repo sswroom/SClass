@@ -41,7 +41,7 @@ const UInt8 *SSWR::DataSync::SyncClientDataMgr::GetData(UOSInt index, UOSInt *da
 
 void SSWR::DataSync::SyncClientDataMgr::RemoveData(UOSInt cnt)
 {
-	Data::ArrayList<UInt8*> tmp;
+	Data::ArrayListObj<UInt8*> tmp;
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt j = this->dataList.GetCount();
 	if (j < cnt)

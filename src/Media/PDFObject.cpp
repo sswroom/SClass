@@ -9,9 +9,9 @@ Media::PDFObject::PDFObject(UInt32 id)
 {
 	this->id = id;
 	this->streamData = false;
-	this->fd = 0;
-	this->decFd = 0;
-	this->parameter = 0;
+	this->fd = nullptr;
+	this->decFd = nullptr;
+	this->parameter = nullptr;
 }
 
 Media::PDFObject::~PDFObject()
@@ -77,29 +77,29 @@ Optional<Text::String> Media::PDFObject::GetType() const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
-		return 0;
+		return nullptr;
 	UOSInt i = parameter->GetEntryIndex(CSTR("Type"));
 	if (i != INVALID_INDEX)
 		return parameter->GetEntryValue(i);
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Media::PDFObject::GetSubtype() const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
-		return 0;
+		return nullptr;
 	UOSInt i = parameter->GetEntryIndex(CSTR("Subtype"));
 	if (i != INVALID_INDEX)
 		return parameter->GetEntryValue(i);
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Media::PDFObject::GetFilter() const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
-		return 0;
+		return nullptr;
 	NN<Text::String> s;
 	UOSInt i = parameter->GetEntryIndex(CSTR("Filter"));
 	if (i != INVALID_INDEX)
@@ -109,20 +109,20 @@ Optional<Text::String> Media::PDFObject::GetFilter() const
 			return s;
 		return parameter->GetEntryValue(i);
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Media::PDFObject::GetColorSpace() const
 {
 	NN<Media::PDFParameter> parameter;
 	if (!this->parameter.SetTo(parameter))
-		return 0;
+		return nullptr;
 	UOSInt i = parameter->GetEntryIndex(CSTR("ColorSpace"));
 	if (i != INVALID_INDEX)
 	{
 		return parameter->GetEntryValue(i);
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Media::PDFObject::GetBitPerComponent() const

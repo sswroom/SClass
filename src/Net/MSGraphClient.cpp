@@ -114,7 +114,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphEventMessageRequest::Parse
 		NEW_CLASSNN(msg, MSGraphEventMessageRequest(obj));
 		return msg;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Net::MSGraphEventMessageRequest::IsKnownType(Text::CStringNN type)
@@ -155,7 +155,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in getting access token: status = %d, content = %s\r\n", (Int32)status, content.v.Ptr());
 #endif
-		return 0;
+		return nullptr;
 	}
 	NN<Text::JSONBase> result;
 	if (!Text::JSONBase::ParseJSONStr(content).SetTo(result))
@@ -173,7 +173,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in parsing access token (Not JSON): content = %s\r\n", content.v.Ptr());
 #endif
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> t;
 	NN<Text::String> at;
@@ -218,7 +218,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 		printf("MSGraphClient: Error in parsing access token (Fields not found): content = %s\r\n", content.v.Ptr());
 #endif
 		result->EndUse();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -361,7 +361,7 @@ Net::MSGraphClient::MSGraphClient(NN<Net::TCPClientFactory> clif, Optional<Net::
 {
 	this->clif = clif;
 	this->ssl = ssl;
-	this->log = 0;
+	this->log = nullptr;
 	this->debugLog = false;
 	this->attSplitSize = 1048576 * 4;
 }
@@ -389,7 +389,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 	NN<IO::LogTool> log;
 	if (tenantId.leng > 40 || clientId.leng > 40 || clientSecret.leng > 64)
 	{
-		return 0;
+		return nullptr;
 	}
 	sb.Append(CSTR("https://login.microsoftonline.com/"));
 	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, tenantId.v);
@@ -438,7 +438,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 		printf("MSGraphClient: AccessTokenGet request error: status = %d\r\n", (Int32)status);
 #endif
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken> token, Text::CString userName)
@@ -484,11 +484,11 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 			if (entity->IsValid())
 				return entity;
 			entity.Delete();
-			return 0;
+			return nullptr;
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else
@@ -504,7 +504,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 		printf("MSGraphClient: EntityGetMe request error: status = %d\r\n", (Int32)status);
 #endif
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext)
@@ -692,7 +692,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	if (userName.leng > 200)
-		return 0;
+		return nullptr;
 	NN<IO::LogTool> log;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(GRAPHROOT);
@@ -768,7 +768,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 				sb.Append(Net::WebStatus::GetCodeName(status).OrEmpty());
 				log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 			}
-			return 0;
+			return nullptr;
 		}
 		NN<Text::JSONBase> json;
 		if (!Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
@@ -786,7 +786,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesCreate cannot parse result: %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
-			return 0;
+			return nullptr;
 		}
 		if (json->GetType() != Text::JSONType::Object)
 		{
@@ -804,7 +804,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesCreate not json object: %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
-			return 0;
+			return nullptr;
 		}
 		NN<MSGraphEventMessageRequest> msg;
 		NEW_CLASSNN(msg, MSGraphEventMessageRequest(json));
@@ -819,7 +819,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 				log->LogMessage(CSTR("MailMessagesCreate message format not valid"), IO::LogHandler::LogLevel::Error);
 			}
 			msg.Delete();
-			return 0;
+			return nullptr;
 		}
 		UOSInt i = 0;
 		UOSInt j = message->AttachmentGetCount();
@@ -1037,7 +1037,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 		{
 			this->MailMessageDelete(token, userName, msg->GetId()->ToCString());
 			msg.Delete();
-			return 0;
+			return nullptr;
 		}
 		return msg;
 	}
@@ -1055,7 +1055,7 @@ Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(
 		printf("MSGraphClient: MailMessagesCreate request error: status = %d\r\n", (Int32)status);
 #endif
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Net::MSGraphClient::MailMessageSend(NN<MSGraphAccessToken> token, Text::CString userName, NN<MSGraphEventMessageRequest> message)

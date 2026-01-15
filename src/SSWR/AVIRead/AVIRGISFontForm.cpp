@@ -29,7 +29,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType 
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->fontColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> p
 	}
 	this->fontSizePt = fontSizePt;
 	this->fontColor = fontColor;
-	this->previewImage = 0;
+	this->previewImage = nullptr;
 
 	this->SetText(CSTR("Font Modify"));
 	this->SetFont(nullptr, 8.25, false);

@@ -21,7 +21,7 @@ Optional<IO::ConfigFile> IO::JavaProperties::Parse(Text::CStringNN fileName)
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	if (fstm.IsError())
 	{
-		cfg = 0;
+		cfg = nullptr;
 	}
 	else
 	{

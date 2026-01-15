@@ -73,9 +73,9 @@ namespace Text
 		Data::ArrayListNN<HeaderInfo> preheaders;
 		Data::ArrayListNN<HeaderInfo> headers;
 		Data::ArrayListArr<TableCell> tableContent;
-		Data::ArrayList<RowType> tableRowType;
+		Data::ArrayListNative<RowType> tableRowType;
 		Data::ArrayListNN<ColURLLatLon> urlList;
-		Data::ArrayList<Optional<Data::ArrayListNN<ColIcon>>> icons;
+		Data::ArrayListObj<Optional<Data::ArrayListNN<ColIcon>>> icons;
 		Bool tableBorders;
 		Double *colWidthPts;
 		ColType *colTypes;

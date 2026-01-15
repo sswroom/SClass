@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(AnyType userO
 		{
 			NN<Net::TCPServer> svr;
 			NEW_CLASSOPT(me->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, me, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-			NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, CSTR("TCP: "), true));
+			NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), nullptr, port, me->log, OnClientConn, me, CSTR("TCP: "), true));
 			me->svr = svr;
 			if (svr->IsV4Error())
 			{
@@ -177,8 +177,8 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(Optional<UI::GUIClient
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
-	this->svr = 0;
-	this->cliMgr = 0;
+	this->svr = nullptr;
+	this->cliMgr = nullptr;
 }
 
 SSWR::AVIRead::AVIRJTT808ServerForm::~AVIRJTT808ServerForm()

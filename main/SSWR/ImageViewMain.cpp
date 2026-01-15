@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		NEW_CLASSNN(core, SSWR::AVIRead::AVIRCoreWin(ui));
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(0, ui, core));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRImageViewerForm(nullptr, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
 		argv = progCtrl->GetCommandLines(progCtrl, argc);

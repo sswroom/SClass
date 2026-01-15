@@ -1,5 +1,5 @@
-#ifndef _SM_DATA_BTREEMAP
-#define _SM_DATA_BTREEMAP
+#ifndef _SM_DATA_BTREEMAPOBJ
+#define _SM_DATA_BTREEMAPOBJ
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32RC.h"
 #include "Data/DataMap.hpp"
@@ -8,37 +8,37 @@
 
 namespace Data
 {
-	template <typename T> struct BTreeNode
+	template <typename T> struct BTreeObjNode
 	{
 		UInt32 nodeCnt;
 		UInt32 maxLev;
-		Optional<BTreeNode<T>> parNode;
-		Optional<BTreeNode<T>> leftNode;
-		Optional<BTreeNode<T>> rightNode;
+		Optional<BTreeObjNode<T>> parNode;
+		Optional<BTreeObjNode<T>> leftNode;
+		Optional<BTreeObjNode<T>> rightNode;
 		T nodeVal;
 		NN<Text::String> nodeStr;
 		UInt32 nodeHash;
 	};
 
-	template <class T> class BTreeMap : public DataMap<NN<Text::String>, T>
+	template <class T> class BTreeMapObj : public DataMap<NN<Text::String>, T>
 	{
 	protected:
 		Crypto::Hash::CRC32RC crc;
-		Optional<BTreeNode<T>> rootNode;
+		Optional<BTreeObjNode<T>> rootNode;
 
 	protected:
-		void OptimizeNode(NN<BTreeNode<T>> node);
-		void ReleaseNodeTree(NN<BTreeNode<T>> node);
-		NN<BTreeNode<T>> NewNode(NN<Text::String> key, UInt32 hash, T val);
-		virtual T PutNode(NN<BTreeNode<T>> node, NN<Text::String> key, UInt32 hash, T val);
-		Optional<BTreeNode<T>> RemoveNode(NN<BTreeNode<T>> node);
-		void FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeNode<T>> node);
-		void FillNameArr(InOutParam<UnsafeArray<NN<Text::String>>> arr, NN<BTreeNode<T>> node);
+		void OptimizeNode(NN<BTreeObjNode<T>> node);
+		void ReleaseNodeTree(NN<BTreeObjNode<T>> node);
+		NN<BTreeObjNode<T>> NewNode(NN<Text::String> key, UInt32 hash, T val);
+		virtual T PutNode(NN<BTreeObjNode<T>> node, NN<Text::String> key, UInt32 hash, T val);
+		Optional<BTreeObjNode<T>> RemoveNode(NN<BTreeObjNode<T>> node);
+		void FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeObjNode<T>> node);
+		void FillNameArr(InOutParam<UnsafeArray<NN<Text::String>>> arr, NN<BTreeObjNode<T>> node);
 		virtual UInt32 CalHash(NN<Text::String> key) const;
 		UInt32 CalHash(Text::CStringNN key) const;
 	public:
-		BTreeMap();
-		virtual ~BTreeMap();
+		BTreeMapObj();
+		virtual ~BTreeMapObj();
 
 		virtual T Put(NN<Text::String> key, T val);
 		virtual T Get(NN<Text::String> key) const;
@@ -50,11 +50,11 @@ namespace Data
 		virtual void Clear();
 	};
 
-	template <class T> void BTreeMap<T>::OptimizeNode(NN<BTreeNode<T>> node)
+	template <class T> void BTreeMapObj<T>::OptimizeNode(NN<BTreeObjNode<T>> node)
 	{
 		Int32 leftLev;
 		Int32 rightLev;
-		NN<BTreeNode<T>> nnnode;
+		NN<BTreeObjNode<T>> nnnode;
 		if (node->leftNode.SetTo(nnnode))
 		{
 			leftLev = nnnode->nodeCnt + 1;
@@ -81,9 +81,9 @@ namespace Data
 		}
 	}
 
-	template <class T> void BTreeMap<T>::ReleaseNodeTree(NN<BTreeNode<T>> node)
+	template <class T> void BTreeMapObj<T>::ReleaseNodeTree(NN<BTreeObjNode<T>> node)
 	{
-		NN<BTreeNode<T>> nnnode;
+		NN<BTreeObjNode<T>> nnnode;
 		if (node->leftNode.SetTo(nnnode))
 		{
 			ReleaseNodeTree(nnnode);
@@ -96,13 +96,13 @@ namespace Data
 		MemFreeNN(node);
 	}
 
-	template <class T> NN<BTreeNode<T>> BTreeMap<T>::NewNode(NN<Text::String> key, UInt32 hash, T val)
+	template <class T> NN<BTreeObjNode<T>> BTreeMapObj<T>::NewNode(NN<Text::String> key, UInt32 hash, T val)
 	{
-		NN<BTreeNode<T>> node = MemAllocNN(BTreeNode<T>);
+		NN<BTreeObjNode<T>> node = MemAllocNN(BTreeObjNode<T>);
 		node->nodeCnt = 0;
-		node->parNode = 0;
-		node->leftNode = 0;
-		node->rightNode = 0;
+		node->parNode = nullptr;
+		node->leftNode = nullptr;
+		node->rightNode = nullptr;
 		node->nodeVal = val;
 		node->nodeHash = hash;
 		node->maxLev = 0;
@@ -110,11 +110,11 @@ namespace Data
 		return node;
 	}
 
-	template <class T> T BTreeMap<T>::PutNode(NN<BTreeNode<T>> node, NN<Text::String> key, UInt32 hash, T val)
+	template <class T> T BTreeMapObj<T>::PutNode(NN<BTreeObjNode<T>> node, NN<Text::String> key, UInt32 hash, T val)
 	{
-		NN<BTreeNode<T>> tmpNode;
-		NN<BTreeNode<T>> nnnode;
-		Optional<BTreeNode<T>> optnode;
+		NN<BTreeObjNode<T>> tmpNode;
+		NN<BTreeObjNode<T>> nnnode;
+		Optional<BTreeObjNode<T>> optnode;
 		T retVal;
 		OSInt i;
 		if (node->nodeHash == hash)
@@ -204,11 +204,11 @@ namespace Data
 
 	}
 
-	template <class T> Optional<BTreeNode<T>> BTreeMap<T>::RemoveNode(NN<BTreeNode<T>> node)
+	template <class T> Optional<BTreeObjNode<T>> BTreeMapObj<T>::RemoveNode(NN<BTreeObjNode<T>> node)
 	{
-		Optional<BTreeNode<T>> parNode = node->parNode;
-		NN<BTreeNode<T>> leftNode;
-		NN<BTreeNode<T>> rightNode;
+		Optional<BTreeObjNode<T>> parNode = node->parNode;
+		NN<BTreeObjNode<T>> leftNode;
+		NN<BTreeObjNode<T>> rightNode;
 		while (parNode.SetTo(leftNode))
 		{
 			leftNode->nodeCnt--;
@@ -227,7 +227,7 @@ namespace Data
 			{
 				node->nodeStr->Release();
 				MemFreeNN(node);
-				return 0;
+				return nullptr;
 			}
 		}
 		else if (!node->rightNode.SetTo(rightNode))
@@ -240,9 +240,9 @@ namespace Data
 
 		if (leftNode->nodeCnt >= rightNode->nodeCnt)
 		{
-			NN<BTreeNode<T>> outNode = leftNode;
-			Optional<BTreeNode<T>> tmpNode;
-			NN<BTreeNode<T>> nnnode;
+			NN<BTreeObjNode<T>> outNode = leftNode;
+			Optional<BTreeObjNode<T>> tmpNode;
+			NN<BTreeObjNode<T>> nnnode;
 			while (outNode->rightNode.SetTo(outNode));
 			tmpNode = outNode->parNode;
 			while (tmpNode.SetTo(nnnode) && nnnode != node)
@@ -282,9 +282,9 @@ namespace Data
 		}
 		else
 		{
-			NN<BTreeNode<T>> outNode = rightNode;
-			Optional<BTreeNode<T>> tmpNode;
-			NN<BTreeNode<T>> nnnode;
+			NN<BTreeObjNode<T>> outNode = rightNode;
+			Optional<BTreeObjNode<T>> tmpNode;
+			NN<BTreeObjNode<T>> nnnode;
 			while (outNode->leftNode.SetTo(outNode));
 			tmpNode = outNode->parNode;
 			while (tmpNode.SetTo(nnnode) && nnnode != node)
@@ -324,20 +324,20 @@ namespace Data
 		}
 	}
 
-	template <class T> UInt32 BTreeMap<T>::CalHash(NN<Text::String> key) const
+	template <class T> UInt32 BTreeMapObj<T>::CalHash(NN<Text::String> key) const
 	{
 		return this->crc.CalcDirect(key->v, key->leng);
 	}
 
-	template <class T> UInt32 BTreeMap<T>::CalHash(Text::CStringNN key) const
+	template <class T> UInt32 BTreeMapObj<T>::CalHash(Text::CStringNN key) const
 	{
 		return this->crc.CalcDirect(key.v, key.leng);
 	}
 
-	template <class T> void BTreeMap<T>::FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeNode<T>> node)
+	template <class T> void BTreeMapObj<T>::FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeObjNode<T>> node)
 	{
 		UnsafeArray<T> narr;
-		NN<BTreeNode<T>> nnnode;
+		NN<BTreeObjNode<T>> nnnode;
 		if (node->leftNode.SetTo(nnnode))
 			FillArr(arr, nnnode);
 		narr = arr.Get();
@@ -347,10 +347,10 @@ namespace Data
 			FillArr(arr, nnnode);
 	}
 
-	template <class T> void BTreeMap<T>::FillNameArr(InOutParam<UnsafeArray<NN<Text::String>>> arr, NN<BTreeNode<T>> node)
+	template <class T> void BTreeMapObj<T>::FillNameArr(InOutParam<UnsafeArray<NN<Text::String>>> arr, NN<BTreeObjNode<T>> node)
 	{
 		UnsafeArray<NN<Text::String>> narr;
-		NN<BTreeNode<T>> nnnode;
+		NN<BTreeObjNode<T>> nnnode;
 		if (node->leftNode.SetTo(nnnode))
 			FillNameArr(arr, nnnode);
 		narr = arr.Get();
@@ -360,25 +360,25 @@ namespace Data
 			FillNameArr(arr, nnnode);
 	}
 
-	template <class T> BTreeMap<T>::BTreeMap() : DataMap<NN<Text::String>, T>()
+	template <class T> BTreeMapObj<T>::BTreeMapObj() : DataMap<NN<Text::String>, T>()
 	{
-		rootNode = 0;
+		this->rootNode = nullptr;
 	}
 
-	template <class T> BTreeMap<T>::~BTreeMap()
+	template <class T> BTreeMapObj<T>::~BTreeMapObj()
 	{
-		NN<BTreeNode<T>> node;
+		NN<BTreeObjNode<T>> node;
 		if (this->rootNode.SetTo(node))
 		{
 			ReleaseNodeTree(node);
-			this->rootNode = 0;
+			this->rootNode = nullptr;
 		}
 	}
 
-	template <class T> T BTreeMap<T>::Put(NN<Text::String> key, T val)
+	template <class T> T BTreeMapObj<T>::Put(NN<Text::String> key, T val)
 	{
 		UInt32 hash = CalHash(key);
-		NN<BTreeNode<T>> node;
+		NN<BTreeObjNode<T>> node;
 		if (!this->rootNode.SetTo(node))
 		{
 			this->rootNode = NewNode(key, hash, val);
@@ -392,11 +392,11 @@ namespace Data
 		}
 	}
 
-	template <class T> T BTreeMap<T>::Get(NN<Text::String> key) const
+	template <class T> T BTreeMapObj<T>::Get(NN<Text::String> key) const
 	{
 		UInt32 hash = CalHash(key);
-		Optional<BTreeNode<T>> optnode = this->rootNode;
-		NN<BTreeNode<T>> node;
+		Optional<BTreeObjNode<T>> optnode = this->rootNode;
+		NN<BTreeObjNode<T>> node;
 		while (optnode.SetTo(node))
 		{
 			OSInt i;
@@ -428,11 +428,11 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T BTreeMap<T>::Get(Text::CStringNN key) const
+	template <class T> T BTreeMapObj<T>::Get(Text::CStringNN key) const
 	{
 		UInt32 hash = CalHash(key);
-		Optional<BTreeNode<T>> optnode = this->rootNode;
-		NN<BTreeNode<T>> node;
+		Optional<BTreeObjNode<T>> optnode = this->rootNode;
+		NN<BTreeObjNode<T>> node;
 		while (optnode.SetTo(node))
 		{
 			OSInt i;
@@ -464,9 +464,9 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T BTreeMap<T>::Remove(NN<Text::String> key)
+	template <class T> T BTreeMapObj<T>::Remove(NN<Text::String> key)
 	{
-		NN<BTreeNode<T>> node;
+		NN<BTreeObjNode<T>> node;
 		if (!this->rootNode.SetTo(node))
 			return 0;
 		if (node->nodeStr->Equals(key))
@@ -478,10 +478,10 @@ namespace Data
 		else
 		{
 			UInt32 hash = CalHash(key);
-			Optional<BTreeNode<T>> parNode = 0;
-			NN<BTreeNode<T>> nnparNode;
-			Optional<BTreeNode<T>> optnode = this->rootNode;
-			NN<BTreeNode<T>> node;
+			Optional<BTreeObjNode<T>> parNode = nullptr;
+			NN<BTreeObjNode<T>> nnparNode;
+			Optional<BTreeObjNode<T>> optnode = this->rootNode;
+			NN<BTreeObjNode<T>> node;
 			while (optnode.SetTo(node))
 			{
 				OSInt i;
@@ -528,15 +528,15 @@ namespace Data
 		}
 	}
 
-	template <class T> Bool BTreeMap<T>::IsEmpty() const
+	template <class T> Bool BTreeMapObj<T>::IsEmpty() const
 	{
 		return this->rootNode.IsNull();
 	}
 
-	template <class T> UnsafeArray<T> BTreeMap<T>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T> UnsafeArray<T> BTreeMapObj<T>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = 0;
-		NN<BTreeNode<T>> node;
+		NN<BTreeObjNode<T>> node;
 		if (!this->rootNode.SetTo(node))
 		{
 			objCnt.Set(0);
@@ -550,10 +550,10 @@ namespace Data
 		return outArr;
 	}
 
-	template <class T> UnsafeArray<NN<Text::String>> BTreeMap<T>::ToNameArray(OutParam<UOSInt> objCnt)
+	template <class T> UnsafeArray<NN<Text::String>> BTreeMapObj<T>::ToNameArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = 0;
-		NN<BTreeNode<T>> node;
+		NN<BTreeObjNode<T>> node;
 		if (!this->rootNode.SetTo(node))
 		{
 			objCnt.Set(0);
@@ -567,13 +567,13 @@ namespace Data
 		return outArr;
 	}
 
-	template <class T>void BTreeMap<T>::Clear()
+	template <class T>void BTreeMapObj<T>::Clear()
 	{
-		NN<BTreeNode<T>> node;
+		NN<BTreeObjNode<T>> node;
 		if (this->rootNode.SetTo(node))
 		{
 			ReleaseNodeTree(node);
-			this->rootNode = 0;
+			this->rootNode = nullptr;
 		}
 	}
 }

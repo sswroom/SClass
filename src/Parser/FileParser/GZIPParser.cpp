@@ -42,21 +42,21 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 
 	if (hdr[0] != 0x1f || hdr[1] != 0x8b || hdr[2] != 8)
 	{
-		return 0;
+		return nullptr;
 	}
 	sbuff[0] = 0;
 	if (hdr[3] & 1)
-		return 0;
+		return nullptr;
 	if (hdr[3] & 2)
-		return 0;
+		return nullptr;
 	if (hdr[3] & 4)
-		return 0;
+		return nullptr;
 	if (hdr[3] & 8)
 	{
 		sptr = Text::StrConcat(sbuff, &hdr[10]);
 		byteConv = (UOSInt)(sptr - sbuff);
 		if (byteConv >= 247)
-			return 0;
+			return nullptr;
 		
 	}
 	else

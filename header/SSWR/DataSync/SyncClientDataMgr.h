@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCCLIENTDATAMGR
 #define _SM_SSWR_DATASYNC_SYNCCLIENTDATAMGR
-#include "Data/ArrayList.hpp"
+#include "Data/ArrayListObj.hpp"
 #include "Sync/Mutex.h"
 
 namespace SSWR
@@ -11,7 +11,7 @@ namespace SSWR
 		{
 		private:
 			Sync::Mutex mut;
-			Data::ArrayList<UInt8*> dataList;
+			Data::ArrayListObj<UInt8*> dataList;
 
 		public:
 			SyncClientDataMgr();

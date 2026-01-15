@@ -1,27 +1,27 @@
-#ifndef _SM_DATA_ICASEBTREEUTF8MAP
-#define _SM_DATA_ICASEBTREEUTF8MAP
-#include "Data/BTreeUTF8Map.hpp"
+#ifndef _SM_DATA_ICASEBTREESTRINGMAPOBJ
+#define _SM_DATA_ICASEBTREESTRINGMAPOBJ
+#include "Data/BTreeStringMapObj.hpp"
 
 namespace Data
 {
-	template <class T> class ICaseBTreeUTF8Map : public Data::BTreeUTF8Map<T>
+	template <class T> class ICaseBTreeStringMapObj : public Data::BTreeStringMapObj<T>
 	{
 	protected:
-		T PutNode(NN<BTreeUTF8Node<T>> node, Text::CStringNN key, UInt32 hash, T val);
+		T PutNode(NN<BTreeStringObjNode<T>> node, Text::CStringNN key, UInt32 hash, T val);
 		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const;
 	public:
-		ICaseBTreeUTF8Map();
-		virtual ~ICaseBTreeUTF8Map();
+		ICaseBTreeStringMapObj();
+		virtual ~ICaseBTreeStringMapObj();
 
 		virtual T Get(Text::CStringNN key) const;
 		virtual T Remove(Text::CStringNN key);
 	};
 
-	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(NN<BTreeUTF8Node<T>> node, Text::CStringNN key, UInt32 hash, T val)
+	template <class T> T ICaseBTreeStringMapObj<T>::PutNode(NN<BTreeStringObjNode<T>> node, Text::CStringNN key, UInt32 hash, T val)
 	{
-		NN<BTreeUTF8Node<T>> leftNode;
-		NN<BTreeUTF8Node<T>> rightNode;
-		NN<BTreeUTF8Node<T>> tmpNode;
+		NN<BTreeStringObjNode<T>> leftNode;
+		NN<BTreeStringObjNode<T>> rightNode;
+		NN<BTreeStringObjNode<T>> tmpNode;
 		T retVal;
 		OSInt i;
 		if (node->nodeHash == hash)
@@ -144,26 +144,26 @@ namespace Data
 		}
 	}
 
-	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const
+	template <class T> UInt32 ICaseBTreeStringMapObj<T>::CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const
 	{
 		UTF8Char sbuff[256];
 		UOSInt charCnt = (UOSInt)(Text::StrToUpperC(sbuff, key, keyLen) - sbuff);
 		return this->crc->CalcDirect(sbuff, charCnt);
 	}
 
-	template <class T> ICaseBTreeUTF8Map<T>::ICaseBTreeUTF8Map() : BTreeUTF8Map<T>()
+	template <class T> ICaseBTreeStringMapObj<T>::ICaseBTreeStringMapObj() : BTreeStringMapObj<T>()
 	{
 	}
 
-	template <class T> ICaseBTreeUTF8Map<T>::~ICaseBTreeUTF8Map()
+	template <class T> ICaseBTreeStringMapObj<T>::~ICaseBTreeStringMapObj()
 	{
 	}
 
-	template <class T> T ICaseBTreeUTF8Map<T>::Get(Text::CStringNN key) const
+	template <class T> T ICaseBTreeStringMapObj<T>::Get(Text::CStringNN key) const
 	{
 		UInt32 hash = CalHash(key.v, key.leng);
-		Optional<BTreeUTF8Node<T>> node = this->rootNode;
-		NN<BTreeUTF8Node<T>> nnnode;
+		Optional<BTreeStringObjNode<T>> node = this->rootNode;
+		NN<BTreeStringObjNode<T>> nnnode;
 		while (node.SetTo(nnnode))
 		{
 			OSInt i;
@@ -195,9 +195,9 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T ICaseBTreeUTF8Map<T>::Remove(Text::CStringNN key)
+	template <class T> T ICaseBTreeStringMapObj<T>::Remove(Text::CStringNN key)
 	{
-		NN<BTreeUTF8Node<T>> rootNode;
+		NN<BTreeStringObjNode<T>> rootNode;
 		if (!this->rootNode.SetTo(rootNode))
 			return 0;
 		if (Text::StrEqualsICaseC(rootNode->nodeKey, rootNode->keyLen, key.v, key.leng))
@@ -209,9 +209,9 @@ namespace Data
 		else
 		{
 			UInt32 hash = CalHash(key.v, key.leng);
-			Optional<BTreeUTF8Node<T>> node = rootNode;
-			NN<BTreeUTF8Node<T>> nnnode;
-			NN<BTreeUTF8Node<T>> parNode = rootNode;
+			Optional<BTreeStringObjNode<T>> node = rootNode;
+			NN<BTreeStringObjNode<T>> nnnode;
+			NN<BTreeStringObjNode<T>> parNode = rootNode;
 			while (node.SetTo(nnnode))
 			{
 				OSInt i;

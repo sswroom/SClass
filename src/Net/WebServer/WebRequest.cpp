@@ -163,7 +163,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetCookieAsNew(Text::CStringN
 	NN<Text::String> cookie;
 	if (!this->GetSHeader(CSTR("Cookie")).SetTo(cookie))
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UnsafeArray<UTF8Char> sbuff;
@@ -212,7 +212,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetQueryString(UnsafeArray<
 	NN<Text::String> s = this->GetRequestURI();
 	UOSInt i = s->IndexOf('?');
 	if (i == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	UnsafeArray<const UTF8Char> uri = &s->v[i + 1];
 
 	UTF8Char c;
@@ -235,7 +235,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetQueryValueStr(Text::CStr
 {
 	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
-		return 0;
+		return nullptr;
 	return Text::StrConcatCS(buff, s->v, s->leng, buffSize);
 }
 

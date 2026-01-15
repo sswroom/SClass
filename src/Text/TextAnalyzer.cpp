@@ -72,7 +72,7 @@ UnsafeArrayOpt<UTF8Char> Text::TextAnalyzer::NextWord(UnsafeArray<UTF8Char> sbuf
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

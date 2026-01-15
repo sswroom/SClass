@@ -8,7 +8,7 @@
 
 Parser::ObjParser::OSMMapParser::OSMMapParser()
 {
-	this->parsers = 0;
+	this->parsers = nullptr;
 }
 
 Parser::ObjParser::OSMMapParser::~OSMMapParser()
@@ -38,14 +38,14 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 {
 	NN<IO::PackageFile> pkg;
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
-		return 0;
+		return nullptr;
 	pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	NN<IO::StreamData> fd;
 	if (!pkg->OpenStreamData(CSTR("metadata.json")).SetTo(fd))
-		return 0;
+		return nullptr;
 	NN<Parser::ParserList> parsers;
 	if (!this->parsers.SetTo(parsers))
-		return 0;
+		return nullptr;
 
 	UOSInt buffSize = (UOSInt)fd->GetDataSize();
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
@@ -57,7 +57,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 	if (!optfileJSON.SetTo(fileJSON))
 	{
 		fd.Delete();
-		return 0;
+		return nullptr;
 	}
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
@@ -97,5 +97,5 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 	}
 	fd.Delete();
 	fileJSON->EndUse();
-	return 0;
+	return nullptr;
 }

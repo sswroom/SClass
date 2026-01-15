@@ -5,7 +5,7 @@
 void __stdcall SSWR::OrganMgr::OrganUserForm::OnAddClicked(AnyType userObj)
 {
 	NN<OrganUserForm> me = userObj.GetNN<OrganUserForm>();
-	OrganUserEditForm frm(0, me->ui, me->env, 0);
+	OrganUserEditForm frm(nullptr, me->ui, me->env, nullptr);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		me->UpdateUserList();
@@ -17,7 +17,7 @@ void __stdcall SSWR::OrganMgr::OrganUserForm::OnModifyClicked(AnyType userObj)
 	NN<OrganWebUser> user;
 	if (me->lvUser->GetSelectedItem().GetOpt<OrganWebUser>().SetTo(user))
 	{
-		OrganUserEditForm frm(0, me->ui, me->env, user);
+		OrganUserEditForm frm(nullptr, me->ui, me->env, user);
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			me->UpdateUserList();

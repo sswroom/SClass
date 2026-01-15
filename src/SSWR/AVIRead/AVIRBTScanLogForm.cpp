@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType use
 	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTScanLog::DevEntry>().SetTo(log))
 		return;
 	{
-		SSWR::AVIRead::AVIRBTScanLogDevForm frm(0, me->ui, me->core, log);
+		SSWR::AVIRead::AVIRBTScanLogDevForm frm(nullptr, me->ui, me->core, log);
 		frm.ShowDialog(me);
 	}
 	

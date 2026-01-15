@@ -5,7 +5,7 @@
 Media::Decoder::G711muLawDecoder::G711muLawDecoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
-	this->sourceAudio = 0;
+	this->sourceAudio = nullptr;
 	this->readBuff = 0;
 	this->readBuffSize = 0;
 	this->align = 0;
@@ -76,7 +76,7 @@ Bool Media::Decoder::G711muLawDecoder::Start(Optional<Sync::Event> evt, UOSInt b
 	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		sourceAudio->Start(0, blkSize >> 1);
+		sourceAudio->Start(nullptr, blkSize >> 1);
 		this->readEvt = evt;
 		if (this->readEvt.SetTo(readEvt))
 			readEvt->Set();
@@ -92,7 +92,7 @@ void Media::Decoder::G711muLawDecoder::Stop()
 	{
 		sourceAudio->Stop();
 	}
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 }
 
 UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)

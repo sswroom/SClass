@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(AnyType userOb
 	NN<DB::DBMS> dbms;
 	NN<Net::MySQLServer> svr;
 	NEW_CLASSNN(dbms, DB::DBMS(MYSQLVERSION, me->log));
-	NEW_CLASSNN(svr, Net::MySQLServer(me->core->GetSocketFactory(), 0, port, dbms, true));
+	NEW_CLASSNN(svr, Net::MySQLServer(me->core->GetSocketFactory(), nullptr, port, dbms, true));
 	if (svr->IsError())
 	{
 		svr.Delete();
@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(Optional<UI::GUIClientCo
 	this->core = core;
 	this->SetText(CSTR("MySQL Server"));
 	this->SetFont(nullptr, 8.25, false);
-	this->svr = 0;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);

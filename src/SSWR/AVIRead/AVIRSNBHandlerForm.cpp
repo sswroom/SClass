@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 	sptr = Text::StrOSInt(sptr, val);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
-	me->pbImage->SetImage(0);
+	me->pbImage->SetImage(nullptr);
 	me->simg.Delete();
 
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
@@ -50,7 +50,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientCont
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->simg = 0;
+	this->simg = nullptr;
 	this->handType = handType;
 
 	this->pnlControl = ui->NewPanel(*this);

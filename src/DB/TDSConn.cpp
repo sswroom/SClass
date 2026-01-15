@@ -276,7 +276,7 @@ public:
 
 	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -361,9 +361,9 @@ public:
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		if (colIndex > this->nCols)
-			return 0;
+			return nullptr;
 		if (this->cols[colIndex].status == -1)
-			return 0;
+			return nullptr;
 		switch (this->cols[colIndex].type)
 		{
 		case SYBTEXT:
@@ -415,7 +415,7 @@ public:
 					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
-			return 0;
+			return nullptr;
 		case SYBUUID:
 		{
 			Data::UUID uuid;
@@ -424,19 +424,19 @@ public:
 			return Text::String::NewP(sbuff, sptr);
 		}
 		case SYBBINARY:
-			return 0;
+			return nullptr;
 		default:
 			printf("TDS: Unsupported type %d to new str\r\n", this->cols[colIndex].type);
-			return 0;
+			return nullptr;
 		}
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
 		if (colIndex > this->nCols)
-			return 0;
+			return nullptr;
 		if (this->cols[colIndex].status == -1)
-			return 0;
+			return nullptr;
 		switch (this->cols[colIndex].type)
 		{
 		case SYBTEXT:
@@ -479,12 +479,12 @@ public:
 		}
 		case SYBGEOMETRY:
 			printf("TDS: Geometry to string not supported\r\n");
-			return 0;
+			return nullptr;
 		case SYBBINARY:
-			return 0;
+			return nullptr;
 		default:
 			printf("TDS: Unsupported type %d to str(s)\r\n", this->cols[colIndex].type);
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -572,13 +572,13 @@ public:
 	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 	{
 		if (colIndex >= this->nCols)
-			return 0;
+			return nullptr;
 		if (this->cols[colIndex].status == -1)
 		{
-			return 0;
+			return nullptr;
 		}
 		if (this->cols[colIndex].type != SYBGEOMETRY)
-			return 0;
+			return nullptr;
 		UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 		UInt32 srId;
@@ -711,7 +711,7 @@ public:
 	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		if (colIndex >= this->nCols)
-			return 0;
+			return nullptr;
 		return Text::StrConcat(buff, (const UTF8Char*)this->cols[colIndex].name);
 	}
 
@@ -935,7 +935,7 @@ OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 {
 	if (this->clsData->dbproc == 0)
-		return 0;
+		return nullptr;
 	this->cmdMut.Lock();
 #if defined(VERBOSE)
 	printf("TDS: Execute SQL: %s\r\n", sql.v);
@@ -948,7 +948,7 @@ Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 #if defined(VERBOSE)
 		printf("TDS: Execute SQL Error\r\n");
 #endif
-		return 0;
+		return nullptr;
 	}
 	NN<TDSConnReader> r;
 	NEW_CLASSNN(r, TDSConnReader(this->clsData->dbproc, this->clsData->tzQhr));
@@ -1016,7 +1016,7 @@ void DB::TDSConn::Reconnect()
 Optional<DB::DBTransaction> DB::TDSConn::BeginTransaction()
 {
 	///////////////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 void DB::TDSConn::Commit(NN<DB::DBTransaction> tran)

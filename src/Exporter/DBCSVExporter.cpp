@@ -53,7 +53,7 @@ Bool Exporter::DBCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStri
 		return false;
 	}
 
-	Optional<Text::String> name = 0;
+	Optional<Text::String> name = nullptr;
 	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
@@ -61,7 +61,7 @@ Bool Exporter::DBCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStri
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
 	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
-	return DB::DBExporter::GenerateCSV(db, nullptr, Text::String::OrEmpty(name)->ToCString(), 0, CSTR("\"\""), stm, this->codePage);
+	return DB::DBExporter::GenerateCSV(db, nullptr, Text::String::OrEmpty(name)->ToCString(), nullptr, CSTR("\"\""), stm, this->codePage);
 }
 
 UOSInt Exporter::DBCSVExporter::GetParamCnt()
@@ -129,7 +129,7 @@ Bool Exporter::DBCSVExporter::SetParamSel(Optional<ParamData> param, UOSInt inde
 
 UnsafeArrayOpt<UTF8Char> Exporter::DBCSVExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
-	return 0;
+	return nullptr;
 }
 
 Int32 Exporter::DBCSVExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
@@ -159,7 +159,7 @@ UnsafeArrayOpt<UTF8Char> Exporter::DBCSVExporter::GetParamSelItems(Optional<Para
 		{
 			return name->ConcatTo(buff);
 		}
-		return 0;
+		return nullptr;
 	}
-	return 0;
+	return nullptr;
 }

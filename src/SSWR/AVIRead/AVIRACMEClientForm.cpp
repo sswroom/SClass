@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj
 	if (me->client.SetTo(client))
 	{
 		client.Delete();
-		me->client = 0;
+		me->client = nullptr;
 		me->txtHost->SetReadOnly(false);
 		me->txtKeyFile->SetReadOnly(false);
 		return;
@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(Optional<UI::GUIClientCont
 
 	this->core = core;
 	this->clif = core->GetTCPClientFactory();
-	this->client = 0;
+	this->client = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	UTF8Char sbuff[512];

@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 			}
 			else
 			{
-				Data::ArrayList<UInt32> relatedList;
+				Data::ArrayListNative<UInt32> relatedList;
 				me->chinese->GetRelatedChars(me->currChar, &relatedList);
 				i = relatedList.GetCount();
 				while (i-- > 0)
@@ -186,7 +186,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedGoClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
-	Data::ArrayList<UInt32> relatedChars;
+	Data::ArrayListNative<UInt32> relatedChars;
 	me->chinese->GetRelatedChars(me->currChar, &relatedChars);
 	if (relatedChars.GetCount() > 0)
 	{
@@ -441,7 +441,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 	}
 	else if (dimg->GetWidth() != newSize.x || dimg->GetHeight() != newSize.y)
 	{
-		this->pbChar->SetImageDImg(0);
+		this->pbChar->SetImageDImg(nullptr);
 		this->deng->DeleteImage(dimg);
 		this->charImg = this->deng->CreateImage32(newSize, Media::AT_ALPHA_ALL_FF);
 	}
@@ -451,7 +451,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawFont> f;
 		b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), nullptr, b);
 		dimg->DelBrush(b);
 		if (this->currChar != 0)
 		{
@@ -482,7 +482,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 	}
 	else
 	{
-		Data::ArrayList<UInt32> relatedChars;
+		Data::ArrayListNative<UInt32> relatedChars;
 		UOSInt i;
 		UOSInt j;
 		this->chinese->GetRelatedChars(this->currChar, &relatedChars);
@@ -509,7 +509,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->deng = this->core->GetDrawEngine();
 	this->currChar = 0;
-	this->charImg = 0;
+	this->charImg = nullptr;
 	this->currFont = Text::String::New(UTF8STRC("MingLiU"));
 	this->currRadical = 0;
 	NEW_CLASSNN(this->chinese, Text::ChineseInfo());
@@ -676,7 +676,7 @@ SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 	if (this->charImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->charImg = 0;
+		this->charImg = nullptr;
 	}
 	this->currFont->Release();
 	this->chinese.Delete();

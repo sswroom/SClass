@@ -129,8 +129,8 @@ Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optiona
 	this->nextCli = 0;
 
 	this->clif = clif;
-	this->accLog = 0;
-	this->reqLog = 0;
+	this->accLog = nullptr;
+	this->reqLog = nullptr;
 	this->ssl = ssl;
 	NN<Net::SSLEngine> nnssl;
 	if (this->ssl.SetTo(nnssl))
@@ -141,7 +141,7 @@ Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optiona
 	this->keepAlive = keepAlive;
 	this->timeoutHdlr = 0;
 	this->timeoutObj = 0;
-	this->proxyCliMgr = 0;
+	this->proxyCliMgr = nullptr;
 	Text::CStringNN nnsvrName;
 	if (svrName.SetTo(nnsvrName) && nnsvrName.leng > 0)
 	{
@@ -156,7 +156,7 @@ Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optiona
 	this->status.reqCnt = 0;
 	this->status.totalRead = 0;
 	this->status.totalWrite = 0;
-	NEW_CLASSNN(this->svr, Net::TCPServer(clif->GetSocketFactory(), 0, port, this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
+	NEW_CLASSNN(this->svr, Net::TCPServer(clif->GetSocketFactory(), nullptr, port, this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
 	if (this->allowProxy)
 	{
 		NEW_CLASSOPT(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));

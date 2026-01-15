@@ -21,9 +21,9 @@
 Parser::FileParser::XMLParser::XMLParser()
 {
 	this->codePage = 0;
-	this->encFact = 0;
-	this->parsers = 0;
-	this->browser = 0;
+	this->encFact = nullptr;
+	this->parsers = nullptr;
+	this->browser = nullptr;
 }
 
 Parser::FileParser::XMLParser::~XMLParser()
@@ -124,7 +124,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::St
 	}
 	if (!valid)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::StreamDataStream stm(fd);
@@ -137,7 +137,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 
 	if (!reader.NextElementName().SetTo(nodeText))
-		return 0;
+		return nullptr;
 	if (nodeText->Equals(UTF8STRC("kml")))
 	{
 		return Map::KMLXML::ParseKMLRoot(reader, fileName, parsers, browser, pkgFile);
@@ -255,11 +255,11 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 			{
 				if (!reader.SkipElement())
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 		}
-		return 0;
+		return nullptr;
 	}
 	else if (nodeText->Equals(UTF8STRC("osm")))
 	{
@@ -441,7 +441,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	{
 		NN<Text::XMLAttrib> attr;
 		Text::VSProject::VisualStudioVersion ver = Text::VSProject::VSV_UNKNOWN;
-		Optional<Text::String> projName = 0;
+		Optional<Text::String> projName = nullptr;
 		NN<Text::String> nnprojName;
 		NN<Text::String> aname;
 		NN<Text::String> avalue;
@@ -502,9 +502,9 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 					}
 				}
 			}
-			return proj.Ptr();
+			return proj;
 		}
-		return 0;
+		return nullptr;
 	}
 	else if (nodeText->EndsWith(UTF8STRC(":FeatureCollection")))
 	{
@@ -546,7 +546,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStringNN colList;
 				Data::ArrayListStringNN nameList;
-				Data::ArrayList<Optional<Text::String>> valList;
+				Data::ArrayListObj<Optional<Text::String>> valList;
 				Bool succ = false;
 				while (reader.NextElementName().SetTo(nodeText))
 				{
@@ -700,8 +700,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				{
 					if (nodeText->Equals(UTF8STRC("REG_VALUE")))
 					{
-						UnsafeArrayOpt<const UTF8Char> roleName = 0;
-						UnsafeArrayOpt<const UTF8Char> roleData = 0;
+						UnsafeArrayOpt<const UTF8Char> roleName = nullptr;
+						UnsafeArrayOpt<const UTF8Char> roleData = nullptr;
 						while (reader.NextElementName().SetTo(nodeText))
 						{
 							if (nodeText->Equals(UTF8STRC("NAME")))
@@ -748,10 +748,10 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				{
 					if (nodeText->Equals(UTF8STRC("DEVICE")))
 					{
-						UnsafeArrayOpt<const UTF8Char> desc = 0;
-						UnsafeArrayOpt<const UTF8Char> hwId = 0;
-						UnsafeArrayOpt<const UTF8Char> service = 0;
-						UnsafeArrayOpt<const UTF8Char> driver = 0;
+						UnsafeArrayOpt<const UTF8Char> desc = nullptr;
+						UnsafeArrayOpt<const UTF8Char> hwId = nullptr;
+						UnsafeArrayOpt<const UTF8Char> service = nullptr;
+						UnsafeArrayOpt<const UTF8Char> driver = nullptr;
 						while (reader.NextElementName().SetTo(nodeText))
 						{
 							if (nodeText->Equals(UTF8STRC("DESCRIPTION")))
@@ -818,13 +818,13 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				{
 					if (nodeText->Equals(UTF8STRC("DRIVER")))
 					{
-						UnsafeArrayOpt<const UTF8Char> fileName = 0;
+						UnsafeArrayOpt<const UTF8Char> fileName = nullptr;
 						UInt64 fileSize = 0;
-						UnsafeArrayOpt<const UTF8Char> createDate = 0;
-						UnsafeArrayOpt<const UTF8Char> version = 0;
-						UnsafeArrayOpt<const UTF8Char> manufacturer = 0;
-						UnsafeArrayOpt<const UTF8Char> productName = 0;
-						UnsafeArrayOpt<const UTF8Char> group = 0;
+						UnsafeArrayOpt<const UTF8Char> createDate = nullptr;
+						UnsafeArrayOpt<const UTF8Char> version = nullptr;
+						UnsafeArrayOpt<const UTF8Char> manufacturer = nullptr;
+						UnsafeArrayOpt<const UTF8Char> productName = nullptr;
+						UnsafeArrayOpt<const UTF8Char> group = nullptr;
 						UInt32 altitude = 0;
 						while (reader.NextElementName().SetTo(nodeText))
 						{
@@ -932,7 +932,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	{
 		return Media::Jasper::JasperXML::ParseJasperReport(reader, fileName);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec)
@@ -1080,7 +1080,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NN<Text::XMLReader> reader, 
 	{
 		if (nodeName->Equals(UTF8STRC("Configuration")))
 		{
-			cfgName = 0;
+			cfgName = nullptr;
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{

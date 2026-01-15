@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientCont
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->bforce = 0;
+	this->bforce = nullptr;
 	this->lastCnt = 0;
 	this->lastTime = 0;
 

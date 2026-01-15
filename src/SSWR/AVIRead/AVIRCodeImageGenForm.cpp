@@ -64,8 +64,8 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(Optional<UI::GUIClient
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
-	this->codeImgGen = 0;
-	this->simg = 0;
+	this->codeImgGen = nullptr;
+	this->simg = nullptr;
 
 	this->pnlMain = ui->NewPanel(*this);
 	this->pnlMain->SetRect(0, 0, 100, 84, false);

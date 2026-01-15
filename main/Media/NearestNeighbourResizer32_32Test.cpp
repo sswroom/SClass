@@ -65,7 +65,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("NearestNeighbourTest.tif"));
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
+				exporter.ExportFile(fs, CSTRP(sbuff, sptr), imgList, nullptr);
 			}
 			imgList.Delete();
 		}

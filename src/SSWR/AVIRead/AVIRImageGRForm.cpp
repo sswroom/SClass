@@ -225,7 +225,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(Optional<UI::GUIClientControl> p
 	}
 	else
 	{
-		this->destPrevImg = 0;
+		this->destPrevImg = nullptr;
 	}
 	this->modifying = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

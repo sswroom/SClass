@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonCustomClicked(AnyType u
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		{
-			SSWR::AVIRead::AVIRColorCustomForm frm(0, me->ui, me->core, me->monColor);
+			SSWR::AVIRead::AVIRColorCustomForm frm(nullptr, me->ui, me->core, me->monColor);
 			frm.ShowDialog(me);
 		}
 
@@ -467,7 +467,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->colorMgr = this->core->GetColorManager();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->hMon = hMon;
-	this->monFileName = 0;
+	this->monFileName = nullptr;
 	Media::MonitorInfo monInfo(this->hMon);
 	Optional<Text::String> monName = monInfo.GetDesc();
 	UTF8Char sbuff[32];

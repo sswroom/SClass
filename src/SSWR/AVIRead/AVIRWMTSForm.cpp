@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(Optional<UI::GUIClientControl> parent,
 {
 	this->core = core;
 	this->ssl = ssl;
-	this->wmts = 0;
+	this->wmts = nullptr;
 	this->SetText(CSTR("Web Map Tile Service"));
 	this->SetFont(nullptr, 8.25, false);
 	this->SetNoResize(true);
@@ -185,6 +185,6 @@ void SSWR::AVIRead::AVIRWMTSForm::OnMonitorChanged()
 Optional<Map::TileMap> SSWR::AVIRead::AVIRWMTSForm::GetTileMap()
 {
 	Optional<Map::TileMap> tile = this->wmts;
-	this->wmts = 0;
+	this->wmts = nullptr;
 	return tile;
 }

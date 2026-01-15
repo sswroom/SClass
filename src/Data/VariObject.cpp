@@ -4,7 +4,7 @@
 
 Data::VariObject::~VariObject()
 {
-	NN<const Data::ArrayList<Data::VariItem*>> itemList = this->items.GetValues();
+	NN<const Data::ArrayListObj<Data::VariItem*>> itemList = this->items.GetValues();
 	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
@@ -18,8 +18,8 @@ void Data::VariObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sb->AppendUTF8Char('{');
-	NN<Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> keys = this->items.GetKeys();
-	NN<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
+	NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> keys = this->items.GetKeys();
+	NN<const Data::ArrayListObj<VariItem*>> values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -42,8 +42,8 @@ NN<Data::Class> Data::VariObject::CreateClass() const
 	NN<Data::Class> cls;
 	OSInt currPos = 0;
 	NEW_CLASSNN(cls, Data::Class(0));
-	NN<Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> keys = this->items.GetKeys();
-	NN<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
+	NN<Data::ArrayListObj<UnsafeArrayOpt<const UTF8Char>>> keys = this->items.GetKeys();
+	NN<const Data::ArrayListObj<VariItem*>> values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

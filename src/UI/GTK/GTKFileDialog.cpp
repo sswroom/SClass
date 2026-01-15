@@ -346,7 +346,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(Optional<ControlHandle> ownerHandle)
 		Bool toSave = true;
 		this->ClearFileNames();
 		OPTSTR_DEL(this->fileName);
-		this->fileName = 0;
+		this->fileName = nullptr;
 		this->filterIndex = (UOSInt)-1;
 		GtkFileFilter *filter = gtk_file_chooser_get_filter(chooser);
 		if (filter)

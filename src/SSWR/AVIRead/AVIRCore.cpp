@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(AnyType userObj, NN<UI::GUIFo
 	me->frms.RemoveAt(me->frms.IndexOf(frm));
 	if (me->gisForm.OrNull() == frm.Ptr())
 	{
-		me->gisForm = 0;
+		me->gisForm = nullptr;
 	}
 }
 
@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	if (gpioCtrl->IsError())
 	{
 		gpioCtrl.Delete();
-		this->gpioCtrl = 0;
+		this->gpioCtrl = nullptr;
 	}
 	else
 	{
@@ -72,7 +72,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	if (siLabDriver->IsError())
 	{
 		siLabDriver.Delete();
-		this->siLabDriver = 0;
+		this->siLabDriver = nullptr;
 	}
 	else
 	{
@@ -84,10 +84,10 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	this->parsers->SetTCPClientFactory(this->clif);
 	this->parsers->SetSSLEngine(this->ssl);
 	this->parsers->SetLogTool(this->log);
-	this->batchLyrs = 0;
-	this->batchCesiumTiles = 0;
+	this->batchLyrs = nullptr;
+	this->batchCesiumTiles = nullptr;
 	this->batchLoad = false;
-	this->gisForm = 0;
+	this->gisForm = nullptr;
 	this->ui->SetMonitorMgr(&this->monMgr);
 
 	NN<IO::Registry> reg;
@@ -123,7 +123,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	this->clif.Delete();
 	this->sockf.Delete();
 	this->eng.Delete();
-	this->ui->SetMonitorMgr(0);
+	this->ui->SetMonitorMgr(nullptr);
 	this->gpioCtrl.Delete();
 	this->siLabDriver.Delete();
 	i = this->audDevList.GetCount();
@@ -136,15 +136,15 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 void SSWR::AVIRead::AVIRCore::OpenGSMModem(Optional<IO::Stream> modemPort)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> frm;
-	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, *this, modemPort));
+	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGSMModemForm(nullptr, ui, *this, modemPort));
 	InitForm(frm);
 	frm->Show();
 }
 
 Optional<IO::Stream> SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
-	Optional<IO::Stream> retStm = 0;
-	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, *this, allowReadOnly, this->ssl, this->GetLog());
+	Optional<IO::Stream> retStm = nullptr;
+	SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, *this, allowReadOnly, this->ssl, this->GetLog());
 	if (defBaudRate != 0)
 	{
 		frm.SetInitBaudRate(defBaudRate);
@@ -160,7 +160,7 @@ Optional<IO::Stream> SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> 
 void SSWR::AVIRead::AVIRCore::OpenHex(NN<IO::StreamData> fd, Optional<IO::FileAnalyse::FileAnalyser> fileAnalyse)
 {
 	NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
-	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, *this));
+	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(nullptr, ui, *this));
 	InitForm(frm);
 	frm->SetData(fd, fileAnalyse);
 	frm->Show();
@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 			NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
 			view = env->CreateMapView(Math::Size2DDbl(320, 240));
 		}
-		NEW_CLASSNN(gisForm, AVIRead::AVIRGISForm(0, this->ui, *this, env, view));
+		NEW_CLASSNN(gisForm, AVIRead::AVIRGISForm(nullptr, this->ui, *this, env, view));
 		gisForm->AddLayers(batchLyrs);
 		this->batchLyrs.Delete();
 		InitForm(gisForm);
@@ -204,7 +204,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	if (this->batchCesiumTiles.SetTo(batchCesiumTiles))
 	{
 		NN<AVIRead::AVIRCesiumTileForm> tileForm;
-		NEW_CLASSNN(tileForm, AVIRead::AVIRCesiumTileForm(0, this->ui, *this, batchCesiumTiles));
+		NEW_CLASSNN(tileForm, AVIRead::AVIRCesiumTileForm(nullptr, this->ui, *this, batchCesiumTiles));
 		this->batchCesiumTiles.Delete();
 		InitForm(tileForm);
 		tileForm->Show();
@@ -434,10 +434,10 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NN<Media::DrawImage> img, NN<Media:
 	NN<Media::DrawBrush> b;
 	Double dpi = img->GetHDPI();
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, b);
 	img->DelBrush(b);
 
-	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), lineThick * dpi / 96.0, 0, 0);
+	p = img->NewPenARGB(colorConv->ConvRGB8(lineColor), lineThick * dpi / 96.0, nullptr, 0);
 	img->DrawLine(0, UOSInt2Double(img->GetHeight()) * 0.5, UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()) * 0.5, p);
 	img->DelPen(p);
 	return true;
@@ -451,7 +451,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<M
 	{
 		NN<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		NN<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
+		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
 		img->DrawString(Math::Coord2DDbl(0, 0), CSTR("No line style"), f, b);
@@ -463,7 +463,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<M
 	NN<Media::DrawPen> p;
 	NN<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffc0c0c0));
-	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
 	img->DelBrush(b);
 
 	UInt32 color;
@@ -490,7 +490,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<M
 	{
 		NN<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		NN<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
+		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
 		img->DrawString(Math::Coord2DDbl(0, 0), CSTR("No font style"), f, b);
@@ -505,7 +505,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<M
 	UnsafeArray<UTF8Char> sptr;
 	Math::Coord2DDbl refPos;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), nullptr, b);
 	img->DelBrush(b);
 
 	NN<Text::String> fontName;
@@ -551,7 +551,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NN<Media::DrawImage> img, NN<Media:
 	NN<Media::DrawFont> f;
 	NN<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
-	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
+	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), nullptr, b);
 	img->DelBrush(b);
 
 	b = img->NewBrushARGB(colorConv->ConvRGB8(fontColor));

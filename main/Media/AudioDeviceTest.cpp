@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(CSTR("End Playing"));
 			renderer->Stop();
 		}
-		renderer->BindAudio(0);
+		renderer->BindAudio(nullptr);
 		DEL_CLASS(clk);
 	}
 	else

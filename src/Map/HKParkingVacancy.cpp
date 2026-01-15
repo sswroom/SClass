@@ -25,7 +25,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 	mstm.SeekFromBeginning(0);
 	DB::CSVFile csv(mstm, 65001);
 	NN<DB::DBReader> r;
-	if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		UOSInt colInd[15];
 		UOSInt i = 15;
@@ -169,7 +169,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 		mstm.SeekFromBeginning(0);
 		DB::CSVFile csv(mstm, 65001);
 		NN<DB::DBReader> r;
-		if (csv.QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (csv.QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			UOSInt colInd[3];
 			UOSInt i = 3;
@@ -256,7 +256,7 @@ Map::HKParkingVacancy::HKParkingVacancy(NN<Net::TCPClientFactory> clif, Optional
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("ParkingPOI")));
 	imgList->AddImage(simg, 0);
 	NN<Media::SharedImage> shimg;
-	NEW_CLASSNN(shimg, Media::SharedImage(imgList, 0));
+	NEW_CLASSNN(shimg, Media::SharedImage(imgList, nullptr));
 	this->SetIconStyle(shimg, 8, 8);
 	shimg.Delete();
 }
@@ -461,7 +461,7 @@ UnsafeArrayOpt<UTF8Char> Map::HKParkingVacancy::GetColumnName(UnsafeArray<UTF8Ch
 	case 17:
 		return Text::StrConcatC(buff, UTF8STRC("lastupdate"));
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -570,7 +570,7 @@ Optional<Math::Geometry::Vector2D> Map::HKParkingVacancy::GetNewVectorById(NN<Ge
 		NEW_CLASS(pt, Math::Geometry::Point(4326, parking->parkingLongitude, parking->parkingLatitude));
 		return pt;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Map::HKParkingVacancy::GetGeomCol() const

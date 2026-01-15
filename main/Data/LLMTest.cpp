@@ -19,7 +19,7 @@ Int32 TestPage2_7()
 	Text::CStringNN url = CSTR("https://raw.githubusercontent.com/rasbt/LLMs-from-scratch/main/ch02/01_main-chapter-code/the-verdict.txt");
 	Text::CStringNN filePath = CSTR("the-verdict.txt");
 	NN<IO::Stream> f;
-	Optional<Text::String> rawText = 0;
+	Optional<Text::String> rawText = nullptr;
 	NN<Text::String> s;
 	NN<Text::String> s2;
 	if (Net::HTTPUtil::DownloadAndOpen(clif, ssl, url, filePath, 1048576).SetTo(f))
@@ -81,7 +81,7 @@ Int32 TestPage2_11()
 {
 	IO::ConsoleWriter console;
 	Text::CStringNN filePath = CSTR("the-verdict.txt");
-	Optional<Text::String> rawText = 0;
+	Optional<Text::String> rawText = nullptr;
 	NN<Text::String> s;
 	NN<Text::String> s2;
 	{
@@ -113,7 +113,7 @@ Int32 TestPage2_12()
 {
 	IO::ConsoleWriter console;
 	Text::CStringNN filePath = CSTR("the-verdict.txt");
-	Optional<Text::String> rawText = 0;
+	Optional<Text::String> rawText = nullptr;
 	NN<Text::String> s;
 	{
 		IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -149,7 +149,7 @@ class SimpleTokenizerV1
 {
 private:
 	Data::ArrayListStringNN intToStr;
-	Data::FastStringMap<UOSInt> strToInt;
+	Data::FastStringMapNative<UOSInt> strToInt;
 	Text::RegEx regEx;
 public:
 	SimpleTokenizerV1(NN<Data::ArrayListStringNN> vocab) : regEx("([,.:;?_!\"()\\']|--|\\s)")
@@ -171,7 +171,7 @@ public:
 		this->intToStr.FreeAll();
 	}
 
-	void Encode(Text::CStringNN text, NN<Data::ArrayList<UOSInt>> ids) const
+	void Encode(Text::CStringNN text, NN<Data::ArrayListNative<UOSInt>> ids) const
 	{
 		Data::ArrayListStringNN result;
 		this->regEx.Split(text, result);
@@ -186,7 +186,7 @@ public:
 		result.FreeAll();
 	}
 
-	void Decode(NN<Data::ArrayList<UOSInt>> ids, NN<Text::StringBuilderUTF8> text) const
+	void Decode(NN<Data::ArrayListNative<UOSInt>> ids, NN<Text::StringBuilderUTF8> text) const
 	{
 		Text::CStringNN pun = CSTR(",.?\"()\\'");
 		NN<Text::String> s;
@@ -218,7 +218,7 @@ Int32 TestPage2_16()
 {
 	IO::ConsoleWriter console;
 	Text::CStringNN filePath = CSTR("the-verdict.txt");
-	Optional<Text::String> rawText = 0;
+	Optional<Text::String> rawText = nullptr;
 	NN<Text::String> s;
 	{
 		IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -238,7 +238,7 @@ Int32 TestPage2_16()
 		SimpleTokenizerV1 tokenizer(result);
 
 		Text::CStringNN text = CSTR("\"It's the last he painted, you know,\" Mrs. Gisburn said with pardonable pride.");
-		Data::ArrayList<UOSInt> ids;
+		Data::ArrayListNative<UOSInt> ids;
 		tokenizer.Encode(text, ids);
 		Text::TextWriteUtil::WriteArrayUOS(console, ids);
 		console.WriteLine();
@@ -253,7 +253,7 @@ class SimpleTokenizerV2
 {
 private:
 	Data::ArrayListStringNN intToStr;
-	Data::FastStringMap<UOSInt> strToInt;
+	Data::FastStringMapNative<UOSInt> strToInt;
 	Text::RegEx regEx;
 public:
 	SimpleTokenizerV2(NN<Data::ArrayListStringNN> vocab) : regEx("([,.:;?_!\"()\\']|--|\\s)")
@@ -275,7 +275,7 @@ public:
 		this->intToStr.FreeAll();
 	}
 
-	void Encode(Text::CStringNN text, NN<Data::ArrayList<UOSInt>> ids) const
+	void Encode(Text::CStringNN text, NN<Data::ArrayListNative<UOSInt>> ids) const
 	{
 		Data::ArrayListStringNN result;
 		this->regEx.Split(text, result);
@@ -297,7 +297,7 @@ public:
 		result.FreeAll();
 	}
 
-	void Decode(NN<Data::ArrayList<UOSInt>> ids, NN<Text::StringBuilderUTF8> text) const
+	void Decode(NN<Data::ArrayListNative<UOSInt>> ids, NN<Text::StringBuilderUTF8> text) const
 	{
 		Text::CStringNN pun = CSTR(",.?\"()\\'");
 		NN<Text::String> s;
@@ -330,7 +330,7 @@ Int32 TestPage2_19()
 {
 	IO::ConsoleWriter console;
 	Text::CStringNN filePath = CSTR("the-verdict.txt");
-	Optional<Text::String> rawText = 0;
+	Optional<Text::String> rawText = nullptr;
 	NN<Text::String> s;
 	{
 		IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -352,7 +352,7 @@ Int32 TestPage2_19()
 		SimpleTokenizerV2 tokenizer(result);
 
 		Text::CStringNN text = CSTR("Hello, do you like tea? <|endoftext|> In the sunlit terraces of the palace.");
-		Data::ArrayList<UOSInt> ids;
+		Data::ArrayListNative<UOSInt> ids;
 		tokenizer.Encode(text, ids);
 		Text::TextWriteUtil::WriteArrayUOS(console, ids);
 		console.WriteLine();

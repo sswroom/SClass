@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(AnyType userObj
 			return;
 		}
 		NN<Net::UDPServer> svr;
-		NEW_CLASSNN(svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, nullptr, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
+		NEW_CLASSNN(svr, Net::UDPServer(me->core->GetSocketFactory(), nullptr, port, nullptr, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
 		if (svr->IsError())
 		{
 			svr.Delete();
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(AnyType userObj)
 			{
 				i = PACKETCOUNT - 1;
 			}
-			if (me->packets[i].buff == 0)
+			if (me->packets[i].buff.IsNull())
 			{
 				break;
 			}
@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->svr = 0;
+	this->svr = nullptr;
 	this->packetsChg = false;
 	this->packetCurr = 0;
 	this->packets = MemAlloc(PacketInfo, PACKETCOUNT);
@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 	i = PACKETCOUNT;
 	while (i-- > 0)
 	{
-		this->packets[i].buff = 0;
+		this->packets[i].buff = nullptr;
 		this->packets[i].buffSize = 0;
 	}
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

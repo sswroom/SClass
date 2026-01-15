@@ -11,7 +11,7 @@
 IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NN<IO::StreamData> fd)
 {
 	UOSInt leng = (UOSInt)fd->GetDataSize();
-	this->fd = 0;
+	this->fd = nullptr;
 	if (leng < 256 || leng > 1048576)
 	{
 		return;
@@ -119,14 +119,14 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	UOSInt l;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	Data::ByteBuffer packBuff(pack->packSize);
 	if (fd->GetRealData(pack->fileOfst, pack->packSize, packBuff) != pack->packSize)
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::CString carr[32];
 	k = 32;

@@ -239,7 +239,7 @@ Int64 Math::TSPReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRowPtr == 0)
-		return 0;
+		return nullptr;
 	if (colIndex == 0)
 	{
 		return Text::StrInt32(buff, ReadInt32(&this->currRowPtr[56]));
@@ -296,7 +296,7 @@ UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<WChar
 			return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[80]));
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Math::TSPReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -319,12 +319,12 @@ Optional<Text::String> Math::TSPReader::GetNewStr(UOSInt colIndex)
 	{
 		return Text::String::NewP(sbuff, sptr);
 	}
-	return 0;
+	return nullptr;
 }
 UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->currRowPtr == 0)
-		return 0;
+		return nullptr;
 	if (colIndex == 0)
 	{
 		return Text::StrInt32(buff, ReadInt32(&this->currRowPtr[56]));
@@ -379,7 +379,7 @@ UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<UT
 			return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[80]));
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::Timestamp Math::TSPReader::GetTimestamp(UOSInt colIndex)
@@ -470,9 +470,9 @@ UOSInt Math::TSPReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UOSInt colIndex)
 {
 	if (this->currRowPtr == 0)
-		return 0;
+		return nullptr;
 	if (colIndex != 1)
-		return 0;
+		return nullptr;
 	Math::Geometry::PointZ *pt;
 	NEW_CLASS(pt, Math::Geometry::PointZ(4326, ReadDouble(&this->currRowPtr[0]), ReadDouble(&this->currRowPtr[8]), ReadDouble(&this->currRowPtr[16])));
 	return pt;
@@ -488,7 +488,7 @@ UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetName(UOSInt colIndex, UnsafeArray<U
 	Text::CStringNN cstr;
 	if (this->GetName(colIndex, this->rowSize).SetTo(cstr))
 		return cstr.ConcatTo(buff);
-	return 0;
+	return nullptr;
 }
 
 Bool Math::TSPReader::IsNull(UOSInt colIndex)
@@ -658,7 +658,7 @@ Int64 Math::TSPHReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRow != 0)
-		return 0;
+		return nullptr;
 	return Text::StrDoubleW(buff, GetDblOrNAN(colIndex));
 }
 
@@ -678,12 +678,12 @@ Optional<Text::String> Math::TSPHReader::GetNewStr(UOSInt colIndex)
 	{
 		return Text::String::NewP(sbuff, sptr);
 	}
-	return 0;
+	return nullptr;
 }
 UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->currRow != 0)
-		return 0;
+		return nullptr;
 	return Text::StrDouble(buff, GetDblOrNAN(colIndex));
 }
 
@@ -724,7 +724,7 @@ UOSInt Math::TSPHReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 
 Optional<Math::Geometry::Vector2D> Math::TSPHReader::GetVector(UOSInt colIndex)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool Math::TSPHReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -737,7 +737,7 @@ UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetName(UOSInt colIndex, UnsafeArray<
 	Text::CStringNN cstr;
 	if (GetName(colIndex).SetTo(cstr))
 		return cstr.ConcatTo(buff);
-	return 0;
+	return nullptr;
 }
 
 Bool Math::TSPHReader::IsNull(UOSInt colIndex)

@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MD5Parser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);

@@ -48,13 +48,13 @@ Optional<IO::ParsedObject> Parser::FileParser::LinkArcParser::ParseFileHdr(NN<IO
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[0]) != 0x4b4e494c || ReadInt16(&hdr[4]) != 0x36)
-		return 0;
+		return nullptr;
 	nameSize = hdr[7];
 	if (nameSize > fd->GetShortName().leng - 4)
-		return 0;
+		return nullptr;
 	currOfst = 8 + (UOSInt)nameSize;
 	fileSize = fd->GetDataSize();
 
@@ -71,12 +71,12 @@ Optional<IO::ParsedObject> Parser::FileParser::LinkArcParser::ParseFileHdr(NN<IO
 		if (recSize <= 16 || recSize + currOfst > fileSize)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		if (fnameSize <= 0 || fnameSize >= 256 || fnameSize & 1)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		dt.SetValue(ReadUInt16(&recBuff[6]), recBuff[8], recBuff[9], recBuff[10], recBuff[11], recBuff[12], 0, 36);
 		Text::StrUTF16_UTF8C(fileName, (const UTF16Char*)&recBuff[15], (UOSInt)fnameSize >> 1);

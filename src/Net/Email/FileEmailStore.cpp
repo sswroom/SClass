@@ -347,7 +347,7 @@ Optional<IO::StreamData> Net::Email::FileEmailStore::OpenEmailData(Int64 id)
 {
 	NN<FileInfo> fileInfo;
 	if (!this->GetFileInfo(id).SetTo(fileInfo))
-		return 0;
+		return nullptr;
 	return NEW_CLASS_D(IO::StmData::FileData(fileInfo->fileName, false));
 }
 
@@ -355,7 +355,7 @@ UnsafeArrayOpt<const UTF8Char> Net::Email::FileEmailStore::GetEmailUid(Int64 id)
 {
 	NN<FileInfo> fileInfo;
 	if (!this->GetFileInfo(id).SetTo(fileInfo))
-		return 0;
+		return nullptr;
 	return fileInfo->uid;
 }
 
@@ -418,7 +418,7 @@ void Net::Email::FileEmailStore::GetMessageStat(Text::CString userName, NN<Messa
 	stat->unreadSize = unreadSize;
 }
 
-UOSInt Net::Email::FileEmailStore::GetUnreadIndices(Text::CString userName, NN<Data::ArrayList<UOSInt>> indices)
+UOSInt Net::Email::FileEmailStore::GetUnreadIndices(Text::CString userName, NN<Data::ArrayListNative<UOSInt>> indices)
 {
 	UOSInt totalCnt;
 	UOSInt i;

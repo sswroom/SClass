@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnDevChanged(AnyType userObj)
 	{
 		currBuddy->PlayEffect(IO::Device::IBuddy::IBBE_OFF, IO::Device::IBuddy::IBHDE_OFF, IO::Device::IBuddy::IBHRE_OFF, IO::Device::IBuddy::IBWE_OFF);
 	}
-	me->currBuddy = 0;
+	me->currBuddy = nullptr;
 	me->lbHead->SetSelectedIndex(0);
 	me->chkHeart->SetChecked(false);
 	me->currHead = IO::Device::IBuddy::IBHDE_OFF;
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> par
 	this->SetNoResize(true);
 	
 	this->core = core;
-	this->currBuddy = 0;
+	this->currBuddy = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lbDevice = ui->NewListBox(*this, false);

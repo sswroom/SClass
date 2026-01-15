@@ -85,7 +85,7 @@ UnsafeArrayOpt<UTF8Char> Map::RevGeoCfg::GetStreetName(UnsafeArray<UTF8Char> buf
 	Text::StringBuilderUTF8 sb;
 	if (GetStreetName(sb, pos))
 		return sb.ConcatToS(buff, buffSize);
-	return 0;
+	return nullptr;
 }
 
 Bool Map::RevGeoCfg::GetStreetName(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos)

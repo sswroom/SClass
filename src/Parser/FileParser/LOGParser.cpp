@@ -56,13 +56,13 @@ Optional<IO::ParsedObject> Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::St
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".LOG")))
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
 	if (!reader.ReadLine(sbuff, 255).SetTo(sptr))
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt strLen = (UOSInt)(sptr - sbuff);
 	if (strLen >= 43 && sbuff[2] == ':' && sbuff[5] == ':' && sbuff[8] == ' ' && Text::StrEquals(&sbuff[9], (const UTF8Char*)"MSG start UDP server successfully!"))
@@ -73,5 +73,5 @@ Optional<IO::ParsedObject> Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::St
 		//////////////////////////////
 		return log;
 	}
-	return 0;
+	return nullptr;
 }

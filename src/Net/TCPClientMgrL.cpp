@@ -579,7 +579,7 @@ Optional<Net::TCPClient> Net::TCPClientMgr::GetClient(UOSInt index, OutParam<Any
 		cliData.Set(cliStat->cliData);
 		return cliStat->cli;
 	}
-	return 0;
+	return nullptr;
 }
 
 

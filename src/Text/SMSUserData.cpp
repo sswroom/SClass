@@ -18,7 +18,7 @@ Text::SMSUserData::SMSUserData(UnsafeArray<const UTF16Char> msg, Text::SMSUtil::
 	}
 	else
 	{
-		this->udh = 0;
+		this->udh = nullptr;
 	}
 }
 
@@ -29,7 +29,7 @@ Text::SMSUserData::~SMSUserData()
 	if (this->udh.SetTo(udh))
 	{
 		MemFreeArr(udh);
-		this->udh = 0;
+		this->udh = nullptr;
 	}
 }
 
@@ -306,7 +306,7 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 		}
 		else
 		{
-			NEW_CLASSNN(ud, Text::SMSUserData(u16Msg, dcs, 0));
+			NEW_CLASSNN(ud, Text::SMSUserData(u16Msg, dcs, nullptr));
 			smsList->Add(ud);
 			MemFree(u16MsgPtr);
 			return 1;
@@ -347,7 +347,7 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 		}
 		else
 		{
-			NEW_CLASSNN(ud, Text::SMSUserData(u16Msg, dcs, 0));
+			NEW_CLASSNN(ud, Text::SMSUserData(u16Msg, dcs, nullptr));
 			smsList->Add(ud);
 			MemFree(u16MsgPtr);
 			return 1;
@@ -408,7 +408,7 @@ Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(UnsafeArray<const U
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -527,6 +527,6 @@ Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSFromBytes(UnsafeArray<co
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

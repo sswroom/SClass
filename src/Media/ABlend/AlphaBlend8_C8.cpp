@@ -184,7 +184,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Optional<Media::ColorSess> colorSe
 	}
 	else
 	{
-		this->lutList = 0;
+		this->lutList = nullptr;
 		this->rgbTable = MemAllocArr(UInt8, 262144 + 8192 + 8192);
 	}
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
@@ -377,7 +377,7 @@ void Media::ABlend::AlphaBlend8_C8::EndColorSess(NN<Media::ColorSess> colorSess)
 	if (this->colorSess.SetTo(nncolorSess) && nncolorSess == colorSess)
 	{
 		nncolorSess->RemoveHandler(*this);
-		this->colorSess = 0;
+		this->colorSess = nullptr;
 		this->changed = true;
 	}
 }

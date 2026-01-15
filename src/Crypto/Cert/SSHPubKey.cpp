@@ -24,19 +24,19 @@ UOSInt Crypto::Cert::SSHPubKey::GetSize() const
 UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAModulus(OptOut<UOSInt> size) const
 {
 	if (this->buff.GetSize() < 15)
-		return 0;
+		return nullptr;
 	UOSInt i;
 	UInt32 buffSize;
 	if (this->buff.ReadMU32(0) != 7 || !Text::CStringNN(&this->buff[4], 7).Equals(CSTR("ssh-rsa")))
-		return 0;
+		return nullptr;
 	buffSize = this->buff.ReadMU32(11);
 	i = 15;
 	if (this->buff.GetSize() < i + buffSize + 4)
-		return 0;
+		return nullptr;
 	i += buffSize + 4;
 	buffSize = this->buff.ReadMU32(i - 4);
 	if (this->buff.GetSize() < i + buffSize)
-		return 0;
+		return nullptr;
 	size.Set(buffSize);
 	return &this->buff[i];	
 }
@@ -44,15 +44,15 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAModulus(OptOut<UOSInt
 UnsafeArrayOpt<const UInt8> Crypto::Cert::SSHPubKey::GetRSAPublicExponent(OptOut<UOSInt> size) const
 {
 	if (this->buff.GetSize() < 15)
-		return 0;
+		return nullptr;
 	UOSInt i;
 	UInt32 buffSize;
 	if (this->buff.ReadMU32(0) != 7 || !Text::CStringNN(&this->buff[4], 7).Equals(CSTR("ssh-rsa")))
-		return 0;
+		return nullptr;
 	buffSize = this->buff.ReadMU32(11);
 	i = 15;
 	if (this->buff.GetSize() < i + buffSize + 4)
-		return 0;
+		return nullptr;
 	size.Set(buffSize);
 	return &this->buff[i];
 }
@@ -67,7 +67,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::SSHPubKey::CreateKey() const
 	{
 		return Crypto::Cert::X509Key::CreateRSAPublicKey(this->sourceNameObj->ToCString(), Data::ByteArrayR(modulus, modulusSize), Data::ByteArrayR(publicExponent, publicExponentSize));
 	}
-	return 0;
+	return nullptr;
 }
 
 NN<Crypto::Cert::SSHPubKey> Crypto::Cert::SSHPubKey::CreateRSAPublicKey(Text::CStringNN name, Data::ByteArrayR modulus, Data::ByteArrayR publicExponent)

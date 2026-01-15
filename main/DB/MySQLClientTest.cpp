@@ -383,7 +383,7 @@ void TextReadAll(NN<DB::DBTool> db)
 {
 	Data::ArrayListNN<Userfile> dataList;
 	NN<DB::DBReader> r;
-	if (db->QueryTableData(nullptr, CSTR("userfile"), 0, 0, 0, nullptr, 0).SetTo(r))
+	if (db->QueryTableData(nullptr, CSTR("userfile"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		NN<Data::NamedClass<Userfile>> cls = Userfile().CreateClass();
 		{

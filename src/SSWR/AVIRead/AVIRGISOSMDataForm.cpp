@@ -237,7 +237,7 @@ void SSWR::AVIRead::AVIRGISOSMDataForm::UpdateRelationList()
 		rel = relList.GetItemNoCheck(i);
 		sb.ClearStr();
 		sb.AppendI64(rel->id);
-		type = 0;
+		type = nullptr;
 		if (rel->tags.SetTo(tags))
 		{
 			UOSInt k = 0;
@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	this->lvQueryTags->AddColumn(CSTR("k"), 100);
 	this->lvQueryTags->AddColumn(CSTR("v"), 200);
 
-	Optional<Text::String> unkType = 0;
+	Optional<Text::String> unkType = nullptr;
 	Data::ArrayListNN<Map::OSM::RelationInfo> relList;
 	this->osmData->GetRelations(relList);
 	NN<Data::ArrayListNN<Map::OSM::TagInfo>> tags;
@@ -357,7 +357,7 @@ SSWR::AVIRead::AVIRGISOSMDataForm::AVIRGISOSMDataForm(Optional<UI::GUIClientCont
 	while (i < j)
 	{
 		rel = relList.GetItemNoCheck(i);
-		type = 0;
+		type = nullptr;
 		if (rel->tags.SetTo(tags))
 		{
 			UOSInt k = 0;

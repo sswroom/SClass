@@ -366,7 +366,7 @@ Bool Math::Geometry::VectorImage::HasArea() const
 	return true;
 }
 
-UOSInt Math::Geometry::VectorImage::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+UOSInt Math::Geometry::VectorImage::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	if (y >= this->tl.y && y < this->br.y)
 	{

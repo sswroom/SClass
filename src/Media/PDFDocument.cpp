@@ -70,9 +70,9 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 {
 	NN<Media::PDFObject> obj;
 	if (!this->objMap.Get(id).SetTo(obj))
-		return 0;
+		return nullptr;
 	if (!obj->IsImage())
-		return 0;
+		return nullptr;
 	NN<IO::StreamData> fd;
 	NN<Text::String> filter;
 	if (obj->GetData().SetTo(fd) && obj->GetFilter().SetTo(filter))
@@ -88,7 +88,7 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 			UOSInt height = obj->GetHeight();
 			NN<Text::String> colorSpace;
 			if (bpc == 0 || width == 0 || height == 0)
-				return 0;
+				return nullptr;
 			if (bpc == 8)
 			{
 				if (!obj->GetColorSpace().SetTo(colorSpace) || colorSpace->Equals(UTF8STRC("DeviceGray")))
@@ -98,5 +98,5 @@ Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser:
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }

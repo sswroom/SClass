@@ -58,7 +58,7 @@ IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 	}
 	else
 	{
-		this->filePtr = 0;
+		this->filePtr = nullptr;
 	}
 }
 

@@ -401,7 +401,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 	UOSInt j;
 	UOSInt lineSpace;
 	NN<ObjectInfo> obj;
-	Optional<ObjectInfo> currObj = 0;
+	Optional<ObjectInfo> currObj = nullptr;
 	Text::StringBuilderUTF8 sbObjValName;
 	Text::StringBuilderUTF8 sbObjValCont;
 	UOSInt objLineSpace = 0;
@@ -428,12 +428,12 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 		{
 			if (sb.EndsWith(UTF8STRC("BEGIN")))
 			{
-				succ = ParseObjectBegin(reader, 0, errMessage);
+				succ = ParseObjectBegin(reader, nullptr, errMessage);
 				if (!succ)
 				{
 					return succ;
 				}
-				currObj = 0;
+				currObj = nullptr;
 			}
 			else if (sb.EndsWith(UTF8STRC("END")))
 			{
@@ -639,11 +639,11 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 											}
 										}
 									}
-									currObj = 0;
+									currObj = nullptr;
 								}
 								else if (obj->typeName->Equals(UTF8STRC("OBJECT IDENTIFIER")))
 								{
-									currObj = 0;
+									currObj = nullptr;
 								}
 							}
 						}
@@ -674,7 +674,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									reader->PeekWord(sbTmp);
 								}
 								obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-								currObj = 0;
+								currObj = nullptr;
 								objIsEqual = false;
 							}
 							else
@@ -692,7 +692,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							{
 								if (obj->typeVal->CountChar('{') <= obj->typeVal->CountChar('}'))
 								{
-									currObj = 0;
+									currObj = nullptr;
 									objIsEqual = false;
 								}
 								else
@@ -720,7 +720,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 								obj->typeVal->Release();
 								obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 								sb.ClearStr();
-								currObj = 0;
+								currObj = nullptr;
 							}
 							else
 							{
@@ -734,7 +734,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									obj->typeVal->Release();
 									obj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 								}
-								currObj = 0;
+								currObj = nullptr;
 								objIsEqual = false;
 							}
 						}
@@ -759,7 +759,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						UOSInt endCnt = obj->typeVal->CountChar('}');
 						if (endCnt >= startCnt)
 						{
-							currObj = 0;
+							currObj = nullptr;
 							objBrkType = 0;
 							objIsEqual = false;
 						}							
@@ -1121,7 +1121,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						sbObjValName.ClearStr();
 						sbObjValCont.ClearStr();
 					}
-					currObj = 0;
+					currObj = nullptr;
 					i = sb.IndexOf(UTF8STRC("::="));
 					if (i == 0)
 					{
@@ -1205,7 +1205,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						}
 						obj->typeVal = 0;
 						obj->oidLen = 0;
-						obj->impModule = 0;
+						obj->impModule = nullptr;
 						obj->parsed = false;
 						UOSInt ui = module->objKeys.SortedInsert(s);
 						module->objValues.Insert(ui, obj);
@@ -1213,7 +1213,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						this->globalModule.objValues.Insert(ui, obj);
 						if (obj->objectName->Equals(UTF8STRC(DEBUGOBJ)))
 						{
-							currObj = 0;
+							currObj = nullptr;
 						}
 
 						if (sb.EndsWith(UTF8STRC("::=")))
@@ -1421,7 +1421,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						obj->typeName = Text::String::New(sb.ToString() + i, sb.GetLength() - i).Ptr();
 						obj->typeVal = 0;
 						obj->oidLen = 0;
-						obj->impModule = 0;
+						obj->impModule = nullptr;
 						obj->parsed = false;
 						UOSInt ui = module->objKeys.SortedInsert(s);
 						module->objValues.Insert(ui, obj);
@@ -2026,7 +2026,7 @@ Optional<Net::ASN1MIB::ModuleInfo> Net::ASN1MIB::GetModuleByFileName(Text::CStri
 		if (module->moduleFileName->Equals(fileName.v, fileName.leng))
 			return module;
 	}
-	return 0;
+	return nullptr;
 }
 
 void Net::ASN1MIB::UnloadAll()

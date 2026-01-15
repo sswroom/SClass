@@ -83,8 +83,8 @@ UI::DObj::VideoDObjHandler::VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media:
 	this->videoTL = videoTL;
 	this->videoSize = videoSize;
 	this->ownerFrm = ownerFrm;
-	this->mf = 0;
-	this->player = 0;
+	this->mf = nullptr;
+	this->player = nullptr;
 	this->UpdateDispInfo(videoSize, 32, Media::PF_B8G8R8A8);
 	this->videoFileName = Text::String::New(videoFileName);
 	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_IGNORE_ALPHA);
@@ -98,7 +98,7 @@ UI::DObj::VideoDObjHandler::VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media:
 		printf("VideoDObjHandler Media file parsed\r\n");
 #endif
 		NN<Media::MediaPlayer> player;
-		NEW_CLASSNN(player, Media::MediaPlayer(*this, 0));
+		NEW_CLASSNN(player, Media::MediaPlayer(*this, nullptr));
 		this->player = player;
 		player->LoadMedia(this->mf);
 		player->StartPlayback();

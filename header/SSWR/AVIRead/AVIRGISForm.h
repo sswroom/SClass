@@ -66,12 +66,12 @@ namespace SSWR
 			Double mapUpdT;
 			Bool pauseUpdate;
 
-			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseLDownHdlrs;
-			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseLUpHdlrs;
-			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseRDownHdlrs;
-			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseRUpHdlrs;
-			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseMoveHdlrs;
-
+			Data::ArrayListObj<Data::CallbackStorage<MouseEvent>> mouseLDownHdlrs;
+			Data::ArrayListObj<Data::CallbackStorage<MouseEvent>> mouseLUpHdlrs;
+			Data::ArrayListObj<Data::CallbackStorage<MouseEvent>> mouseRDownHdlrs;
+			Data::ArrayListObj<Data::CallbackStorage<MouseEvent>> mouseRUpHdlrs;
+			Data::ArrayListObj<Data::CallbackStorage<MouseEvent>> mouseMoveHdlrs;
+			
 			Optional<Media::Printer> printer;
 
 			CursorType currCursor;

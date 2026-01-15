@@ -190,7 +190,7 @@ Bool IO::MODBUSDevice::ReadInputBuff(UInt16 addr, UInt16 regCnt, UnsafeArray<UIn
 	this->cbEvt.Clear();
 	this->modbus->ReadInputRegisters(this->addr, addr, regCnt);
 	this->cbEvt.Wait(this->timeout);
-	this->reqBResult = 0;
+	this->reqBResult = nullptr;
 	return this->reqHasResult;
 }
 
@@ -360,7 +360,7 @@ IO::MODBUSDevice::MODBUSDevice(NN<IO::MODBUSMaster> modbus, UInt8 addr)
 	this->timeout = 200;
 	this->reqDResult = nullptr;
 	this->reqIResult = nullptr;
-	this->reqBResult = 0;
+	this->reqBResult = nullptr;
 	this->reqSetStartAddr = 0;
 	this->reqSetCount = 0;
 	this->modbus->HandleReadResult(this->addr, ReadResult, SetResult, this);

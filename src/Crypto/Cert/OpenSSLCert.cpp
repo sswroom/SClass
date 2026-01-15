@@ -75,7 +75,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::OpenSSLCert::CreateX509Cert() con
 	BIO *bio2;
 	UInt8 buff[4096];
 	Int32 readSize;
-	Optional<Crypto::Cert::X509File> pobjCert = 0;
+	Optional<Crypto::Cert::X509File> pobjCert = nullptr;
 	NN<Crypto::Cert::X509File> nncert;
 	BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 	PEM_write_bio_X509(bio1, this->clsData->x509);

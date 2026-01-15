@@ -132,8 +132,8 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl>
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->currFile = 0;
-	this->currDec = 0;
+	this->currFile = nullptr;
+	this->currDec = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);

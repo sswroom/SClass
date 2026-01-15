@@ -150,7 +150,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 				if (valid)
 				{
-					Data::ArrayList<UInt32> dnsList;
+					Data::ArrayListNative<UInt32> dnsList;
 					UOSInt i;
 					UOSInt j;
 					if (sockf->GetDNSList(dnsList))
@@ -224,7 +224,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 				{
 					IO::LogTool log;
 					Net::UDPServer *udp;
-					NEW_CLASS(udp, Net::UDPServer(sockf, 0, 0, nullptr, OnUDPData, 0, log, nullptr, 1, false));
+					NEW_CLASS(udp, Net::UDPServer(sockf, nullptr, 0, nullptr, OnUDPData, 0, log, nullptr, 1, false));
 					if (udp->IsError())
 					{
 						console->WriteLine(CSTR("Error in listening to UDP port"));

@@ -27,13 +27,13 @@ void Crypto::Cert::CertExtensions::FreeExtensions(NN<CertExtensions> ext)
 	{
 		strList->FreeAll();
 		strList.Delete();
-		ext->subjectAltName = 0;
+		ext->subjectAltName = nullptr;
 	}
 	if (ext->issuerAltName.SetTo(strList))
 	{
 		strList->FreeAll();
 		strList.Delete();
-		ext->issuerAltName = 0;
+		ext->issuerAltName = nullptr;
 	}
 }
 
@@ -962,7 +962,7 @@ void Crypto::Cert::X509File::AppendPFX(UnsafeArray<const UInt8> pdu, UnsafeArray
 	UnsafeArray<const UInt8> buff;
 	if (Net::ASN1Util::PDUGetItem(pdu, pduEnd, path, buffSize, itemType).SetTo(buff) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		UOSInt cnt = Net::ASN1Util::PDUCountItem(buff, buff + buffSize, 0);
+		UOSInt cnt = Net::ASN1Util::PDUCountItem(buff, buff + buffSize, nullptr);
 
 		Net::ASN1Util::ItemType itemType;
 		UOSInt versionLen;
@@ -1215,7 +1215,7 @@ void Crypto::Cert::X509File::AppendName(UnsafeArray<const UInt8> pdu, UnsafeArra
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	UOSInt i = 0;
 	while (i < cnt)
 	{
@@ -1238,7 +1238,7 @@ void Crypto::Cert::X509File::AppendRelativeDistinguishedName(UnsafeArray<const U
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	UOSInt i = 0;
 	while (i < cnt)
 	{
@@ -2460,7 +2460,7 @@ void Crypto::Cert::X509File::AppendAuthenticatedSafe(UnsafeArray<const UInt8> pd
 	if (Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		i = 0;
-		j = Net::ASN1Util::PDUCountItem(itemPDU, itemPDU + itemLen, 0);
+		j = Net::ASN1Util::PDUCountItem(itemPDU, itemPDU + itemLen, nullptr);
 		while (i < j)
 		{
 			sptr = varName.ConcatTo(sbuff);
@@ -2521,7 +2521,7 @@ Bool Crypto::Cert::X509File::NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeAr
 	UOSInt itemLen;
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	UOSInt i = 0;
 	while (i < cnt)
 	{
@@ -2562,7 +2562,7 @@ UnsafeArrayOpt<UTF8Char> Crypto::Cert::X509File::NameGetByOID(UnsafeArray<const 
 	UOSInt itemLen;
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	UOSInt i = 0;
 	while (i < cnt)
 	{
@@ -2590,7 +2590,7 @@ UnsafeArrayOpt<UTF8Char> Crypto::Cert::X509File::NameGetByOID(UnsafeArray<const 
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Crypto::Cert::X509File::NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb)
@@ -2613,7 +2613,7 @@ Bool Crypto::Cert::X509File::NamesGet(UnsafeArray<const UInt8> pdu, UnsafeArray<
 	UOSInt oidLen;
 	UOSInt strLen;
 	Net::ASN1Util::ItemType itemType;
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	UOSInt i = 0;
 	while (i < cnt)
 	{
@@ -2685,7 +2685,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeA
 	UOSInt strLen;
 	UOSInt subItemLen;
 	Net::ASN1Util::ItemType itemType;
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	UOSInt i = 0;
 	while (i < cnt)
 	{
@@ -2773,7 +2773,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeA
 	return true;
 }
 
-UOSInt Crypto::Cert::X509File::ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayList<Text::CString>> crlDistributionPoints)
+UOSInt Crypto::Cert::X509File::ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints)
 {
 	UTF8Char sbuff[32];
 	UOSInt ret = 0;
@@ -2787,7 +2787,7 @@ UOSInt Crypto::Cert::X509File::ExtensionsGetCRLDistributionPoints(UnsafeArray<co
 	UOSInt strLen;
 	UOSInt subItemLen;
 	Net::ASN1Util::ItemType itemType;
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	UOSInt i = 0;
 	while (i < cnt)
 	{
@@ -2829,7 +2829,7 @@ UOSInt Crypto::Cert::X509File::ExtensionsGetCRLDistributionPoints(UnsafeArray<co
 	return ret;
 }
 
-UOSInt Crypto::Cert::X509File::DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayList<Text::CString>> crlDistributionPoints)
+UOSInt Crypto::Cert::X509File::DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayListObj<Text::CString>> crlDistributionPoints)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -2881,7 +2881,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509File::PublicKeyGetNew(UnsafeAr
 			return key;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Crypto::Cert::X509File::KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, KeyType keyType)
@@ -2894,7 +2894,7 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeAr
 	case KeyType::RSA:
 		if (Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", keyLen, itemType).SetTo(keyPDU) && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			UOSInt cnt = Net::ASN1Util::PDUCountItem(keyPDU, keyPDU + keyLen, 0);
+			UOSInt cnt = Net::ASN1Util::PDUCountItem(keyPDU, keyPDU + keyLen, nullptr);
 			if (cnt > 4)
 			{
 				UOSInt modulusLen;
@@ -2981,7 +2981,7 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509File::ECNameFromOID(Data::ByteA
 
 Bool Crypto::Cert::X509File::AlgorithmIdentifierGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<AlgType> algType)
 {
-	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, nullptr);
 	if (cnt != 2 && cnt != 1)
 	{
 		return false;
@@ -3067,7 +3067,7 @@ Bool Crypto::Cert::X509File::GetCertName(UOSInt index, NN<Text::StringBuilderUTF
 
 Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509File::GetNewCert(UOSInt index)
 {
-	return 0;
+	return nullptr;
 }
 
 void Crypto::Cert::X509File::ToShortString(NN<Text::StringBuilderUTF8> sb) const
@@ -3357,7 +3357,7 @@ Optional<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCerts(NN<cons
 {
 	if (certs->GetCount() == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	else if (certs->GetCount() == 1)
 	{
@@ -3394,7 +3394,7 @@ Optional<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCertsAndClear
 {
 	if (certs->GetCount() == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	else if (certs->GetCount() == 1)
 	{

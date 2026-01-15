@@ -556,12 +556,12 @@ UnsafeArrayOpt<UTF8Char> Media::ALSARenderer::GetDeviceName(UnsafeArray<UTF8Char
 			sprintf(name, "hw:%d", card);
 			if (snd_ctl_open(&handle, name, 0) < 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			if (snd_ctl_card_info(handle, info) < 0)
 			{
 				snd_ctl_close(handle);
-				return 0;
+				return nullptr;
 			}
 			cardName = snd_ctl_card_info_get_name(info);
 			if (cardName)
@@ -570,7 +570,7 @@ UnsafeArrayOpt<UTF8Char> Media::ALSARenderer::GetDeviceName(UnsafeArray<UTF8Char
 			}
 			else
 			{
-				ret = 0;
+				ret = nullptr;
 			}
 			
 			snd_ctl_close(handle);
@@ -581,7 +581,7 @@ UnsafeArrayOpt<UTF8Char> Media::ALSARenderer::GetDeviceName(UnsafeArray<UTF8Char
 			devNo--;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void Media::ALSARenderer::OnEvent()
@@ -594,7 +594,7 @@ Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thre
 	UnsafeArray<const UTF8Char> nndevName;
 	if (!devName.SetTo(nndevName))
 	{
-		this->devName = 0;
+		this->devName = nullptr;
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
 		if (cfg)
 		{
@@ -608,7 +608,7 @@ Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thre
 			}
 			DEL_CLASS(cfg);
 		}
-		if (this->devName == 0)
+		if (this->devName.IsNull())
 		{
 			this->devName = Text::StrCopyNewC(UTF8STRC("hw:0"));
 		}
@@ -617,8 +617,8 @@ Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thre
 	{
 		this->devName = Text::StrCopyNew(nndevName);
 	}
-	this->audsrc = 0;
-	this->resampler = 0;
+	this->audsrc = nullptr;
+	this->resampler = nullptr;
 	this->endHdlr = 0;
 	this->buffTime = 500;
 	this->hand = 0;
@@ -632,7 +632,7 @@ Media::ALSARenderer::~ALSARenderer()
 {
 	if (this->audsrc.NotNull())
 	{
-		BindAudio(0);
+		BindAudio(nullptr);
 	}
 	SDEL_TEXT(this->devName);
 }
@@ -652,7 +652,7 @@ Bool Media::ALSARenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	if (this->audsrc.NotNull())
 	{
 		snd_pcm_close((snd_pcm_t*)this->hand);
-		this->audsrc = 0;
+		this->audsrc = nullptr;
 		this->resampler.Delete();
 		this->hand = 0;
 	}

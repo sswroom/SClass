@@ -43,7 +43,7 @@ Optional<DB::DBTool> DB::DBList::UseDB()
 	UOSInt j;
 	UOSInt k;
 	if (this->dbList.GetCount() <= 0)
-		return 0;
+		return nullptr;
 
 	while (true)
 	{

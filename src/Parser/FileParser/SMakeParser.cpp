@@ -34,18 +34,18 @@ Optional<IO::ParsedObject> Parser::FileParser::SMakeParser::ParseFileHdr(NN<IO::
 {
 	if (!fd->IsFullFile())
 	{
-		return 0;
+		return nullptr;
 	}
 	if (!fd->GetShortName().OrEmpty().Equals(UTF8STRC("SMake.cfg")))
 	{
-		return 0;
+		return nullptr;
 	}
 	IO::SMake *smake;
-	NEW_CLASS(smake, IO::SMake(fd->GetFullFileName()->ToCString(), 0, 0));
+	NEW_CLASS(smake, IO::SMake(fd->GetFullFileName()->ToCString(), 0, nullptr));
 	if (smake->IsLoadFailed())
 	{
 		DEL_CLASS(smake);
-		return 0;
+		return nullptr;
 	}
 
 	return smake;

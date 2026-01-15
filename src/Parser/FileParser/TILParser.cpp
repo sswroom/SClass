@@ -43,7 +43,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 	IO::VirtualPackageFile *pf;
 
 	if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')
-		return 0;
+		return nullptr;
 	
 	Data::DateTime dt;
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
@@ -55,7 +55,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 		if (dirOfst < 16 || dirOfst > fileSize || ((fileSize - dirOfst) & 31) != 0)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		UOSInt indexSize = (UOSInt)(fileSize - dirOfst);
 		UOSInt i;
@@ -107,7 +107,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 	else
 	{
 		DEL_CLASS(pf);
-		return 0;
+		return nullptr;
 	}
 	return pf;
 }

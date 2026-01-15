@@ -30,7 +30,7 @@ Optional<Media::AudioSource> Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<
 		if (afmt.formatId == 0)
 		{
 			decoder.Delete();
-			return 0;
+			return nullptr;
 		}
 		return decoder;
 	case 0x50: //MPEG-1 Audio Layer 2
@@ -39,7 +39,7 @@ Optional<Media::AudioSource> Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<
 		if (afmt.formatId == 0)
 		{
 			decoder.Delete();
-			return 0;
+			return nullptr;
 		}
 		return decoder;
 	case 0x2080: //ADX
@@ -48,7 +48,7 @@ Optional<Media::AudioSource> Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<
 		if (afmt.formatId == 0)
 		{
 			decoder.Delete();
-			return 0;
+			return nullptr;
 		}
 		return decoder;
 	case 0x2081: //PSSA
@@ -57,7 +57,7 @@ Optional<Media::AudioSource> Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<
 		if (afmt.formatId == 0)
 		{
 			decoder.Delete();
-			return 0;
+			return nullptr;
 		}
 		return decoder;
 	case 0x2082: //XA
@@ -66,7 +66,7 @@ Optional<Media::AudioSource> Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<
 		if (afmt.formatId == 0)
 		{
 			decoder.Delete();
-			return 0;
+			return nullptr;
 		}
 		return decoder;
 	default:
@@ -78,7 +78,7 @@ Optional<Media::AudioSource> Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<
 		if (afmt.formatId == 0)
 		{
 			decoder.Delete();
-			return 0;
+			return nullptr;
 		}
 		return decoder;
 	}

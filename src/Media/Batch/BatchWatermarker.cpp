@@ -9,7 +9,7 @@ Media::Batch::BatchWatermarker::BatchWatermarker(NN<Media::DrawEngine> deng, Opt
 {
 	this->deng = deng;
 	this->hdlr = hdlr;
-	this->watermark = 0;
+	this->watermark = nullptr;
 }
 
 Media::Batch::BatchWatermarker::~BatchWatermarker()

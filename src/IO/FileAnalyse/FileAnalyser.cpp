@@ -193,13 +193,13 @@ Optional<IO::FileAnalyse::FileAnalyser> IO::FileAnalyse::FileAnalyser::AnalyseFi
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 
 	if (analyse->IsError())
 	{
 		analyse.Delete();
-		return 0;
+		return nullptr;
 	}
 	return analyse;
 }

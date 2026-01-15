@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 
 	currCapture->SetPreferSize(fmt->size, fmt->fourcc, fmt->bpp, fmt->frameRateNumer, fmt->frameRateDenom);
 	me->capture = currCapture;
-	me->currCapture = 0;
+	me->currCapture = nullptr;
 
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 	}
 	else
 	{
-		me->currCapture = 0;
+		me->currCapture = nullptr;
 	}
 	me->cboFormat->ClearItems();
 	NN<Media::VideoCapturer> currCapture;
@@ -195,8 +195,8 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientCont
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	this->currCapture = 0;
-	this->capture = 0;
+	this->currCapture = nullptr;
+	this->capture = nullptr;
 	this->captureMgr.GetDeviceList(this->devInfoList);
 	UOSInt cnt = this->devInfoList.GetCount();
 	if (cnt == 0)

@@ -18,5 +18,5 @@ UOSInt IO::GPUManager::GetGPUCount()
 
 Optional<IO::GPUControl> IO::GPUManager::GetGPUControl(UOSInt index)
 {
-	return 0;
+	return nullptr;
 }

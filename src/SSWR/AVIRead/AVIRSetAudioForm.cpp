@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	if (!me->lbDevice->GetSelectedItemText(sbuff).SetTo(sptr) || Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Default")))
 	{
-		me->core->SetAudioDeviceList(0);
+		me->core->SetAudioDeviceList(nullptr);
 	}
 	else
 	{

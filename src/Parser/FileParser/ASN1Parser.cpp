@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::ASN1Parser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::ASN1Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->IsFullFile())
-		return 0;
+		return nullptr;
 	Net::ASN1Data *asn1 = 0;
 //	UInt8 *buff;
 	UInt64 fsize = fd->GetDataSize();

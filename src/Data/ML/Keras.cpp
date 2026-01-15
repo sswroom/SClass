@@ -46,7 +46,7 @@ public:
 		}
 	}
 
-	virtual void Predict(UnsafeArray<UnsafeArray<Double>> historyData, UOSInt historyStep, NN<Data::ArrayList<Double>> predictData)
+	virtual void Predict(UnsafeArray<UnsafeArray<Double>> historyData, UOSInt historyStep, NN<Data::ArrayListNative<Double>> predictData)
 	{
 		std::vector<fdeep::float_type> d;
 		UOSInt i;
@@ -92,5 +92,5 @@ Optional<Data::ML::MLModel> Data::ML::Keras::LoadModel(Text::CStringNN fileName,
 		log->LogMessage(Text::CStringNN::FromPtr((const UTF8Char*)e.what()), IO::LogHandler::LogLevel::Error);
 		log->LogStackTrace(IO::LogHandler::LogLevel::ErrorDetail);
 	}
-	return 0;
+	return nullptr;
 }

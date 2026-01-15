@@ -49,7 +49,7 @@ Optional<Net::Google::GoogleServiceAccount> Net::Google::GoogleServiceAccount::F
 {
 	IO::FileStream fs(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
-		return 0;
+		return nullptr;
 	UInt8 buff[8192];
 	UOSInt readSize;
 	Text::StringBuilderUTF8 sb;
@@ -64,8 +64,8 @@ Optional<Net::Google::GoogleServiceAccount> Net::Google::GoogleServiceAccount::F
 {
 	NN<Text::JSONBase> json;
 	if (!Text::JSONBase::ParseJSONStr(fileData).SetTo(json))
-		return 0;
-	Optional<GoogleServiceAccount> ret = 0;
+		return nullptr;
+	Optional<GoogleServiceAccount> ret = nullptr;
 	NN<Text::String> type;
 	NN<Text::String> projectId;
 	NN<Text::String> privateKeyId;

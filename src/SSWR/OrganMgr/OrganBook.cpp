@@ -6,11 +6,11 @@
 SSWR::OrganMgr::OrganBook::OrganBook()
 {
 	this->id = 0;
-	this->title = 0;
-	this->dispAuthor = 0;
-	this->press = 0;
+	this->title = nullptr;
+	this->dispAuthor = nullptr;
+	this->press = nullptr;
 	this->groupId = 0;
-	this->url = 0;
+	this->url = nullptr;
 }
 
 SSWR::OrganMgr::OrganBook::~OrganBook()

@@ -82,9 +82,9 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		isImage = 4;
 	}
 	if (isImage == 0)
-		return 0;
+		return nullptr;
 
-	Optional<Media::ImageList> imgList = 0;
+	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
 	UInt64 dataSize = fd->GetDataSize();
 	{
@@ -110,7 +110,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			cptr = gdk_pixbuf_get_option(pixBuf, "y-dpi");
 			if (cptr) Text::StrToDoubleCh(cptr, ydpi);
 
-			Optional<Media::StaticImage> optimg = 0;
+			Optional<Media::StaticImage> optimg = nullptr;
 			NN<Media::StaticImage> img;
 			Media::AlphaType aType = (isImage == 2||!hasAlpha)?Media::AT_IGNORE_ALPHA:Media::AT_ALPHA;
 
@@ -215,7 +215,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			{
 				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
 			}
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));
@@ -339,7 +339,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			NN<Media::SharedImage> simg;
 			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, nullptr));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));

@@ -330,7 +330,7 @@ void IO::Device::DensoWaveQB30::HandleCodeScanned(ScanHandler hdlr, AnyType user
 	this->scanHdlrObj = userObj;
 }
 
-UOSInt IO::Device::DensoWaveQB30::GetCommandList(NN<Data::ArrayList<DeviceCommand>> cmdList)
+UOSInt IO::Device::DensoWaveQB30::GetCommandList(NN<Data::ArrayListNative<DeviceCommand>> cmdList)
 {
 	UOSInt initCnt = cmdList->GetCount();
 	cmdList->Add(DC_GET_READ_MODE);

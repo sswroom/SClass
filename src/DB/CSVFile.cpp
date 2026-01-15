@@ -28,8 +28,8 @@ void DB::CSVFile::InitReader(NN<CSVReader> r)
 DB::CSVFile::CSVFile(NN<Text::String> fileName, UInt32 codePage) : DB::ReadingDB(fileName), timeCols(4)
 {
 	this->fileName = fileName->Clone();
-	this->stm = 0;
-	this->fd = 0;
+	this->stm = nullptr;
+	this->fd = nullptr;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
@@ -39,8 +39,8 @@ DB::CSVFile::CSVFile(NN<Text::String> fileName, UInt32 codePage) : DB::ReadingDB
 DB::CSVFile::CSVFile(Text::CStringNN fileName, UInt32 codePage) : DB::ReadingDB(fileName), timeCols(4)
 {
 	this->fileName = Text::String::New(fileName);
-	this->stm = 0;
-	this->fd = 0;
+	this->stm = nullptr;
+	this->fd = nullptr;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
@@ -51,7 +51,7 @@ DB::CSVFile::CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingD
 {
 	this->fileName = stm->GetSourceNameObj()->Clone();
 	this->stm = stm;
-	this->fd = 0;
+	this->fd = nullptr;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
@@ -62,7 +62,7 @@ DB::CSVFile::CSVFile(NN<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd-
 {
 	this->fileName = fd->GetFullName()->Clone();
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
-	this->stm = 0;
+	this->stm = nullptr;
 	this->codePage = codePage;
 	this->noHeader = false;
 	this->nullIfEmpty = false;
@@ -115,7 +115,7 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 		{
 			NEW_CLASSNN(rdr, IO::StreamReader(stm, codePage));
 		}
-		NEW_CLASSNN(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty, condition));
+		NEW_CLASSNN(r, DB::CSVReader(nullptr, rdr, this->noHeader, this->nullIfEmpty, condition));
 		this->InitReader(r);
 		return r;
 	}
@@ -138,14 +138,14 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 	else
 	{
 		fs.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
 Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::DBReader> r;
-	if (this->QueryTableData(schemaName, tableName, 0, 0, 0, nullptr, 0).SetTo(r))
+	if (this->QueryTableData(schemaName, tableName, nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 	{
 		DB::TableDef *tab;
 		NN<DB::ColDef> col;
@@ -162,7 +162,7 @@ Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::
 		this->CloseReader(r);
 		return tab;
 	}
-	return 0;
+	return nullptr;
 }
 
 void DB::CSVFile::CloseReader(NN<DBReader> r)
@@ -209,7 +209,7 @@ void DB::CSVFile::SetTimeCols(Data::DataArray<UOSInt> timeCols)
 Optional<Data::TableData> DB::CSVFile::LoadAsTableData(Text::CStringNN fileName, UInt32 codePage, UOSInt indexCol, Data::DataArray<UOSInt> timeCols)
 {
 	if (IO::Path::GetPathType(fileName) != IO::Path::PathType::File)
-		return 0;
+		return nullptr;
 	NN<DB::CSVFile> csv;
 	NEW_CLASSNN(csv, DB::CSVFile(fileName, codePage));
 	csv->SetIndexCol(indexCol);
@@ -479,13 +479,13 @@ Int64 DB::CSVReader::GetInt64(UOSInt colIndex)
 UnsafeArrayOpt<WChar> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (colIndex >= nCol)
-		return 0;
+		return nullptr;
 
 	if (nullIfEmpty)
 	{
 		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	UnsafeArray<const WChar> csptr = Text::StrToWCharNew(cols[colIndex].value);
@@ -618,12 +618,12 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex >= nCol)
-		return 0;
+		return nullptr;
 	if (nullIfEmpty)
 	{
 		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	NN<Text::String> s;
@@ -737,12 +737,12 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (colIndex >= nCol)
-		return 0;
+		return nullptr;
 	if (nullIfEmpty)
 	{
 		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	UnsafeArray<const UTF8Char> ptr = cols[colIndex].value;
@@ -854,12 +854,12 @@ UOSInt DB::CSVReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
 {
 	if (colIndex >= nCol)
-		return 0;
+		return nullptr;
 	if (nullIfEmpty)
 	{
 		if (cols[colIndex].value[0] == 0 || cols[colIndex].value[0] == ',' || Text::StrStartsWith(cols[colIndex].value, (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex].value, (const UTF8Char*)"\"\""))
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	UnsafeArray<const UTF8Char> ptr = cols[colIndex].value;
@@ -903,14 +903,14 @@ Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 			sb.AppendUTF8Char(v);
 			ptr += 2;
 		}
 		return Math::MSGeography::ParseBinary(sb.ToPtr(), sb.GetLength(), 0);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool DB::CSVReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -1000,7 +1000,7 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex >= this->nHdr)
-		return 0;
+		return nullptr;
 	return this->hdrs[colIndex].ConcatTo(buff);
 }
 

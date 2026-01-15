@@ -41,7 +41,7 @@ UnsafeArrayOpt<UTF8Char> Media::Decoder::VDecoderBase::GetSourceName(UnsafeArray
 	if (this->sourceVideo)
 		return this->sourceVideo->GetSourceName(buff);
 	//////////////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 Bool Media::Decoder::VDecoderBase::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)

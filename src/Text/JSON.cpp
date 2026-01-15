@@ -65,7 +65,7 @@ Optional<Text::JSONBase> Text::JSONBase::GetValue(Text::CStringNN path)
 					return ((Text::JSONArray*)json)->GetArrayValue(dotIndex);
 				}
 			}
-			return 0;
+			return nullptr;
 		}
 		else
 		{
@@ -101,33 +101,33 @@ Optional<Text::JSONBase> Text::JSONBase::GetValue(Text::CStringNN path)
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 			sptr += dotIndex + 1;
 			if (!isDot)
 			{
 				if (json == 0)
 				{
-					return 0;
+					return nullptr;
 				}
 				dotIndex = Text::StrIndexOfChar(sptr, ']');
 				if (dotIndex == INVALID_INDEX)
 				{
-					return 0;
+					return nullptr;
 				}
 				if (json->GetType() != JSONType::Array)
 				{
-					return 0;
+					return nullptr;
 				}
 				sptr[dotIndex] = 0;
 				if (!Text::StrToUOSInt(sptr, brkIndex))
 				{
-					return 0;
+					return nullptr;
 				}
 				json = ((Text::JSONArray*)json)->GetArrayValue(brkIndex).OrNull();
 				sptr += dotIndex + 1;
@@ -145,12 +145,12 @@ Optional<Text::JSONBase> Text::JSONBase::GetValue(Text::CStringNN path)
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Text::JSONBase::GetValueString(Text::CStringNN path)
@@ -160,7 +160,7 @@ Optional<Text::String> Text::JSONBase::GetValueString(Text::CStringNN path)
 	{
 		return NN<Text::JSONString>::ConvertFrom(json)->GetValue();
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::String> Text::JSONBase::GetValueNewString(Text::CStringNN path)
@@ -170,7 +170,7 @@ Optional<Text::String> Text::JSONBase::GetValueNewString(Text::CStringNN path)
 	{
 		return NN<Text::JSONString>::ConvertFrom(json)->GetValue()->Clone();
 	}
-	return 0;
+	return nullptr;
 }
 
 Int32 Text::JSONBase::GetValueAsInt32(Text::CStringNN path)
@@ -210,7 +210,7 @@ Bool Text::JSONBase::GetValueAsInt64(Text::CStringNN path, OutParam<Int64> val)
 	{
 		return json->GetAsInt64(val);
 	}
-	return 0;
+	return false;
 }
 
 Bool Text::JSONBase::GetValueAsDouble(Text::CStringNN path, OutParam<Double> val)
@@ -240,7 +240,7 @@ Optional<Text::JSONArray> Text::JSONBase::GetValueArray(Text::CStringNN path)
 	{
 		return NN<Text::JSONArray>::ConvertFrom(json);
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::JSONObject> Text::JSONBase::GetValueObject(Text::CStringNN path)
@@ -250,7 +250,7 @@ Optional<Text::JSONObject> Text::JSONBase::GetValueObject(Text::CStringNN path)
 	{
 		return NN<Text::JSONObject>::ConvertFrom(json);
 	}
-	return 0;
+	return nullptr;
 }
 
 Text::JSONType Text::JSONBase::GetValueType(Text::CStringNN path)
@@ -496,7 +496,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 	UTF8Char c;
 	c = *jsonStr++;
 	if (c != '\"')
-		return 0;
+		return nullptr;
 	sptr = sbuff;
 	while (true)
 	{
@@ -556,7 +556,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 				else if (c >= 'a' && c <= 'f')
 					v = (v << 4) + (UInt32)(c - 0x57);
 				else
-					return 0;
+					return nullptr;
 				c = *jsonStr++;
 				if (c >= '0' && c <= '9')
 					v = (v << 4) + (UInt32)(c - '0');
@@ -565,7 +565,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 				else if (c >= 'a' && c <= 'f')
 					v = (v << 4) + (UInt32)(c - 0x57);
 				else
-					return 0;
+					return nullptr;
 				c = *jsonStr++;
 				if (c >= '0' && c <= '9')
 					v = (v << 4) + (UInt32)(c - '0');
@@ -574,7 +574,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 				else if (c >= 'a' && c <= 'f')
 					v = (v << 4) + (UInt32)(c - 0x57);
 				else
-					return 0;
+					return nullptr;
 				c = *jsonStr++;
 				if (c >= '0' && c <= '9')
 					v = (v << 4) + (UInt32)(c - '0');
@@ -583,7 +583,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 				else if (c >= 'a' && c <= 'f')
 					v = (v << 4) + (UInt32)(c - 0x57);
 				else
-					return 0;
+					return nullptr;
 
 				if (v < 0x80)
 				{
@@ -608,7 +608,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 						else if (c >= 'a' && c <= 'f')
 							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
-							return 0;
+							return nullptr;
 						c = *jsonStr++;
 						if (c >= '0' && c <= '9')
 							v2 = (v2 << 4) + (UInt32)(c - '0');
@@ -617,7 +617,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 						else if (c >= 'a' && c <= 'f')
 							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
-							return 0;
+							return nullptr;
 						c = *jsonStr++;
 						if (c >= '0' && c <= '9')
 							v2 = (v2 << 4) + (UInt32)(c - '0');
@@ -626,7 +626,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 						else if (c >= 'a' && c <= 'f')
 							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
-							return 0;
+							return nullptr;
 						c = *jsonStr++;
 						if (c >= '0' && c <= '9')
 							v2 = (v2 << 4) + (UInt32)(c - '0');
@@ -635,7 +635,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 						else if (c >= 'a' && c <= 'f')
 							v2 = (v2 << 4) + (UInt32)(c - 0x57);
 						else
-							return 0;
+							return nullptr;
 
 						if (v2 >= 0xdc00 && v2 < 0xe000)
 						{
@@ -691,12 +691,12 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		else if (c == 0)
 		{
-			return 0;
+			return nullptr;
 		}
 		else
 		{
@@ -709,7 +709,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const U
 			sptr = sbuff;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const UTF8Char> jsonStr, OutParam<Double> val, OptOut<Bool> noDecimal)
@@ -731,7 +731,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const U
 		else if (c == '-')
 		{
 			if (!numStart)
-				return 0;
+				return nullptr;
 			*dptr++ = c;
 			numStart = false;
 
@@ -739,7 +739,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const U
 		else if (c == '.')
 		{
 			if (hasDot || hasE)
-				return 0;
+				return nullptr;
 			hasDot = true;
 			numStart = false;
 			*dptr++ = c;
@@ -747,7 +747,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const U
 		else if (c == 'e' || c == 'E')
 		{
 			if (hasE || numStart)
-				return 0;
+				return nullptr;
 			hasE = true;
 			*dptr++ = c;
 			numStart = true;
@@ -777,8 +777,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 	c = *jsonStr;
 	if (c == 0)
 	{
-		jsonStrEndOut.Set(0);
-		return 0;
+		jsonStrEndOut.Set(nullptr);
+		return nullptr;
 	}
 	else if (c == '{')
 	{
@@ -807,17 +807,17 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 				sb.ClearStr();
 				if (!ParseJSString(jsonStr, sb).SetTo(jsonStr))
 				{
-					jsonStrEndOut.Set(0);
+					jsonStrEndOut.Set(nullptr);
 					jobj->EndUse();
-					return 0;
+					return nullptr;
 				}
 				jsonStr = ClearWS(jsonStr);
 				c = *jsonStr;
 				if (c != ':')
 				{
-					jsonStrEndOut.Set(0);
+					jsonStrEndOut.Set(nullptr);
 					jobj->EndUse();
-					return 0;
+					return nullptr;
 				}
 				jsonStr++;
 				jsonStr = ClearWS(jsonStr);
@@ -826,8 +826,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 				if (!optStr.SetTo(jsonStr))
 				{
 					jobj->EndUse();
-					jsonStrEndOut.Set(0);
-					return 0;
+					jsonStrEndOut.Set(nullptr);
+					return nullptr;
 				}
 				jobj->SetObjectValue(sb.ToCString(), obj);
 				if (obj.SetTo(nnobj))
@@ -849,15 +849,15 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 				else
 				{
 					jobj->EndUse();
-					jsonStrEndOut.Set(0);
-					return 0;
+					jsonStrEndOut.Set(nullptr);
+					return nullptr;
 				}
 			}
 			else
 			{
-				jsonStrEndOut.Set(0);
+				jsonStrEndOut.Set(nullptr);
 				jobj->EndUse();
-				return 0;
+				return nullptr;
 			}
 		}
 	}
@@ -882,8 +882,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 			if (c == 0)
 			{
 				arr->EndUse();
-				jsonStrEndOut.Set(0);
-				return 0;
+				jsonStrEndOut.Set(nullptr);
+				return nullptr;
 			}
 			else
 			{
@@ -891,8 +891,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 				if (!optStr.SetTo(jsonStr))
 				{
 					arr->EndUse();
-					jsonStrEndOut.Set(0);
-					return 0;
+					jsonStrEndOut.Set(nullptr);
+					return nullptr;
 				}
 				arr->AddArrayValue(obj);
 				if (obj.SetTo(nnobj))
@@ -914,12 +914,12 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 				else
 				{
 					arr->EndUse();
-					jsonStrEndOut.Set(0);
-					return 0;
+					jsonStrEndOut.Set(nullptr);
+					return nullptr;
 				}
 			}
 		}
-		return 0;
+		return nullptr;
 	}
 	else if (c == '\"')
 	{
@@ -927,8 +927,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 		sbEnv->ClearStr();
 		if (!ParseJSString(jsonStr, sbEnv).SetTo(endPtr))
 		{
-			jsonStrEndOut.Set(0);
-			return 0;
+			jsonStrEndOut.Set(nullptr);
+			return nullptr;
 		}
 		Text::JSONString *s;
 		jsonStrEndOut.Set(endPtr);
@@ -941,8 +941,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 		Bool noDecimal;
 		if (!ParseJSNumber(jsonStr, val, noDecimal).SetTo(jsonStr))
 		{
-			jsonStrEndOut.Set(0);
-			return 0;
+			jsonStrEndOut.Set(nullptr);
+			return nullptr;
 		}
 		else 
 		{
@@ -980,8 +980,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 		}
 		else
 		{
-			jsonStrEndOut.Set(0);
-			return 0;
+			jsonStrEndOut.Set(nullptr);
+			return nullptr;
 		}
 	}
 	else if (c == 'f')
@@ -995,8 +995,8 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 		}
 		else
 		{
-			jsonStrEndOut.Set(0);
-			return 0;
+			jsonStrEndOut.Set(nullptr);
+			return nullptr;
 		}
 	}
 	else if (c == 'n')
@@ -1010,14 +1010,14 @@ Optional<Text::JSONBase> Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Cha
 		}
 		else
 		{
-			jsonStrEndOut.Set(0);
-			return 0;
+			jsonStrEndOut.Set(nullptr);
+			return nullptr;
 		}
 	}
 	else
 	{
-		jsonStrEndOut.Set(0);
-		return 0;
+		jsonStrEndOut.Set(nullptr);
+		return nullptr;
 	}
 }
 
@@ -1554,7 +1554,7 @@ Optional<Text::JSONArray> Text::JSONObject::GetObjectArray(Text::CStringNN name)
 	NN<Text::JSONBase> o;
 	if (this->GetObjectValue(name).SetTo(o) && o->GetType() == Text::JSONType::Array)
 		return NN<Text::JSONArray>::ConvertFrom(o);
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::JSONObject> Text::JSONObject::GetObjectObject(Text::CStringNN name)
@@ -1562,7 +1562,7 @@ Optional<Text::JSONObject> Text::JSONObject::GetObjectObject(Text::CStringNN nam
 	NN<Text::JSONBase> o;
 	if (this->GetObjectValue(name).SetTo(o) && o->GetType() == Text::JSONType::Object)
 		return NN<Text::JSONObject>::ConvertFrom(o);
-	return 0;
+	return nullptr;
 }
 
 void Text::JSONObject::GetObjectNames(NN<Data::ArrayListNN<Text::String>> names)
@@ -1579,7 +1579,7 @@ Optional<Text::String> Text::JSONObject::GetObjectString(Text::CStringNN name)
 	NN<Text::JSONBase> baseObj;
 	if (!this->objVals.GetC(name).SetTo(baseObj) || baseObj->GetType() != Text::JSONType::String)
 	{
-		return 0;
+		return nullptr;
 	}
 	return NN<Text::JSONString>::ConvertFrom(baseObj)->GetValue();
 }
@@ -1589,7 +1589,7 @@ Optional<Text::String> Text::JSONObject::GetObjectNewString(Text::CStringNN name
 	NN<Text::JSONBase> baseObj;
 	if (!this->objVals.GetC(name).SetTo(baseObj) || baseObj->GetType() != Text::JSONType::String)
 	{
-		return 0;
+		return nullptr;
 	}
 	return NN<Text::JSONString>::ConvertFrom(baseObj)->GetValue()->Clone();
 }
@@ -1825,7 +1825,7 @@ Optional<Text::JSONObject> Text::JSONArray::GetArrayObject(UOSInt index)
 	NN<Text::JSONBase> o;
 	if (this->GetArrayValue(index).SetTo(o) && o->GetType() == Text::JSONType::Object)
 		return NN<Text::JSONObject>::ConvertFrom(o);
-	return 0;
+	return nullptr;
 }
 
 Double Text::JSONArray::GetArrayDoubleOrNAN(UOSInt index)
@@ -1853,7 +1853,7 @@ Optional<Text::String> Text::JSONArray::GetArrayString(UOSInt index)
 	NN<Text::JSONBase> baseObj;
 	if (!this->arrVals.GetItem(index).SetTo(baseObj) || baseObj->GetType() != Text::JSONType::String)
 	{
-		return 0;
+		return nullptr;
 	}
 	return NN<Text::JSONString>::ConvertFrom(baseObj)->GetValue();
 }

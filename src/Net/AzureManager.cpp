@@ -60,7 +60,7 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 	NN<Text::String> s;
 	if (!this->keyMap->GetC(kid).SetTo(s))
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 keyBuff[4096];

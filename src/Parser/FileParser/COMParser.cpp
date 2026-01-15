@@ -35,11 +35,11 @@ Optional<IO::ParsedObject> Parser::FileParser::COMParser::ParseFileHdr(NN<IO::St
 {
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".COM")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (fd->GetDataSize() >= 65280)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Manage::Dasm::DasmX86_16_Regs regs;

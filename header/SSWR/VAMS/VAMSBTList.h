@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_VAMS_VAMSBTLIST
 #define _SM_SSWR_VAMS_VAMSBTLIST
 #include "Data/ArrayListNN.hpp"
-#include "Data/FastMap.hpp"
+#include "Data/FastMapNative.hpp"
 #include "Data/FastMapNN.hpp"
 #include "Data/FastStringMapNN.hpp"
 #include "Sync/Mutex.h"
@@ -24,7 +24,7 @@ namespace SSWR
 		private:
 			Sync::Mutex mut;
 			Data::FastMapNN<Int32, Data::FastStringMapNN<AvlBleItem>> itemMap;
-			Data::FastMap<Int32, Int64> kaMap;
+			Data::FastMapNative<Int32, Int64> kaMap;
 
 		public:
 			VAMSBTList();
@@ -35,7 +35,7 @@ namespace SSWR
 			void KARecv(Int32 progId);
 			Int64 GetLastKeepAlive(Int32 progId);
 			Bool HasProg(Int32 progId);
-			UOSInt GetProgList(NN<Data::ArrayList<Int32>> progList);
+			UOSInt GetProgList(NN<Data::ArrayListNative<Int32>> progList);
 		};
 	}
 }

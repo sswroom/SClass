@@ -196,7 +196,7 @@ void IO::StmData::FileData::SetFullName(Text::CStringNN fullName)
 
 UnsafeArrayOpt<const UInt8> IO::StmData::FileData::GetPointer() const
 {
-	return 0;
+	return nullptr;
 }
 
 NN<IO::StreamData> IO::StmData::FileData::GetPartialData(UInt64 offset, UInt64 length)

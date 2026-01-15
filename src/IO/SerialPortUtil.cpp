@@ -5,8 +5,8 @@
 void IO::SerialPortUtil::FillPortSelector(NN<UI::ItemSelector> selector, UOSInt defPort)
 {
 	UOSInt defIndex = 0;
-	Data::ArrayList<UOSInt> ports;
-	Data::ArrayList<IO::SerialPort::SerialPortType> portTypeList;
+	Data::ArrayListNative<UOSInt> ports;
+	Data::ArrayListNative<IO::SerialPort::SerialPortType> portTypeList;
 	IO::SerialPort::GetAvailablePorts(ports, &portTypeList);
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -78,7 +78,7 @@ Optional<IO::SerialPort> IO::SerialPortUtil::OpenSerialPort(NN<UI::ItemSelector>
 	if (port->IsError())
 	{
 		port.Delete();
-		return 0;
+		return nullptr;
 	}
 	return port;
 }

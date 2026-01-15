@@ -1525,6 +1525,7 @@ Data/ArrayListUInt32.h:
 @ArrayListUInt32.o
 Data/ArrayListUInt64.h:
 @ArrayListUInt64.o
+Data/ArrayListUtil.hpp:
 Data/ArrayMap.h:
 Data/BinaryBuilder.h:
 @BinaryBuilder.o
@@ -1532,8 +1533,9 @@ Data/BinaryParser.h:
 @BinaryParser.o
 Data/BinTool.h:
 @BinTool.o
-Data/BTreeMap.hpp:
-Data/BTreeUTF8Map.hpp:
+Data/BTreeMapObj.hpp:
+Data/BTreeStringMapNative.hpp:
+Data/BTreeStringMapObj.hpp:
 Data/ByteArray.h:
 Data/ByteArrayBase.hpp:
 Data/ByteBuffer.h:
@@ -1580,7 +1582,8 @@ Data/FastStringMapObj.hpp:
 Data/FieldComparator.h:
 @FieldComparator.o
 Data/FixedCircularBuff.hpp:
-Data/ICaseBTreeUTF8Map.hpp:
+Data/ICaseBTreeStringMapNative.hpp:
+Data/ICaseBTreeStringMapObj.hpp:
 Data/ICaseStringMapNN.hpp:
 Data/ICaseStringMapObj.hpp:
 Data/ICaseStringUTF8Map.hpp:
@@ -1612,8 +1615,8 @@ Data/StringMapNative.hpp:
 Data/StringMapNN.hpp:
 Data/StringMapObj.hpp:
 Data/StringUTF8Map.hpp:
-Data/SyncArrayList.hpp:
 Data/SyncArrayListNN.hpp:
+Data/SyncArrayListObj.hpp:
 Data/SyncCircularBuff.hpp:
 Data/SyncCircularBuffNN.hpp:
 Data/SyncLinkedList.h:
@@ -1624,6 +1627,7 @@ Data/TimeInstant.h:
 Data/Timestamp.h:
 Data/TwinItemObj.hpp:
 Data/TwinItemNative.hpp:
+Data/TwinItemNativeObj.hpp:
 Data/TwinItemNN.hpp:
 Data/Usable.h:
 Data/Usage.h:

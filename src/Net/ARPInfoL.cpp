@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/StringUTF8Map.hpp"
+#include "Data/StringMapNative.hpp"
 #include "IO/FileStream.h"
 #include "Net/ARPInfo.h"
 #include "Net/SocketUtil.h"
@@ -71,7 +71,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoL
 	if (sock == -1)
 		return 0;
 
-	Data::StringUTF8Map<UInt32> indexMap;
+	Data::StringMapNative<UInt32> indexMap;
 	UInt32 ind = 0;
 	Char buff[1024];
 	ifconf ifc;
@@ -86,7 +86,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoL
 		ifrend = ifrcurr + ((UInt32)ifc.ifc_len / sizeof(ifreq));
 		while (ifrcurr != ifrend)
 		{
-			indexMap.Put((const UTF8Char*)ifrcurr->ifr_name, ind);
+			indexMap.Put(Text::CStringNN::FromPtr((const UTF8Char*)ifrcurr->ifr_name), ind);
 			ind++;
 			ifrcurr++;
 		}
@@ -121,7 +121,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoL
 
 				if (Text::StrSplitWSP(sarr, 7, sb) >= 6)
 				{
-					data.ifIndex = indexMap.Get(UnsafeArray<const UTF8Char>(sarr[5].v));
+					data.ifIndex = indexMap.Get(sarr[5].ToCString());
 					data.ipAddr = Net::SocketUtil::GetIPAddr(sarr[0].ToCString());
 					flags = Text::StrToInt32(sarr[2].v);
 					data.arpType = (flags & 4)?ARPT_STATIC:ARPT_DYNAMIC;

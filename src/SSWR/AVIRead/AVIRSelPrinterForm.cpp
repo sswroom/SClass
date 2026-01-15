@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(AnyType userObj
 	NN<Media::Printer> currPrinter;
 	if (me->currPrinter.SetTo(currPrinter))
 	{
-		currPrinter->ShowPrintSettings(0);
+		currPrinter->ShowPrintSettings(nullptr);
 	}
 }
 
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnOKClick(AnyType userObj)
 	if (me->currPrinter.NotNull())
 	{
 		me->printer = me->currPrinter;
-		me->currPrinter = 0;
+		me->currPrinter = nullptr;
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
@@ -61,8 +61,8 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientCont
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->currPrinter = 0;
-	this->printer = 0;
+	this->currPrinter = nullptr;
+	this->printer = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPrinter = ui->NewLabel(*this, CSTR("Printer"));

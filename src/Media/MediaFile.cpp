@@ -8,13 +8,13 @@
 
 Media::MediaFile::MediaFile(NN<Text::String> name) : IO::ParsedObject(name)
 {
-	this->chapters = 0;
+	this->chapters = nullptr;
 	this->releaseChapter = false;
 }
 
 Media::MediaFile::MediaFile(Text::CStringNN name) : IO::ParsedObject(name)
 {
-	this->chapters = 0;
+	this->chapters = nullptr;
 	this->releaseChapter = false;
 }
 

@@ -384,7 +384,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(Optional<UI::GUIClientContro
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetRect(0, 0, 100, 200, false);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->hexView, UI::GUIHexFileView(ui, *this, this->core->GetDrawEngine(), 0));
+	NEW_CLASSNN(this->hexView, UI::GUIHexFileView(ui, *this, this->core->GetDrawEngine(), nullptr));
 	this->hexView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hexView->HandleOffsetChg(OnOffsetChg, this);
 	
@@ -529,7 +529,7 @@ void SSWR::AVIRead::AVIRHexViewerForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_GOTO:
 	{
-		SSWR::AVIRead::AVIRHexViewerGoToForm frm(0, this->ui, this->core, this->hexView->GetCurrOfst(), this->hexView->GetFileSize());
+		SSWR::AVIRead::AVIRHexViewerGoToForm frm(nullptr, this->ui, this->core, this->hexView->GetCurrOfst(), this->hexView->GetFileSize());
 		if (frm.ShowDialog(this))
 		{
 			this->hexView->GoToOffset(frm.GetOffset());

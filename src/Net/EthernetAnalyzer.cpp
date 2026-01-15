@@ -370,7 +370,7 @@ Optional<Text::String> Net::EthernetAnalyzer::DNSTargetGetName(UInt32 ip) const
 	{
 		return target->currName;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt Net::EthernetAnalyzer::MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList)
@@ -414,7 +414,7 @@ Bool Net::EthernetAnalyzer::TCP4SYNIsDiff(UOSInt lastIndex) const
 	return this->tcp4synList.GetPutIndex() != lastIndex;
 }
 
-UOSInt Net::EthernetAnalyzer::TCP4SYNGetList(NN<Data::ArrayList<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const
+UOSInt Net::EthernetAnalyzer::TCP4SYNGetList(NN<Data::ArrayListNative<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const
 {
 	Sync::MutexUsage mutUsage(this->tcp4synMut);
 	thisIndex.Set(this->tcp4synList.GetPutIndex());
@@ -866,7 +866,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 			{
 				Text::StringBuilderUTF8 sb;
 				NN<IPLogInfo> ipLog;
-				Optional<IPLogInfo> optipLog = 0;
+				Optional<IPLogInfo> optipLog = nullptr;
 				Data::Timestamp ts = Data::Timestamp::Now();
 				UInt32 sortableIP = ReadMUInt32(&packet[12]);
 				Sync::MutexUsage mutUsage(this->ipLogMut);
@@ -981,7 +981,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 				}
 
 				sortableIP = ReadMUInt32(&packet[16]);
-				optipLog = 0;
+				optipLog = nullptr;
 				if (!this->ipLogMap.Get(sortableIP).SetTo(ipLog))
 				{
 					Net::IPType itype = Net::SocketUtil::GetIPv4Type(ip->destIP);
@@ -1363,8 +1363,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4_2(UnsafeArray<const UInt8> packet, UOSInt
 								dhcp->renewTime = 0;
 								dhcp->rebindTime = 0;
 								dhcp->router = 0;
-								dhcp->hostName = 0;
-								dhcp->vendorClass = 0;
+								dhcp->hostName = nullptr;
+								dhcp->vendorClass = nullptr;
 								this->dhcpMap.Put(iMAC, dhcp);
 							}
 							dhcpMutUsage.EndUse();

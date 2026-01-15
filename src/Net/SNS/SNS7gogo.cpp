@@ -7,7 +7,7 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEn
 {
 	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSite7gogoControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
-	this->chDesc = 0;
+	this->chDesc = nullptr;
 	this->chError = false;
 
 	UTF8Char sbuff[32];
@@ -46,7 +46,7 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEn
 		sb.AppendI64(item->id);
 		NN<Text::String> s = Text::String::NewP(sbuff, sptr);
 		NN<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
-		snsItem = CreateItem(s, item->recTime, 0, item->message, s2.Ptr(), item->imgURL, 0);
+		snsItem = CreateItem(s, item->recTime, nullptr, item->message, s2.Ptr(), item->imgURL, nullptr);
 		s->Release();
 		s2->Release();
 		this->itemMap.Put(item->id, snsItem);
@@ -123,7 +123,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 	Bool changed = false;
 	this->itemMap.AddKeysTo(idList);
 	
-	this->ctrl->GetChannelItems(this->channelId, 0, itemList, 0);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, nullptr);
 	UOSInt i = itemList.GetCount();
 	if (i > 0)
 	{
@@ -146,7 +146,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 				sb.AppendI64(item->id);
 				NN<Text::String> s = Text::String::NewP(sbuff, sptr);
 				NN<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
-				snsItem = CreateItem(s, item->recTime, 0, item->message, s2.Ptr(), item->imgURL, 0);
+				snsItem = CreateItem(s, item->recTime, nullptr, item->message, s2.Ptr(), item->imgURL, nullptr);
 				s->Release();
 				s2->Release();
 				this->itemMap.Put(item->id, snsItem);

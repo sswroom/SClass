@@ -8,7 +8,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	NN<UI::GUICore> ui;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
-		ui->ShowMsgOK(CSTR("Message Dialog Test"), CSTR("Message Dialog"), 0);
+		ui->ShowMsgOK(CSTR("Message Dialog Test"), CSTR("Message Dialog"), nullptr);
 		ui.Delete();
 	}
 	return 0;

@@ -435,7 +435,7 @@ UnsafeArray<UTF8Char> UI::GUIMenu::ToKeyDisplay(UnsafeArray<UTF8Char> sbuff, Key
 UI::GUIMenu::GUIMenu(Bool isPopup)
 {
 	this->hdpi = 96.0;
-	this->mnuForm = 0;
+	this->mnuForm = nullptr;
 
 	if (isPopup)
 	{

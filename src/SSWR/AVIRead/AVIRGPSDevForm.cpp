@@ -357,14 +357,14 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 	if (this->devContAlerts.SetTo(devContAlerts))
 	{
 		MemFreeArr(devContAlerts);
-		this->devContAlerts = 0;
+		this->devContAlerts = nullptr;
 	}
 	this->devContACnt = 0;
 	UnsafeArray<DevGuard> devContGuards;
 	if (this->devContGuards.SetTo(devContGuards))
 	{
 		MemFreeArr(devContGuards);
-		this->devContGuards = 0;
+		this->devContGuards = nullptr;
 	}
 	this->devContGCnt = 0;
 }
@@ -462,16 +462,16 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(Optional<UI::GUIClientControl> par
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->cli = 0;
+	this->cli = nullptr;
 
 	this->alertUpd = false;
 	this->deviceUpd = false;
 	this->userUpd = false;
 	this->devContUpd = false;
 	this->devContACnt = 0;
-	this->devContAlerts = 0;
+	this->devContAlerts = nullptr;
 	this->devContGCnt = 0;
-	this->devContGuards = 0;
+	this->devContGuards = nullptr;
 	this->alertContUpd = false;
 	this->userContUpd = false;
 

@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userOb
 	if (me->cli.SetTo(cli))
 	{
 		cli.Delete();
-		me->cli = 0;
+		me->cli = nullptr;
 		me->txtHost->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		me->txtUserName->SetReadOnly(false);
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 			sb.AppendC(UTF8STRC("Disconnected: "));
 			cli->GetLastErrorMsg(sb);
 			cli.Delete();
-			me->cli = 0;
+			me->cli = nullptr;
 			me->txtHost->SetReadOnly(false);
 			me->txtPort->SetReadOnly(false);
 			me->txtUserName->SetReadOnly(false);
@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientCo
 	this->core = core;
 	this->SetText(CSTR("MySQL Client"));
 	this->SetFont(nullptr, 8.25, false);
-	this->cli = 0;
+	this->cli = nullptr;
 
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);

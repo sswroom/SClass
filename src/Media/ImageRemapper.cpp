@@ -4,12 +4,12 @@
 
 Media::ImageRemapper::ImageRemapper()
 {
-	this->srcImgPtr = 0;
+	this->srcImgPtr = nullptr;
 	this->srcBpl = 0;
 	this->srcWidth = 0;
 	this->srcHeight = 0;
 	this->srcPF = Media::PF_UNKNOWN;
-	this->srcPal = 0;
+	this->srcPal = nullptr;
 }
 
 void Media::ImageRemapper::SetSourceImage32(UnsafeArray<const UInt8> srcImgPtr, UOSInt srcBpl, UOSInt srcWidth, UOSInt srcHeight)
@@ -19,7 +19,7 @@ void Media::ImageRemapper::SetSourceImage32(UnsafeArray<const UInt8> srcImgPtr, 
 	this->srcWidth = srcWidth;
 	this->srcHeight = srcHeight;
 	this->srcPF = Media::PF_B8G8R8A8;
-	this->srcPal = 0;
+	this->srcPal = nullptr;
 }
 
 void Media::ImageRemapper::SetSourceImage(NN<Media::StaticImage> srcImg)

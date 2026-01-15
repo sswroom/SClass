@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 		me->tvCtrl.Delete();
 		me->port.Delete();
 		MemFreeNN(cmdInfos);
-		me->cmdInfos = 0;
+		me->cmdInfos = nullptr;
 
 		me->cboPort->SetEnabled(true);
 		me->cboTVType->SetEnabled(true);
@@ -61,8 +61,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 	me->cboTVType->SetEnabled(false);
 	me->cboCommand->ClearItems();
 
-	Data::ArrayList<IO::TVControl::CommandType> cmdList;
-	Data::ArrayList<IO::TVControl::CommandFormat> cmdFormats;
+	Data::ArrayListNative<IO::TVControl::CommandType> cmdList;
+	Data::ArrayListNative<IO::TVControl::CommandFormat> cmdFormats;
 	UOSInt j;
 	tvCtrl->GetSupportedCmd(&cmdList, &cmdFormats);
 	i = 0;
@@ -197,7 +197,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<IO::TVControl::TVType> tvTypes;
+	Data::ArrayListNative<IO::TVControl::TVType> tvTypes;
 	IO::TVControl::TVInfo tvInfo;
 
 	this->SetText(CSTR("TV Control"));
@@ -205,9 +205,9 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->port = 0;
-	this->tvCtrl = 0;
-	this->cmdInfos = 0;
+	this->port = nullptr;
+	this->tvCtrl = nullptr;
+	this->cmdInfos = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlPort = ui->NewPanel(*this);
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 	}
 	
 	{
-		Data::ArrayList<UOSInt> ports;
+		Data::ArrayListNative<UOSInt> ports;
 		IO::SerialPort::GetAvailablePorts(ports, 0);
 		i = 0;
 		j = ports.GetCount();
@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRTVControlForm::~AVIRTVControlForm()
 		this->tvCtrl.Delete();
 		this->port.Delete();
 		MemFreeArr(cmdInfos);
-		this->cmdInfos = 0;
+		this->cmdInfos = nullptr;
 	}
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();

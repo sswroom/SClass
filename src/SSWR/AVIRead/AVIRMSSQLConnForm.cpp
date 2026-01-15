@@ -106,7 +106,7 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(Optional<UI::GUIClientContro
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->isError = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

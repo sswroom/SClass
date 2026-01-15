@@ -28,7 +28,7 @@ void IO::ValgrindLog::BeginLeak(UOSInt threadId, Text::CStringNN message)
 	leak->message = Text::String::New(message);
 	this->leaks.Add(leak);
 	this->currLeak = leak;
-	this->currException = 0;
+	this->currException = nullptr;
 	this->currStack = leak->stacks;
 }
 
@@ -44,7 +44,7 @@ void IO::ValgrindLog::BeginException(UOSInt threadId, Text::CStringNN message)
 	ex->stackSize = 0;
 	this->exceptions.Add(ex);
 	this->currException = ex;
-	this->currLeak = 0;
+	this->currLeak = nullptr;
 	this->currStack = ex->stacks;
 }
 
@@ -132,16 +132,16 @@ IO::ValgrindLog::ValgrindLog(UOSInt mainPID)
 {
 	this->ppid = 0;
 	this->mainPID = mainPID;
-	this->version = 0;
-	this->commandLine = 0;
+	this->version = nullptr;
+	this->commandLine = nullptr;
 	this->bytesInUse = 0;
 	this->blocksInUse = 0;
 	this->blocksAllocs = 0;
 	this->blocksFrees = 0;
 	this->bytesAllocs = 0;
-	this->currException = 0;
-	this->currLeak = 0;
-	this->currStack = 0;
+	this->currException = nullptr;
+	this->currLeak = nullptr;
+	this->currStack = nullptr;
 }
 
 IO::ValgrindLog::~ValgrindLog()
@@ -219,7 +219,7 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 	Text::StringBuilderUTF8 sb;
 	if (!reader.ReadLine(sb, 1024))
 	{
-		return 0;
+		return nullptr;
 	}
 	UTF8Char sbuff[128];
 	UInt32 lineNum = 1;
@@ -232,15 +232,15 @@ Optional<IO::ValgrindLog> IO::ValgrindLog::LoadStream(NN<IO::Stream> stream)
 	UOSInt i;
 	UOSInt j;
 	if (!sb.StartsWith(CSTR("==")))
-		return 0;
+		return nullptr;
 	i = sb.IndexOf(UTF8STRC("== "), 2);
 	if (i == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	sb.v[i] = 0;
 	if (!Text::StrToUOSInt(&sb.v[2], pid))
-		return 0;
+		return nullptr;
 	if (!sb.ToCString().Substring(i + 3).Equals(CSTR("Memcheck, a memory error detector")))
-		return 0;
+		return nullptr;
 	NN<IO::ValgrindLog> log;
 	NEW_CLASSNN(log, IO::ValgrindLog(pid));
 	while (true)

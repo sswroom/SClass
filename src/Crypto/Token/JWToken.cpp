@@ -84,9 +84,9 @@ Crypto::Token::JWToken::PayloadMapping Crypto::Token::JWToken::payloadNames[] =
 Crypto::Token::JWToken::JWToken(JWSignature::Algorithm alg)
 {
 	this->alg = alg;
-	this->header = 0;
-	this->payload = 0;
-	this->sign = 0;
+	this->header = nullptr;
+	this->payload = nullptr;
+	this->sign = nullptr;
 	this->signSize = 0;
 }
 
@@ -189,7 +189,7 @@ Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, Unsafe
 	return sign.VerifyHash(sb.v, sb.leng, nnsign, this->signSize);
 }
 
-Optional<Data::StringMap<Text::String*>> Crypto::Token::JWToken::ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr)
+Optional<Data::StringMapObj<Text::String*>> Crypto::Token::JWToken::ParsePayload(NN<JWTParam> param, Bool keepDefault, Optional<Text::StringBuilderUTF8> sbErr)
 {
 	param->Clear();
 	NN<Text::JSONBase> payloadJson;
@@ -198,17 +198,17 @@ Optional<Data::StringMap<Text::String*>> Crypto::Token::JWToken::ParsePayload(NN
 	if (!this->payload.SetTo(nnpayload) || !Text::JSONBase::ParseJSONStr(nnpayload->ToCString()).SetTo(payloadJson))
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Payload cannot be parsed with JSON"));
-		return 0;
+		return nullptr;
 	}
 	if (payloadJson->GetType() != Text::JSONType::Object)
 	{
 		payloadJson->EndUse();
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Payload is not JSON object"));
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::StringMap<Text::String *> *retMap;
-	NEW_CLASS(retMap, Data::StringMap<Text::String *>());
+	Data::StringMapObj<Text::String *> *retMap;
+	NEW_CLASS(retMap, Data::StringMapObj<Text::String *>());
 	NN<Text::JSONObject> payloadObj = NN<Text::JSONObject>::ConvertFrom(payloadJson);
 	NN<Text::JSONBase> json;
 	Data::ArrayListNN<Text::String> objNames;
@@ -296,9 +296,9 @@ Optional<Data::StringMap<Text::String*>> Crypto::Token::JWToken::ParsePayload(NN
 	return retMap;
 }
 
-void Crypto::Token::JWToken::FreeResult(NN<Data::StringMap<Text::String*>> result)
+void Crypto::Token::JWToken::FreeResult(NN<Data::StringMapObj<Text::String*>> result)
 {
-	NN<const Data::ArrayList<Text::String*>> vals = result->GetValues();
+	NN<const Data::ArrayListObj<Text::String*>> vals = result->GetValues();
 	LIST_FREE_STRING_NO_CLEAR(vals);
 	result.Delete();
 }
@@ -333,7 +333,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Generate(JWSignature::A
 	Crypto::Token::JWSignature sign(ssl, alg, key, keyLeng, keyType);
 	if (!sign.CalcHash(sb.ToString(), sb.GetLength()))
 	{
-		return 0;
+		return nullptr;
 	}
 	JWToken *token;
 	NEW_CLASS(token, JWToken(alg));
@@ -348,7 +348,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::GenerateRSA(JWSignature
 	NN<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl))
 	{
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sbHeader;
 	NN<Text::String> s;
@@ -370,7 +370,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::GenerateRSA(JWSignature
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	s = Text::JSText::ToNewJSTextDQuote(keyId.v);
 	sbHeader.Append(s);
@@ -385,11 +385,11 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::GenerateRSA(JWSignature
 	b64.EncodeBin(sb, payload.v, payload.leng);
 	NN<Crypto::Cert::X509Key> k;
 	if (!key->CreateKey().SetTo(k))
-		return 0;
+		return nullptr;
 	Bool succ = nnssl->Signature(k, hash, sb.ToByteArray(), signData, signLen);
 	k.Delete();
 	if (!succ)
-		return 0;
+		return nullptr;
 	JWToken *token;
 	NEW_CLASS(token, JWToken(alg));
 	token->SetHeader(sbHeader.ToCString());
@@ -405,18 +405,18 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 	if (i1 == INVALID_INDEX)
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: no . found"));
-		return 0;
+		return nullptr;
 	}
 	UOSInt i2 = token.IndexOf('.', i1 + 1);
 	if (i2 == INVALID_INDEX)
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: Only 1 . found"));
-		return 0;
+		return nullptr;
 	}
 	if (token.IndexOf('.', i2 + 1) != INVALID_INDEX)
 	{
 		if (sbErr.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Token format error: More than 2 . found"));
-		return 0;
+		return nullptr;
 	}
 	Text::TextBinEnc::Base64Enc b64url(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	UInt8 *headerBuff = MemAlloc(UInt8, i1 + 1);
@@ -438,7 +438,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		MemFree(signBuff);
-		return 0;
+		return nullptr;
 	}
 	else if (json->GetType() != Text::JSONType::Object)
 	{
@@ -447,7 +447,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		MemFree(signBuff);
-		return 0;
+		return nullptr;
 	}
 	NN<Text::String> sAlg;
 	if (!json->GetValueString(CSTR("alg")).SetTo(sAlg))
@@ -457,7 +457,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		MemFree(signBuff);
-		return 0;
+		return nullptr;
 	}
 	alg = JWSignature::AlgorithmGetByName(sAlg->v);
 	if (alg == JWSignature::Algorithm::Unknown)
@@ -467,7 +467,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		MemFree(signBuff);
-		return 0;
+		return nullptr;
 	}
 	json->EndUse();
 	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(payloadBuff, payloadSize)).SetTo(json))
@@ -476,7 +476,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		MemFree(signBuff);
-		return 0;
+		return nullptr;
 	}
 	else if (json->GetType() != Text::JSONType::Object)
 	{
@@ -485,7 +485,7 @@ Optional<Crypto::Token::JWToken> Crypto::Token::JWToken::Parse(Text::CStringNN t
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		MemFree(signBuff);
-		return 0;
+		return nullptr;
 	}
 	json->EndUse();
 	JWToken *jwt;

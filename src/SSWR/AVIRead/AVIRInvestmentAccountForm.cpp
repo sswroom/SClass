@@ -29,7 +29,7 @@ SSWR::AVIRead::AVIRInvestmentAccountForm::AVIRInvestmentAccountForm(Optional<UI:
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->inputName = 0;
+	this->inputName = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblName = ui->NewLabel(*this, CSTR("Name"));

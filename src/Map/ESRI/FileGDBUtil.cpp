@@ -186,7 +186,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 	if (!valid || ofst > descSize)
 	{
 		FreeTableInfo(table);
-		return 0;
+		return nullptr;
 	}
 	return table;
 }
@@ -224,7 +224,7 @@ NN<Map::ESRI::FileGDBFieldInfo> Map::ESRI::FileGDBUtil::FieldInfoClone(NN<FileGD
 	newField->fieldSize = field->fieldSize;
 	newField->flags = field->flags;
 	newField->defSize = field->defSize;
-	newField->defValue = 0;
+	newField->defValue = nullptr;
 	UnsafeArray<UInt8> valArr;
 	UnsafeArray<UInt8> newArr;
 	if (field->defValue.SetTo(valArr))
@@ -233,7 +233,7 @@ NN<Map::ESRI::FileGDBFieldInfo> Map::ESRI::FileGDBUtil::FieldInfoClone(NN<FileGD
 		MemCopyNO(newArr.Ptr(), valArr.Ptr(), field->defSize);
 	}
 	newField->srsSize = field->srsSize;
-	newField->srsValue = 0;
+	newField->srsValue = nullptr;
 	if (field->srsValue.SetTo(valArr))
 	{
 		newField->srsValue = newArr = MemAllocArr(UInt8, field->srsSize);
@@ -359,7 +359,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 {
 	UInt32 recSize = buff.ReadU32(0);
 	if (recSize != buff.GetSize())
-		return 0;
+		return nullptr;
 	UInt32 nPoints = buff.ReadU32(4);
 	UInt16 type1 = buff.ReadU16(8);
 	UInt16 type2 = buff.ReadU16(10);
@@ -404,7 +404,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 		{
 			pt.Delete();
 			printf("FileGDBUtil.ParseSDERecord: pointLen not valid: %d, actual = %d\r\n", (UInt32)pointLen, (UInt32)ofst - 24);
-			return 0;
+			return nullptr;
 		}
 		return pt;
 	}
@@ -428,7 +428,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 		{
 			lineString.Delete();
 			printf("FileGDBUtil.ParseSDERecord: pointLen not valid: %d, actual = %d\r\n", (UInt32)pointLen, (UInt32)ofst - 24);
-			return 0;
+			return nullptr;
 		}
 		return lineString;
 	}
@@ -438,7 +438,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		printf("%s\r\n", sb.ToPtr());
-		return 0;
+		return nullptr;
 	}
 }
 

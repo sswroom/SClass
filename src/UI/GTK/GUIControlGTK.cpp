@@ -53,7 +53,7 @@ UI::GUIControl::GUIControl(NN<UI::GUICore> ui, Optional<GUIClientControl> parent
 		this->ddpi = 96.0;
 	}
 	this->hFont = 0;
-	this->fontName = 0;
+	this->fontName = nullptr;
 	this->fontHeightPt = 0;
 	this->fontIsBold = false;
 	this->lxPos = 0;
@@ -121,7 +121,7 @@ void UI::GUIControl::SetText(Text::CStringNN text)
 UnsafeArrayOpt<UTF8Char> UI::GUIControl::GetText(UnsafeArray<UTF8Char> buff)
 {
 	////////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 Bool UI::GUIControl::GetText(NN<Text::StringBuilderUTF8> sb)
@@ -722,7 +722,7 @@ Optional<UI::GUIForm> UI::GUIControl::GetRootForm()
 		}
 		ctrl = ctrl->GetParent().OrNull();
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<ControlHandle> UI::GUIControl::GetHandle()
@@ -741,7 +741,7 @@ Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 	GdkDisplay *display = gtk_widget_get_display((GtkWidget*)this->hwnd.OrNull());
 	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull());
 	if (display == 0)
-		return 0;
+		return nullptr;
 	MonitorHandle *ret;
 	if (wnd == 0)
 	{
@@ -770,7 +770,7 @@ Optional<MonitorHandle> UI::GUIControl::GetHMonitor()
 	GdkScreen *scn = gtk_widget_get_screen((GtkWidget*)this->hwnd.OrNull());
 	GdkWindow *wnd = gtk_widget_get_window((GtkWidget*)this->hwnd.OrNull());
 	if (scn == 0)
-		return 0;
+		return nullptr;
 	if (wnd == 0)
 	{
 		wnd = gdk_screen_get_active_window(scn);
@@ -794,12 +794,12 @@ Optional<Media::MonitorInfo> UI::GUIControl::GetMonitorInfo()
 	if (display)
 	{
 		Media::MonitorInfo *info;
-		NEW_CLASS(info, Media::MonitorInfo(0));
+		NEW_CLASS(info, Media::MonitorInfo(nullptr));
 		return info;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -832,7 +832,7 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 {
 	PangoFontDescription *f = (PangoFontDescription *)this->GetFont();
 	if (f == 0)
-		return 0;
+		return nullptr;
 	NN<Text::String> nnfontName;
 	if (!this->fontName.SetTo(nnfontName))
 	{

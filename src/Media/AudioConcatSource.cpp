@@ -15,7 +15,7 @@ Media::AudioConcatSource::AudioConcatSource()
 	this->stmTime = 0;
 
 	this->currStm = 0;
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 	this->readBlkSize = 0;
 }
@@ -84,7 +84,7 @@ UnsafeArrayOpt<UTF8Char> Media::AudioConcatSource::GetSourceName(UnsafeArray<UTF
 	{
 		return audSrc->GetSourceName(buff);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Media::AudioConcatSource::CanSeek()
@@ -199,7 +199,7 @@ void Media::AudioConcatSource::Stop()
 	{
 		audSrc->Stop();
 	}
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 }
 
 UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)

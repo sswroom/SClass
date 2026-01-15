@@ -50,7 +50,7 @@ Net::RAWCapture::RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, Capt
 	}
 	if (this->writer)
 	{
-		Optional<Socket> s = 0;
+		Optional<Socket> s = nullptr;
 		switch (type)
 		{
 		case CT_RAW:

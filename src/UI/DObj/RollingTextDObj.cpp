@@ -11,7 +11,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 	if (this->dimg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->dimg = 0;
+		this->dimg = nullptr;
 	}
 
 	NN<Text::String> txt;
@@ -220,7 +220,7 @@ UI::DObj::RollingTextDObj::RollingTextDObj(NN<Media::DrawEngine> deng, Text::CSt
 	this->size = size;
 	this->codePage = codePage;
 	this->rollSpeed = rollSpeed;
-	this->dimg = 0;
+	this->dimg = nullptr;
 	this->lastRollPos = -1;
 	this->startTime.SetCurrTimeUTC();
 
@@ -236,7 +236,7 @@ UI::DObj::RollingTextDObj::~RollingTextDObj()
 	if (this->dimg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
-		this->dimg = 0;
+		this->dimg = nullptr;
 	}
 }
 

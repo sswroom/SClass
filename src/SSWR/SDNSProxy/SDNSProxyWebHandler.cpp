@@ -34,7 +34,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(NN<SSWR::SDNSProx
 	sbOut.AppendP(sbuff, sptr);
 	sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 	sbOut.AppendC(UTF8STRC("<tr><td>DNS List</td><td>"));
-	Data::ArrayList<UInt32> dnsList;
+	Data::ArrayListNative<UInt32> dnsList;
 	UOSInt i;
 	UOSInt j;
 	me->proxy->GetDNSList(dnsList);
@@ -511,7 +511,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(NN<SSWR::SDNSProx
 	UnsafeArray<UTF8Char> sptr;
 	UInt32 selCliId = 0;
 	NN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo> cli;
-	Optional<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo> selCli = 0;
+	Optional<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo> selCli = nullptr;
 	me->core->GetClientList(cliList);
 
 	req->GetQueryValueU32(CSTR("cliId"), selCliId);

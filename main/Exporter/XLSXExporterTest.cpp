@@ -24,13 +24,13 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	fileName = CSTR("Workbook.xml");
 	{
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		exporterXML.ExportFile(fs, fileName, workbook, 0);
+		exporterXML.ExportFile(fs, fileName, workbook, nullptr);
 	}
 
 	fileName = CSTR("Workbook.xlsx");
 	{
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		exporterXLSX.ExportFile(fs, fileName, workbook, 0);
+		exporterXLSX.ExportFile(fs, fileName, workbook, nullptr);
 	}
 	return 0;
 }

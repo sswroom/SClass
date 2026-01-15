@@ -94,7 +94,7 @@ void SSWR::AVIRead::AVIRStreamEchoForm::StopStream()
 		}
 		this->threadToStop = false;
 		stm.Delete();
-		this->stm = 0;
+		this->stm = nullptr;
 		this->txtStream->SetText(CSTR("-"));
 		this->btnStream->SetText(CSTR("&Open"));
 		this->remoteClosed = false;
@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(Optional<UI::GUIClientCont
 	
 	this->core = core;
 	this->siLabDriver = this->core->GetSiLabDriver();
-	this->stm = 0;
+	this->stm = nullptr;
 	this->threadToStop = false;
 	this->threadRunning = false;
 	this->recvUpdated = false;

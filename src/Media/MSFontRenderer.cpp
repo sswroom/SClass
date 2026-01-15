@@ -78,7 +78,7 @@ Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCo
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt imgSize = fntH * ((fntW + 7) >> 3);
 	NN<Media::StaticImage> simg;

@@ -45,21 +45,21 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 	UTF16Char *fileName;
 
 	if (ReadInt32(&hdr[12]) != 0)
-		return 0;
+		return nullptr;
 	recCnt = ReadUInt32(&hdr[0]);
 	recSize = ReadUInt32(&hdr[4]);
 	if (recCnt == 0 || recCnt >= 65536)
-		return 0;
+		return nullptr;
 	if (recSize < recCnt * 10 || recSize >= 1048576)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Data::ByteBuffer recBuff(recSize);
 	dataOfst = recSize + 8;
 	if (fd->GetRealData(8, recSize, recBuff) != recSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -74,7 +74,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 		if (fileOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		fileName = (UTF16Char*)&recBuff[i + 8];
 		while (*fileName++);

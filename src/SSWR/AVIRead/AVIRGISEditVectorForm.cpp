@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsSelChg(AnyType use
 		}
 		else
 		{
-			me->navi->SetSelectedVector(0);
+			me->navi->SetSelectedVector(nullptr);
 		}
 		me->lyr->EndGetObject(sess);
 	}
@@ -169,7 +169,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnDeleteClicked(AnyType use
 		me->lyr->DeleteVector(objId);
 		if (me->status == 0)
 		{
-			me->navi->SetSelectedVector(0);
+			me->navi->SetSelectedVector(nullptr);
 		}
 		me->UpdateList();
 	}
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnEndClicked(AnyType userOb
 				me->navi->RedrawMap();
 				me->UpdateList();
 			}
-			me->navi->SetSelectedVector(0);
+			me->navi->SetSelectedVector(nullptr);
 			me->status = 0;
 			me->txtStatus->SetText(CSTR("View"));
 			me->txtNPoints->SetText(CSTR("0"));

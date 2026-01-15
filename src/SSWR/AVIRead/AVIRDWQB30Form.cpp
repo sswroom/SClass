@@ -13,14 +13,14 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(AnyType userObj)
 	if (me->scanner.SetTo(scanner))
 	{
 		scanner.Delete();
-		me->scanner = 0;
+		me->scanner = nullptr;
 		me->txtPort->SetText(CSTR(""));
 		me->btnPort->SetText(CSTR("Open"));
 		me->txtMode->SetText(CSTR(""));
 	}
 	else
 	{
-		SSWR::AVIRead::AVIRSelStreamForm frm(0, me->ui, me->core, false, 0, me->core->GetLog());
+		SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, me->ui, me->core, false, nullptr, me->core->GetLog());
 		if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			NN<IO::Stream> stm = frm.GetStream();
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(AnyType userO
 		me->txtMode->SetText(CSTR("Setting"));
 		me->tpSetting->SetEnabled(true);
 
-		Data::ArrayList<IO::CodeScanner::DeviceCommand> cmdList;
+		Data::ArrayListNative<IO::CodeScanner::DeviceCommand> cmdList;
 		UOSInt i;
 		UOSInt j;
 		scanner->GetCommandList(cmdList);
@@ -282,7 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(AnyType userObj)
 			me->txtScan->SetText(s->ToCString());
 			me->lbScan->AddItem(s, 0);
 			s->Release();
-			me->newCode = 0;
+			me->newCode = nullptr;
 		}
 	}
 }
@@ -295,8 +295,8 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(Optional<UI::GUIClientControl> par
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->scanner = 0;
-	this->newCode = 0;
+	this->scanner = nullptr;
+	this->newCode = nullptr;
 	this->codeUpdate = false;
 	this->cmdCurr = IO::CodeScanner::DC_GET_READ_MODE;
 	this->cmdType = IO::CodeScanner::CT_UNKNOWN;

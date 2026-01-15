@@ -289,7 +289,7 @@ void Net::RTPH264Handler::SetFormat(UnsafeArray<const UTF8Char> fmtStr)
 				this->sps = MemAlloc(UInt8, spsSize);
 				MemCopyNO(this->sps, buff, this->spsSize);
 				
-				Media::H264Parser::GetFrameInfo(buff, this->spsSize, this->frameInfo, 0);
+				Media::H264Parser::GetFrameInfo(buff, this->spsSize, this->frameInfo, nullptr);
 
 				txtSize = (UOSInt)(Text::StrConcat(&buff[4], sarr2[1]) - &buff[4]);
 				WriteMInt32(buff, 1);

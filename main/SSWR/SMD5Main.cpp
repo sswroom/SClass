@@ -87,7 +87,7 @@ public:
 	{
 		this->currCount = 0;
 		this->lastCount = 0;
-		this->name = 0;
+		this->name = nullptr;
 		this->fileName = nullptr;
 
 		this->threadRunning = false;
@@ -150,7 +150,7 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose, Option
 		NN<IO::FileCheck> fileChk;
 		{
 			IO::StmData::FileData fd(fileName, false);
-			if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::FileCheck)).SetTo(fileChk))
+			if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, nullptr, IO::ParserType::FileCheck)).SetTo(fileChk))
 			{
 				console->WriteLine(CSTR("Error in parsing the file"));
 				return false;
@@ -228,7 +228,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 					flagVerbose = true;
 				}
 			}
-			else if (md5File.v == 0)
+			else if (md5File.v.IsNull())
 			{
 				md5File = Text::CStringNN::FromPtr(cmdLines[j]);
 				showHelp = false;
@@ -329,7 +329,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Exporter::MD5Exporter exporter;
 			{
 				IO::FileStream fs(md5File.OrEmpty(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				exporter.ExportFile(fs, sb.ToCString(), nnfileChk, 0);
+				exporter.ExportFile(fs, sb.ToCString(), nnfileChk, nullptr);
 			}
 			nnfileChk.Delete();
 			showHelp = false;

@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/ICaseBTreeUTF8Map.hpp"
+#include "Data/ArrayListObj.hpp"
+#include "Data/ICaseBTreeStringMapObj.hpp"
 #include "Text/SearchIndexer.h"
 
 Text::SearchIndexer::SearchIndexer(NN<Text::TextAnalyzer> ta)
@@ -50,7 +51,7 @@ UOSInt Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, Unsafe
 	Data::ArrayListInt64 *tmpIndex;
 	Data::ArrayListInt64 *tmpIndex2;
 	NN<Text::TextAnalyzer::TextSession> sess = this->ta->BeginAnalyze(searchStr);
-	Data::ArrayList<Data::ArrayListInt64*> resultList;
+	Data::ArrayListObj<Data::ArrayListInt64*> resultList;
 	Data::ArrayListInt32 resultListCnt;
 	while (this->ta->NextWord(sbuff, sess).SetTo(sptr))
 	{

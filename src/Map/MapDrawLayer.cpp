@@ -51,7 +51,7 @@ Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Opt
 	this->pgColor = 0;
 	this->lineColor = 0;
 	this->lineWidth = 0;
-	this->iconImg = 0;
+	this->iconImg = nullptr;
 	this->iconSpotX = 0;
 	this->iconSpotY = 0;
 	this->flags = 0;
@@ -66,7 +66,7 @@ Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text
 	this->pgColor = 0;
 	this->lineColor = 0;
 	this->lineWidth = 0;
-	this->iconImg = 0;
+	this->iconImg = nullptr;
 	this->iconSpotX = 0;
 	this->iconSpotY = 0;
 	this->flags = 0;
@@ -419,7 +419,7 @@ Bool Map::MapDrawLayer::CanQuery()
 	return false;
 }
 
-Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	return false;
 }
@@ -463,7 +463,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(NN<GetObjectSess> session, Math::Coo
 	return nearObjId;
 }
 
-void Map::MapDrawLayer::GetNearestObjectIds(NN<GetObjectSess> session, Math::Coord2DDbl pt, NN<Data::ArrayList<Int64>> ids, OptOut<Math::Coord2DDbl> nearPt)
+void Map::MapDrawLayer::GetNearestObjectIds(NN<GetObjectSess> session, Math::Coord2DDbl pt, NN<Data::ArrayListNative<Int64>> ids, OptOut<Math::Coord2DDbl> nearPt)
 {
 	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
@@ -624,7 +624,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 			}
 			else
 			{
-				sptrs[i] = 0;
+				sptrs[i] = nullptr;
 			}
 		}
 		else
@@ -636,7 +636,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 			}
 			else
 			{
-				sptrs[i - 1] = 0;
+				sptrs[i - 1] = nullptr;
 			}
 		}
 	}
@@ -691,7 +691,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 				{
 					if (ofsts[l] == INVALID_INDEX)
 					{
-						sptrs[l] = 0;
+						sptrs[l] = nullptr;
 					}
 					else
 					{
@@ -702,7 +702,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 				{
 					if (ofsts[l] == INVALID_INDEX)
 					{
-						sptrs[l - 1] = 0;
+						sptrs[l - 1] = nullptr;
 					}
 					else
 					{
@@ -727,7 +727,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UOSInt strIndex)
 {
 	if (strIndex >= this->GetColumnCnt())
-		return 0;
+		return nullptr;
 
 	Text::SearchIndexer *searching;
 	Data::ArrayListInt64 objIds;
@@ -796,7 +796,7 @@ void Map::MapDrawLayer::ReleaseSearchStr(NN<Data::ArrayListString> strArr)
 
 Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex)
 {
-	Optional<Math::Geometry::Vector2D> vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	NN<Math::Geometry::Vector2D> nnvec;
 	Data::ArrayListInt64 objIds;
 	srchInd->SearchString(objIds, srchStr.v, 10000);
@@ -842,7 +842,7 @@ Bool Map::MapDrawLayer::HasPGStyle()
 
 Bool Map::MapDrawLayer::HasIconStyle()
 {
-	return this->iconImg != 0;
+	return this->iconImg.NotNull();
 }
 
 void Map::MapDrawLayer::SetLineStyle(UInt32 lineColor, Double lineWidth)
@@ -1021,14 +1021,14 @@ UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<W
 		{
 			NN<Math::Geometry::Vector2D> vec;
 			if (!this->GetVector(0).SetTo(vec))
-				return 0;
+				return nullptr;
 			Math::WKTWriter writer;
 			Text::StringBuilderUTF8 sb;
 			Bool succ = writer.ToText(sb, vec);
 			vec.Delete();
 			if (!succ)
 			{
-				return 0;
+				return nullptr;
 			}
 			return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
 		}
@@ -1039,7 +1039,7 @@ UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<W
 	{
 		return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -1069,14 +1069,14 @@ Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 		{
 			NN<Math::Geometry::Vector2D> vec;
 			if (!this->GetVector(0).SetTo(vec))
-				return 0;
+				return nullptr;
 			Math::WKTWriter writer;
 			Text::StringBuilderUTF8 sb;
 			Bool succ = writer.ToText(sb, vec);
 			vec.Delete();
 			if (!succ)
 			{
-				return 0;
+				return nullptr;
 			}
 			return Text::String::New(sb.ToCString());
 		}
@@ -1085,7 +1085,7 @@ Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	Text::StringBuilderUTF8 sb;
 	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
 		return Text::String::New(sb.ToCString());
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
@@ -1096,14 +1096,14 @@ UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArra
 		{
 			NN<Math::Geometry::Vector2D> vec;
 			if (!this->GetVector(0).SetTo(vec))
-				return 0;
+				return nullptr;
 			Math::WKTWriter writer;
 			Text::StringBuilderUTF8 sb;
 			Bool succ = writer.ToText(sb, vec);
 			vec.Delete();
 			if (!succ)
 			{
-				return 0;
+				return nullptr;
 			}
 			return sb.ConcatToS(buff, buffSize);
 		}
@@ -1112,7 +1112,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArra
 	Text::StringBuilderUTF8 sb;
 	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
 		return sb.ConcatToS(buff, buffSize);
-	return 0;
+	return nullptr;
 }
 
 Data::Timestamp Map::MapLayerReader::GetTimestamp(UOSInt colIndex)
@@ -1177,14 +1177,14 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colInde
 	if (geomCol == INVALID_INDEX)
 	{
  		if (colIndex != 0)
-			return 0;
+			return nullptr;
 	}
 	else if (geomCol != colIndex)
 	{
-		return 0;
+		return nullptr;
 	}
 	if ((UOSInt)this->currIndex >= this->objIds.GetCount() || this->currIndex < 0)
-		return 0;
+		return nullptr;
 	NN<GetObjectSess> sess = this->layer->BeginGetObject();
 	Optional<Math::Geometry::Vector2D> vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
 	this->layer->EndGetObject(sess);

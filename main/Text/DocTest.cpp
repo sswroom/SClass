@@ -51,7 +51,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-		exporter.ExportFile(fs, CSTRP(sbuff, sptr), doc, 0);
+		exporter.ExportFile(fs, CSTRP(sbuff, sptr), doc, nullptr);
 	}
 	return 0;
 }

@@ -306,7 +306,7 @@ Bool Math::WKTWriter::AppendGeometryCollection(NN<Text::StringBuilderUTF8> sb, N
 
 Math::WKTWriter::WKTWriter()
 {
-	this->lastError = 0;
+	this->lastError = nullptr;
 	this->reverseAxis = false;
 	this->no3D = false;
 }

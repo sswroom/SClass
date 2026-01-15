@@ -204,7 +204,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 	Math::Geometry::Polyline *newPL;
 	
 	if (minId == (UOSInt)-1)
-		return 0;
+		return nullptr;
 	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	UOSInt i = 0;
 	while (it.HasNext())
@@ -214,7 +214,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		if (minId == 0 && isPoint)
 		{
 			if (i == 0)
-				return 0;
+				return nullptr;
 			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
 			while (this->geometries.RemoveAt(i).SetTo(lineString))
 			{
@@ -225,7 +225,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		else if (minId == nPoint - 1)
 		{
 			if (i + 1 == this->geometries.GetCount())
-				return 0;
+				return nullptr;
 			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
 			while (this->geometries.RemoveAt(i + 1).SetTo(lineString))
 			{
@@ -252,7 +252,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 /*void Math::Geometry::Polyline::OptimizePolyline()

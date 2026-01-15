@@ -475,7 +475,7 @@ Optional<const Text::CharUtil::UnicodeBlock> Text::CharUtil::GetUnicodeBlock(UTF
 			return blk;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Text::CharUtil::IsDoubleSize(UTF32Char c)

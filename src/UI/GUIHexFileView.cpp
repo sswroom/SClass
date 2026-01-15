@@ -10,8 +10,8 @@ UI::GUIHexFileView::GUIHexFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 {
 	this->fs = 0;
 	this->fd = 0;
-	this->analyse = 0;
-	this->frame = 0;
+	this->analyse = nullptr;
+	this->frame = nullptr;
 	this->fileSize = 0;
 	this->currOfst = 0;
 	if ((this->txtColor & 0x808080) == 0x808080)
@@ -171,7 +171,7 @@ void UI::GUIHexFileView::EventTimerTick()
 void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
-	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 	dimg->DelBrush(b);
 	OSInt vPos = this->GetScrollVPos();
 	if (this->fileSize > 0)
@@ -202,7 +202,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 		UnsafeArray<const UTF8Char> textPtr2;
 		UOSInt textSkip;
 		UInt64 drawOfst;
-		Optional<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldInfo = 0;
+		Optional<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldInfo = nullptr;
 		NN<const IO::FileAnalyse::FrameDetail::FieldInfo> nnfieldInfo;
 		NN<IO::FileAnalyse::FrameDetail> frame;
 		if (this->frame.SetTo(frame))
@@ -269,28 +269,28 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 				{
 					if (j + 1 == k || (drawOfst + 1 == frame->GetOffset() + frame->GetSize()))
 					{
-						dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, frameBrush);
+						dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), nullptr, frameBrush);
 					}
 					else
 					{
-						dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight * 1.5, this->pageLineHeight), 0, frameBrush);
+						dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight * 1.5, this->pageLineHeight), nullptr, frameBrush);
 					}
 					if (fieldInfo.SetTo(nnfieldInfo) && drawOfst >= frame->GetOffset() + nnfieldInfo->ofst && drawOfst < frame->GetOffset() + nnfieldInfo->ofst + nnfieldInfo->size)
 					{
 						if (j + 1 == k || drawOfst + 1 == frame->GetOffset() + nnfieldInfo->ofst + nnfieldInfo->size)
 						{
-							dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, fieldBrush);
+							dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), nullptr, fieldBrush);
 						}
 						else
 						{
-							dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight * 1.5, this->pageLineHeight), 0, fieldBrush);
+							dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight * 1.5, this->pageLineHeight), nullptr, fieldBrush);
 						}
 					}
 				}
 				NN<Media::DrawBrush> tBrush = textBrush;
 				if (this->currOfst == drawOfst)
 				{
-					dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, selBrush);
+					dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), nullptr, selBrush);
 					tBrush = selTextBrush;
 				}
 				Text::StrHexByte(sbuff, *currPtr++);
@@ -715,7 +715,7 @@ Optional<Data::ByteBuffer> UI::GUIHexFileView::GetDevrivedBuff() const
 	{
 		return frame->GetDevrivedBuff();
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<IO::FileAnalyse::FileAnalyser> UI::GUIHexFileView::CreateDevrivedAnaylse() const
@@ -724,7 +724,7 @@ Optional<IO::FileAnalyse::FileAnalyser> UI::GUIHexFileView::CreateDevrivedAnayls
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (!this->frame.SetTo(frame) || !frame->GetDevrivedBuff().SetTo(devrivedBuff))
 	{
-		return 0;
+		return nullptr;
 	}
 	return frame->CreateDevrivedAnaylse();
 }

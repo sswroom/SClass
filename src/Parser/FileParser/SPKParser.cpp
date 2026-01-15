@@ -13,8 +13,8 @@
 
 Parser::FileParser::SPKParser::SPKParser()
 {
-	this->clif = 0;
-	this->parsers = 0;
+	this->clif = nullptr;
+	this->parsers = nullptr;
 }
 
 Parser::FileParser::SPKParser::~SPKParser()
@@ -68,13 +68,13 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> srcPtr2;
 
 	if (hdr[0] != 'S' || hdr[1] != 'm' || hdr[2] != 'p' || hdr[3] != 'f')
-		return 0;
+		return nullptr;
 
 	flags = ReadInt32(&hdr[4]);
 	dirOfst = ReadUInt64(&hdr[8]);
 	fileSize = fd->GetDataSize();
 	if (dirOfst < 16 || dirOfst > fileSize)
-		return 0;
+		return nullptr;
 	if (flags & 1 && targetType != IO::ParserType::PackageFile)
 	{
 		Int32 customType;

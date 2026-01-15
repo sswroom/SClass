@@ -13,9 +13,9 @@ SSWR::OrganMgr::OrganImageItem::OrganImageItem(Int32 userId)
 	this->fullName = 0;
 	this->fileType = FileType::Unknown;
 	this->srcURL = 0;
-	this->imgURL = 0;
-	this->userFile = 0;
-	this->webFile = 0;
+	this->imgURL = nullptr;
+	this->userFile = nullptr;
+	this->webFile = nullptr;
 }
 
 SSWR::OrganMgr::OrganImageItem::~OrganImageItem()

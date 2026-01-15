@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/StringMapNative.hpp"
 #include "DB/DBReader.h"
 #include "DB/MDBFileConn.h"
 #include "DB/ODBCConn.h"
@@ -125,7 +126,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 {
 	NN<IO::ConfigFile> cfg;
-	this->db = 0;
+	this->db = nullptr;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
@@ -260,7 +261,7 @@ Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
-		return 0;
+		return nullptr;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into BurntDisc (DiscID, DiscTypeID, BurntDate, Status) values ("));
 	sql.AppendStrUTF8(discId.v);
@@ -284,7 +285,7 @@ Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -423,10 +424,10 @@ Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::Ne
 {
 	NN<DVDTypeInfo> dvdType;
 	if (this->dvdTypeMap.GetC(discTypeID).SetTo(dvdType))
-		return 0;
+		return nullptr;
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
-		return 0;
+		return nullptr;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into DVDType (DiscTypeID, Name, Description) values ("));
 	sql.AppendStrUTF8(discTypeID.v);
@@ -444,7 +445,7 @@ Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::Ne
 		this->dvdTypeMap.PutNN(dvdType->discTypeID, dvdType);
 		return dvdType;
 	}
-	return 0;
+	return nullptr;
 }
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList)
@@ -576,7 +577,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NN<IO::StreamData> fd)
 	Parser::FileParser::MD5Parser parser;
 	parser.SetCodePage(65001);
 	NN<IO::FileCheck> fileChk;
-	if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::FileCheck)).SetTo(fileChk))
+	if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, nullptr, IO::ParserType::FileCheck)).SetTo(fileChk))
 	{
 		return false;
 	}
@@ -598,7 +599,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NN<IO::StreamData> fd)
 		sbDiscId.RemoveChars(sbDiscId.GetCharCnt() - i);
 	}
 
-	Data::StringUTF8Map<Int32> nameMap;
+	Data::StringMapNative<Int32> nameMap;
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
 		return false;
@@ -614,7 +615,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NN<IO::StreamData> fd)
 		{
 			sb.ClearStr();
 			r->GetStr(0, sb);
-			nameMap.Put(sb.ToString(), r->GetInt32(1));
+			nameMap.Put(sb.ToCString(), r->GetInt32(1));
 		}
 		db->CloseReader(r);
 	}
@@ -637,10 +638,10 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NN<IO::StreamData> fd)
 		if (fileChk->GetEntryName(i).SetTo(fileName))
 		{
 			k = fileName->IndexOf('\\', 1);
-			if (nameMap.GetIndex(&fileName->v[k + 1]) >= 0)
+			if (nameMap.GetIndexC(fileName->ToCString().Substring(k + 1)) >= 0)
 			{
 				sql.AppendCmdC(CSTR(" and FileID = "));
-				sql.AppendInt32(nameMap.Get(&fileName->v[k + 1]));
+				sql.AppendInt32(nameMap.Get(fileName->ToCString().Substring(k + 1)));
 			}
 			else
 			{

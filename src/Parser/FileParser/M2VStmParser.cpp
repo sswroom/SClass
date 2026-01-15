@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::M2VStmParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::M2VStmParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (hdr.ReadMI32(0) != 0x1b3)
-		return 0;
+		return nullptr;
 	UInt8 tmpBuff[1024];
 	UOSInt readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
 	UInt32 frameRateNorm;
@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::M2VStmParser::ParseFileHdr(NN<IO:
 	UInt64 bitRate;
 	Media::FrameInfo info;
 	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, info, frameRateNorm, frameRateDenorm, bitRate, false))
-		return 0;
+		return nullptr;
 
 	Media::MediaFile *file;
 	NEW_CLASS(file, Media::M2VFile(fd));

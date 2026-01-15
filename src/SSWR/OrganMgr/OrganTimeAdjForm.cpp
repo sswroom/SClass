@@ -77,7 +77,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(AnyType userObj)
 	{
 		me->selImgCamera = s.Ptr();
 		me->selImgTime = userFile->fileTime;
-		me->pbPreview->SetImage(0, false);
+		me->pbPreview->SetImage(nullptr, false);
 		me->dispImg.Delete();
 		me->dispImg = me->env->ParseFileImage(userFile);
 		NN<Media::ImageList> dispImg;
@@ -240,7 +240,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 		NEW_CLASSNN(this->gpsTrk, Map::GPSTrack(CSTR("Untitled"), false, 65001, CSTR("Untitled")));
 	}
 	this->colorSess = this->env->GetColorManager()->CreateSess(this->GetHMonitor());
-	this->dispImg = 0;
+	this->dispImg = nullptr;
 	this->selImgCamera = 0;
 	this->selImgTime = 0;
 
@@ -270,10 +270,10 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	this->mapEnv->AddImage(CSTR("PointImage"), imgList);
 	NEW_CLASSNN(this->adjLyr, OrganTimeAdjLayer(this->gpsTrk, this->currFileList));
 	this->adjLyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
-	this->mapEnv->ChgLineStyleLayer(0, 0, 0xff0000ff, 3, 0, 0);
-	i = this->mapEnv->AddLayer(0, this->mapTileLyr, true);
-	i = this->mapEnv->AddLayer(0, this->gpsTrk, false);
-	this->mapEnv->AddLayer(0, this->adjLyr, true);
+	this->mapEnv->ChgLineStyleLayer(0, 0, 0xff0000ff, 3, nullptr, 0);
+	i = this->mapEnv->AddLayer(nullptr, this->mapTileLyr, true);
+	i = this->mapEnv->AddLayer(nullptr, this->gpsTrk, false);
+	this->mapEnv->AddLayer(nullptr, this->adjLyr, true);
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASSNN(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->mapView = this->mapEnv->CreateMapView(Math::Size2DDbl(1024, 768));
@@ -365,7 +365,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 		}
 		i++;
 	}
-	NN<Data::ArrayList<Optional<Text::String>>> cameraList = this->cameraMap.GetKeys();
+	NN<Data::ArrayListObj<Optional<Text::String>>> cameraList = this->cameraMap.GetKeys();
 	Text::StringBuilderUTF8 sbu8;
 	i = 0;
 	j = cameraList->GetCount();

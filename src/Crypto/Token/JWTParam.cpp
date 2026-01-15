@@ -5,13 +5,13 @@
 
 Crypto::Token::JWTParam::JWTParam()
 {
-	this->iss = 0;
-	this->sub = 0;
-	this->aud = 0;
+	this->iss = nullptr;
+	this->sub = nullptr;
+	this->aud = nullptr;
 	this->exp = 0;
 	this->nbf = 0;
 	this->iat = 0;
-	this->jti = 0;
+	this->jti = nullptr;
 }
 
 Crypto::Token::JWTParam::~JWTParam()
@@ -31,10 +31,10 @@ void Crypto::Token::JWTParam::Clear()
 	this->nbf = 0;
 	this->iat = 0;
 	OPTSTR_DEL(this->jti);
-	this->iss = 0;
-	this->sub = 0;
-	this->aud = 0;
-	this->jti = 0;
+	this->iss = nullptr;
+	this->sub = nullptr;
+	this->aud = nullptr;
+	this->jti = nullptr;
 }
 
 void Crypto::Token::JWTParam::SetIssuer(Optional<Text::String> issuer)

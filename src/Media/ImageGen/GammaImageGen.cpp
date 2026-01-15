@@ -27,7 +27,7 @@ Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<co
 	UOSInt k;
 	UOSInt bpl = size.x << 3;
 	if (size.x < 2 || size.y < 2)
-		return 0;
+		return nullptr;
 	NN<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
 	NN<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
 	NN<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());

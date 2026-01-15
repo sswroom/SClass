@@ -43,12 +43,12 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 	UInt32 tmp;
 	UInt32 displayRate = 0;
 	UInt32 nFrames = 0;
-	Optional<Media::ImageList> currImage = 0;
+	Optional<Media::ImageList> currImage = nullptr;
 	NN<Media::ImageList> nncurrImage;
 
 	if (ReadNUInt32(&hdr[0]) != *(UInt32*)"RIFF" || ReadNUInt32(&hdr[8]) != *(UInt32*)"ACON")
 	{
-		return 0;
+		return nullptr;
 	}
 	aniSize = ReadUInt32(&hdr[4]) + 8;
 	UOSInt currOfst = 12;
@@ -143,7 +143,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::St
 	if (nFrames != imgList->GetCount())
 	{
 		DEL_CLASS(imgList);
-		return 0;
+		return nullptr;
 	}
 
 	return imgList;

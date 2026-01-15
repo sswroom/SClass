@@ -39,8 +39,8 @@ namespace SSWR
 			virtual UOSInt GetGroupImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganGroup> grp);
 			virtual UOSInt GetSpeciesImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganSpecies> sp);
 			virtual UOSInt GetGroupAllSpecies(NN<Data::ArrayListNN<OrganSpecies>> items, Optional<OrganGroup> grp);
-			virtual UOSInt GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayList<UInt32>> colors, Optional<OrganGroup> grp);
-			virtual UOSInt GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayList<Int32>> speciesIds);
+			virtual UOSInt GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayListNative<UInt32>> colors, Optional<OrganGroup> grp);
+			virtual UOSInt GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayListNative<Int32>> speciesIds);
 			virtual Optional<OrganGroup> GetGroup(Int32 groupId, OutParam<Int32> parentId);
 			virtual Optional<OrganSpecies> GetSpecies(Int32 speciesId);
 			virtual UnsafeArray<UTF8Char> GetSpeciesDir(NN<OrganSpecies> sp, UnsafeArray<UTF8Char> sbuff);

@@ -128,7 +128,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 		NEW_CLASS(db, DB::SQLiteFile(CSTRP(u8fileName, sptr)));
 		if (!db->IsError())
 		{
-			Data::ArrayList<Math::Coord2D<Int32>> imgIds;
+			Data::ArrayListT<Math::Coord2D<Int32>> imgIds;
 			Map::TileMap::ImageType it;
 			NN<IO::StreamData> fd;
 			DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());

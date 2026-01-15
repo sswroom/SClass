@@ -345,7 +345,7 @@ Optional<const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo> IO::FileAnalyse::E
 			return element;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 size)
@@ -440,7 +440,7 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EBMLFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->maxLev = 0;
 	fd->GetRealData(0, 256, BYTEARR(buff));
@@ -740,7 +740,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFram
 {
 	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));

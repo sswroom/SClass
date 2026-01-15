@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				me->ui->ShowMsgOK(CSTR("Please input baud rate"), CSTR("Error"), me);
 				return;
 			}
-			me->stm = 0;
+			me->stm = nullptr;
 			if (me->siLabDriver.SetTo(siLabDriver))
 				me->stm = siLabDriver->OpenPort((UInt32)me->lvSLPort->GetSelectedItem().GetUOSInt(), baudRate);
 			if (me->stm.NotNull())

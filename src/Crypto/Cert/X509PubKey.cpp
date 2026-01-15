@@ -90,7 +90,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 		NEW_CLASSNN(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), Data::ByteArrayR(keyData, keyDataLen), KeyTypeFromOID(Data::ByteArrayR(keyTypeOID, keyTypeLen), true)));
 		return key;
 	}
-	return 0;
+	return nullptr;
 }
 
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509PubKey::GetKeyType() const

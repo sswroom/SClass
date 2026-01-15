@@ -13,7 +13,7 @@ IO::FileFindRecur::FileFindRecur(Text::CStringNN path)
 	i = 0;
 	while (i < this->partCnt)
 	{
-		this->srchParts[i].sess = 0;
+		this->srchParts[i].sess = nullptr;
 		this->srchParts[i].buffPtr = 0;
 		i++;
 	}
@@ -30,7 +30,7 @@ IO::FileFindRecur::~FileFindRecur()
 		if (this->srchParts[i].sess.SetTo(sess))
 		{
 			IO::Path::FindFileClose(sess);
-			this->srchParts[i].sess = 0;
+			this->srchParts[i].sess = nullptr;
 		}
 	}
 	MemFreeArr(this->srcBuff);
@@ -74,7 +74,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 					else
 					{
 						IO::Path::FindFileClose(sess);
-						this->srchParts[i].sess = 0;
+						this->srchParts[i].sess = nullptr;
 					}
 				}
 			}
@@ -99,7 +99,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 					else
 					{
 						IO::Path::FindFileClose(sess);
-						this->srchParts[i].sess = 0;
+						this->srchParts[i].sess = nullptr;
 						while (true)
 						{
 							if (i == 0)
@@ -116,7 +116,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 								else
 								{
 									IO::Path::FindFileClose(sess);
-									this->srchParts[i].sess = 0;
+									this->srchParts[i].sess = nullptr;
 								}
 							}
 						}
@@ -140,7 +140,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 							else
 							{
 								IO::Path::FindFileClose(sess);
-								this->srchParts[i].sess = 0;
+								this->srchParts[i].sess = nullptr;
 							}
 						}
 					}

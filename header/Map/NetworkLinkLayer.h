@@ -40,7 +40,7 @@ namespace Map
 
 		Double currScale;
 		Int64 currTime;
-		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
+		Data::ArrayListObj<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
 
 		Sync::Mutex dispMut;
 		Math::Size2DDbl dispSize;

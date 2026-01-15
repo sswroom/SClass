@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 	{
 		name = nullptr;
 	}
-	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
+	SSWR::AVIRead::AVIRMACManagerEntryForm frm(nullptr, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Text::String> name = frm.GetNameNew();
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 	{
 		name = nullptr;
 	}
-	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, &buff[2], name);
+	SSWR::AVIRead::AVIRMACManagerEntryForm frm(nullptr, me->ui, me->core, &buff[2], name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Text::String> name = frm.GetNameNew();
@@ -334,9 +334,9 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 						}
 						else
 						{
-							log->manuf = 0;
-							log->model = 0;
-							log->serialNum = 0;
+							log->manuf = nullptr;
+							log->model = nullptr;
+							log->serialNum = nullptr;
 						}
 						j = 3;
 						while (j-- > 0)
@@ -359,7 +359,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 						}
 						else
 						{
-							log->country = 0;
+							log->country = nullptr;
 						}
 						if (i >= 10)
 						{
@@ -385,13 +385,13 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 							}
 							else
 							{
-								log->ieBuff = 0;
+								log->ieBuff = nullptr;
 							}
 						}
 						else
 						{
 							log->ieLen = 0;
-							log->ieBuff = 0;
+							log->ieBuff = nullptr;
 						}
 						
 

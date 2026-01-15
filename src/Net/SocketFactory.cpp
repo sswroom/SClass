@@ -25,9 +25,9 @@ Bool Net::SocketFactory::GetEffectiveDNS(NN<Net::SocketUtil::AddressInfo> addr)
 
 Net::SocketFactory::SocketFactory(Bool noV6DNS)
 {
-	this->dnsHdlr = 0;
+	this->dnsHdlr = nullptr;
 	this->noV6DNS = noV6DNS;
-	this->forceDNS = 0;
+	this->forceDNS = nullptr;
 }
 
 Net::SocketFactory::~SocketFactory()
@@ -181,7 +181,7 @@ UnsafeArrayOpt<UTF8Char> Net::SocketFactory::GetRemoteName(UnsafeArray<UTF8Char>
 	else
 	{
 		*buff = 0;
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -196,7 +196,7 @@ UnsafeArrayOpt<UTF8Char> Net::SocketFactory::GetLocalName(UnsafeArray<UTF8Char> 
 	else
 	{
 		*buff = 0;
-		return 0;
+		return nullptr;
 	}
 }
 

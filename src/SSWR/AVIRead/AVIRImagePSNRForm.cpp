@@ -60,8 +60,8 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 	{
 		return;
 	}
-	Optional<Media::ImageList> imgList1 = 0;
-	Optional<Media::ImageList> imgList2 = 0;
+	Optional<Media::ImageList> imgList1 = nullptr;
+	Optional<Media::ImageList> imgList2 = nullptr;
 	NN<Media::ImageList> nnimgList1;
 	NN<Media::ImageList> nnimgList2;
 	NN<Media::StaticImage> simg1;

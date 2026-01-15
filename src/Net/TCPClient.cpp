@@ -19,7 +19,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UI
 {
 	this->currCnt = 0;
 	this->flags = 0;
-	this->s = 0;
+	this->s = nullptr;
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
@@ -59,7 +59,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UI
 	if (!sockf->Connect(s, addr, port, timeout))
 	{
 		sockf->DestroySocket(s);
-		this->s = 0;
+		this->s = nullptr;
 		this->flags = 12;
 		return;
 	}
@@ -69,7 +69,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UI
 Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
-	this->s = 0;
+	this->s = nullptr;
 	this->flags = 0;
 	this->sockf = sockf;
 	this->readEvent = 0;
@@ -94,7 +94,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, 
 	{
 		printf("Error in connecting\r\n");
 		sockf->DestroySocket(s);
-		this->s = 0;
+		this->s = nullptr;
 		this->flags = 12;
 		return;
 	}
@@ -104,7 +104,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, 
 Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
-	this->s = 0;
+	this->s = nullptr;
 	this->flags = 0;
 	this->sockf = sockf;
 	this->readEvent = 0;
@@ -150,7 +150,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 		IO::Console::PrintStrO((const UTF8Char*)"Cannot connect to destination\r\n");
 #endif
 		sockf->DestroySocket(s);
-		this->s = 0;
+		this->s = nullptr;
 		this->flags = 12;
 		return;
 	}
@@ -302,7 +302,7 @@ Optional<IO::StreamReadReq> Net::TCPClient::BeginRead(const Data::ByteArray &buf
 {
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 6) != 0)
-		return 0;
+		return nullptr;
 	Net::SocketFactory::ErrorType et;
 	Optional<Net::SocketRecvSess> data = sockf->BeginReceiveData(s, buff.Arr(), buff.GetSize(), evt, et);
 	if (data.IsNull())
@@ -338,7 +338,7 @@ Optional<IO::StreamWriteReq> Net::TCPClient::BeginWrite(Data::ByteArrayR buff, N
 {
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 5) != 0)
-		return 0;
+		return nullptr;
 	UOSInt data = Write(buff);
 	if (data != 0)
 		evt->Set();
@@ -369,7 +369,7 @@ void Net::TCPClient::Close()
 		if (this->s.SetTo(s))
 		{
 			this->sockf->DestroySocket(s);
-			this->s = 0;
+			this->s = nullptr;
 		}
 	}
 }
@@ -459,7 +459,7 @@ UnsafeArrayOpt<UTF8Char> Net::TCPClient::GetLocalName(UnsafeArray<UTF8Char> buff
 	{
 		return this->sockf->GetLocalName(buff, s);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Net::TCPClient::GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const
@@ -527,7 +527,7 @@ Optional<Socket> Net::TCPClient::GetSocket()
 Optional<Socket> Net::TCPClient::RemoveSocket()
 {
 	Optional<Socket> s = this->s;
-	this->s = 0;
+	this->s = nullptr;
 	this->flags |= 4;
 	return s;
 }

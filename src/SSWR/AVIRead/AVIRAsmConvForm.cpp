@@ -50,7 +50,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	UTF8Char c2;
 	UTF8Char endC;
 	Data::ArrayListICaseStrUTF8 regKey;
-	Data::ArrayList<OSInt> regSize;
+	Data::ArrayListNative<OSInt> regSize;
 	Bool found;
 
 	regSize.Insert(regKey.SortedInsert((const UTF8Char*)"eax"), 4);

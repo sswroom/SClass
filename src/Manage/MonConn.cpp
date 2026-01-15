@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.hpp"
 #include "Data/ByteBuffer.h"
 #include "Core/ByteTool_C.h"
 #include "Data/DateTime.h"
@@ -297,7 +296,7 @@ Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFa
 	this->ToStop = false;
 	this->svrMonConn = 0;
 	this->port = 0;
-	this->cli = 0;
+	this->cli = nullptr;
 	this->cmdSeq = 0;
 	this->connREvt = 0;
 	this->connTEvt = 0;

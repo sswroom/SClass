@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	UOSInt xCol = (UOSInt)-1;
 	UOSInt yCol = (UOSInt)-1;
 	UOSInt colCnt;
-	Optional<DB::ReadingDB> db = 0;
+	Optional<DB::ReadingDB> db = nullptr;
 	NN<DB::ReadingDB> nndb;
 	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false);
 	parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 		}
 	}
 	NN<DB::DBReader> reader;
-	if (!nndb->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(reader))
+	if (!nndb->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(reader))
 	{
 		me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
 		nndb.Delete();
@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sarr;
 	sarr = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, colCnt + 2);
 	i = 0;
-	if (!nndb->QueryTableData(nullptr, CSTR(""), 0, 0, 0, nullptr, 0).SetTo(reader))
+	if (!nndb->QueryTableData(nullptr, CSTR(""), nullptr, 0, 0, nullptr, nullptr).SetTo(reader))
 	{
 		MemFreeArr(sarr);
 		nndb.Delete();
@@ -449,7 +449,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	i = this->cboSrc->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		srcCoord = 0;
+		srcCoord = nullptr;
 	}
 	else
 	{
@@ -468,7 +468,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	i = this->cboDest->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		destCoord = 0;
+		destCoord = nullptr;
 	}
 	else
 	{

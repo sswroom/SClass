@@ -43,7 +43,7 @@ UOSInt Crypto::Cert::X509PKCS7::GetCertCount()
 	{
 		return 0;
 	}
-	return Net::ASN1Util::PDUCountItem(certListPDU, certListPDU + len, 0);
+	return Net::ASN1Util::PDUCountItem(certListPDU, certListPDU + len, nullptr);
 }
 
 Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
@@ -87,7 +87,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS7::GetNewCert(UOSInt inde
 	UnsafeArray<const UInt8> certListPDU;
 	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.4", len, itemType).SetTo(certListPDU) || itemType != Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt ofst;
 	Char sbuff[32];
@@ -99,7 +99,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS7::GetNewCert(UOSInt inde
 		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(this->GetSourceNameObj(), Data::ByteArrayR(certPDU, len + ofst)));
 		return cert;
 	}
-	return 0;
+	return nullptr;
 }
 
 Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS7::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
@@ -189,7 +189,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetMessageDigest(OutParam<U
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetEncryptedDigest(OutParam<UOSInt> signSize) const
@@ -202,5 +202,5 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetEncryptedDigest(OutParam
 		signSize.Set(itemLen);
 		return itemPDU;
 	}
-	return 0;
+	return nullptr;
 }

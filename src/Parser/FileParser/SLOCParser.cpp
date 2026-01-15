@@ -224,23 +224,23 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOC")))
 	{
-		return 0;
+		return nullptr;
 	}
 	i = Text::StrIndexOfChar(sbuff, '_');
 	if (i == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	sbuff[i] = 0;
 	devId = Text::StrToInt64(&sbuff[3]);
 	if (devId == 0)
-		return 0;
+		return nullptr;
 	fileSize = fd->GetDataSize();
 	if ((fileSize % 84) != 0)
-		return 0;
+		return nullptr;
 
 	if (fileSize < 252)
-		return 0;
+		return nullptr;
 	if (ReadInt64(&hdr[0]) != devId || ReadInt64(&hdr[84]) != devId || ReadInt64(&hdr[168]) != devId)
-		return 0;
+		return nullptr;
 
 	Map::GPSTrack *track;
 	sptr = Text::StrInt64(sbuff, devId);

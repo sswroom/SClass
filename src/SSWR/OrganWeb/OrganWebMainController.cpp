@@ -339,7 +339,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer.WriteLine(sb.ToCString());
 
-		if (env.user != 0 || me->env->GroupIsPublic(mutUsage, group->id))
+		if (env.user.NotNull() || me->env->GroupIsPublic(mutUsage, group->id))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<a href=\"map/index.html?group="));
@@ -515,7 +515,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 		NN<Text::String> descr = ename;
 		GroupFlags groupFlags = GF_NONE;
 		Int32 groupTypeId = 0;
-		Optional<GroupInfo> modGroup = 0;
+		Optional<GroupInfo> modGroup = nullptr;
 		NN<GroupInfo> nnmodGroup;
 		if (req->GetQueryValueI32(CSTR("groupId"), groupId))
 		{
@@ -1214,7 +1214,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 
 			Data::ArrayListNN<UserFileInfo> fileList;
 			fileList.AddAll(species->files);
-			if (env.user != 0)
+			if (env.user.NotNull())
 			{
 				UserFileDescComparator comparator(env);
 				Data::Sort::ArtificialQuickSort::Sort<NN<UserFileInfo>>(fileList, comparator);
@@ -1614,9 +1614,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 		NN<Text::String> ename = cname;
 		NN<Text::String> descr = cname;
 		Bool canDelete = false;
-		UnsafeArrayOpt<const UTF8Char> bookIgn = 0;
+		UnsafeArrayOpt<const UTF8Char> bookIgn = nullptr;
 		UnsafeArray<const UTF8Char> nnbookIgn;
-		Optional<SpeciesInfo> species = 0;
+		Optional<SpeciesInfo> species = nullptr;
 		NN<SpeciesInfo> nnspecies;
 		if (req->GetQueryValueI32(CSTR("spId"), spId))
 		{

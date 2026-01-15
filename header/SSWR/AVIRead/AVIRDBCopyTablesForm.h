@@ -57,7 +57,7 @@ namespace SSWR
 			Optional<DB::ReadingDB> dataConn;
 			Optional<Text::String> dataSchema;
 			Data::ArrayListStringNN dataTables;
-			Data::ArrayList<Bool> dataTableSelected;
+			Data::ArrayListNative<Bool> dataTableSelected;
 
 			static void __stdcall OnSourceDBChg(AnyType userObj);
 			static void __stdcall OnSourceSelectClicked(AnyType userObj);

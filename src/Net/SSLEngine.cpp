@@ -10,7 +10,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-Optional<Crypto::Cert::CertStore> Net::SSLEngine::trustStore = 0;
+Optional<Crypto::Cert::CertStore> Net::SSLEngine::trustStore = nullptr;
 UInt32 Net::SSLEngine::trustStoreCnt = 0;
 
 UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
@@ -27,7 +27,7 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
 		if (state->s.SetTo(s))
 		{
 			state->status = ThreadStatus::Processing;
-			state->s = 0;
+			state->s = nullptr;
 
 			NN<Net::SSLClient> cli;
 			if (state->me->CreateServerConn(s).SetTo(cli))
@@ -54,7 +54,7 @@ Net::SSLEngine::SSLEngine(NN<Net::TCPClientFactory> clif)
 	this->clif = clif;
 	this->maxThreadCnt = 10;
 	this->currThreadCnt = 0;
-	this->usedTrustStore = 0;
+	this->usedTrustStore = nullptr;
 	this->threadMut.SetDebName((const UTF8Char*)"SSLEngine");
 	this->threadSt = MemAllocArr(ThreadState, this->maxThreadCnt);
 	this->threadToStop = false;
@@ -62,7 +62,7 @@ Net::SSLEngine::SSLEngine(NN<Net::TCPClientFactory> clif)
 	while (i-- > 0)
 	{
 		this->threadSt[i].status = ThreadStatus::NotRunning;
-		this->threadSt[i].s = 0;
+		this->threadSt[i].s = nullptr;
 	}
 }
 

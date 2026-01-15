@@ -51,7 +51,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 {
 	if (wkbLen < 5)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt8 byteOrder = wkb[0];
 	FReadDouble readDouble;
@@ -101,7 +101,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	{
 	case 1: //Point
 		if (wkbLen < ofst + 16)
-			return 0;
+			return nullptr;
 		else
 		{
 			Math::Geometry::Point *pt;
@@ -112,7 +112,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 1001: //PointZ
 	case 0x80000001:
 		if (wkbLen < ofst + 24)
-			return 0;
+			return nullptr;
 		else
 		{
 			Math::Geometry::PointZ *pt;
@@ -123,7 +123,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 2001: //PointM
 	case 0x40000001:
 		if (wkbLen < ofst + 24)
-			return 0;
+			return nullptr;
 		else
 		{
 			Math::Geometry::Point *pt;
@@ -134,7 +134,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 3001: //PointZM
 	case 0xC0000001:
 		if (wkbLen < ofst + 32)
-			return 0;
+			return nullptr;
 		else
 		{
 			Math::Geometry::PointZ *pt;
@@ -144,13 +144,13 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 		}
 	case 2: //LineString
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 16 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, false, false));
@@ -168,13 +168,13 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 1002: //LineStringZ
 	case 0x80000002:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, false));
@@ -196,19 +196,19 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 	case 2002: //LineStringM
 	case 0x40000002:
 		if (wkbLen < 9)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, false, true));
@@ -230,19 +230,19 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 	case 3002: //LineStringZM
 	case 0xC0000002:
 		if (wkbLen < 9)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 32 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, true));
@@ -266,12 +266,12 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 	case 3: //Polygon
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numParts = readUInt32(&wkb[ofst]);
@@ -280,7 +280,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			UOSInt j;
 			if (numParts < 1)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::Polygon *pg;
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
@@ -290,14 +290,14 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (ofst + 4 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 16 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
@@ -319,7 +319,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 1003: //PolygonZ
 	case 0x80000003:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numParts = readUInt32(&wkb[ofst]);
@@ -328,7 +328,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			UOSInt j;
 			if (numParts < 1)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::Polygon *pg;
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
@@ -338,14 +338,14 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (ofst + 4 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 24 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
@@ -376,7 +376,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 2003: //PolygonM
 	case 0x40000003:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numParts = readUInt32(&wkb[ofst]);
@@ -385,7 +385,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			UOSInt j;
 			if (numParts < 1)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::Polygon *pg;
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
@@ -395,14 +395,14 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (ofst + 4 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 24 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
@@ -433,7 +433,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 3003: //PolygonZM
 	case 0xC0000003:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numParts = readUInt32(&wkb[ofst]);
@@ -442,7 +442,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			UOSInt j;
 			if (numParts < 1)
 			{
-				return 0;
+				return nullptr;
 			}
 			Math::Geometry::Polygon *pg;
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
@@ -452,14 +452,14 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (ofst + 4 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UInt32 numPoints = readUInt32(&wkb[ofst]);
 				ofst += 4;
 				if (ofst + numPoints * 32 > wkbLen)
 				{
 					DEL_CLASS(pg);
-					return 0;
+					return nullptr;
 				}
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
@@ -497,7 +497,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 0x40000006:
 	case 0xC0000006:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 nPolygon = readUInt32(&wkb[ofst]);
@@ -526,14 +526,14 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(mpg);
-					return 0;
+					return nullptr;
 				}
 				else if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon)
 				{
 					printf("WKBMultipolygon: wrong type: %d\r\n", (Int32)vec->GetVectorType());
 					vec.Delete();
 					DEL_CLASS(mpg);
-					return 0;
+					return nullptr;
 				}
 				else
 				{
@@ -553,7 +553,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 0x40000007:
 	case 0xC0000007:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 nGeometry = readUInt32(&wkb[ofst]);
@@ -582,7 +582,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(mpg);
-					return 0;
+					return nullptr;
 				}
 				else
 				{
@@ -596,13 +596,13 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 		}
 	case 8: //CircularString
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 16 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, false, false));
@@ -620,13 +620,13 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 1008: //CircularStringZ
 	case 0x80000008:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, false));
@@ -648,19 +648,19 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 	case 2008: //CircularStringM
 	case 0x40000008:
 		if (wkbLen < 9)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 24 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, false, true));
@@ -682,19 +682,19 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 	case 3008: //CircularStringZM
 	case 0xC0000008:
 		if (wkbLen < 9)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 numPoints = readUInt32(&wkb[ofst]);
 			ofst += 4;
 			if (numPoints < 2 || (ofst + numPoints * 32 > wkbLen))
-				return 0;
+				return nullptr;
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, true));
@@ -718,7 +718,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			else
 			{
 				DEL_CLASS(pl);
-				return 0;
+				return nullptr;
 			}
 		}
 	case 9: //CompoundCurve
@@ -729,7 +729,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 0x40000009:
 	case 0xC0000009:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 nPolyline = readUInt32(&wkb[ofst]);
@@ -758,7 +758,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(cpl);
-					return 0;
+					return nullptr;
 				}
 				else
 				{
@@ -773,7 +773,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 						printf("WKBCurvePolyline: wrong type: %d\r\n", (Int32)vec->GetVectorType());
 						vec.Delete();
 						DEL_CLASS(cpl);
-						return 0;
+						return nullptr;
 					}
 				}
 				i++;
@@ -789,7 +789,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 0x4000000A:
 	case 0xC000000A:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 nCPolyline = readUInt32(&wkb[ofst]);
@@ -818,7 +818,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(cpg);
-					return 0;
+					return nullptr;
 				}
 				else
 				{
@@ -833,7 +833,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 						printf("WKBCurvePolygon: wrong type: %d\r\n", (Int32)vec->GetVectorType());
 						vec.Delete();
 						DEL_CLASS(cpg);
-						return 0;
+						return nullptr;
 					}
 				}
 				i++;
@@ -849,7 +849,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 0x4000000B:
 	case 0xC000000B:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 nCurve = readUInt32(&wkb[ofst]);
@@ -878,7 +878,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(mc);
-					return 0;
+					return nullptr;
 				}
 				else
 				{
@@ -893,7 +893,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 						printf("WKBMultiCurve: wrong type: %d\r\n", (Int32)vec->GetVectorType());
 						vec.Delete();
 						DEL_CLASS(mc);
-						return 0;
+						return nullptr;
 					}
 				}
 				i++;
@@ -909,7 +909,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 	case 0x4000000C:
 	case 0xC000000C:
 		if (wkbLen < ofst + 4)
-			return 0;
+			return nullptr;
 		else
 		{
 			UInt32 nCPolyline = readUInt32(&wkb[ofst]);
@@ -938,7 +938,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
 				{
 					DEL_CLASS(cpg);
-					return 0;
+					return nullptr;
 				}
 				else
 				{
@@ -953,7 +953,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 						printf("WKBMultiSurface: wrong type: %d\r\n", (Int32)vec->GetVectorType());
 						vec.Delete();
 						DEL_CLASS(cpg);
-						return 0;
+						return nullptr;
 					}
 				}
 				i++;
@@ -969,5 +969,5 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 		}
 		break;
 	}
-	return 0;
+	return nullptr;
 }

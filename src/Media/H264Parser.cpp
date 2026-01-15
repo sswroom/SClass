@@ -630,7 +630,7 @@ Bool Media::H264Parser::FindNALs(UnsafeArray<const UInt8> frame, UOSInt frameSiz
 UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> frame, UOSInt frameSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
-		return 0;
+		return nullptr;
 
 	UOSInt i;
 	Data::ArrayListUInt32 nalList;
@@ -674,10 +674,10 @@ UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> s
 			case 9:
 				return Text::StrConcatC(sbuff, UTF8STRC("SI"));
 			default:
-				return 0;
+				return nullptr;
 			}
 		}
 		endOfst = startOfst;
 	}
-	return 0;
+	return nullptr;
 }

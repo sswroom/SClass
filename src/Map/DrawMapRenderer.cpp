@@ -52,7 +52,7 @@ UOSInt Map::DrawMapRenderer::NewLabel(UnsafeArray<Map::DrawMapRenderer::MapLabel
 		if (labels[j].points.SetTo(ptPtr))
 			MemFreeAArr(ptPtr);
 		labels[j].label = 0;
-		labels[j].points = 0;
+		labels[j].points = nullptr;
 		labels[j].priority = priority;
 		return j;
 	}
@@ -62,7 +62,7 @@ UOSInt Map::DrawMapRenderer::NewLabel(UnsafeArray<Map::DrawMapRenderer::MapLabel
 		labelCnt.Set(i + 1);
 		labels[i].priority = priority;
 		labels[i].label = 0;
-		labels[i].points = 0;
+		labels[i].points = nullptr;
 		return i;
 	}
 }
@@ -179,7 +179,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UOSInt maxLab
 					labels[i].totalSize = UOSInt2Double(nPoints);
 					labels[i].nPoints = 0;
 					labels[i].layerType = recType;
-					labels[i].points = 0;
+					labels[i].points = nullptr;
 					labels[i].flags = flags;
 					labels[i].xOfst = xOfst;
 					labels[i].yOfst = yOfst;
@@ -441,7 +441,7 @@ Bool Map::DrawMapRenderer::AddLabel(UnsafeArray<MapLabels> labels, UOSInt maxLab
 			labels[i].flags = flags;
 
 			labels[i].label = Text::String::New(label).Ptr();
-			labels[i].points = 0;
+			labels[i].points = nullptr;
 
 			toUpdate = 1;
 		}
@@ -1414,7 +1414,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								DrawShapesPoint(denv, layer.layer, layer.imgIndex);
 							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 							{
-								Optional<Media::StaticImage> pimg = 0;
+								Optional<Media::StaticImage> pimg = nullptr;
 								NN<Media::StaticImage> nnimg;
 								Double spotX;
 								Double spotY;
@@ -1575,7 +1575,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, b, nullptr, 0.0, 0.0, denv->isLayerEmpty);
 
 			Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
 			session = layer->BeginGetObject();
@@ -1600,7 +1600,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					this->mapSch.DrawNextType(p, 0);
+					this->mapSch.DrawNextType(p, nullptr);
 				}
 			}
 			this->mapSch.WaitForFinish();
@@ -1631,7 +1631,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 			}
 			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), thick * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
-			this->mapSch.SetDrawType(layer, p, b, 0, 0.0, 0.0, denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, p, b, nullptr, 0.0, 0.0, denv->isLayerEmpty);
 
 			session = layer->BeginGetObject();
 			lastId = -1;
@@ -1654,7 +1654,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))
 				{
 					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
-					this->mapSch.DrawNextType(p, 0);
+					this->mapSch.DrawNextType(p, nullptr);
 				}
 			}
 			this->mapSch.WaitForFinish();
@@ -1677,7 +1677,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 	Double spotY;
 	UOSInt maxLabel = denv->env->GetNString();
 
-	Optional<Media::StaticImage> img = 0;
+	Optional<Media::StaticImage> img = nullptr;
 	NN<Media::StaticImage> nnimg;
 	NN<Media::SharedImage> shimg;
 	UInt32 imgTimeMS = 0;
@@ -1758,7 +1758,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		}
 		if (dimg.SetTo(gimg))
 		{
-			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, nullptr, nullptr, dimg, spotX, spotY, denv->isLayerEmpty);
 			this->mapSch.SetDrawObjs(denv->objBounds, denv->objCnt, maxLabel);
 			session = layer->BeginGetObject();
 			Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
@@ -1821,7 +1821,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		}
 		if (dimg.SetTo(gimg))
 		{
-			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, denv->isLayerEmpty);
+			this->mapSch.SetDrawType(layer, nullptr, nullptr, dimg, spotX, spotY, denv->isLayerEmpty);
 			this->mapSch.SetDrawObjs(denv->objBounds, denv->objCnt, maxLabel);
 			session = layer->BeginGetObject();
 
@@ -3799,19 +3799,19 @@ void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 			}
 			else
 			{
-				font->buffBrush = 0;
+				font->buffBrush = nullptr;
 			}
 		}
 		else
 		{
-			font->font = 0;
-			font->fontBrush = 0;
+			font->font = nullptr;
+			font->fontBrush = nullptr;
 			font->buffSize = 0;
-			font->buffBrush = 0;
+			font->buffBrush = nullptr;
 		}
 	}
 
-	this->DrawLayers(denv, 0);
+	this->DrawLayers(denv, nullptr);
 	DrawLabels(denv);
 
 	NN<Media::DrawBrush> b;

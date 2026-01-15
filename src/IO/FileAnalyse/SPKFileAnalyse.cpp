@@ -58,7 +58,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(NN<IO::StreamData> fd, UI
 	pack->fileOfst = dirOfst;
 	pack->packSize = (UOSInt)dirSize;
 	pack->packType = PT_V2DIRECTORY;
-	pack->fileName = 0;
+	pack->fileName = nullptr;
 	this->packs.Add(pack);
 }
 
@@ -100,7 +100,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	pack->fileOfst = 0;
 	pack->packSize = endOfst;
 	pack->packType = PT_HEADER;
-	pack->fileName = 0;
+	pack->fileName = nullptr;
 	me->packs.Add(pack);
 	if (dirType == PT_V1DIRECTORY)
 	{
@@ -110,7 +110,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 		pack->fileOfst = lastOfst;
 		pack->packSize = (UOSInt)(fd->GetDataSize() - lastOfst);
 		pack->packType = PT_V1DIRECTORY;
-		pack->fileName = 0;
+		pack->fileName = nullptr;
 		me->packs.Add(pack);
 	}
 	else if (dirType == PT_V2DIRECTORY)
@@ -128,7 +128,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(NN<IO::FileAnalyse:
 IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SPKFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 
 	fd->GetRealData(0, 256, BYTEARR(buff));
@@ -226,9 +226,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	NN<IO::StreamData> fd;
 	NN<Text::String> s;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	if (pack->packType == PT_HEADER)

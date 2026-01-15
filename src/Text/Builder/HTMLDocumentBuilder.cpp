@@ -13,7 +13,7 @@ Text::Builder::HTMLDocumentBuilder::HTMLDocumentBuilder(DocType docType, Text::C
 	sb.AppendC(UTF8STRC("<html>\r\n"));
 	sb.AppendC(UTF8STRC("<head>\r\n"));
 	NEW_CLASSOPT(this->headerBuilder, HTMLHeaderBuilder(this->sb, title));
-	this->bodyBuilder = 0;
+	this->bodyBuilder = nullptr;
 }
 
 Text::Builder::HTMLDocumentBuilder::~HTMLDocumentBuilder()

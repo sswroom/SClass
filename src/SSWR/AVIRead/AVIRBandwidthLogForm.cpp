@@ -266,7 +266,7 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadBandwidthLog(Text::CStringNN fileN
 				valid = false;
 			if (!table->GetCol(5).SetTo(col) || !col->GetColName()->Equals(CSTR("SendBytes")))
 				valid = false;
-			if (valid && csv.QueryTableData(0, fileName, 0, 0, 0, 0, 0).SetTo(r))
+			if (valid && csv.QueryTableData(0, fileName, nullptr, 0, 0, 0, nullptr).SetTo(r))
 			{
 				this->ClearBandwidthLog();
 				Text::StringBuilderUTF8 sb;
@@ -431,7 +431,7 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadSIDELog(Text::CStringNN filePath)
 		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2) && pt == IO::Path::PathType::File)
 		{
 			DB::CSVFile csv(CSTRP(sbuff, sptr2), 65001);
-			if (csv.QueryTableData(0, CSTR(""), 0, 0, 0, 0, 0).SetTo(r))
+			if (csv.QueryTableData(0, CSTR(""), nullptr, 0, 0, 0, nullptr).SetTo(r))
 			{
 				startTime = 0;
 				endTime = 0;

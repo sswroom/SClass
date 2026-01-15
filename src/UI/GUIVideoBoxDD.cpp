@@ -274,7 +274,7 @@ void UI::GUIVideoBoxDD::HandleMouseActon(MouseActionHandler hdlr, AnyType userOb
 void UI::GUIVideoBoxDD::DestroyObject()
 {
 	this->StopPlay();
-	this->SetVideo(0);
+	this->SetVideo(nullptr);
 	this->StopThreads();
 }
 

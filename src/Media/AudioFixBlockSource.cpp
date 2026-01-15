@@ -8,7 +8,7 @@ Media::AudioFixBlockSource::AudioFixBlockSource(NN<IO::StreamData> fd, UInt64 of
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
 	this->name = name->Clone();
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 
@@ -66,7 +66,7 @@ Bool Media::AudioFixBlockSource::Start(Optional<Sync::Event> evt, UOSInt blkSize
 
 void Media::AudioFixBlockSource::Stop()
 {
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 	this->readOfst = 0;
 }
 

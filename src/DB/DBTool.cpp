@@ -20,10 +20,10 @@
 
 DB::DBTool::DBTool(NN<DB::DBConn> conn, Bool needRelease, NN<IO::LogTool> log, Text::CString logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
 {
-	this->ssh = 0;
-	this->sshCli = 0;
+	this->ssh = nullptr;
+	this->sshCli = nullptr;
 	this->nqFail = 0;
-	this->tran = 0;
+	this->tran = nullptr;
 }
 
 DB::DBTool::~DBTool()
@@ -122,7 +122,7 @@ void DB::DBTool::EndTrans(Bool toCommit)
 		this->db->Commit(thisTran);
 	else
 		this->db->Rollback(thisTran);
-	tran = 0;
+	tran = nullptr;
 }
 
 Int32 DB::DBTool::GetLastIdentity32()

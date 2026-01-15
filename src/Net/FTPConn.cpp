@@ -77,7 +77,7 @@ Int32 Net::FTPConn::WaitForResult()
 	{
 		this->evt.Wait(1000);
 	}
-	this->msgRet = 0;
+	this->msgRet = nullptr;
 	if (this->statusChg)
 	{
 		return this->lastStatus;
@@ -93,7 +93,7 @@ Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NN<Net::TCPClientFactor
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->logged = true;
-	this->msgRet = 0;
+	this->msgRet = nullptr;
 	this->statusChg = false;
 	NEW_CLASSNN(this->writer, IO::StreamWriter(this->cli, codePage));
 	Sync::ThreadUtil::Create(FTPThread, this);

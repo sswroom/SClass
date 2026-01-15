@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		options.implicitTimeout = timeoutImplicit;
 		options.cmdTimeout = timeoutCommand;
 		NN<Net::WebDriverSession> sess;
-		if (runner.BeginTest((IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, 0, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options).SetTo(sess))
+		if (runner.BeginTest((IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, nullptr, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options).SetTo(sess))
 		{
 			if (runner.RunTest(sess, test, Text::String::OrEmpty(me->side->GetURL())->ToCString(), OnStepStatus, me))
 			{

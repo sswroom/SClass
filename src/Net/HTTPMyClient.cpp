@@ -440,8 +440,8 @@ Net::HTTPMyClient::HTTPMyClient(NN<Net::TCPClientFactory> clif, Optional<Net::SS
 	NEW_CLASS(this->clsData->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	this->ssl = ssl;
-	this->cli = 0;
-	this->cliHost = 0;
+	this->cli = nullptr;
+	this->cliHost = nullptr;
 	this->writing = false;
 	this->buffSize = 0;
 	this->buffOfst = 0;
@@ -614,7 +614,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		i = Text::StrIndexOfCharC(urltmp, urltmpLen, ']');
 		if (i == INVALID_INDEX)
 		{
-			this->cli = 0;
+			this->cli = nullptr;
 
 			this->writing = true;
 			this->canWrite = false;
@@ -678,7 +678,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		}
 		else if (!this->clif->GetSocketFactory()->DNSResolveIP(CSTRP(svrname, svrnameEnd), addr))
 		{
-			this->cli = 0;
+			this->cli = nullptr;
 
 			this->writing = true;
 			this->canWrite = false;
@@ -712,7 +712,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		}
 		else
 		{
-			this->cli = 0;
+			this->cli = nullptr;
 
 			this->writing = true;
 			this->canWrite = false;
@@ -980,7 +980,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		{
 			UOSInt len = sbForm->GetLength();
 			this->AddContentLength(len);
-			this->sbForm = 0;
+			this->sbForm = nullptr;
 			this->Write(sbForm->ToByteArray());
 			sbForm.Delete();
 		}
@@ -1235,5 +1235,5 @@ Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPMyClient
 	{
 		return NN<Net::SSLClient>::ConvertFrom(cli)->GetRemoteCerts();
 	}
-	return 0;
+	return nullptr;
 }

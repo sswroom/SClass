@@ -38,7 +38,7 @@ NN<Text::String> DB::DBQueue::SQLCmd::GetSQL() const
 	return this->str;
 }
 
-DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
+DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayListObj<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	UOSInt i = 0;
 	UOSInt j = strs->GetCount();
@@ -116,13 +116,13 @@ DB::DBQueue::DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UOSI
 {
 	this->db1 = db.Ptr();
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
-	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList = MemAlloc(Data::ArrayListObj<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAlloc(Data::ArrayListObj<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(sqlList[i], Data::ArrayList<IDBCmd*>());
-		NEW_CLASS(sqlList2[i], Data::ArrayList<IDBCmd**>());
+		NEW_CLASS(sqlList[i], Data::ArrayListObj<IDBCmd*>());
+		NEW_CLASS(sqlList2[i], Data::ArrayListObj<IDBCmd**>());
 	}
 	this->sqlCnt = 0;
 	this->lostCnt = 0;
@@ -139,13 +139,13 @@ DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Tex
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
-	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList = MemAlloc(Data::ArrayListObj<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAlloc(Data::ArrayListObj<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(sqlList[i], Data::ArrayList<IDBCmd*>());
-		NEW_CLASS(sqlList2[i], Data::ArrayList<IDBCmd**>());
+		NEW_CLASS(sqlList[i], Data::ArrayListObj<IDBCmd*>());
+		NEW_CLASS(sqlList2[i], Data::ArrayListObj<IDBCmd**>());
 	}
 	sqlCnt = 0;
 	lostCnt = 0;
@@ -166,13 +166,13 @@ DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
-	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList = MemAlloc(Data::ArrayListObj<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAlloc(Data::ArrayListObj<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
 	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
-		NEW_CLASS(sqlList[i], Data::ArrayList<IDBCmd*>());
-		NEW_CLASS(sqlList2[i], Data::ArrayList<IDBCmd**>());
+		NEW_CLASS(sqlList[i], Data::ArrayListObj<IDBCmd*>());
+		NEW_CLASS(sqlList2[i], Data::ArrayListObj<IDBCmd**>());
 	}
 	sqlCnt = 0;
 	lostCnt = 0;
@@ -666,7 +666,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 							}
 							else
 							{
-								cmd->hdlr(cmd->userData, cmd->userData2, me->db, 0);
+								cmd->hdlr(cmd->userData, cmd->userData2, me->db, nullptr);
 							}
 						}
 						break;
@@ -730,7 +730,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 							}
 							else
 							{
-								Optional<DB::DBReader> rdr = 0;
+								Optional<DB::DBReader> rdr = nullptr;
 								NN<DB::DBReader> nnrdr;
 								i = 3;
 								while (k < grp->strs.GetCount())
@@ -765,7 +765,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 								}
 								else
 								{
-									grp->hdlr(grp->userData, grp->userData2, me->db, 0);
+									grp->hdlr(grp->userData, grp->userData2, me->db, nullptr);
 								}
 								me->db->EndTrans(!hasError);
 							}

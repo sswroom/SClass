@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(AnyType us
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -183,9 +183,9 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(Optional<U
 	this->SetText(CSTR("HTTP Client Cert Test"));
 	this->SetFont(nullptr, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->sslCert = 0;
-	this->sslKey = 0;
-	this->svr = 0;
+	this->sslCert = nullptr;
+	this->sslKey = nullptr;
+	this->svr = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpParam = ui->NewGroupBox(*this, CSTR("Parameters"));

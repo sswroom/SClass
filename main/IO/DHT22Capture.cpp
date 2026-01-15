@@ -55,8 +55,8 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in reading from DHT22"));
 		}
 
-		Data::ArrayList<Double> times;
-		Data::ArrayList<Int32> isHighs;
+		Data::ArrayListNative<Double> times;
+		Data::ArrayListNative<Int32> isHighs;
 		UOSInt i;
 		UOSInt j;
 		if (pinCapture.GetCaptureData(times, isHighs) > 0)

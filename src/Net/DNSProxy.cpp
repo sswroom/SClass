@@ -634,7 +634,7 @@ Net::DNSProxy::DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO:
 	this->currServerIndex = 0;
 	this->currIPTime.SetCurrTimeUTC();
 
-	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, 0, 0, nullptr, ClientPacket, this, log, nullptr, 2, false));
+	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, nullptr, 0, nullptr, ClientPacket, this, log, nullptr, 2, false));
 	NEW_CLASS(this->svr, Net::DNSServer(this->sockf, log));
 	this->svr->HandleRequest(OnDNSRequest, this);
 }
@@ -762,7 +762,7 @@ UOSInt Net::DNSProxy::GetTargetList(NN<Data::ArrayListNN<TargetInfo>> targetList
 
 UOSInt Net::DNSProxy::SearchIPv4(NN<Data::ArrayListNN<Text::String>> reqList, UInt32 ip, UInt32 mask)
 {
-	NN<Data::ArrayList<Optional<Text::String>>> keys;
+	NN<Data::ArrayListObj<Optional<Text::String>>> keys;
 	NN<Text::String> key;
 	NN<const Data::ArrayListNN<RequestResult>> results;
 	Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
@@ -884,7 +884,7 @@ void Net::DNSProxy::SetServerIP(UInt32 serverIP)
 	this->currServerIndex = 0;
 }
 
-void Net::DNSProxy::GetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
+void Net::DNSProxy::GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList)
 {
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	dnsList->AddAll(this->dnsList);
@@ -939,7 +939,7 @@ Bool Net::DNSProxy::AddBlackList(Text::CStringNN blackList)
 	NN<RequestResult> req;
 	NN<Text::String> reqName;
 	NN<const Data::ArrayListNN<RequestResult>> reqList;
-	NN<Data::ArrayList<Optional<Text::String>>> reqNames;
+	NN<Data::ArrayListObj<Optional<Text::String>>> reqNames;
 	Sync::MutexUsage reqv4MutUsage(this->reqv4Mut);
 	reqList = this->reqv4Map.GetValues();
 	reqNames = this->reqv4Map.GetKeys();

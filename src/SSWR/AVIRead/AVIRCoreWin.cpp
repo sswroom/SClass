@@ -49,7 +49,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	switch (pt)
 	{
 	case IO::ParserType::MapEnv:
-		NEW_CLASSNN(frm, AVIRead::AVIRGISForm(0, this->ui, *this, NN<Map::MapEnv>::ConvertFrom(pobj), ((Map::MapEnv*)pobj.Ptr())->CreateMapView(Math::Size2DDbl(320, 240))));
+		NEW_CLASSNN(frm, AVIRead::AVIRGISForm(nullptr, this->ui, *this, NN<Map::MapEnv>::ConvertFrom(pobj), ((Map::MapEnv*)pobj.Ptr())->CreateMapView(Math::Size2DDbl(320, 240))));
 		InitForm(frm);
 		break;
 	case IO::ParserType::MapLayer:
@@ -68,44 +68,44 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			NN<Map::MapDrawLayer> lyr = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 			NN<Map::MapEnv> env;
 			NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, lyr->GetCoordinateSystem()->Clone()));
-			NEW_CLASSNN(frm, AVIRead::AVIRGISForm(0, this->ui, *this, env, lyr->CreateMapView(Math::Size2DDbl(320, 240))));
+			NEW_CLASSNN(frm, AVIRead::AVIRGISForm(nullptr, this->ui, *this, env, lyr->CreateMapView(Math::Size2DDbl(320, 240))));
 			NN<AVIRead::AVIRGISForm>::ConvertFrom(frm)->AddLayer(lyr);
 			InitForm(frm);
 			frm->Show();
 		}
 		break;
 	case IO::ParserType::ImageList:
-		NEW_CLASSNN(frm, AVIRead::AVIRImageForm(0, this->ui, *this, NN<Media::ImageList>::ConvertFrom(pobj)));
+		NEW_CLASSNN(frm, AVIRead::AVIRImageForm(nullptr, this->ui, *this, NN<Media::ImageList>::ConvertFrom(pobj)));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::PackageFile:
-		NEW_CLASSNN(frm, AVIRead::AVIRPackageForm(0, this->ui, *this, NN<IO::PackageFile>::ConvertFrom(pobj)));
+		NEW_CLASSNN(frm, AVIRead::AVIRPackageForm(nullptr, this->ui, *this, NN<IO::PackageFile>::ConvertFrom(pobj)));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::MediaFile:
-		NEW_CLASSNN(frm, AVIRead::AVIRMediaForm(0, this->ui, *this, NN<Media::MediaFile>::ConvertFrom(pobj)));
+		NEW_CLASSNN(frm, AVIRead::AVIRMediaForm(nullptr, this->ui, *this, NN<Media::MediaFile>::ConvertFrom(pobj)));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::EXEFile:
-		NEW_CLASSNN(frm, AVIRead::AVIRExeForm(0, this->ui, *this, NN<IO::EXEFile>::ConvertFrom(pobj)));
+		NEW_CLASSNN(frm, AVIRead::AVIRExeForm(nullptr, this->ui, *this, NN<IO::EXEFile>::ConvertFrom(pobj)));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::ReadingDB:
-		NEW_CLASSNN(frm, AVIRead::AVIRDBForm(0, this->ui, *this, NN<DB::ReadingDB>::ConvertFrom(pobj), true));
+		NEW_CLASSNN(frm, AVIRead::AVIRDBForm(nullptr, this->ui, *this, NN<DB::ReadingDB>::ConvertFrom(pobj), true));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::FileCheck:
-		NEW_CLASSNN(frm, AVIRead::AVIRFileChkForm(0, this->ui, *this, NN<IO::FileCheck>::ConvertFrom(pobj)));
+		NEW_CLASSNN(frm, AVIRead::AVIRFileChkForm(nullptr, this->ui, *this, NN<IO::FileCheck>::ConvertFrom(pobj)));
 		InitForm(frm);
 		frm->Show();
 		break;
 	case IO::ParserType::LogFile:
-		NEW_CLASSNN(frm, AVIRead::AVIRLogFileForm(0, this->ui, *this, NN<IO::LogFile>::ConvertFrom(pobj)));
+		NEW_CLASSNN(frm, AVIRead::AVIRLogFileForm(nullptr, this->ui, *this, NN<IO::LogFile>::ConvertFrom(pobj)));
 		InitForm(frm);
 		frm->Show();
 		break;
@@ -132,7 +132,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 				IO::StmData::MemoryDataCopy data(mstm->GetArray());
 				data.SetFullName(stm->GetSourceNameObj()->ToCString());
 				DEL_CLASS(mstm);
-				this->LoadData(data, 0);
+				this->LoadData(data, nullptr);
 			}
 			else
 			{
@@ -144,7 +144,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::Playlist:
 		{
 			NN<SSWR::AVIRead::AVIRPlaylistForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPlaylistForm(0, this->ui, *this, NN<Media::Playlist>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPlaylistForm(nullptr, this->ui, *this, NN<Media::Playlist>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -152,7 +152,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::SectorData:
 		{
 			NN<SSWR::AVIRead::AVIRSectorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSectorForm(0, this->ui, *this, NN<IO::SectorData>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSectorForm(nullptr, this->ui, *this, NN<IO::SectorData>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -160,7 +160,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::CodeProject:
 		{
 			NN<SSWR::AVIRead::AVIRCodeProjectForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeProjectForm(0, this->ui, *this, NN<Text::CodeProject>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeProjectForm(nullptr, this->ui, *this, NN<Text::CodeProject>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::LUT:
 		{
 			NN<SSWR::AVIRead::AVIRLUTForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLUTForm(0, this->ui, *this, NN<Media::LUT>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRLUTForm(nullptr, this->ui, *this, NN<Media::LUT>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -176,7 +176,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::FontRenderer:
 		{
 			NN<SSWR::AVIRead::AVIRFontRendererForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFontRendererForm(0, this->ui, *this, NN<Media::FontRenderer>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRFontRendererForm(nullptr, this->ui, *this, NN<Media::FontRenderer>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -184,7 +184,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::MIMEObject:
 		{
 			NN<SSWR::AVIRead::AVIRMIMEViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMIMEViewerForm(0, this->ui, *this, NN<Text::MIMEObject>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMIMEViewerForm(nullptr, this->ui, *this, NN<Text::MIMEObject>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -192,7 +192,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::EthernetAnalyzer:
 		{
 			NN<SSWR::AVIRead::AVIRRAWMonitorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRAWMonitorForm(0, this->ui, *this, NN<Net::EthernetAnalyzer>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRAWMonitorForm(nullptr, this->ui, *this, NN<Net::EthernetAnalyzer>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -200,7 +200,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::JavaClass:
 		{
 			NN<SSWR::AVIRead::AVIRJavaClassForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJavaClassForm(0, this->ui, *this, NN<IO::JavaClass>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJavaClassForm(nullptr, this->ui, *this, NN<IO::JavaClass>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -208,7 +208,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::Smake:
 		{
 			NN<SSWR::AVIRead::AVIRSMakeForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSMakeForm(0, this->ui, *this, NN<IO::SMake>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSMakeForm(nullptr, this->ui, *this, NN<IO::SMake>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -216,7 +216,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::ASN1Data:
 		{
 			NN<SSWR::AVIRead::AVIRASN1DataForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1DataForm(0, this->ui, *this, NN<Net::ASN1Data>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRASN1DataForm(nullptr, this->ui, *this, NN<Net::ASN1Data>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -224,7 +224,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::BTScanLog:
 		{
 			NN<SSWR::AVIRead::AVIRBTScanLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBTScanLogForm(0, this->ui, *this, NN<IO::BTScanLog>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBTScanLogForm(nullptr, this->ui, *this, NN<IO::BTScanLog>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -232,7 +232,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::SystemInfoLog:
 		{
 			NN<SSWR::AVIRead::AVIRSystemInfoLogForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSystemInfoLogForm(0, this->ui, *this, NN<IO::SystemInfoLog>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSystemInfoLogForm(nullptr, this->ui, *this, NN<IO::SystemInfoLog>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -240,7 +240,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::CoordinateSystem:
 		{
 			NN<SSWR::AVIRead::AVIRCoordSysForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordSysForm(0, this->ui, *this, NN<Math::CoordinateSystem>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCoordSysForm(nullptr, this->ui, *this, NN<Math::CoordinateSystem>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -248,7 +248,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::PDFDocument:
 		{
 			NN<SSWR::AVIRead::AVIRPDFObjectForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPDFObjectForm(0, this->ui, *this, NN<Media::PDFDocument>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPDFObjectForm(nullptr, this->ui, *this, NN<Media::PDFDocument>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -256,7 +256,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::SeleniumIDE:
 		{
 			NN<SSWR::AVIRead::AVIRSeleniumIDEForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSeleniumIDEForm(0, this->ui, *this, NN<IO::SeleniumIDE>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSeleniumIDEForm(nullptr, this->ui, *this, NN<IO::SeleniumIDE>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -277,7 +277,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			Data::ArrayListNN<Map::CesiumTile> tileList;
 			tileList.Add(NN<Map::CesiumTile>::ConvertFrom(pobj));
 			NN<SSWR::AVIRead::AVIRCesiumTileForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(0, this->ui, *this, tileList));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(nullptr, this->ui, *this, tileList));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -293,7 +293,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			Text::StringBuilderUTF8 sb;
 			sb.Append(CSTR("No UI support this type of object: "));
 			sb.Append(IO::ParserTypeGetName(pt));
-			this->ui->ShowMsgOK(sb.ToCString(), CSTR("AVIRead"), 0);
+			this->ui->ShowMsgOK(sb.ToCString(), CSTR("AVIRead"), nullptr);
 		}
 		break;
 	}
@@ -357,7 +357,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Pars
 				}
 				else
 				{
-					AVIRExportParamForm dlg(0, this->ui, *this, fileExp, param);
+					AVIRExportParamForm dlg(nullptr, this->ui, *this, fileExp, param);
 					if (dlg.ShowDialog(ownerForm) == UI::GUIForm::DR_OK)
 					{
 						if (suppType == IO::FileExporter::SupportType::PathOnly)
@@ -385,7 +385,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Pars
 				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
 					IO::NullStream stm;
-					if (!fileExp->ExportFile(stm, sfd->GetFileName()->ToCString(), pobj, 0))
+					if (!fileExp->ExportFile(stm, sfd->GetFileName()->ToCString(), pobj, nullptr))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
@@ -393,7 +393,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Pars
 				else
 				{
 					IO::FileStream fs(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, 0))
+					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, nullptr))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
@@ -406,8 +406,8 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::Pars
 
 Optional<Media::Printer> SSWR::AVIRead::AVIRCoreWin::SelectPrinter(Optional<UI::GUIForm> frm)
 {
-	Optional<Media::Printer> printer = 0;
-	SSWR::AVIRead::AVIRSelPrinterForm selFrm(0, this->ui, *this);
+	Optional<Media::Printer> printer = nullptr;
+	SSWR::AVIRead::AVIRSelPrinterForm selFrm(nullptr, this->ui, *this);
 	if (selFrm.ShowDialog(frm) == UI::GUIForm::DR_OK)
 	{
 		printer = selFrm.printer;

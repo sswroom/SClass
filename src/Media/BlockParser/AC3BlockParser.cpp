@@ -34,7 +34,7 @@ Optional<Media::AudioBlockSource> Media::BlockParser::AC3BlockParser::ParseStrea
 	}
 	if (buff[0] != 0x0b || buff[1] != 0x77)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt8 fscod = (buff[4] & 0xc0) >> 6;
 	UInt8 frmsizecod = buff[4] & 0x3f;

@@ -162,7 +162,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 	Net::UserAgentDB::UAEntry *uaList = Net::UserAgentDB::GetUAEntryList(&j);
 	osItem = MemAllocNN(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem);
 	osItem->os = Manage::OSInfo::OT_UNKNOWN;
-	osItem->osVer = 0;
+	osItem->osVer = nullptr;
 	osItem->osVerLen = 0 ;
 	this->osList.Add(osItem);
 	sb.ClearStr();
@@ -177,7 +177,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 		while (k-- > 0)
 		{
 			osItem = this->osList.GetItemNoCheck(k);
-			if (osItem->os == uaList[i].os && osItem->osVer == 0)
+			if (osItem->os == uaList[i].os && osItem->osVer.IsNull())
 			{
 				found = true;
 				break;
@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 		{
 			osItem = MemAllocNN(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem);
 			osItem->os = uaList[i].os;
-			osItem->osVer = 0;
+			osItem->osVer = nullptr;
 			osItem->osVerLen = 0;
 			this->osList.Add(osItem);
 			sb.ClearStr();

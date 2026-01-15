@@ -35,7 +35,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(An
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->currColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -61,7 +61,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		UtilUI::ColorDialog dlg(0, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
+		UtilUI::ColorDialog dlg(nullptr, me->ui, me->core->GetColorManager(), me->core->GetDrawEngine(), UtilUI::ColorDialog::CCT_PHOTO, color, me->core->GetMonitorMgr());
 		dlg.SetColor32(me->currBuffColor);
 		if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
@@ -127,7 +127,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 		}
 
 		b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(0xffc0c0c0));
-		dimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), nullptr, b);
 		dimg->DelBrush(b);
 
 		if (this->currFontName.SetTo(currFontName))
@@ -175,7 +175,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	}
 	else
 	{
-		this->currFontName = 0;
+		this->currFontName = nullptr;
 		this->txtFontName->SetText(CSTR(""));
 	}
 	this->pbFontColor->SetBGColor(this->colorConv->ConvRGB8(this->currColor));
@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 	this->env = env;
 	this->eng = eng;
 	this->fontStyle = fontStyle;
-	this->currFontName = 0;
+	this->currFontName = nullptr;
 	this->currColor = 0xff000000;
 	this->currBuffColor = 0xff000000;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 	this->btnCancel->SetRect(184, 196, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetCancelButton(this->btnCancel);
-	this->previewImage = 0;
+	this->previewImage = nullptr;
 
 	this->changed = false;
 	this->UpdateDisplay();

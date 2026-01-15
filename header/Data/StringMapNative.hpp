@@ -23,6 +23,8 @@ namespace Data
 		virtual T Remove(Optional<Text::String> key);
 		T RemoveNN(NN<Text::String> key);
 		T Remove(Text::CStringNN key);
+		OSInt GetIndexC(Text::CStringNN key) const;
+		Bool ContainsKeyC(Text::CStringNN key) const;
 		virtual Optional<Text::String> GetKey(UOSInt index) const;
 		virtual void Clear();
 		virtual NN<StringMapNative<T>> Clone() const;
@@ -209,6 +211,19 @@ namespace Data
 		return this->keys->GetItem(index);
 	}
 
+	template <class T> OSInt StringMapNative<T>::GetIndexC(Text::CStringNN key) const
+	{
+		OSInt i;
+		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
+		return i;
+	}
+	
+	template <class T> Bool StringMapNative<T>::ContainsKeyC(Text::CStringNN key) const
+	{
+		OSInt i;
+		i = NN<Data::ArrayListString>::ConvertFrom(this->keys)->SortedIndexOfPtr(key.v, key.leng);
+		return i >= 0;
+	}
 	template <class T> void StringMapNative<T>::Clear()
 	{
 		NN<Text::String> s;

@@ -34,7 +34,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 	UOSInt type = this->cboType->GetSelectedIndex();
 	if (fileName.StartsWith(UTF8STRC("http://")) || (reqSSL = fileName.StartsWith(UTF8STRC("https://"))))
 	{
-		Optional<Net::SSLEngine> ssl = 0;
+		Optional<Net::SSLEngine> ssl = nullptr;
 		if (reqSSL)
 		{
 			ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);

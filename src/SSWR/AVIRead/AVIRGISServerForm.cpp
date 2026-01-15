@@ -11,7 +11,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISServerForm>();
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 	if (me->listener.SetTo(listener))
 	{
 		listener.Delete();
-		me->listener = 0;
+		me->listener = nullptr;
 		me->txtPort->SetReadOnly(false);
 		me->chkSSL->SetEnabled(true);
 		me->btnSSLCert->SetEnabled(true);
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRGISServerForm::OnStartClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter valid worker count"), TITLE, me);
 		return;
 	}
-	Optional<Net::SSLEngine> ssl = 0;
+	Optional<Net::SSLEngine> ssl = nullptr;
 
 	if (me->chkSSL->IsChecked())
 	{
@@ -283,9 +283,9 @@ SSWR::AVIRead::AVIRGISServerForm::AVIRGISServerForm(Optional<UI::GUIClientContro
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->sslCert = 0;
-	this->sslKey = 0;
-	this->listener = 0;
+	this->sslCert = nullptr;
+	this->sslKey = nullptr;
+	this->listener = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	UTF8Char sbuff[32];

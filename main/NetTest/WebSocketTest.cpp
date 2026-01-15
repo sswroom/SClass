@@ -24,10 +24,10 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
 	NN<Net::WebSocketClient> cli;
-//	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("192.168.1.24"), 9001, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
-//	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("ws.vi-server.org"), 80, CSTR("/mirror"), CSTR("http://127.0.0.1"), Net::WebSocketClient::Protocol::Chat, 30000));
-//	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("test.mosquitto.org"), 8080, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
-	NEW_CLASSNN(cli, Net::WebSocketClient(clif, 0, CSTR("127.0.0.1"), 9001, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
+//	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, nullptr, CSTR("192.168.1.24"), 9001, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
+//	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, nullptr, CSTR("ws.vi-server.org"), 80, CSTR("/mirror"), CSTR("http://127.0.0.1"), Net::WebSocketClient::Protocol::Chat, 30000));
+//	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, nullptr, CSTR("test.mosquitto.org"), 8080, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
+	NEW_CLASSNN(cli, Net::WebSocketClient(clif, nullptr, CSTR("127.0.0.1"), 9001, CSTR("/mqtt"), nullptr, Net::WebSocketClient::Protocol::MQTT, 30000));
 	disconnected = false;
 	if (!cli->IsDown())
 	{

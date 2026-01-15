@@ -35,7 +35,7 @@ Net::ProxyServer::ProxyServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::
 	this->svr = 0;
 	this->cliMgr = 0;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(30, OnClientEvent, OnClientData, this, 10, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, 0, port, log, OnClientConn, this, CSTR("Prx: "), autoStart));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, nullptr, port, log, OnClientConn, this, CSTR("Prx: "), autoStart));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);

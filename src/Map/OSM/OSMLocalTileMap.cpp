@@ -13,7 +13,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 {
 	this->pkgFile = pkgFile;
 	this->name = 0;
-	this->rootPkg = 0;
+	this->rootPkg = nullptr;
 	this->minLevel = 0;
 	this->maxLevel = 0;
 	this->tileWidth = 256;
@@ -166,7 +166,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile, NN<Text:
 {
 	this->pkgFile = pkgFile;
 	this->name = name->Clone().Ptr();
-	this->rootPkg = 0;
+	this->rootPkg = nullptr;
 	this->minLevel = minZoom;
 	this->maxLevel = maxZoom;
 	this->tileWidth = 256;
@@ -278,7 +278,7 @@ Map::TileMap::ImageType Map::OSM::OSMLocalTileMap::GetImageType() const
 	}
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
+UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	Int32 i;
 	Int32 j;
@@ -353,7 +353,7 @@ Optional<Media::ImageList> Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level
 			fd.Delete();
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::OSM::OSMLocalTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
@@ -403,7 +403,7 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 	UnsafeArray<UTF8Char> sptr;
 	Optional<IO::StreamData> fd;
 	if (level < this->minLevel || level > this->maxLevel)
-		return 0;
+		return nullptr;
 	Double x1 = Map::OSM::OSMTileMap::TileX2Lon(tileId.x, level);
 	Double y1 = Map::OSM::OSMTileMap::TileY2Lat(tileId.y, level);
 	Double x2 = Map::OSM::OSMTileMap::TileX2Lon(tileId.x + 1, level);
@@ -411,13 +411,13 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 
 	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2)));
 	if (x1 > 180 || y1 < -90)
-		return 0;
+		return nullptr;
 
 	Bool xNeedDelete;
 	NN<IO::PackageFile> xPkg;
 	Bool yNeedDelete;
 	NN<IO::PackageFile> yPkg;
-	fd = 0;
+	fd = nullptr;
 	sptr = Text::StrUOSInt(sbuff, level);
 	if (this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
 	{

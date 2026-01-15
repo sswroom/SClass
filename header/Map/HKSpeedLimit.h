@@ -22,12 +22,12 @@ namespace Map
 		Optional<Math::CoordinateSystem> reqCsys;
 		Data::FastMapNN<Int32, RouteInfo> routeMap;
 		Math::RectAreaDbl bounds;
-		Data::FastMapNN<Int64, Data::ArrayList<Int32>> indexMap;
+		Data::FastMapNN<Int64, Data::ArrayListNative<Int32>> indexMap;
 
 		static void __stdcall FreeRoute(NN<RouteInfo> route);
 		void FreeIndex();
 		void BuildIndex();
-		void AppendRouteIds(NN<Data::ArrayList<Int32>> routeList, Int32 x, Int32 y);
+		void AppendRouteIds(NN<Data::ArrayListNative<Int32>> routeList, Int32 x, Int32 y);
 	public:
 		HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork);
 		~HKSpeedLimit();

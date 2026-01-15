@@ -102,7 +102,7 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RIFFFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->maxLev = 0;
 	fd->GetRealData(0, 256, BYTEARR(buff));
@@ -453,7 +453,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	UOSInt k;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack) || !this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	frame->AddStrS(0, 4, CSTR("Type"), (const UTF8Char*)&pack->packType);

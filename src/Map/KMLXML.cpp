@@ -24,13 +24,13 @@
 Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
-		return 0;
+		return nullptr;
 	if (!Text::String::OrEmpty(reader->GetNodeText())->Equals(UTF8STRC("kml")))
-		return 0;
-	Data::ICaseStringMap<KMLStyle*> styles;
+		return nullptr;
+	Data::ICaseStringMapObj<KMLStyle*> styles;
 	Optional<Map::MapDrawLayer> lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile, true);
 
-	NN<const Data::ArrayList<KMLStyle*>> styleList = styles.GetValues();
+	NN<const Data::ArrayListObj<KMLStyle*>> styleList = styles.GetValues();
 	KMLStyle *style;
 	UOSInt ui = styleList->GetCount();
 	while (ui-- > 0)
@@ -856,7 +856,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 	}
 	if (layers.GetCount() <= 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	else if (rootKml && layers.GetCount() == 1)
 	{
@@ -876,7 +876,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 	}
 }
 
-void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles)
+void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPSTrack> lyr, Data::StringMapObj<KMLStyle*> *styles)
 {
 	Data::ArrayListStringNN timeList;
 	Data::ArrayListStringNN coordList;
@@ -1278,12 +1278,12 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 	}
 }
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMapObj<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN colNames;
 	Data::ArrayListStringNN colValues;
-	Data::ArrayList<Map::VectorLayer::ColInfo> colInfos;
+	Data::ArrayListT<Map::VectorLayer::ColInfo> colInfos;
 	KMLStyle *style = 0;
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
 	NN<Math::Geometry::Vector2D> vec;
@@ -1371,7 +1371,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 					{
 						if (style->img == 0)
 						{
-							Optional<IO::StreamData> fd = 0;
+							Optional<IO::StreamData> fd = nullptr;
 							NN<IO::PackageFile> nnbasePF;
 							if (basePF.SetTo(nnbasePF))
 							{
@@ -1379,7 +1379,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 							}
 							if (fd.IsNull() && browser.SetTo(nnbrowser))
 							{
-								fd = nnbrowser->GetData(style->iconURL->ToCString(), false, 0);
+								fd = nnbrowser->GetData(style->iconURL->ToCString(), false, nullptr);
 							}
 							NN<IO::StreamData> nnfd;
 							if (fd.SetTo(nnfd))
@@ -1398,7 +1398,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 												img->MultiplyColor(style->iconColor);
 										}
 									}
-									NEW_CLASS(style->img, Media::SharedImage(imgList, 0));
+									NEW_CLASS(style->img, Media::SharedImage(imgList, nullptr));
 								}
 								nnfd.Delete();
 							}
@@ -1469,13 +1469,13 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 	{
 		layers.GetItem(i).Delete();
 	}
-	return 0;
+	return nullptr;
 }
 
-Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReader> reader, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListStringNN> colValues, NN<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos)
+Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReader> reader, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListStringNN> colValues, NN<Data::ArrayListT<Map::VectorLayer::ColInfo>> colInfos)
 {
 	NN<Text::String> nodeText = Text::String::OrEmpty(reader->GetNodeOriText());
-	Optional<Math::Geometry::Vector2D> vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	if (nodeText->EqualsICase(UTF8STRC("LINESTRING")))
 	{
 		while (reader->NextElementName().SetTo(nodeText))
@@ -1663,7 +1663,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 			}
 		}
 		if (vecList.GetCount() == 0)
-			return 0;
+			return nullptr;
 		
 		Bool allPG = true;
 		Bool allPL = true;
@@ -1740,10 +1740,10 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 			len = 256;
 		colInfos->Add(Map::VectorLayer::ColInfo(DB::DBUtil::CT_VarUTF8Char, len, 0));
 	}
-	return 0;
+	return nullptr;
 }
 
-void Map::KMLXML::ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayListA<Math::Coord2DDbl>> coordList, NN<Data::ArrayList<Double>> altList)
+void Map::KMLXML::ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayListA<Math::Coord2DDbl>> coordList, NN<Data::ArrayListNative<Double>> altList)
 {
 	UOSInt i;
 	UnsafeArray<UTF8Char> sptr;

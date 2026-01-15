@@ -169,7 +169,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		}
 	}
 	this->ent.dhcpSvr = 0;
-	this->ent.dnsSuffix = 0;
+	this->ent.dnsSuffix = nullptr;
 	
 #if !defined(NO_GETIFADDRS) && (!defined(__ANDROID_API__) || __ANDROID_API__ >= 24)
 	struct ifaddrs *ifap;

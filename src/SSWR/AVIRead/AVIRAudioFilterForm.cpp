@@ -198,8 +198,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 				me->audioAmp.Delete();
 				me->audSrc.Delete();
 				MemFreeArr(sampleBuff);
-				me->audSrc = 0;
-				me->sampleBuff = 0;
+				me->audSrc = nullptr;
+				me->sampleBuff = nullptr;
 			}
 		}
 	}
@@ -628,7 +628,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 			else if (me->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(img))
 			{
 				b = img->NewBrushARGB(0xffffffff);
-				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 				img->DelBrush(b);
 				sampleInt = me->nChannels * (UOSInt)me->bitCount >> 3;
 				if (me->bitCount == 16)
@@ -640,20 +640,20 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 						lastY = -1;
 						if (i == 0)
 						{
-							p = img->NewPenARGB(0xffff0000, 1, 0, 0);
+							p = img->NewPenARGB(0xffff0000, 1, nullptr, 0);
 						}
 						else if (i == 1)
 						{
-							p = img->NewPenARGB(0xff0000ff, 1, 0, 0);
+							p = img->NewPenARGB(0xff0000ff, 1, nullptr, 0);
 						}
 						else if (i == 2)
 						{
-							p = img->NewPenARGB(0xff00ff00, 1, 0, 0);
+							p = img->NewPenARGB(0xff00ff00, 1, nullptr, 0);
 						}
 						else
 						{
 							Data::RandomOS rand;
-							p = img->NewPenARGB(rand.NextInt30() | 0xff000000, 1, 0, 0);
+							p = img->NewPenARGB(rand.NextInt30() | 0xff000000, 1, nullptr, 0);
 						}
 						k = i << 1;
 						j = 0;
@@ -683,20 +683,20 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 						lastY = -1;
 						if (i == 0)
 						{
-							p = img->NewPenARGB(0xffff0000, 1, 0, 0);
+							p = img->NewPenARGB(0xffff0000, 1, nullptr, 0);
 						}
 						else if (i == 1)
 						{
-							p = img->NewPenARGB(0xff0000ff, 1, 0, 0);
+							p = img->NewPenARGB(0xff0000ff, 1, nullptr, 0);
 						}
 						else if (i == 2)
 						{
-							p = img->NewPenARGB(0xff00ff00, 1, 0, 0);
+							p = img->NewPenARGB(0xff00ff00, 1, nullptr, 0);
 						}
 						else
 						{
 							Data::RandomOS rand;
-							p = img->NewPenARGB(rand.NextInt30() | 0xff000000, 1, 0, 0);
+							p = img->NewPenARGB(rand.NextInt30() | 0xff000000, 1, nullptr, 0);
 						}
 						k = i;
 						j = 0;
@@ -732,7 +732,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 			else if (me->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(img))
 			{
 				b = img->NewBrushARGB(0xffffffff);
-				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
+				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), nullptr, b);
 				img->DelBrush(b);
 				sampleInt = me->nChannels * (UOSInt)me->bitCount >> 3;
 
@@ -760,20 +760,20 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 					}
 					if (i == 0)
 					{
-						p = img->NewPenARGB(0xffff0000, 1, 0, 0);
+						p = img->NewPenARGB(0xffff0000, 1, nullptr, 0);
 					}
 					else if (i == 1)
 					{
-						p = img->NewPenARGB(0xff0000ff, 1, 0, 0);
+						p = img->NewPenARGB(0xff0000ff, 1, nullptr, 0);
 					}
 					else if (i == 2)
 					{
-						p = img->NewPenARGB(0xff00ff00, 1, 0, 0);
+						p = img->NewPenARGB(0xff00ff00, 1, nullptr, 0);
 					}
 					else
 					{
 						Data::RandomOS rand;
-						p = img->NewPenARGB(rand.NextInt30() | 0xff000000, 1, 0, 0);
+						p = img->NewPenARGB(rand.NextInt30() | 0xff000000, 1, nullptr, 0);
 					}
 					Double rVal;
 					lastX = -1;
@@ -987,8 +987,8 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 		}
 		else
 		{
-			this->core->BindAudio(0);
-			this->audRender = 0;
+			this->core->BindAudio(nullptr);
+			this->audRender = nullptr;
 		}
 		this->audSrc.Delete();
 		this->audioAmp.Delete();
@@ -1001,7 +1001,7 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 		this->volBooster.Delete();
 		this->audioCapture.Delete();
 		if (this->sampleBuff.SetTo(sampleBuff)) MemFreeArr(sampleBuff);
-		this->sampleBuff = 0;
+		this->sampleBuff = nullptr;
 	}
 }
 
@@ -1012,20 +1012,20 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->audSrc = 0;
-	this->audioCapture = 0;
-	this->audioLevel = 0;
-	this->audioRipper = 0;
-	this->dtmfDec = 0;
-	this->volBooster = 0;
-	this->dtmfGen = 0;
-	this->fileMix = 0;
-	this->audRender = 0;
-	this->audioAmp = 0;
-	this->sampleBuff = 0;
+	this->audSrc = nullptr;
+	this->audioCapture = nullptr;
+	this->audioLevel = nullptr;
+	this->audioRipper = nullptr;
+	this->dtmfDec = nullptr;
+	this->volBooster = nullptr;
+	this->dtmfGen = nullptr;
+	this->fileMix = nullptr;
+	this->audRender = nullptr;
+	this->audioAmp = nullptr;
+	this->sampleBuff = nullptr;
 	this->eng = this->core->GetDrawEngine();
-	this->sampleImg = 0;
-	this->fftImg = 0;
+	this->sampleImg = nullptr;
+	this->fftImg = nullptr;
 	this->dtmfMod = false;
 
 	this->pnlInput = ui->NewPanel(*this);
@@ -1075,7 +1075,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
 	this->tpVolLevel = this->tcFilter->AddTabPage(CSTR("VolLevel"));
-	this->rlcVolLevel = ui->NewRealtimeLineChart(this->tpVolLevel, this->core->GetDrawEngine(), 2, 600, 100, 0);
+	this->rlcVolLevel = ui->NewRealtimeLineChart(this->tpVolLevel, this->core->GetDrawEngine(), 2, 600, 100, nullptr);
 	this->rlcVolLevel->SetRect(0, 0, 100, 200, false);
 	this->rlcVolLevel->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->rlcVolLevel->SetUnit(CSTR("dB"));
@@ -1284,12 +1284,12 @@ SSWR::AVIRead::AVIRAudioFilterForm::~AVIRAudioFilterForm()
 	if (this->sampleImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
-		this->sampleImg = 0;
+		this->sampleImg = nullptr;
 	}
 	if (this->fftImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
-		this->fftImg = 0;
+		this->fftImg = nullptr;
 	}
 }
 
@@ -1299,7 +1299,7 @@ void SSWR::AVIRead::AVIRAudioFilterForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_SET_DEVICE:
 		{
-			SSWR::AVIRead::AVIRSetAudioForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRSetAudioForm frm(nullptr, this->ui, this->core);
 			frm.ShowDialog(this);
 		}
 		break;

@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::NS2Parser::ParseFileHdr(NN<IO::St
 	UOSInt j;
 
 	if (hdr[4] != '"')
-		return 0;
+		return nullptr;
 	i = 5;
 	while (i < 32)
 	{
@@ -55,9 +55,9 @@ Optional<IO::ParsedObject> Parser::FileParser::NS2Parser::ParseFileHdr(NN<IO::St
 		i++;
 	}
 	if (i >= 32)
-		return 0;
+		return nullptr;
 	if (hdr[i + 5] != '"')
-		return 0;
+		return nullptr;
 
 	IO::VirtualPackageFile *pf;
 	Text::Encoding enc(932);

@@ -276,8 +276,8 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::ExtractPublicKey() const
 		UnsafeArray<const UInt8> modulus;
 		UOSInt publicExponentSize;
 		UnsafeArray<const UInt8> publicExponent;
-		if (!this->GetRSAModulus(modulusSize).SetTo(modulus)) return 0;
-		if (!this->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent)) return 0;
+		if (!this->GetRSAModulus(modulusSize).SetTo(modulus)) return nullptr;
+		if (!this->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent)) return nullptr;
 		return CreateRSAPublicKey(this->GetSourceNameObj()->ToCString(), Data::ByteArrayR(modulus, modulusSize), Data::ByteArrayR(publicExponent, publicExponentSize));
 	}
 	else if (this->keyType == KeyType::ECPublic)
@@ -286,7 +286,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::ExtractPublicKey() const
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -325,7 +325,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAModulus(OptOut<UOSInt> 
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -341,25 +341,25 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPublicExponent(OptOut<U
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrivateExponent(OptOut<UOSInt> size) const
 {
-	if (this->keyType != KeyType::RSA) return 0;
+	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.4", size, 0);
 }
 
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrime1(OptOut<UOSInt> size) const
 {
-	if (this->keyType != KeyType::RSA) return 0;
+	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.5", size, 0);
 }
 
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrime2(OptOut<UOSInt> size) const
 {
-	if (this->keyType != KeyType::RSA) return 0;
+	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.6", size, 0);
 }
 
@@ -368,7 +368,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent1(OptOut<UOSInt
 	// e1 = d % p
 	// d = private Exponent
 	// p = prime1
-	if (this->keyType != KeyType::RSA) return 0;
+	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.7", size, 0);
 }
 
@@ -377,13 +377,13 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent2(OptOut<UOSInt
 	// e2 = d % q
 	// d = private Exponent
 	// p = prime2
-	if (this->keyType != KeyType::RSA) return 0;
+	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.8", size, 0);
 }
 
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSACoefficient(OptOut<UOSInt> size) const
 {
-	if (this->keyType != KeyType::RSA) return 0;
+	if (this->keyType != KeyType::RSA) return nullptr;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.9", size, 0);
 }
 
@@ -395,7 +395,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPrivate(OptOut<UOSInt> s
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPublic(OptOut<UOSInt> size) const
@@ -410,7 +410,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPublic(OptOut<UOSInt> si
 			size.Set(itemLen - 1);
 			return itemPDU + 1;
 		}
-		return 0;
+		return nullptr;
 	}
 	else if (this->keyType == KeyType::ECDSA)
 	{
@@ -421,7 +421,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPublic(OptOut<UOSInt> si
 				size.Set(itemLen - 1);
 				return itemPDU + 1;
 			}
-			return 0;
+			return nullptr;
 		}
 		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.4", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)
 		{
@@ -430,13 +430,13 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetECPublic(OptOut<UOSInt> si
 				size.Set(itemLen - 1);
 				return itemPDU + 1;
 			}
-			return 0;
+			return nullptr;
 		}
-		return 0;
+		return nullptr;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -503,7 +503,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::FromRSAKey(NN<RSAKey> key
 	UnsafeArray<const UInt8> publicExponent;
 	if (!key->GetRSAModulus(modulusSize).SetTo(modulus) || !key->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent))
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt privateExponentSize;
 	UnsafeArray<const UInt8> privateExponent;

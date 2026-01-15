@@ -44,12 +44,12 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 	UInt32 magic = ReadMUInt32(&hdr[0]);
 	if (magic != 0xFEEDFEED && magic != 0xCECECECE)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 version = ReadMUInt32(&hdr[4]);
 	if (version > 2)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt8 buff[256];
 	Data::ByteBuffer cerBuff(0);

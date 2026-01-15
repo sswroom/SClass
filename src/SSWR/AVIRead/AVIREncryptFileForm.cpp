@@ -27,14 +27,14 @@ Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCr
 		break;
 	default:
 		this->ui->ShowMsgOK(CSTR("Unknown Algorithm"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	Text::StringBuilderUTF8 sb;
 	this->txtKey->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("Key cannot be empty"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	NN<Text::TextBinEnc::TextBinEnc> enc = GetTextEncType(this->cboKeyType);
 	UOSInt buffSize = enc->CalcBinSize(sb.ToCString());
@@ -42,13 +42,13 @@ Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCr
 	{
 		enc.Delete();
 		this->ui->ShowMsgOK(CSTR("Error in parsing key"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	else if (buffSize > keySize)
 	{
 		enc.Delete();
 		this->ui->ShowMsgOK(CSTR("Key size is too long"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	UInt8 key[32];
 	MemClear(key, keySize);
@@ -67,7 +67,7 @@ Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCr
 		NEW_CLASS(crypto, Crypto::Encrypt::AES256(key));
 		break;
 	default:
-		return 0;
+		return nullptr;
 	}
 	crypto->SetChainMode((Crypto::Encrypt::ChainMode)this->cboChainMode->GetSelectedItem().GetOSInt());
 	crypto->SetPaddingMode((Crypto::Encrypt::PaddingMode)this->cboPaddingMode->GetSelectedItem().GetOSInt());
@@ -81,24 +81,24 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitInput(UOSInt block
 	if (sb.GetLength() == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("Please input Input File"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
 		this->ui->ShowMsgOK(CSTR("Error in opening Input File"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	UInt64 fileSize = fs.GetLength();
 	if (fileSize > 0x7fffffff)
 	{
 		this->ui->ShowMsgOK(CSTR("Input File is too large to encrypt"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	else if (fileSize == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("Input File is empty"), CSTR("Encrypt File"), this);
-		return 0;
+		return nullptr;
 	}
 	UOSInt buffSize = (UOSInt)fileSize;
 	UOSInt nBlock = (buffSize + blockSize) / blockSize;
@@ -124,13 +124,13 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encr
 			if (sb.GetLength() > sizeof(tmpbuff))
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length not valid"), CSTR("Encrypt File"), this);
-				return 0;
+				return nullptr;
 			}
 			UOSInt ivLeng = sb.Hex2Bytes(tmpbuff);
 			if (ivLeng > blockSize)
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length too long"), CSTR("Encrypt File"), this);
-				return 0;
+				return nullptr;
 			}
 			else if (ivLeng < blockSize)
 			{
@@ -147,14 +147,14 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encr
 			if (sb.GetLength() > sizeof(tmpbuff))
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length too long"), CSTR("Encrypt File"), this);
-				return 0;
+				return nullptr;
 			}
 			Text::TextBinEnc::Base64Enc b64;
 			UOSInt ivLeng = b64.DecodeBin(sb.ToCString(), tmpbuff);
 			if (ivLeng > blockSize)
 			{
 				this->ui->ShowMsgOK(CSTR("IV input length too long"), CSTR("Encrypt File"), this);
-				return 0;
+				return nullptr;
 			}
 			else if (ivLeng < blockSize)
 			{
@@ -178,14 +178,14 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encr
 			if (buffSize.Get() < blockSize)
 			{
 				this->ui->ShowMsgOK(CSTR("Data input length too short"), CSTR("Encrypt File"), this);
-				return 0;
+				return nullptr;
 			}
 			NN<Crypto::Encrypt::BlockCipher>::ConvertFrom(crypto)->SetIV(dataBuff);
 			buffSize.Set(buffSize.Get() - blockSize);
 			return dataBuff + blockSize;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void SSWR::AVIRead::AVIREncryptFileForm::SaveOutput(UnsafeArray<const UInt8> buff, UOSInt buffSize)

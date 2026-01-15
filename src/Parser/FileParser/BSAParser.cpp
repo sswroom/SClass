@@ -50,22 +50,22 @@ Optional<IO::ParsedObject> Parser::FileParser::BSAParser::ParseFileHdr(NN<IO::St
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".BSA")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[0]) != 0x72415342 || ReadInt32(&hdr[4]) != 0x63)
-		return 0;
+		return nullptr;
 //	ver = ReadUInt16(&hdr[8]);
 	recCnt = ReadUInt16(&hdr[10]);
 	recOfst = ReadUInt32(&hdr[12]);
 
 	if (recOfst >= fd->GetDataSize() - recCnt * 12)
-		return 0;
+		return nullptr;
 
 	recSize = (UOSInt)(fd->GetDataSize() - recOfst);
 	Data::ByteBuffer recBuff(recSize);
 	if (fd->GetRealData(recOfst, recSize, recBuff) != recSize)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;

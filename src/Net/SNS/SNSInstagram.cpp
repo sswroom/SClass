@@ -7,7 +7,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Ne
 {
 	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSiteInstagramControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
-	this->chDesc = 0;
+	this->chDesc = nullptr;
 	this->chError = false;
 
 	NN<Text::String> s;
@@ -67,7 +67,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Ne
 		sb.Append(item->shortCode);
 		sb.AppendC(UTF8STRC("/"));
 		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
+		snsItem = CreateItem(item->shortCode, item->recTime, nullptr, item->message, s.Ptr(), item->imgURL, item->videoURL);
 		s->Release();
 		this->itemMap.PutNN(item->shortCode, snsItem);
 	}
@@ -148,7 +148,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 		i++;
 	}
 
-	this->ctrl->GetChannelItems(this->channelId, 0, itemList, 0);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, nullptr);
 	i = itemList.GetCount();
 	if (i > 0)
 	{
@@ -194,7 +194,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 				sb.Append(item->shortCode);
 				sb.AppendC(UTF8STRC("/"));
 				NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
+				snsItem = CreateItem(item->shortCode, item->recTime, nullptr, item->message, s, item->imgURL, item->videoURL);
 				s->Release();
 				this->itemMap.PutNN(item->shortCode, snsItem);
 				changed = true;

@@ -385,7 +385,7 @@ Bool Map::ESRI::ESRIMapServer::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
@@ -524,7 +524,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 	if (sbUrl.SetTo(sb))
 		sb->AppendC(url, (UOSInt)(sptr - url));
 
-	Optional<Media::ImageList> ret = 0;
+	Optional<Media::ImageList> ret = nullptr;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
@@ -536,7 +536,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 		}
 		Parser::FileParser::PNGParser parser;
 		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UOSInt)mstm.GetLength());
-		ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
+		ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, nullptr, IO::ParserType::ImageList));
 	}
 	cli.Delete();
 	return ret;
@@ -580,7 +580,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 					}
 					if (ptArr.GetCount() > 0)
 					{
-						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, ptArr.Arr(), ptArr.GetCount(), 0, 0));
+						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, ptArr.Arr(), ptArr.GetCount(), nullptr, nullptr));
 						pg->AddGeometry(lr);
 					}
 				}
@@ -597,7 +597,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 	{
 		if (geometry->GetValue(CSTR("paths")).SetTo(o) && o->GetType() == Text::JSONType::Array)
 		{
-			Data::ArrayList<UInt32> ptOfstArr;
+			Data::ArrayListNative<UInt32> ptOfstArr;
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;
 			NN<Text::JSONArray> paths = NN<Text::JSONArray>::ConvertFrom(o);
 			UOSInt i = 0;
@@ -626,7 +626,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 			{
 				Math::Geometry::Polyline *pl;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-				pl->AddFromPtOfst(ptOfstArr.Arr().Ptr(), ptOfstArr.GetCount(), ptArr.Arr().Ptr(), ptArr.GetCount(), 0, 0);
+				pl->AddFromPtOfst(ptOfstArr.Arr().Ptr(), ptOfstArr.GetCount(), ptArr.Arr().Ptr(), ptArr.GetCount(), nullptr, nullptr);
 				return pl;
 			}
 		}
@@ -656,6 +656,6 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 		printf("ESRIMapServer: Unknown geometryType: %s\r\n", geometryType->v.Ptr());
 	}
 	///////////////////////////////////	
-	return 0;
+	return nullptr;
 }
 

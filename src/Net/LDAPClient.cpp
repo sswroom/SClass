@@ -319,7 +319,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt 
 					obj = MemAllocNN(Net::LDAPClient::SearchResObject);
 					obj->isRef = true;
 					obj->name = Text::String::New(sb.ToString(), sb.GetLength());
-					obj->items = 0;
+					obj->items = nullptr;
 					searchObjs->Add(obj);
 				}
 			}
@@ -350,7 +350,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 	while (Text::CharUtil::PtrIsWS(filter));
 	if (filter[0] != '(')
 	{
-		return 0;
+		return nullptr;
 	}
 	filter++;
 	while (Text::CharUtil::PtrIsWS(filter));
@@ -366,7 +366,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			{
 				if (!ParseFilter(pdu, filter, true).SetTo(filter))
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 			else if (filter[0] == ')')
@@ -376,7 +376,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 	}
@@ -391,7 +391,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 				if (!ParseFilter(pdu, filter, true).SetTo(filter))
 				{
 					pdu->EndLevel();
-					return 0;
+					return nullptr;
 				}
 			}
 			else if (filter[0] == ')')
@@ -402,7 +402,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			else
 			{
 				pdu->EndLevel();
-				return 0;
+				return nullptr;
 			}
 		}
 	}
@@ -411,7 +411,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 		while (Text::CharUtil::PtrIsWS(filter));
 		if (filter[0] == ')' || filter[0] == '=' || filter[0] == 0)
 		{
-			return 0;
+			return nullptr;
 		}
 		pdu->BeginOther(complex?0xA2:0x82);
 		filterStart = filter;
@@ -420,7 +420,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			if (filter[0] == ')' || filter[0] == 0)
 			{
 				pdu->EndLevel();
-				return 0;
+				return nullptr;
 			}
 			else if (filter[0] == '=')
 			{
@@ -442,21 +442,21 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			else if (filter[0] == '=' || filter[0] == 0)
 			{
 				pdu->EndLevel();
-				return 0;
+				return nullptr;
 			}
 			filter++;
 		}
 	}
 	else if (filter[0] == 0 || filter[0] == ')')
 	{
-		return 0;
+		return nullptr;
 	}
 	else
 	{
 		while (Text::CharUtil::PtrIsWS(filter));
 		if (filter[0] == ')' || filter[0] == '=' || filter[0] == 0)
 		{
-			return 0;
+			return nullptr;
 		}
 		filterStart = filter;
 		while (true)
@@ -464,7 +464,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			if (filter[0] == ')' || filter[0] == 0)
 			{
 				pdu->EndLevel();
-				return 0;
+				return nullptr;
 			}
 			else if (filter[0] == '=' && filter[1] == '*' && filter[2] == ')')
 			{
@@ -520,7 +520,7 @@ UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder 
 			else if (filter[0] == '=' || filter[0] == 0)
 			{
 				pdu->EndLevel();
-				return 0;
+				return nullptr;
 			}
 			filter++;
 		}
@@ -598,7 +598,7 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 
 	status.isFin = false;
 	status.resultCode = 0;
-	status.searchObjs = 0;
+	status.searchObjs = nullptr;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqMap.Put(status.msgId, status);
 	mutUsage.EndUse();

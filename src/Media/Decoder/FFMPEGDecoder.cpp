@@ -1237,7 +1237,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 	UOSInt maxFrameSize;
 	sourceVideo->GetVideoInfo(frameInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	if (frameInfo.fourcc == 0 || frameInfo.fourcc == 0xFFFFFFFF)
-		return 0;
+		return nullptr;
 
 	if (frameInfo.fourcc == *(UInt32*)"ravc")
 	{
@@ -1250,7 +1250,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 		{
 			decoder.Delete();
 			ravc.Delete();
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(ravc);
@@ -1267,7 +1267,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 		{
 			decoder.Delete();
 			rhvc.Delete();
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(rhvc);
@@ -1284,7 +1284,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 		{
 			decoder.Delete();
 			m2vd.Delete();
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(m2vd);
@@ -1301,7 +1301,7 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 		{
 			decoder.Delete();
 			vp09.Delete();
-			return 0;
+			return nullptr;
 		}
 		NEW_CLASS(decChain, Media::Decoder::VDecoderChain(decoder));
 		decChain->AddDecoder(vp09);
@@ -1313,11 +1313,11 @@ Optional<Media::VideoSource> __stdcall FFMPEGDecoder_DecodeVideo(NN<Media::Video
 		if (decoder->IsError())
 		{
 			decoder.Delete();
-			return 0;
+			return nullptr;
 		}
 		return decoder.Ptr();
 	}
-	return 0;
+	return nullptr;
 }
 
 class FFMPEGADecoder : public Media::Decoder::ADecoderBase
@@ -1365,7 +1365,7 @@ public:
 		this->frameMaxSize = 65536;
 		this->frameBuffSize = 0;
 		this->seeked = true;
-		this->readEvt = 0;
+		this->readEvt = nullptr;
 		sourceAudio->GetFormat(fmt);
 
 		AVCodecID codecId;
@@ -1583,7 +1583,7 @@ public:
 		{
 			this->seeked = true;
 			this->frameBuffSize = 0;
-			sourceAudio->Start(0, blkSize);
+			sourceAudio->Start(nullptr, blkSize);
 			this->readEvt = evt;
 
 			if (this->readEvt.SetTo(nnevt))
@@ -1600,7 +1600,7 @@ public:
 		{
 			sourceAudio->Stop();
 		}
-		this->readEvt = 0;
+		this->readEvt = nullptr;
 	}
 
 	virtual UOSInt ReadBlock(Data::ByteArray blk)
@@ -1959,7 +1959,7 @@ Optional<Media::AudioSource> __stdcall FFMPEGDecoder_DecodeAudio(NN<Media::Audio
 	NEW_CLASS(decoder, FFMPEGADecoder(sourceAudio));
 	if (!decoder->IsError())
 		return decoder;
-	return 0;
+	return nullptr;
 }
 
 void __stdcall FFMPEGDecoder_OnExit()

@@ -38,10 +38,10 @@ Optional<IO::ParsedObject> Parser::FileParser::ADXParser::ParseFileHdr(NN<IO::St
 	Media::AudioFormat af;
 	startOfst = ReadMUInt32(&hdr[0]);
 	if ((startOfst & 0x80000000) == 0)
-		return 0;
+		return nullptr;
 	startOfst ^= 0x80000000;
 	if (startOfst > 2048)
-		return 0;
+		return nullptr;
 	fd->GetRealData(4, startOfst, BYTEARR(buff));
 
 	

@@ -105,7 +105,7 @@ namespace Data
 		{
 			return this->arr.RemoveAt(i - 1);
 		}
-		return 0;
+		return nullptr;
 	}
 
 	template <class T> NN<Data::SyncArrayListNN<T>> Data::SyncArrayListNN<T>::Clone() const

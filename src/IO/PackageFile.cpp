@@ -30,7 +30,7 @@ Optional<IO::StreamData> IO::PackageFile::GetItemStmDataNew(Text::CStringNN name
 	UOSInt index = GetItemIndex(name);
 	if (index == INVALID_INDEX)
 	{
-		return 0;
+		return nullptr;
 	}
 #if defined(VERBOSE)
 	printf("PackageFile: Found item %s in index %d\r\n", name.v.Ptr(), (UInt32)index);
@@ -53,7 +53,7 @@ Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, Out
 	{
 		i = GetItemIndex(path);
 		if (i == INVALID_INDEX)
-			return 0;
+			return nullptr;
 		return this->GetItemPack(i, needRelease);
 	}
 	UTF8Char sbuff[64];
@@ -73,7 +73,7 @@ Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, Out
 		MemFreeArr(tmpBuff);
 	}
 	if (j == INVALID_INDEX)
-		return 0;
+		return nullptr;
 	Bool thisNeedRelease;
 	NN<IO::PackageFile> pkg;
 	if (GetItemPack(j, thisNeedRelease).SetTo(pkg))
@@ -85,5 +85,5 @@ Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, Out
 		}
 		return ret;
 	}
-	return 0;
+	return nullptr;
 }

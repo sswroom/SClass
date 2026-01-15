@@ -19,7 +19,7 @@
 
 Parser::FileParser::OziMapParser::OziMapParser()
 {
-	this->parsers = 0;
+	this->parsers = nullptr;
 }
 
 Parser::FileParser::OziMapParser::~OziMapParser()
@@ -60,10 +60,10 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 	NN<Parser::ParserList> parsers;
 
 	if (!this->parsers.SetTo(parsers))
-		return 0;
+		return nullptr;
 
 	if (!Text::StrEqualsC(&hdr[0], 34, UTF8STRC("OziExplorer Map Data File Version ")))
-		return 0;
+		return nullptr;
 
 	IO::StreamDataStream stm(fd);
 	Text::UTF8Reader reader(stm);
@@ -174,7 +174,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 
 		if (valid)
 		{
-			Optional<Media::ImageList> imgList = 0;
+			Optional<Media::ImageList> imgList = nullptr;
 			NN<Media::ImageList> nnimgList;
 			sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());

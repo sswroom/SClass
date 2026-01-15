@@ -38,7 +38,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NN<Text::String> txt)
 {
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
-	this->parent = 0;
+	this->parent = nullptr;
 	this->txt = txt->Clone();
 }
 
@@ -46,7 +46,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, Text::CStringNN txt)
 {
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
-	this->parent = 0;
+	this->parent = nullptr;
 	this->txt = Text::String::New(txt);
 }
 
@@ -361,7 +361,7 @@ Optional<UI::GUITreeView::TreeItem> GUITreeView_SearchChildSelected(UI::GUITreeV
 			gtk_tree_path_free(itemPath);
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
@@ -395,11 +395,11 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetSelectedItem()
 			gtk_tree_path_free(itemPath);
 		}
 		gtk_tree_path_free(selPath);
-		return 0;
+		return nullptr;
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 

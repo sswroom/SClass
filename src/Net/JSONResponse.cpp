@@ -260,7 +260,7 @@ void Net::JSONResponse::FindMissingFields()
 		while (i < j)
 		{
 			field = this->fieldMap.GetItemNoCheck(i);
-			if (field->IsOptional() || this->json->GetValue(field->GetName()) != 0)
+			if (field->IsOptional() || this->json->GetValue(field->GetName()).NotNull())
 			{
 			}
 			else
@@ -577,7 +577,7 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 					else if (afield->GetArrType() == Text::JSONType::Number)
 					{
 						NN<ArrayNativeField<Double>> anfield = NN<ArrayNativeField<Double>>::ConvertFrom(afield);
-						NN<const Data::ArrayList<Double>> arr = anfield->GetValue();
+						NN<const Data::ArrayListNative<Double>> arr = anfield->GetValue();
 						UOSInt i = 0;
 						UOSInt j = arr->GetCount();
 						if (j < 10)

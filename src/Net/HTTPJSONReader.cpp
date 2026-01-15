@@ -16,7 +16,7 @@ Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::TCPClientFactory> cli
 		printf("HTTPJSONReader: Error in connecting to server: %s\r\n", url.v.Ptr());
 #endif
 		cli.Delete();
-		return 0;
+		return nullptr;
 	}
 	if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
 	{
@@ -34,7 +34,7 @@ Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::TCPClientFactory> cli
 #endif
 				cli2.Delete();
 				cli.Delete();
-				return 0;
+				return nullptr;
 			}
 			cli.Delete();
 			cli = cli2;
@@ -51,7 +51,7 @@ Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::TCPClientFactory> cli
 		}
 #endif
 		cli.Delete();
-		return 0;
+		return nullptr;
 	}
 	cli.Delete();
 	Optional<Text::JSONBase> json = Text::JSONBase::ParseJSONStr(sb.ToCString());

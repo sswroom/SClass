@@ -4,7 +4,7 @@
 
 Optional<Media::ImageList> UI::ClipboardUtil::LoadImage(NN<UI::Clipboard> clipboard, NN<Parser::ParserList> parsers)
 {
-	Data::ArrayList<UInt32> dataTypes;
+	Data::ArrayListNative<UInt32> dataTypes;
 	clipboard->GetDataFormats(dataTypes);
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -30,5 +30,5 @@ Optional<Media::ImageList> UI::ClipboardUtil::LoadImage(NN<UI::Clipboard> clipbo
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }

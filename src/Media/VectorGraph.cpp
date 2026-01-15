@@ -27,7 +27,7 @@ Media::VectorGraph::VectorPenStyle::VectorPenStyle(UOSInt index, UInt32 color, D
 	}
 	else
 	{
-		this->pattern = 0;
+		this->pattern = nullptr;
 		this->nPattern = 0;
 	}
 }
@@ -250,7 +250,7 @@ void Media::VectorGraph::SetVDPI(Double dpi)
 
 UnsafeArrayOpt<UInt8> Media::VectorGraph::GetImgBits(OutParam<Bool> revOrder)
 {
-	return 0;
+	return nullptr;
 }
 
 void Media::VectorGraph::GetImgBitsEnd(Bool modified)
@@ -259,7 +259,7 @@ void Media::VectorGraph::GetImgBitsEnd(Bool modified)
 
 Optional<Media::EXIFData> Media::VectorGraph::GetEXIF() const
 {
-	return 0;
+	return nullptr;
 }
 
 Media::PixelFormat Media::VectorGraph::GetPixelFormat() const
@@ -284,11 +284,11 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, NN
 	pt[1] = Math::Coord2DDbl(x2, y2);
 	NN<Math::Geometry::LineString> pl;
 	NN<VectorStyles> style;
-	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, pt, 2, 0, 0));
+	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, pt, 2, nullptr, nullptr));
 	style = MemAllocNN(VectorStyles);
 	style->pen = (Media::VectorGraph::VectorPenStyle*)p.Ptr();
-	style->brush = 0;
-	style->font = 0;
+	style->brush = nullptr;
+	style->font = nullptr;
 	this->items.Add(pl);
 	this->itemStyle.Add(style);
 	return true;
@@ -300,11 +300,11 @@ Bool Media::VectorGraph::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt n
 	Math_Int32Arr2DblArr(dPoints, points.Ptr(), nPoints * 2);
 	NN<Math::Geometry::LineString> pl;
 	NN<VectorStyles> style;
-	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, 0, 0));
+	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, nullptr, nullptr));
 	style = MemAllocNN(VectorStyles);
 	style->pen = (VectorPenStyle*)p.Ptr();
-	style->brush = 0;
-	style->font = 0;
+	style->brush = nullptr;
+	style->font = nullptr;
 	this->items.Add(pl);
 	this->itemStyle.Add(style);
 	MemFree(dPoints);
@@ -327,11 +327,11 @@ Bool Media::VectorGraph::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points
 {
 	NN<Math::Geometry::LineString> pl;
 	NN<VectorStyles> style;
-	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, points, nPoints, 0, 0));
+	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, points, nPoints, nullptr, nullptr));
 	style = MemAllocNN(VectorStyles);
 	style->pen = (VectorPenStyle*)p.Ptr();
-	style->brush = 0;
-	style->font = 0;
+	style->brush = nullptr;
+	style->font = nullptr;
 	this->items.Add(pl);
 	this->itemStyle.Add(style);
 	return true;
@@ -363,7 +363,7 @@ Bool Media::VectorGraph::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, 
 	style = MemAllocNN(VectorStyles);
 	style->pen = Optional<Media::VectorGraph::VectorPenStyle>::ConvertFrom(p);
 	style->brush = Optional<VectorBrushStyle>::ConvertFrom(b);
-	style->font = 0;
+	style->font = nullptr;
 	this->items.Add(vstr);
 	this->itemStyle.Add(style);
 	return true;
@@ -375,7 +375,7 @@ Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, N
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, 0, this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -389,7 +389,7 @@ Bool Media::VectorGraph::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, 0, this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -403,7 +403,7 @@ Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, NN<Text::String>
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, 0, this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -417,7 +417,7 @@ Bool Media::VectorGraph::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN 
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, 0, this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -431,7 +431,7 @@ Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str, 
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, UOSInt2Double(buffSize), this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -445,7 +445,7 @@ Bool Media::VectorGraph::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, N
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, tl, 0, UOSInt2Double(buffSize), this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -459,7 +459,7 @@ Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -473,7 +473,7 @@ Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN
 	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, str, center, angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
+	style->pen = nullptr;
 	style->brush = NN<VectorBrushStyle>::ConvertFrom(b);
 	style->font = NN<VectorFontStyle>::ConvertFrom(f);
 	this->items.Add(vstr);
@@ -491,12 +491,12 @@ Bool Media::VectorGraph::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 		return false;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
-	Media::SharedImage simg(imgList, 0);
+	Media::SharedImage simg(imgList, nullptr);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, tl.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
-	style->brush = 0;
-	style->font = 0;
+	style->pen = nullptr;
+	style->brush = nullptr;
+	style->font = nullptr;
 	this->items.Add(vimg);
 	this->itemStyle.Add(style);
 	return true;
@@ -509,12 +509,12 @@ Bool Media::VectorGraph::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DD
 	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
-	Media::SharedImage simg(imgList, 0);
+	Media::SharedImage simg(imgList, nullptr);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(img->info.dispSize.x) * this->GetHDPI() / img->info.hdpi, tl.y + UOSInt2Double(img->info.dispSize.y) * img->info.par2 * this->GetVDPI() / img->info.vdpi), true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
-	style->brush = 0;
-	style->font = 0;
+	style->pen = nullptr;
+	style->brush = nullptr;
+	style->font = nullptr;
 	this->items.Add(vimg);
 	this->itemStyle.Add(style);
 	return true;
@@ -530,12 +530,12 @@ Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL
 		return false;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
-	Media::SharedImage simg(imgList, 0);
+	Media::SharedImage simg(imgList, nullptr);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, Math::Coord2DDbl(destTL.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, destTL.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, Text::CString(nullptr), 0, 0));
 	style = MemAllocNN(VectorStyles);
-	style->pen = 0;
-	style->brush = 0;
-	style->font = 0;
+	style->pen = nullptr;
+	style->brush = nullptr;
+	style->font = nullptr;
 	this->items.Add(vimg);
 	this->itemStyle.Add(style);
 	return true;
@@ -687,7 +687,7 @@ void Media::VectorGraph::CopyBits(OSInt x, OSInt y, UnsafeArray<UInt8> imgPtr, U
 
 Optional<Media::StaticImage> Media::VectorGraph::ToStaticImage() const
 {
-	return 0;
+	return nullptr;
 }
 
 UOSInt Media::VectorGraph::SavePng(NN<IO::SeekableStream> stm)
@@ -775,7 +775,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 		}
 		else
 		{
-			dp = 0;
+			dp = nullptr;
 		}
 		if (styles->font.SetTo(font))
 		{
@@ -783,7 +783,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 		}
 		else
 		{
-			df = 0;
+			df = nullptr;
 		}
 		NN<VectorBrushStyle> brush;
 		if (styles->brush.SetTo(brush))
@@ -792,7 +792,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 		}
 		else
 		{
-			ob = 0;
+			ob = nullptr;
 		}
 
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)

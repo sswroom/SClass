@@ -689,7 +689,7 @@ Optional<Text::String> Data::VariItem::GetAsNewString() const
 	{
 	case ItemType::Unknown:
 	case ItemType::Null:
-		return 0;
+		return nullptr;
 	case ItemType::F32:
 		s = Text::String::New(32);
 		s->leng = (UOSInt)(Text::StrDouble(s->v, this->val.f32) - s->v);
@@ -769,7 +769,7 @@ Optional<Text::String> Data::VariItem::GetAsNewString() const
 		s->leng = (UOSInt)(Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(s->v, UTF8STRC("{"))), UTF8STRC("}")) - s->v);
 		return s;
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -885,7 +885,7 @@ Optional<Math::Geometry::Vector2D> Data::VariItem::GetAsNewVector() const
 		Math::WKTReader reader(0);
 		return reader.ParseWKT(this->val.str->v);
 	}
-	return 0;
+	return nullptr;
 }
 
 Data::UUID *Data::VariItem::GetAsNewUUID() const
@@ -906,7 +906,7 @@ Data::ReadonlyArray<UInt8> *Data::VariItem::GetAndRemoveByteArr()
 Optional<Math::Geometry::Vector2D> Data::VariItem::GetAndRemoveVector()
 {
 	if (this->itemType != ItemType::Vector)
-		return 0;
+		return nullptr;
 	this->itemType = ItemType::Null;
 	return this->val.vector;
 }
@@ -1927,7 +1927,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, NN<VariItem> item)
 			ItemType itemType = item->GetItemType();
 			if (itemType == ItemType::Null)
 			{
-				*(Optional<Text::String>*)ptr = 0;
+				*(Optional<Text::String>*)ptr = nullptr;
 			}
 			else if (itemType == ItemType::Str)
 			{

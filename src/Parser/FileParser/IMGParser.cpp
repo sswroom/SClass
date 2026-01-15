@@ -37,5 +37,5 @@ Optional<IO::ParsedObject> Parser::FileParser::IMGParser::ParseFileHdr(NN<IO::St
 		NEW_CLASS(data, IO::FileSectorData(fd, 0, fd->GetDataSize(), 512));
 		return data;
 	}
-	return 0;
+	return nullptr;
 }

@@ -15,7 +15,7 @@ void Math::CesiumEntityWriter::SetLastError(Text::CStringNN lastError)
 
 Math::CesiumEntityWriter::CesiumEntityWriter()
 {
-	this->lastError = 0;
+	this->lastError = nullptr;
 }
 
 Math::CesiumEntityWriter::~CesiumEntityWriter()

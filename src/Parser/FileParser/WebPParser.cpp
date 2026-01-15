@@ -46,14 +46,14 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 {
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 32 || fileLen > 104857600)
-		return 0;
+		return nullptr;
 	if (ReadNInt32(&hdr[0]) != *(Int32*)"RIFF" || ReadUInt32(&hdr[4]) != (fileLen - 8) || ReadNInt32(&hdr[8]) != *(Int32*)"WEBP")
-		return 0;
+		return nullptr;
 
 	Data::ByteBuffer fileData((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileData) != fileLen)
 	{
-		return 0;
+		return nullptr;
 	}
 	WebPData data;
 	data.bytes = fileData.Arr().Ptr();
@@ -61,7 +61,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	WebPDemuxer* demux = WebPDemux(&data);
 	if (demux == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	UInt32 width = WebPDemuxGetI(demux, WEBP_FF_CANVAS_WIDTH);
@@ -69,7 +69,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	UInt32 flags = WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
 
 	Data::ArrayListNN<Media::StaticImage> imgList;
-	Data::ArrayList<Int32> imgDur;
+	Data::ArrayListNative<Int32> imgDur;
 	UOSInt i;
 	UOSInt j;
 	NN<Media::StaticImage> simg;
@@ -174,7 +174,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	
 	if (imgList.GetCount() == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	Media::ImageList *ret;
 	NEW_CLASS(ret, Media::ImageList(fd->GetFullFileName()));

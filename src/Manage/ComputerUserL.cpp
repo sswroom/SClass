@@ -12,5 +12,5 @@ UnsafeArrayOpt<UTF8Char> Manage::ComputerUser::GetProcessUser(UnsafeArray<UTF8Ch
 	{
 		return Text::StrConcat(sbuff, (const UTF8Char*)pw->pw_name);
 	}
-	return 0;
+	return nullptr;
 }

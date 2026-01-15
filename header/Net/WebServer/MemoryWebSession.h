@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_MEMORYWEBSESSION
 #define _SM_NET_WEBSERVER_MEMORYWEBSESSION
-#include "Data/FastStringMap.hpp"
+#include "Data/FastStringMapNative.hpp"
 #include "Net/WebServer/WebSession.h"
 #include "Sync/Mutex.h"
 
@@ -13,7 +13,7 @@ namespace Net
 		private:
 			Net::BrowserInfo::BrowserType browser;
 			Manage::OSInfo::OSType os;
-			Data::FastStringMap<Int64> items;
+			Data::FastStringMapNative<Int64> items;
 			NN<Text::String> origin;
 			Sync::Mutex mut;
 			Int64 sessId;

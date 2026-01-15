@@ -247,7 +247,7 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 	const UInt8 *ptr = dataBuff.Ptr();
 	JPEGDecoder_ErrorMgr jerr;
 	jpeg_decompress_struct cinfo;
-	Optional<Media::StaticImage> img = 0;
+	Optional<Media::StaticImage> img = nullptr;
 	NN<Media::StaticImage> nnimg;
 	int ret;
 	UInt8 *row = 0;
@@ -257,7 +257,7 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 		if (row) MemFree(row);
 		img.Delete();
 		jpeg_destroy_decompress(&cinfo);
-		return 0;
+		return nullptr;
 	}
 	jpeg_create_decompress(&cinfo);
 #ifdef LIBJPEG_TURBO_VERSION_NUMBER

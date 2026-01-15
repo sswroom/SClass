@@ -110,7 +110,7 @@ Bool SSWR::VAMS::VAMSBTList::HasProg(Int32 progId)
 }
 
 
-UOSInt SSWR::VAMS::VAMSBTList::GetProgList(NN<Data::ArrayList<Int32>> progList)
+UOSInt SSWR::VAMS::VAMSBTList::GetProgList(NN<Data::ArrayListNative<Int32>> progList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	return this->itemMap.AddKeysTo(progList);

@@ -12,7 +12,7 @@ namespace Data
 		ICaseStringMapObj(NN<const ICaseStringMapObj<T>> map);
 		virtual ~ICaseStringMapObj();
 
-		virtual NN<StringMap<T>> Clone() const;
+		virtual NN<StringMapObj<T>> Clone() const;
 	};
 
 

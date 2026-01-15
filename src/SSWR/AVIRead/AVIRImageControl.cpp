@@ -114,7 +114,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 
 	UOSInt i;
 	UOSInt colCnt;
-	NN<const Data::ArrayList<ImageSetting*>> imgSettList;
+	NN<const Data::ArrayListObj<ImageSetting*>> imgSettList;
 	ImageSetting *imgSett;
 	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	NN<Parser::ParserList> parsers;
@@ -209,7 +209,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 							mutUsage.BeginUse();
 							{
 								IO::FileStream fs(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-								exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), imgList, 0);
+								exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), imgList, nullptr);
 							}
 							mutUsage.EndUse();
 						}
@@ -236,8 +236,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 							status->setting.cropWidth = 0;
 							status->setting.cropHeight = 0;
 						}
-						status->previewImg = 0;
-						status->previewImg2 = 0;
+						status->previewImg = nullptr;
+						status->previewImg2 = nullptr;
 						Sync::MutexUsage imgMutUsage(this->imgMut);
 						this->imgMap.PutC(status->fileName, status);
 						this->imgMapUpdated = true;
@@ -321,7 +321,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			{
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("tif"));
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, 0);
+				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, nullptr);
 			}
 			ioMutUsage.EndUse();
 		}
@@ -460,14 +460,14 @@ UnsafeArrayOpt<Double> SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CSt
 	}
 	camera = MemAllocNN(SSWR::AVIRead::AVIRImageControl::CameraCorr);
 	camera->gammaCnt = 0;
-	camera->gammaParam = 0;
+	camera->gammaParam = nullptr;
 	this->cameraMap.PutC(cameraName, camera);
 
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, cameraName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".gamma"));
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Double> gammaVals;
+	Data::ArrayListNative<Double> gammaVals;
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);
@@ -500,7 +500,7 @@ UnsafeArrayOpt<Double> SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CSt
 SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIForm> frm, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine(), colorSess), filter(core->GetColorManager())
 {
 	this->core = core;
-	this->folderPath = 0;
+	this->folderPath = nullptr;
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
 	this->exportCurrCnt = 0;
@@ -514,7 +514,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUI
 	this->imgUpdated = false;
 	this->previewSize = 160;
 	this->currSel = 0;
-	this->dispImg = 0;
+	this->dispImg = nullptr;
 	this->dispImgChg = true;
 	this->progHdlr = 0;
 	this->progHdlrObj = 0;
@@ -584,7 +584,7 @@ void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(NN<const Media::ColorHandl
 		if (status->previewImg2.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
-			status->previewImg2 = 0;
+			status->previewImg2 = nullptr;
 		}
 	}
 }
@@ -615,7 +615,7 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 		if (status->previewImg2.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
-			status->previewImg2 = 0;
+			status->previewImg2 = nullptr;
 		}
 	}
 }
@@ -684,8 +684,8 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 				status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_IGNORE_ALPHA);
 				this->UpdateImgPreview(status);
 			}
-			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos))), Math::Size2DDbl(UOSInt2Double(scnW), itemBH), 0, barr[status->setting.flags & 3]);
-			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH))), Math::Size2DDbl(UOSInt2Double(scnW), itemTH - itemBH), 0, barr[4]);
+			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos))), Math::Size2DDbl(UOSInt2Double(scnW), itemBH), nullptr, barr[status->setting.flags & 3]);
+			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH))), Math::Size2DDbl(UOSInt2Double(scnW), itemTH - itemBH), nullptr, barr[4]);
 			NN<Media::DrawImage> previewImg2;
 			if (status->previewImg2.SetTo(previewImg2))
 			{
@@ -706,7 +706,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 		}
 		if ((j + 1) * itemTH - scrPos < scnH)
 		{
-			dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((j + 1) * itemTH - scrPos)), Math::Size2DDbl(UOSInt2Double(scnW), UOSInt2Double(scnH) - UOSInt2Double((j + 1) * itemTH - scrPos)), 0, barr[4]);
+			dimg->DrawRect(Math::Coord2DDbl(0, UOSInt2Double((j + 1) * itemTH - scrPos)), Math::Size2DDbl(UOSInt2Double(scnW), UOSInt2Double(scnH) - UOSInt2Double((j + 1) * itemTH - scrPos)), nullptr, barr[4]);
 		}
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
@@ -721,12 +721,12 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 			if (status->previewImg.SetTo(img))
 			{
 				this->deng->DeleteImage(img);
-				status->previewImg = 0;
+				status->previewImg = nullptr;
 			}
 			if (status->previewImg2.SetTo(img))
 			{
 				this->deng->DeleteImage(img);
-				status->previewImg2 = 0;
+				status->previewImg2 = nullptr;
 			}
 		}
 	}
@@ -805,7 +805,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 				status = this->imgMap.GetItemNoCheck(i);
 				status->setting.flags &= ~1;
 			}
-			clkStatus = 0;
+			clkStatus = nullptr;
 			if (this->imgMap.GetItem((UOSInt)clickIndex).SetTo(status))
 			{
 				status->setting.flags |= 1;
@@ -825,7 +825,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 					}
 					else
 					{
-						this->dispHdlr(this->dispHdlrObj, nullptr, 0);
+						this->dispHdlr(this->dispHdlrObj, nullptr, nullptr);
 					}
 				}
 			}
@@ -864,7 +864,7 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(Text::CString folderPath)
 		Sync::MutexUsage mutUsage(this->folderMut);
 		this->EndFolder();
 		sfolderPath->Release();
-		this->folderPath = 0;
+		this->folderPath = nullptr;
 	}
 	Text::CStringNN nnfolderPath;
 	if (folderPath.SetTo(nnfolderPath) && nnfolderPath.leng > 0)
@@ -882,7 +882,7 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(Text::CString folderPath)
 		}
 	}
 	this->currSel = 0;
-	this->dispImg = 0;
+	this->dispImg = nullptr;
 }
 
 Optional<Text::String> SSWR::AVIRead::AVIRImageControl::GetFolder()
@@ -953,8 +953,8 @@ void SSWR::AVIRead::AVIRImageControl::SetProgressHandler(ProgressUpdated hdlr, A
 Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(Text::CStringNN fileName)
 {
 	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
-	Optional<Media::StaticImage> outImg = 0;
-	Optional<Media::ImageList> imgList = 0;
+	Optional<Media::StaticImage> outImg = nullptr;
+	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
 	NN<Media::RasterImage> img;
 
@@ -987,8 +987,8 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(Text::CS
 Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(Text::CStringNN fileName)
 {
 	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
-	Optional<Media::StaticImage> outImg = 0;
-	Optional<Media::ImageList> imgList = 0;
+	Optional<Media::StaticImage> outImg = nullptr;
+	Optional<Media::ImageList> imgList = nullptr;
 	NN<Media::ImageList> nnimgList;
 	NN<Media::RasterImage> img;
 
@@ -1025,7 +1025,7 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(NN<Media::StaticImage> srcImg
 	}
 	else
 	{
-		gammaParam = 0;
+		gammaParam = nullptr;
 		gammaCnt = 0;
 	}
 
@@ -1065,7 +1065,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(NN<SSWR::AVIRead::AVIRIma
 	}
 	else
 	{
-		gammaParam = 0;
+		gammaParam = nullptr;
 		gammaCnt = 0;
 	}
 	Sync::MutexUsage mutUsage(this->filterMut);
@@ -1196,10 +1196,10 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 
 	if (i < 0)
 	{
-		this->dispImg = 0;
+		this->dispImg = nullptr;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, nullptr, 0);
+			this->dispHdlr(this->dispHdlrObj, nullptr, nullptr);
 		}
 	}
 	else
@@ -1258,10 +1258,10 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 
 	if (i < 0)
 	{
-		this->dispImg = 0;
+		this->dispImg = nullptr;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, nullptr, 0);
+			this->dispHdlr(this->dispHdlrObj, nullptr, nullptr);
 		}
 	}
 	else

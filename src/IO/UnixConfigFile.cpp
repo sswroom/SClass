@@ -9,7 +9,7 @@ Optional<IO::ConfigFile> IO::UnixConfigFile::Parse(Text::CStringNN fileName)
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	if (fstm.IsError())
 	{
-		cfg = 0;
+		cfg = nullptr;
 	}
 	else
 	{
@@ -90,7 +90,7 @@ Optional<IO::ConfigFile> IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> re
 	if (cfg->GetCateCount() == 0)
 	{
 		DEL_CLASS(cfg);
-		return 0;
+		return nullptr;
 	}
 	return cfg;
 }

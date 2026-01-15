@@ -39,10 +39,10 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::
 	{
 		c = *tmpStr++;
 		if (c < '0' || c > '9')
-			return 0;
+			return nullptr;
 	}
 	if (*tmpStr != 0)
-		return 0;
+		return nullptr;
 	j = Text::StrToUInt32(code.v);
 
 	UnsafeArray<const UTF8Char> codePtr = code.v;
@@ -284,15 +284,15 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::
 
 	NN<Media::DrawImage> dimg;
 	if (!eng->CreateImage32(Math::Size2D<UOSInt>((4 + 21) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
-		return 0;
+		return nullptr;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawPen> p;
 	NN<Media::DrawFont> f;
 	b = dimg->NewBrushARGB(0xffffffff);
-	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
+	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), nullptr, b);
 	dimg->DelBrush(b);
 
-	p = dimg->NewPenARGB(0xff000000, 1, 0, 0);
+	p = dimg->NewPenARGB(0xff000000, 1, nullptr, 0);
 	i = 0;
 	j = 2 * codeWidth;
 	while (i < 21)

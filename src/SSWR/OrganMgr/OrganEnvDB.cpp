@@ -45,7 +45,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	NN<Category> cate;
 
 	this->cfg = IO::IniFile::ParseProgConfig(0);
-	this->db = 0;
+	this->db = nullptr;
 
 	NN<IO::ConfigFile> cfg;
 	if (!this->cfg.SetTo(cfg))
@@ -83,14 +83,14 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	{
 		this->cfgImgDirBase->v[i - 1] = 0;
 	}
-	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, 0, false);
+	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, nullptr, false);
 	if (cfg->GetValue(CSTR("MySQLDB")).SetTo(cfgMySQLDB) && cfg->GetValue(CSTR("MySQLHost")).SetTo(cfgMySQLHost))
 	{
 		this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, nullptr);
 	}
 	else if (cfg->GetValue(CSTR("DBDSN")).SetTo(cfgDSN))
 	{
-		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, 0, this->log, nullptr);
+		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, nullptr, this->log, nullptr);
 	}
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -215,7 +215,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 
 		UserFileTimeComparator tcomparator;
 		Data::Sort::ArtificialQuickSort::Sort<NN<UserFileInfo>>(userFileList, tcomparator);
-		webUser = 0;
+		webUser = nullptr;
 		i = 0;
 		j = userFileList.GetCount();
 		while (i < j)
@@ -234,7 +234,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 
 		UserFileSpeciesComparator scomparator;
 		Data::Sort::ArtificialQuickSort::Sort<NN<UserFileInfo>>(userFileList, scomparator);
-		species = 0;
+		species = nullptr;
 		i = 0;
 		j = userFileList.GetCount();
 		while (i < j)
@@ -279,7 +279,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 
 		WebFileSpeciesComparator comparator;
 		Data::Sort::ArtificialQuickSort::Sort<NN<WebFileInfo>>(fileList, comparator);
-		species = 0;
+		species = nullptr;
 		i = 0;
 		j = fileList.GetCount();
 		while (i < j)
@@ -714,7 +714,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 			imgItem->SetFileType(OrganImageItem::FileType::WebFile);
 			imgItem->SetSrcURL(webFile->srcUrl.Ptr());
 			imgItem->SetImgURL(webFile->imgUrl.Ptr());
-			imgItem->SetUserFile(0);
+			imgItem->SetUserFile(nullptr);
 			imgItem->SetWebFile(webFile);
 			items->Add(imgItem);
 
@@ -1029,7 +1029,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(NN<Data::ArrayListNN<Organ
 	return cnt;
 }
 
-UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayList<UInt32>> colors, Optional<OrganGroup> grp)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayListNative<UInt32>> colors, Optional<OrganGroup> grp)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -1123,7 +1123,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(NN<Data::ArrayListNN<User
 	return items->GetCount() - cnt;
 }
 
-UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayList<Int32>> speciesIds)
+UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayListNative<Int32>> speciesIds)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -1197,7 +1197,7 @@ Optional<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
-		return 0;
+		return nullptr;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
 	Int32 photoGroup;
@@ -1252,7 +1252,7 @@ Optional<SSWR::OrganMgr::OrganSpecies> SSWR::OrganMgr::OrganEnvDB::GetSpecies(In
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
-		return 0;
+		return nullptr;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
 	OrganSpecies *sp = 0;
@@ -1679,11 +1679,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				Bool succ;
 				if (moveFile)
 				{
-					succ = IO::FileUtil::MoveFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0);
+					succ = IO::FileUtil::MoveFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 				}
 				else
 				{
-					succ = IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0);
+					succ = IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 				}
 				if (succ)
 				{
@@ -1740,12 +1740,12 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							userFile->crcVal = crcVal;
 							userFile->rotType = 0;
 							userFile->camera = camera;
-							userFile->descript = 0;
+							userFile->descript = nullptr;
 							userFile->cropLeft = 0;
 							userFile->cropTop = 0;
 							userFile->cropRight = 0;
 							userFile->cropBottom = 0;
-							userFile->location = 0;
+							userFile->location = nullptr;
 							userFile->locType = locType;
 							this->userFileMap.Put(userFile->id, userFile);
 
@@ -1802,7 +1802,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		Data::Timestamp fileTime = 0;
 		NN<UserFileInfo> userFile;
 		Bool valid = false;
-		Optional<Media::DrawImage> graphImg = 0;
+		Optional<Media::DrawImage> graphImg = nullptr;
 		NN<Media::DrawImage> nngraphImg;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
@@ -1907,11 +1907,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				Bool succ;
 				if (moveFile)
 				{
-					succ = IO::FileUtil::MoveFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0);
+					succ = IO::FileUtil::MoveFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 				}
 				else
 				{
-					succ = IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0);
+					succ = IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 				}
 				if (succ)
 				{
@@ -1940,7 +1940,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendInt32((Int32)crcVal);
 						sql.AppendCmdC(CSTR(", "));
-						sql.AppendStrUTF8(0);
+						sql.AppendStrUTF8(nullptr);
 						sql.AppendCmdC(CSTR(")"));
 						if (db->ExecuteNonQuery(sql.ToCString()) > 0)
 						{
@@ -1957,13 +1957,13 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							userFile->dataFileName = Text::String::NewP(dataFileName, sptr);
 							userFile->crcVal = crcVal;
 							userFile->rotType = 0;
-							userFile->camera = 0;
-							userFile->descript = 0;
+							userFile->camera = nullptr;
+							userFile->descript = nullptr;
 							userFile->cropLeft = 0;
 							userFile->cropTop = 0;
 							userFile->cropRight = 0;
 							userFile->cropBottom = 0;
-							userFile->location = 0;
+							userFile->location = nullptr;
 							userFile->locType = LocType::Unknown;
 							this->userFileMap.Put(userFile->id, userFile);
 
@@ -2038,7 +2038,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		sptr = this->GetSpeciesDir(sp, sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = fileName.Substring(i + 1).ConcatTo(sptr);
-		if (IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0))
+		if (IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, nullptr, 0))
 		{
 			if (firstPhoto)
 			{
@@ -2769,7 +2769,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> i
 			{
 				break;
 			}
-			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName()->ToCString(), CSTRP(sbuff, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
+			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName()->ToCString(), CSTRP(sbuff, sptr2), IO::FileUtil::FileExistAction::Fail, nullptr, 0))
 			{
 				Text::StringBuilderUTF8 sb;
 				NN<Text::String> s;
@@ -2796,7 +2796,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> i
 	{
 		Text::StringBuilderUTF8 sb;
 		Text::CStringNN name;
-		UnsafeArrayOpt<const UTF8Char> srcDir = 0;
+		UnsafeArrayOpt<const UTF8Char> srcDir = nullptr;
 		sptr[0] = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr + 1, UTF8STRC("web.txt"));
 		{
@@ -3270,7 +3270,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 				{
 					NN<DB::DBReader> reader;
 					Bool found = false;
-					if (db->QueryTableData(nullptr, CSTR("Records"), 0, 0, 0, nullptr, 0).SetTo(reader))
+					if (db->QueryTableData(nullptr, CSTR("Records"), nullptr, 0, 0, nullptr, nullptr).SetTo(reader))
 					{
 						while (reader->ReadNext())
 						{
@@ -3314,7 +3314,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 		{
 			sptr = Text::StrConcatC(sptr, &fileName.v[i], fileName.leng - i);
 		}
-		if (IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0))
+		if (IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, nullptr, 0))
 		{
 			DB::SQLBuilder sql(db);
 			sql.AppendCmdC(CSTR("insert into datafile (fileType, startTime, endTime, oriFileName, dataFileName, webuser_id) values ("));
@@ -3510,7 +3510,7 @@ Optional<Map::GPSTrack> SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NN<DataFileInfo
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = dataFile->fileName->ConcatTo(sptr);
 	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-	Optional<Map::GPSTrack> trk = 0;
+	Optional<Map::GPSTrack> trk = nullptr;
 	NN<Map::MapDrawLayer> lyr;
 	if (Optional<Map::MapDrawLayer>::ConvertFrom(this->parsers.ParseFileType(fd, IO::ParserType::MapLayer)).SetTo(lyr))
 	{
@@ -3520,7 +3520,7 @@ Optional<Map::GPSTrack> SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NN<DataFileInfo
 		}
 		else
 		{
-			trk = 0;
+			trk = nullptr;
 			lyr.Delete();
 		}
 	}
@@ -3933,7 +3933,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 		Optional<UserFileInfo> userFile = img->GetUserFile();
 		NN<UserFileInfo> nnuserFile;
 		outUserFile.Set(userFile);
-		outWebFile.Set(0);
+		outWebFile.Set(nullptr);
 		if (userFile.SetTo(nnuserFile))
 		{
 			UTF8Char sbuff[512];
@@ -3966,7 +3966,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 				if (!this->parsers.ParseFile(fd).SetTo(pobj))
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
@@ -3999,15 +3999,15 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 				return imgList;
 			}
 			pobj.Delete();
-			return 0;
+			return nullptr;
 		}
-		return 0;
+		return nullptr;
 	}
 	else if (img->GetFileType() == OrganImageItem::FileType::WebFile)
 	{
 		Optional<WebFileInfo> wfile = img->GetWebFile();
 		NN<WebFileInfo> nnwfile;
-		outUserFile.Set(0);
+		outUserFile.Set(nullptr);
 		outWebFile.Set(wfile);
 		if (wfile.SetTo(nnwfile))
 		{
@@ -4030,7 +4030,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 				if (!this->parsers.ParseFile(fd).SetTo(pobj))
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
@@ -4061,20 +4061,20 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 				return imgList;
 			}
 			pobj.Delete();
-			return 0;
+			return nullptr;
 		}
-		return 0;
+		return nullptr;
 	}
 	else if (img->GetFullName())
 	{
-		outUserFile.Set(0);
-		outWebFile.Set(0);
+		outUserFile.Set(nullptr);
+		outWebFile.Set(nullptr);
 		NN<IO::ParsedObject> pobj;
 		{
 			IO::StmData::FileData fd(Text::String::OrEmpty(img->GetFullName()), false);
 			if (!this->parsers.ParseFile(fd).SetTo(pobj))
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
@@ -4082,13 +4082,13 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 			return NN<Media::ImageList>::ConvertFrom(pobj);
 		}
 		pobj.Delete();
-		return 0;
+		return nullptr;
 	}
 	else
 	{
-		outUserFile.Set(0);
-		outWebFile.Set(0);
-		return 0;
+		outUserFile.Set(nullptr);
+		outWebFile.Set(nullptr);
+		return nullptr;
 	}
 }
 
@@ -4103,7 +4103,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	UOSInt i;
-	Optional<IO::ParsedObject> pobj = 0;
+	Optional<IO::ParsedObject> pobj = nullptr;
 	if (sp->GetPhotoId() != 0)
 	{
 		NN<UserFileInfo> userFile;
@@ -4113,7 +4113,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	else if (sp->GetPhotoWId() != 0)
@@ -4127,7 +4127,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 				return this->ParseWebImage(wfile);
 			}
 		}
-		return 0;
+		return nullptr;
 	}
 
 	Text::CStringNN nncoverName;
@@ -4204,7 +4204,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 			}
 		}
 	}
-	Optional<Media::ImageList> imgList = 0;
+	Optional<Media::ImageList> imgList = nullptr;
 	NN<IO::ParsedObject> nnpobj;
 	if (pobj.SetTo(nnpobj))
 	{
@@ -4242,7 +4242,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFil
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 		if (!this->parsers.ParseFile(fd).SetTo(pobj))
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
@@ -4275,7 +4275,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFil
 		return imgList;
 	}
 	pobj.Delete();
-	return 0;
+	return nullptr;
 }
 
 Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileInfo> wfile)
@@ -4298,7 +4298,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileI
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 		if (!this->parsers.ParseFile(fd).SetTo(pobj))
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
@@ -4329,7 +4329,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileI
 		return imgList;
 	}
 	pobj.Delete();
-	return 0;
+	return nullptr;
 }
 
 SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UOSInt resultStrBuffSize, Int32 *parentId)
@@ -4770,7 +4770,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB()
 	Data::ArrayListNN<OrganSpecies> spList;
 	UOSInt i;
 	NN<OrganSpecies> sp;
-	this->GetGroupAllSpecies(spList, 0);
+	this->GetGroupAllSpecies(spList, nullptr);
 	i = spList.GetCount();
 	while (i-- > 0)
 	{
@@ -4802,7 +4802,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 	UOSInt j;
 	Int32 id;
 	Bool allSucc;
-	Data::ArrayList<UpgradeDBSpInfo*> spList;
+	Data::ArrayListObj<UpgradeDBSpInfo*> spList;
 	UpgradeDBSpInfo *sp;
 	Text::StringBuilderUTF8 sb;
 	NN<DB::DBReader> r;
@@ -4934,7 +4934,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 								*sptr2++ = IO::Path::PATH_SEPERATOR;
 								sptr2 = Text::StrInt32(sptr2, id);
 								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".jpg"));
-								if (!IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
+								if (!IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, nullptr, 0))
 								{
 									allSucc = false;
 
@@ -4951,7 +4951,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 
 										sql.Clear();
 										sql.AppendCmdC(CSTR("update species set photo = "));
-										sql.AppendStrUTF8(0);
+										sql.AppendStrUTF8(nullptr);
 										sql.AppendCmdC(CSTR(", photoWId = "));
 										sql.AppendInt32(id);
 										sql.AppendCmdC(CSTR(" where id = "));
@@ -5021,7 +5021,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(NN<OrganSpecies> sp)
 	}
 	if (coverName.SetTo(nncoverName) && nncoverName[0] == 0)
 	{
-		coverName = 0;
+		coverName = nullptr;
 	}
 
 	sptr = sbuff;
@@ -5113,7 +5113,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb"));
 	
 	IO::NullStream nstm;
-	exporter.ExportFile(nstm, CSTRP(sbuff, sptr2), db->GetDBConn(), 0);
+	exporter.ExportFile(nstm, CSTRP(sbuff, sptr2), db->GetDBConn(), nullptr);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Image"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
@@ -5131,7 +5131,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 			{
 				sptr2End = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
 				sptr3End = Text::StrConcatC(sptr3, sb.ToString(), sb.GetLength());
-				IO::FileUtil::CopyDir(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Fail, 0, 0);
+				IO::FileUtil::CopyDir(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 			}
 		}
 		db->CloseReader(r);
@@ -5145,7 +5145,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 	sptr3 = this->cfgDataPath->ConcatTo(sbuff2);
 	*sptr3++ = IO::Path::PATH_SEPERATOR;
 	sptr3End = Text::StrConcatC(sptr3, UTF8STRC("DataFile"));
-	IO::FileUtil::CopyDir(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Fail, 0, 0);
+	IO::FileUtil::CopyDir(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Fail, nullptr, 0);
 
 	if (db->ExecuteReader(CSTR("select fileType, fileTime, webuser_id, dataFileName from userfile")).SetTo(r))
 	{
@@ -5219,12 +5219,12 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 					}
 					else
 					{
-						imgList = 0;
+						imgList = nullptr;
 					}
 				}
 				else
 				{
-					IO::FileUtil::CopyFile(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Overwrite, 0, 0);
+					IO::FileUtil::CopyFile(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Overwrite, nullptr, 0);
 				}
 			}
 		}

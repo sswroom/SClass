@@ -35,7 +35,7 @@ Bool Crypto::Encrypt::RSAEnc::LoadPublicKeyFile(Text::CString filePath)
 
 UnsafeArrayOpt<const UInt8> Crypto::Encrypt::RSAEnc::GetSessKey()
 {
-	return 0;
+	return nullptr;
 }
 
 UOSInt Crypto::Encrypt::RSAEnc::GetSessKeyLen()
@@ -45,7 +45,7 @@ UOSInt Crypto::Encrypt::RSAEnc::GetSessKeyLen()
 
 UnsafeArrayOpt<const UInt8> Crypto::Encrypt::RSAEnc::GetIV()
 {
-	return 0;
+	return nullptr;
 }
 
 UOSInt Crypto::Encrypt::RSAEnc::GetIVLen()

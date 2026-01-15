@@ -106,7 +106,7 @@ namespace SSWR
 
 			Sync::Mutex fileMut;
 			Data::ArrayListStringNN fileNames;
-			Data::ArrayList<ActionType> fileAction;
+			Data::ArrayListNative<ActionType> fileAction;
 			Bool statusChg;
 			Bool threadRunning;
 			Bool threadToStop;

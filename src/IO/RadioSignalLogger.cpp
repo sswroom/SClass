@@ -126,10 +126,10 @@ void __stdcall IO::RadioSignalLogger::OnGSMUpdate(NN<Data::ArrayListNN<IO::GSMMo
 
 IO::RadioSignalLogger::RadioSignalLogger()
 {
-	this->fs = 0;
-	this->wifiCapture = 0;
-	this->btCapture = 0;
-	this->gsmCapturer = 0;
+	this->fs = nullptr;
+	this->wifiCapture = nullptr;
+	this->btCapture = nullptr;
+	this->gsmCapturer = nullptr;
 	this->wifiCnt = 0;
 	this->btCnt = 0;
 	this->gsmCnt = 0;
@@ -214,17 +214,17 @@ void IO::RadioSignalLogger::Stop()
 		if (this->btCapture.SetTo(btCapture))
 		{
 			btCapture->SetUpdateHandler(0, 0);
-			this->btCapture = 0;
+			this->btCapture = nullptr;
 		}
 		if (this->wifiCapture.SetTo(wifiCapture))
 		{
 			wifiCapture->SetUpdateHandler(0, 0);
-			this->wifiCapture = 0;
+			this->wifiCapture = nullptr;
 		}
 		if (this->gsmCapturer.SetTo(gsmCapturer))
 		{
 			gsmCapturer->SetUpdateHandler(0, 0);
-			this->gsmCapturer = 0;
+			this->gsmCapturer = nullptr;
 		}
 		this->fs.Delete();
 	}

@@ -116,7 +116,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> th
 IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MPEGFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (ReadMInt32(buff) != 0x000001ba)
@@ -771,9 +771,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 

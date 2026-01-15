@@ -552,17 +552,17 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 #if defined(VERBOSE)
 		printf("PDFParser: Error in reading xref\r\n");
 #endif
-		return 0;
+		return nullptr;
 	}
 	if (!sb->Equals(UTF8STRC("xref")))
 	{
 #if defined(VERBOSE)
 		printf("PDFParser: xref not found, ofst = %lld\r\n", env->lineBegin);
 #endif
-		return 0;
+		return nullptr;
 	}
 	PDFXRef *thisRef = 0;
-	Optional<PDFXRef> firstRef = 0;
+	Optional<PDFXRef> firstRef = nullptr;
 	PDFXRef *lastRef;
 	NN<PDFXRef> nnxref;
 	while (true)
@@ -587,7 +587,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 				printf("PDFParser: table not found before trailer\r\n");
 #endif
 				env->normalEnd = true;
-				return 0;
+				return nullptr;
 			}
 			sb->ClearStr();
 			if (!NextLine(env, sb, true))
@@ -758,10 +758,10 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 			thisRef = MemAlloc(PDFXRef, 1);
 			thisRef->startId = i;
 			thisRef->count = j;
-			thisRef->nextRef = 0;
+			thisRef->nextRef = nullptr;
 			if (lastRef)
 				lastRef->nextRef = thisRef;
-			thisRef->trailer = 0;
+			thisRef->trailer = nullptr;
 			thisRef->items = MemAlloc(PDFXRefItem, j);
 			if (firstRef.IsNull())
 				firstRef = thisRef;
@@ -806,7 +806,7 @@ Optional<Parser::FileParser::PDFParser::PDFXRef> Parser::FileParser::PDFParser::
 	{
 		FreeXRef(nnxref);
 	}
-	return 0;
+	return nullptr;
 }
 
 void Parser::FileParser::PDFParser::FreeXRef(NN<PDFXRef> xref)
@@ -849,7 +849,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 {
 	if (ReadNInt32(&hdr[0]) != ReadNInt32((const UInt8*)"%PDF") || hdr[4] != '-' || hdr[6] != '.')
 	{
-		return 0;
+		return nullptr;
 	}
 
 	NN<Media::PDFDocument> doc;
@@ -865,7 +865,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 	env.normalEnd = false;
 	env.succ = false;
 	Text::StringBuilderUTF8 sb;
-	Optional<PDFXRef> xref = 0;
+	Optional<PDFXRef> xref = nullptr;
 	NN<PDFXRef> nnxref;
 
 	UInt8 tmpBuff[32];
@@ -904,7 +904,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 	{
 		if (xref.SetTo(nnxref))
 			FreeXRef(nnxref);
-		return 0;
+		return nullptr;
 	}
 	NEW_CLASSNN(doc, Media::PDFDocument(fd->GetFullFileName(), sb.ToCString().Substring(5)));
 	sb.ClearStr();
@@ -1108,5 +1108,5 @@ Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::St
 	if (env.succ)
 		return doc;
 	doc.Delete();
-	return 0;
+	return nullptr;
 }

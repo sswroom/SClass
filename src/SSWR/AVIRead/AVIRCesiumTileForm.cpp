@@ -331,7 +331,7 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 		i++;
 	}
 	NEW_CLASSNN(this->hdlr, AVIRCesiumTileHandler(this->tileList));
-	NEW_CLASSNN(this->listener, Net::WebServer::WebListener(core->GetTCPClientFactory(), 0, this->hdlr, 0, 30, 1, 6, CSTR("CesiumTile/1.0"), false, Net::WebServer::KeepAlive::Always, true));
+	NEW_CLASSNN(this->listener, Net::WebServer::WebListener(core->GetTCPClientFactory(), nullptr, this->hdlr, 0, 30, 1, 6, CSTR("CesiumTile/1.0"), false, Net::WebServer::KeepAlive::Always, true));
 	UInt16 port = this->listener->GetListenPort();
 	if (port != 0)
 	{

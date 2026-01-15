@@ -37,7 +37,7 @@ namespace IO
 			virtual Bool SendInstruction(CommandType ct);
 			virtual Bool SendGetCommand(CommandType ct, Int32 *val, UnsafeArray<UTF8Char> sbuff);
 			virtual Bool SendSetCommand(CommandType ct, Int32 val);
-			virtual void GetSupportedCmd(Data::ArrayList<CommandType> *cmdList, Data::ArrayList<CommandFormat> *cmdFormats);
+			virtual void GetSupportedCmd(Data::ArrayListNative<CommandType> *cmdList, Data::ArrayListNative<CommandFormat> *cmdFormats);
 			static Bool GetInfo(IO::TVControl::TVInfo *info);
 		};
 	}

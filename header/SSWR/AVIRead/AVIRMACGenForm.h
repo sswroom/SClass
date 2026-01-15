@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMACGENFORM
 #define _SM_SSWR_AVIREAD_AVIRMACGENFORM
-#include "Data/BTreeUTF8Map.hpp"
+#include "Data/BTreeStringMapObj.hpp"
 #include "Net/MACInfo.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -29,7 +29,7 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboAdapter;
 			NN<UI::GUIButton> btnAdapterSet;
 
-			Data::BTreeUTF8Map<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>> macMap;
+			Data::BTreeStringMapObj<Optional<Data::ArrayListNN<Net::MACInfo::MACEntry>>> macMap;
 
 			static void __stdcall OnGenerateClicked(AnyType userObj);
 			static void __stdcall OnAdapterSetClicked(AnyType userObj);

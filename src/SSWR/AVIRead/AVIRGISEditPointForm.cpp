@@ -40,7 +40,7 @@ UI::EventState __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnMouseDown(AnyTyp
 		i = cnt;
 		while (i-- > 0)
 		{
-			strs[i] = 0;
+			strs[i] = nullptr;
 		}
 		Text::StringBuilderUTF8 sb;
 		UOSInt nameCol = me->lyr->GetNameCol();
@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnObjectsSelChg(AnyType user
 		}
 		else
 		{
-			me->navi->SetSelectedVector(0);
+			me->navi->SetSelectedVector(nullptr);
 		}
 		me->lyr->EndGetObject(sess);
 	}
@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditPointForm::OnDeleteClicked(AnyType user
 		me->lyr->DeleteVector(objId);
 		if (me->status == 0)
 		{
-			me->navi->SetSelectedVector(0);
+			me->navi->SetSelectedVector(nullptr);
 		}
 		me->UpdateList();
 	}

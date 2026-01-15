@@ -13,7 +13,7 @@ IO::Device::AM2315::AM2315(NN<IO::I2CChannel> channel, Bool toRelease)
 {
 	this->channel = channel;
 	this->toRelease = toRelease;
-	this->i2c = 0;
+	this->i2c = nullptr;
 	NN<IO::I2CMODBUS> i2c;
 	NEW_CLASSNN(i2c, IO::I2CMODBUS(this->channel, 20));
 
@@ -124,7 +124,7 @@ Optional<IO::I2CChannel> IO::Device::AM2315::CreateDefChannel(Int32 i2cBusNum)
 		printf("Error in opening i2c device");
 #endif
 		DEL_CLASS(channel);
-		return 0;
+		return nullptr;
 	}
 	return channel;
 }

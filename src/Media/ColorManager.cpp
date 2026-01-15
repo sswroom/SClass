@@ -64,7 +64,7 @@ void Media::MonitorColorManager::SetDefaultRGB(NN<Media::ColorHandler::RGBPARAM2
 Media::MonitorColorManager::MonitorColorManager(Optional<Text::String> profileName)
 {
 	this->profileName = Text::String::CopyOrNull(profileName);
-	this->monProfileFile = 0;
+	this->monProfileFile = nullptr;
 	this->SetDefault();
 	this->Load();
 }
@@ -72,7 +72,7 @@ Media::MonitorColorManager::MonitorColorManager(Optional<Text::String> profileNa
 Media::MonitorColorManager::MonitorColorManager(Text::CString profileName)
 {
 	this->profileName = Text::String::NewOrNull(profileName);
-	this->monProfileFile = 0;
+	this->monProfileFile = nullptr;
 	this->SetDefault();
 	this->Load();
 }
@@ -104,7 +104,7 @@ Bool Media::MonitorColorManager::Load()
 
 	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color").SetTo(regBase))
 	{
-		reg2 = 0;
+		reg2 = nullptr;
 		reg = regBase;
 		if (this->profileName.SetTo(s))
 		{
@@ -245,7 +245,7 @@ Bool Media::MonitorColorManager::Save()
 
 	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color").SetTo(regBase))
 	{
-		reg2 = 0;
+		reg2 = nullptr;
 		reg = regBase;
 		if (this->profileName.SetTo(s))
 		{

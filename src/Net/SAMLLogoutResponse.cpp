@@ -5,7 +5,7 @@ Net::SAMLLogoutResponse::SAMLLogoutResponse(ProcessError error, Text::CStringNN 
 {
 	this->error = error;
 	this->errorMessage = Text::String::New(errorMessage);
-	this->rawResponse = 0;
+	this->rawResponse = nullptr;
 	this->status = SAMLStatusCode::Unknown;
 }
 

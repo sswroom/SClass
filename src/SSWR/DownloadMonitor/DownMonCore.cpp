@@ -201,7 +201,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								}
 								sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, nullptr, bnt);
 								this->chkStatus = CS_CHECKING;
 							}
 						}
@@ -253,7 +253,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 									}
 									sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 									this->chkStatus = CS_MOVING;
-									IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, bnt);
+									IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, nullptr, bnt);
 								}
 								this->chkStatus = CS_CHECKING;
 							}
@@ -266,7 +266,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								}
 								sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, nullptr, bnt);
 								this->chkStatus = CS_CHECKING;
 							}
 						}
@@ -310,7 +310,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					}
 					sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 					this->chkStatus = CS_MOVING;
-					IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, bnt);
+					IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, nullptr, bnt);
 					this->chkStatus = CS_CHECKING;
 				}
 			}
@@ -354,7 +354,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 							sptr2 = Text::StrConcat(sptr2, sptr) - 4;
 							sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 							this->chkStatus = CS_MOVING;
-							IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, bnt);
+							IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, nullptr, bnt);
 						}
 						else
 						{
@@ -367,7 +367,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 							}
 							sptr2 = Text::StrConcat(sptr2, sptr);
 							this->chkStatus = CS_MOVING;
-							IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, bnt);
+							IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, nullptr, bnt);
 						}
 					}
 					this->chkStatus = CS_CHECKING;
@@ -419,7 +419,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr)) - 4;
 								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, nullptr, bnt);
 							}
 							else
 							{
@@ -432,7 +432,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								}
 								sptr2 = Text::StrConcat(sptr2, sptr);
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, nullptr, bnt);
 							}
 						}
 						this->chkStatus = CS_CHECKING;

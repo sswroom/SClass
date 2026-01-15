@@ -231,7 +231,7 @@ Optional<IO::ValgrindLog::StackEntry> SSWR::AVIRead::AVIRValgrindLogForm::GetOpt
 		}
 		i++;
 	}
-	return 0;
+	return nullptr;
 }
 
 SSWR::AVIRead::AVIRValgrindLogForm::AVIRValgrindLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
@@ -240,7 +240,7 @@ SSWR::AVIRead::AVIRValgrindLogForm::AVIRValgrindLogForm(Optional<UI::GUIClientCo
 	this->SetText(CSTR("Valgrind Log"));
 	
 	this->core = core;
-	this->log = 0;
+	this->log = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlFile = ui->NewPanel(*this);

@@ -43,7 +43,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 {
 	NN<Math::ArcGISPRJParser> prjParser;
 	if (!this->prjParser.SetTo(prjParser) || pobj->GetParserType() != IO::ParserType::PackageFile)
-		return 0;
+		return nullptr;
 	IO::PackageFile *relObj = 0;
 	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	while (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
@@ -59,20 +59,20 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 	if (index == INVALID_INDEX)
 	{
 		SDEL_CLASS(relObj);
-		return 0;
+		return nullptr;
 	}
 	NN<Map::ESRI::FileGDBDir> fgdb;
 	if (!Map::ESRI::FileGDBDir::OpenDir(pkg).SetTo(fgdb))
 	{
 		SDEL_CLASS(relObj);
-		return 0;
+		return nullptr;
 	}
 	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 	{
 		NN<DB::DBReader> r;
 		Data::ArrayListStringNN layers;
 		NN<Text::String> layerName;
-		if (fgdb->QueryTableData(nullptr, CSTR("GDB_Items"), 0, 0, 0, nullptr, 0).SetTo(r))
+		if (fgdb->QueryTableData(nullptr, CSTR("GDB_Items"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			while (r->ReadNext())
 			{

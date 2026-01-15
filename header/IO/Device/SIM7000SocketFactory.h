@@ -112,7 +112,7 @@ namespace IO
 
 			virtual Bool DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr);
 			virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr);
-			virtual UOSInt GetDNSList(NN<Data::ArrayList<UInt32>> dnsList);
+			virtual UOSInt GetDNSList(NN<Data::ArrayListNative<UInt32>> dnsList);
 			virtual Bool LoadHosts(NN<Net::DNSHandler> dnsHdlr);
 
 			virtual Bool ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4);

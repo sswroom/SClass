@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 			i++;
 		}
 		NN<DB::DBReader> r;
-		if (!me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, nullptr, 0).SetTo(r))
+		if (!me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, nullptr, nullptr).SetTo(r))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("Export Table Data"), me);
 			dlg.Delete();
@@ -111,7 +111,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 	this->chkAxisAware->SetRect(200, 0, 150, 23, false);
 	this->lblSchema = ui->NewLabel(this->pnlMain, CSTR("Schema"));
 	this->lblSchema->SetRect(0, 24, 100, 23, false);
-	if (schema.v == 0)
+	if (schema.v.IsNull())
 	{
 		schema = CSTR("");
 	}

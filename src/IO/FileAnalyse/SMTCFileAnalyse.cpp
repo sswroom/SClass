@@ -51,7 +51,7 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NN<Sync::Thread> th
 IO::FileAnalyse::SMTCFileAnalyse::SMTCFileAnalyse(NN<IO::StreamData> fd) : packetBuff(65535 + 23), thread(ParseThread, this, CSTR("SMTCFileAnalyse"))
 {
 	UInt8 buff[25];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	if (fd->GetRealData(0, 25, BYTEARR(buff)) != 25)
 	{
@@ -178,7 +178,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 	NN<IO::StreamData> fd;
 	if (!this->fd.SetTo(fd))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (index == 0)
 	{
@@ -190,7 +190,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 	NN<DataInfo> data;
 	if (index > this->dataList.GetCount())
 	{
-		return 0;
+		return nullptr;
 	}
 	Sync::MutexUsage mutUsage(this->dataMut);
 	data = this->dataList.GetItemNoCheck(index - 1);

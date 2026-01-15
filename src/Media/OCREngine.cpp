@@ -148,9 +148,9 @@ Optional<Text::String> Media::OCREngine::ParseInsideImage(Math::RectArea<UOSInt>
 {
 	if (this->clsData->currImg == 0 || area.min.x >= area.max.x || area.min.y >= area.max.y || area.max.x > (UOSInt)pixGetWidth(this->clsData->currImg) || area.max.y > (UOSInt)pixGetHeight(this->clsData->currImg))
 	{
-		return 0;
+		return nullptr;
 	}
-	Optional<Text::String> s = 0;
+	Optional<Text::String> s = nullptr;
 	this->clsData->api.SetRectangle((int)area.min.x, (int)area.min.y, (int)area.GetWidth(), (int)area.GetHeight());
 	char *resultText = this->clsData->api.GetUTF8Text();
 	if (resultText)

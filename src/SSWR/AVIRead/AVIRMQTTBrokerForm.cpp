@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 		}
 		else
 		{
-			Optional<Net::SSLEngine> ssl = 0;
+			Optional<Net::SSLEngine> ssl = nullptr;
 			if (sslEnable)
 			{
 				NN<Crypto::Cert::X509Cert> sslCert;
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 				{
 					me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);
 					broker.Delete();
-					me->broker = 0;
+					me->broker = nullptr;
 				}
 			}
 		}
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(AnyType userO
 		me->ui->ShowMsgOK(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
 		return;
 	}
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -242,8 +242,8 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientCont
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->sslCert = 0;
-	this->sslKey = 0;
+	this->sslCert = nullptr;
+	this->sslKey = nullptr;
 	this->topicListUpdated = false;
 	this->totalCount = 0;
 	this->dispCount = 0;
@@ -301,7 +301,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientCont
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
-	this->broker = 0;
+	this->broker = nullptr;
 	this->AddTimer(1000, OnTimerTick, this);
 }
 

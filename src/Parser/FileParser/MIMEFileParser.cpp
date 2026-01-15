@@ -39,5 +39,5 @@ Optional<IO::ParsedObject> Parser::FileParser::MIMEFileParser::ParseFileHdr(NN<I
 	{
 		return Text::MIMEObj::MailMessage::ParseFile(fd);
 	}
-	return 0;
+	return nullptr;
 }

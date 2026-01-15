@@ -83,7 +83,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UnsafeArray<UInt8> src
 IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("NFDumpFileAnaly"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	this->hasLZODecomp = true;
 
@@ -752,9 +752,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 	NN<IO::StreamData> fd;
 	if (!this->packs.GetItem(index).SetTo(pack))
-		return 0;
+		return nullptr;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	if (pack->packType == 0)
 	{

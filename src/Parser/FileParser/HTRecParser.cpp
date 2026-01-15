@@ -34,11 +34,11 @@ Optional<IO::ParsedObject> Parser::FileParser::HTRecParser::ParseFileHdr(NN<IO::
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"$#\" ")
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt32 recCnt = ReadUInt16(&hdr[83]);
 	if (fd->GetDataSize() != 96 + recCnt * 3)
-		return 0;
+		return nullptr;
 
 	Media::HTRecFile *file;
 	NEW_CLASS(file, Media::HTRecFile(fd));

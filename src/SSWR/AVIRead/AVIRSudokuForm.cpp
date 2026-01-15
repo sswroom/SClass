@@ -114,7 +114,7 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 	this->btnClear = ui->NewButton(this->pnlMain, CSTR("Clear"));
 	this->btnClear->SetRect(420, 4, 75, 23, false);
 	this->btnClear->HandleButtonClick(OnClearClicked, this);
-	NEW_CLASSNN(this->svMain, UI::GUISudokuViewer(ui, *this, this->core->GetDrawEngine(), 0, board));
+	NEW_CLASSNN(this->svMain, UI::GUISudokuViewer(ui, *this, this->core->GetDrawEngine(), nullptr, board));
 	this->svMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->svMain->HandleNumberInput(EventNumInput, this);
 	NN<UI::GUIMenu> mnu;

@@ -8,9 +8,9 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 {
 	this->tableName = Text::String::New(tableName);
 	this->gdbtableFD = gdbtableFD->GetPartialData(0, gdbtableFD->GetDataSize());
-	this->gdbtablxFD = 0;
+	this->gdbtablxFD = nullptr;
 	this->indexCnt = 0;
-	this->tableInfo = 0;
+	this->tableInfo = nullptr;
 	this->dataOfst = 0;
 	this->maxRowSize = 0;
 	this->prjParser = prjParser;
@@ -71,7 +71,7 @@ Map::ESRI::FileGDBTable::~FileGDBTable()
 	if (this->tableInfo.SetTo(tableInfo))
 	{
 		Map::ESRI::FileGDBUtil::FreeTableInfo(tableInfo);
-		this->tableInfo = 0;
+		this->tableInfo = nullptr;
 	}
 }
 
@@ -95,7 +95,7 @@ Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Optional<Data::ArrayL
 	NN<FileGDBTableInfo> tableInfo;
 	if (!this->tableInfo.SetTo(tableInfo))
 	{
-		return 0;
+		return nullptr;
 	}
 	NN<Map::ESRI::FileGDBReader> reader;
 	NEW_CLASSNN(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, tableInfo, columnNames, dataOfst, maxCnt, conditions, this->maxRowSize));

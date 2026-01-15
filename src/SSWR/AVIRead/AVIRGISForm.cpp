@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 	while (i < nFiles)
 	{
 		IO::Path::PathType pathType = IO::Path::GetPathType(files[i]->ToCString());
-		pobj = 0;
+		pobj = nullptr;
 		if (pathType == IO::Path::PathType::File)
 		{
 			IO::StmData::FileData fd(files[i], false);
@@ -431,7 +431,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(AnyType userObj)
 		else if (ind->itemType == Map::MapEnv::IT_GROUP)
 		{
 			me->popNode = item;
-			me->mnuGroup->SetItemEnabled(MNU_GROUP_REMOVE, (ind->item != 0));
+			me->mnuGroup->SetItemEnabled(MNU_GROUP_REMOVE, (ind->item.NotNull()));
 			me->mnuGroup->ShowMenu(me, cursorPos);
 		}
 	}
@@ -440,11 +440,11 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTreeRightClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
 	NN<SSWR::AVIRead::AVIRGISForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISForm>();
-	me->ctrlForm = 0;
+	me->ctrlForm = nullptr;
 	if (!me->pauseUpdate)
 	{
 		me->mapCtrl->HideMarker();
-		me->mapCtrl->SetSelectedVector(0);
+		me->mapCtrl->SetSelectedVector(nullptr);
 	}
 }
 
@@ -468,7 +468,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeScrolled(AnyType userObj, UOSIn
 	if (me->useTime)
 	{
 		me->currTime = (OSInt)newVal + me->timeRangeStart;
-		me->env->SetCurrTimeTS(0, me->currTime);
+		me->env->SetCurrTimeTS(nullptr, me->currTime);
 		OnMapLayerUpdated(me);
 	}
 }
@@ -481,11 +481,11 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeChecked(AnyType userObj, Bool n
 		me->useTime = newState;
 		if (me->useTime)
 		{
-			me->env->SetCurrTimeTS(0, me->currTime);
+			me->env->SetCurrTimeTS(nullptr, me->currTime);
 		}
 		else
 		{
-			me->env->SetCurrTimeTS(0, 0);
+			me->env->SetCurrTimeTS(nullptr, 0);
 		}
 		OnMapLayerUpdated(me);
 	}
@@ -558,7 +558,7 @@ void SSWR::AVIRead::AVIRGISForm::CloseCtrlForm(Bool closing)
 		if (!closing)
 		{
 			this->HideMarker();
-			this->SetSelectedVector(0);
+			this->SetSelectedVector(nullptr);
 		}
 	}
 }
@@ -598,7 +598,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString cust
 	NN<Net::WebBrowser> browser = this->core->GetWebBrowser();
 	NN<IO::StreamData> fd;
 	Text::CStringNN nncustomeName;
-	if (browser->GetData(url, false, 0).SetTo(fd))
+	if (browser->GetData(url, false, nullptr).SetTo(fd))
 	{
 		if (customName.SetTo(nncustomeName) && nncustomeName.leng > 0)
 		{
@@ -639,10 +639,10 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CStringNN listFile, Text::CStri
 	cli = Net::HTTPClient::CreateConnect(this->core->GetTCPClientFactory(), this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	{
 		Text::UTF8Reader reader(cli);
-		dateStr = 0;
-		dateStrEnd = 0;
-		timeStr = 0;
-		timeStrEnd = 0;
+		dateStr = nullptr;
+		dateStrEnd = nullptr;
+		timeStr = nullptr;
+		timeStrEnd = nullptr;
 		while (true)
 		{
 			sb.ClearStr();
@@ -692,13 +692,13 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->env = env;
 	this->colorSess = this->core->GetColorManager()->CreateSess(this->GetHMonitor());
 	this->scaleChanging = false;
-	this->ctrlForm = 0;
-	this->ctrlItem = 0;
+	this->ctrlForm = nullptr;
+	this->ctrlItem = nullptr;
 	this->timeRangeStart = 0;
 	this->timeRangeEnd = 0;
 	this->useTime = false;
 	this->currTime = 0;
-	this->printer = 0;
+	this->printer = nullptr;
 	this->currCursor = UI::GUIControl::CT_ARROW;
 	this->mapUpdTChanged = false;
 	this->mapUpdT = 0;
@@ -1018,7 +1018,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<UI::GUIForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISGroupQueryForm(0, this->ui, this->core, *this, this->env, Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISGroupQueryForm(nullptr, this->ui, this->core, *this, this->env, Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item)));
 			this->SetCtrlForm(frm, item);
 		}
 		break;
@@ -1090,7 +1090,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		if (this->popNode.SetTo(item))
 		{
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
-			AVIRGISPropForm frm(0, this->ui, this->core, this->env, ind->group, ind->index);
+			AVIRGISPropForm frm(nullptr, this->ui, this->core, this->env, ind->group, ind->index);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->mapCtrl->UpdateMap();
@@ -1124,7 +1124,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (layer->layer->CreateSearchIndexer(this->ta, setting.labelCol).SetTo(searching))
 				{
 					NN<AVIRGISSearchForm> frm;
-					NEW_CLASSNN(frm, AVIRGISSearchForm(0, ui, this->core, *this, layer->layer, searching, setting.labelCol, setting.flags));
+					NEW_CLASSNN(frm, AVIRGISSearchForm(nullptr, ui, this->core, *this, layer->layer, searching, setting.labelCol, setting.flags));
 					this->SetCtrlForm(frm, item);
 				}
 			}
@@ -1142,7 +1142,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (layer->layer->GetLayerType() == Map::DRAW_LAYER_POLYLINE || layer->layer->GetLayerType() == Map::DRAW_LAYER_POLYLINE3D)
 				{
 					NN<AVIRGISShortestPathForm> frm;
-					NEW_CLASSNN(frm, AVIRGISShortestPathForm(0, ui, this->core, *this, layer->layer));
+					NEW_CLASSNN(frm, AVIRGISShortestPathForm(nullptr, ui, this->core, *this, layer->layer));
 					this->SetCtrlForm(frm, item);
 				}
 			}
@@ -1168,13 +1168,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Data::ArrayListNN<Map::MapDrawLayer> layers;
 				this->env->GetLayersOfType(layers, lyr->layer->GetLayerType());
-				AVIRGISCombineForm frm(0, this->ui, this->core, layers);
+				AVIRGISCombineForm frm(nullptr, this->ui, this->core, layers);
 				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 				{
 					NN<Map::MapDrawLayer> newLyr;
 					if (frm.GetCombinedLayer().SetTo(newLyr))
 					{
-						this->env->AddLayer(0, newLyr, true);
+						this->env->AddLayer(nullptr, newLyr, true);
 						newLyr->AddUpdatedHandler(OnMapLayerUpdated, this);
 						this->mapTree->UpdateTree();
 						this->mapCtrl->UpdateMap();
@@ -1210,17 +1210,17 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NN<UI::GUIForm> frm;
 					if (lyrType == Map::DRAW_LAYER_IMAGE)
 					{
-						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditImageForm(nullptr, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
 						this->SetCtrlForm(frm, item);
 					}
 					else if (lyrType == Map::DRAW_LAYER_MIXED || lyrType == Map::DRAW_LAYER_POLYGON || lyrType == Map::DRAW_LAYER_POLYLINE)
 					{
-						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditVectorForm(nullptr, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
 						this->SetCtrlForm(frm, item);
 					}
 					else if (lyrType == Map::DRAW_LAYER_POINT3D || lyrType == Map::DRAW_LAYER_POINT)
 					{
-						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditPointForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditPointForm(nullptr, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
 						this->SetCtrlForm(frm, item);
 					}
 				}
@@ -1236,7 +1236,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<Map::MapDrawLayer> lyr = litem->layer;
 				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GEOPACKAGE)
 				{
-					UtilUI::TextInputDialog dlg(0, this->ui, this->core->GetMonitorMgr(), CSTR("Multiply Coordinate"), CSTR("Please input value floating point value to multiply"));
+					UtilUI::TextInputDialog dlg(nullptr, this->ui, this->core->GetMonitorMgr(), CSTR("Multiply Coordinate"), CSTR("Please input value floating point value to multiply"));
 					dlg.SetInputString(CSTR("1.0"));
 					if (dlg.ShowDialog(this))
 					{
@@ -1272,7 +1272,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<UI::GUIForm> frm;
 				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 				{
-					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, NN<Map::GPSTrack>::ConvertFrom(lyr), *this));
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISReplayForm(nullptr, this->ui, this->core, NN<Map::GPSTrack>::ConvertFrom(lyr), *this));
 					this->SetCtrlForm(frm, item);
 				}
 				else
@@ -1289,7 +1289,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (Optional<Map::MapEnv::LayerItem>::ConvertFrom(item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>()->item).SetTo(litem))
 			{
 				NN<Map::MapDrawLayer> lyr = litem->layer;
-				NEW_CLASSNN(frm, AVIRDBForm(0, ui, this->core, lyr, false));
+				NEW_CLASSNN(frm, AVIRDBForm(nullptr, ui, this->core, lyr, false));
 				this->AddSubForm(frm);
 			}
 		}
@@ -1303,7 +1303,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<Map::MapDrawLayer> lyr = litem->layer;
 				Math::RectAreaDbl bounds;
 				if (!lyr->GetBounds(bounds)) bounds = Math::RectAreaDbl(0, 0, 0, 0);
-				AVIRGISCSysForm frm(0, this->ui, this->core, bounds, lyr->GetCoordinateSystem());
+				AVIRGISCSysForm frm(nullptr, this->ui, this->core, bounds, lyr->GetCoordinateSystem());
 				frm.SetText(CSTR("Assign Coordinate System"));
 				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetCSys().SetTo(csys))
 				{
@@ -1326,7 +1326,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NN<Map::VectorLayer> vec = NN<Map::VectorLayer>::ConvertFrom(lyr);
 					Math::RectAreaDbl bounds;
 					if (!lyr->GetBounds(bounds)) bounds = Math::RectAreaDbl(0, 0, 0, 0);
-					AVIRGISCSysForm frm(0, this->ui, this->core, bounds, lyr->GetCoordinateSystem());
+					AVIRGISCSysForm frm(nullptr, this->ui, this->core, bounds, lyr->GetCoordinateSystem());
 					frm.SetText(CSTR("Convert Coordinate System"));
 					if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetCSys().SetTo(csys))
 					{
@@ -1363,7 +1363,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<Map::MapDrawLayer> lyr = litem->layer;
 				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 				{
-					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISTileDownloadForm(0, this->ui, this->core, NN<Map::TileMapLayer>::ConvertFrom(lyr), *this));
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISTileDownloadForm(nullptr, this->ui, this->core, NN<Map::TileMapLayer>::ConvertFrom(lyr), *this));
 					this->SetCtrlForm(frm, item);
 				}
 			}
@@ -1441,7 +1441,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				NN<UI::GUIForm> frm;
 				NN<Map::MapDrawLayer> lyr = litem->layer;
-				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISQueryForm(0, this->ui, this->core, lyr, *this));
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISQueryForm(nullptr, this->ui, this->core, lyr, *this));
 				this->SetCtrlForm(frm, item);
 			}
 		}
@@ -1456,7 +1456,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_OSMDATA)
 				{
 					NN<UI::GUIForm> frm;
-					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISOSMDataForm(0, this->ui, this->core, NN<Map::OSM::OSMData>::ConvertFrom(lyr), *this));
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISOSMDataForm(nullptr, this->ui, this->core, NN<Map::OSM::OSMData>::ConvertFrom(lyr), *this));
 					this->SetCtrlForm(frm, item);
 				}
 			}
@@ -1491,7 +1491,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						}
 						sptr = dt.ToString(sptr, "yyyyMMdd");
 						trk->SetSourceName(CSTRP(sbuff, sptr));
-						this->env->AddLayer(0, trk, true);
+						this->env->AddLayer(nullptr, trk, true);
 						this->mapTree->UpdateTree();
 						this->mapCtrl->UpdateMap();
 						this->mapCtrl->Redraw();
@@ -1530,7 +1530,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NN<Map::GPSTrack> trk;
 					Data::ByteBuffer fileBuff((UOSInt)fileSize);
 					fs.Read(fileBuff);
-					NEW_CLASSNN(trk, Map::GPSTrack(dlg->GetFileName(), true, 0, 0));
+					NEW_CLASSNN(trk, Map::GPSTrack(dlg->GetFileName(), true, 0, nullptr));
 					i = 0;
 					while (i < fileSize)
 					{
@@ -1548,7 +1548,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, true, this->ssl, this->core->GetLog());
+			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, true, this->ssl, this->core->GetLog());
 			frm.SetText(CSTR("Select GPS Tracker"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1556,7 +1556,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<IO::GPSNMEA> gps;
 				NN<Map::GPSTrack> trk;
 				NEW_CLASSNN(gps, IO::GPSNMEA(frm.GetStream(), true));
-				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
+				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(nullptr, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, nullptr));
 				gpsFrm->SetGPSTrack(trk.Ptr());
@@ -1567,7 +1567,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MTKGPS_TRACKER:
 		{
-			SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, this->core, false, this->ssl, this->core->GetLog());
+			SSWR::AVIRead::AVIRSelStreamForm frm(nullptr, this->ui, this->core, false, this->ssl, this->core->GetLog());
 			frm.SetText(CSTR("Select MTK GPS Tracker"));
 			frm.SetInitSerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort());
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
@@ -1576,7 +1576,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<IO::GPSNMEA> gps;
 				NN<Map::GPSTrack> trk;
 				NEW_CLASSNN(gps, IO::Device::MTKGPSNMEA(frm.GetStream(), true));
-				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
+				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(nullptr, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, nullptr));
 				gpsFrm->SetGPSTrack(trk.Ptr());
@@ -1587,7 +1587,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GOOGLE_POLYLINE:
 		{
-			SSWR::AVIRead::AVIRGooglePolylineForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRGooglePolylineForm frm(nullptr, this->ui, this->core);
 			NN<Math::Geometry::LineString> pl;
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetPolyline().SetTo(pl))
 			{
@@ -1600,7 +1600,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_OPEN_FILE:
 		{
-			SSWR::AVIRead::AVIROpenFileForm frm(0, this->ui, this->core, IO::ParserType::Unknown);
+			SSWR::AVIRead::AVIROpenFileForm frm(nullptr, this->ui, this->core, IO::ParserType::Unknown);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Text::String> fname = frm.GetFileName();
@@ -1614,7 +1614,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						this->core->LoadDataType(fd, 0, frm.GetParserType());
+						this->core->LoadDataType(fd, nullptr, frm.GetParserType());
 					}
 				}
 				else
@@ -1708,17 +1708,17 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GPS_SIMULATOR:
 		{
 			NN<UI::GUIForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPSSimulatorForm(0, this->ui, this->core, *this));
-			this->SetCtrlForm(frm, 0);
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPSSimulatorForm(nullptr, this->ui, this->core, *this));
+			this->SetCtrlForm(frm, nullptr);
 		}
 		break;
 	case MNU_DISTANCE:
-		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISDistanceForm(0, this->ui, this->core, *this));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISDistanceForm(nullptr, this->ui, this->core, *this));
 		this->AddSubForm(frm);
 		break;
 	case MNU_HKTD_TRAFFIC:
 		{
-			SSWR::AVIRead::AVIRGISHKTrafficForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRGISHKTrafficForm frm(nullptr, this->ui, this->core);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::MapDrawLayer> layer;
@@ -1731,7 +1731,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_HKTD_TONNES_SIGN:
 		{
-			SSWR::AVIRead::AVIRGISHKTDTonnesForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRGISHKTDTonnesForm frm(nullptr, this->ui, this->core);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::MapDrawLayer> layer;
@@ -1743,7 +1743,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_RANDOMLOC:
-		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, *this));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISRandomLocForm(nullptr, this->ui, this->core, *this));
 		this->AddSubForm(frm);
 		break;
 	case MNU_HK_WASTELESS:
@@ -1763,7 +1763,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_TMS:
 		{
-			SSWR::AVIRead::AVIRTMSForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRTMSForm frm(nullptr, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::TileMap> tileMap;
@@ -1778,7 +1778,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_WMTS:
 		{
-			SSWR::AVIRead::AVIRWMTSForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRWMTSForm frm(nullptr, this->ui, this->core, this->ssl);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::TileMap> tileMap;
@@ -1793,7 +1793,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_WMS:
 		{
-			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
+			SSWR::AVIRead::AVIRWMSForm frm(nullptr, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
 			NN<Map::DrawMapService> mapService;
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetDrawMapService().SetTo(mapService))
 			{
@@ -1805,7 +1805,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_WFS:
 		{
-			SSWR::AVIRead::AVIRWFSForm frm(0, this->ui, this->core);
+			SSWR::AVIRead::AVIRWFSForm frm(nullptr, this->ui, this->core);
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::MapDrawLayer> layer;
@@ -1818,7 +1818,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_ESRI_MAP:
 		{
-			SSWR::AVIRead::AVIRESRIMapForm frm(0, this->ui, this->core, this->ssl);
+			SSWR::AVIRead::AVIRESRIMapForm frm(nullptr, this->ui, this->core, this->ssl);
 			NN<Map::ESRI::ESRIMapServer> esriMap;
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetSelectedMap().SetTo(esriMap))
 			{
@@ -1850,7 +1850,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_REGIONAL_MAP:
 		{
-			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
+			SSWR::AVIRead::AVIRRegionalMapForm frm(nullptr, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::MapDrawLayer> layer;
@@ -1863,7 +1863,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 	case MNU_HK_GEODATA_WMS:
 		{
-			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
+			SSWR::AVIRead::AVIRWMSForm frm(nullptr, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
 			NN<Map::DrawMapService> mapService;
 			frm.SetURL(CSTR("https://geodata.gov.hk/geoserver/geodatastore/wms"));
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetDrawMapService().SetTo(mapService))
@@ -1894,7 +1894,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayerFromFile(Text::CStringNN fileName)
 {
 	IO::Path::PathType pathType = IO::Path::GetPathType(fileName);
 	NN<Parser::ParserList> parsers = this->core->GetParserList();
-	Optional<IO::ParsedObject> pobj = 0;
+	Optional<IO::ParsedObject> pobj = nullptr;
 	NN<IO::ParsedObject> nnpobj;
 	if (pathType == IO::Path::PathType::File)
 	{
@@ -1939,7 +1939,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayerFromFile(Text::CStringNN fileName)
 void SSWR::AVIRead::AVIRGISForm::AddLayer(NN<Map::MapDrawLayer> layer)
 {
 	layer->AddUpdatedHandler(OnMapLayerUpdated, this);
-	if (this->env->GetItemCount(0) == 0)
+	if (this->env->GetItemCount(nullptr) == 0)
 	{
 		Math::RectAreaDbl bounds;
 //		OSInt w;
@@ -1947,12 +1947,12 @@ void SSWR::AVIRead::AVIRGISForm::AddLayer(NN<Map::MapDrawLayer> layer)
 		layer->GetBounds(bounds);
 //		this->mapCtrl->GetSize(&w, &h);
 //		this->mapCtrl->UpdateMapView(layer->CreateMapView(w, h));
-		this->env->AddLayer(0, layer, true);
+		this->env->AddLayer(nullptr, layer, true);
 		this->mapCtrl->PanToMapXY(bounds.GetCenter());
 	}
 	else
 	{
-		this->env->AddLayer(0, layer, true);
+		this->env->AddLayer(nullptr, layer, true);
 		this->mapCtrl->UpdateMap();
 		this->mapCtrl->Redraw();
 	}
@@ -1963,7 +1963,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayer(NN<Map::MapDrawLayer> layer)
 void SSWR::AVIRead::AVIRGISForm::AddLayers(NN<::Data::ArrayListNN<Map::MapDrawLayer>> layers)
 {
 	NN<Map::MapDrawLayer> layer;
-	Bool needPan = this->env->GetItemCount(0) == 0;
+	Bool needPan = this->env->GetItemCount(nullptr) == 0;
 	UOSInt i;
 	UOSInt j;
 	Math::RectAreaDbl bounds;
@@ -1983,7 +1983,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(NN<::Data::ArrayListNN<Map::MapDrawLa
 		if (layers->GetItem(i).SetTo(layer))
 		{
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
-			this->env->AddLayer(0, layer, true);
+			this->env->AddLayer(nullptr, layer, true);
 		}
 		i++;
 	}
@@ -2226,7 +2226,7 @@ UnsafeArrayOpt<UTF8Char> SSWR::AVIRead::AVIRGISForm::ResolveAddress(UnsafeArray<
 		return 0;
 	}
 	return this->kmap->ResolveAddress(sbuff, this->lcid, pos, L"~@#");*/
-	return 0;
+	return nullptr;
 }
 
 void SSWR::AVIRead::AVIRGISForm::PauseUpdate()
@@ -2248,8 +2248,8 @@ void SSWR::AVIRead::AVIRGISForm::ResumeUpdate()
 
 void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 {
-	Int64 timeStart = this->env->GetTimeStartTS(0);
-	Int64 timeEnd = this->env->GetTimeEndTS(0);
+	Int64 timeStart = this->env->GetTimeStartTS(nullptr);
+	Int64 timeEnd = this->env->GetTimeEndTS(nullptr);
 	if (this->timeRangeStart == timeStart && this->timeRangeEnd == timeEnd)
 	{
 		return;
@@ -2303,7 +2303,7 @@ Bool SSWR::AVIRead::AVIRGISForm::PrintPage(NN<Media::DrawImage> printPage)
 {
 	NN<Map::MapView> view = this->mapCtrl->CloneMapView();
 	Map::DrawMapRenderer *renderer;
-	NEW_CLASS(renderer, Map::DrawMapRenderer(this->core->GetDrawEngine(), this->env, printPage->GetColorProfile(), 0, Map::DrawMapRenderer::DT_VECTORDRAW));
+	NEW_CLASS(renderer, Map::DrawMapRenderer(this->core->GetDrawEngine(), this->env, printPage->GetColorProfile(), nullptr, Map::DrawMapRenderer::DT_VECTORDRAW));
 	view->SetDestImage(printPage);
 	renderer->DrawMap(printPage, view, 0);
 	DEL_CLASS(renderer);

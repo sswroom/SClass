@@ -13,7 +13,7 @@ IO::TVControl::~TVControl()
 {
 }
 
-OSInt IO::TVControl::GetTVList(Data::ArrayList<TVType> *tvList)
+OSInt IO::TVControl::GetTVList(Data::ArrayListNative<TVType> *tvList)
 {
 	tvList->Add(TVT_MDT701S);
 	tvList->Add(TVT_NEC);
@@ -45,7 +45,7 @@ Optional<IO::TVControl> IO::TVControl::CreateTVControl(NN<IO::Stream> stm, TVTyp
 		NEW_CLASS(tvCtrl, IO::TVCtrl::NECTVControl(stm, monId));
 		return tvCtrl;
 	default:
-		return 0;
+		return nullptr;
 	}
 }
 

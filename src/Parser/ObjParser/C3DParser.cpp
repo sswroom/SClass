@@ -6,7 +6,7 @@
 
 Parser::ObjParser::C3DParser::C3DParser()
 {
-	this->encFact = 0;
+	this->encFact = nullptr;
 }
 
 Parser::ObjParser::C3DParser::~C3DParser()
@@ -37,7 +37,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::C3DParser::ParseObject(NN<IO::Pars
 	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
 		NN<IO::PackageFile> pf = NN<IO::PackageFile>::ConvertFrom(pobj);
-		Optional<IO::PackageFile> pfToDel = 0;
+		Optional<IO::PackageFile> pfToDel = nullptr;
 		NN<Map::CesiumTile> c3d;
 		Bool needRelease = false;
 		if (pf->GetCount() == 1 && pf->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
@@ -62,7 +62,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::C3DParser::ParseObject(NN<IO::Pars
 				return c3d;
 			}
 			c3d.Delete();
-			return 0;
+			return nullptr;
 		}
 		else
 		{
@@ -74,8 +74,8 @@ Optional<IO::ParsedObject> Parser::ObjParser::C3DParser::ParseObject(NN<IO::Pars
 				return c3d;
 			}
 			c3d.Delete();
-			return 0;
+			return nullptr;
 		}
 	}
-	return 0;
+	return nullptr;
 }

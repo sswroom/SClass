@@ -814,7 +814,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 	Bool nextLine = false;
 	Bool parseStatus = true;
 	UTF8Char c;
-	UnsafeArrayOpt<UTF8Char> wordStart = 0;
+	UnsafeArrayOpt<UTF8Char> wordStart = nullptr;
 	UnsafeArray<UTF8Char> nnwordStart;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
@@ -935,7 +935,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							}
 							else if (c == '\t' || c == ' ')
 							{
-								wordStart = 0;
+								wordStart = nullptr;
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_INCLUDE;
 								break;
 							}
@@ -986,7 +986,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							{
 								sptr[-1] = c;
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_PRAGMA;
-								wordStart = 0;
+								wordStart = nullptr;
 								break;
 							}
 							else
@@ -1010,7 +1010,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							fileStatus->pastModes.Add(Text::Cpp::CppParseStatus::PM_IFNDEF);
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_COMMENTPARA;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else if (c == '/' && *sptr == '/')
@@ -1024,7 +1024,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							sptr[-1] = c;
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_IFNDEF;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else
@@ -1042,7 +1042,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							fileStatus->pastModes.Add(Text::Cpp::CppParseStatus::PM_IFDEF);
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_COMMENTPARA;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else if (c == '/' && *sptr == '/')
@@ -1056,7 +1056,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							sptr[-1] = c;
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_IFDEF;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else
@@ -1074,7 +1074,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							fileStatus->pastModes.Add(Text::Cpp::CppParseStatus::PM_IF);
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_COMMENTPARA;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else if (c == '/' && *sptr == '/')
@@ -1088,7 +1088,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							sptr[-1] = c;
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_IF;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else
@@ -1106,7 +1106,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							fileStatus->pastModes.Add(Text::Cpp::CppParseStatus::PM_ELIF);
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_COMMENTPARA;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else if (c == '/' && *sptr == '/')
@@ -1118,7 +1118,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							sptr[-1] = c;
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_ELIF;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else
@@ -1147,7 +1147,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						{
 							sptr[-1] = c;
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_DEFINE;
-							wordStart = 0;
+							wordStart = nullptr;
 							break;
 						}
 						else
@@ -1178,7 +1178,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							{
 								sptr[-1] = c;
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_UNDEF;
-								wordStart = 0;
+								wordStart = nullptr;
 								break;
 							}
 							else
@@ -1235,7 +1235,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							{
 								sptr[-1] = c;
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
-								wordStart = 0;
+								wordStart = nullptr;
 								if (c == 0)
 								{
 									nextLine = true;
@@ -1280,7 +1280,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							{
 								sptr[-1] = c;
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
-								wordStart = 0;
+								wordStart = nullptr;
 								if (c == 0)
 									nextLine = true;
 								break;
@@ -1313,7 +1313,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 							{
 								sptr[-1] = c;
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_ERROR;
-								wordStart = 0;
+								wordStart = nullptr;
 								break;
 							}
 							else
@@ -1550,7 +1550,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 				}
 				else
 				{
-					if (wordStart == 0)
+					if (wordStart.IsNull())
 					{
 						wordStart = sptr - 1;
 					}
@@ -1604,7 +1604,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 				}
 				else
 				{
-					if (wordStart == 0)
+					if (wordStart.IsNull())
 					{
 						wordStart = sptr - 1;
 					}
@@ -1672,7 +1672,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 					else
 					{
 						lastNextLine = false;
-						if (wordStart == 0)
+						if (wordStart.IsNull())
 						{
 							wordStart = sptr - 1;
 						}
@@ -1784,7 +1784,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 					else
 					{
 						lastNextLine = false;
-						if (wordStart == 0)
+						if (wordStart.IsNull())
 						{
 							wordStart = sptr - 1;
 						}
@@ -1856,10 +1856,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 						}
 						else
 						{
-							UnsafeArrayOpt<UTF8Char> paramPtr = 0;
-							UnsafeArrayOpt<UTF8Char> paramPtrEnd = 0;
+							UnsafeArrayOpt<UTF8Char> paramPtr = nullptr;
+							UnsafeArrayOpt<UTF8Char> paramPtrEnd = nullptr;
 							UnsafeArray<UTF8Char> tmpPtr = nnwordStart;
-							UnsafeArrayOpt<UTF8Char> wordEnd = 0;
+							UnsafeArrayOpt<UTF8Char> wordEnd = nullptr;
 							Int32 mode = 0;
 							/*
 							  Name( Param ) Cont
@@ -1870,7 +1870,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 								c = *tmpPtr++;
 								if (c == 0)
 								{
-									if (paramPtr == 0)
+									if (paramPtr.IsNull())
 									{
 										if (status->AddDef(CSTRP(nnwordStart, tmpPtr - 1), nullptr, nullptr, fileStatus->lineNum))
 										{
@@ -1998,7 +1998,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 		case Text::Cpp::CppParseStatus::PM_UNDEF:
 			if (valid)
 			{
-				wordStart = 0;
+				wordStart = nullptr;
 				/////////////////////////////////////////////
 				while ((c = *sptr++) != 0)
 				{
@@ -2075,7 +2075,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 					}
 					else
 					{
-						if (wordStart == 0)
+						if (wordStart.IsNull())
 						{
 							wordStart = sptr - 1;
 						}
@@ -2182,7 +2182,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 				{
 					if (wordStart.NotNull())
 					{
-						wordStart = 0;
+						wordStart = nullptr;
 					}
 				}
 				else if (c == '/' && *sptr == '*')
@@ -2221,7 +2221,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeA
 				}
 				else
 				{
-					if (wordStart == 0)
+					if (wordStart.IsNull())
 					{
 						wordStart = sptr - 1;
 					}

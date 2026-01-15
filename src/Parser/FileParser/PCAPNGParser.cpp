@@ -54,14 +54,14 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 
 	if (ReadNInt32(&hdr[0]) != 0x0a0d0d0a)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[8]) == 0x1a2b3c4d)
 	{
-		Data::ArrayList<Int8> resolList;
-		Data::ArrayList<UInt16> linkTypeList;
+		Data::ArrayListNative<Int8> resolList;
+		Data::ArrayListNative<UInt16> linkTypeList;
 
-		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
@@ -162,10 +162,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 	}
 	else if (ReadMInt32(&hdr[8]) == 0x1a2b3c4d)
 	{
-		Data::ArrayList<Int8> resolList;
-		Data::ArrayList<UInt16> linkTypeList;
+		Data::ArrayListNative<Int8> resolList;
+		Data::ArrayListNative<UInt16> linkTypeList;
 
-		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
+		NEW_CLASS(analyzer, Net::EthernetAnalyzer(nullptr, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
 		NEW_CLASS(scanLog, IO::BTScanLog(fd->GetFullFileName()));
 		Data::ByteBuffer packetBuff(maxSize);
 		currOfst = 0;
@@ -263,5 +263,5 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 			return analyzer;
 		}
 	}
-	return 0;
+	return nullptr;
 }

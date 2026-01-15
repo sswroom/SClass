@@ -47,25 +47,25 @@ Optional<IO::ParsedObject> Parser::FileParser::MEDParser::ParseFileHdr(NN<IO::St
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".MED")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (hdr[0] != 'M' || hdr[1] != 'D')
-		return 0;
+		return nullptr;
 	recCnt = ReadUInt16(&hdr[6]);
 	recSize = ReadUInt16(&hdr[4]);
 	if (recSize < 9 || recSize > 32)
-		return 0;
+		return nullptr;
 	if (recCnt == 0)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (recSize * recCnt >= fd->GetDataSize())
-		return 0;
+		return nullptr;
 
 	Data::ByteBuffer recBuff(recSize * recCnt);
 	if (fd->GetRealData(16, recSize * recCnt, recBuff) != recSize * recCnt)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -82,7 +82,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEDParser::ParseFileHdr(NN<IO::St
 		if (fileOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], recSize - 8, 0);
 		pf->AddData(fd, fileOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);

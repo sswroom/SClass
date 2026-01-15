@@ -25,7 +25,7 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(Optional<UI::GUIClien
 	this->SetFont(nullptr, 10.5, false);
 
 	this->env = env;
-	this->descript = 0;
+	this->descript = nullptr;
 
 	this->SetText(this->env->GetLang(CSTR("ImageDetailTitle")));
 

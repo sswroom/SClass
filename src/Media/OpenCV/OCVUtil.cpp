@@ -26,7 +26,7 @@ UnsafeArrayOpt<UTF8Char> OCVUtil_TestDataPath(UnsafeArray<UTF8Char> sbuff, Unsaf
 	{
 		return sptr;
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Media::OpenCV::OCVUtil::GetDataPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> dataFile)
@@ -52,5 +52,5 @@ UnsafeArrayOpt<UTF8Char> Media::OpenCV::OCVUtil::GetDataPath(UnsafeArray<UTF8Cha
 		if (OCVUtil_TestDataPath(sbuff, path, dataFile).SetTo(sptr))
 			return sptr;
 	}
-	return 0;
+	return nullptr;
 }

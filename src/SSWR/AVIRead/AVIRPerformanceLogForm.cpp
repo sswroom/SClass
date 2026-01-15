@@ -53,7 +53,7 @@ Bool SSWR::AVIRead::AVIRPerformanceLogForm::Start()
 	if (fs->IsError())
 	{
 		fs.Delete();
-		this->logStream = 0;
+		this->logStream = nullptr;
 		return false;
 	}
 	NEW_CLASSOPT(this->writer, Text::UTF8Writer(fs));
@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::Stop()
 		this->writer.Delete();
 		this->logStream.Delete();
 		MemFreeAArr(testBuff);
-		this->testBuff = 0;
+		this->testBuff = nullptr;
 	}
 }
 
@@ -104,9 +104,9 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(Optional<UI::GUICl
 	this->SetFont(nullptr, 8.25, false);
 
 	this->core = core;
-	this->logStream = 0;
-	this->writer = 0;
-	this->testBuff = 0;
+	this->logStream = nullptr;
+	this->writer = nullptr;
+	this->testBuff = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->pnlCtrl = ui->NewPanel(*this);
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(Optional<UI::GUICl
 	this->txtCurrWRate = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtCurrWRate->SetRect(104, 28, 150, 23, false);
 	this->txtCurrWRate->SetReadOnly(true);
-	this->rlcWRate = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 1, 144, 1000, 0);
+	this->rlcWRate = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 1, 144, 1000, nullptr);
 	this->rlcWRate->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->AddTimer(1000, OnTimerTick, this);

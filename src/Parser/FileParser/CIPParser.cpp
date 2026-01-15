@@ -37,31 +37,31 @@ Optional<IO::ParsedObject> Parser::FileParser::CIPParser::ParseFileHdr(NN<IO::St
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	if (!fd->IsFullFile())
-		return 0;
+		return nullptr;
 	sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".CIP")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
-		return 0;
+		return nullptr;
 	}
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".ciu"));
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
-		return 0;
+		return nullptr;
 	}
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".cix"));
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
-		return 0;
+		return nullptr;
 	}
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".blk"));
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	Map::CIPLayer2 *layer;
@@ -70,7 +70,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CIPParser::ParseFileHdr(NN<IO::St
 	if (layer->IsError())
 	{
 		DEL_CLASS(layer);
-		return 0;
+		return nullptr;
 	}
 	return layer;
 }

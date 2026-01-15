@@ -779,7 +779,7 @@ Int32 MyMain(NN<Core::ProgControl> progCtrl)
 			Data::ArrayListNN<LamppostData> dataList2;
 			NN<Data::NamedClass<LamppostData>> cls = LamppostData().CreateClass();
 			NN<DB::DBReader> r;
-			if (db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), 0, 0, 0, nullptr, 0).SetTo(r))
+			if (db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), nullptr, 0, 0, nullptr, nullptr).SetTo(r))
 			{
 				{
 					DB::DBClassReader<LamppostData> reader(r, cls);

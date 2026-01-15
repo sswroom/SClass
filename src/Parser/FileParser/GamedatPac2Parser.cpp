@@ -47,18 +47,18 @@ Optional<IO::ParsedObject> Parser::FileParser::GamedatPac2Parser::ParseFileHdr(N
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".dat")))
 	{
-		return 0;
+		return nullptr;
 	}
 	if (ReadInt32(&hdr[0]) != 0x454d4147 || ReadInt32(&hdr[4]) != 0x20544144 || ReadInt32(&hdr[8]) != 0x32434150)
-		return 0;
+		return nullptr;
 	recCnt = ReadUInt32(&hdr[12]);
 	if (recCnt == 0 || recCnt >= 65536)
-		return 0;
+		return nullptr;
 
 	Data::ByteBuffer recBuff(recCnt * 40);
 	if (fd->GetRealData(16, recCnt * 40, recBuff) != recCnt * 40)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	IO::VirtualPackageFile *pf;
@@ -76,7 +76,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GamedatPac2Parser::ParseFileHdr(N
 		if (fileOfst != nextOfst)
 		{
 			DEL_CLASS(pf);
-			return 0;
+			return nullptr;
 		}
 		sptr = enc.UTF8FromBytes(fileName, &recBuff[i * 32], 32, 0);
 		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, IO::PackFileItem::HeaderType::No, CSTRP(fileName, sptr), 0, 0, 0, 0);

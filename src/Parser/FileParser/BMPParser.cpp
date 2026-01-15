@@ -62,7 +62,7 @@ void BMPParser_ReadPal(Media::StaticImage *img, NN<IO::StreamData> fd, UOSInt pa
 
 Parser::FileParser::BMPParser::BMPParser()
 {
-	this->parsers = 0;
+	this->parsers = nullptr;
 }
 
 Parser::FileParser::BMPParser::~BMPParser()
@@ -127,7 +127,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 
 	if (hdr.ReadNI16(0) != *(Int16*)"BM")
 	{
-		return 0;
+		return nullptr;
 	}
 
 	headerSize = ReadInt32(&hdr[14]);
@@ -383,7 +383,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 	}
 	if (biCompression == 4 || biCompression == 5) //BI_JPEG / BI_PNG)
 	{
-		Optional<IO::ParsedObject> pobj = 0;
+		Optional<IO::ParsedObject> pobj = nullptr;
 		NN<Parser::ParserList> parsers;
 		if (this->parsers.SetTo(parsers))
 		{
@@ -1890,6 +1890,6 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }

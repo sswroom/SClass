@@ -154,7 +154,7 @@ void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NN<Sync::Thread> thr
 IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FLVFileAnalyse"))
 {
 	UInt8 buff[256];
-	this->fd = 0;
+	this->fd = nullptr;
 	this->pauseParsing = false;
 	fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buff[0] != 'F' || buff[1] != 'L' || buff[2] != 'V' || buff[3] != 1)
@@ -337,7 +337,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	UnsafeArray<UTF8Char> sptr;
 	Text::CString vName;
 	if (!this->fd.SetTo(fd))
-		return 0;
+		return nullptr;
 	if (index == 0)
 	{
 		NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, this->hdrSize));
@@ -362,7 +362,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	}
 	NN<IO::FileAnalyse::FLVFileAnalyse::FLVTag> tag;
 	if (!this->tags.GetItem(index - 1).SetTo(tag))
-		return 0;
+		return nullptr;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);

@@ -60,7 +60,7 @@ UnsafeArrayOpt<UTF8Char> Text::MIMEObj::MailMessage::GetFromAddr(UnsafeArray<UTF
 {
 	NN<Text::String> hdr;
 	if (!GetHeader(UTF8STRC("From")).SetTo(hdr))
-		return 0;
+		return nullptr;
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
@@ -68,7 +68,7 @@ UnsafeArrayOpt<UTF8Char> Text::MIMEObj::MailMessage::GetSubject(UnsafeArray<UTF8
 {
 	NN<Text::String> hdr;
 	if (!GetHeader(UTF8STRC("Subject")).SetTo(hdr))
-		return 0;
+		return nullptr;
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
@@ -76,7 +76,7 @@ UnsafeArrayOpt<UTF8Char> Text::MIMEObj::MailMessage::GetReplyTo(UnsafeArray<UTF8
 {
 	NN<Text::String> hdr;
 	if (!GetHeader(UTF8STRC("Reply-To")).SetTo(hdr))
-		return 0;
+		return nullptr;
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
@@ -111,7 +111,7 @@ Optional<Text::MIMEObj::TextMIMEObj> Text::MIMEObj::MailMessage::GetContentText(
 {
 	NN<MIMEObject> content;
 	if (!this->content.SetTo(content))
-		return 0;
+		return nullptr;
 	Text::CStringNN clsName = content->GetClassName();
 	if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 		return NN<Text::MIMEObj::TextMIMEObj>::ConvertFrom(content);
@@ -131,14 +131,14 @@ Optional<Text::MIMEObj::TextMIMEObj> Text::MIMEObj::MailMessage::GetContentText(
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetContentMajor() const
 {
 	NN<MIMEObject> content;
 	if (!this->content.SetTo(content))
-		return 0;
+		return nullptr;
 	Optional<Text::MIMEObject> obj = content;
 	Text::CStringNN contType = content->GetContentType();
 	Text::CStringNN clsName = content->GetClassName();
@@ -165,7 +165,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetContentMajor() const
 			return mpart->GetPartContent(mpart->GetPartCount() - 1);
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const
@@ -180,7 +180,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index
 	NN<Text::MIMEObj::MIMEMessage> part;
 	NN<MIMEObject> content;
 	if (!this->content.SetTo(content))
-		return 0;
+		return nullptr;
 	if (content->GetClassName().Equals(UTF8STRC("MultipartMIMEObj")))
 	{
 		Text::CStringNN contType = content->GetContentType();
@@ -238,7 +238,7 @@ Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetRAWContent() const
@@ -253,7 +253,7 @@ Optional<Text::MIMEObj::MailMessage> Text::MIMEObj::MailMessage::ParseFile(NN<IO
 	if (!mail->ParseFromData(fd))
 	{
 		mail.Delete();
-		return 0;
+		return nullptr;
 	}
 	return mail;
 }

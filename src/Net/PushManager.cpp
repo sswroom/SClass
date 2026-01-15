@@ -147,7 +147,7 @@ Optional<Text::String> Net::PushManager::GetAccessToken()
 		this->accessTokenExpire = Data::Timestamp::Now().AddSecond(accessToken->GetExpiresIn());
 		return accessToken->GetAccessToken();
 	}
-	return 0;
+	return nullptr;
 }
 
 Net::PushManager::PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::Google::GoogleServiceAccount> serviceAccount, NN<IO::LogTool> log) : fcm(clif, ssl, serviceAccount->GetProjectId()->ToCString()), oauth2(clif, ssl)
@@ -155,7 +155,7 @@ Net::PushManager::PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLE
 	this->serviceAccount = serviceAccount;
 	this->log = log;
 	this->loading = false;
-	this->accessToken = 0;
+	this->accessToken = nullptr;
 	this->accessTokenExpire = 0;
 	this->LoadData();
 }
@@ -221,7 +221,7 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 		dev->token = Text::String::New(token);
 		dev->devType = devType;
 		dev->subscribeAddr.addrType = Net::AddrType::Unknown;
-		dev->devModel = 0;
+		dev->devModel = nullptr;
 		dev->lastSubscribeTime = 0;
 		this->devMap.PutNN(dev->token, dev);
 	}

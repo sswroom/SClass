@@ -5,12 +5,12 @@
 
 IO::StmData::MemoryDataRef::MemoryDataRef(UnsafeArray<const UInt8> data, UOSInt dataLength) : data(data, dataLength)
 {
-	this->name = 0;
+	this->name = nullptr;
 }
 
 IO::StmData::MemoryDataRef::MemoryDataRef(const Data::ByteArrayR &data) : data(data)
 {
-	this->name = 0;
+	this->name = nullptr;
 }
 
 IO::StmData::MemoryDataRef::~MemoryDataRef()

@@ -35,14 +35,14 @@ Optional<IO::ParsedObject> Parser::FileParser::ClassParser::ParseFileHdr(NN<IO::
 {
 	if (ReadMUInt32(&hdr[0]) != 0xCAFEBABE)
 	{
-		return 0;
+		return nullptr;
 	}
 	UInt64 dsize = fd->GetDataSize();
 	if (dsize < 26 || dsize > 1048576)
 	{
-		return 0;
+		return nullptr;
 	}
-	Optional<IO::JavaClass> cls = 0;
+	Optional<IO::JavaClass> cls = nullptr;
 	Data::ByteBuffer buff((UOSInt)dsize);
 	if (fd->GetRealData(0, (UOSInt)dsize, buff) == dsize)
 	{

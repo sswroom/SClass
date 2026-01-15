@@ -135,12 +135,12 @@ IO::SeleniumIDERunner::SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 
 {
 	this->clif = clif;
 	this->lastErrorIndex = INVALID_INDEX;
-	this->lastErrorMsg = 0;
+	this->lastErrorMsg = nullptr;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("http://localhost:"));
 	sb.AppendU16(port);
 	this->webdriverURL = Text::String::New(sb.ToCString());
-	this->userDataDir = 0;
+	this->userDataDir = nullptr;
 	this->noPause = false;
 }
 
@@ -165,7 +165,7 @@ Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType bro
 	Net::WebDriverStartSession param(browser);
 	NN<Net::WebDriverSession> sess;
 	NN<GPSPosition> nnlocation;
-	Net::WebDriver driver(this->clif, 0, this->webdriverURL->ToCString(), options->cmdTimeout);
+	Net::WebDriver driver(this->clif, nullptr, this->webdriverURL->ToCString(), options->cmdTimeout);
 	if (driver.NewSession(param).SetTo(sess))
 	{
 		if (location.SetTo(nnlocation))
@@ -181,7 +181,7 @@ Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType bro
 	{
 		this->ErrorClient(driver, INVALID_INDEX);
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumTest> test, Text::CStringNN url, StepStatusHandler statusHdlr, AnyType userObj)
@@ -801,13 +801,13 @@ Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseBy(Text::CStringNN by, UO
 		sb.Append(by);
 		this->lastErrorMsg = Text::String::New(sb.ToCString());
 		this->lastErrorIndex = currIndex;
-		return 0;
+		return nullptr;
 	}
 }
 
 Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseOptionLocator(Text::CStringNN locator, UOSInt currIndex)
 {
-	Optional<Net::WebDriverBy> ret = 0;
+	Optional<Net::WebDriverBy> ret = nullptr;
 	if (locator.StartsWith(CSTR("id=")))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -840,7 +840,7 @@ Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseOptionLocator(Text::CStri
 		sb.Append(locator);
 		this->lastErrorMsg = Text::String::New(sb.ToCString());
 		this->lastErrorIndex = currIndex;
-		return 0;
+		return nullptr;
 	}
 	return ret;
 }

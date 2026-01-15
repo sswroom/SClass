@@ -57,7 +57,7 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NN<Text::String> tabName)
 {
 	NN<UI::GUITabPage> tp;
 	PageInfo *page;
-	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
+	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, nullptr, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName->v.Ptr());
 	page->txt = tabName->Clone();
@@ -75,7 +75,7 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(Text::CStringNN tabName)
 {
 	NN<UI::GUITabPage> tp;
 	PageInfo *page;
-	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
+	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, nullptr, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName.v.Ptr());
 	page->txt = Text::String::New(tabName);
@@ -136,7 +136,7 @@ UnsafeArrayOpt<UTF8Char> UI::GTK::GTKTabControl::GetTabPageName(UOSInt index, Un
 {
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
-		return 0;
+		return nullptr;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
 	return page->txt->ConcatTo(buff);
 }

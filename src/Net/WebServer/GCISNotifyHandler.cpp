@@ -23,7 +23,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 		Bool failed = false;
 		UOSInt dataSize;
 		UnsafeArray<const UInt8> content = req->GetReqData(dataSize).Or((const UInt8*)&dataSize);
-		Optional<Text::JSONBase> optjson = 0;
+		Optional<Text::JSONBase> optjson = nullptr;
 		NN<Text::JSONBase> json;
 		Text::CStringNN resultCd = CSTR("0000");
 		Text::CStringNN resultMsg = CSTR("Request processed successfully.");

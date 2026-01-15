@@ -142,7 +142,7 @@ Bool Math::Geometry::VectorString::HasArea() const
 	return false;
 }
 
-UOSInt Math::Geometry::VectorString::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+UOSInt Math::Geometry::VectorString::CalcHIntersacts(Double y, NN<Data::ArrayListNative<Double>> xList) const
 {
 	return 0;
 }

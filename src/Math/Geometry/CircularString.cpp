@@ -55,8 +55,8 @@ Optional<Math::Geometry::Vector2D> Math::Geometry::CircularString::ToSimpleShape
 			ret += Math::GeometryTool::ArcToLine(this->pointArr[i - 2], pointArr[i - 1], pointArr[i], 2.5, ptList);
 		}
 		NN<Math::Geometry::LineString> ls;
-		NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, ptList.Arr(), ptList.GetCount(), 0, 0));
+		NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, ptList.Arr(), ptList.GetCount(), nullptr, nullptr));
 		return ls;
 	}
-	return 0;
+	return nullptr;
 }

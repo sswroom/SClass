@@ -159,7 +159,7 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformName(UnsafeArray<UTF8Char> buff)
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	UnsafeArray<UTF8Char> nnret;
 	this->GetDataType(dataList, 2);
 	i = 0;
@@ -213,7 +213,7 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformSN(UnsafeArray<UTF8Char> buff) c
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = nullptr;
 	this->GetDataType(dataList, 2);
 	i = 0;
 	j = dataList.GetCount();
@@ -250,21 +250,21 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformSN(UnsafeArray<UTF8Char> buff) c
 			ret = Text::StrTrim(buff);
 			if (ret == buff)
 			{
-				ret = 0;
+				ret = nullptr;
 			}
 			else if (Text::StrEndsWith(buff, (const UTF8Char*)"XXXX"))
 			{
-				ret = 0;
+				ret = nullptr;
 			}
 			else if (Text::StrEquals(buff, (const UTF8Char*)"Default string"))
 			{
-				ret = 0;
+				ret = nullptr;
 			}
 			break;
 		}
 		i++;
 	}
-	if (ret == 0)
+	if (ret.IsNull())
 	{
 		this->GetDataType(dataList, 1);
 		i = 0;
@@ -302,15 +302,15 @@ UnsafeArrayOpt<UTF8Char> IO::SMBIOS::GetPlatformSN(UnsafeArray<UTF8Char> buff) c
 				ret = Text::StrTrim(buff);
 				if (ret == buff)
 				{
-					ret = 0;
+					ret = nullptr;
 				}
 				else if (Text::StrEndsWith(buff, (const UTF8Char*)"XXXX"))
 				{
-					ret = 0;
+					ret = nullptr;
 				}
 				else if (Text::StrEquals(buff, (const UTF8Char*)"Default string"))
 				{
-					ret = 0;
+					ret = nullptr;
 				}
 				break;
 			}

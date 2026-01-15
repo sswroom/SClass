@@ -8,7 +8,7 @@
 Media::Decoder::ADXDecoder::ADXDecoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
-	this->sourceAudio = 0;
+	this->sourceAudio = nullptr;
 	this->nChannels = 0;
 	sourceAudio->GetFormat(fmt);
 	if (fmt.formatId != 0x2080)
@@ -75,7 +75,7 @@ Bool Media::Decoder::ADXDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize
 	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(nullptr, blkSize);
 		this->readEvt = evt;
 		adxSample1[0] = 0;
 		adxSample1[1] = 0;
@@ -95,7 +95,7 @@ void Media::Decoder::ADXDecoder::Stop()
 	{
 		sourceAudio->Stop();
 	}
-	this->readEvt = 0;
+	this->readEvt = nullptr;
 }
 
 UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)

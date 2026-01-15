@@ -20,7 +20,7 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Optional<
 	}
 }
 
-void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map)
+void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMapObj<Text::String*> *map)
 {
 	if (map == 0)
 	{
@@ -28,8 +28,8 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::Str
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	NN<Data::ArrayList<Optional<Text::String>>> keys = map->GetKeys();
-	NN<const Data::ArrayList<Text::String *>> vals = map->GetValues();
+	NN<Data::ArrayListObj<Optional<Text::String>>> keys = map->GetKeys();
+	NN<const Data::ArrayListObj<Text::String *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -170,7 +170,7 @@ Bool Text::StringTool::IsTextUTF8(const Data::ByteArrayR &buff)
 Bool Text::StringTool::IsEmailAddress(UnsafeArray<const UTF8Char> s)
 {
 	UOSInt atPos = INVALID_INDEX;
-	UnsafeArrayOpt<const UTF8Char> dotPtr = 0;
+	UnsafeArrayOpt<const UTF8Char> dotPtr = nullptr;
 	UnsafeArray<const UTF8Char> nndotPtr;
 	UnsafeArray<const UTF8Char> startPtr = s;
 	UTF8Char c;
@@ -201,7 +201,7 @@ Bool Text::StringTool::IsEmailAddress(UnsafeArray<const UTF8Char> s)
 				return false;
 			}
 			atPos = (UOSInt)(s - startPtr - 1);
-			dotPtr = 0;
+			dotPtr = nullptr;
 
 		}
 		else
@@ -371,7 +371,7 @@ UnsafeArray<const UTF8Char> Text::StringTool::Null2Empty(UnsafeArrayOpt<const UT
 	return U8STR("");
 }
 
-Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayList<Double>> outArr)
+Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListNative<Double>> outArr)
 {
 	UTF8Char sbuff[128];
 	Double v;

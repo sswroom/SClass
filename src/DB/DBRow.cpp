@@ -98,7 +98,7 @@ Bool DB::DBRow::SetFieldStr(NN<DB::DBRow::Field> field, UnsafeArrayOpt<const UTF
 	SDEL_TEXT(field->currentData.str);
 	field->currentData.str = Text::StrSCopyNew(strValue);
 	field->currentChanged = true;
-	field->currentNull = (field->currentData.str == 0);
+	field->currentNull = field->currentData.str.IsNull();
 	return true;
 }
 
@@ -210,7 +210,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBRow::GetFieldStr(NN<DB::DBRow::Field> field
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_STRING)
 	{
-		return 0;
+		return nullptr;
 	}
 	if (field->currentChanged)
 	{
@@ -519,7 +519,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBRow::GetValueStr(Text::CStringNN fieldName)
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
-		return 0;
+		return nullptr;
 	}
 	return this->GetFieldStr(field);
 }
@@ -589,7 +589,7 @@ void DB::DBRow::Commit()
 			case DT_STRING:
 				SDEL_TEXT(field->committedData.str);
 				field->committedData.str = field->currentData.str;
-				field->currentData.str = 0;
+				field->currentData.str = nullptr;
 				break;
 			case DT_VECTOR:
 				SDEL_CLASS(field->committedData.vec);

@@ -350,14 +350,14 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	UInt8 macBuff[16];
 	if (s.leng != 17)
 	{
-		return 0;
+		return nullptr;
 	}
 	macBuff[6] = 0;
 	macBuff[7] = 0;
 	s.ConcatTo(sbuff);
 	if (Text::StrSplit(sarr, 7, sbuff, ':') != 6)
 	{
-		return 0;
+		return nullptr;
 	}
 	macBuff[0] = Text::StrHex2UInt8C(sarr[0]);
 	macBuff[1] = Text::StrHex2UInt8C(sarr[1]);
@@ -396,7 +396,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NN<IO::BTScanLog::ScanRecord
 
 IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl() : thread(ReadThread, this, CSTR("BTCtrlProgCtrl"))
 {
-	this->lastCmd = 0;
+	this->lastCmd = nullptr;
 	this->recHdlr = 0;
 	this->recHdlrObj = 0;
 	this->agentOn = false;

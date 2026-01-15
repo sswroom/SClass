@@ -45,7 +45,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	UInt8 buff[4096];
 	if (ReadUInt32(&hdr[0]) != 0xe011cfd0 || ReadUInt32(&hdr[4]) != 0xe11ab1a1)
 	{
-		return 0;
+		return nullptr;
 	}
 	UOSInt i;
 	UOSInt j;
@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	UInt32 miniFatCnt = ReadUInt32(&hdr[64]);
 	UInt32 sectorNum;
 	if (fatCnt <= 0)
-		return 0;
+		return nullptr;
 
 	UInt32 currSect;
 	UInt64 sizeLeft;
@@ -93,7 +93,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			sectorNum = fat.ReadU32(miniFatSect * 4);
 			if (sectorNum >= 0xfffffffc && sectorNum != 0xfffffffe)
 			{
-				return 0;
+				return nullptr;
 			}
 			fd->GetRealData(sectorSize * (miniFatSect + 1), sectorSize, miniFat.SubArray(i * sectorSize));
 			i++;
@@ -102,7 +102,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			{
 				if (i == miniFatCnt)
 					break;
-				return 0;
+				return nullptr;
 			}
 			miniFatSect = sectorNum;
 		}
@@ -283,7 +283,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 				else
 				{
 					wb.Delete();
-					return 0;
+					return nullptr;
 				}
 			}
 			NEW_CLASSNN(db, DB::WorkbookDB(wb));
@@ -300,7 +300,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 			else
 			{
 				db.Delete();
-				return 0;
+				return nullptr;
 			}
 		}
 	}

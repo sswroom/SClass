@@ -10,7 +10,7 @@ namespace Math
 	public:
 		static void GenerateNormalRandom(NN<Data::ArrayListDbl> out, NN<Data::Random> random, Double average, Double stddev, UOSInt count);
 		static void GenerateExponentialRandom(NN<Data::ArrayListDbl> out, NN<Data::Random> random, Double scale, UOSInt count);
-		template<class K> static void RandomChoice(NN<Data::ArrayList<K>> out, NN<Data::Random> random, NN<Data::ReadingList<K>> srcList, UOSInt count)
+		template<class K> static void RandomChoice(NN<Data::ArrayListNative<K>> out, NN<Data::Random> random, NN<Data::ReadingList<K>> srcList, UOSInt count)
 		{
 			UOSInt c = srcList->GetCount();
 			while (count-- > 0)

@@ -113,10 +113,10 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	this->exitOnClose = false;
 	this->isDialog = false;
 	this->dialogResult = DR_UNKNOWN;
-	this->okBtn = 0;
-	this->cancelBtn = 0;
+	this->okBtn = nullptr;
+	this->cancelBtn = nullptr;
 	this->closingHdlr = 0;
-	this->menu = 0;
+	this->menu = nullptr;
 	this->hAcc = 0;
 
 	this->hwnd = (ControlHandle*)gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -200,7 +200,7 @@ UI::GUIForm::~GUIForm()
 	}
 	this->isDialog = true;
 	GtkWidget *widget = (GtkWidget*)this->hwnd.OrNull();
-	this->hwnd = 0;
+	this->hwnd = nullptr;
 	if (widget)
 	{
 		gtk_widget_destroy(widget);
@@ -245,7 +245,7 @@ UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
 	{
 		gtk_main_iteration();
 	}
-	this->hwnd = 0;
+	this->hwnd = nullptr;
 	if (owner.SetTo(frm))
 	{
 		frm->SetEnabled(true);

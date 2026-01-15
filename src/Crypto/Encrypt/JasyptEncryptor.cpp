@@ -86,8 +86,8 @@ Crypto::Encrypt::JasyptEncryptor::JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlg
 		this->dkLen = 32;
 		break;
 	}
-	this->salt = 0;
-	this->iv = 0;
+	this->salt = nullptr;
+	this->iv = nullptr;
 }
 
 Crypto::Encrypt::JasyptEncryptor::~JasyptEncryptor()
@@ -178,7 +178,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::DecryptB64(Text::CStringNN b64Str, Unsa
 
 UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8> sb, Data::ByteArrayR srcBuff)
 {
-	UnsafeArrayOpt<UInt8> srcTmpBuff = 0;
+	UnsafeArrayOpt<UInt8> srcTmpBuff = nullptr;
 	UnsafeArray<UInt8> nnsrcTmpBuff;
 	UOSInt nBlock = srcBuff.GetSize() / this->ivSize;
 	UOSInt destLen;
@@ -195,11 +195,11 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8
 	{
 		destLen = nBlock * this->ivSize;		
 	}
-	if (this->salt == 0)
+	if (this->salt.IsNull())
 	{
 		destLen += this->saltSize;
 	}
-	if (this->iv == 0)
+	if (this->iv.IsNull())
 	{
 		destLen += this->ivSize;
 	}

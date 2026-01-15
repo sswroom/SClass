@@ -214,7 +214,7 @@ Text::MailCreator::MailCreator()
 	this->from = 0;
 	this->replyTo = 0;
 	this->subject = 0;
-	this->content = 0;
+	this->content = nullptr;
 }
 
 Text::MailCreator::~MailCreator()

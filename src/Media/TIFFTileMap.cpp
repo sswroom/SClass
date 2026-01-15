@@ -91,12 +91,12 @@ Bool Media::TIFFTileMap::CanQuery() const
 	return false;
 }
 
-Bool Media::TIFFTileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
+Bool Media::TIFFTileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayListNative<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
 {
 	return false;
 }
 
-UOSInt Media::TIFFTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
+UOSInt Media::TIFFTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	//////////////////////////////
 	return 0;
@@ -105,12 +105,12 @@ UOSInt Media::TIFFTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect,
 Optional<Media::ImageList> Media::TIFFTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	//////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Media::TIFFTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	return 0;
+	return nullptr;
 }
 
 Bool Media::TIFFTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
@@ -121,7 +121,7 @@ Bool Media::TIFFTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt 
 Optional<IO::StreamData> Media::TIFFTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	///////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 UOSInt Media::TIFFTileMap::GetLayerCount() const

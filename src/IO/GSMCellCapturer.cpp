@@ -40,10 +40,10 @@ IO::GSMCellCapturer::GSMCellCapturer(NN<IO::ATCommandChannel> channel, Bool need
 {
 	this->channel = channel;
 	this->needRelease = needRelease;
-	this->manuf = 0;
-	this->model = 0;
-	this->modem = 0;
-	this->hdlr = 0;
+	this->manuf = nullptr;
+	this->model = nullptr;
+	this->modem = nullptr;
+	this->hdlr = nullptr;
 	this->hdlrObj = nullptr;
 	this->lastScanTime = nullptr;
 	this->Reload();

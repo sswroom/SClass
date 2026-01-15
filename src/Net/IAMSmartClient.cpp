@@ -26,7 +26,7 @@ Net::IAMSmartClient::IAMSmartClient(NN<Net::TCPClientFactory> clif, Optional<Net
 {
 	cek.issueAt = 0;
 	cek.expiresAt = 0;
-	this->key = 0;
+	this->key = nullptr;
 	Parser::FileParser::X509Parser parser;
 	NN<Crypto::Cert::X509File> file;
 	if (Optional<Crypto::Cert::X509File>::ConvertFrom(parser.ParseFilePath(keyFile)).SetTo(file))

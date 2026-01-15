@@ -269,7 +269,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 		{
 			Sync::SimpleThread::Sleep(1);
 		}
-		this->soc = 0;
+		this->soc = nullptr;
 		DEL_CLASS(this->clk);
 		this->clk = 0;
 

@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(Optional<UI::GUIClientContro
 	this->SetText(CSTR("MySQL Connection"));
 
 	this->core = core;
-	this->conn = 0;
+	this->conn = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetNoResize(true);
 

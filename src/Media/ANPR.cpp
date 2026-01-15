@@ -13,7 +13,7 @@ struct ParseStatus
 {
 	Media::ANPR *me;
 	NN<Media::StaticImage> simg;
-	Data::ArrayList<UOSInt> *pastPos;
+	Data::ArrayListNative<UOSInt> *pastPos;
 };
 
 void __stdcall Media::ANPR::NumPlateArea(AnyType userObj, NN<Media::OpenCV::OCVFrame> filteredFrame, UnsafeArray<Math::Coord2D<UOSInt>> rect, Double maxTiltAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
@@ -129,7 +129,7 @@ Bool Media::ANPR::ParseImage(NN<Media::StaticImage> simg)
 	NN<Media::OpenCV::OCVFrame> frame;
 	if (Media::OpenCV::OCVFrame::CreateYFrame(bwImg).SetTo(frame))
 	{
-		Data::ArrayList<UOSInt> pastPos;
+		Data::ArrayListNative<UOSInt> pastPos;
 		ParseStatus status;
 		status.me = this;
 		status.simg = simg;

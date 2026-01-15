@@ -16,7 +16,7 @@
 
 void Map::TileMapServiceSource::LoadXML()
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, 0, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, nullptr, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -416,7 +416,7 @@ Map::TileMap::ImageType Map::TileMapServiceSource::GetImageType() const
 	return this->imgType;
 }
 
-UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
+UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayListT<Math::Coord2D<Int32>>> ids)
 {
 	NN<TileLayer> layer;
 	if (!this->layers.GetItem(level).SetTo(layer))
@@ -467,7 +467,7 @@ Optional<Media::ImageList> Map::TileMapServiceSource::LoadTileImage(UOSInt level
 			fd.Delete();
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::TileMapServiceSource::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
@@ -484,7 +484,7 @@ UnsafeArrayOpt<UTF8Char> Map::TileMapServiceSource::GetTileImageURL(UnsafeArray<
 		sbuff = this->tileExt->ConcatTo(sbuff);
 		return sbuff;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
@@ -518,7 +518,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	NN<IO::StreamData> fd;
 	NN<TileLayer> layer;
 	if (!this->layers.GetItem(level).SetTo(layer))
-		return 0;
+		return nullptr;
 	Double x1 = tileId.x * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
 	Double y1 = tileId.y * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;
 	Double x2 = (tileId.x + 1) * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
@@ -527,7 +527,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	Math::RectAreaDbl b = Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
 	bounds.Set(b);
 	if (!this->bounds.OverlapOrTouch(b))
-		return 0;
+		return nullptr;
 
 #if defined(VERBOSE)
 //	printf("Loading Tile %d %d %d\r\n", (UInt32)level, imgX, imgY);
@@ -549,7 +549,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	{
 		currTime.SetCurrTimeUTC();
 		currTime.AddDay(-7);
-		((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, 0, 0);
+		((IO::StmData::FileData*)fd.Ptr())->GetFileStream()->GetFileTimes(&dt, nullptr, nullptr);
 		if (dt.CompareTo(currTime) > 0)
 		{
 			it.Set(this->imgType);
@@ -563,7 +563,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	fd.Delete();
 
 	if (localOnly)
-		return 0;
+		return nullptr;
 
 	urlSb.ClearStr();
 	urlSb.Append(layer->url);
@@ -590,7 +590,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	{
 		IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		dt.SetCurrTimeUTC();
-		fs.SetFileTimes(&dt, 0, 0);
+		fs.SetFileTimes(&dt, nullptr, nullptr);
 	}
 	else if (status >= 200 && status < 300)
 	{
@@ -602,12 +602,12 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 			if (cli->GetLastModified(dt))
 			{
 				currTime.SetCurrTimeUTC();
-				fs.SetFileTimes(&currTime, 0, &dt);
+				fs.SetFileTimes(&currTime, nullptr, &dt);
 			}
 			else
 			{
 				currTime.SetCurrTimeUTC();
-				fs.SetFileTimes(&currTime, 0, 0);
+				fs.SetFileTimes(&currTime, nullptr, nullptr);
 			}
 		}
 	}
@@ -626,7 +626,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 		return fd.Ptr();
 	}
 	fd.Delete();
-	return 0;
+	return nullptr;
 }
 
 void Map::TileMapServiceSource::SetConcurrentCount(UOSInt concurrCnt)

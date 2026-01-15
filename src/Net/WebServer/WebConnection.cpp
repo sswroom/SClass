@@ -64,7 +64,7 @@ Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Opt
 	this->logWriter = 0;
 	this->sseHdlr = 0;
 	this->sseHdlrObj = 0;
-	this->protoHdlr = 0;
+	this->protoHdlr = nullptr;
 }
 
 Net::WebServer::WebConnection::~WebConnection()
@@ -73,7 +73,7 @@ Net::WebServer::WebConnection::~WebConnection()
 	if (this->protoHdlr.SetTo(protoHdlr))
 	{
 		protoHdlr->ConnectionClosed();
-		this->protoHdlr = 0;
+		this->protoHdlr = nullptr;
 	}
 	if (this->sseHdlr)
 	{
@@ -377,7 +377,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 		sb.AppendUTF8Char(' ');
 	}
 	sb.AppendC(UTF8STRC("Process Timeout"));
-	this->svr->LogMessageC(0, sb.ToCString());
+	this->svr->LogMessageC(nullptr, sb.ToCString());
 }
 
 Optional<Text::String> Net::WebServer::WebConnection::GetRequestURL()
@@ -386,7 +386,7 @@ Optional<Text::String> Net::WebServer::WebConnection::GetRequestURL()
 	{
 		return this->currReq->GetRequestURI();
 	}
-	return 0;
+	return nullptr;
 }
 
 void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::WebRequest::RequestProtocol protocol)

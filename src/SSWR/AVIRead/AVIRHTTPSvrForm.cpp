@@ -21,7 +21,7 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 		this->entries[i].reqTime = 0;
 		NEW_CLASSNN(this->entries[i].headerName, Data::ArrayListStringNN());
 		NEW_CLASSNN(this->entries[i].headerVal, Data::ArrayListStringNN());
-		this->entries[i].reqURI = 0;
+		this->entries[i].reqURI = nullptr;
 		this->entries[i].cliAddr.addrType = Net::AddrType::Unknown;
 		this->entries[i].cliPort = 0;
 	}
@@ -86,7 +86,7 @@ void SSWR::AVIRead::AVIRHTTPLog::Use(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->entMut);
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayList<UOSInt>> logIndex)
+void SSWR::AVIRead::AVIRHTTPLog::GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayListNative<UOSInt>> logIndex)
 {
 	UOSInt i;
 	if (this->entries[this->currEnt].reqTime == 0)
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 	}
 	sb.ClearStr();
 	me->txtDocDir->GetText(sb);
-	Optional<Net::SSLEngine> ssl = 0;
+	Optional<Net::SSLEngine> ssl = nullptr;
 
 	if (me->chkSSL->IsChecked())
 	{
@@ -370,7 +370,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 	if (i != me->lastAccessIndex)
 	{
 		Data::ArrayListNN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> logs;
-		Data::ArrayList<UOSInt> logIndex;
+		Data::ArrayListNative<UOSInt> logIndex;
 		NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage;
@@ -432,7 +432,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
-	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
+	SSWR::AVIRead::AVIRSSLCertKeyForm frm(nullptr, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Crypto::Cert::X509Cert> nnCert;
@@ -465,12 +465,12 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->SetText(CSTR("HTTP Server"));
 	this->SetFont(nullptr, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	this->sslCert = 0;
-	this->sslKey = 0;
-	this->svr = 0;
-	this->log = 0;
-	this->dirHdlr = 0;
-	this->logger = 0;
+	this->sslCert = nullptr;
+	this->sslKey = nullptr;
+	this->svr = nullptr;
+	this->log = nullptr;
+	this->dirHdlr = nullptr;
+	this->logger = nullptr;
 	this->lastAccessIndex = 0;
 	this->lastStatus.connCnt = 0;
 	this->lastStatus.currConn = 0;

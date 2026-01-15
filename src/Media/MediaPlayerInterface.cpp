@@ -22,9 +22,9 @@ Media::MediaPlayerInterface::MediaPlayerInterface(NN<Parser::ParserList> parsers
 {
 	this->parsers = parsers;
 	this->storeTime = (UInt32)-1;
-	this->currFile = 0;
-	this->player = 0;
-	this->currPBC = 0;
+	this->currFile = nullptr;
+	this->player = nullptr;
+	this->currPBC = nullptr;
 }
 
 Media::MediaPlayerInterface::~MediaPlayerInterface()
@@ -155,7 +155,7 @@ void Media::MediaPlayerInterface::CloseFile()
 	if (this->player.SetTo(player) && this->currFile.NotNull())
 	{
 		player->StopPlayback();
-		player->LoadMedia(0);
+		player->LoadMedia(nullptr);
 	}
 	this->storeTime = (UInt32)-1;
 	this->currFile.Delete();
@@ -172,7 +172,7 @@ Optional<Media::VideoRenderer> Media::MediaPlayerInterface::GetVideoRenderer()
 {
 	NN<Media::MediaPlayer> player;
 	if (!this->player.SetTo(player))
-		return 0;
+		return nullptr;
 	return player->GetVideoRenderer();
 }
 

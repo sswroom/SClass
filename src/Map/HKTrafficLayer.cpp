@@ -739,7 +739,7 @@ Optional<const Map::HKTrafficLayer::NodeInfo> Map::HKTrafficLayer::GetNodeInfo(I
 			return &nodeTable[k];
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed)
@@ -761,7 +761,7 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		road->objId = id;
 		road->fromId = fromId;
 		road->toId = toId;
-		road->vec = 0;
+		road->vec = nullptr;
 		road->lev = lev;
 		road->spd = trafficSpeed;
 		this->roadMap.Put(id, road);
@@ -807,7 +807,7 @@ Optional<IO::Stream> Map::HKTrafficLayer::OpenURLStream()
 			return fs;
 		}
 		DEL_CLASS(fs);
-		return 0;
+		return nullptr;
 	}
 	else
 	{
@@ -830,7 +830,7 @@ Optional<IO::Stream> Map::HKTrafficLayer::OpenURLStream()
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 			else
@@ -844,7 +844,7 @@ Optional<IO::Stream> Map::HKTrafficLayer::OpenURLStream()
 			return cli.Ptr();
 		}
 		cli.Delete();
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -1199,7 +1199,7 @@ UOSInt Map::HKTrafficLayer::GetColumnCnt() const
 UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) const
 {
 	////////////////////////////
-	return 0;
+	return nullptr;
 }
 
 DB::DBUtil::ColType Map::HKTrafficLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) const
@@ -1237,7 +1237,7 @@ void Map::HKTrafficLayer::EndGetObject(NN<GetObjectSess> session)
 Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<RoadInfo> road;
-	Optional<Math::Geometry::Vector2D> vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = nullptr;
 	NN<Math::Geometry::Vector2D> nnvec;
 	Sync::MutexUsage mutUsage(this->roadMut);
 	if (this->roadMap.Get(id).SetTo(road) && road->vec.SetTo(nnvec))
@@ -1278,7 +1278,7 @@ Optional<Map::MapDrawLayer> Map::HKTrafficLayer::GetNodePoints()
 	NN<Math::Geometry::Point> pt;
 	NN<Math::CoordinateSystem> csys;
 	if (!Optional<Math::CoordinateSystem>(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)).SetTo(csys))
-		return 0;
+		return nullptr;
 	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, csys, 0, CSTR("HKTrafficNode")));
 	OSInt i = 0;
 	OSInt j = sizeof(nodeTable) / sizeof(nodeTable[0]);

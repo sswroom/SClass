@@ -171,7 +171,7 @@ void Text::XMLReader::ParseElementNS()
 Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, ParseMode mode)
 {
 	this->encFact = encFact;
-	this->enc = 0;
+	this->enc = nullptr;
 	this->stm = stm;
 	this->stmEnc = false;
 	this->mode = mode;
@@ -180,11 +180,11 @@ Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Strea
 	this->rawBuff = MemAllocArr(UInt8, BUFFSIZE);
 	this->rawBuffSize = 0;
 	this->parseOfst = 0;
-	this->nodeText = 0;
-	this->nodeOriText = 0;
+	this->nodeText = nullptr;
+	this->nodeOriText = nullptr;
 	this->emptyNode = false;
 	this->parseError = 0;
-	this->ns = 0;
+	this->ns = nullptr;
 	this->nt = Text::XMLNode::NodeType::Unknown;
 	this->InitBuffer();
 }
@@ -287,14 +287,14 @@ Optional<Text::XMLAttrib> Text::XMLReader::GetAttrib(Text::CStringNN name) const
 		if (Text::String::OrEmpty(attr->name)->Equals(name))
 			return attr;
 	}
-	return 0;
+	return nullptr;
 }
 
 Bool Text::XMLReader::ReadNext()
 {
 	NN<Text::String> nns;
 	Bool isHTMLScript = false;
-	this->ns = 0;
+	this->ns = nullptr;
 	if (this->nt == Text::XMLNode::NodeType::Element && !this->emptyNode && this->nodeText.SetTo(nns))
 	{
 		if (this->mode == Text::XMLReader::PM_HTML)
@@ -581,7 +581,7 @@ Bool Text::XMLReader::ReadNext()
 					else if (c == '>')
 					{
 						this->parseOfst = parseOfst + 1;
-						if (this->nodeText != 0)
+						if (this->nodeText.NotNull())
 						{
 							return true;
 						}
@@ -1321,11 +1321,11 @@ Bool Text::XMLReader::ReadNext()
 					{
 						this->parseOfst = parseOfst + 2;
 						this->emptyNode = true;
-						if (this->mode == ParseMode::PM_XML && this->nodeText != 0)
+						if (this->mode == ParseMode::PM_XML && this->nodeText.NotNull())
 						{
 							this->ParseElementNS();
 						}
-						return this->nodeText != 0;
+						return this->nodeText.NotNull();
 					}
 					else
 					{
@@ -1378,11 +1378,11 @@ Bool Text::XMLReader::ReadNext()
 					}
 					this->parseOfst = parseOfst + 1;
 					this->emptyNode = false;
-					if (this->mode == ParseMode::PM_XML && this->nodeText != 0)
+					if (this->mode == ParseMode::PM_XML && this->nodeText.NotNull())
 					{
 						this->ParseElementNS();
 					}
-					return this->nodeText != 0;
+					return this->nodeText.NotNull();
 				}
 				else if (c == '=')
 				{
@@ -1700,11 +1700,11 @@ Optional<Text::String> Text::XMLReader::NextElementName()
 	while (true)
 	{
 		if (!this->ReadNext())
-			return 0;
+			return nullptr;
 		if (this->nt == Text::XMLNode::NodeType::Element)
 			return this->nodeText;
 		if (this->nt == Text::XMLNode::NodeType::ElementEnd)
-			return 0;
+			return nullptr;
 	}
 }
 

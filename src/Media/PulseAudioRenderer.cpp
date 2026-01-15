@@ -415,7 +415,7 @@ Bool Media::PulseAudioRenderer::GetDeviceInfo(NN<DeviceInfo> devInfo)
 UOSInt Media::PulseAudioRenderer::GetDeviceCount()
 {
 	DeviceInfo devInfo;
-	devInfo.sbuff = 0;
+	devInfo.sbuff = nullptr;
 	devInfo.devNo = 0;
 	if (GetDeviceInfo(devInfo))
 		return devInfo.count;
@@ -429,7 +429,7 @@ UnsafeArrayOpt<UTF8Char> Media::PulseAudioRenderer::GetDeviceName(UnsafeArray<UT
 	devInfo.devNo = devNo;
 	if (GetDeviceInfo(devInfo) && devInfo.count > devNo)
 		return devInfo.sbuff;
-	return 0;
+	return nullptr;
 }
 
 void Media::PulseAudioRenderer::OnEvent()
@@ -440,8 +440,8 @@ void Media::PulseAudioRenderer::OnEvent()
 Media::PulseAudioRenderer::PulseAudioRenderer(UnsafeArrayOpt<const UTF8Char> devName, Text::CStringNN appName) : thread(PlayThread, this, CSTR("PulseAudio"))
 {
 	this->devName = Text::String::NewOrNullSlow(devName);
-	this->audsrc = 0;
-	this->resampler = 0;
+	this->audsrc = nullptr;
+	this->resampler = nullptr;
 	this->endHdlr = 0;
 	this->buffTime = 500;
 	this->clsData = MemAllocNN(ClassData);
@@ -459,7 +459,7 @@ Media::PulseAudioRenderer::~PulseAudioRenderer()
 {
 	if (this->audsrc.NotNull())
 	{
-		BindAudio(0);
+		BindAudio(nullptr);
 	}
 	OPTSTR_DEL(this->devName);
 	pa_context_disconnect(this->clsData->context);
@@ -482,7 +482,7 @@ Bool Media::PulseAudioRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 	}
 	if (this->audsrc.NotNull())
 	{
-		this->audsrc = 0;
+		this->audsrc = nullptr;
 		this->resampler.Delete();
 	}
 	if (this->clsData->stream)

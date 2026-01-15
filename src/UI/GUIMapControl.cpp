@@ -399,19 +399,19 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 		NN<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tl.x > 0)
 		{
-			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), nullptr, bgBrush);
 		}
 		if (tl.x + UOSInt2Double(sz.x) < UOSInt2Double(this->currSize.x))
 		{
-			img->DrawRect(Math::Coord2DDbl(UOSInt2Double(sz.x) + tl.x, 0), Math::Size2DDbl(UOSInt2Double(this->currSize.x - sz.x) - tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(UOSInt2Double(sz.x) + tl.x, 0), Math::Size2DDbl(UOSInt2Double(this->currSize.x - sz.x) - tl.x, UOSInt2Double(this->currSize.y)), nullptr, bgBrush);
 		}
 		if (tl.y > 0)
 		{
-			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->currSize.x), tl.y), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->currSize.x), tl.y), nullptr, bgBrush);
 		}
 		if (tl.y + UOSInt2Double(sz.y) < UOSInt2Double(this->currSize.y))
 		{
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(sz.y) + tl.y), Math::Size2DDbl(UOSInt2Double(this->currSize.x), UOSInt2Double(this->currSize.y - sz.y) - tl.y), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(sz.y) + tl.y), Math::Size2DDbl(UOSInt2Double(this->currSize.x), UOSInt2Double(this->currSize.y - sz.y) - tl.y), nullptr, bgBrush);
 		}
 		img->DelBrush(bgBrush);
 	}
@@ -420,19 +420,19 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 		NN<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tl.x > 0)
 		{
-			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), nullptr, bgBrush);
 		}
 		else if (tl.x < 0)
 		{
-			img->DrawRect(Math::Coord2DDbl(UOSInt2Double(this->currSize.x) + tl.x, 0), Math::Size2DDbl(-tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(UOSInt2Double(this->currSize.x) + tl.x, 0), Math::Size2DDbl(-tl.x, UOSInt2Double(this->currSize.y)), nullptr, bgBrush);
 		}
 		if (tl.y > 0)
 		{
-			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->currSize.x), tl.y), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(this->currSize.x), tl.y), nullptr, bgBrush);
 		}
 		else if (tl.y < 0)
 		{
-			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(this->currSize.y) + tl.y), Math::Size2DDbl(UOSInt2Double(this->currSize.x), -tl.y), 0, bgBrush);
+			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(this->currSize.y) + tl.y), Math::Size2DDbl(UOSInt2Double(this->currSize.x), -tl.y), nullptr, bgBrush);
 		}
 		img->DelBrush(bgBrush);
 
@@ -469,7 +469,7 @@ void UI::GUIMapControl::DrawScnObjects(NN<Media::DrawImage> img, Math::Coord2DDb
 		scnPos = this->view->MapXYToScnXY(this->markerPos);
 		x = Double2Int32(scnPos.x + ofst.x);
 		y = Double2Int32(scnPos.y + ofst.y);
-		NN<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
+		NN<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, nullptr, 0);
 		if (this->markerHasDir)
 		{
 			Double ptAdd = 8 * hdpi / ddpi;
@@ -492,7 +492,7 @@ void UI::GUIMapControl::DrawScnObjects(NN<Media::DrawImage> img, Math::Coord2DDb
 	UOSInt j = this->selVecList.GetCount();
 	if (j > 0)
 	{
-		NN<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+		NN<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3, nullptr, 0);
 		NN<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
 		NN<Math::Geometry::Vector2D> vec;
 		while (i < j)
@@ -518,7 +518,7 @@ UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
 	this->currSize = Math::Size2D<UOSInt>(640, 480);
-	this->bgImg = 0;
+	this->bgImg = nullptr;
 	this->mouseDown = false;
 	this->mouseCurrPos = Math::Coord2D<OSInt>(0, 0);
 	this->mouseDownPos = Math::Coord2D<OSInt>(0, 0);
@@ -530,7 +530,7 @@ UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	this->mouseDownHdlr = 0;
 	this->mouseUpHdlr = 0;
 	this->drawHdlr = 0;
-	this->mapEnv = 0;
+	this->mapEnv = nullptr;
 	this->imgTimeoutTick = 0;
 
 	this->markerPos = Math::Coord2DDbl(0, 0);
@@ -551,7 +551,7 @@ UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
 	this->currSize = Math::Size2D<UOSInt>(640, 480);
-	this->bgImg = 0;
+	this->bgImg = nullptr;
 	this->mouseDown = false;
 	this->mouseCurrPos = Math::Coord2D<OSInt>(0, 0);
 	this->mouseDownPos = Math::Coord2D<OSInt>(0, 0);
@@ -614,7 +614,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	if (this->bgImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
-		this->bgImg = 0;
+		this->bgImg = nullptr;
 	}
 	if (this->currSize.x > 0 && this->currSize.y > 0)
 	{
@@ -720,7 +720,7 @@ void UI::GUIMapControl::UpdateMap()
 		Math::Coord2DDbl center = this->view->GetCenter();
 		Manage::HiResClock clk;
 		NN<Media::DrawBrush> b = bgImg->NewBrushARGB(this->bgDispColor);
-		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize().ToDouble(), 0, b);
+		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize().ToDouble(), nullptr, b);
 		bgImg->DelBrush(b);
 		this->renderer->DrawMap(bgImg, this->view, imgDurMS);
 		t = clk.GetTimeDiff();

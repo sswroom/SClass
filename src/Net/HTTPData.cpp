@@ -33,7 +33,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 		if (!fs.IsError())
 		{
 			Data::DateTime dt;
-			fs.GetFileTimes(0, 0, &dt);
+			fs.GetFileTimes(nullptr, nullptr, &dt);
 			cli->AddTimeHeader(CSTR("If-Modified-Since"), dt);
 		}
 	}
@@ -101,7 +101,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 			Data::DateTime dt;
 			if (fdh->file && cli->GetLastModified(dt))
 			{
-				fdh->file->SetFileTimes(0, 0, &dt);
+				fdh->file->SetFileTimes(nullptr, nullptr, &dt);
 			}
 		}
 		else
@@ -146,7 +146,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 				Data::DateTime dt;
 				if (fdh->file && cli->GetLastModified(dt))
 				{
-					fdh->file->SetFileTimes(0, 0, &dt);
+					fdh->file->SetFileTimes(nullptr, nullptr, &dt);
 				}
 			}
 		}
@@ -160,7 +160,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	{
 		cli.Delete();
 	}
-	fdh->cli = 0;
+	fdh->cli = nullptr;
 	fdh->isLoading = false;
 	mutUsage.EndUse();
 	return 0;
@@ -194,7 +194,7 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 	Bool needReload = forceReload;
 	NN<HTTPDATAHANDLE> fdh;
 	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
-	this->fdh = 0;
+	this->fdh = nullptr;
 	if (pt == IO::Path::PathType::Directory)
 	{
 		this->dataLength = 0;
@@ -229,7 +229,7 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 			fdh->localFile = Text::String::New(localFile);
 			fdh->isLoading = false;
 			fdh->loadSize = 0;
-			fdh->cli = 0;
+			fdh->cli = nullptr;
 			i = fdh->url->LastIndexOf('/');
 			if (i != INVALID_INDEX)
 			{
@@ -270,7 +270,7 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 		{
 			fdh->fileName = fdh->url->ToCString();
 		}
-		fdh->cli = 0;
+		fdh->cli = nullptr;
 		NEW_CLASS(fdh->evtTmp, Sync::Event(false));
 		Sync::ThreadUtil::Create(LoadThread, fdh);
 		while (fdh->cli.IsNull() && fdh->isLoading)
@@ -380,7 +380,7 @@ void Net::HTTPData::SetFullName(Text::CStringNN fullName)
 
 UnsafeArrayOpt<const UInt8> Net::HTTPData::GetPointer() const
 {
-	return 0;
+	return nullptr;
 }
 
 NN<IO::StreamData> Net::HTTPData::GetPartialData(UInt64 offset, UInt64 length)
@@ -433,6 +433,6 @@ void Net::HTTPData::Close()
 			fdh.Delete();
 		}
 	}
-	this->fdh = 0;
+	this->fdh = nullptr;
 }
 

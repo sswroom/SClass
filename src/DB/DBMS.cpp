@@ -67,7 +67,7 @@ namespace DB
 	private:
 		UOSInt colCount;
 		OSInt rowChanged;
-		Data::ArrayList<Text::String **> *rows;
+		Data::ArrayListObj<Text::String **> *rows;
 		DB::DBUtil::ColType *colTypes;
 		UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>> colNames;
 		OSInt rowIndex;
@@ -79,7 +79,7 @@ namespace DB
 			UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nncolNames;
 			if (this->rowChanged == -1)
 			{
-				NEW_CLASS(this->rows, Data::ArrayList<Text::String**>());
+				NEW_CLASS(this->rows, Data::ArrayListObj<Text::String**>());
 				this->colTypes = MemAlloc(DB::DBUtil::ColType, this->colCount);
 				this->colNames = nncolNames = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, this->colCount);
 				UOSInt i;
@@ -87,7 +87,7 @@ namespace DB
 				while (i < this->colCount)
 				{
 					this->colTypes[i] = DB::DBUtil::CT_VarUTF8Char;
-					nncolNames[i] = 0;
+					nncolNames[i] = nullptr;
 					i++;
 				}
 			}
@@ -95,7 +95,7 @@ namespace DB
 			{
 				this->rows = 0;
 				this->colTypes = 0;
-				this->colNames = 0;
+				this->colNames = nullptr;
 			}
 			this->rowIndex = -1;
 		}
@@ -127,7 +127,7 @@ namespace DB
 						SDEL_TEXT(nncolNames[i]);
 					}
 					MemFreeArr(nncolNames);
-					this->colNames = 0;
+					this->colNames = nullptr;
 				}
 				MemFree(this->colTypes);
 			}
@@ -202,10 +202,10 @@ namespace DB
 		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
-				return 0;
+				return nullptr;
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
-				return 0;
+				return nullptr;
 			return Text::StrUTF8_WCharC(buff, row[colIndex]->v, row[colIndex]->leng, 0);
 		}
 
@@ -223,20 +223,20 @@ namespace DB
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
-				return 0;
+				return nullptr;
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
-				return 0;
+				return nullptr;
 			return row[colIndex]->Clone();
 		}
 
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
-				return 0;
+				return nullptr;
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
-				return 0;
+				return nullptr;
 			return Text::StrConcatS(buff, row[colIndex]->v, buffSize);
 		}
 
@@ -245,9 +245,9 @@ namespace DB
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return Data::Timestamp(0);
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
-			if (row == 0)
+			if (row == nullptr)
 				return Data::Timestamp(0);
-			if (row[colIndex] == 0)
+			if (row[colIndex] == nullptr)
 				return Data::Timestamp(0);
 			return Data::Timestamp(row[colIndex]->ToCString(), 0);
 		}
@@ -277,7 +277,7 @@ namespace DB
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
-			if (row == 0 || row[colIndex] == 0)
+			if (row == nullptr || row[colIndex] == nullptr)
 				return 0;
 			return row[colIndex]->leng;
 		}
@@ -296,7 +296,7 @@ namespace DB
 
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
 		{
-			return 0;
+			return nullptr;
 		}
 
 		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -317,9 +317,9 @@ namespace DB
 		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 		{
 			if (this->rowChanged != -1)
-				return 0;
+				return nullptr;
 			if (colIndex >= this->colCount)
-				return 0;
+				return nullptr;
 			UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nncolNames;
 			UnsafeArray<const UTF8Char> nns;
 			if (this->colNames.SetTo(nncolNames) && nncolNames[colIndex].SetTo(nns))
@@ -387,7 +387,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 			if (sql[0] == '.')
 			{
 				if (hasDot)
-					return 0;
+					return nullptr;
 				hasDot = true;
 				*nameBuff++ = '.';
 			}
@@ -420,7 +420,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 				}
 				else
 				{
-					return 0;
+					return nullptr;
 				}
 			}
 		}
@@ -469,7 +469,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 			}
 			else if (c == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			else
 			{
@@ -521,7 +521,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 			}
 			else if (c == 0)
 			{
-				return 0;
+				return nullptr;
 			}
 			else
 			{
@@ -552,7 +552,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 		{
 			if (varType == 1 || isSep)
 			{
-				return 0;
+				return nullptr;
 			}
 			*nameBuff++ = c;
 			isSep = true;
@@ -566,7 +566,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 		{
 			if (isSep)
 			{
-				return 0;
+				return nullptr;
 			}
 			*nameBuff++ = c;
 		}
@@ -574,7 +574,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 		{
 			if (!isSep)
 			{
-				return 0;
+				return nullptr;
 			}
 			*nameBuff++ = c;
 			c = *sql++;
@@ -585,14 +585,14 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 			}
 			else
 			{
-				return 0;
+				return nullptr;
 			}
 		}
 		else if (c == 0 || c == ',')
 		{
 			if (isSep)
 			{
-				return 0;
+				return nullptr;
 			}
 			else
 			{
@@ -621,7 +621,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 				{
 					sptr = sql;
 					if (!SQLParseName(nameBuff, sql).SetTo(sql))
-						return 0;
+						return nullptr;
 					while (Text::CharUtil::PtrIsWS(sql));
 					MemCopyNO(nameBuff.Ptr(), sptr.Ptr(), (UOSInt)(sql - sptr));
 					nameBuff += sql - sptr;
@@ -645,7 +645,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 					}
 					else
 					{
-						return 0;
+						return nullptr;
 					}
 				}
 				
@@ -658,7 +658,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBMS::SQLParseName(UnsafeArray<UTF8Char> name
 		}
 		else
 		{
-			return 0;
+			return nullptr;
 		}
 	}
 }
@@ -1984,7 +1984,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 	if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("SELECT")) && Text::CharUtil::IsWS(sptr1 + 6))
 	{
 		sptr1 += 6;
-		Data::ArrayList<DB::DBMS::SQLColumn*> cols;
+		Data::ArrayListObj<DB::DBMS::SQLColumn*> cols;
 		DB::DBMS::SQLColumn *col;
 		Bool hasFrom = false;
 
@@ -2252,7 +2252,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> 
 	{
 		sptr1 += 3;
 
-		Data::ArrayList<DB::DBMS::SQLColumn*> cols;
+		Data::ArrayListObj<DB::DBMS::SQLColumn*> cols;
 		DB::DBMS::SQLColumn *col;
 		UTF8Char c;
 		UnsafeArray<UTF8Char> namePtr;

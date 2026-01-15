@@ -11,7 +11,7 @@ void Media::LUT::Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataForm
 	this->inputLev = inputLev;
 	this->outputCh = outputCh;
 	this->fmt = fmt;
-	this->remark = 0;
+	this->remark = nullptr;
 	UOSInt tableSize;
 	UOSInt i;
 	if (fmt == Media::LUT::DF_UINT8)

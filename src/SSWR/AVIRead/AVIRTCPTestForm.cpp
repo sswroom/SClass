@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 			threads[i].Delete();
 		}
 		MemFreeArr(threads);
-		this->threads = 0;
+		this->threads = nullptr;
 		this->threadCnt = 0;
 	}
 }
@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(Optional<UI::GUIClientControl> p
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->threads = 0;
+	this->threads = nullptr;
 	this->svrIP = 0;
 	this->svrPort = 0;
 	this->connLeftCnt = 0;

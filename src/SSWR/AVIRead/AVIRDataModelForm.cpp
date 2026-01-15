@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRDataModelForm::AVIRDataModelForm(Optional<UI::GUIClientContro
 	this->SetFont(nullptr, 8.25, false);
 	
 	this->core = core;
-	this->cls = 0;
+	this->cls = nullptr;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlControl = ui->NewPanel(*this);

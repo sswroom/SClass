@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(AnyType userObj)
 		return;
 	}
 	IO::StmData::MemoryDataCopy fd(edid, me->edidSize);
-	me->core->OpenHex(fd, 0);
+	me->core->OpenHex(fd, nullptr);
 }
 
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames)
@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Da
 					if (me->edid.SetTo(edid))
 					{
 						MemFreeArr(edid);
-						me->edid = 0;
+						me->edid = nullptr;
 					}
 					me->edid = edid = MemAllocArr(UInt8, fileSize);
 					me->edidSize = fileSize;
@@ -190,7 +190,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(Optional<UI::GUIClientCont
 	this->SetText(CSTR("EDID Viewer"));
 	this->SetFont(nullptr, 8.25, false);
 
-	this->edid = 0;
+	this->edid = nullptr;
 	this->edidSize = 0;
 
 	this->pnlCtrl = ui->NewPanel(*this);
@@ -216,7 +216,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::~AVIREDIDViewerForm()
 	if (this->edid.SetTo(edid))
 	{
 		MemFreeArr(edid);
-		this->edid = 0;
+		this->edid = nullptr;
 	}
 }
 
@@ -231,7 +231,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 	if (this->edid.SetTo(edid))
 	{
 		MemFreeArr(edid);
-		this->edid = 0;
+		this->edid = nullptr;
 	}
 
 	{

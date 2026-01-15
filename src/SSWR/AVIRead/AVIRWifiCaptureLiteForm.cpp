@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 						}
 						else
 						{
-							wifiLog->ieBuff = 0;
+							wifiLog->ieBuff = nullptr;
 						}
 						me->wifiLogMap.Put(imac, wifiLog);
 

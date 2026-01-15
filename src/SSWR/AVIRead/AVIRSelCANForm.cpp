@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSelCANForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelCANForm>();
-	SSWR::AVIRead::AVIRSelStreamForm dlg(0, me->ui, me->core, false, me->ssl, me->core->GetLog());
+	SSWR::AVIRead::AVIRSelStreamForm dlg(nullptr, me->ui, me->core, false, me->ssl, me->core->GetLog());
 	if (dlg.ShowDialog(me) == DR_OK)
 	{
 		IO::Device::AXCAN *can;
@@ -46,7 +46,7 @@ SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(Optional<UI::GUIClientControl> par
 
 	this->core = core;
 	this->hdlr = hdlr;
-	this->listener = 0;
+	this->listener = nullptr;
 	this->ssl = ssl;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
